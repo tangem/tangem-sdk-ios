@@ -17,30 +17,25 @@ class ViewController: UIViewController {
     var card: Card?
     
     @IBAction func scanCardTapped(_ sender: Any) {
-        cardManager.scanCard {[unowned self] scanResult in
-            var date = Date()
-            switch scanResult {
+        cardManager.scanCard {[unowned self] taskEvent in
+            switch taskEvent {
             case .event(let scanEvent):
                 switch scanEvent {
                 case .onRead(let card):
-                    date = Date()
                     self.card = card
                     print("read result: \(card)")
                 case .onVerify(let isGenuine):
-                    let dateDiff = Calendar.current.dateComponents([.second,.nanosecond], from: date, to: Date())
-                    print("Verify time is: \(dateDiff.second ?? 0).\(dateDiff.nanosecond ?? 0) sec.")
                     print("verify result: \(isGenuine)")
                 }
-            case .failure(let error):
-                if case .userCancelled = error {
-                    //silence error
-                    return
+            case .completion(let error):
+                if let error = error {
+                    if case .userCancelled = error {
+                        //silence user cancelled
+                    } else {
+                        print("completed with error: \(error.localizedDescription)")
+                    }
                 }
-                let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-                self.show(alertController, sender: nil)
-            case .success(let newEnvironment):
-                print("Sign completed with environment: \(newEnvironment)")
+                //handle completion. Unlock UI, etc.
             }
         }
     }
@@ -54,18 +49,19 @@ class ViewController: UIViewController {
             return
         }
         
-        cardManager.sign(hashes: hashes, environment: CardEnvironment(cardId: cardId)) { signResult  in
-            switch signResult {
+        cardManager.sign(hashes: hashes, cardId: cardId) { taskEvent  in
+            switch taskEvent {
             case .event(let signResponse):
                 print(signResponse)
-            case .failure(let error):
-                if case .userCancelled = error {
-                    //silence error
-                    return
+            case .completion(let error):
+                if let error = error {
+                    if case .userCancelled = error {
+                        //silence user cancelled
+                    } else {
+                        print("completed with error: \(error.localizedDescription)")
+                    }
                 }
-                print(error.localizedDescription)
-            case .success(let newEnvironment):
-                print("Sign completed with environment: \(newEnvironment)")
+                //handle completion. Unlock UI, etc.
             }
         }
     }

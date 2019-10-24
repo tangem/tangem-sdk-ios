@@ -10,11 +10,6 @@ import Foundation
 import Combine
 import CoreNFC
 
-/// For setting alertMessage into NFC popup
-public protocol NFCReaderText: class {
-    var alertMessage: String {get set}
-}
-
 @available(iOS 13.0, *)
 enum NFCTagWrapper {
     case tag(NFCISO7816Tag)
@@ -63,11 +58,17 @@ public final class NFCReader: NSObject {
             session.isReady else { return }
         
         session.invalidate(errorMessage: Localization.nfcSessionTimeout)
+        readerSessionError.send(NFCReaderError(.readerSessionInvalidationErrorSessionTimeout))
     }
 }
 
 @available(iOS 13.0, *)
 extension NFCReader: CardReader {
+    public var alertMessage: String {
+        get { return readerSession?.alertMessage ?? "" }
+        set { readerSession?.alertMessage = newValue }
+    }
+    
     /// Start session and try to connect with tag
     public func startSession() {
         if let existingSession = readerSession, existingSession.isReady { return }
@@ -80,20 +81,17 @@ extension NFCReader: CardReader {
     }
     
     public func stopSession() {
-        guard let session = readerSession, session.isReady else { return }
-        
-        session.invalidate()
+        readerSession?.invalidate()
     }
     
     /// Send apdu command to connected tag
     /// - Parameter command: serialized apdu
     /// - Parameter completion: result with ResponseApdu or NFCReaderError otherwise
     public func send(commandApdu: CommandApdu, completion: @escaping (CompletionResult<ResponseApdu, NFCReaderError>) -> Void) {
-         print("Create subscriptions")
+        print("Create subscriptions")
         sessionSubscription = readerSessionError
             .compactMap { $0 }
             .sink(receiveValue: { [weak self] error in
-                print("Receive session error")
                 completion(.failure(error))
                 self?.cancelSubscriptions()
             })
@@ -101,7 +99,6 @@ extension NFCReader: CardReader {
         tagSubscription = connectedTag
             .compactMap({ $0 })
             .sink(receiveValue: { [weak self] tagWrapper in
-                print("Receive tag")
                 switch tagWrapper {
                 case .error(let tagError):
                     completion(.failure(tagError))
@@ -186,13 +183,5 @@ extension NFCReader: NFCTagReaderSessionDelegate {
                 self?.connectedTag.send(.tag(tag7816))
             }
         }
-    }
-}
-
-@available(iOS 13.0, *)
-extension NFCReader: NFCReaderText {
-    public var alertMessage: String {
-        get { return readerSession?.alertMessage ?? "" }
-        set { readerSession?.alertMessage = newValue }
     }
 }

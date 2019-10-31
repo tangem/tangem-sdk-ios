@@ -23,18 +23,18 @@ public final class ScanTask: Task<ScanEvent> {
     }
     
     func scanWithNdef(environment: CardEnvironment, callback: @escaping (TaskEvent<ScanEvent>) -> Void) {
-        let readCommand = ReadCommandNdef()
+        let readCommand = ReadCommand()
         sendCommand(readCommand, environment: environment) { firstResult in
             switch firstResult {
-            case .completion(let error):
-                if let error = error {
-                    callback(.completion(error))
-                }
-            case .event(var firstResponse):
+            case .failure(let error):
+                callback(.completion(error))
+                self.cardReader.stopSession()
+            case .success(var firstResponse):
                 guard let firstChallenge = firstResponse.challenge,
                     let firstSalt = firstResponse.salt,
                     let publicKey = firstResponse.walletPublicKey,
                     let firstHashes = firstResponse.signedHashes else {
+                        self.cardReader.stopSession()
                         callback(.event(.onRead(firstResponse))) //card has no wallet
                         callback(.completion())
                         return
@@ -42,17 +42,17 @@ public final class ScanTask: Task<ScanEvent> {
                 
                 self.sendCommand(readCommand, environment: environment) { secondResult in
                     switch secondResult {
-                    case .completion(let error):
-                        if let error = error {
-                            callback(.completion(error))
-                        }
-                    case .event(let secondResponse):
+                    case .failure(let error):
+                        callback(.completion(error))
+                        self.cardReader.stopSession()
+                    case .success(let secondResponse):
                         callback(.event(.onRead(secondResponse)))
                         guard let secondHashes = secondResponse.signedHashes,
                             let secondChallenge = secondResponse.challenge,
                             let walletSignature = secondResponse.walletSignature,
                             let secondSalt  = secondResponse.salt else {
                                 callback(.completion(TaskError.cardError))
+                                self.cardReader.stopSession()
                                 return
                         }
                         
@@ -63,6 +63,7 @@ public final class ScanTask: Task<ScanEvent> {
                         if firstChallenge == secondChallenge || firstSalt == secondSalt {
                             callback(.event(.onVerify(false)))
                             callback(.completion())
+                            self.cardReader.stopSession()
                             return
                         }
                         
@@ -75,6 +76,7 @@ public final class ScanTask: Task<ScanEvent> {
                         } else {
                             callback(.completion(TaskError.vefificationFailed))
                         }
+                        self.cardReader.stopSession()
                     }
                 }
             }
@@ -84,43 +86,43 @@ public final class ScanTask: Task<ScanEvent> {
     @available(iOS 13.0, *)
     func scanWithNfc(environment: CardEnvironment, callback: @escaping (TaskEvent<ScanEvent>) -> Void) {
         let readCommand = ReadCommand()
-        sendCommand(readCommand, environment: environment) { readResult in
+        sendCommand(readCommand, environment: environment) { [weak self] readResult in
             switch readResult {
-            case .completion(let error):
-                if let error = error {
-                    self.cardReader.stopSession()
-                    callback(.completion(error))
-                }
-            case .event(let readResponse):
+            case .failure(let error):
+                self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                callback(.completion(error))
+            case .success(let readResponse):
                 callback(.event(.onRead(readResponse)))
                 guard let cardStatus = readResponse.status, cardStatus == .loaded else {
-                    self.cardReader.stopSession()
+                    self?.cardReader.stopSession()
                     callback(.completion())
                     return
                 }
                 
-                guard let curve = readResponse.curve, let publicKey = readResponse.walletPublicKey else {
-                    self.cardReader.stopSession()
-                    callback(.completion(TaskError.cardError))
-                    return
+                guard let curve = readResponse.curve,
+                    let publicKey = readResponse.walletPublicKey else {
+                        let error = TaskError.cardError
+                        self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                        callback(.completion(error))
+                        return
                 }
                 
                 guard let challenge = CryptoUtils.generateRandomBytes(count: 16) else {
-                    self.cardReader.stopSession()
-                    callback(.completion(TaskError.vefificationFailed))
+                    let error = TaskError.cardError
+                    self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                    callback(.completion(error))
                     return
                 }
                 
                 let checkWalletCommand = CheckWalletCommand(pin1: environment.pin1, cardId: readResponse.cardId, challenge: challenge)
-                self.sendCommand(checkWalletCommand, environment: environment) { checkWalletResult in
-                    self.delegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
-                    self.cardReader.stopSession()
+                self?.sendCommand(checkWalletCommand, environment: environment) {[weak self] checkWalletResult in
                     switch checkWalletResult {
-                    case .completion(let error):
-                        if let error = error {
-                            callback(.completion(error))
-                        }
-                    case .event(let checkWalletResponse):
+                    case .failure(let error):
+                        self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                        callback(.completion(error))
+                    case .success(let checkWalletResponse):
+                        self?.delegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
+                        self?.cardReader.stopSession()
                         if let verifyResult = CryptoUtils.vefify(curve: curve,
                                                                  publicKey: publicKey,
                                                                  message: challenge + checkWalletResponse.salt,

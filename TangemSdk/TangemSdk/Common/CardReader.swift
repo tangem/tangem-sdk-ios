@@ -15,12 +15,13 @@ public protocol CardReader: class {
     
     func startSession()
     func stopSession()
-    func send(commandApdu: CommandApdu, completion: @escaping (CompletionResult<ResponseApdu,NFCReaderError>) -> Void)
+    func stopSession(errorMessage: String)
+    func send(commandApdu: CommandApdu, completion: @escaping (Result<ResponseApdu,NFCReaderError>) -> Void)
     func restartPolling()
 }
 
 class CardReaderFactory {
-    static func createDefaultReader() -> CardReader {
+    func createDefaultReader() -> CardReader {
         if #available(iOS 13.0, *) {
             return NFCReader()
         } else {

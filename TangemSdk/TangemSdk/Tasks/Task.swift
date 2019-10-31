@@ -9,6 +9,10 @@
 import Foundation
 import CoreNFC
 
+public protocol AnyTask {
+    
+}
+
 public enum TaskEvent<TEvent> {
     case event(TEvent)
     case completion(TaskError? = nil)
@@ -38,6 +42,7 @@ public enum TaskError: Error, LocalizedError {
     case busy
     case userCancelled
     case genericError(Error)
+    case unsupported
     //NFC error
     case readerError(NFCReaderError)
     
@@ -51,14 +56,12 @@ public enum TaskError: Error, LocalizedError {
     }
 }
 
-open class Task<TEvent> {
+open class Task<TEvent>: AnyTask {
     var cardReader: CardReader!
     weak var delegate: CardManagerDelegate?
     
     deinit {
         print("task deinit")
-        delegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
-        cardReader?.stopSession()
     }
     
     public final func run(with environment: CardEnvironment, callback: @escaping (TaskEvent<TEvent>) -> Void) {
@@ -72,66 +75,63 @@ open class Task<TEvent> {
     
     public func onRun(environment: CardEnvironment, callback: @escaping (TaskEvent<TEvent>) -> Void) {}
     
-    func sendCommand<T: CommandSerializer>(_ commandSerializer: T, environment: CardEnvironment, callback: @escaping (TaskEvent<T.CommandResponse>) -> Void) {
+    public final func sendCommand<T: CommandSerializer>(_ commandSerializer: T, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
         let commandApdu = commandSerializer.serialize(with: environment)
         sendRequest(commandSerializer, apdu: commandApdu, environment: environment, callback: callback)
     }
     
-    func sendRequest<T: CommandSerializer>(_ commandSerializer: T, apdu: CommandApdu, environment: CardEnvironment, callback: @escaping (TaskEvent<T.CommandResponse>) -> Void) {
-        cardReader.send(commandApdu: apdu) { commandResponse in
+    func sendRequest<T: CommandSerializer>(_ commandSerializer: T, apdu: CommandApdu, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
+        cardReader.send(commandApdu: apdu) { [weak self] commandResponse in
             switch commandResponse {
             case .success(let responseApdu):
                 guard let status = responseApdu.status else {
-                    callback(.completion(TaskError.unknownStatus(sw: responseApdu.sw)))
+                    callback(.failure(TaskError.unknownStatus(sw: responseApdu.sw)))
                     return
                 }
                 
                 switch status {
                 case .needPause:
-                    let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey)
-                    if let ms = tlv?.value(for: .pause)?.toInt() {
-                        self.delegate?.showSecurityDelay(remainingMilliseconds: ms)
+                    if let securityDelayResponse = commandSerializer.deserializeSecurityDelay(with: environment, from: responseApdu) {
+                        self?.delegate?.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds)
+                        if securityDelayResponse.saveToFlash {
+                             self?.cardReader.restartPolling()
+                        }
                     }
-                    if tlv?.value(for: .flash) != nil {
-                        print("Save flash")
-                        self.cardReader.restartPolling()
-                    }
-                    self.sendRequest(commandSerializer, apdu: apdu, environment: environment, callback: callback)
+                    self?.sendRequest(commandSerializer, apdu: apdu, environment: environment, callback: callback)
                 case .needEcryption:
                     //TODO: handle needEcryption
                     
-                    callback(.completion(TaskError.needEncryption))
+                    callback(.failure(TaskError.needEncryption))
                     
                 case .invalidParams:
                     //TODO: handle need pin ?
                     
-                    callback(.completion(TaskError.invalidParams))
+                    callback(.failure(TaskError.invalidParams))
                     
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed, .pinsNotChanged:
                     do {
                         let responseData = try commandSerializer.deserialize(with: environment, from: responseApdu)
-                        callback(.event(responseData))
-                        callback(.completion())
+                        callback(.success(responseData))
                     } catch {
                         if let taskError = error as? TaskError {
-                            callback(.completion(taskError))
+                            callback(.failure(taskError))
                         } else {
-                            callback(.completion(TaskError.genericError(error)))
+                            callback(.failure(TaskError.genericError(error)))
                         }
                     }
                 case .errorProcessingCommand:
-                    callback(.completion(TaskError.errorProcessingCommand))
+                    callback(.failure(TaskError.errorProcessingCommand))
                 case .invalidState:
-                    callback(.completion(TaskError.invalidState))
+                    callback(.failure(TaskError.invalidState))
                     
                 case .insNotSupported:
-                    callback(.completion(TaskError.insNotSupported))
+                    callback(.failure(TaskError.insNotSupported))
                 }
             case .failure(let error):
                 if error.code == .readerSessionInvalidationErrorUserCanceled {
-                    callback(.completion(TaskError.userCancelled))
+                    callback(.failure(TaskError.userCancelled))
                 } else {
-                    callback(.completion(TaskError.readerError(error)))
+                    callback(.failure(TaskError.readerError(error)))
                 }
             }
         }

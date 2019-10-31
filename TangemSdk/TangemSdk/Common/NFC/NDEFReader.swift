@@ -13,7 +13,7 @@ public final class NDEFReader: NSObject {
     static let tangemWalletRecordType = "tangem.com:wallet"
     
     private var readerSession: NFCNDEFReaderSession?
-    private var completion: ((CompletionResult<ResponseApdu, NFCReaderError>) -> Void)?
+    private var completion: ((Result<ResponseApdu, NFCReaderError>) -> Void)?
 }
 
 extension NDEFReader: NFCNDEFReaderSessionDelegate {
@@ -63,12 +63,14 @@ extension NDEFReader: CardReader {
     
     public func stopSession() {
         completion = nil
-        guard let session = readerSession, session.isReady else { return }
-        
-        session.invalidate()
+        readerSession?.invalidate()
     }
     
-    public func send(commandApdu: CommandApdu, completion: @escaping (CompletionResult<ResponseApdu, NFCReaderError>) -> Void) {
+    public func stopSession(errorMessage: String) {
+        stopSession()
+    }
+    
+    public func send(commandApdu: CommandApdu, completion: @escaping (Result<ResponseApdu, NFCReaderError>) -> Void) {
         self.completion = completion
         readerSession = NFCNDEFReaderSession(delegate: self, queue: nil, invalidateAfterFirstRead: true)
         readerSession!.alertMessage = Localization.nfcAlertDefault

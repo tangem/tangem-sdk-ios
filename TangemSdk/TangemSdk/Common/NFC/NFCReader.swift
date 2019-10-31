@@ -57,7 +57,7 @@ public final class NFCReader: NSObject {
         guard let session = readerSession,
             session.isReady else { return }
         
-        session.invalidate(errorMessage: Localization.nfcSessionTimeout)
+        stopSession(errorMessage: Localization.nfcSessionTimeout)
         readerSessionError.send(NFCReaderError(.readerSessionInvalidationErrorSessionTimeout))
     }
 }
@@ -81,21 +81,30 @@ extension NFCReader: CardReader {
     }
     
     public func stopSession() {
+        readerSessionError.send(nil)
+        connectedTag.send(nil)
         readerSession?.invalidate()
+        readerSession = nil
+    }
+    
+    public func stopSession(errorMessage: String) {
+        readerSessionError.send(nil)
+        connectedTag.send(nil)
+        readerSession?.invalidate(errorMessage: errorMessage)
+        readerSession = nil
     }
     
     /// Send apdu command to connected tag
     /// - Parameter command: serialized apdu
     /// - Parameter completion: result with ResponseApdu or NFCReaderError otherwise
-    public func send(commandApdu: CommandApdu, completion: @escaping (CompletionResult<ResponseApdu, NFCReaderError>) -> Void) {
-        print("Create subscriptions")
+    public func send(commandApdu: CommandApdu, completion: @escaping (Result<ResponseApdu, NFCReaderError>) -> Void) {
         sessionSubscription = readerSessionError
             .compactMap { $0 }
             .sink(receiveValue: { [weak self] error in
                 completion(.failure(error))
                 self?.cancelSubscriptions()
             })
-        
+
         tagSubscription = connectedTag
             .compactMap({ $0 })
             .sink(receiveValue: { [weak self] tagWrapper in
@@ -123,7 +132,7 @@ extension NFCReader: CardReader {
         session.restartPolling()
     }
     
-    private func sendCommand(apdu: NFCISO7816APDU, to tag: NFCISO7816Tag, completion: @escaping (CompletionResult<ResponseApdu, NFCReaderError>) -> Void) {
+    private func sendCommand(apdu: NFCISO7816APDU, to tag: NFCISO7816Tag, completion: @escaping (Result<ResponseApdu, NFCReaderError>) -> Void) {
         tag.sendCommand(apdu: apdu) {[weak self] (data, sw1, sw2, error) in
             guard let self = self,
                 let session = self.readerSession,
@@ -151,7 +160,6 @@ extension NFCReader: CardReader {
     }
     
     private func cancelSubscriptions() {
-        print("Cancel subscriptions")
         sessionSubscription?.cancel()
         tagSubscription?.cancel()
     }

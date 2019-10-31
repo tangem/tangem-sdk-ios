@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5D2739DB234F22A800ACDA11 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; platformFilter = ios; productRef = 5D2739DA234F22A800ACDA11 /* secp256k1 */; settings = {ATTRIBUTES = (Required, ); }; };
+		5D2739DB234F22A800ACDA11 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 5D2739DA234F22A800ACDA11 /* secp256k1 */; settings = {ATTRIBUTES = (Required, ); }; };
 		5D2739F7234F270200ACDA11 /* precomp_data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739DE234F270200ACDA11 /* precomp_data.h */; };
 		5D2739F8234F270200ACDA11 /* ed25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739E0234F270200ACDA11 /* ed25519.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5D2739F9234F270200ACDA11 /* seed.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E1234F270200ACDA11 /* seed.c */; };
@@ -49,16 +49,16 @@
 		5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B610233E11950058C720 /* CommandApdu.swift */; };
 		5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B612233E11A50058C720 /* ResponseApdu.swift */; };
 		5DA5B616233E12170058C720 /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B615233E12170058C720 /* Instruction.swift */; };
-		5DA5B618233E124A0058C720 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B617233E124A0058C720 /* Status.swift */; };
+		5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B617233E124A0058C720 /* StatusWord.swift */; };
 		5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B619233E12780058C720 /* TlvTag.swift */; };
 		5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B61B233E12B30058C720 /* Tlv.swift */; };
 		5DA80CA4231D247A00A50A10 /* TangemSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DA80C9A231D247A00A50A10 /* TangemSdk.framework */; };
-		5DA80CA9231D247A00A50A10 /* TangemSdkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA80CA8231D247A00A50A10 /* TangemSdkTests.swift */; };
+		5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */; };
 		5DA80CAB231D247A00A50A10 /* TangemSdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DA80C9D231D247A00A50A10 /* TangemSdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */; };
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
 		5DC62D3E23506CF300195A51 /* TlvMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvMapper.swift */; };
-		5DF7CFCC233D03BD00461F4D /* CompletionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCB233D03BD00461F4D /* CompletionResult.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
@@ -99,6 +99,7 @@
 		5D2739F4234F270200ACDA11 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		5D2739F5234F270200ACDA11 /* PrivateKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		5D2739F6234F270200ACDA11 /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
+		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		5D58B4BE233E4C6B00F33764 /* InputStream+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InputStream+.swift"; sourceTree = "<group>"; };
 		5D58B4C0233E54A400F33764 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		5D6A92D92344E2D700158457 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -117,19 +118,19 @@
 		5DA5B610233E11950058C720 /* CommandApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandApdu.swift; sourceTree = "<group>"; };
 		5DA5B612233E11A50058C720 /* ResponseApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseApdu.swift; sourceTree = "<group>"; };
 		5DA5B615233E12170058C720 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
-		5DA5B617233E124A0058C720 /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		5DA5B617233E124A0058C720 /* StatusWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusWord.swift; sourceTree = "<group>"; };
 		5DA5B619233E12780058C720 /* TlvTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTag.swift; sourceTree = "<group>"; };
 		5DA5B61B233E12B30058C720 /* Tlv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tlv.swift; sourceTree = "<group>"; };
 		5DA80C9A231D247A00A50A10 /* TangemSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TangemSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA80C9D231D247A00A50A10 /* TangemSdk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TangemSdk.h; sourceTree = "<group>"; };
 		5DA80CA3231D247A00A50A10 /* TangemSdkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemSdkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5DA80CA8231D247A00A50A10 /* TangemSdkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkTests.swift; sourceTree = "<group>"; };
+		5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtilsTests.swift; sourceTree = "<group>"; };
 		5DA80CAA231D247A00A50A10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensionTests.swift; sourceTree = "<group>"; };
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		5DC62D3D23506CF300195A51 /* TlvMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvMapper.swift; sourceTree = "<group>"; };
 		5DDF4F89235F06F600E46EAB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5DF7CFCB233D03BD00461F4D /* CompletionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionResult.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -202,6 +203,14 @@
 			path = include;
 			sourceTree = "<group>";
 		};
+		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5D53A4092369D7D10021DAF6 /* CoreNFC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5D6A92D52344E2B400158457 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,7 +247,7 @@
 				5DA5B610233E11950058C720 /* CommandApdu.swift */,
 				5DA5B612233E11A50058C720 /* ResponseApdu.swift */,
 				5DA5B615233E12170058C720 /* Instruction.swift */,
-				5DA5B617233E124A0058C720 /* Status.swift */,
+				5DA5B617233E124A0058C720 /* StatusWord.swift */,
 			);
 			path = APDU;
 			sourceTree = "<group>";
@@ -260,6 +269,7 @@
 				5DA80C9C231D247A00A50A10 /* TangemSdk */,
 				5DA80CA7231D247A00A50A10 /* TangemSdkTests */,
 				5DA80C9B231D247A00A50A10 /* Products */,
+				5D53A4082369D7D10021DAF6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -289,8 +299,9 @@
 		5DA80CA7231D247A00A50A10 /* TangemSdkTests */ = {
 			isa = PBXGroup;
 			children = (
-				5DA80CA8231D247A00A50A10 /* TangemSdkTests.swift */,
+				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
+				5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -303,7 +314,6 @@
 				5DFFC49D233B9D4C004964E8 /* NFC */,
 				5DFFC4A0233BA5D2004964E8 /* Extensions */,
 				5D6A92D52344E2B400158457 /* Localization */,
-				5DF7CFCB233D03BD00461F4D /* CompletionResult.swift */,
 				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5D7D5FB123449D4000058D69 /* CardEnvironment.swift */,
 			);
@@ -493,7 +503,7 @@
 				5D2739FB234F270200ACDA11 /* verify.c in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
 				5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */,
-				5DA5B618233E124A0058C720 /* Status.swift in Sources */,
+				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
@@ -502,7 +512,6 @@
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* CommandSerializer.swift in Sources */,
 				5D6A92EC2346069700158457 /* CardManager.swift in Sources */,
-				5DF7CFCC233D03BD00461F4D /* CompletionResult.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
 				5D6A92DE2344F1DC00158457 /* Task.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
@@ -515,7 +524,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DA80CA9231D247A00A50A10 /* TangemSdkTests.swift in Sources */,
+				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
+				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,6 +606,14 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
+				);
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -653,6 +671,14 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
+				);
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -681,6 +707,14 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -708,6 +742,14 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -728,6 +770,14 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -746,6 +796,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					Combine,
+					"-weak_framework",
+					CoreNFC,
+					"-weak_framework",
+					CryptoKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdkTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -10,6 +10,7 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
+
 extension Data {
     public func toHexString() -> String {
         return self.map { return String(format: "%02X", $0) }.joined()
@@ -102,11 +103,7 @@ extension Data {
             let digest = SHA256.hash(data: self)
             return Data(digest)
         } else {
-            guard let res = NSMutableData(length: Int(CC_SHA256_DIGEST_LENGTH)) else {
-                return Data()
-            }
-            CC_SHA256((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
-            return res as Data
+           return sha256Old()
         }
     }
     
@@ -115,15 +112,27 @@ extension Data {
             let digest = SHA512.hash(data: self)
             return Data(digest)
         } else {
-            guard let res = NSMutableData(length: Int(CC_SHA512_DIGEST_LENGTH)) else {
-                return Data()
-            }
-            CC_SHA512((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
-            return res as Data
+           return sha512Old()
         }
     }
     
     var bytes: [Byte] {
         return Array(self)
+    }
+    
+    func sha256Old() -> Data {
+        guard let res = NSMutableData(length: Int(CC_SHA256_DIGEST_LENGTH)) else {
+            return Data()
+        }
+        CC_SHA256((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
+        return res as Data
+    }
+    
+    func sha512Old() -> Data {
+        guard let res = NSMutableData(length: Int(CC_SHA512_DIGEST_LENGTH)) else {
+            return Data()
+        }
+        CC_SHA512((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
+        return res as Data
     }
 }

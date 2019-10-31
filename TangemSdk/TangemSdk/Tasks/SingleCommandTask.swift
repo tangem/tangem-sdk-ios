@@ -17,6 +17,18 @@ public final class SingleCommandTask<T: CommandSerializer>: Task<T.CommandRespon
     }
     
     override public func onRun(environment: CardEnvironment, callback: @escaping (TaskEvent<T.CommandResponse>) -> Void) {
-        sendCommand(command, environment: environment, callback: callback)
+        sendCommand(command, environment: environment) { result in
+            switch result {
+            case .success(let commandResponse):
+                self.delegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
+                self.cardReader.stopSession()
+                callback(.event(commandResponse))
+                callback(.completion(nil))
+                self.cardReader.stopSession()
+            case .failure(let error):
+                self.cardReader.stopSession(errorMessage: error.localizedDescription)
+                callback(.completion(error))
+            }
+        }
     }
 }

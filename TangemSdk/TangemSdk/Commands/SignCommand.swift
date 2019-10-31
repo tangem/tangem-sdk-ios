@@ -8,29 +8,16 @@
 
 import Foundation
 
-public struct SignResponse: TlvMappable {
+public struct SignResponse {
     public let cardId: String
     public let signature: Data
     public let walletRemainingSignatures: Int
     public let walletSignedHashes: Int
-    
-    public init(from tlv: [Tlv]) throws {
-        let mapper = TlvMapper(tlv: tlv)
-        do {
-            cardId = try mapper.map(.cardId)
-            signature = try mapper.map(.walletSignature)
-            walletRemainingSignatures = try mapper.map(.walletRemainingSignatures)
-            walletSignedHashes = try mapper.map(.walletSignedHashes)
-        }
-        catch {
-            throw error
-        }
-    }
 }
 
 @available(iOS 13.0, *)
-final class SignHashesCommand: CommandSerializer {
-    typealias CommandResponse = SignResponse
+public final class SignHashesCommand: CommandSerializer {
+    public typealias CommandResponse = SignResponse
     
     private let hashSize: Int
     private let dataToSign: Data
@@ -58,7 +45,7 @@ final class SignHashesCommand: CommandSerializer {
         dataToSign = Data(flattenHashes)
     }
     
-    func serialize(with environment: CardEnvironment) -> CommandApdu {
+    public func serialize(with environment: CardEnvironment) -> CommandApdu {
         var tlvData = [Tlv(.pin, value: environment.pin1.sha256()),
                        Tlv(.pin2, value: environment.pin2.sha256()),
                        Tlv(.cardId, value: Data(hex: cardId)),
@@ -66,12 +53,25 @@ final class SignHashesCommand: CommandSerializer {
                        Tlv(.transactionOutHash, value: dataToSign)]
         
         if let keys = environment.terminalKeys,
-            let signedData = CryptoUtils.sign(dataToSign.sha256(), with: keys.privateKey) {
+            let signedData = CryptoUtils.signSecp256k1(dataToSign, with: keys.privateKey) {
             tlvData.append(Tlv(.terminalTransactionSignature, value: signedData))
             tlvData.append(Tlv(.terminalPublicKey, value: keys.publicKey))
         }
         
         let cApdu = CommandApdu(.sign, tlv: tlvData)
         return cApdu
+    }
+    
+    public func deserialize(with environment: CardEnvironment, from responseApdu: ResponseApdu) throws -> SignResponse {
+        guard let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey) else {
+            throw TaskError.serializeCommandError
+        }
+        
+        let mapper = TlvMapper(tlv: tlv)
+        return SignResponse(
+            cardId: try mapper.map(.cardId),
+            signature: try mapper.map(.walletSignature),
+            walletRemainingSignatures: try mapper.map(.walletRemainingSignatures),
+            walletSignedHashes: try mapper.map(.walletSignedHashes))
     }
 }

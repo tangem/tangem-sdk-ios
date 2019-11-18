@@ -7,12 +7,20 @@
 //
 
 import Foundation
-
+/**
+  * Events that `ScanTask` returns on completion of its commands.
+  * `onRead(Card)`: Contains data from a Tangem card after successful completion of `ReadCommand`.
+  * `onVerify(Bool)`: Shows whether the Tangem card was verified on completion of `CheckWalletCommand`.
+*/
 public enum ScanEvent {
     case onRead(Card)
     case onVerify(Bool)
 }
 
+/**
+* Task that allows to read Tangem card and verify its private key.
+  It performs two commands, `ReadCommand` and `CheckWalletCommand`, subsequently.
+*/
 public final class ScanTask: Task<ScanEvent> {
     override public func onRun(environment: CardEnvironment, callback: @escaping (TaskEvent<ScanEvent>) -> Void) {
         if #available(iOS 13.0, *) {
@@ -28,13 +36,13 @@ public final class ScanTask: Task<ScanEvent> {
             switch firstResult {
             case .failure(let error):
                 callback(.completion(error))
-                self.cardReader.stopSession()
+                self.reader.stopSession()
             case .success(var firstResponse):
                 guard let firstChallenge = firstResponse.challenge,
                     let firstSalt = firstResponse.salt,
                     let publicKey = firstResponse.walletPublicKey,
                     let firstHashes = firstResponse.signedHashes else {
-                        self.cardReader.stopSession()
+                        self.reader.stopSession()
                         callback(.event(.onRead(firstResponse))) //card has no wallet
                         callback(.completion())
                         return
@@ -44,7 +52,7 @@ public final class ScanTask: Task<ScanEvent> {
                     switch secondResult {
                     case .failure(let error):
                         callback(.completion(error))
-                        self.cardReader.stopSession()
+                        self.reader.stopSession()
                     case .success(let secondResponse):
                         callback(.event(.onRead(secondResponse)))
                         guard let secondHashes = secondResponse.signedHashes,
@@ -52,7 +60,7 @@ public final class ScanTask: Task<ScanEvent> {
                             let walletSignature = secondResponse.walletSignature,
                             let secondSalt  = secondResponse.salt else {
                                 callback(.completion(TaskError.cardError))
-                                self.cardReader.stopSession()
+                                self.reader.stopSession()
                                 return
                         }
                         
@@ -63,7 +71,7 @@ public final class ScanTask: Task<ScanEvent> {
                         if firstChallenge == secondChallenge || firstSalt == secondSalt {
                             callback(.event(.onVerify(false)))
                             callback(.completion())
-                            self.cardReader.stopSession()
+                            self.reader.stopSession()
                             return
                         }
                         
@@ -76,7 +84,7 @@ public final class ScanTask: Task<ScanEvent> {
                         } else {
                             callback(.completion(TaskError.vefificationFailed))
                         }
-                        self.cardReader.stopSession()
+                        self.reader.stopSession()
                     }
                 }
             }
@@ -89,12 +97,12 @@ public final class ScanTask: Task<ScanEvent> {
         sendCommand(readCommand, environment: environment) { [weak self] readResult in
             switch readResult {
             case .failure(let error):
-                self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                self?.reader.stopSession(errorMessage: error.localizedDescription)
                 callback(.completion(error))
             case .success(let readResponse):
                 callback(.event(.onRead(readResponse)))
                 guard let cardStatus = readResponse.status, cardStatus == .loaded else {
-                    self?.cardReader.stopSession()
+                    self?.reader.stopSession()
                     callback(.completion())
                     return
                 }
@@ -102,14 +110,14 @@ public final class ScanTask: Task<ScanEvent> {
                 guard let curve = readResponse.curve,
                     let publicKey = readResponse.walletPublicKey else {
                         let error = TaskError.cardError
-                        self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                        self?.reader.stopSession(errorMessage: error.localizedDescription)
                         callback(.completion(error))
                         return
                 }
                 
                 guard let challenge = CryptoUtils.generateRandomBytes(count: 16) else {
                     let error = TaskError.cardError
-                    self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                    self?.reader.stopSession(errorMessage: error.localizedDescription)
                     callback(.completion(error))
                     return
                 }
@@ -118,11 +126,11 @@ public final class ScanTask: Task<ScanEvent> {
                 self?.sendCommand(checkWalletCommand, environment: environment) {[weak self] checkWalletResult in
                     switch checkWalletResult {
                     case .failure(let error):
-                        self?.cardReader.stopSession(errorMessage: error.localizedDescription)
+                        self?.reader.stopSession(errorMessage: error.localizedDescription)
                         callback(.completion(error))
                     case .success(let checkWalletResponse):
                         self?.delegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
-                        self?.cardReader.stopSession()
+                        self?.reader.stopSession()
                         if let verifyResult = CryptoUtils.vefify(curve: curve,
                                                                  publicKey: publicKey,
                                                                  message: challenge + checkWalletResponse.salt,

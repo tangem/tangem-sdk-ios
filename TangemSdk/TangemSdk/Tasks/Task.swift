@@ -9,15 +9,24 @@
 import Foundation
 import CoreNFC
 
-public protocol AnyTask {
+protocol AnyTask {
     
 }
 
+/**
+* Events that are are sent in callbacks from `Task`.
+* `event(TEvent)`:  A callback that is triggered by a `Task`.
+* `completion(TaskError? = nil)` A callback that is triggered when a `Task` is completed. `TaskError` is nil if it's a successful completion of a `Task`
+*/
 public enum TaskEvent<TEvent> {
     case event(TEvent)
     case completion(TaskError? = nil)
 }
 
+/**
+* An error class that represent typical errors that may occur when performing Tangem SDK tasks.
+* Errors are propagated back to the caller in callbacks.
+*/
 public enum TaskError: Error, LocalizedError {
     //Serialize apdu errors
     case serializeCommandError
@@ -56,48 +65,62 @@ public enum TaskError: Error, LocalizedError {
     }
 }
 
+/**
+* Allows to perform a group of commands interacting between the card and the application.
+* A task opens an NFC session, sends commands to the card and receives its responses,
+* repeats the commands if needed, and closes session after receiving the last answer.
+*/
 open class Task<TEvent>: AnyTask {
-    var cardReader: CardReader!
+    var reader: CardReader!
     weak var delegate: CardManagerDelegate?
     
     deinit {
         print("task deinit")
     }
     
+    /**
+     * This method should be called to run the `Task` and perform all its operations.
+     *
+     * - Parameter environment: Relevant current version of a card environment
+     * - Parameter callback: It will be triggered during the performance of the `Task`
+     */
     public final func run(with environment: CardEnvironment, callback: @escaping (TaskEvent<TEvent>) -> Void) {
-        guard cardReader != nil else {
+        guard reader != nil else {
             fatalError("Card reader is nil")
         }
         
-        cardReader.startSession()
+        reader.startSession()
         onRun(environment: environment, callback: callback)
     }
     
+    /**
+     * In this method the individual Tasks' logic should be implemented.
+     */
     public func onRun(environment: CardEnvironment, callback: @escaping (TaskEvent<TEvent>) -> Void) {}
     
-    public final func sendCommand<T: CommandSerializer>(_ commandSerializer: T, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
-        let commandApdu = commandSerializer.serialize(with: environment)
-        sendRequest(commandSerializer, apdu: commandApdu, environment: environment, callback: callback)
+    /**
+     * This method should be called by Tasks in their `onRun` method wherever
+     * they need to communicate with the Tangem Card by launching commands.
+     */
+    public final func sendCommand<T: CommandSerializer>(_ command: T, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
+        //TODO: refactor
+        let commandApdu = command.serialize(with: environment)
+        sendRequest(command, apdu: commandApdu, environment: environment, callback: callback)
     }
     
-    func sendRequest<T: CommandSerializer>(_ commandSerializer: T, apdu: CommandApdu, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
-        cardReader.send(commandApdu: apdu) { [weak self] commandResponse in
+    private func sendRequest<T: CommandSerializer>(_ command: T, apdu: CommandApdu, environment: CardEnvironment, callback: @escaping (Result<T.CommandResponse, TaskError>) -> Void) {
+        reader.send(commandApdu: apdu) { [weak self] commandResponse in
             switch commandResponse {
             case .success(let responseApdu):
-                guard let status = responseApdu.status else {
-                    callback(.failure(TaskError.unknownStatus(sw: responseApdu.sw)))
-                    return
-                }
-                
-                switch status {
+                switch responseApdu.statusWord {
                 case .needPause:
-                    if let securityDelayResponse = commandSerializer.deserializeSecurityDelay(with: environment, from: responseApdu) {
+                    if let securityDelayResponse = command.deserializeSecurityDelay(with: environment, from: responseApdu) {
                         self?.delegate?.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds)
                         if securityDelayResponse.saveToFlash {
-                             self?.cardReader.restartPolling()
+                             self?.reader.restartPolling()
                         }
                     }
-                    self?.sendRequest(commandSerializer, apdu: apdu, environment: environment, callback: callback)
+                    self?.sendRequest(command, apdu: apdu, environment: environment, callback: callback)
                 case .needEcryption:
                     //TODO: handle needEcryption
                     
@@ -108,9 +131,9 @@ open class Task<TEvent>: AnyTask {
                     
                     callback(.failure(TaskError.invalidParams))
                     
-                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed, .pinsNotChanged:
+                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed:
                     do {
-                        let responseData = try commandSerializer.deserialize(with: environment, from: responseApdu)
+                        let responseData = try command.deserialize(with: environment, from: responseApdu)
                         callback(.success(responseData))
                     } catch {
                         if let taskError = error as? TaskError {
@@ -126,6 +149,8 @@ open class Task<TEvent>: AnyTask {
                     
                 case .insNotSupported:
                     callback(.failure(TaskError.insNotSupported))
+                case .unknown:
+                    callback(.failure(TaskError.unknownStatus(sw: responseApdu.sw)))
                 }
             case .failure(let error):
                 if error.code == .readerSessionInvalidationErrorUserCanceled {

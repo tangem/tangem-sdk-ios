@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TangemSdk'
-  s.version          = '0.4.0-alpha'
+  s.version          = '1.0.0'
   s.summary          = 'Use TangemSdk for Tangem cards integration'
 
 # This description is used to generate tags and improve search results.
@@ -40,4 +40,5 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
   # s.frameworks = 'UIKit', 'MapKit'
 
   s.dependency 'secp256k1.swift'
+  s.dependency 'KeychainSwift'
 end

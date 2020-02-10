@@ -5,17 +5,17 @@
   Created by Alexander Osokin on 02/10/2019.
   Copyright © 2019 Tangem AG. All rights reserved.
 */
-"nfc_session_timeout" = "Session timeout. Please, try again";
+"nfc_session_timeout" = "La session a expiré";
 
-"nfc_alert_default" = "Hold your iPhone near a card";
+"nfc_alert_default" = "Tenez votre iPhone près d'une carte";
 
-"nfc_alert_sign_completed" = "Transaction has been successfully signed";
+"nfc_alert_sign_completed" = "La transaction a été signée avec succès";
 
-"dialog_security_delay" = "Security delay";
+"dialog_security_delay" = "Délai de sécurité";
 
-"nfc_seconds_left" = "%@ left";
+"nfc_seconds_left" = "Encore %@";
 
-"nfc_unknown_card_state" = "Unknown card state";
+"nfc_unknown_card_state" = "État de la carte inconnu";
 
 "nfc_alert_default_done" = "Done";
 

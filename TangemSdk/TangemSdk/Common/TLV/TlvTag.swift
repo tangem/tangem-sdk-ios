@@ -21,8 +21,8 @@ public enum TlvValueType {
     case settingsMask
     case cardStatus
     case signingMethod
+    case byte
 }
-
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
     case unknown = 0x00
@@ -100,14 +100,14 @@ public enum TlvTag: Byte {
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .pin, .batchId:
+        case .cardId, .pin, .pin2, .batchId:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress:
             return .utf8String
         case .curveId:
             return .ellipticCurve
         case .maxSignatures, .pauseBeforePin2,
-             .walletRemainingSignatures, .walletSignedHashes, .health, .userCounter, .tokenDecimal:
+             .walletRemainingSignatures, .walletSignedHashes, .health, .userCounter, .tokenDecimal, .issuerDataCounter:
             return .intValue
         case .isActivated, .isLinked:
             return .boolValue
@@ -121,6 +121,8 @@ public enum TlvTag: Byte {
             return .cardStatus
         case .signingMethod:
             return .signingMethod
+        case .transactionOutHashSize, .legacyMode:
+            return .byte
         default:
             return .data
         }

@@ -1,0 +1,7 @@
+lane :test do
+run_tests(
+  project: "TangemSdk/TangemSdk.xcodeproj",
+  clean: true
+)
+end
+

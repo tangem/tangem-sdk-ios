@@ -86,7 +86,10 @@ The universal initializer allows you to create an instance of the class that you
 You can also use a custom initializer, which allows you to pass your implementation of `CardReader` protocol to communicate with a card as well as the implementation of `SessionViewDelegate` protocol to create a custom user interface.
 You can read more about this in [Customization](#сustomization).
 
-### Tasks
+### Basic usage
+The easiest way to use the SDK is to call basic methods. All the basic methods you can find in `BasicUsage` extension of `TangemSdk` class. The basic method performs one or more operations and, after that, calls completion block with success or error.
+
+When calling basic methods, there is no need to show the error to the user, since it will be displayed on the NFC popup before it's hidden.
 
 #### Scan card 
 To start using any card, you first need to read it using the  `scanCard()` method. This method launches an NFC session, and once it’s connected with the card, it obtains the card data. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.

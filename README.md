@@ -1,6 +1,8 @@
 [![Version](https://img.shields.io/cocoapods/v/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![License](https://img.shields.io/cocoapods/l/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![Platform](https://img.shields.io/cocoapods/p/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
+[![Beta](https://img.shields.io/badge/-beta-red)]()
+
 
 # Welcome to Tangem
 
@@ -10,13 +12,13 @@ The Tangem card is a self-custodial hardware wallet for blockchain assets. The m
 	- [Requirements](#requirements)
 	- [Installation](#installation)
 		- [CocoaPods](#cocoapods)
-		- [Swift Package Manager](#swift-package-manager)
-		- [Carthage](#carthage)
 - [Usage](#usage)
 	- [Initialization](#initialization)
-	- [Card interaction](#card-interaction)
+	- [Basic usage](#basic-usage)
 		- [Scan card](#scan-card)
-		- [Sign](#sign)
+		- [Sign hashes](#sign-hashes)
+    - [Advanced usage](#advanced-usage)
+        - [Starting custom session](#starting-custom-session)
 - [Customization](#customization)
 	- [UI](#ui)
 	- [Tasks](#tasks)
@@ -27,6 +29,7 @@ The Tangem card is a self-custodial hardware wallet for blockchain assets. The m
 
 ### Requirements
 iOS 11+ (CoreNFC is required), Xcode 11+
+SDK can be imported to iOS 11, but it will work only since iOS 13.
 
 ### Installation
 
@@ -119,8 +122,8 @@ Method `sign(hashes: hashes, cardId: cardId)` allows you to sign one or multiple
 
 | Parameter | Description |
 | ------------ | ------------ |
-| hashes | Array of hashes to be signed by card |
 | cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| hashes | Array of hashes to be signed by card |
 
 
 ```swift
@@ -138,8 +141,22 @@ tangemSdk.sign(hashes: hashes, cardId: cardId) { result in
 ```
 
 ### Advanced usage
-Sometimes basic functions are not enough to achieve the goal. For instance, you want to sign some hashes and put some  data to a card.
-To do it you can start Card Session by calling `tangemSdk.startSession(...)` and then implement everything you need in session callback function.
+Sometimes it's needed to perform some sequence of commands during one session. 
+For instance, you need to sign some hashes, send transaction, and then put some data to a card.
+
+#### Starting custom session
+`tangemSdk.startSession(...)` starts custom session.
+
+**Arguments:**
+
+| Parameter | Description |
+| ------------ | ------------ |
+| cardId | *(Optional)* If cardId is passed, user will be asked to tap the particular card |
+| initialMessage | *(Optional)* Custom text to show to user before he tapped the card |
+| onSessionStarted | `@escaping (CardSession, SessionError?) -> Void` Closure that will be called after card is connected |
+
+Closure `onSessionStarted` runs with two parameters: `CardSession` and `SessionError`. If starting session is failed, there will be `SessionError`. You need to check it first to proceed with the other commands.
+After you finish with everything, close the session by calling `session.stop()` for success result or `session.stop(error: error)` for failure.
 
 ```swift
 tangemSdk.startSession(cardId: nil) { session, error in
@@ -173,60 +190,15 @@ tangemSdk.startSession(cardId: nil) { session, error in
     })
 }
 ```
-But that is a manual mode, and in this case you should do some stuff by yourself:
-1) Check that session is started successfully
-2) Commands will not ...
 
 
 ## Customization
 ### UI
-If the interaction with user is required, the SDK performs the entire cycle of this interaction. In order to change the appearance or behavior of the user UI, you can provide you own implementation of the `SessionViewDelegate` protocol. After this, initialize the `TangemSdk` class with your delegate class.
+Tangem SDK performs the entire cycle of UI user interaction. In order to change the appearance or behavior of the UI, you are welcome provide you own implementation of the `SessionViewDelegate` protocol. After this, initialize the `TangemSdk` class with your delegate class.
 
 ```swift
 let mySessionViewDelegate = MySessionViewDelegate()
 let tangemSdk = TangemSdk(cardReader: nil, viewDelegate: myCardManagerDelegate)
-```
-
-### Tasks
-`TangemSdk` only covers general tasks. If you want to trigger card commands in a certain order, you have to options:
-
-1) You can adopt `CardSessionRunnable` protocol and then use `run` method for your custom logic. You can run other commands and tasks via theirs `run` method.  You can use `ScanTask` as a reference.
-
-Then call the `startSession(with runnable ...)` method of the `TangemSdk` class with you task.
-
-```swift
-let task = YourTask()
-tangemSdk.startSession(with: task), completion: completion)
-```
-
-2) You can use `startSession(cardId: String?, initialMessage: String? = nil, delegate: @escaping (CardSession, SessionError?) -> Void)` method of the  `TangemSdk`
-
-```swift
-tangemSdk.startSession(cardId: nil) { session, error in
-    let cmd1 = ReadCommand()
-    cmd1!.run(in: session, completion: { result in
-        switch result {
-        case .success(let response1):
-            DispatchQueue.main.async { // Switch to UI thread manually
-                self.log(response1)
-            }
-            let cmd2 = CheckWalletCommand(...)
-            cmd2!.run(in: session, completion: { result in
-                switch result {
-                case .success(let response2):
-                    DispatchQueue.main.async {
-                        self.log(response2)
-                    }
-                    session.stop() // Close session manually
-                case .failure(let error):
-                    print(error)
-                }
-            })
-        case .failure(let error):
-            print(error)
-        }
-    })
-}
 ```
 
 ### Localization

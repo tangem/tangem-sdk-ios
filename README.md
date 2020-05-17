@@ -89,10 +89,13 @@ You can read more about this in [Customization](#сustomization).
 ### Basic usage
 The easiest way to use the SDK is to call basic methods. All the basic methods you can find in `BasicUsage` extension of `TangemSdk` class. The basic method performs one or more operations and, after that, calls completion block with success or error.
 
+Most of functions have the optional `cardId` argument, if it's passed the operation, it can be performed only with the card with the same card ID. If card is wrong, user will be asked to take the right card.
+We recommend to set this argument if there is no special need to use any card.
+
 When calling basic methods, there is no need to show the error to the user, since it will be displayed on the NFC popup before it's hidden.
 
 #### Scan card 
-To start using any card, you first need to read it using the  `scanCard()` method. This method launches an NFC session, and once it’s connected with the card, it obtains the card data. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.
+Method `scanCard()` is needed to obtain information from the Tangem card. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.
 
 Example:
 
@@ -102,15 +105,19 @@ tangemSdk.scanCard { result in
     case .success(let card):
         print("Read result: \(card)")
     case .failure(let error):
-        if !error.isUserCancelled {
-            print("Completed with error: \(error.localizedDescription), details: \(error)")
-        }
+        print("Completed with error: \(error.localizedDescription), details: \(error)")
     }
 }
 ```
 
 #### Sign
-This method allows you to sign one or multiple hashes. Simultaneous signing of array of hashes in a single SIGN command is required to support Bitcoin-type multi-input blockchains (UTXO). The SIGN command will return a corresponding array of signatures.
+Method `sign(hashes: hashes, cardId: cardId)` allows you to sign one or multiple hashes. The SIGN command will return a corresponding array of signatures.
+
+**Arguments:**
+| Parameter | Description |
+| ------------ | ------------ |
+| hashes | Array of hashes to be signed by card |
+| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
 
 ```swift
 let hashes = [hash1, hash2]

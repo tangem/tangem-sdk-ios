@@ -94,6 +94,8 @@ We recommend to set this argument if there is no special need to use any card.
 
 When calling basic methods, there is no need to show the error to the user, since it will be displayed on the NFC popup before it's hidden.
 
+**IMPORTANT**: You can't perform more then one basic function during the NFC session. In case you need to perform your own sequence of commands, take a look at [Advanced usage](#advanced-usage)
+
 #### Scan card 
 Method `scanCard()` is needed to obtain information from the Tangem card. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.
 
@@ -110,14 +112,16 @@ tangemSdk.scanCard { result in
 }
 ```
 
-#### Sign
+#### Sign hashes
 Method `sign(hashes: hashes, cardId: cardId)` allows you to sign one or multiple hashes. The SIGN command will return a corresponding array of signatures.
 
 **Arguments:**
+
 | Parameter | Description |
 | ------------ | ------------ |
 | hashes | Array of hashes to be signed by card |
 | cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+
 
 ```swift
 let hashes = [hash1, hash2]
@@ -128,12 +132,51 @@ tangemSdk.sign(hashes: hashes, cardId: cardId) { result in
     case .success(let signResponse):
         print("Result: \(signResponse)")
     case .failure(let error):
-        if !error.isUserCancelled {
-            print("Completed with error: \(error.localizedDescription), details: \(error)")
-        }
+        print("Completed with error: \(error.localizedDescription), details: \(error)")
     }
 }
 ```
+
+### Advanced usage
+Sometimes basic functions are not enough to achieve the goal. For instance, you want to sign some hashes and put some  data to a card.
+To do it you can start Card Session by calling `tangemSdk.startSession(...)` and then implement everything you need in session callback function.
+
+```swift
+tangemSdk.startSession(cardId: nil) { session, error in
+    //If session started wiithour errors
+    //IF-LET-ERROR
+    
+    let readCommand = ReadCommand()
+    //WHY-! ?
+    readCommand!.run(in: session, completion: { result in
+        switch result {
+        case .success(let response1):
+            DispatchQueue.main.async { // Switch to UI thread manually
+                self.log(response1)
+            }
+            let checkWalletCommand = CheckWalletCommand(...)
+            //WHY-! ?
+            checkWalletCommand!.run(in: session, completion: { result in
+                switch result {
+                case .success(let response2):
+                    DispatchQueue.main.async {
+                        self.log(response2)
+                    }
+                    session.stop() // Close session manually
+                case .failure(let error):
+                    print(error)
+                }
+            })
+        case .failure(let error):
+            print(error)
+        }
+    })
+}
+```
+But that is a manual mode, and in this case you should do some stuff by yourself:
+1) Check that session is started successfully
+2) Commands will not ...
+
 
 ## Customization
 ### UI

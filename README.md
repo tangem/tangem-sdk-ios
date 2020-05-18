@@ -160,25 +160,31 @@ After you finish with everything, close the session by calling `session.stop()` 
 ```swift
 tangemSdk.startSession(cardId: nil) { session, error in
     //If session started wiithour errors
-    //IF-LET-ERROR
+    if let error = error {
+        DispatchQueue.main.async {
+            //Handle error here
+        }
+        return
+    }
     
     let readCommand = ReadCommand()
-    //WHY-! ?
     readCommand!.run(in: session, completion: { result in
         switch result {
-        case .success(let response1):
-            DispatchQueue.main.async { // Switch to UI thread manually
+        case .success(let card):
+            // Switch to UI thread manually
+            DispatchQueue.main.async { 
                 self.log(response1)
             }
             let checkWalletCommand = CheckWalletCommand(...)
             //WHY-! ?
             checkWalletCommand!.run(in: session, completion: { result in
                 switch result {
-                case .success(let response2):
+                case .success(let checkWalletResult):
                     DispatchQueue.main.async {
-                        self.log(response2)
+                        self.log(checkWalletResult)
                     }
-                    session.stop() // Close session manually
+                    // Close session manually
+                    session.stop() 
                 case .failure(let error):
                     print(error)
                 }
@@ -197,7 +203,7 @@ Tangem SDK performs the entire cycle of UI user interaction. In order to change 
 
 ```swift
 let mySessionViewDelegate = MySessionViewDelegate()
-let tangemSdk = TangemSdk(cardReader: nil, viewDelegate: myCardManagerDelegate)
+let tangemSdk = TangemSdk(viewDelegate: myCardManagerDelegate)
 ```
 
 ### Localization

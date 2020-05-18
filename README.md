@@ -52,7 +52,7 @@ SDK can be imported to iOS 11, but it will work only since iOS 13.
 
 4) To prevent customers from installing apps on a device that does not support the NFC capability, add the following to the Info.plist code:
 
- ```xml
+```xml
 <key>UIRequiredDeviceCapabilities</key>
     <array>
         <string>nfc</string>

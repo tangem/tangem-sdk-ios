@@ -16,7 +16,7 @@ The Tangem card is a self-custodial hardware wallet for blockchain assets. The m
 	- [Initialization](#initialization)
 	- [Basic usage](#basic-usage)
 		- [Scan card](#scan-card)
-		- [Sign hashes](#sign-hashes)
+		- [Sign](#sign-hashes)
     - [Advanced usage](#advanced-usage)
         - [Starting custom session](#starting-custom-session)
 - [Customization](#customization)
@@ -114,7 +114,7 @@ tangemSdk.scanCard { result in
 }
 ```
 
-#### Sign hashes
+#### Sign
 Method `sign(hashes: hashes, cardId: cardId)` allows you to sign one or multiple hashes. The SIGN command will return a corresponding array of signatures.
 
 **Arguments:**
@@ -138,6 +138,35 @@ tangemSdk.sign(hashes: hashes, cardId: cardId) { result in
     }
 }
 ```
+#### Issuer data
+Card has a special 512-byte memory block to securely store and update information in COS. For example, this mechanism could be employed for enabling off-line validation of the wallet balance and attesting of cards by the issuer (in addition to Tangem’s attestation). The issuer should define the purpose of use, payload, and format of Issuer Data field. Note that Issuer_Data is never changed or parsed by the executable code the Tangem COS. 
+
+The issuer has to generate single Issuer Data Key pair `Issuer_Data_PublicKey` / `Issuer_Data_PrivateKey`, same for all issuer’s cards. The private key Issuer_Data_PrivateKey is permanently stored in a secure back-end of the issuer (e.g. HSM). The non-secret public key Issuer_Data_PublicKey is stored both in COS (during personalization) and issuer’s host application that will use it to validate Issuer_Data field.
+
+##### Write ussuer data
+Method `tangemSdk.writeIssuerData(cardId: cardId,issuerData: sampleData, issuerDataSignature: dataSignature, issuerDataCounter: counter)` writes 512-byte Issuer_Data field to the card.
+
+**Arguments:**
+
+| Parameter | Description |
+| ------------ | ------------ |
+| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| issuerData | Data to be written to the card |
+| issuerDataSignature | Issuer’s signature of issuerData with `Issuer_Data_PrivateKey` |
+| issuerDataCounter | An optional counter that protect issuer data against replay attack. When flag Protect_Issuer_Data_Against_Replay set in the card configuration then this value is mandatory and must increase on each execution of `writeIssuerData` command.  |
+
+##### Write ussuer extra data data
+If 512 bytes are not enough, you can use `tangemSdk.writeIssuerData(cardId: cardId,issuerData: sampleData, issuerDataSignature: dataSignature, issuerDataCounter: counter)`
+
+Method `tangemSdk.readIssuerData(cardId: cardId)` returns 512-byte Issuer Data field and its issuer’s signature. 
+
+| Parameter | Description |
+| ------------ | ------------ |
+| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+
+If you want to keep more then 512 bytes, 
+
+
 
 ### Advanced usage
 Sometimes it's needed to perform some sequence of commands during one session. 

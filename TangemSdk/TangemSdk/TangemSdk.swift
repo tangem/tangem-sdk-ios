@@ -12,6 +12,7 @@ import CoreNFC
 #endif
 
 /// The main interface of Tangem SDK that allows your app to communicate with Tangem cards.
+@available(iOS 13.0, *)
 public final class TangemSdk {
     /// Check if the current device doesn't support the desired NFC operations
     public static var isNFCAvailable: Bool {
@@ -58,15 +59,11 @@ public final class TangemSdk {
      * it proves that the wallet owns a private key that corresponds to a public one.
      *
      * - Parameters:
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<Card,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<Card,TangemSdkError>`
      */
-    public func scanCard(initialMessage: String? = nil, completion: @escaping CompletionResult<Card>) {
-        if #available(iOS 13.0, *) {
-            startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, completion: completion)
-        } else {
-            startSession(with: ScanTaskLegacy(), cardId: nil, initialMessage: initialMessage, completion: completion)
-        }
+    public func scanCard(pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
+        startSession(with: ScanTask(), cardId: nil, pin1: pin1, completion: completion)
     }
     
     /**
@@ -81,12 +78,21 @@ public final class TangemSdk {
      * - Parameters:
      *   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
      *   - cardId: CID, Unique Tangem card ID number
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns  `Swift.Result<SignResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+     *   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func sign(hashes: [Data], cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<SignResponse>) {
-        startSession(with: SignCommand(hashes: hashes), cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func sign(hashes: [Data],
+                     cardId: String? = nil,
+                     pin1: String? = nil,
+                     pin2: String? = nil,
+                     completion: @escaping CompletionResult<SignResponse>) {
+        startSession(with: SignCommand(hashes: hashes),
+                     cardId: cardId,
+                     pin1: pin1,
+                     pin2: pin2,
+                     completion: completion)
     }
     
     /**
@@ -96,12 +102,17 @@ public final class TangemSdk {
      * wallet balance signed by the issuer or additional issuer’s attestation data.
      * - Parameters:
      *   - cardId: CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<ReadIssuerDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<ReadIssuerDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func readIssuerData(cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
-        startSession(with: ReadIssuerDataCommand(issuerPublicKey: config.issuerPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func readIssuerData(cardId: String? = nil,
+                               pin1: String? = nil,
+                               completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
+        startSession(with: ReadIssuerDataCommand(issuerPublicKey: config.issuerPublicKey),
+                     cardId: cardId,
+                     pin1: pin1,
+                     completion: completion)
     }
     
     /**
@@ -114,13 +125,21 @@ public final class TangemSdk {
      *   - issuerData: Data provided by issuer.
      *   - issuerDataSignature: Issuer’s signature of `issuerData` with Issuer Data Private Key (which is kept on card).
      *   - issuerDataCounter: An optional counter that protect issuer data against replay attack.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func writeIssuerData(cardId: String, issuerData: Data, issuerDataSignature: Data, issuerDataCounter: Int? = nil, initialMessage: String? = nil, completion: @escaping CompletionResult<WriteIssuerDataResponse>) {
-        let command = WriteIssuerDataCommand(issuerData: issuerData, issuerDataSignature: issuerDataSignature, issuerDataCounter: issuerDataCounter, issuerPublicKey: config.issuerPublicKey)
-        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func writeIssuerData(cardId: String? = nil,
+                                issuerData: Data,
+                                issuerDataSignature: Data,
+                                issuerDataCounter: Int? = nil,
+                                pin1: String? = nil,
+                                completion: @escaping CompletionResult<WriteIssuerDataResponse>) {
+        let command = WriteIssuerDataCommand(issuerData: issuerData,
+                                             issuerDataSignature: issuerDataSignature,
+                                             issuerDataCounter: issuerDataCounter,
+                                             issuerPublicKey: config.issuerPublicKey)
+        startSession(with: command, cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -132,13 +151,15 @@ public final class TangemSdk {
      *
      * - Parameters:
      *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func readIssuerExtraData(cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
+    public func readIssuerExtraData(cardId: String? = nil,
+                                    pin1: String? = nil,
+                                    completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
         let command = ReadIssuerExtraDataCommand(issuerPublicKey: config.issuerPublicKey)
-        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: command, cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -159,15 +180,16 @@ public final class TangemSdk {
      *   [issuerData] and [issuerDataCounter] (the latter one only if flags Protect_Issuer_Data_Against_Replay
      *   and Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]).
      *   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
-     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func writeIssuerExtraData(cardId: String,
+    public func writeIssuerExtraData(cardId: String? = nil,
                                      issuerData: Data,
                                      startingSignature: Data,
                                      finalizingSignature: Data,
                                      issuerDataCounter: Int? = nil,
-                                     initialMessage: String? = nil,
+                                     pin1: String? = nil,
                                      completion: @escaping CompletionResult<WriteIssuerDataResponse>) {
         
         let command = WriteIssuerExtraDataCommand(issuerData: issuerData,
@@ -176,7 +198,7 @@ public final class TangemSdk {
                                                   finalizingSignature: finalizingSignature,
                                                   issuerDataCounter: issuerDataCounter)
         
-        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: command, cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -193,12 +215,14 @@ public final class TangemSdk {
      *
      * - Parameters:
      *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<ReadUserDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<ReadUserDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func readUserData(cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<ReadUserDataResponse>) {
-        startSession(with: ReadUserDataCommand(), cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func readUserData(cardId: String? = nil,
+                             pin1: String? = nil,
+                             completion: @escaping CompletionResult<ReadUserDataResponse>) {
+        startSession(with: ReadUserDataCommand(), cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -217,14 +241,17 @@ public final class TangemSdk {
      *   - cardId:  CID, Unique Tangem card ID number.
      *   - userData: Data defined by user’s App
      *   - userCounter: Counter initialized by user’s App and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteUserDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func writeUserData(cardId: String, userData: Data, userCounter: Int?,
-                              initialMessage: String? = nil, completion: @escaping CompletionResult<WriteUserDataResponse>) {
+    public func writeUserData(cardId: String? = nil,
+                              userData: Data,
+                              userCounter: Int?,
+                              pin1: String? = nil,
+                              completion: @escaping CompletionResult<WriteUserDataResponse>) {
         let writeUserDataCommand = WriteUserDataCommand(userData: userData, userCounter: userCounter)
-        startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: writeUserDataCommand, cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -243,14 +270,17 @@ public final class TangemSdk {
      *   - cardId:  CID, Unique Tangem card ID number.
      *   - userProtectedData: Data defined by user’s App (confirmed by PIN2)
      *   - userProtectedCounter: Counter initialized by user’s App (confirmed by PIN2) and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteUserDataResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func writeUserProtectedData(cardId: String, userProtectedData: Data, userProtectedCounter: Int?,
-                              initialMessage: String? = nil, completion: @escaping CompletionResult<WriteUserDataResponse>) {
+    public func writeUserProtectedData(cardId: String? = nil,
+                                       userProtectedData: Data,
+                                       userProtectedCounter: Int?,
+                                       pin1: String? = nil,
+                                       completion: @escaping CompletionResult<WriteUserDataResponse>) {
         let writeUserDataCommand = WriteUserDataCommand(userProtectedData: userProtectedData, userProtectedCounter: userProtectedCounter)
-        startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: writeUserDataCommand, cardId: cardId, pin1: pin1, completion: completion)
     }
     
     /**
@@ -263,12 +293,16 @@ public final class TangemSdk {
      * RemainingSignature is set to MaxSignatures.
      * - Parameters:
      *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<CreateWalletResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+     *   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func createWallet(cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<CreateWalletResponse>) {
-        startSession(with: CreateWalletTask(), cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func createWallet(cardId: String? = nil,
+                             pin1: String? = nil,
+                             pin2: String? = nil,
+                             completion: @escaping CompletionResult<CreateWalletResponse>) {
+        startSession(with: CreateWalletTask(), cardId: cardId, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /**
@@ -278,12 +312,16 @@ public final class TangemSdk {
      * ‘Purged’ state is final, it makes the card useless.
      * - Parameters:
      *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<PurgeWalletResponse,SessionError>`
+     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+     *   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
      */
     @available(iOS 13.0, *)
-    public func purgeWallet(cardId: String, initialMessage: String? = nil, completion: @escaping CompletionResult<PurgeWalletResponse>) {
-        startSession(with: PurgeWalletCommand(), cardId: cardId, initialMessage: initialMessage, completion: completion)
+    public func purgeWallet(cardId: String? = nil,
+                            pin1: String? = nil,
+                            pin2: String? = nil,
+                            completion: @escaping CompletionResult<PurgeWalletResponse>) {
+        startSession(with: PurgeWalletCommand(), cardId: cardId, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
@@ -293,9 +331,22 @@ public final class TangemSdk {
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.CommandResponse, SessionError>) -> Void`.
-    public func startSession<T>(with runnable: T, cardId: String?, initialMessage: String? = nil, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
-        cardSession = CardSession(environment: buildEnvironment(), cardId: cardId, initialMessage: initialMessage, cardReader: reader, viewDelegate: viewDelegate)
+    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`.
+    ///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+    ///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+    public func startSession<T>(with runnable: T,
+                                cardId: String? = nil,
+                                initialMessage: String? = nil,
+                                pin1: String? = nil,
+                                pin2: String? = nil,
+                                completion: @escaping CompletionResult<T.CommandResponse>)
+        where T : CardSessionRunnable {
+        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
+                                  cardId: cardId,
+                                  initialMessage: initialMessage,
+                                  cardReader: reader,
+                                  viewDelegate: viewDelegate)
+            
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -303,20 +354,38 @@ public final class TangemSdk {
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - delegate: At first, you should check that the `SessionError` is not nil, then you can use the `CardSession` to interact with a card.
+    ///   - callback: At first, you should check that the `TangemSdkError` is not nil, then you can use the `CardSession` to interact with a card.
     ///   You can find the current card in the `environment` property of the `CardSession`
     ///   If you need to interact with UI, you should dispatch to the main thread manually
+    ///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+    ///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
     @available(iOS 13.0, *)
-    public func startSession(cardId: String?, initialMessage: String? = nil, delegate: @escaping (CardSession, SessionError?) -> Void) {
-        cardSession = CardSession(environment: buildEnvironment(), cardId: cardId, initialMessage: initialMessage, cardReader: reader, viewDelegate: viewDelegate)
-        cardSession?.start(delegate: delegate)
+    public func startSession(cardId: String? = nil,
+                             initialMessage: String? = nil,
+                             pin1: String? = nil,
+                             pin2: String? = nil,
+                             callback: @escaping (CardSession, TangemSdkError?) -> Void) {
+        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
+                                  cardId: cardId,
+                                  initialMessage: initialMessage,
+                                  cardReader: reader,
+                                  viewDelegate: viewDelegate)
+        cardSession?.start(callback)
     }
     
-    private func buildEnvironment() -> SessionEnvironment {
+    private func buildEnvironment(_ pin1: String?, _ pin2: String?) -> SessionEnvironment {
         var environment = SessionEnvironment()
         environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
         if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
             environment.terminalKeys = terminalKeysService.getKeys()
+        }
+        environment.allowedCardTypes = config.allowedCardTypes
+        environment.handleErrors = config.handleErrors
+        if let pin1 = pin1 {
+            environment.set(pin1: pin1)
+        }
+        if let pin2 = pin2 {
+            environment.set(pin2: pin2)
         }
         return environment
     }

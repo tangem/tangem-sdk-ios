@@ -25,7 +25,7 @@ public enum IssuerExtraDataMode: Byte {
     case finalizeWrite = 3
 }
 
-public struct ReadIssuerExtraDataResponse: TlvCodable {
+public struct ReadIssuerExtraDataResponse: ResponseCodable {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Size of all Issuer_Extra_Data field.
@@ -58,7 +58,7 @@ public struct ReadIssuerExtraDataResponse: TlvCodable {
         self.issuerDataCounter = issuerDataCounter
     }
     
-    public func verify(with publicKey: Data) -> Bool? {
+    func verify(with publicKey: Data) -> Bool? {
         guard let signature = issuerDataSignature else {
             return nil
         }
@@ -95,16 +95,23 @@ public final class ReadIssuerExtraDataCommand: Command {
         print("ReadIssuerExtraDataCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let status = card.status, status == .notPersonalized {
+            return .notPersonalized
+        }
+        
         if issuerPublicKey == nil {
-            issuerPublicKey = session.environment.card?.issuerPublicKey
+            issuerPublicKey = card.issuerPublicKey
         }
         
-        guard issuerPublicKey != nil else {
-            completion(.failure(.missingIssuerPublicKey))
-            return
+        if issuerPublicKey == nil {
+            return .missingIssuerPublicKey
         }
         
+        return nil
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
         self.completion = completion
         self.viewDelegate = session.viewDelegate
         readData(session)
@@ -157,7 +164,7 @@ public final class ReadIssuerExtraDataCommand: Command {
         viewDelegate?.showAlertMessage(Localization.readProgress(progress.description))
     }
     
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1)
             .append(.cardId, value: environment.card?.cardId)
@@ -167,9 +174,9 @@ public final class ReadIssuerExtraDataCommand: Command {
         return CommandApdu(.readIssuerData, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadIssuerExtraDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadIssuerExtraDataResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)

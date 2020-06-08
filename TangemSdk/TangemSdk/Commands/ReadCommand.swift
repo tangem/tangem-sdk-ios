@@ -228,7 +228,7 @@ public struct SettingsMask: OptionSet, Codable {
 }
 
 /// Detailed information about card contents.
-public struct CardData: TlvCodable {
+public struct CardData: ResponseCodable {
     /// Tangem internal manufacturing batch ID.
     public let batchId: String?
     /// Timestamp of manufacturing.
@@ -250,7 +250,7 @@ public struct CardData: TlvCodable {
 }
 
 ///Response for `ReadCommand`. Contains detailed card information.
-public struct Card: TlvCodable {
+public struct Card: ResponseCodable {
     /// Unique Tangem card ID number.
     public let cardId: String?
     /// Name of Tangem card manufacturer.
@@ -327,9 +327,18 @@ public struct Card: TlvCodable {
     public let walletSignature: Data?
 }
 
+public enum CardType {
+    case sdk
+    case release
+    case unknown
+}
+
 public extension Card {
+    private static let firmwareSdkLiteral = "d SDK"
+    private static let firmwareReleaseLiteral = "r"
+    
     var firmwareVersionValue: Double? {
-        if let firmwareVersion = firmwareVersion?.remove("d SDK").remove("r").remove("\0") {
+        if let firmwareVersion = firmwareVersion?.remove(Card.firmwareSdkLiteral).remove(Card.firmwareReleaseLiteral).remove("\0") {
             return Double(firmwareVersion)
         }
         return nil
@@ -338,17 +347,60 @@ public extension Card {
     var isLinkedTerminalSupported: Bool {
         return settingsMask?.contains(SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal) ?? false
     }
+    
+    var cardType: CardType {
+        guard let firmwareVersion = firmwareVersion else  {
+            return .unknown
+        }
+        
+        if firmwareVersion.hasSuffix(Card.firmwareSdkLiteral) {
+            return .sdk
+        }
+        
+        if firmwareVersion.hasSuffix(Card.firmwareReleaseLiteral) {
+            return .release
+        }
+        
+        return .unknown
+    }
 }
 
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
+@available(iOS 13.0, *)
 public final class ReadCommand: Command {
     public typealias CommandResponse = ReadResponse
+    
+    public var needPreflightRead: Bool {
+        return false
+    }
+    
     public init() {}
     deinit {
         print("ReadCommand deinit")
     }
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+        transieve(in: session) { result in
+            switch result {
+            case .success(let readResponse):
+                session.environment.card = readResponse
+                completion(.success(readResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+        if error == .invalidParams {
+            return .pin1Required
+        }
+        
+        return nil
+    }
+    
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         /// `SessionEnvironment` stores the pin1 value. If no pin1 value was set, it will contain
         /// default value of ‘000000’.
         /// In order to obtain card’s data, [ReadCommand] should use the correct pin 1 value.
@@ -362,9 +414,15 @@ public final class ReadCommand: Command {
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
+        return try CardDeserializer.deserialize(with: environment, from: apdu)
+    }
+}
+
+struct CardDeserializer {
+    static func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
@@ -400,7 +458,7 @@ public final class ReadCommand: Command {
         return card
     }
     
-    private func deserializeCardData(tlv: [Tlv]) throws -> CardData? {
+    static private func deserializeCardData(tlv: [Tlv]) throws -> CardData? {
         guard let cardDataValue = tlv.value(for: .cardData),
             let cardDataTlv = Tlv.deserialize(cardDataValue) else {
                 return nil

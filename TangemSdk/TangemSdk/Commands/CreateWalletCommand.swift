@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `CheckWalletCommand`.
-public struct CreateWalletResponse: TlvCodable {
+public struct CreateWalletResponse: ResponseCodable {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
@@ -37,7 +37,36 @@ public final class CreateWalletCommand: Command {
         print ("CreateWalletCommand deinit")
     }
     
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let status = card.status {
+            switch status {
+            case .empty:
+                  break
+            case .loaded:
+                return .alreadyCreated
+            case .notPersonalized:
+                return .notPersonalized
+            case .purged:
+                return .cardIsPurged
+            }
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
+        return nil
+    }
+    
+    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+        if error == .invalidParams {
+            return .pin2OrCvcRequired
+        }
+        
+        return nil
+    }
+    
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1)
             .append(.pin2, value: environment.pin2)
@@ -50,9 +79,9 @@ public final class CreateWalletCommand: Command {
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CreateWalletResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CreateWalletResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)

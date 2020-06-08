@@ -9,7 +9,7 @@
 import Foundation
 
 /// Response for `SignCommand`.
-public struct SignResponse: TlvCodable {
+public struct SignResponse: ResponseCodable {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hashes (array of resulting signatures)
@@ -46,12 +46,44 @@ public final class SignCommand: Command {
         print("SignCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
-        guard hashes.count > 0 else {
-            completion(.failure(.emptyHashes))
-            return
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let status = card.status {
+            switch status {
+            case .empty:
+                return .cardIsEmpty
+            case .loaded:
+                break
+            case .notPersonalized:
+                return .notPersonalized
+            case .purged:
+                return .cardIsPurged
+            }
         }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
+        if card.walletRemainingSignatures == 0 {
+            return .noRemainingSignatures
+        }
+        
+        if let signingMethod = card.signingMethod, !signingMethod.contains(.signHash) {
+            return .signHashesNotAvailable
+        }
+        
+        if hashes.count == 0 {
+            return .emptyHashes
+        }
+        
+        if hashes.contains(where: { $0.count != hashes.first!.count }) {
+            return .hashSizeMustBeEqual
+        }
+        
+        return nil
+    }
     
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000
@@ -61,12 +93,19 @@ public final class SignCommand: Command {
             return
         }
         
-        guard !hashes.contains(where: { $0.count != hashes.first!.count }) else {
-            completion(.failure(.hashSizeMustBeEqual))
-            return
+        sign(in: session, completion: completion)
+    }
+    
+    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+        if error == .invalidParams {
+            return .pin2OrCvcRequired
         }
         
-        sign(in: session, completion: completion)
+        if error == .unknownStatus {
+            return .nfcStuck
+        }
+        
+        return nil
     }
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
@@ -90,6 +129,7 @@ public final class SignCommand: Command {
             case .success(let response):
                 self.responces.append(response)
                 self.currentChunk += 1
+                session.restartPolling()
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -98,7 +138,7 @@ public final class SignCommand: Command {
     }
     
     
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1)
@@ -126,9 +166,9 @@ public final class SignCommand: Command {
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SignResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SignResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
@@ -137,12 +177,6 @@ public final class SignCommand: Command {
             signature: try decoder.decode(.walletSignature),
             walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
             walletSignedHashes: try decoder.decode(.walletSignedHashes))
-    }
-    
-    public func tryHandleError(_ error: SessionError) -> SessionError? {
-        if error == SessionError.unknownStatus {
-            return SessionError.nfcStuck
-        } else { return error }
     }
     
     private func getChunk() -> Range<Int> {

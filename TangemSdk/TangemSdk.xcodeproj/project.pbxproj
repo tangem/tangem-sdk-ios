@@ -58,6 +58,13 @@
 		5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */; };
 		5D7D5FB423449F2300058D69 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB323449F2300058D69 /* Command.swift */; };
 		5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */; };
+		5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */; };
+		5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E45248FCF9700A1700D /* PinViewController.swift */; };
+		5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E47248FD31700A1700D /* UIViewController.swift */; };
+		5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */; };
+		5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */; };
+		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
+		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
 		5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F6643235F30B5008149B1 /* NDEFReader.swift */; };
 		5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */; };
 		5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F378247EC275005E7A35 /* secp256k1_recovery.h */; };
@@ -205,6 +212,13 @@
 		5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironment.swift; sourceTree = "<group>"; };
 		5D7D5FB323449F2300058D69 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TangemSdk+Combine.swift"; sourceTree = "<group>"; };
+		5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PinStoryboard.storyboard; sourceTree = "<group>"; };
+		5D7F4E45248FCF9700A1700D /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
+		5D7F4E47248FD31700A1700D /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
+		5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkButton.swift; sourceTree = "<group>"; };
+		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
+		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		5D7F6643235F30B5008149B1 /* NDEFReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NDEFReader.swift; sourceTree = "<group>"; };
 		5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
 		5D83F378247EC275005E7A35 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
@@ -401,6 +415,25 @@
 			path = Tasks;
 			sourceTree = "<group>";
 		};
+		5D7F4E3F248FCEFB00A1700D /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
+				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
+				5D7F4E44248FCF8300A1700D /* Pin */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		5D7F4E44248FCF8300A1700D /* Pin */ = {
+			isa = PBXGroup;
+			children = (
+				5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */,
+				5D7F4E45248FCF9700A1700D /* PinViewController.swift */,
+			);
+			path = Pin;
+			sourceTree = "<group>";
+		};
 		5D83F36E247EC275005E7A35 /* secp256k1 */ = {
 			isa = PBXGroup;
 			children = (
@@ -541,6 +574,7 @@
 		5DA80C9C231D247A00A50A10 /* TangemSdk */ = {
 			isa = PBXGroup;
 			children = (
+				5D7F4E3F248FCEFB00A1700D /* UI */,
 				5DA80C9D231D247A00A50A10 /* TangemSdk.h */,
 				5D5369D124461F62002886E0 /* module.modulemap */,
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
@@ -631,6 +665,7 @@
 		5DFFC4A0233BA5D2004964E8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5D7F4E51249006DB00A1700D /* Bundle+.swift */,
 				5DFFC4A1233BA5E0004964E8 /* Byte+.swift */,
 				5D58B4BE233E4C6B00F33764 /* InputStream+.swift */,
 				5D58B4C0233E54A400F33764 /* Int+.swift */,
@@ -640,6 +675,8 @@
 				5D0A6C5C2428CF3C0094FA83 /* Error+.swift */,
 				5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */,
 				5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */,
+				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
+				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -795,6 +832,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
 				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
@@ -828,6 +866,7 @@
 				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
+				5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */,
 				5D273A06234F270200ACDA11 /* sha512.c in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */,
@@ -836,10 +875,13 @@
 				5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				5D2739FD234F270200ACDA11 /* sc.c in Sources */,
+				5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */,
 				5D273A0B234F270200ACDA11 /* Error.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
+				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
+				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
@@ -857,6 +899,7 @@
 				5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */,
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
+				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
 				5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
@@ -880,6 +923,7 @@
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
+				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,
 			);

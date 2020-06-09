@@ -145,7 +145,6 @@ public class CardSession {
         
         reader.startSession(with: initialMessage)
     }
-    
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
     public func stop(message: String? = nil) {
@@ -212,6 +211,14 @@ public class CardSession {
     /// - Parameter completion: Completion handler. Invoked by nfc-reader
     public final func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void)  {
         reader.readSlix2Tag(completion: completion)
+    }
+    
+    func pause() {
+        reader.stopSession()
+    }
+    
+    func resume() {
+        reader.startSession(with: initialMessage)
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {

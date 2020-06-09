@@ -31,7 +31,9 @@ public struct SessionEnvironment {
     public var card: Card? = nil
     
     /// Hashed pin1 with sha256
-    public var pin1: Data = defaultPin1.sha256()
+    public var pin1: Data {
+        return SessionEnvironment.pin1
+    }
     
     /// Hashed pin2 with sha256
     public var pin2: Data = defaultPin2.sha256()
@@ -50,12 +52,18 @@ public struct SessionEnvironment {
 
     public var handleErrors: Bool = true
     
+    private static var pin1: Data = defaultPin1.sha256()
+    
+    public var isDefaultPin1: Bool {
+        return SessionEnvironment.pin1 == SessionEnvironment.defaultPin1.sha256()
+    }
+    
     public init() {}
     
     /// Helper method for setting pin1 in string format. Calculates sha256 hash for you
     /// - Parameter pin1: pin1
     public mutating func set(pin1: String) {
-        self.pin1 = pin1.sha256()
+        SessionEnvironment.pin1 = pin1.sha256()
     }
     
     /// Helper method for setting pin2 in string format.  Calculates sha256 hash for you

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Pin View Controller-->
+        <scene sceneID="6cg-Fg-Dbv">
+            <objects>
+                <viewController storyboardIdentifier="PinViewController" id="8Ku-ct-S6D" customClass="PinViewController" customModule="TangemSdk" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1fQ-Dy-GF2">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KbP-Rd-i5w">
+                                <rect key="frame" x="376" y="62" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="aM3-2u-YBZ"/>
+                                    <constraint firstAttribute="width" constant="20" id="qme-rv-hsj"/>
+                                </constraints>
+                                <color key="tintColor" red="0.81960784313725488" green="0.81960784313725488" blue="0.81960784313725488" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Cancel" image="xmark.circle.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="btnActionTapped:" destination="8Ku-ct-S6D" eventType="touchUpInside" id="Ywc-w5-m2A"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Access code" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fNd-6m-aYH">
+                                <rect key="frame" x="46" y="200" width="279" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="8Ku-ct-S6D" eventType="editingChanged" id="QJI-M5-De8"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HGz-lF-ijz">
+                                <rect key="frame" x="343" y="201" width="25" height="19"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="Dh5-QX-s7X"/>
+                                    <constraint firstAttribute="height" constant="19" id="R6o-mP-qxB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <color key="tintColor" red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" image="eye" catalog="system"/>
+                                <state key="selected" image="eye.slash" catalog="system"/>
+                                <connections>
+                                    <action selector="btnSecureEntryTapped:" destination="8Ku-ct-S6D" eventType="touchUpInside" id="Q8N-U1-kKB"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Access Code" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7kj-Ck-glm">
+                                <rect key="frame" x="46" y="127" width="264.5" height="36"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HrF-8B-xCY">
+                                <rect key="frame" x="46" y="236" width="322" height="1"/>
+                                <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="0kD-xM-HR2"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bod-mu-BUX" customClass="TangemSdkButton" customModule="TangemSdk" customModuleProvider="target">
+                                <rect key="frame" x="46" y="794" width="322" height="50"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="SEj-EK-YL0"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                <state key="normal" title="Continue">
+                                    <color key="titleColor" red="0.79607843137254897" green="0.89411764705882346" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnContinueTapped:" destination="8Ku-ct-S6D" eventType="touchUpInside" id="4qA-wp-ZIJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="KbP-Rd-i5w" firstAttribute="top" secondItem="YGz-c4-Ply" secondAttribute="top" constant="18" id="7kq-Ov-lHA"/>
+                            <constraint firstItem="fNd-6m-aYH" firstAttribute="leading" secondItem="7kj-Ck-glm" secondAttribute="leading" id="Add-7a-dZs"/>
+                            <constraint firstItem="HrF-8B-xCY" firstAttribute="leading" secondItem="fNd-6m-aYH" secondAttribute="leading" id="CmU-nn-USG"/>
+                            <constraint firstAttribute="trailing" secondItem="HrF-8B-xCY" secondAttribute="trailing" constant="46" id="F7l-DQ-dRr"/>
+                            <constraint firstItem="HrF-8B-xCY" firstAttribute="top" secondItem="7kj-Ck-glm" secondAttribute="bottom" constant="73" id="Hwr-u7-Zko"/>
+                            <constraint firstItem="bod-mu-BUX" firstAttribute="leading" secondItem="YGz-c4-Ply" secondAttribute="leading" constant="46" id="IpG-es-Acb"/>
+                            <constraint firstItem="YGz-c4-Ply" firstAttribute="trailing" secondItem="bod-mu-BUX" secondAttribute="trailing" constant="46" id="KBf-ah-X78"/>
+                            <constraint firstItem="7kj-Ck-glm" firstAttribute="top" secondItem="KbP-Rd-i5w" secondAttribute="bottom" constant="45" id="Tn7-3S-LpZ"/>
+                            <constraint firstItem="7kj-Ck-glm" firstAttribute="leading" secondItem="YGz-c4-Ply" secondAttribute="leading" constant="46" id="UD0-wf-HNd"/>
+                            <constraint firstItem="YGz-c4-Ply" firstAttribute="bottom" secondItem="bod-mu-BUX" secondAttribute="bottom" constant="18" id="e7j-UE-5fg" customClass="KeyboardLayoutConstraint" customModule="TangemSdk" customModuleProvider="target"/>
+                            <constraint firstItem="HGz-lF-ijz" firstAttribute="centerY" secondItem="fNd-6m-aYH" secondAttribute="centerY" id="f4k-aE-Dv4"/>
+                            <constraint firstItem="HGz-lF-ijz" firstAttribute="leading" secondItem="fNd-6m-aYH" secondAttribute="trailing" constant="18" id="ivs-2q-u96"/>
+                            <constraint firstItem="YGz-c4-Ply" firstAttribute="trailing" secondItem="KbP-Rd-i5w" secondAttribute="trailing" constant="18" id="vM2-YG-DHM"/>
+                            <constraint firstItem="YGz-c4-Ply" firstAttribute="trailing" secondItem="HGz-lF-ijz" secondAttribute="trailing" constant="46" id="wcK-LK-DJ9"/>
+                            <constraint firstItem="fNd-6m-aYH" firstAttribute="top" secondItem="7kj-Ck-glm" secondAttribute="bottom" constant="37" id="x5B-aT-KTY"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="YGz-c4-Ply"/>
+                    </view>
+                    <connections>
+                        <outlet property="btnClose" destination="KbP-Rd-i5w" id="FCM-xo-rXm"/>
+                        <outlet property="btnContinue" destination="bod-mu-BUX" id="fJC-oJ-RyA"/>
+                        <outlet property="btnContinueBottomConstraint" destination="e7j-UE-5fg" id="0Oi-oi-54p"/>
+                        <outlet property="btnSecureEntry" destination="HGz-lF-ijz" id="VlN-ch-j13"/>
+                        <outlet property="pinText" destination="fNd-6m-aYH" id="iDc-Jm-t9Y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IyE-JX-qBH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-159.42028985507247" y="68.973214285714278"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="eye" catalog="system" width="128" height="81"/>
+        <image name="eye.slash" catalog="system" width="128" height="86"/>
+        <image name="xmark.circle.fill" catalog="system" width="128" height="121"/>
+    </resources>
+</document>

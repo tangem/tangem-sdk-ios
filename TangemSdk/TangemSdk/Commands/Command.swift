@@ -86,7 +86,28 @@ extension Command {
                     }
                 case .failure(let error):
                     if session.environment.handleErrors, let handledError = self.performAfterCheck(session.environment.card, error) {
-                        completion(.failure(handledError))
+                        if handledError == .pin1Required {
+                            if !session.environment.isDefaultPin1 {
+                                session.environment.set(pin1: SessionEnvironment.defaultPin1)
+                                self.transieve(in: session, completion: completion)
+                                return
+                            }
+                            session.pause()
+                            DispatchQueue.main.async {
+                                session.viewDelegate.requestPin { pin1 in
+                                    if let pin1 = pin1 {
+                                        session.environment.set(pin1: pin1)
+                                        session.resume()
+                                        self.transieve(in: session, completion: completion)
+                                    } else {
+                                        session.environment.set(pin1: SessionEnvironment.defaultPin1)
+                                        completion(.failure(handledError))
+                                    }
+                                }
+                            }
+                        } else {
+                            completion(.failure(handledError))
+                        }
                     } else {
                         completion(.failure(error))
                     }
@@ -114,7 +135,6 @@ extension Command {
                             self.transieve(apdu: apdu, in: session, completion: completion)
                         }
                     }
-                    
                 case .needEcryption:
                     switch session.environment.encryptionMode {
                     case .none:

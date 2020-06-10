@@ -33,8 +33,17 @@ public final class PurgeWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status == .notPersonalized {
-            return .notPersonalized
+        if let status = card.status {
+            switch status {
+            case .empty:
+                return .cardIsEmpty
+            case .loaded:
+                break
+            case .notPersonalized:
+                return .notPersonalized
+            case .purged:
+                return .cardIsPurged
+            }
         }
         
         if card.isActivated {

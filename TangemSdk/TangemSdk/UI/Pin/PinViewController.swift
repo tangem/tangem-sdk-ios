@@ -8,10 +8,21 @@
 
 import UIKit
 
+enum PinViewControllerState {
+    case pin1
+    case pin2
+}
+
 class PinViewController: UIViewController, UITextFieldDelegate {
     
     var completionHandler: (String?) -> Void
+    var state: PinViewControllerState
     
+    @IBOutlet weak var lblTitle: UILabel! {
+        didSet {
+            lblTitle.text = state == .pin1 ? "Enter Access Code" : "Enter Pass Code"
+        }
+    }
     @IBOutlet weak var btnContinueBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var btnSecureEntry: UIButton!
     @IBOutlet weak var btnClose: UIButton!
@@ -26,8 +37,9 @@ class PinViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    init?(coder: NSCoder, completionHandler: @escaping (String?) -> Void) {
+    init?(coder: NSCoder, state: PinViewControllerState, completionHandler: @escaping (String?) -> Void) {
         self.completionHandler = completionHandler
+        self.state = state
         super.init(coder: coder)
     }
     

@@ -53,8 +53,9 @@ public enum TlvTag: Byte {
     case health = 0x0F
     case newPin = 0x12
     case newPin2 = 0x13
-    case newPinHash = 0x14
-    case newPin2Hash = 0x15
+    case newPin3 = 0x1E
+    case publicKeyChallenge = 0x14
+    case publicKeySalt = 0x15
     case challenge = 0x16
     case salt = 0x17
     case validationCounter = 0x18

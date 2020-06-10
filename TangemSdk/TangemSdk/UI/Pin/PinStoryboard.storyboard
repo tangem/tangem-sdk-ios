@@ -102,6 +102,7 @@
                         <outlet property="btnContinue" destination="bod-mu-BUX" id="fJC-oJ-RyA"/>
                         <outlet property="btnContinueBottomConstraint" destination="e7j-UE-5fg" id="0Oi-oi-54p"/>
                         <outlet property="btnSecureEntry" destination="HGz-lF-ijz" id="VlN-ch-j13"/>
+                        <outlet property="lblTitle" destination="7kj-Ck-glm" id="Q7b-Z8-EwF"/>
                         <outlet property="pinText" destination="fNd-6m-aYH" id="iDc-Jm-t9Y"/>
                     </connections>
                 </viewController>

@@ -73,6 +73,9 @@ extension Command {
             }
         }
         
+        //todo: Check if command need pin2, send setPin and parse result
+       
+        
         do {
             let commandApdu = try serialize(with: session.environment)
             transieve(apdu: commandApdu, in: session) { result in
@@ -94,7 +97,7 @@ extension Command {
                             }
                             session.pause()
                             DispatchQueue.main.async {
-                                session.viewDelegate.requestPin { pin1 in
+                                session.viewDelegate.requestPin1 { pin1 in
                                     if let pin1 = pin1 {
                                         session.environment.set(pin1: pin1)
                                         session.resume()
@@ -124,7 +127,8 @@ extension Command {
             switch result {
             case .success(let responseApdu):
                 switch responseApdu.statusWord {
-                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed:
+                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
+                     .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {

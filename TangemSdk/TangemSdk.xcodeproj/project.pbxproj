@@ -130,6 +130,7 @@
 		5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */; };
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
+		5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBD7324249122C9000DF4BD /* SetPinCommand.swift */; };
 		5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC060D823E18A17001BF611 /* CreateWalletTask.swift */; };
 		5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvDecoder.swift */; };
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
@@ -286,6 +287,7 @@
 		5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensionTests.swift; sourceTree = "<group>"; };
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		5DBD7324249122C9000DF4BD /* SetPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinCommand.swift; sourceTree = "<group>"; };
 		5DC060D823E18A17001BF611 /* CreateWalletTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletTask.swift; sourceTree = "<group>"; };
 		5DC62D3D23506CF300195A51 /* TlvDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvDecoder.swift; sourceTree = "<group>"; };
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */,
 				5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */,
 				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
+				5DBD7324249122C9000DF4BD /* SetPinCommand.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -898,6 +901,7 @@
 				5D2739FB234F270200ACDA11 /* verify.c in Sources */,
 				5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */,
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
+				5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,

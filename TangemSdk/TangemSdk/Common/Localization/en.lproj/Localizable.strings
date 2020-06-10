@@ -23,8 +23,37 @@
 
 "unknownStatus" = "Unknown card status";
 
-"generic_error_code" = "Operation could not be completed. Code: %@";
+"generic_error_code" = "An error occurred during the operation. Code: %@";
 
 "reading_data_progress" = "Reading data: %@%%";
 
 "writing_data_progress" = "Writing data: %@%%";
+
+// Errors
+"error_operation" = "An error occurred during the operation";
+"error_tag_lost" = "Tag lost.";
+"error_already_personalized" = "This card has already been personalized";
+"error_cannot_be_depersonalized" = "This card cannot be depersonalized";
+"error_already_created" = "A wallet has already been created";
+"error_purge_prohibited" = "This card’s configuration does not allow you to erase the wallet";
+"error_pin1_cannot_be_changed" = "PIN1 Access Code cannot be changed";
+"error_pin2_cannot_be_changed" = "PIN2 Passcode cannot be changed";
+"error_pin1_cannot_be_default" = " PIN1 Access Code cannot be changed to the default value. Please create a new PIN1 Access Code.";
+"error_no_remaining_signatures" = " You cannot sign data with this wallet because the card has reached its signature limit";
+"error_empty_hashes" = "There is nothing to sign here";
+"error_cannot_be_signed" = " This data cannot be signed";
+"error_card_is_empty" = "Please create a wallet to sign data";
+"error_not_personalized" = "This card has not been personalized";
+"error_not_activated" = "This card has not been activated";
+"error_purged" = "You cannot sign data with this wallet because the card has been purged";
+"error_verification_failed" = "Data verification failed";
+"error_data_size_too_large" = "Data size exceeds the max limit of 512 bytes";
+"error_data_size_too_large_extended" = "Data size exceeds the max limit of 32 Kbytes";
+"error_missing_counter" = "The data cannot be written to the card because there is no counter";
+"error_data_cannot_be_written" = "The data cannot be written to the card";
+"error_missing_issuer_public_key" = "The issuer public key is missing";
+"error_user_cancelled" = "The user cancelled the operation";
+"error_busy" = "The CardSession is running a command. Please wait and try again";
+"error_wrong_card_number" = "You tapped a different card. Please match the in-app Card ID to the your physical Card ID to continue this process.";
+"error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
+"error_card_error" = "Your card is missing essential data";

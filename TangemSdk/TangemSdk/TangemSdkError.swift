@@ -131,7 +131,7 @@ public enum TangemSdkError: Int, Error, LocalizedError, Encodable {
     
     /// Tangem cards can sign currently up to 10 hashes during one `SignCommand`.
     /// This error is returned when a `SignCommand` receives more than 10 hashes to sign.
-    case tooMuchHashesInOneTransaction = 40906
+    case tooManyHashesInOneTransaction = 40906
     
     // Write Extra Issuer Data Errors
     case extendedDataSizeTooLarge = 41101
@@ -224,10 +224,37 @@ public enum TangemSdkError: Int, Error, LocalizedError, Encodable {
     
     public var errorDescription: String? {
         switch self {
-        case .nfcTimeout:
-            return Localization.nfcSessionTimeout
-        case .nfcStuck:
-            return Localization.nfcStuckError
+        case .nfcTimeout: return Localization.nfcSessionTimeout
+        case .nfcStuck: return Localization.nfcStuckError
+        case .alreadyCreated: return Localization.string("error_already_created")
+        case .alreadyPersonalized: return Localization.string("error_already_personalized")
+        case .busy: return Localization.string("error_busy")
+        case .cannotBeDepersonalized: return Localization.string("error_cannot_be_depersonalized")
+        case .cardError: return Localization.string("error_card_error")
+        case .cardIsEmpty: return Localization.string("error_card_is_empty")
+        case .cardIsPurged: return Localization.string("error_purged")
+        case .dataCannotBeWritten: return Localization.string("error_data_cannot_be_written")
+        case .dataSizeTooLarge: return Localization.string("error_data_size_too_large")
+        case .emptyHashes: return Localization.string("error_empty_hashes")
+        case .extendedDataSizeTooLarge: return Localization.string("error_data_size_too_large_extended")
+        case .hashSizeMustBeEqual: return Localization.string("error_cannot_be_signed")
+        case .missingCounter: return Localization.string("error_missing_counter")
+        case .missingIssuerPublicKey: return Localization.string("error_missing_issuer_public_key")
+        case .noRemainingSignatures: return Localization.string("error_no_remaining_signatures")
+        case .notActivated: return Localization.string("error_not_activated")
+        case .notPersonalized: return Localization.string("error_not_personalized")
+        case .overwritingDataIsProhibited: return Localization.string("error_data_cannot_be_written")
+        case .pin1CannotBeChanged: return Localization.string("error_pin1_cannot_be_changed")
+        case .pin1CannotBeDefault: return Localization.string("error_pin1_cannot_be_default")
+        case .pin2CannotBeChanged: return Localization.string("error_pin2_cannot_be_changed")
+        case .purgeWalletProhibited: return Localization.string("error_purge_prohibited")
+        case .signHashesNotAvailable: return Localization.string("error_cannot_be_signed")
+        case .tagLost: return Localization.string("error_tag_lost")
+        case .tooManyHashesInOneTransaction: return Localization.string("error_cannot_be_signed")
+        case .userCancelled: return Localization.string("error_user_cancelled")
+        case .verificationFailed: return Localization.string("error_verification_failed")
+        case .wrongCardNumber: return Localization.string("error_wrong_card_number")
+        case .wrongCardType: return Localization.string("error_wrong_card_type")
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.rawValue). \(description)")

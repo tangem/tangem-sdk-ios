@@ -18,8 +18,11 @@ public protocol SessionViewDelegate: class {
     /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.
     func showSecurityDelay(remainingMilliseconds: Int) //todo: rename santiseconds
     
-    /// It is called when a user is expected to enter pin code.
-    func requestPin(completion: @escaping (_ pin: String?) -> Void)
+    /// It is called when a user is expected to enter pin1 code.
+    func requestPin1(completion: @escaping (_ pin: String?) -> Void)
+    
+    /// It is called when a user is expected to enter pin2 code.
+    func requestPin2(completion: @escaping (_ pin: String?) -> Void)
     
     /// It is called when tag was found
     func tagConnected()
@@ -69,17 +72,12 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         }
     }
     
-    func requestPin(completion: @escaping (_ pin: String?) -> Void) {
-        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
-        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
-            return PinViewController(coder: coder, completionHandler: completion)
-        })
-        if let topmostViewController = UIApplication.shared.topMostViewController {
-            vc.modalPresentationStyle = .fullScreen
-            topmostViewController.present(vc, animated: true, completion: nil)
-        } else {
-            completion(nil)
-        }
+    func requestPin1(completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin1, completion: completion)
+    }
+    
+    func requestPin2(completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin2, completion: completion)
     }
     
     func tagConnected() {
@@ -112,6 +110,19 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStopped() {
         stopHapticsEngine()
+    }
+    
+    private func requestPin(_ state: PinViewControllerState, completion: @escaping (String?) -> Void) {
+        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
+        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
+            return PinViewController(coder: coder, state: state, completionHandler: completion)
+        })
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            vc.modalPresentationStyle = .fullScreen
+            topmostViewController.present(vc, animated: true, completion: nil)
+        } else {
+            completion(nil)
+        }
     }
     
     private func playSuccess() {

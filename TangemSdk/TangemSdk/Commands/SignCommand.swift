@@ -89,7 +89,7 @@ public final class SignCommand: Command {
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000
         let hasEnoughDelay = (delay * numberOfChunks) <= 5000
         guard hashes.count <= chunkSize || (isLinkedTerminalSupported && hasTerminalKeys) || hasEnoughDelay else {
-            completion(.failure(.tooMuchHashesInOneTransaction))
+            completion(.failure(.tooManyHashesInOneTransaction))
             return
         }
         

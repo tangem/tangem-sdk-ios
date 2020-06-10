@@ -20,7 +20,7 @@ public enum Instruction: Byte {
     case readIssuerData = 0xF7
     case createWallet = 0xF8
     case checkWallet = 0xF9
-    case swapPin = 0xFA
+    case setPin = 0xFA
     case sign = 0xFB
     case purgeWallet = 0xFC
     case activate = 0xFE

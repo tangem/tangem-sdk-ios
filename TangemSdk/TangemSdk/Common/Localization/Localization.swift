@@ -37,7 +37,7 @@ public final class Localization {
         return string("writing_data_progress", p1)
     }
     
-    private static func string( _ key: String, _ args: CVarArg...) -> String {
+    public static func string( _ key: String, _ args: CVarArg...) -> String {
         let format = getFormat(for: key)
         return String(format: format, locale: Locale.current, arguments: args)
     }

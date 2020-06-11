@@ -96,7 +96,7 @@ public final class SignCommand: Command {
         sign(in: session, completion: completion)
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if error == .invalidParams {
             return .pin2OrCvcRequired
         }
@@ -105,7 +105,7 @@ public final class SignCommand: Command {
             return .nfcStuck
         }
         
-        return nil
+        return error
     }
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {

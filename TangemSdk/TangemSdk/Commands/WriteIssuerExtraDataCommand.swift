@@ -94,7 +94,7 @@ public final class WriteIssuerExtraDataCommand: Command {
         writeData(session)
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay) {
             
             if error == .invalidParams {
@@ -105,7 +105,7 @@ public final class WriteIssuerExtraDataCommand: Command {
                 return .overwritingDataIsProhibited
             }
         }
-        return nil
+        return error
     }
     
     private func writeData(_ session: CardSession) {

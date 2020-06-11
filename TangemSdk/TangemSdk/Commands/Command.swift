@@ -43,7 +43,7 @@ extension ApduSerializable {
 @available(iOS 13.0, *)
 protocol Command: ApduSerializable, CardSessionRunnable {
     func performPreCheck(_ card: Card) -> TangemSdkError?
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError?
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
 
 @available(iOS 13.0, *)
@@ -56,7 +56,7 @@ extension Command {
         return nil
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         return error
     }
     
@@ -74,7 +74,16 @@ extension Command {
         }
         
         //todo: Check if command need pin2, send setPin and parse result
-       
+//        let setPinCommand = SetPinCommand(newPin1: session.environment.pin1, newPin2: session.environment.pin2)
+//        if let setPinApdu = try? setPinCommand.serialize(with: session.environment) {
+//            transieve(apdu: setPinApdu, in: session) { setPinResult in
+//                switch setPinResult {
+//                case .success(let reponseApdu):
+//                case .failure(let error)
+//                }
+//            }
+//        }
+        
         
         do {
             let commandApdu = try serialize(with: session.environment)
@@ -88,8 +97,9 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
-                    if session.environment.handleErrors, let handledError = self.performAfterCheck(session.environment.card, error) {
-                        if handledError == .pin1Required {
+                    if session.environment.handleErrors {
+                        let mappedError = self.mapError(session.environment.card, error)
+                        if mappedError == .pin1Required {
                             if !session.environment.isDefaultPin1 {
                                 session.environment.set(pin1: SessionEnvironment.defaultPin1)
                                 self.transieve(in: session, completion: completion)
@@ -104,12 +114,12 @@ extension Command {
                                         self.transieve(in: session, completion: completion)
                                     } else {
                                         session.environment.set(pin1: SessionEnvironment.defaultPin1)
-                                        completion(.failure(handledError))
+                                        completion(.failure(mappedError))
                                     }
                                 }
                             }
                         } else {
-                            completion(.failure(handledError))
+                            completion(.failure(mappedError))
                         }
                     } else {
                         completion(.failure(error))
@@ -135,9 +145,8 @@ extension Command {
                         session.viewDelegate.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds)
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
                             session.restartPolling()
-                        } else {
-                            self.transieve(apdu: apdu, in: session, completion: completion)
                         }
+                        self.transieve(apdu: apdu, in: session, completion: completion)                        
                     }
                 case .needEcryption:
                     switch session.environment.encryptionMode {

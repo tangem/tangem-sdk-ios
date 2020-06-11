@@ -43,7 +43,11 @@ public struct ResponseApdu {
             return self
         }
         
-        if data.count == 0 { //error response. nothing to decrupt
+        if data.count == 0 { //error response. nothing to decrypt
+            return self
+        }
+        
+        if statusWord == .needPause { //security delay response. nothing to decrypt
             return self
         }
         

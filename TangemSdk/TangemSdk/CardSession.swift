@@ -190,7 +190,7 @@ public class CardSession {
         
         reader.tag
             .compactMap{ $0 }
-            .flatMap { _ in self.establishEncryptionPublisher() }
+            .flatMap { _ in self.establishEncryptionIfNeeded() }
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(encryptionKey: self.environment.encryptionKey) }
@@ -270,7 +270,7 @@ public class CardSession {
         }
     }
     
-    private func establishEncryptionPublisher() -> AnyPublisher<Void, TangemSdkError> {
+    private func establishEncryptionIfNeeded() -> AnyPublisher<Void, TangemSdkError> {
         if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
             return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
         }

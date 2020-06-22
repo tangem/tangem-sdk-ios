@@ -47,7 +47,7 @@ public struct ResponseApdu {
             return self
         }
         
-        if statusWord == .needPause { //security delay response. nothing to decrypt
+        if data.count < 16 { //not encrypted response. nothing to decrypt
             return self
         }
         

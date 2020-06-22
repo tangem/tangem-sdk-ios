@@ -30,6 +30,10 @@ public struct WriteUserDataResponse: ResponseCodable {
 public final class WriteUserDataCommand: Command {
     public typealias CommandResponse = WriteUserDataResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     private static let maxSize = 512
     
     private let userData: Data?

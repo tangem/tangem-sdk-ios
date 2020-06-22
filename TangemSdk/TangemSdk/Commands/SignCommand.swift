@@ -25,6 +25,10 @@ public struct SignResponse: ResponseCodable {
 public final class SignCommand: Command {
     public typealias CommandResponse = SignResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     private let hashes: [Data]
     private var responces: [SignResponse] = []
     private var currentChunk = 0

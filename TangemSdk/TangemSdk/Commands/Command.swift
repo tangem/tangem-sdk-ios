@@ -73,17 +73,10 @@ extension Command {
             }
         }
         
-        //todo: Check if command need pin2, send setPin and parse result
-//        let setPinCommand = SetPinCommand(newPin1: session.environment.pin1, newPin2: session.environment.pin2)
-//        if let setPinApdu = try? setPinCommand.serialize(with: session.environment) {
-//            transieve(apdu: setPinApdu, in: session) { setPinResult in
-//                switch setPinResult {
-//                case .success(let reponseApdu):
-//                case .failure(let error)
-//                }
-//            }
-//        }
-        
+        if session.environment.isDefaultPin2 && requiresPin2 {
+            handlePin2(session, completion: completion)
+            return
+        }
         
         do {
             let commandApdu = try serialize(with: session.environment)
@@ -100,24 +93,7 @@ extension Command {
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
                         if mappedError == .pin1Required {
-                            if !session.environment.isDefaultPin1 {
-                                session.environment.set(pin1: SessionEnvironment.defaultPin1)
-                                self.transieve(in: session, completion: completion)
-                                return
-                            }
-                            session.pause()
-                            DispatchQueue.main.async {
-                                session.viewDelegate.requestPin1 { pin1 in
-                                    if let pin1 = pin1 {
-                                        session.environment.set(pin1: pin1)
-                                        session.resume()
-                                        self.transieve(in: session, completion: completion)
-                                    } else {
-                                        session.environment.set(pin1: SessionEnvironment.defaultPin1)
-                                        completion(.failure(mappedError))
-                                    }
-                                }
-                            }
+                            self.handlePin1(session, completion: completion)
                         } else {
                             completion(.failure(mappedError))
                         }
@@ -130,7 +106,7 @@ extension Command {
             completion(.failure(error.toTangemSdkError()))
         }
     }
-        
+    
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
         print("transieve: \(Instruction(rawValue: apdu.ins)!)")
         session.send(apdu: apdu) { result in
@@ -181,6 +157,56 @@ extension Command {
         
         let saveToFlash = tlv.contains(tag: .flash)
         return (remainingMilliseconds, saveToFlash)
+    }
+    
+    private func handlePin1(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        if !session.environment.isDefaultPin1 {
+            session.environment.set(pin1: SessionEnvironment.defaultPin1)
+            self.transieve(in: session, completion: completion)
+            return
+        }
+        session.pause()
+        DispatchQueue.main.async {
+            session.viewDelegate.requestPin1 { pin1 in
+                if let pin1 = pin1 {
+                    session.environment.set(pin1: pin1)
+                    session.resume()
+                    self.transieve(in: session, completion: completion)
+                } else {
+                    session.environment.set(pin1: SessionEnvironment.defaultPin1)
+                    completion(.failure(.pin1Required))
+                }
+            }
+        }
+    }
+    
+    private func handlePin2(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        let setPinCommand = SetPinCommand(newPin1: session.environment.pin1, newPin2: session.environment.pin2)
+        setPinCommand.run(in: session) { result in
+            switch result {
+            case .success:
+                self.transieve(in: session, completion: completion)
+            case .failure(let error):
+                guard error == .invalidParams else {
+                    completion(.failure(error))
+                    return
+                }
+                
+                session.pause()
+                DispatchQueue.main.async {
+                    session.viewDelegate.requestPin2 { pin2 in
+                        if let pin2 = pin2 {
+                            session.environment.set(pin2: pin2)
+                            session.resume()
+                            self.transieve(in: session, completion: completion)
+                        } else {
+                            session.environment.set(pin2: SessionEnvironment.defaultPin2)
+                            completion(.failure(.pin2OrCvcRequired))
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -22,13 +22,17 @@ public class SetPinCommand: Command {
     private let newPin1: Data
     private let newPin2: Data
     private let newPin3: Data?
-    private let cvc: String?
     
-    public init(newPin1: Data, newPin2: Data, newPin3: Data? = nil, cvc: String? = nil) {
+    public init(newPin1: Data, newPin2: Data, newPin3: Data? = nil) {
         self.newPin1 = newPin1
         self.newPin2 = newPin2
         self.newPin3 = newPin3
-        self.cvc = cvc
+    }
+    
+    public convenience init() {
+        self.init(newPin1: SessionEnvironment.defaultPin1.sha256(),
+                  newPin2: SessionEnvironment.defaultPin2.sha256(),
+                  newPin3: nil)
     }
     
     deinit {
@@ -47,7 +51,7 @@ public class SetPinCommand: Command {
             try tlvBuilder.append(.newPin3, value: newPin3)
         }
         
-        if let cvc = self.cvc {
+        if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         

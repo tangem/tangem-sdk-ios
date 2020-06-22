@@ -17,6 +17,8 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 public protocol CardSessionRunnable {
     
     var needPreflightRead: Bool {get}
+    
+    var requiresPin2: Bool {get}
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
     
@@ -31,6 +33,10 @@ public protocol CardSessionRunnable {
 extension CardSessionRunnable {
     public var needPreflightRead: Bool {
         return true
+    }
+    
+    public var requiresPin2: Bool {
+        return false
     }
 }
 
@@ -214,6 +220,7 @@ public class CardSession {
     }
     
     func pause() {
+        environment.encryptionKey = nil
         reader.stopSession()
     }
     

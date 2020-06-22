@@ -225,7 +225,7 @@ public class CardSession {
     }
     
     func resume() {
-        reader.startSession(with: initialMessage)
+        reader.resumeSession()
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {

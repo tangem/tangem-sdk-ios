@@ -54,11 +54,11 @@ public struct SessionEnvironment {
     
     private static var pin1: Data = defaultPin1.sha256()
     
-    public var isDefaultPin1: Bool {
+    public var isCurrentPin1Default: Bool {
         return SessionEnvironment.pin1 == SessionEnvironment.defaultPin1.sha256()
     }
     
-    public var isDefaultPin2: Bool {
+    public var isCurrentPin2Default: Bool {
         return pin2 == SessionEnvironment.defaultPin2.sha256()
     }
     

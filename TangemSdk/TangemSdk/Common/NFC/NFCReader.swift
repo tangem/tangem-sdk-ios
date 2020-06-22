@@ -41,6 +41,8 @@ final class NFCReader: NSObject {
     // Idle timer
     private var idleTimer: TangemTimer!
     
+    private var _alertMessage: String? = nil
+    
     /// Invalidate session before session will close automatically
     @objc private func timerTimeout() {
         guard let session = readerSession,
@@ -82,8 +84,11 @@ extension NFCReader: CardReader {
     }
     
     var alertMessage: String {
-        get { return readerSession?.alertMessage ?? "" }
-        set { readerSession?.alertMessage = newValue }
+        get { return _alertMessage ?? "" }
+        set {
+            readerSession?.alertMessage = newValue
+            _alertMessage = newValue
+        }
     }
     
     /// Start session and try to connect with tag
@@ -92,9 +97,15 @@ extension NFCReader: CardReader {
         readerSessionError = nil
         connectedTag = nil
         readerSession = NFCTagReaderSession(pollingOption: [.iso14443, .iso15693], delegate: self)!
-        readerSession!.alertMessage = message ?? Localization.nfcAlertDefault
+        let alertMessage = message ?? Localization.nfcAlertDefault
+        readerSession!.alertMessage = alertMessage
+        _alertMessage = alertMessage
         readerSession!.begin()
         nfcStuckTimer.start()
+    }
+    
+    func resumeSession() {
+        startSession(with: _alertMessage)
     }
     
     func stopSession(with errorMessage: String? = nil) {

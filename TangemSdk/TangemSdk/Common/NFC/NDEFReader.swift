@@ -81,6 +81,9 @@ extension NDEFReader: CardReader {
         set { readerSession?.alertMessage = newValue }
     }
     
+    func resumeSession() {
+    }
+    
     public func stopSession(with errorMessage: String? = nil) {
         completion = nil
         readerSession?.invalidate()

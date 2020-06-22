@@ -26,6 +26,10 @@ public struct PurgeWalletResponse: ResponseCodable {
 public final class PurgeWalletCommand: Command {
     public typealias CommandResponse = PurgeWalletResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     public init() {}
     
     deinit {

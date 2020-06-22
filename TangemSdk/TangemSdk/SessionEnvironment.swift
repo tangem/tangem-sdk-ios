@@ -58,6 +58,10 @@ public struct SessionEnvironment {
         return SessionEnvironment.pin1 == SessionEnvironment.defaultPin1.sha256()
     }
     
+    public var isDefaultPin2: Bool {
+        return pin2 == SessionEnvironment.defaultPin2.sha256()
+    }
+    
     public init() {}
     
     /// Helper method for setting pin1 in string format. Calculates sha256 hash for you

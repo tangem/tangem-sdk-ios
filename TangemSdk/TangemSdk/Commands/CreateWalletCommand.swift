@@ -31,6 +31,10 @@ public struct CreateWalletResponse: ResponseCodable {
 public final class CreateWalletCommand: Command {
     public typealias CommandResponse = CreateWalletResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     public init() {}
     
     deinit {

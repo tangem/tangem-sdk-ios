@@ -17,6 +17,8 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 public protocol CardSessionRunnable {
     
     var needPreflightRead: Bool {get}
+    
+    var requiresPin2: Bool {get}
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
     
@@ -31,6 +33,10 @@ public protocol CardSessionRunnable {
 extension CardSessionRunnable {
     public var needPreflightRead: Bool {
         return true
+    }
+    
+    public var requiresPin2: Bool {
+        return false
     }
 }
 
@@ -145,7 +151,6 @@ public class CardSession {
         
         reader.startSession(with: initialMessage)
     }
-    
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
     public func stop(message: String? = nil) {
@@ -191,7 +196,7 @@ public class CardSession {
         
         reader.tag
             .compactMap{ $0 }
-            .flatMap { _ in self.establishEncryptionPublisher() }
+            .flatMap { _ in self.establishEncryptionIfNeeded() }
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(encryptionKey: self.environment.encryptionKey) }
@@ -212,6 +217,15 @@ public class CardSession {
     /// - Parameter completion: Completion handler. Invoked by nfc-reader
     public final func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void)  {
         reader.readSlix2Tag(completion: completion)
+    }
+    
+    func pause() {
+        environment.encryptionKey = nil
+        reader.stopSession()
+    }
+    
+    func resume() {
+        reader.resumeSession()
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {
@@ -263,7 +277,7 @@ public class CardSession {
         }
     }
     
-    private func establishEncryptionPublisher() -> AnyPublisher<Void, TangemSdkError> {
+    private func establishEncryptionIfNeeded() -> AnyPublisher<Void, TangemSdkError> {
         if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
             return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
         }

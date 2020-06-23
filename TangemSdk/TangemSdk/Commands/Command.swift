@@ -43,7 +43,7 @@ extension ApduSerializable {
 @available(iOS 13.0, *)
 protocol Command: ApduSerializable, CardSessionRunnable {
     func performPreCheck(_ card: Card) -> TangemSdkError?
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError?
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
 
 @available(iOS 13.0, *)
@@ -56,7 +56,7 @@ extension Command {
         return nil
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         return error
     }
     
@@ -73,6 +73,11 @@ extension Command {
             }
         }
         
+        if session.environment.isCurrentPin2Default && requiresPin2 {
+            handlePin2(session, completion: completion)
+            return
+        }
+        
         do {
             let commandApdu = try serialize(with: session.environment)
             transieve(apdu: commandApdu, in: session) { result in
@@ -85,8 +90,13 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
-                    if session.environment.handleErrors, let handledError = self.performAfterCheck(session.environment.card, error) {
-                        completion(.failure(handledError))
+                    if session.environment.handleErrors {
+                        let mappedError = self.mapError(session.environment.card, error)
+                        if mappedError == .pin1Required {
+                            self.handlePin1(session, completion: completion)
+                        } else {
+                            completion(.failure(mappedError))
+                        }
                     } else {
                         completion(.failure(error))
                     }
@@ -96,25 +106,24 @@ extension Command {
             completion(.failure(error.toTangemSdkError()))
         }
     }
-        
+    
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
         print("transieve: \(Instruction(rawValue: apdu.ins)!)")
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
                 switch responseApdu.statusWord {
-                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed:
+                case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
+                     .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
                         session.viewDelegate.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds)
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
                             session.restartPolling()
-                        } else {
-                            self.transieve(apdu: apdu, in: session, completion: completion)
                         }
+                        self.transieve(apdu: apdu, in: session, completion: completion)                        
                     }
-                    
                 case .needEcryption:
                     switch session.environment.encryptionMode {
                     case .none:
@@ -148,6 +157,56 @@ extension Command {
         
         let saveToFlash = tlv.contains(tag: .flash)
         return (remainingMilliseconds, saveToFlash)
+    }
+    
+    private func handlePin1(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        if !session.environment.isCurrentPin1Default {
+            session.environment.setDefaultPin1()
+            self.transieve(in: session, completion: completion)
+            return
+        }
+        session.pause()
+        DispatchQueue.main.async {
+            session.viewDelegate.requestPin1 { pin1 in
+                if let pin1 = pin1 {
+                    session.environment.set(pin1: pin1)
+                    session.resume()
+                    self.transieve(in: session, completion: completion)
+                } else {
+                    session.environment.setDefaultPin1()
+                    completion(.failure(.pin1Required))
+                }
+            }
+        }
+    }
+    
+    private func handlePin2(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        let setPinCommand = SetPinCommand(newPin1: session.environment.pin1, newPin2: session.environment.pin2)
+        setPinCommand.run(in: session) { result in
+            switch result {
+            case .success:
+                self.transieve(in: session, completion: completion)
+            case .failure(let error):
+                guard error == .invalidParams else {
+                    completion(.failure(error))
+                    return
+                }
+                
+                session.pause()
+                DispatchQueue.main.async {
+                    session.viewDelegate.requestPin2 { pin2 in
+                        if let pin2 = pin2 {
+                            session.environment.set(pin2: pin2)
+                            session.resume()
+                            self.transieve(in: session, completion: completion)
+                        } else {
+                            session.environment.setDefaultPin2()
+                            completion(.failure(.pin2OrCvcRequired))
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

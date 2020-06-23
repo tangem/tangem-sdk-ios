@@ -324,6 +324,34 @@ public final class TangemSdk {
         startSession(with: PurgeWalletCommand(), cardId: cardId, pin1: pin1, pin2: pin2, completion: completion)
     }
     
+    /// Command available on SDK cards only
+    /// This command resets card to initial state, erasing all data written during personalization and usage.
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - completion: Returns `Swift.Result<DepersonalizeResponse,TangemSdkError>`
+    public func depersonalize(cardId: String? = nil, completion: @escaping CompletionResult<DepersonalizeResponse>) {
+        startSession(with: DepersonalizeCommand(), cardId: cardId, completion: completion)
+    }
+    
+    /// Command available on SDK cards only
+    ///  Personalization is an initialization procedure, required before starting using a card.
+    /// During this procedure a card setting is set up. During this procedure all data exchange is encrypted.
+    /// - Parameters:
+    ///   - config: is a configuration file with all the card settings that are written on the card during personalization.
+    ///   - issuer: Issuer is a third-party team or company wishing to use Tangem cards.
+    ///   - manufacturer: Tangem Card Manufacturer.
+    ///   - acquirer: Acquirer is a trusted third-party company that operates proprietary
+    ///   (non-EMV) POS terminal infrastructure and transaction processing back-end.
+    ///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
+    public func personalize(config: CardConfig,
+                            issuer: Issuer,
+                            manufacturer: Manufacturer,
+                            acquirer: Acquirer? = nil,
+                            completion: @escaping CompletionResult<Card>) {
+        let command = PersonalizeCommand(config: config, issuer: issuer, manufacturer: manufacturer, acquirer: acquirer)
+        startSession(with: command, completion: completion)
+    }
+    
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`

@@ -116,6 +116,14 @@
 		5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */; };
 		5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */; };
 		5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */; };
+		5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */; };
+		5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */; };
+		5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */; };
+		5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */; };
+		5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */; };
+		5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE024A113C900FB5BA7 /* CardConfig.swift */; };
+		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
+		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
 		5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D974B7D237D672F00DCDF21 /* Date+.swift */; };
 		5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B610233E11950058C720 /* CommandApdu.swift */; };
 		5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B612233E11A50058C720 /* ResponseApdu.swift */; };
@@ -271,6 +279,14 @@
 		5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CCCCryptorStatus+Error.swift"; sourceTree = "<group>"; };
 		5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
 		5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
+		5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepersonalizeCommand.swift; sourceTree = "<group>"; };
+		5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Acquirer.swift; sourceTree = "<group>"; };
+		5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Issuer.swift; sourceTree = "<group>"; };
+		5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manufacturer.swift; sourceTree = "<group>"; };
+		5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefRecord.swift; sourceTree = "<group>"; };
+		5D86CBE024A113C900FB5BA7 /* CardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConfig.swift; sourceTree = "<group>"; };
+		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
+		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
 		5D974B7D237D672F00DCDF21 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		5DA5B610233E11950058C720 /* CommandApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandApdu.swift; sourceTree = "<group>"; };
 		5DA5B612233E11A50058C720 /* ResponseApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseApdu.swift; sourceTree = "<group>"; };
@@ -391,6 +407,7 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
 				5D6A92E42345F2B200158457 /* SignCommand.swift */,
@@ -529,6 +546,29 @@
 				5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */,
 			);
 			path = ecdh;
+			sourceTree = "<group>";
+		};
+		5D86CBD624A10F3D00FB5BA7 /* Personalization */ = {
+			isa = PBXGroup;
+			children = (
+				5D86CBD724A10F5500FB5BA7 /* Entities */,
+				5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */,
+				5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */,
+				5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */,
+			);
+			path = Personalization;
+			sourceTree = "<group>";
+		};
+		5D86CBD724A10F5500FB5BA7 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */,
+				5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */,
+				5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */,
+				5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */,
+				5D86CBE024A113C900FB5BA7 /* CardConfig.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		5DA5B614233E11DD0058C720 /* APDU */ = {
@@ -865,7 +905,11 @@
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
+				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
+				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
+				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
+				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
@@ -875,6 +919,7 @@
 				5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				5D2739FD234F270200ACDA11 /* sc.c in Sources */,
@@ -898,6 +943,7 @@
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */,
 				5D2739FC234F270200ACDA11 /* ge.c in Sources */,
+				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				5D2739FB234F270200ACDA11 /* verify.c in Sources */,
 				5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */,
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
@@ -912,8 +958,10 @@
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
+				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
+				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D273A00234F270200ACDA11 /* key_exchange.c in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,

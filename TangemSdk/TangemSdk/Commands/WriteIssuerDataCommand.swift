@@ -94,13 +94,13 @@ public final class WriteIssuerDataCommand: Command {
         return nil
     }
         
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay),
             error == .invalidParams {
             return .dataCannotBeWritten
         }
         
-        return nil
+        return error
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

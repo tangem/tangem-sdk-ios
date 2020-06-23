@@ -18,8 +18,11 @@ public protocol SessionViewDelegate: class {
     /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.
     func showSecurityDelay(remainingMilliseconds: Int) //todo: rename santiseconds
     
-    /// It is called when a user is expected to enter pin code.
-    func requestPin(completion: @escaping () -> Result<String, Error>)
+    /// It is called when a user is expected to enter pin1 code.
+    func requestPin1(completion: @escaping (_ pin: String?) -> Void)
+    
+    /// It is called when a user is expected to enter pin2 code.
+    func requestPin2(completion: @escaping (_ pin: String?) -> Void)
     
     /// It is called when tag was found
     func tagConnected()
@@ -53,16 +56,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         return CHHapticEngine.capabilitiesForHardware().supportsHaptics
     }()
     
-    private lazy var bundle: Bundle = {
-         let selfBundle = Bundle(for: DefaultSessionViewDelegate.self)
-         if let path = selfBundle.path(forResource: "TangemSdk", ofType: "bundle"), //for pods
-             let bundle = Bundle(path: path) {
-             return bundle
-         } else {
-             return selfBundle
-         }
-     }()
-    
     init(reader: CardReader) {
         self.reader = reader
         createHapticEngine()
@@ -79,8 +72,12 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         }
     }
     
-    func requestPin(completion: @escaping () -> Result<String, Error>) {
-        //TODO:implement
+    func requestPin1(completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin1, completion: completion)
+    }
+    
+    func requestPin2(completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin2, completion: completion)
     }
     
     func tagConnected() {
@@ -115,11 +112,24 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         stopHapticsEngine()
     }
     
+    private func requestPin(_ state: PinViewControllerState, completion: @escaping (String?) -> Void) {
+        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
+        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
+            return PinViewController(coder: coder, state: state, completionHandler: completion)
+        })
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            vc.modalPresentationStyle = .fullScreen
+            topmostViewController.present(vc, animated: true, completion: nil)
+        } else {
+            completion(nil)
+        }
+    }
+    
     private func playSuccess() {
         if supportsHaptics {
             do {
                 
-                guard let path = bundle.path(forResource: "Success", ofType: "ahap") else {
+                guard let path = Bundle.sdkBundle.path(forResource: "Success", ofType: "ahap") else {
                   return
               }
                              
@@ -133,7 +143,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     private func playError() {
         if supportsHaptics {
             do {
-                guard let path = bundle.path(forResource: "Error", ofType: "ahap") else {
+                guard let path = Bundle.sdkBundle.path(forResource: "Error", ofType: "ahap") else {
                     return
                 }
                                

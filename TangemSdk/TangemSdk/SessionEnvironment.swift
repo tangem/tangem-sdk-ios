@@ -75,4 +75,12 @@ public struct SessionEnvironment {
     public mutating func set(pin2: String) {
         self.pin2 = pin2.sha256()
     }
+    
+    public mutating func setDefaultPin1() {
+        SessionEnvironment.pin1 = SessionEnvironment.defaultPin1.sha256()
+    }
+    
+    public mutating func setDefaultPin2() {
+        pin2 = SessionEnvironment.defaultPin2.sha256()
+    }
 }

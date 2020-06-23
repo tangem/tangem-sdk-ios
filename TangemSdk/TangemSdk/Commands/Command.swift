@@ -161,7 +161,7 @@ extension Command {
     
     private func handlePin1(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         if !session.environment.isCurrentPin1Default {
-            session.environment.set(pin1: SessionEnvironment.defaultPin1)
+            session.environment.setDefaultPin1()
             self.transieve(in: session, completion: completion)
             return
         }
@@ -173,7 +173,7 @@ extension Command {
                     session.resume()
                     self.transieve(in: session, completion: completion)
                 } else {
-                    session.environment.set(pin1: SessionEnvironment.defaultPin1)
+                    session.environment.setDefaultPin1()
                     completion(.failure(.pin1Required))
                 }
             }
@@ -200,7 +200,7 @@ extension Command {
                             session.resume()
                             self.transieve(in: session, completion: completion)
                         } else {
-                            session.environment.set(pin2: SessionEnvironment.defaultPin2)
+                            session.environment.setDefaultPin2()
                             completion(.failure(.pin2OrCvcRequired))
                         }
                     }

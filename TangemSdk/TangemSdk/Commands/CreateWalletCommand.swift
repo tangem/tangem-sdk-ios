@@ -31,6 +31,10 @@ public struct CreateWalletResponse: ResponseCodable {
 public final class CreateWalletCommand: Command {
     public typealias CommandResponse = CreateWalletResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     public init() {}
     
     deinit {
@@ -58,12 +62,12 @@ public final class CreateWalletCommand: Command {
         return nil
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if error == .invalidParams {
             return .pin2OrCvcRequired
         }
         
-        return nil
+        return error
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

@@ -20,13 +20,15 @@ public enum StatusWord: UInt16 {
     case needPause = 0x9789
     case pin1Changed = 0x9001
     case pin2Changed = 0x9002
-    case pin3Changed = 0x9003
+    case pin3Changed = 0x9004
+    case pins12Changed = 0x9003
+    case pins13Changed = 0x9005
+    case pins23Changed = 0x9006
+    case pins123Changed = 0x9007
     //case pinsNotChanged = 0x9000 //equal to processCompleted
     
     func toTangemSdkError() -> TangemSdkError? {
         switch self {
-        case .needPause:
-            return nil
         case .needEcryption:
             return TangemSdkError.needEncryption
         case .invalidParams:
@@ -41,6 +43,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.insNotSupported
         case .unknown:
             return TangemSdkError.unknownStatus
+        default:
+            return nil
         }
     }
 }

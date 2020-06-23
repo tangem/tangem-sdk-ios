@@ -25,6 +25,7 @@ public protocol CardReader: class {
     @available(iOS 13.0, *)
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> {get}
     func startSession(with message: String?)
+    func resumeSession()
     func stopSession(with errorMessage: String?)
     func send(apdu: CommandApdu, completion: @escaping (Result<ResponseApdu,TangemSdkError>) -> Void)
     @available(iOS 13.0, *)

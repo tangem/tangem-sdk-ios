@@ -143,7 +143,7 @@ public struct SettingsMask: OptionSet, Codable {
     public static let skipSecurityDelayIfValidatedByIssuer = SettingsMask(rawValue: 0x00020000)
     public static let skipCheckPIN2CVCIfValidatedByIssuer = SettingsMask(rawValue: 0x00040000)
     public static let skipSecurityDelayIfValidatedByLinkedTerminal = SettingsMask(rawValue: 0x00080000)
-    public static let restrictOverwriteIssuerExtraDara = SettingsMask(rawValue: 0x00100000)
+    public static let restrictOverwriteIssuerExtraData = SettingsMask(rawValue: 0x00100000)
     public static let requireTermTxSignature = SettingsMask(rawValue: 0x01000000)
     public static let requireTermCertSignature = SettingsMask(rawValue: 0x02000000)
     public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000)
@@ -210,7 +210,7 @@ public struct SettingsMask: OptionSet, Codable {
         if contains(SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal) {
             values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
         }
-        if contains(SettingsMask.restrictOverwriteIssuerExtraDara) {
+        if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
             values.append("RestrictOverwriteIssuerExtraDara")
         }
         if contains(SettingsMask.requireTermTxSignature) {
@@ -224,6 +224,18 @@ public struct SettingsMask: OptionSet, Codable {
         }
         var container = encoder.singleValueContainer()
         try container.encode(values)
+    }
+}
+
+class SettingsMaskBuilder {
+    private var settingsMaskValue = 0
+    
+    func add(_ settings: SettingsMask) {
+        settingsMaskValue |= settings.rawValue
+    }
+    
+    func build() -> SettingsMask {
+        return SettingsMask(rawValue: settingsMaskValue)
     }
 }
 

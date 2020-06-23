@@ -392,12 +392,12 @@ public final class ReadCommand: Command {
         }
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if error == .invalidParams {
             return .pin1Required
         }
         
-        return nil
+        return error
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

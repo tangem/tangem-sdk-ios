@@ -94,6 +94,20 @@ public final class WriteIssuerExtraDataCommand: Command {
         writeData(session)
     }
     
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+        if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay) {
+            
+            if error == .invalidParams {
+                return .dataCannotBeWritten
+            }
+            
+            if error == .invalidState {
+                return .overwritingDataIsProhibited
+            }
+        }
+        return error
+    }
+    
     private func writeData(_ session: CardSession) {
         showProgress()
         transieve(in: session) {result in

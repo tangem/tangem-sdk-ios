@@ -26,6 +26,10 @@ public struct PurgeWalletResponse: ResponseCodable {
 public final class PurgeWalletCommand: Command {
     public typealias CommandResponse = PurgeWalletResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     public init() {}
     
     deinit {
@@ -33,8 +37,17 @@ public final class PurgeWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status == .notPersonalized {
-            return .notPersonalized
+        if let status = card.status {
+            switch status {
+            case .empty:
+                return .cardIsEmpty
+            case .loaded:
+                break
+            case .notPersonalized:
+                return .notPersonalized
+            case .purged:
+                return .cardIsPurged
+            }
         }
         
         if card.isActivated {
@@ -48,12 +61,12 @@ public final class PurgeWalletCommand: Command {
         return nil
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if error == .invalidParams {
             return .pin2OrCvcRequired
         }
         
-        return nil
+        return error
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

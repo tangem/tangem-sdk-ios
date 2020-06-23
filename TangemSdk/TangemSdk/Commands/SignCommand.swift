@@ -25,6 +25,10 @@ public struct SignResponse: ResponseCodable {
 public final class SignCommand: Command {
     public typealias CommandResponse = SignResponse
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     private let hashes: [Data]
     private var responces: [SignResponse] = []
     private var currentChunk = 0
@@ -89,14 +93,14 @@ public final class SignCommand: Command {
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000
         let hasEnoughDelay = (delay * numberOfChunks) <= 5000
         guard hashes.count <= chunkSize || (isLinkedTerminalSupported && hasTerminalKeys) || hasEnoughDelay else {
-            completion(.failure(.tooMuchHashesInOneTransaction))
+            completion(.failure(.tooManyHashesInOneTransaction))
             return
         }
         
         sign(in: session, completion: completion)
     }
     
-    func performAfterCheck(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError? {
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if error == .invalidParams {
             return .pin2OrCvcRequired
         }
@@ -105,7 +109,7 @@ public final class SignCommand: Command {
             return .nfcStuck
         }
         
-        return nil
+        return error
     }
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {

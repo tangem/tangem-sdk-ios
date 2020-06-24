@@ -27,4 +27,6 @@ public enum Instruction: Byte {
     case openSession = 0xFF
     case writeUserData = 0xE0
     case readUserData = 0xE1
+    case personalize = 0xF1
+    case depersonalize = 0xE3
 }

@@ -61,7 +61,7 @@ public struct CommandApdu: Equatable {
     /// - Parameter encryptionKey: encryption key
     /// - Returns: Encrypted APDU
     public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?) throws -> CommandApdu {
-        guard encryptionMode != .none, let encryptionKey = encryptionKey, p1 == EncryptionMode.none.rawValue else { //skip if already enctypted, encryptionMode == NONE or emptyEncriptionKey
+        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.rawValue else { //skip if already encrypted or empty encryptionKey
             return self
         }
         let crc = data.crc16()

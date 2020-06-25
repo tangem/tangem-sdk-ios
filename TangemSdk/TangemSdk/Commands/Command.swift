@@ -75,9 +75,12 @@ extension Command {
         
         if session.environment.isCurrentPin2Default && requiresPin2 {
             handlePin2(session, completion: completion)
-            return
+        } else {
+            transieveInternal(in: session, completion: completion)
         }
-        
+    }
+    
+    private func transieveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
             let commandApdu = try serialize(with: session.environment)
             transieve(apdu: commandApdu, in: session) { result in
@@ -185,7 +188,7 @@ extension Command {
         setPinCommand.run(in: session) { result in
             switch result {
             case .success:
-                self.transieve(in: session, completion: completion)
+                self.transieveInternal(in: session, completion: completion)
             case .failure(let error):
                 guard error == .invalidParams else {
                     completion(.failure(error))

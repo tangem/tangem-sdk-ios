@@ -15,7 +15,7 @@ public enum EncryptionMode: Byte {
     case strong = 0x02
 }
 
-public struct KeyPair: Equatable {
+public struct KeyPair: Equatable, Codable {
     public let privateKey: Data
     public let publicKey: Data
 }

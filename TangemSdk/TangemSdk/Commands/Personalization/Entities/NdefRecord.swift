@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct NdefRecord {
-    enum NdefRecordType {
+struct NdefRecord: Codable {
+    enum NdefRecordType: String, Codable {
         case uri
         case aar
         case text
@@ -20,5 +20,16 @@ struct NdefRecord {
     
     func toBytes() -> Data? {
         return value.data(using: .utf8)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let typeString = try values.decode(String.self, forKey: .type)
+        if let type = NdefRecordType(rawValue: typeString.lowercased()) {
+            self.type = type
+        } else {
+            throw TangemSdkError.decodingFailed
+        }
+        value = try values.decode(String.self, forKey: .value)
     }
 }

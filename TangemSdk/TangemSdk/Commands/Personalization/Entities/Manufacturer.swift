@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Manufacturer {
+public struct Manufacturer: Codable {
     let keyPair: KeyPair
     let name: String?
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Acquirer {
+public struct Acquirer: Codable {
     let keyPair: KeyPair
     let name: String?
     let id: String?

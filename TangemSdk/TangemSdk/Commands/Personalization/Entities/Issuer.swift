@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Issuer {
+public struct Issuer: Codable {
     let name: String
     let id: String
     let dataKeyPair: KeyPair

@@ -147,7 +147,7 @@ public struct SettingsMask: OptionSet, Codable {
     public static let requireTermTxSignature = SettingsMask(rawValue: 0x01000000)
     public static let requireTermCertSignature = SettingsMask(rawValue: 0x02000000)
     public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000)
-
+    
     public func encode(to encoder: Encoder) throws {
         var values = [String]()
         if contains(SettingsMask.isReusable) {
@@ -259,6 +259,26 @@ public struct CardData: ResponseCodable {
     public let tokenContractAddress: String?
     /// Number of decimals in token value.
     public let tokenDecimal: Int?
+}
+
+extension CardData {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        batchId = try? values.decode(String.self, forKey: .batchId)
+        manufactureDateTime = try? values.decode(Date.self, forKey: .manufactureDateTime)
+        issuerName = try? values.decode(String.self, forKey: .issuerName)
+        blockchainName = try? values.decode(String.self, forKey: .blockchainName)
+        manufacturerSignature = try? values.decode(Data.self, forKey: .manufacturerSignature)
+        if let productMaskDictionary = try? values.decode([String:UInt8].self, forKey: .productMask),
+            let rawValue = productMaskDictionary["rawValue"]  {
+            productMask = ProductMask(rawValue: rawValue)
+        } else {
+            throw TangemSdkError.decodingFailed
+        }
+        tokenSymbol = try? values.decode(String.self, forKey: .tokenSymbol)
+        tokenContractAddress = try? values.decode(String.self, forKey: .tokenContractAddress)
+        tokenDecimal = try? values.decode(Int.self, forKey: .tokenDecimal)
+    }
 }
 
 ///Response for `ReadCommand`. Contains detailed card information.

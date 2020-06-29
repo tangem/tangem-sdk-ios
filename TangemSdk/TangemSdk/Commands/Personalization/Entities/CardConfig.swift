@@ -9,11 +9,14 @@
 import Foundation
 
 
+//{"issuerName":"TANGEM SDK","acquirerName":"Smart Cash","series":"BB","startNumber":300000000000,"count":0,"pin":"000000","pin2":"000","pin3":"","hexCrExKey":"00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF","cvc":"000","pauseBeforePin2":5000,"smartSecurityDelay":true,"curveID":"Secp256k1","signingMethods":{"rawValue":0},"maxSignatures":999999,"isReusable":true,"allowSwapPin":true,"allowSwapPin2":true,"useActivation":false,"useCvc":false,"useNdef":true,"useDynamicNdef":true,"useOneCommandAtTime":false,"useBlock":false,"allowSelectBlockchain":false,"forbidPurgeWallet":false,"protocolAllowUnencrypted":true,"protocolAllowStaticEncryption":true,"protectIssuerDataAgainstReplay":true,"forbidDefaultPin":false,"disablePrecomputedNdef":false,"skipSecurityDelayIfValidatedByIssuer":true,"skipCheckPIN2andCVCIfValidatedByIssuer":true,"skipSecurityDelayIfValidatedByLinkedTerminal":true,"restrictOverwriteIssuerDataEx":false,"requireTerminalTxSignature":false,"requireTerminalCertSignature":false,"checkPin3onCard":true,"createWallet":true,"cardData":{"issuerName":"TANGEM SDK","batchId":"FFFF","blockchainName":"ETH","manufactureDateTime":"2020-06-26","productMask":{"rawValue":1}},"ndefRecords":[{"type":"AAR","value":"com.tangem.wallet"},{"type":"URI","value":"https://tangem.com"}]}
+
+
 /**
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
-public struct CardConfig {
+public struct CardConfig: ResponseCodable {
     let issuerName: String?
     let acquirerName: String?
     let series: String?
@@ -40,16 +43,16 @@ public struct CardConfig {
     let useBlock: Bool
     let allowSelectBlockchain: Bool
     let forbidPurgeWallet: Bool
-    let allowUnencrypted: Bool
-    let allowFastEncryption: Bool
+    let protocolAllowUnencrypted: Bool
+    let protocolAllowStaticEncryption: Bool
     let protectIssuerDataAgainstReplay: Bool
-    let prohibitDefaultPIN1: Bool
+    let forbidDefaultPin: Bool
     let disablePrecomputedNdef: Bool
     let skipSecurityDelayIfValidatedByIssuer: Bool
-    let skipCheckPIN2CVCIfValidatedByIssuer: Bool
-    let skipSecurityDelayIfletidatedByLinkedTerminal: Bool
+    let skipCheckPIN2andCVCIfValidatedByIssuer: Bool
+    let skipSecurityDelayIfValidatedByLinkedTerminal: Bool
     
-    let restrictOverwriteIssuerExtraData: Bool
+    let restrictOverwriteIssuerDataEx: Bool
     
     let requireTerminalTxSignature: Bool
     let requireTerminalCertSignature: Bool
@@ -61,6 +64,65 @@ public struct CardConfig {
     let ndefRecords: [NdefRecord]
     
     private let Alf = "ABCDEF0123456789"
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        issuerName = try values.decode(String.self, forKey: .issuerName)
+        acquirerName = try values.decode(String.self, forKey: .acquirerName)
+        series = try values.decode(String.self, forKey: .issuerName)
+        startNumber = try values.decode(Int64.self, forKey: .startNumber)
+        count = try values.decode(Int.self, forKey: .count)
+        pin = try values.decode(String.self, forKey: .pin)
+        pin2 = try values.decode(String.self, forKey: .pin2)
+        pin3 = try values.decode(String.self, forKey: .pin3)
+        hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
+        cvc = try values.decode(String.self, forKey: .cvc)
+        pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
+        smartSecurityDelay = try values.decode(Bool.self, forKey: .smartSecurityDelay)
+        
+        let curveString = try values.decode(String.self, forKey: .curveID)
+        if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
+            self.curveID = curveID
+        } else {
+            throw TangemSdkError.decodingFailed
+        }
+        
+        let signingMethodsDictionary = try values.decode([String:Int].self, forKey: .signingMethods)
+        if let rawValue = signingMethodsDictionary["rawValue"]  {
+            signingMethods = SigningMethod(rawValue: rawValue)
+        } else {
+            throw TangemSdkError.decodingFailed
+        }
+        
+        maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
+        isReusable = try values.decode(Bool.self, forKey: .isReusable)
+        allowSwapPin = try values.decode(Bool.self, forKey: .allowSwapPin)
+        allowSwapPin2 = try values.decode(Bool.self, forKey: .allowSwapPin2)
+        useActivation = try values.decode(Bool.self, forKey: .useActivation)
+        useCvc = try values.decode(Bool.self, forKey: .useCvc)
+        useNdef = try values.decode(Bool.self, forKey: .useNdef)
+        useDynamicNdef = try values.decode(Bool.self, forKey: .useDynamicNdef)
+        useOneCommandAtTime = try values.decode(Bool.self, forKey: .useOneCommandAtTime)
+        useBlock = try values.decode(Bool.self, forKey: .useBlock)
+        allowSelectBlockchain = try values.decode(Bool.self, forKey: .allowSelectBlockchain)
+        forbidPurgeWallet = try values.decode(Bool.self, forKey: .forbidPurgeWallet)
+        protocolAllowUnencrypted = try values.decode(Bool.self, forKey: .protocolAllowUnencrypted)
+        protocolAllowStaticEncryption = try values.decode(Bool.self, forKey: .protocolAllowStaticEncryption)
+        protectIssuerDataAgainstReplay = try values.decode(Bool.self, forKey: .protectIssuerDataAgainstReplay)
+        forbidDefaultPin = try values.decode(Bool.self, forKey: .forbidDefaultPin)
+        disablePrecomputedNdef = try values.decode(Bool.self, forKey: .disablePrecomputedNdef)
+        skipSecurityDelayIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByIssuer)
+        skipCheckPIN2andCVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2andCVCIfValidatedByIssuer)
+        skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
+        restrictOverwriteIssuerDataEx = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerDataEx)
+        requireTerminalTxSignature = try values.decode(Bool.self, forKey: .requireTerminalTxSignature)
+        requireTerminalCertSignature = try values.decode(Bool.self, forKey: .requireTerminalCertSignature)
+        checkPin3onCard = try values.decode(Bool.self, forKey: .checkPin3onCard)
+        createWallet = try values.decode(Bool.self, forKey: .createWallet)
+        cardData = try values.decode(CardData.self, forKey: .cardData)
+        ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
+    }
+    
     
     func createSettingsMask() -> SettingsMask {
         let builder = SettingsMaskBuilder()
@@ -89,13 +151,13 @@ public struct CardConfig {
         if disablePrecomputedNdef {
             builder.add(.disablePrecomputedNDEF)
         }
-        if allowUnencrypted {
+        if protocolAllowUnencrypted {
             builder.add(.allowUnencrypted)
         }
-        if allowFastEncryption {
+        if protocolAllowStaticEncryption {
             builder.add(.allowFastEncryption)
         }
-        if prohibitDefaultPIN1 {
+        if forbidDefaultPin {
             builder.add(.prohibitDefaultPIN1)
         }
         if useActivation {
@@ -116,16 +178,16 @@ public struct CardConfig {
         if allowSelectBlockchain {
             builder.add(.allowSelectBlockchain)
         }
-        if skipCheckPIN2CVCIfValidatedByIssuer {
+        if skipCheckPIN2andCVCIfValidatedByIssuer {
             builder.add(.skipCheckPIN2CVCIfValidatedByIssuer)
         }
         if skipSecurityDelayIfValidatedByIssuer {
             builder.add(.skipSecurityDelayIfValidatedByIssuer)
         }
-        if skipSecurityDelayIfletidatedByLinkedTerminal {
+        if skipSecurityDelayIfValidatedByLinkedTerminal {
             builder.add(.skipSecurityDelayIfValidatedByLinkedTerminal)
         }
-        if restrictOverwriteIssuerExtraData {
+        if restrictOverwriteIssuerDataEx {
             builder.add(.restrictOverwriteIssuerExtraData)
         }
         if requireTerminalTxSignature {
@@ -148,7 +210,7 @@ public struct CardConfig {
         if startNumber <= 0 || (series.count != 2 && series.count != 4) {
             return nil
         }
-    
+        
         if !checkSeries(series) {
             return nil
         }

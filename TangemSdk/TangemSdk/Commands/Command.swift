@@ -233,3 +233,21 @@ extension ResponseCodable {
         return String(data: data, encoding: .utf8)!
     }
 }
+
+
+extension JSONDecoder {
+    public static var tangemSdkDecoder: JSONDecoder  {
+        let decoder = JSONDecoder()
+        decoder.dataDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let hex = try container.decode(String.self)
+            return Data(hexString: hex)
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.dateFormat = "YYYY-MM-DD"
+        decoder.dateDecodingStrategy  = .formatted(dateFormatter)
+        return decoder
+    }
+}

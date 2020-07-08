@@ -149,7 +149,11 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
         
-        reader.startSession(with: initialMessage)
+        if UserDefaults.standard.bool(forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue) {
+            start()
+        } else {
+            viewDelegate.showScanUI(session: self)
+        }
     }
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
@@ -162,6 +166,10 @@ public class CardSession {
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
+
+        if !UserDefaults.standard.bool(forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue) {
+            UserDefaults.standard.set(true, forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue)
+        }
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
@@ -226,6 +234,10 @@ public class CardSession {
     
     func resume() {
         reader.resumeSession()
+    }
+    
+    func start() {
+        reader.startSession(with: initialMessage)
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {

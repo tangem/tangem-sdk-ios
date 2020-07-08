@@ -32,6 +32,7 @@
 		5D273A0B234F270200ACDA11 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F4234F270200ACDA11 /* Error.swift */; };
 		5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F5234F270200ACDA11 /* PrivateKey.swift */; };
 		5D273A0D234F270200ACDA11 /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F6234F270200ACDA11 /* Seed.swift */; };
+		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
 		5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D41EA0523D19BAD004DE701 /* TangemTimer.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
@@ -152,6 +153,14 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
+		5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */; };
+		5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */; };
+		5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40024B2F6C6007B95AF /* Scan.storyboard */; };
+		5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */; };
+		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
+		5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40724B3307F007B95AF /* Colors.xcassets */; };
+		5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40924B34799007B95AF /* SetPinViewController.swift */; };
+		5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */; };
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
 		5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC4A1233BA5E0004964E8 /* Byte+.swift */; };
@@ -194,6 +203,7 @@
 		5D2739F4234F270200ACDA11 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		5D2739F5234F270200ACDA11 /* PrivateKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		5D2739F6234F270200ACDA11 /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
+		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D41EA0523D19BAD004DE701 /* TangemTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemTimer.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
@@ -318,6 +328,14 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageService.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
+		5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CircularIndicator.storyboard; sourceTree = "<group>"; };
+		5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorViewController.swift; sourceTree = "<group>"; };
+		5DFCE40024B2F6C6007B95AF /* Scan.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Scan.storyboard; sourceTree = "<group>"; };
+		5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5DFCE40724B3307F007B95AF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		5DFCE40924B34799007B95AF /* SetPinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinViewController.swift; sourceTree = "<group>"; };
+		5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePinViewController.swift; sourceTree = "<group>"; };
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		5DFFC4A1233BA5E0004964E8 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
@@ -438,6 +456,8 @@
 		5D7F4E3F248FCEFB00A1700D /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				5DFCE3FF24B2F618007B95AF /* Scan */,
+				5DFCE3FA24AB89F5007B95AF /* Indicator */,
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
 				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
 				5D7F4E44248FCF8300A1700D /* Pin */,
@@ -450,6 +470,8 @@
 			children = (
 				5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */,
 				5D7F4E45248FCF9700A1700D /* PinViewController.swift */,
+				5DFCE40924B34799007B95AF /* SetPinViewController.swift */,
+				5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */,
 			);
 			path = Pin;
 			sourceTree = "<group>";
@@ -664,6 +686,7 @@
 			children = (
 				5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */,
 				5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */,
+				5DFCE40424B30589007B95AF /* StorageService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -671,6 +694,7 @@
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				5DFCE40624B33062007B95AF /* Assets */,
 				5DE59F2723D96F5C00312DA4 /* Services */,
 				5DA5B61F233E13180058C720 /* TLV */,
 				5DA5B614233E11DD0058C720 /* APDU */,
@@ -681,6 +705,33 @@
 				5D41EA0523D19BAD004DE701 /* TangemTimer.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		5DFCE3FA24AB89F5007B95AF /* Indicator */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */,
+				5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */,
+			);
+			path = Indicator;
+			sourceTree = "<group>";
+		};
+		5DFCE3FF24B2F618007B95AF /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE40024B2F6C6007B95AF /* Scan.storyboard */,
+				5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		5DFCE40624B33062007B95AF /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE40724B3307F007B95AF /* Colors.xcassets */,
+				5D3F77A924B4E05400E8695B /* Assets.xcassets */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		5DFFC1A2234DC969001C2F35 /* Crypto */ = {
@@ -876,9 +927,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */,
+				5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
+				5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */,
+				5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */,
 				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
+				5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */,
 				5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -910,6 +965,7 @@
 				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
+				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
 				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
@@ -930,6 +986,7 @@
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
+				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
 				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
@@ -959,6 +1016,8 @@
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
+				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
+				5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
@@ -978,6 +1037,7 @@
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,
+				5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

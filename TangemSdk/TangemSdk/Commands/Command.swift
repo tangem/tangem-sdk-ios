@@ -118,6 +118,7 @@ extension Command {
                 switch responseApdu.statusWord {
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                      .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
+                    session.viewDelegate.hideUI(.sd)
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
@@ -145,6 +146,7 @@ extension Command {
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }
             case .failure(let error):
+                session.viewDelegate.hideUI(nil)
                 completion(.failure(error))
             }
         }
@@ -170,7 +172,7 @@ extension Command {
         }
         session.pause()
         DispatchQueue.main.async {
-            session.viewDelegate.requestPin1 { pin1 in
+            session.viewDelegate.requestPin1(cardId: session.environment.card?.cardId) { pin1 in
                 if let pin1 = pin1 {
                     session.environment.set(pin1: pin1)
                     session.resume()
@@ -197,7 +199,7 @@ extension Command {
                 
                 session.pause()
                 DispatchQueue.main.async {
-                    session.viewDelegate.requestPin2 { pin2 in
+                    session.viewDelegate.requestPin2(cardId: session.environment.card?.cardId) { pin2 in
                         if let pin2 = pin2 {
                             session.environment.set(pin2: pin2)
                             session.resume()

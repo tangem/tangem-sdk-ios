@@ -18,17 +18,21 @@ public protocol SessionViewDelegate: class {
     /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.
     func showSecurityDelay(remainingMilliseconds: Int) //todo: rename santiseconds
     
+    func showPercentLoading(_ percent: Int, hint: String?)
+    
     /// It is called when a user is expected to enter pin1 code.
-    func requestPin1(completion: @escaping (_ pin: String?) -> Void)
+    func requestPin1(cardId: String?, completion: @escaping (_ pin: String?) -> Void)
     
     /// It is called when a user is expected to enter pin2 code.
-    func requestPin2(completion: @escaping (_ pin: String?) -> Void)
+    func requestPin2(cardId: String?, completion: @escaping (_ pin: String?) -> Void)
     
     /// It is called when tag was found
     func tagConnected()
     
     /// It is called when tag was lost
     func tagLost()
+    
+    func hideUI(_ indicatorMode: IndicatorMode?)
     
     func wrongCard(message: String?)
     
@@ -37,13 +41,19 @@ public protocol SessionViewDelegate: class {
     func sessionStopped()
     
     func sessionInitialized()
+    
+    @available(iOS 13.0, *)
+    func showScanUI(session: CardSession)
 }
+
 
 @available(iOS 13.0, *)
 final class DefaultSessionViewDelegate: SessionViewDelegate {
     private let reader: CardReader
     private var engine: CHHapticEngine?
     private var engineNeedsStart = true
+    private var indicatorController: CircularIndicatorViewController?
+    private var scanController: ScanViewController?
     
     private lazy var delayFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
@@ -65,19 +75,96 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         reader.alertMessage = text
     }
     
-    func showSecurityDelay(remainingMilliseconds: Int) {
-        if let timeString = delayFormatter.string(from: TimeInterval(remainingMilliseconds/100)) {
-            playTick()
-            showAlertMessage(Localization.secondsLeft(timeString))
+    func showScanUI(session: CardSession) {
+        let storyBoard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
+        if scanController == nil {
+        scanController = storyBoard.instantiateViewController(identifier: "ScanViewController", creator: { coder in
+                return ScanViewController(coder: coder, session: session)
+            })
+        scanController?.modalPresentationStyle = .fullScreen
+        }
+        
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            topmostViewController.present(scanController!, animated: true) {
+            }
         }
     }
     
-    func requestPin1(completion: @escaping (_ pin: String?) -> Void) {
-        requestPin(.pin1, completion: completion)
+    func hideUI(_ indicatorMode: IndicatorMode?) {
+        guard let indicatorMode = indicatorMode else {
+            DispatchQueue.main.async {
+                self.indicatorController?.dismiss(animated: true, completion: nil)
+                self.scanController?.dismiss(animated: true, completion: nil)
+            }
+            return
+        }
+        
+        if let indicatorController = self.indicatorController, indicatorMode == indicatorController.mode {
+            DispatchQueue.main.async {
+                self.indicatorController?.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
-    func requestPin2(completion: @escaping (_ pin: String?) -> Void) {
-        requestPin(.pin2, completion: completion)
+    func showSecurityDelay(remainingMilliseconds: Int) {
+        //if let timeString = self.delayFormatter.string(from: TimeInterval(remainingMilliseconds/100)) {
+        playTick()
+        showAlertMessage(Localization.nfcAlertDefault)
+        // self.showAlertMessage(Localization.secondsLeft(timeString))
+        //}
+        DispatchQueue.main.async {
+            if self.indicatorController == nil {
+                let storyBoard = UIStoryboard(name: "CircularIndicator", bundle: .sdkBundle)
+                self.indicatorController = storyBoard.instantiateViewController(identifier: "CircularIndicatorViewController")
+                self.indicatorController?.modalPresentationStyle = .fullScreen
+            }
+            self.indicatorController!.mode = .sd
+            
+            let remainingSeconds = Float(remainingMilliseconds/100)
+            if self.indicatorController!.view.window == nil {
+                self.indicatorController!.totalValue = remainingSeconds + 1
+                if let topmostViewController = UIApplication.shared.topMostViewController {
+                    topmostViewController.present(self.indicatorController!, animated: true) {
+                        self.indicatorController!.modalPresentationStyle = .fullScreen
+                        
+                    }
+                }
+            }
+            
+            self.indicatorController!.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: Localization.nfcAlertDefault)
+        }
+    }
+    
+    
+    func showPercentLoading(_ percent: Int, hint: String?) {
+        playTick()
+        showAlertMessage(Localization.nfcAlertDefault)
+        
+        DispatchQueue.main.async {
+            if self.indicatorController == nil {
+                let storyBoard = UIStoryboard(name: "CircularIndicator", bundle: .sdkBundle)
+                self.indicatorController = storyBoard.instantiateViewController(identifier: "CircularIndicatorViewController")
+            }
+            self.indicatorController!.mode = .percent
+            
+            if self.indicatorController!.view.window == nil {
+                if let topmostViewController = UIApplication.shared.topMostViewController {
+                    topmostViewController.present(self.indicatorController!, animated: true) {
+                        self.indicatorController!.modalPresentationStyle = .fullScreen
+                    }
+                }
+            }
+            
+            self.indicatorController!.tickPercent(percentValue: percent, message: String(format: "%@%%", percent.description), hint: hint)
+        }
+    }
+    
+    func requestPin1(cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin1, cardId: cardId, completion: completion)
+    }
+    
+    func requestPin2(cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
+        requestPin(.pin2, cardId: cardId, completion: completion)
     }
     
     func tagConnected() {
@@ -109,13 +196,14 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     }
     
     func sessionStopped() {
+        hideUI(nil)
         stopHapticsEngine()
     }
     
-    private func requestPin(_ state: PinViewControllerState, completion: @escaping (String?) -> Void) {
+    private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
         let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
         let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
-            return PinViewController(coder: coder, state: state, completionHandler: completion)
+            return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
@@ -130,10 +218,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
             do {
                 
                 guard let path = Bundle.sdkBundle.path(forResource: "Success", ofType: "ahap") else {
-                  return
-              }
-                             
-              try engine?.playPattern(from: URL(fileURLWithPath: path))
+                    return
+                }
+                
+                try engine?.playPattern(from: URL(fileURLWithPath: path))
             } catch let error {
                 print("Error creating a haptic transient pattern: \(error)")
             }
@@ -146,7 +234,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
                 guard let path = Bundle.sdkBundle.path(forResource: "Error", ofType: "ahap") else {
                     return
                 }
-                               
+                
                 try engine?.playPattern(from: URL(fileURLWithPath: path))
             } catch let error {
                 print("Error creating a haptic transient pattern: \(error)")

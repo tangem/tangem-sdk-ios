@@ -16,7 +16,8 @@ enum PinViewControllerState {
 class PinViewController: UIViewController, UITextFieldDelegate {
     
     var completionHandler: (String?) -> Void
-    var state: PinViewControllerState
+    let state: PinViewControllerState
+    let cardId: String?
     
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
@@ -37,9 +38,12 @@ class PinViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    init?(coder: NSCoder, state: PinViewControllerState, completionHandler: @escaping (String?) -> Void) {
+    @IBOutlet weak var lblCard: UILabel!
+    
+    init?(coder: NSCoder, state: PinViewControllerState, cardId: String? = nil, completionHandler: @escaping (String?) -> Void) {
         self.completionHandler = completionHandler
         self.state = state
+        self.cardId = cardId
         super.init(coder: coder)
     }
     
@@ -53,6 +57,7 @@ class PinViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        lblCard.text = cardId
         pinText.becomeFirstResponder()
     }
     

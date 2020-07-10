@@ -11,7 +11,7 @@ import UIKit
 class TangemSdkButton: UIButton {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        layer.cornerRadius = 12
+        layer.cornerRadius = 8
     }
     
     override public var isEnabled: Bool {

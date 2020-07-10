@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Scan View Controller-->
+        <scene sceneID="q9w-Zs-iI7">
+            <objects>
+                <viewController storyboardIdentifier="ScanViewController" id="twj-6E-Ebw" customClass="ScanViewController" customModule="TangemSdk" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uAU-n2-Vvz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tch-Hx-QgG">
+                                <rect key="frame" x="301" y="16" width="48" height="30"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" name="tngBlue"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonCancelTapped:" destination="twj-6E-Ebw" eventType="touchUpInside" id="mWs-cP-mLH"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O0s-ZG-zCm">
+                                <rect key="frame" x="0.0" y="472" width="375" height="195"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QOI-y8-XhF" customClass="TangemSdkButton" customModule="TangemSdk" customModuleProvider="target">
+                                        <rect key="frame" x="16" y="45" width="343" height="50"/>
+                                        <color key="backgroundColor" name="tngBlue"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="vjt-Qo-lwl"/>
+                                        </constraints>
+                                        <state key="normal" title="Tap In">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="buttonTapInTapped:" destination="twj-6E-Ebw" eventType="touchUpInside" id="hDA-uK-PZK"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" name="scanBgBottom"/>
+                                <constraints>
+                                    <constraint firstItem="QOI-y8-XhF" firstAttribute="leading" secondItem="O0s-ZG-zCm" secondAttribute="leading" constant="16" id="3Xx-dh-AA4"/>
+                                    <constraint firstItem="QOI-y8-XhF" firstAttribute="top" secondItem="O0s-ZG-zCm" secondAttribute="top" constant="45" id="IiP-bH-uQ9"/>
+                                    <constraint firstAttribute="height" constant="195" id="jCK-Uj-Stq"/>
+                                    <constraint firstAttribute="trailing" secondItem="QOI-y8-XhF" secondAttribute="trailing" constant="16" id="ocE-gr-s6F"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap in! Aim the gem to the center of your card, and hold your phone to the card." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gsB-4x-WL7">
+                                <rect key="frame" x="16" y="392" width="343" height="41"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hand" translatesAutoresizingMaskIntoConstraints="NO" id="qmt-60-fB2">
+                                <rect key="frame" x="-50" y="76" width="267" height="294"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="267" id="Fta-61-N33"/>
+                                    <constraint firstAttribute="height" constant="294" id="rVR-og-ul7"/>
+                                </constraints>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="phone" translatesAutoresizingMaskIntoConstraints="NO" id="ieM-gO-SvJ">
+                                <rect key="frame" x="0.0" y="138" width="375" height="203"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" name="scanBg"/>
+                        <constraints>
+                            <constraint firstItem="ieM-gO-SvJ" firstAttribute="leading" secondItem="Ldn-LB-ceH" secondAttribute="leading" id="0BK-6v-zzn"/>
+                            <constraint firstItem="O0s-ZG-zCm" firstAttribute="trailing" secondItem="Ldn-LB-ceH" secondAttribute="trailing" id="2f3-ik-gKN"/>
+                            <constraint firstItem="O0s-ZG-zCm" firstAttribute="top" secondItem="gsB-4x-WL7" secondAttribute="bottom" constant="39" id="DiV-J8-W4A"/>
+                            <constraint firstAttribute="bottom" secondItem="O0s-ZG-zCm" secondAttribute="bottom" id="G3b-vm-gbp"/>
+                            <constraint firstItem="qmt-60-fB2" firstAttribute="leading" secondItem="uAU-n2-Vvz" secondAttribute="leading" constant="-50" id="Rqi-gy-yQL"/>
+                            <constraint firstItem="qmt-60-fB2" firstAttribute="top" secondItem="Ldn-LB-ceH" secondAttribute="top" constant="76" id="Zuy-5N-r9f"/>
+                            <constraint firstItem="ieM-gO-SvJ" firstAttribute="centerX" secondItem="uAU-n2-Vvz" secondAttribute="centerX" id="ahE-EO-NSd"/>
+                            <constraint firstItem="gsB-4x-WL7" firstAttribute="top" relation="greaterThanOrEqual" secondItem="ieM-gO-SvJ" secondAttribute="bottom" constant="16" id="c4Q-Aa-4pi"/>
+                            <constraint firstItem="Ldn-LB-ceH" firstAttribute="trailing" secondItem="gsB-4x-WL7" secondAttribute="trailing" constant="16" id="eo5-BW-eM6"/>
+                            <constraint firstItem="O0s-ZG-zCm" firstAttribute="leading" secondItem="Ldn-LB-ceH" secondAttribute="leading" id="kJV-kB-xod"/>
+                            <constraint firstItem="Ldn-LB-ceH" firstAttribute="trailing" secondItem="ieM-gO-SvJ" secondAttribute="trailing" id="rJF-9q-tB2"/>
+                            <constraint firstItem="Ldn-LB-ceH" firstAttribute="trailing" secondItem="tch-Hx-QgG" secondAttribute="trailing" constant="26" id="sal-3h-duP"/>
+                            <constraint firstItem="tch-Hx-QgG" firstAttribute="top" secondItem="Ldn-LB-ceH" secondAttribute="top" constant="16" id="upj-bI-Llc"/>
+                            <constraint firstItem="gsB-4x-WL7" firstAttribute="leading" secondItem="Ldn-LB-ceH" secondAttribute="leading" constant="16" id="xBg-F0-nAs"/>
+                            <constraint firstItem="ieM-gO-SvJ" firstAttribute="top" secondItem="Ldn-LB-ceH" secondAttribute="top" constant="138" id="zNx-ZD-Wp3"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Ldn-LB-ceH"/>
+                    </view>
+                    <connections>
+                        <outlet property="buttonCancel" destination="tch-Hx-QgG" id="NfK-5d-6gU"/>
+                        <outlet property="buttonTapIn" destination="QOI-y8-XhF" id="9bT-d4-JL2"/>
+                        <outlet property="hintLabel" destination="gsB-4x-WL7" id="V6f-c1-Xz1"/>
+                        <outlet property="imageHand" destination="qmt-60-fB2" id="32Z-mN-zL9"/>
+                        <outlet property="imageHandLeading" destination="Rqi-gy-yQL" id="rhf-RN-yc5"/>
+                        <outlet property="imageView" destination="ieM-gO-SvJ" id="vGD-KP-X27"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p9a-Jl-e4g" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="115.59220389805098"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="hand" width="311" height="255"/>
+        <image name="phone" width="102" height="203"/>
+        <namedColor name="scanBg">
+            <color red="0.93300002813339233" green="0.93300002813339233" blue="0.93300002813339233" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="scanBgBottom">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="tngBlue">
+            <color red="0.0" green="0.16099999845027924" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

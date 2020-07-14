@@ -20,67 +20,75 @@ public struct KeyPair: Equatable, Codable {
     public let publicKey: Data
 }
 
-
-/// Contains data relating to a Tangem card. It is used in constructing all the commands,
-/// and commands can return modified `SessionEnvironment`.
-public struct SessionEnvironment {
+struct PinCode {
     static let defaultPin1 = "000000"
     static let defaultPin2 = "000"
     
-    /// Current card, read by preflight `Read` command
-    public var card: Card? = nil
-    
-    /// Hashed pin1 with sha256
-    public var pin1: Data {
-        return SessionEnvironment.pin1
+    enum PinType {
+        case pin1
+        case pin2
     }
     
-    /// Hashed pin2 with sha256
-    public var pin2: Data = defaultPin2.sha256()
+    let type: PinType
+    let value: Data?
+    
+    var isDefault: Bool {
+        switch type {
+        case .pin1:
+            return PinCode.defaultPin1.sha256() == value
+        case .pin2:
+            return PinCode.defaultPin2.sha256() == value
+        }
+    }
+
+    internal init(_ type: PinType) {
+        switch type {
+        case .pin1:
+            self.value = PinCode.defaultPin1.sha256()
+        case .pin2:
+            self.value = PinCode.defaultPin2.sha256()
+        }
+        self.type = type
+    }
+    
+    internal init(_ type: PinType, stringValue: String) {
+        self.value = stringValue.sha256()
+        self.type = type
+    }
+    
+    internal init(_ type: PinType, value: Data?) {
+        self.value = value
+        self.type = type
+    }
+}
+
+/// Contains data relating to a Tangem card. It is used in constructing all the commands,
+/// and commands can return modified `SessionEnvironment`.
+public struct SessionEnvironment {    
+    /// Current card, read by preflight `Read` command
+    public var card: Card? = nil
     
     /// Keys for Linked Terminal feature
     public var terminalKeys: KeyPair? = nil
     
     public var encryptionMode: EncryptionMode = .none
     public var encryptionKey: Data? = nil
-
+    
     public var cvc: Data? = nil
+    
+    public var cardVerification: VerificationState?
+    public var cardValidation: VerificationState?
+    public var codeVerification: VerificationState?
     
     var legacyMode: Bool = true
     
     public var allowedCardTypes: [CardType] = [.sdk, .release, .unknown]
-
+    
     public var handleErrors: Bool = true
     
-    private static var pin1: Data = defaultPin1.sha256()
+    var pin1: PinCode = PinCode(.pin1)
     
-    public var isCurrentPin1Default: Bool {
-        return SessionEnvironment.pin1 == SessionEnvironment.defaultPin1.sha256()
-    }
-    
-    public var isCurrentPin2Default: Bool {
-        return pin2 == SessionEnvironment.defaultPin2.sha256()
-    }
+    var pin2: PinCode = PinCode(.pin2)
     
     public init() {}
-    
-    /// Helper method for setting pin1 in string format. Calculates sha256 hash for you
-    /// - Parameter pin1: pin1
-    public mutating func set(pin1: String) {
-        SessionEnvironment.pin1 = pin1.sha256()
-    }
-    
-    /// Helper method for setting pin2 in string format.  Calculates sha256 hash for you
-    /// - Parameter pin2: pin2
-    public mutating func set(pin2: String) {
-        self.pin2 = pin2.sha256()
-    }
-    
-    public mutating func setDefaultPin1() {
-        SessionEnvironment.pin1 = SessionEnvironment.defaultPin1.sha256()
-    }
-    
-    public mutating func setDefaultPin2() {
-        pin2 = SessionEnvironment.defaultPin2.sha256()
-    }
 }

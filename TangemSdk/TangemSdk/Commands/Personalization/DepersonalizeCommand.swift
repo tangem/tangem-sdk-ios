@@ -21,7 +21,7 @@ public struct DepersonalizeResponse: ResponseCodable {
 public class DepersonalizeCommand: Command {
     public typealias CommandResponse = DepersonalizeResponse
     
-    public var needPreflightRead: Bool {
+    var needPreflightRead: Bool {
         return false
     }
     

@@ -14,10 +14,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 
 /// Base protocol for run tasks in a card session
 @available(iOS 13.0, *)
-public protocol CardSessionRunnable {
-    
-    var needPreflightRead: Bool {get}
-    
+public protocol CardSessionRunnable {    
     var requiresPin2: Bool {get}
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
@@ -30,11 +27,7 @@ public protocol CardSessionRunnable {
 }
 
 @available(iOS 13.0, *)
-extension CardSessionRunnable {
-    public var needPreflightRead: Bool {
-        return true
-    }
-    
+extension CardSessionRunnable {    
     public var requiresPin2: Bool {
         return false
     }
@@ -57,23 +50,31 @@ public class CardSession {
     
     private let reader: CardReader
     private let initialMessage: String?
-    private let cardId: String?
+    private var cardId: String?
+    private let storageService: StorageService
+    private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
     private var connectedTagSubscription: [AnyCancellable] = []
     private var state: CardSessionState = .inactive
+    
+    private var needPreflightRead = true
+    private var pin2Required = false
+    
     /// Main initializer
     /// - Parameters:
-    ///   - environment: Contains data relating to a Tangem card
+    ///   - environmentService: Contains data relating to a Tangem card
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environment: SessionEnvironment, cardId: String? = nil, initialMessage: String? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: String? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
-        self.environment = environment
+        self.environmentService = environmentService
+        self.environment = environmentService.createEnvironment(cardId: cardId)
         self.initialMessage = initialMessage
         self.cardId = cardId
+        self.storageService = storageService
     }
     
     deinit {
@@ -85,25 +86,50 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
-        start(needPreflightRead: runnable.needPreflightRead) {[weak self] session, error in
-            guard let self = self else { return }
-            
-            if let error = error {
+        if let command = runnable as? PreflightReadCapable {
+            needPreflightRead = command.needPreflightRead
+        }
+        pin2Required = runnable.requiresPin2
+        
+        requestPin1IfNeeded {[weak self] result in
+            switch result {
+            case .success:
+                self?.requestPin2IfNeeded {[weak self] result in
+                    switch result {
+                    case .success:
+                        self?.start() {[weak self] session, error in
+                            guard let self = self else { return }
+                            
+                            if let error = error {
+                                DispatchQueue.main.async {
+                                    completion(.failure(error))
+                                }
+                                return
+                            }
+                            
+                            runnable.run(in: self) {result in
+                                self.handleRunnableCompletion(runnableResult: result, completion: completion)
+                            }
+                        }
+                        
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+                
+            case .failure(let error):
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }
-                return
-            }
-            
-            runnable.run(in: self) {result in
-                self.handleRunnableCompletion(runnableResult: result, completion: completion)
             }
         }
     }
     
     /// Starts a card session and performs preflight `Read` command.
     /// - Parameter onSessionStarted: Delegate with the card session. Can contain error
-    public func start(needPreflightRead: Bool = true, _ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
+    public func start(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         guard TangemSdk.isNFCAvailable else {
             onSessionStarted(self, .unsupportedDevice)
             return
@@ -140,7 +166,7 @@ public class CardSession {
                     onSessionStarted(self, error)
                 }}, receiveValue: { [unowned self] tag in
                     self.viewDelegate.sessionStarted()
-                    if case .tag = tag, needPreflightRead {
+                    if case .tag = tag, self.needPreflightRead {
                         self.preflightCheck(onSessionStarted)
                     } else {
                         self.viewDelegate.sessionInitialized()
@@ -149,7 +175,7 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
         
-        if UserDefaults.standard.bool(forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue) {
+        if storageService.bool(forKey: .hasSuccessfulTapIn) {
             start()
         } else {
             viewDelegate.showScanUI(session: self)
@@ -167,8 +193,8 @@ public class CardSession {
         sendSubscription = []
         viewDelegate.sessionStopped()
 
-        if !UserDefaults.standard.bool(forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue) {
-            UserDefaults.standard.set(true, forKey: StorageService.Keys.tngHasSuccessfulTapIn.rawValue)
+        if !storageService.bool(forKey: .hasSuccessfulTapIn) {
+            storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
     }
     
@@ -280,6 +306,12 @@ public class CardSession {
                         return
                     }
                 }
+                
+                self.cardId = readResponse.cardId
+                if let cid = self.cardId {
+                    self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
+                }
+               
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
@@ -317,7 +349,7 @@ public class CardSession {
                     }
                 }
                 
-                guard let protocolKey = self.environment.pin1.pbkdf2sha256(salt: uid, rounds: 50),
+                guard let protocolKey = self.environment.pin1.value?.pbkdf2sha256(salt: uid, rounds: 50),
                     let secret = encryptionHelper.generateSecret(keyB: response.sessionKeyB) else {
                         return Fail(error: .cryptoUtilsError).eraseToAnyPublisher()
                 }
@@ -326,6 +358,42 @@ public class CardSession {
                 self.environment.encryptionKey = sessionKey
                 return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
         }.eraseToAnyPublisher()
+    }
+    
+    private func requestPin1IfNeeded(_ completion: @escaping CompletionResult<Void>) {
+        guard environment.pin1.value == nil else {
+            completion(.success(()))
+            return
+        }
+        
+        viewDelegate.requestPin1(cardId: self.cardId) {[weak self] pin1 in
+            guard let self = self else { return }
+            
+            if let pin1 = pin1 {
+                self.environment.pin1 = PinCode(.pin1, stringValue: pin1)
+                completion(.success(()))
+            } else {
+                completion(.failure(.pin1Required))
+            }
+        }
+    }
+    
+    private func requestPin2IfNeeded(_ completion: @escaping CompletionResult<Void>) {
+        guard pin2Required && environment.pin2.value == nil else {
+            completion(.success(()))
+            return
+        }
+        
+        viewDelegate.requestPin2(cardId: self.cardId) {[weak self] pin2 in
+            guard let self = self else { return }
+            
+            if let pin2 = pin2 {
+                self.environment.pin2 = PinCode(.pin2, stringValue: pin2)
+                completion(.success(()))
+            } else {
+                completion(.failure(.pin2OrCvcRequired))
+            }
+        }
     }
 }
 

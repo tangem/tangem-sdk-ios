@@ -32,6 +32,6 @@ class CardValuesStorage {
     }
     
     func getValues(for cardId: String) ->  CardValues? {
-        return storageService.object(forKey: .cardValues) as? CardValues
+        return storageService.object(forKey: .cardValues)
     }
 }

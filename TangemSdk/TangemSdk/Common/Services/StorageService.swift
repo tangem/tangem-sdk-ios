@@ -32,15 +32,17 @@ public class StorageService {
         UserDefaults.standard.set(stringValue, forKey: rawKey(forKey))
     }
     
-    func object(forKey: StorageService.Keys) -> Any? {
+    func object<T: Decodable>(forKey: StorageService.Keys) -> T? {
         if let data =  UserDefaults.standard.data(forKey: rawKey(forKey)) {
-            return NSKeyedUnarchiver.unarchiveObject(with: data)
+            let decoder = JSONDecoder()
+            return try? decoder.decode(T.self, from: data)
         }
         return nil
     }
     
-    func set(object: Any, forKey: StorageService.Keys) {
-        let data = NSKeyedArchiver.archivedData(withRootObject: object)
+    func set<T: Encodable>(object: T, forKey: StorageService.Keys) {
+        let encoder = JSONEncoder()
+        let data = try? encoder.encode(object)
         UserDefaults.standard.set(data, forKey: rawKey(forKey))
     }
     

@@ -196,6 +196,8 @@ public class CardSession {
         if !storageService.bool(forKey: .hasSuccessfulTapIn) {
             storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
+        
+        environmentService.saveEnvironmentValues(environment, cardId: cardId)
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used

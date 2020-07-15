@@ -20,13 +20,14 @@ public struct KeyPair: Equatable, Codable {
     public let publicKey: Data
 }
 
-struct PinCode {
+public struct PinCode {
     static let defaultPin1 = "000000"
     static let defaultPin2 = "000"
     
-    enum PinType {
+    public enum PinType {
         case pin1
         case pin2
+        case pin3
     }
     
     let type: PinType
@@ -38,6 +39,8 @@ struct PinCode {
             return PinCode.defaultPin1.sha256() == value
         case .pin2:
             return PinCode.defaultPin2.sha256() == value
+        case .pin3:
+            return false
         }
     }
 

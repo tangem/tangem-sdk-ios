@@ -50,6 +50,8 @@ public struct PinCode {
             self.value = PinCode.defaultPin1.sha256()
         case .pin2:
             self.value = PinCode.defaultPin2.sha256()
+        case .pin3:
+            self.value = nil
         }
         self.type = type
     }

@@ -76,7 +76,7 @@ public final class CheckWalletCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         challenge = try CryptoUtils.generateRandomBytes(count: 16)
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1)
+            .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
         

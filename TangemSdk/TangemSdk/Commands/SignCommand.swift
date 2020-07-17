@@ -145,8 +145,8 @@ public final class SignCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1)
-            .append(.pin2, value: environment.pin2)
+            .append(.pin, value: environment.pin1.value)
+            .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.transactionOutHashSize, value: hashes.first!.count)
             .append(.transactionOutHash, value: flattenHashes)

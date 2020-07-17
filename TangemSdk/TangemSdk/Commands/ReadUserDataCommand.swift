@@ -53,7 +53,7 @@ public final class ReadUserDataCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.pin1)
+            .append(.pin, value: environment.pin1.value)
         
         return CommandApdu(.readUserData, tlv: tlvBuilder.serialize())
     }

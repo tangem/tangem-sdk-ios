@@ -16,6 +16,7 @@ public struct SetPinResponse: ResponseCodable {
     public let status: SetPinStatus
 }
 
+@available(iOS 13.0, *)
 public class SetPinCommand: Command {
     public typealias CommandResponse = SetPinResponse
     
@@ -30,8 +31,8 @@ public class SetPinCommand: Command {
     }
     
     public convenience init() {
-        self.init(newPin1: SessionEnvironment.defaultPin1.sha256(),
-                  newPin2: SessionEnvironment.defaultPin2.sha256(),
+        self.init(newPin1: PinCode.defaultPin1.sha256(),
+                  newPin2: PinCode.defaultPin2.sha256(),
                   newPin3: nil)
     }
     
@@ -41,8 +42,8 @@ public class SetPinCommand: Command {
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1)
-            .append(.pin2, value: environment.pin2)
+            .append(.pin, value: environment.pin1.value)
+            .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.newPin, value: newPin1)
             .append(.newPin2, value: newPin2)

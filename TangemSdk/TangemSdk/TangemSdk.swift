@@ -27,13 +27,25 @@ public final class TangemSdk {
     /// Configuration of the SDK. Do not change the default values unless you know what you are doing
     public var config = Config()
     
+    static var pin1: PinCode? = nil
+    static var pins2 = [String:PinCode?]()
+    
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
-    private let storageService = SecureStorageService()
+    private let secureStorageService = SecureStorageService()
+    private let storageService = StorageService()
+    
     private var cardSession: CardSession? = nil
     
+    private lazy var environmentService: SessionEnvironmentService = {
+        let service = SessionEnvironmentService(config: config,
+                                                terminalKeysService: terminalKeysService,
+                                                cardValuesStorage: CardValuesStorage(storageService: storageService))
+        return service
+    }()
+    
     private lazy var terminalKeysService: TerminalKeysService = {
-        let service = TerminalKeysService(secureStorageService: storageService)
+        let service = TerminalKeysService(secureStorageService: secureStorageService)
         return service
     }()
     
@@ -369,11 +381,12 @@ public final class TangemSdk {
                                 pin2: String? = nil,
                                 completion: @escaping CompletionResult<T.CommandResponse>)
         where T : CardSessionRunnable {
-        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
+        cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
                                   cardReader: reader,
-                                  viewDelegate: viewDelegate)
+                                  viewDelegate: viewDelegate,
+                                  storageService: storageService)
             
         cardSession!.start(with: runnable, completion: completion)
     }
@@ -393,30 +406,41 @@ public final class TangemSdk {
                              pin1: String? = nil,
                              pin2: String? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
-        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
+        cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
                                   cardReader: reader,
-                                  viewDelegate: viewDelegate)
+                                  viewDelegate: viewDelegate,
+                                  storageService: storageService)
         cardSession?.start(callback)
     }
     
-    private func buildEnvironment(_ pin1: String?, _ pin2: String?) -> SessionEnvironment {
-        var environment = SessionEnvironment()
-        environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
-        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
-            environment.terminalKeys = terminalKeysService.getKeys()
-        }
-        environment.allowedCardTypes = config.allowedCardTypes
-        environment.handleErrors = config.handleErrors
+    private func prepareEnvironmentService(_ pin1: String?, _ pin2: String?) -> SessionEnvironmentService {
         if let pin1 = pin1 {
-            environment.set(pin1: pin1)
+            environmentService.pin1 = PinCode(.pin1, stringValue: pin1)
         }
         if let pin2 = pin2 {
-            environment.set(pin2: pin2)
+            environmentService.pin2 = PinCode(.pin2, stringValue: pin2)
         }
-        return environment
+        return environmentService
     }
+    
+//    private func buildEnvironment(_ pin1: String?, _ pin2: String?) -> SessionEnvironment {
+//        var environment = SessionEnvironment()
+//        environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
+//        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
+//            environment.terminalKeys = terminalKeysService.getKeys()
+//        }
+//        environment.allowedCardTypes = config.allowedCardTypes
+//        environment.handleErrors = config.handleErrors
+//        if let pin1 = pin1 {
+//            environment.set(pin1: pin1)
+//        }
+//        if let pin2 = pin2 {
+//            environment.set(pin2: pin2)
+//        }
+//        return environment
+//    }
     
     @available(swift, obsoleted: 1.0, renamed: "start")
     public func runTask(_ task: Any, cardId: String? = nil, callback: @escaping (Any) -> Void) {}

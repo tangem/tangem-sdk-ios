@@ -33,6 +33,10 @@
 		5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F5234F270200ACDA11 /* PrivateKey.swift */; };
 		5D273A0D234F270200ACDA11 /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F6234F270200ACDA11 /* Seed.swift */; };
 		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
+		5D3F77AE24B9B60800E8695B /* SessionEnvironmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */; };
+		5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B024B9B89000E8695B /* CardValues.swift */; };
+		5D3F77B324B9B8B500E8695B /* CardValuesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */; };
+		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
 		5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D41EA0523D19BAD004DE701 /* TangemTimer.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
@@ -204,6 +208,10 @@
 		5D2739F5234F270200ACDA11 /* PrivateKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		5D2739F6234F270200ACDA11 /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
 		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironmentService.swift; sourceTree = "<group>"; };
+		5D3F77B024B9B89000E8695B /* CardValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValues.swift; sourceTree = "<group>"; };
+		5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValuesStorage.swift; sourceTree = "<group>"; };
+		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
 		5D41EA0523D19BAD004DE701 /* TangemTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemTimer.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
@@ -405,6 +413,23 @@
 			path = include;
 			sourceTree = "<group>";
 		};
+		5D3F77AF24B9B87F00E8695B /* CardState */ = {
+			isa = PBXGroup;
+			children = (
+				5D3F77B024B9B89000E8695B /* CardValues.swift */,
+				5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */,
+			);
+			path = CardState;
+			sourceTree = "<group>";
+		};
+		5D3F77B424B9B8E700E8695B /* Verification */ = {
+			isa = PBXGroup;
+			children = (
+				5D3F77B524B9B8F600E8695B /* VerificationState.swift */,
+			);
+			path = Verification;
+			sourceTree = "<group>";
+		};
 		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -425,6 +450,7 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				5D3F77B424B9B8E700E8695B /* Verification */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
@@ -684,9 +710,11 @@
 		5DE59F2723D96F5C00312DA4 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5D3F77AF24B9B87F00E8695B /* CardState */,
 				5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */,
 				5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */,
 				5DFCE40424B30589007B95AF /* StorageService.swift */,
+				5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -966,8 +994,10 @@
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
+				5D3F77AE24B9B60800E8695B /* SessionEnvironmentService.swift in Sources */,
 				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
+				5D3F77B324B9B8B500E8695B /* CardValuesStorage.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
 				5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */,
 				5D273A06234F270200ACDA11 /* sha512.c in Sources */,
@@ -988,6 +1018,7 @@
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
 				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
+				5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
 				5D2739FE234F270200ACDA11 /* sign.c in Sources */,
@@ -1007,6 +1038,7 @@
 				5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
+				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
 				5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,

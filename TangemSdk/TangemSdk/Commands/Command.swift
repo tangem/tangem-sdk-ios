@@ -82,10 +82,26 @@ extension Command {
             }
         }
         
-        if session.environment.pin2.isDefault && requiresPin2 {
-            handlePin2(session, completion: completion)
+        if session.environment.pin2.value == nil {
+            session.pause()
+            DispatchQueue.main.async {
+                session.viewDelegate.requestPin2(cardId: session.environment.card?.cardId) { pin2 in
+                    if let pin2 = pin2 {
+                        session.environment.pin2 = PinCode(.pin2, stringValue: pin2)
+                        session.resume()
+                        self.transieveInternal(in: session, completion: completion)
+                    } else {
+                        session.environment.pin2 = PinCode(.pin2, value: nil)
+                        completion(.failure(.pin2OrCvcRequired))
+                    }
+                }
+            }
         } else {
-            transieveInternal(in: session, completion: completion)
+            if session.environment.pin2.isDefault && requiresPin2 {
+                handlePin2(session, completion: completion)
+            } else {
+                transieveInternal(in: session, completion: completion)
+            }
         }
     }
     
@@ -223,7 +239,7 @@ extension Command {
                             session.resume()
                             self.transieve(in: session, completion: completion)
                         } else {
-                            session.environment.pin1 = PinCode(.pin2, value: nil)
+                            session.environment.pin2 = PinCode(.pin2, value: nil)
                             completion(.failure(.pin2OrCvcRequired))
                         }
                     }
@@ -231,6 +247,7 @@ extension Command {
             }
         }
     }
+    
 }
 
 /// The basic protocol for command response

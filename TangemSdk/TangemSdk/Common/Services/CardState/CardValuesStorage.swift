@@ -28,10 +28,10 @@ class CardValuesStorage {
                                       cardValidation: cardValidation,
                                       codeVerification: codeVerification)
         
-        storageService.set(object: valuesObject, forKey: .cardValues)
+        storageService.set(object: valuesObject, forKey: .cardValues, postfix: cardId.uppercased())
     }
     
     func getValues(for cardId: String) ->  CardValues? {
-        return storageService.object(forKey: .cardValues)
+        return storageService.object(forKey: .cardValues, postfix: cardId.uppercased())
     }
 }

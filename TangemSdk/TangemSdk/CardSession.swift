@@ -50,6 +50,7 @@ public class CardSession {
     
     private let reader: CardReader
     private let initialMessage: String?
+    private let showScanOnboarding: Bool
     private var cardId: String?
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
@@ -67,7 +68,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: String? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: String? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environmentService = environmentService
@@ -75,6 +76,7 @@ public class CardSession {
         self.initialMessage = initialMessage
         self.cardId = cardId
         self.storageService = storageService
+        self.showScanOnboarding = showScanOnboarding
     }
     
     deinit {
@@ -175,10 +177,12 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
         
-        if storageService.bool(forKey: .hasSuccessfulTapIn) {
-            start()
+        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
+            viewDelegate.showScanUI(session: self) {
+                onSessionStarted(self, TangemSdkError.userCancelled)
+            }
         } else {
-            viewDelegate.showScanUI(session: self)
+            start()
         }
     }
     /// Stops the current session with the text message. If nil, the default message will be shown

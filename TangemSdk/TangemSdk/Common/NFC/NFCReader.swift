@@ -61,6 +61,7 @@ final class NFCReader: NSObject {
         sessionTimer = TangemTimer(timeInterval: NFCReader.sessionTimeout, completion: timerTimeout)
         tagTimer = TangemTimer(timeInterval: NFCReader.tagTimeout, completion: timerTimeout)
         nfcStuckTimer = TangemTimer(timeInterval: NFCReader.nfcStuckTimeout, completion: {[weak self] in
+            self?.log("stop by stuck timer")
             self?.stopSession()
             self?.readerSessionError = .nfcStuck
         })

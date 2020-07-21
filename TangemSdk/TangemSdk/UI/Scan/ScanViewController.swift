@@ -11,6 +11,7 @@ import UIKit
 @available(iOS 13.0, *)
 class ScanViewController: UIViewController {
     var cardSession: CardSession
+    var cancelledHandler: () -> Void
     private static let handLeadingFrom = -50.0
     private var handLeadingTo = 0.0 //calculate later
     
@@ -63,6 +64,7 @@ class ScanViewController: UIViewController {
     }
     
     @IBAction func buttonCancelTapped(_ sender: Any) {
+        self.cancelledHandler()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -70,8 +72,9 @@ class ScanViewController: UIViewController {
         cardSession.start()
     }
     
-    init?(coder: NSCoder, session: CardSession) {
+    init?(coder: NSCoder, session: CardSession, cancelledHandler: @escaping () -> Void) {
         self.cardSession = session
+        self.cancelledHandler = cancelledHandler
         super.init(coder: coder)
     }
     

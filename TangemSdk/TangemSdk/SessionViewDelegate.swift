@@ -43,7 +43,7 @@ public protocol SessionViewDelegate: class {
     func sessionInitialized()
     
     @available(iOS 13.0, *)
-    func showScanUI(session: CardSession)
+    func showScanUI(session: CardSession, cancelledHandler: @escaping () -> Void)
 }
 
 
@@ -75,11 +75,11 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         reader.alertMessage = text
     }
     
-    func showScanUI(session: CardSession) {
+    func showScanUI(session: CardSession, cancelledHandler: @escaping () -> Void) {
         let storyBoard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
         if scanController == nil {
         scanController = storyBoard.instantiateViewController(identifier: "ScanViewController", creator: { coder in
-                return ScanViewController(coder: coder, session: session)
+        return ScanViewController(coder: coder, session: session, cancelledHandler: cancelledHandler)
             })
         scanController?.modalPresentationStyle = .fullScreen
         }

@@ -384,6 +384,7 @@ public final class TangemSdk {
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
+                                  showScanOnboarding: config.showScanOnboarding,
                                   cardReader: reader,
                                   viewDelegate: viewDelegate,
                                   storageService: storageService)
@@ -409,6 +410,7 @@ public final class TangemSdk {
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
+                                  showScanOnboarding: config.showScanOnboarding,
                                   cardReader: reader,
                                   viewDelegate: viewDelegate,
                                   storageService: storageService)

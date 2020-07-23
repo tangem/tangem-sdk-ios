@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public final class Localization {
     public static var localizationsBundle: Bundle?
     
@@ -24,17 +25,6 @@ public final class Localization {
         return string("generic_error_code", code)
     }
     
-    private static var defaultBundle: Bundle = {
-        let selfBundle = Bundle(for: Localization.self)
-        if let path = selfBundle.path(forResource: "TangemSdk", ofType: "bundle"), //for pods
-            let bundle = Bundle(path: path) {
-            return bundle
-        } else {
-            return selfBundle
-        }
-    }()
-    
-    
     public static func secondsLeft(_ p1: String) -> String {
         return string("nfc_seconds_left", p1)
     }
@@ -47,7 +37,7 @@ public final class Localization {
         return string("writing_data_progress", p1)
     }
     
-    private static func string( _ key: String, _ args: CVarArg...) -> String {
+    public static func string( _ key: String, _ args: CVarArg...) -> String {
         let format = getFormat(for: key)
         return String(format: format, locale: Locale.current, arguments: args)
     }
@@ -59,7 +49,7 @@ public final class Localization {
                 return format
             }
         }
-        let format = NSLocalizedString(key,  bundle: defaultBundle, comment: "")
+        let format = NSLocalizedString(key,  bundle: .sdkBundle, comment: "")
         return format
     }
 }

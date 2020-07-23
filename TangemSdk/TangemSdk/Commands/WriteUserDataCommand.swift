@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `WriteUserDataCommand`.
-public struct WriteUserDataResponse: TlvCodable {
+public struct WriteUserDataResponse: ResponseCodable {
     /// Unique Tangem card ID number
     public let cardId: String
 }
@@ -29,6 +29,12 @@ public struct WriteUserDataResponse: TlvCodable {
 @available(iOS 13.0, *)
 public final class WriteUserDataCommand: Command {
     public typealias CommandResponse = WriteUserDataResponse
+    
+    public var requiresPin2: Bool {
+        return true
+    }
+    
+    private static let maxSize = 512
     
     private let userData: Data?
     private let userCounter: Int?
@@ -68,10 +74,38 @@ public final class WriteUserDataCommand: Command {
         self.init(userData: nil, userCounter: nil, userProtectedData: userProtectedData, userProtectedCounter: userProtectedCounter)
     }
     
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let status = card.status, status == .notPersonalized {
+            return .notPersonalized
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
+        if let userData = userData, userData.count > WriteUserDataCommand.maxSize {
+            return .dataSizeTooLarge
+        }
+        
+        if let userProtectedData = userProtectedData, userProtectedData.count > WriteUserDataCommand.maxSize {
+            return .dataSizeTooLarge
+        }
+        
+        return nil
+    }
+    
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+        if error == .invalidParams {
+            return .pin2OrCvcRequired
+        }
+        
+        return error
+    }
+    
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.pin1)
+            .append(.pin, value: environment.pin1.value)
         
         if let userData = userData {
             try tlvBuilder.append(.userData, value: userData)
@@ -97,9 +131,9 @@ public final class WriteUserDataCommand: Command {
         return CommandApdu(.writeUserData, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteUserDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteUserDataResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)

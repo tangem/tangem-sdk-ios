@@ -20,11 +20,13 @@ public enum Instruction: Byte {
     case readIssuerData = 0xF7
     case createWallet = 0xF8
     case checkWallet = 0xF9
-    case swapPin = 0xFA
+    case setPin = 0xFA
     case sign = 0xFB
     case purgeWallet = 0xFC
     case activate = 0xFE
     case openSession = 0xFF
     case writeUserData = 0xE0
     case readUserData = 0xE1
+    case personalize = 0xF1
+    case depersonalize = 0xE3
 }

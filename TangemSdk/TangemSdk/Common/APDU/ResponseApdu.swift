@@ -37,7 +37,39 @@ public struct ResponseApdu {
         //TODO: implement encryption
         return tlv
     }
+    
+    func decrypt(encryptionKey: Data?) throws -> ResponseApdu {
+        guard let key = encryptionKey else {
+            return self
+        }
+        
+        if data.count == 0 { //error response. nothing to decrypt
+            return self
+        }
+        
+        if data.count < 16 { //not encrypted response. nothing to decrypt
+            return self
+        }
+        
+        let decryptedData = try data.decrypt(with: key)
+        guard decryptedData.count >= 4 else {
+            throw TangemSdkError.invalidResponseApdu
+        }
+        
+        let length = decryptedData[0...1].toInt()
+        let crc = decryptedData[2...3]
+        let payload = decryptedData[4...]
+        
+        guard length == payload.count, crc == payload.crc16() else {
+            throw TangemSdkError.invalidResponseApdu
+        }
+        
+        return ResponseApdu(payload, self.sw1, self.sw2)
+    }
 }
+
+
+
 
 //Slix2 tag support. TODO: Refactor
 @available(iOS 13.0, *)

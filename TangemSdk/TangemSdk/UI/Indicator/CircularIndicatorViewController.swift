@@ -17,6 +17,8 @@ class CircularIndicatorViewController: UIViewController {
     @IBOutlet weak var lbltext: UILabel!
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var lblHint: UILabel!
+    @IBOutlet weak var lblHintTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var containerTopConstraint: NSLayoutConstraint!
     
     var totalValue: Float = 0
     var isClockwise: Bool = false
@@ -45,6 +47,12 @@ class CircularIndicatorViewController: UIViewController {
         } else {
             shapeLayer.strokeEnd = CGFloat(1.0 - 1.0/totalValue)
         }
+        
+       let height = UIScreen.main.bounds.height
+       let coeff: CGFloat = height > 667 ? 6.0 : 14.0
+       let topOffset = height / coeff
+       containerTopConstraint.constant = topOffset
+       lblHintTopConstraint.constant = topOffset/3
     }
     
     func setupUI() {

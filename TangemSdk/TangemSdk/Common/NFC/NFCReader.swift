@@ -269,7 +269,9 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         stopTimers()
         let nfcError = error as! NFCReaderError
         print(nfcError.localizedDescription)
-        readerSessionError = TangemSdkError.parse(nfcError)
+        if readerSessionError == nil {
+            readerSessionError = TangemSdkError.parse(nfcError)
+        }
         tag.send(completion: .failure(readerSessionError!))
         tag = .init(nil)
     }

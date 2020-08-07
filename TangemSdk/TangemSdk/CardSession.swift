@@ -196,7 +196,7 @@ public class CardSession {
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
-
+        
         if !storageService.bool(forKey: .hasSuccessfulTapIn) {
             storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
@@ -290,34 +290,34 @@ public class CardSession {
             
             switch readResult {
             case .success(let readResponse):
+                var wrongCardError: TangemSdkError? = nil
+                
                 if let expectedCardId = self.cardId?.uppercased(),
                     let actualCardId = readResponse.cardId?.uppercased() {
-                    
-                    var wrongCardError: TangemSdkError? = nil
                     
                     if expectedCardId != actualCardId {
                         wrongCardError = .wrongCardNumber
                     }
-                    
-                    if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
-                        wrongCardError = .wrongCardType
+                }
+                
+                if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
+                    wrongCardError = .wrongCardType
+                }
+                
+                if let wrongCardError = wrongCardError {
+                    self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        self.restartPolling()
+                        self.preflightCheck(onSessionStarted)
                     }
-                    
-                    if let wrongCardError = wrongCardError {
-                        self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                            self.restartPolling()
-                            self.preflightCheck(onSessionStarted)
-                        }
-                        return
-                    }
+                    return
                 }
                 
                 self.cardId = readResponse.cardId
                 if let cid = self.cardId {
                     self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
                 }
-               
+                
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):

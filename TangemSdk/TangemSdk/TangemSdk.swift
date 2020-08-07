@@ -364,6 +364,30 @@ public final class TangemSdk {
         startSession(with: command, completion: completion)
     }
     
+    /**
+     * This method launches a [VerifyCardCommand] on a new thread.
+     *
+     * The command to ensures the card has not been counterfeited.
+     * By using standard challenge-response scheme, the card proves possession of CardPrivateKey
+     * that corresponds to CardPublicKey returned by [ReadCommand]. Then the data is sent
+     * to Tangem server to prove that  this card was indeed issued by Tangem.
+     * The online part of the verification is unavailable for DevKit cards.
+     *
+     *
+     * @param cardId CID, Unique Tangem card ID number.
+     * @param online flag that allows disable online verification
+     * @param callback is triggered on the completion of the [VerifyCardCommand] and provides
+     * card response in the form of [VerifyCardResponse] if the task was performed successfully
+     * or [TangemSdkError] in case of an error.
+     */
+    public func verify(cardId: String? = nil,
+                       online: Bool = true,
+                       pin1: String? = nil,
+                       completion: @escaping CompletionResult<VerifyCardResponse>) {
+        let command = VerifyCardCommand(onlineVerification: online)
+        startSession(with: command, cardId: cardId, pin1: pin1, completion: completion)
+    }
+    
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`

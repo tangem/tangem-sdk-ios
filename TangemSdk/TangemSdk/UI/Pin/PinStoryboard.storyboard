@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -257,10 +257,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Access code" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bGJ-29-gfT">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Current access code" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bGJ-29-gfT">
                                 <rect key="frame" x="36" y="225" width="291" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="zW5-NR-AWt" eventType="editingChanged" id="xja-3W-ESF"/>
+                                </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change Access Code" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hSd-RT-3Tc">
                                 <rect key="frame" x="16" y="106" width="382" height="41"/>
@@ -291,6 +294,9 @@
                                 <state key="normal" title="Cancel">
                                     <color key="titleColor" name="tngBlue"/>
                                 </state>
+                                <connections>
+                                    <action selector="btnActionTapped:" destination="zW5-NR-AWt" eventType="touchUpInside" id="vXa-Mx-lqP"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0000 0000 0000 0000" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mhp-fh-SYJ">
                                 <rect key="frame" x="16" y="155" width="179" height="21"/>
@@ -308,6 +314,9 @@
                                 <color key="tintColor" red="0.78039215689999997" green="0.78039215689999997" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" image="eye" catalog="system"/>
                                 <state key="selected" image="eye.slash" catalog="system"/>
+                                <connections>
+                                    <action selector="btnSecureEntryTapped:" destination="zW5-NR-AWt" eventType="touchUpInside" id="zyH-MT-qD8"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiD-e9-Rba" customClass="TangemSdkButton" customModule="TangemSdk" customModuleProvider="target">
                                 <rect key="frame" x="16" y="804" width="382" height="50"/>
@@ -319,34 +328,96 @@
                                 <state key="normal" title="Continue">
                                     <color key="titleColor" red="0.79607843140000001" green="0.89411764709999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="btnSaveTapped:" destination="zW5-NR-AWt" eventType="touchUpInside" id="4E1-ju-ibx"/>
+                                </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="New access code" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bqd-iJ-8XC">
+                                <rect key="frame" x="36" y="287" width="135" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="zW5-NR-AWt" eventType="editingChanged" id="oPf-n6-AdP"/>
+                                </connections>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="832-Cs-off">
+                                <rect key="frame" x="16" y="321" width="382" height="1"/>
+                                <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="Na6-t9-4I9"/>
+                                </constraints>
+                            </view>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Confirm" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Nd4-ew-86f">
+                                <rect key="frame" x="36" y="349" width="61.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" secureTextEntry="YES" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="password"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="zW5-NR-AWt" eventType="editingChanged" id="czP-eD-gTL"/>
+                                </connections>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tyZ-hq-dm5">
+                                <rect key="frame" x="16" y="383" width="382" height="1"/>
+                                <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="MRr-pW-uTG"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hBN-2R-0Pr">
+                                <rect key="frame" x="36" y="392" width="0.0" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" red="1" green="0.27058823529411763" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="mhp-fh-SYJ" firstAttribute="top" secondItem="hSd-RT-3Tc" secondAttribute="bottom" constant="8" id="0M2-Fg-e5p"/>
                             <constraint firstItem="L6M-fn-Z4B" firstAttribute="trailing" secondItem="jiD-e9-Rba" secondAttribute="trailing" constant="16" id="1vZ-sa-c5H"/>
+                            <constraint firstItem="tyZ-hq-dm5" firstAttribute="leading" secondItem="mSF-rJ-5ov" secondAttribute="leading" constant="16" id="3ah-b4-67h"/>
                             <constraint firstItem="Q8z-oQ-bIy" firstAttribute="top" secondItem="L6M-fn-Z4B" secondAttribute="top" constant="16" id="3cM-Wf-OSR"/>
                             <constraint firstItem="bGJ-29-gfT" firstAttribute="leading" secondItem="L6M-fn-Z4B" secondAttribute="leading" constant="36" id="4qt-uY-lWc"/>
                             <constraint firstItem="phj-zA-yWw" firstAttribute="top" secondItem="bGJ-29-gfT" secondAttribute="bottom" constant="13" id="6XY-8J-4Zq"/>
                             <constraint firstItem="saj-Oi-2B9" firstAttribute="centerY" secondItem="bGJ-29-gfT" secondAttribute="centerY" id="9gE-W6-Fkz"/>
                             <constraint firstItem="BP3-Ud-xhm" firstAttribute="top" secondItem="hSd-RT-3Tc" secondAttribute="bottom" constant="42" id="9xb-rb-VI8"/>
+                            <constraint firstItem="bqd-iJ-8XC" firstAttribute="leading" secondItem="bGJ-29-gfT" secondAttribute="leading" id="Din-P7-8t5"/>
                             <constraint firstItem="hSd-RT-3Tc" firstAttribute="top" secondItem="L6M-fn-Z4B" secondAttribute="top" constant="62" id="OIf-zQ-sSe"/>
                             <constraint firstAttribute="trailing" secondItem="BP3-Ud-xhm" secondAttribute="trailing" id="OiT-gm-Ee9"/>
                             <constraint firstItem="hSd-RT-3Tc" firstAttribute="leading" secondItem="L6M-fn-Z4B" secondAttribute="leading" constant="16" id="Okf-M1-lrN"/>
+                            <constraint firstItem="Nd4-ew-86f" firstAttribute="leading" secondItem="bqd-iJ-8XC" secondAttribute="leading" id="Ori-TA-7v1"/>
+                            <constraint firstAttribute="trailing" secondItem="832-Cs-off" secondAttribute="trailing" constant="16" id="P8W-p4-Tyu"/>
                             <constraint firstItem="L6M-fn-Z4B" firstAttribute="trailing" secondItem="Q8z-oQ-bIy" secondAttribute="trailing" constant="26" id="Sny-P7-aB8"/>
                             <constraint firstItem="mhp-fh-SYJ" firstAttribute="leading" secondItem="hSd-RT-3Tc" secondAttribute="leading" id="TEd-yj-d6c"/>
                             <constraint firstItem="saj-Oi-2B9" firstAttribute="leading" secondItem="bGJ-29-gfT" secondAttribute="trailing" constant="18" id="TJg-9d-VFN"/>
+                            <constraint firstItem="832-Cs-off" firstAttribute="leading" secondItem="mSF-rJ-5ov" secondAttribute="leading" constant="16" id="UaC-ly-4Te"/>
                             <constraint firstItem="bGJ-29-gfT" firstAttribute="top" secondItem="BP3-Ud-xhm" secondAttribute="bottom" constant="35" id="VYG-lz-IIe"/>
+                            <constraint firstItem="tyZ-hq-dm5" firstAttribute="top" secondItem="Nd4-ew-86f" secondAttribute="bottom" constant="13" id="cny-E6-JVk"/>
                             <constraint firstItem="L6M-fn-Z4B" firstAttribute="trailing" secondItem="saj-Oi-2B9" secondAttribute="trailing" constant="44" id="gDV-ah-Whp"/>
-                            <constraint firstItem="L6M-fn-Z4B" firstAttribute="bottom" secondItem="jiD-e9-Rba" secondAttribute="bottom" constant="8" id="jsM-7x-2Cd"/>
+                            <constraint firstAttribute="trailing" secondItem="tyZ-hq-dm5" secondAttribute="trailing" constant="16" id="ha0-jr-yzZ"/>
+                            <constraint firstItem="L6M-fn-Z4B" firstAttribute="bottom" secondItem="jiD-e9-Rba" secondAttribute="bottom" constant="8" id="jsM-7x-2Cd" customClass="KeyboardLayoutConstraint" customModule="TangemSdk" customModuleProvider="target"/>
+                            <constraint firstItem="hBN-2R-0Pr" firstAttribute="top" secondItem="tyZ-hq-dm5" secondAttribute="bottom" constant="8" id="k6b-1q-pv7"/>
+                            <constraint firstItem="hBN-2R-0Pr" firstAttribute="leading" secondItem="Nd4-ew-86f" secondAttribute="leading" id="m9f-tP-Fx0"/>
+                            <constraint firstItem="832-Cs-off" firstAttribute="top" secondItem="bqd-iJ-8XC" secondAttribute="bottom" constant="13" id="oFJ-Wo-Jv1"/>
+                            <constraint firstItem="Nd4-ew-86f" firstAttribute="top" secondItem="832-Cs-off" secondAttribute="bottom" constant="27" id="r1R-Cu-dnJ"/>
                             <constraint firstItem="phj-zA-yWw" firstAttribute="leading" secondItem="mSF-rJ-5ov" secondAttribute="leading" constant="16" id="rRA-Pc-Mqp"/>
                             <constraint firstAttribute="trailing" secondItem="phj-zA-yWw" secondAttribute="trailing" constant="16" id="txq-UH-TbA"/>
                             <constraint firstItem="BP3-Ud-xhm" firstAttribute="leading" secondItem="mSF-rJ-5ov" secondAttribute="leading" id="u6Z-7T-BeY"/>
+                            <constraint firstItem="bqd-iJ-8XC" firstAttribute="top" secondItem="phj-zA-yWw" secondAttribute="bottom" constant="27" id="wlu-Yn-cHY"/>
                             <constraint firstItem="L6M-fn-Z4B" firstAttribute="trailing" secondItem="hSd-RT-3Tc" secondAttribute="trailing" constant="16" id="ybZ-Dw-ZSc"/>
                             <constraint firstItem="jiD-e9-Rba" firstAttribute="leading" secondItem="L6M-fn-Z4B" secondAttribute="leading" constant="16" id="z5H-ho-vJc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="L6M-fn-Z4B"/>
                     </view>
+                    <connections>
+                        <outlet property="btnClose" destination="Q8z-oQ-bIy" id="fNv-iN-3Xh"/>
+                        <outlet property="btnSave" destination="jiD-e9-Rba" id="1dq-uv-l4b"/>
+                        <outlet property="btnSecureEntry" destination="saj-Oi-2B9" id="GVt-kt-H6E"/>
+                        <outlet property="confirmText" destination="Nd4-ew-86f" id="0qE-OJ-2T5"/>
+                        <outlet property="currentText" destination="bGJ-29-gfT" id="1ds-sH-1a9"/>
+                        <outlet property="lblCard" destination="mhp-fh-SYJ" id="01y-V6-09x"/>
+                        <outlet property="lblError" destination="hBN-2R-0Pr" id="sgU-Fv-Yxa"/>
+                        <outlet property="lblTitle" destination="hSd-RT-3Tc" id="Zym-rr-sC2"/>
+                        <outlet property="newText" destination="bqd-iJ-8XC" id="Fdp-T3-kjR"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8DA-ak-MT1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -357,7 +428,7 @@
         <image name="eye" catalog="system" width="128" height="81"/>
         <image name="eye.slash" catalog="system" width="128" height="86"/>
         <namedColor name="tngBlue">
-            <color red="0.0" green="0.16078431372549018" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.16099999845027924" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

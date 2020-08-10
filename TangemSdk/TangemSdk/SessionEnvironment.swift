@@ -95,5 +95,7 @@ public struct SessionEnvironment {
     
     var pin2: PinCode = PinCode(.pin2)
     
+    var pin3: PinCode = PinCode(.pin3)
+    
     public init() {}
 }

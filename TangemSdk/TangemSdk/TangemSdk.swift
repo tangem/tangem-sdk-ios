@@ -388,6 +388,27 @@ public final class TangemSdk {
         startSession(with: command, cardId: cardId, pin1: pin1, completion: completion)
     }
     
+    public func changePin1(cardId: String? = nil,
+                           pin: Data? = nil,
+                           completion: @escaping CompletionResult<SetPinResponse>){
+        let command = ChangePinTask(pinType: .pin1, pin: pin)
+        startSession(with: command, cardId: cardId, completion: completion)
+    }
+
+    public func changePin2(cardId: String? = nil,
+                           pin: Data? = nil,
+                           completion: @escaping CompletionResult<SetPinResponse>){
+        let command = ChangePinTask(pinType: .pin2, pin: pin)
+        startSession(with: command, cardId: cardId, completion: completion)
+    }
+
+    public func changePin3(cardId: String? = nil,
+                           pin: Data? = nil,
+                           completion: @escaping CompletionResult<SetPinResponse>){
+        let command = ChangePinTask(pinType: .pin3, pin: pin)
+        startSession(with: command, cardId: cardId, completion: completion)
+    }
+    
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`

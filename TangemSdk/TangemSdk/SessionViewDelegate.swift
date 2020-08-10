@@ -21,10 +21,10 @@ public protocol SessionViewDelegate: class {
     func showPercentLoading(_ percent: Int, hint: String?)
     
     /// It is called when a user is expected to enter pin1 code.
-    func requestPin1(cardId: String?, completion: @escaping (_ pin: String?) -> Void)
+    func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void)
     
-    /// It is called when a user is expected to enter pin2 code.
-    func requestPin2(cardId: String?, completion: @escaping (_ pin: String?) -> Void)
+    /// It is called when a user is expected to enter pin1 code.
+    func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>)
     
     /// It is called when tag was found
     func tagConnected()
@@ -159,12 +159,26 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         }
     }
     
-    func requestPin1(cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
-        requestPin(.pin1, cardId: cardId, completion: completion)
+    func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
+        switch pinType {
+        case .pin1:
+            requestPin(.pin1, cardId: cardId, completion: completion)
+        case .pin2:
+            requestPin(.pin2, cardId: cardId, completion: completion)
+        case .pin3:
+            requestPin(.pin3, cardId: cardId, completion: completion)
+        }
     }
     
-    func requestPin2(cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
-        requestPin(.pin2, cardId: cardId, completion: completion)
+    func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+        switch pinType {
+        case .pin1:
+            requestChangePin(.pin1, cardId: cardId, completion: completion)
+        case .pin2:
+            requestChangePin(.pin2, cardId: cardId, completion: completion)
+        case .pin3:
+            requestChangePin(.pin3, cardId: cardId, completion: completion)
+        }
     }
     
     func tagConnected() {
@@ -210,6 +224,19 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {
             completion(nil)
+        }
+    }
+    
+    private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
+        let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
+            return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
+        })
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            vc.modalPresentationStyle = .fullScreen
+            topmostViewController.present(vc, animated: true, completion: nil)
+        } else {
+            completion(.failure(.unknownError))
         }
     }
     

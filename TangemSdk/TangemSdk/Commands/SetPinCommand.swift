@@ -75,7 +75,7 @@ public class SetPinCommand: Command {
     }
 }
 
-public enum SetPinStatus: String, ResponseCodable {
+public enum SetPinStatus: String, Codable {
     case pinsNotChanged
     case pin1Changed
     case pin2Changed

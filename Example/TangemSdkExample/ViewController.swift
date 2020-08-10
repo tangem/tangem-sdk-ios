@@ -351,6 +351,38 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func changePin1Tapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.changePin1(cardId: cardId, pin: nil) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
+    @IBAction func changePin2Tapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.changePin2(cardId: cardId, pin: nil) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
     @IBAction func clearTapped(_ sender: Any) {
         self.logView.text = ""
     }

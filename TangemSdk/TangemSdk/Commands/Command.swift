@@ -85,7 +85,7 @@ extension Command {
         if session.environment.pin2.value == nil {
             session.pause()
             DispatchQueue.main.async {
-                session.viewDelegate.requestPin2(cardId: session.environment.card?.cardId) { pin2 in
+                session.viewDelegate.requestPin(pinType: .pin2, cardId: session.environment.card?.cardId) { pin2 in
                     if let pin2 = pin2 {
                         session.environment.pin2 = PinCode(.pin2, stringValue: pin2)
                         session.resume()
@@ -196,7 +196,7 @@ extension Command {
     private func handlePin1(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         session.pause()
         DispatchQueue.main.async {
-            session.viewDelegate.requestPin1(cardId: session.environment.card?.cardId) { pin1 in
+            session.viewDelegate.requestPin(pinType: .pin1, cardId: session.environment.card?.cardId) { pin1 in
                 if let pin1 = pin1 {
                     session.environment.pin1 = PinCode(.pin1, stringValue: pin1)
                     session.resume()
@@ -233,7 +233,7 @@ extension Command {
                 
                 session.pause()
                 DispatchQueue.main.async {
-                    session.viewDelegate.requestPin2(cardId: session.environment.card?.cardId) { pin2 in
+                    session.viewDelegate.requestPin(pinType: .pin2, cardId: session.environment.card?.cardId) { pin2 in
                         if let pin2 = pin2 {
                              session.environment.pin2 = PinCode(.pin2, stringValue: pin2)
                             session.resume()

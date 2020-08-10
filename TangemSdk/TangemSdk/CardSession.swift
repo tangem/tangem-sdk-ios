@@ -366,13 +366,13 @@ public class CardSession {
         }.eraseToAnyPublisher()
     }
     
-    private func requestPin1IfNeeded(_ completion: @escaping CompletionResult<Void>) {
+    func requestPin1IfNeeded(_ completion: @escaping CompletionResult<Void>) {
         guard environment.pin1.value == nil else {
             completion(.success(()))
             return
         }
         
-        viewDelegate.requestPin1(cardId: self.cardId) {[weak self] pin1 in
+        viewDelegate.requestPin(pinType: .pin1, cardId: self.cardId) {[weak self] pin1 in
             guard let self = self else { return }
             
             if let pin1 = pin1 {
@@ -384,13 +384,13 @@ public class CardSession {
         }
     }
     
-    private func requestPin2IfNeeded(_ completion: @escaping CompletionResult<Void>) {
+    func requestPin2IfNeeded(_ completion: @escaping CompletionResult<Void>) {
         guard pin2Required && environment.pin2.value == nil else {
             completion(.success(()))
             return
         }
         
-        viewDelegate.requestPin2(cardId: self.cardId) {[weak self] pin2 in
+        viewDelegate.requestPin(pinType: .pin2, cardId: self.cardId) {[weak self] pin2 in
             guard let self = self else { return }
             
             if let pin2 = pin2 {

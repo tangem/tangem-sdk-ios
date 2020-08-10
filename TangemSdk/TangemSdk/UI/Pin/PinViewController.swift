@@ -11,6 +11,7 @@ import UIKit
 enum PinViewControllerState {
     case pin1
     case pin2
+    case pin3
 }
 
 class PinViewController: UIViewController, UITextFieldDelegate {
@@ -21,7 +22,11 @@ class PinViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
-            lblTitle.text = state == .pin1 ? "Enter Access Code" : "Enter Pass Code"
+            switch state {
+            case .pin1: lblTitle.text = Localization.string("pin_title_pin1")
+            case .pin2: lblTitle.text = Localization.string("pin_title_pin2")
+            case .pin3: lblTitle.text = Localization.string("pin_title_pin3")
+            }
         }
     }
     @IBOutlet weak var btnContinueBottomConstraint: NSLayoutConstraint!
@@ -30,11 +35,17 @@ class PinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var pinText: UITextField! {
         didSet {
             pinText.delegate = self
+            switch state {
+            case .pin1: pinText.placeholder = Localization.string("pin_placeholder_access")
+            case .pin2: pinText.placeholder = Localization.string("pin_placeholder_pass")
+            case .pin3: pinText.placeholder = Localization.string("pin_placeholder_pin3")
+            }
         }
     }
     @IBOutlet weak var btnContinue: UIButton! {
         didSet {
             btnContinue.isEnabled = false
+            btnContinue.setTitle(Localization.string("common_continue"), for: .normal)
         }
     }
     

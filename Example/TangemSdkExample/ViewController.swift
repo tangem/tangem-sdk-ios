@@ -335,6 +335,22 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func verifyCardTapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.verify(cardId: cardId, online: true) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
     @IBAction func clearTapped(_ sender: Any) {
         self.logView.text = ""
     }

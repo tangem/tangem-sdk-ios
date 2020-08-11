@@ -50,7 +50,7 @@ class NetworkService {
                 return
             }
             
-            print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8))")
+            print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
             
             if let mapped = self.map(data, type: T.self) {
                 completion(.success(mapped))

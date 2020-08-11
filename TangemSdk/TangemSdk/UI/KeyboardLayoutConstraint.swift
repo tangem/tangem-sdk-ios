@@ -34,7 +34,6 @@ public class KeyboardLayoutConstraint: NSLayoutConstraint {
         super.awakeFromNib()
         
         offset = constant
-        
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardLayoutConstraint.keyboardWillShowNotification(_:)), name: UIWindow.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardLayoutConstraint.keyboardWillHideNotification(_:)), name: UIWindow.keyboardWillHideNotification, object: nil)
     }
@@ -49,22 +48,29 @@ public class KeyboardLayoutConstraint: NSLayoutConstraint {
         if let userInfo = notification.userInfo {
             if let frameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
                 let frame = frameValue.cgRectValue
-                keyboardVisibleHeight = frame.size.height
+                if keyboardVisibleHeight < frame.size.height {
+                   keyboardVisibleHeight = frame.size.height
+                } else {
+                    return
+                }
             }
             
-            self.updateConstant()
             switch (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber, userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? NSNumber) {
             case let (.some(duration), .some(curve)):
                 
                 let options = UIView.AnimationOptions(rawValue: curve.uintValue)
-                
                 UIView.animate(
                     withDuration: TimeInterval(duration.doubleValue),
                     delay: 0,
                     options: options,
                     animations: {
-                        UIApplication.shared.keyWindow?.layoutIfNeeded()
-                        return
+                        self.updateConstant()
+                        if let view = (self.firstItem as? UIView)?.superview {
+                            view.layoutIfNeeded()
+                        } else if let secondView = (self.secondItem as? UIView)?.superview {
+                             secondView.layoutIfNeeded()
+                        }
+                        //UIApplication.shared.keyWindow?.layoutIfNeeded()
                     }, completion: { finished in
                 })
             default:

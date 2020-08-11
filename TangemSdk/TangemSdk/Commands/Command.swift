@@ -82,7 +82,7 @@ extension Command {
             }
         }
         
-        if session.environment.pin2.value == nil {
+        if session.environment.pin2.value == nil && requiresPin2 {
             session.pause()
             DispatchQueue.main.async {
                 session.viewDelegate.requestPin(pinType: .pin2, cardId: session.environment.card?.cardId) { pin2 in
@@ -97,11 +97,7 @@ extension Command {
                 }
             }
         } else {
-            if session.environment.pin2.isDefault && requiresPin2 {
-                handlePin2(session, completion: completion)
-            } else {
-                transieveInternal(in: session, completion: completion)
-            }
+           transieveInternal(in: session, completion: completion)
         }
     }
     
@@ -122,10 +118,10 @@ extension Command {
                         let mappedError = self.mapError(session.environment.card, error)
                         if mappedError == .pin1Required {
                             session.environment.pin1 = PinCode(.pin1, value: nil)
-                            self.handlePin1(session, completion: completion)
+                            self.requestPin(.pin1, session, completion: completion)
                         } else if mappedError == .pin2OrCvcRequired {
                             session.environment.pin2 = PinCode(.pin2, value: nil)
-                             self.handlePin2(session, completion: completion)
+                            self.requestPin(.pin2, session, completion: completion)
                         } else {
                             completion(.failure(mappedError))
                         }
@@ -193,61 +189,20 @@ extension Command {
         return (remainingMilliseconds, saveToFlash)
     }
     
-    private func handlePin1(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+    private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         session.pause()
         DispatchQueue.main.async {
-            session.viewDelegate.requestPin(pinType: .pin1, cardId: session.environment.card?.cardId) { pin1 in
-                if let pin1 = pin1 {
-                    session.environment.pin1 = PinCode(.pin1, stringValue: pin1)
+            session.requestPinIfNeeded(pinType) { result in
+                switch result {
+                case .success:
                     session.resume()
                     self.transieve(in: session, completion: completion)
-                } else {
-                    session.environment.pin1 = PinCode(.pin1, value: nil)
-                    completion(.failure(.pin1Required))
-                }
-            }
-        }
-    }
-    
-    private func handlePin2(_ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        guard let pin1 = session.environment.pin1.value else {
-            completion(.failure(.pin1Required))
-            return
-        }
-        
-        guard let pin2 = session.environment.pin2.value else {
-            completion(.failure(.pin2OrCvcRequired))
-            return
-        }
-        
-        let setPinCommand = SetPinCommand(newPin1: pin1, newPin2: pin2)
-        setPinCommand.run(in: session) { result in
-            switch result {
-            case .success:
-                self.transieveInternal(in: session, completion: completion)
-            case .failure(let error):
-                guard error == .invalidParams else {
+                case .failure(let error):
                     completion(.failure(error))
-                    return
-                }
-                
-                session.pause()
-                DispatchQueue.main.async {
-                    session.viewDelegate.requestPin(pinType: .pin2, cardId: session.environment.card?.cardId) { pin2 in
-                        if let pin2 = pin2 {
-                             session.environment.pin2 = PinCode(.pin2, stringValue: pin2)
-                            session.resume()
-                            self.transieve(in: session, completion: completion)
-                        } else {
-                            session.environment.pin2 = PinCode(.pin2, value: nil)
-                            completion(.failure(.pin2OrCvcRequired))
-                        }
-                    }
                 }
             }
         }
     }
-    
 }
 
 /// The basic protocol for command response

@@ -42,6 +42,11 @@
 "changepin_placeholder_confirm" = "Confirm";
 "changepin_error_mismatch" = "Codes do not match";
 
+"changepin_title_pin1" = "Change Access Code";
+"changepin_title_pin2" = "Change Pass Code";
+"changepin_title_pin3" = "Change Pin3";
+
+
 "common_continue" = "Continue";
 "common_save" = "Save";
 // Errors

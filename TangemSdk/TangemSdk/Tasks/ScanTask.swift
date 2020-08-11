@@ -43,20 +43,22 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        if let pin1 = session.environment.pin1.value, let pin2 = session.environment.pin2.value {
-            let checkPinCommand = SetPinCommand(newPin1: pin1, newPin2: pin2)
-            checkPinCommand.run(in: session) {result in
-                switch result {
-                case .success:
-                    break
-                case .failure:
-                    session.environment.pin2 = PinCode(.pin2, value: nil)
-                }
-                self.runCheckWalletIfNeeded(card, session, completion)
-            }
-        } else {
+//        if let pin1 = session.environment.pin1.value, let pin2 = session.environment.pin2.value {
+//            let checkPinCommand = SetPinCommand(newPin1: pin1, newPin2: pin2)
+//            checkPinCommand.run(in: session) {result in
+//                switch result {
+//                case .success:
+//                    break
+//                case .failure(let error):
+//                    if error == .invalidParams {
+//                        session.environment.pin2 = PinCode(.pin2, value: nil)
+//                    }
+//                }
+//                self.runCheckWalletIfNeeded(card, session, completion)
+//            }
+//        } else {
             runCheckWalletIfNeeded(card, session, completion)
-        }
+//        }
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {

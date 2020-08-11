@@ -93,10 +93,10 @@ public class CardSession {
         }
         pin2Required = runnable.requiresPin2
         
-        requestPin1IfNeeded {[weak self] result in
+        requestPinIfNeeded(.pin1) {[weak self] result in
             switch result {
             case .success:
-                self?.requestPin2IfNeeded {[weak self] result in
+                self?.requestPinIfNeeded(.pin2) {[weak self] result in
                     switch result {
                     case .success:
                         self?.start() {[weak self] session, error in
@@ -366,38 +366,48 @@ public class CardSession {
         }.eraseToAnyPublisher()
     }
     
-    func requestPin1IfNeeded(_ completion: @escaping CompletionResult<Void>) {
-        guard environment.pin1.value == nil else {
-            completion(.success(()))
-            return
-        }
-        
-        viewDelegate.requestPin(pinType: .pin1, cardId: self.cardId) {[weak self] pin1 in
-            guard let self = self else { return }
-            
-            if let pin1 = pin1 {
-                self.environment.pin1 = PinCode(.pin1, stringValue: pin1)
+    func requestPinIfNeeded(_ pinType: PinCode.PinType, _ completion: @escaping CompletionResult<Void>) {
+        switch pinType {
+        case .pin1:
+            guard environment.pin1.value == nil else {
                 completion(.success(()))
-            } else {
-                completion(.failure(.pin1Required))
+                return
+            }
+        case .pin2:
+            guard pin2Required && environment.pin2.value == nil else {
+                completion(.success(()))
+                return
+            }
+        case .pin3:
+            guard environment.pin3.value == nil else {
+                completion(.success(()))
+                return
             }
         }
-    }
-    
-    func requestPin2IfNeeded(_ completion: @escaping CompletionResult<Void>) {
-        guard pin2Required && environment.pin2.value == nil else {
-            completion(.success(()))
-            return
-        }
         
-        viewDelegate.requestPin(pinType: .pin2, cardId: self.cardId) {[weak self] pin2 in
+        viewDelegate.requestPin(pinType: pinType, cardId: self.cardId) {[weak self] pin in
             guard let self = self else { return }
             
-            if let pin2 = pin2 {
-                self.environment.pin2 = PinCode(.pin2, stringValue: pin2)
+            if let pin = pin {
+                switch pinType {
+                case .pin1:
+                    self.environment.pin1 = PinCode(.pin1, stringValue: pin)
+                case .pin2:
+                    self.environment.pin2 = PinCode(.pin1, stringValue: pin)
+                case .pin3:
+                    self.environment.pin3 = PinCode(.pin3, stringValue: pin)
+                }
                 completion(.success(()))
             } else {
-                completion(.failure(.pin2OrCvcRequired))
+                switch pinType {
+                case .pin1:
+                    completion(.failure(.pin1Required))
+                case .pin2:
+                    completion(.failure(.pin2OrCvcRequired))
+                case .pin3:
+                    completion(.failure(.unknownError))
+                }
+
             }
         }
     }

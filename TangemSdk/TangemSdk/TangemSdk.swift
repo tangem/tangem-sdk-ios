@@ -424,8 +424,8 @@ public final class TangemSdk {
     }
 
     public func changePin2(cardId: String? = nil,
-                           initialMessage: String? = nil,
                            pin: Data? = nil,
+                           initialMessage: String? = nil,
                            completion: @escaping CompletionResult<SetPinResponse>){
         let command = SetPinCommand(pinType: .pin2, pin: pin)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)

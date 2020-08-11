@@ -17,9 +17,9 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
             switch state {
-            case .pin1: lblTitle.text = Localization.string("pin_title_pin1")
-            case .pin2: lblTitle.text = Localization.string("pin_title_pin2")
-            case .pin3: lblTitle.text = Localization.string("pin_title_pin3")
+            case .pin1: lblTitle.text = Localization.string("changepin_title_pin1")
+            case .pin2: lblTitle.text = Localization.string("changepin_title_pin2")
+            case .pin3: lblTitle.text = Localization.string("changepin_title_pin3")
             }
         }
     }
@@ -28,17 +28,17 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var btnClose: UIButton!
     @IBOutlet weak var lblCard: UILabel!
     @IBOutlet weak var lblError: UILabel!
-    @IBOutlet weak var currentText: UITextField! {
-        didSet {
-            currentText.delegate = self
-            let prefix = "\(Localization.string("changepin_placeholder_current")) "
-            switch state {
-            case .pin1: currentText.placeholder = prefix + Localization.string("pin_placeholder_access")
-            case .pin2: currentText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-            case .pin3: currentText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-            }
-        }
-    }
+//    @IBOutlet weak var currentText: UITextField! {
+//        didSet {
+//            currentText.delegate = self
+//            let prefix = "\(Localization.string("changepin_placeholder_current")) "
+//            switch state {
+//            case .pin1: currentText.placeholder = prefix + Localization.string("pin_placeholder_access")
+//            case .pin2: currentText.placeholder = prefix + Localization.string("pin_placeholder_pass")
+//            case .pin3: currentText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
+//            }
+//        }
+//    }
     
     @IBOutlet weak var newText: UITextField! {
         didSet {
@@ -55,12 +55,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var confirmText: UITextField! {
         didSet {
             confirmText.delegate = self
-            let prefix = "\(Localization.string("changepin_placeholder_confirm")) "
-            switch state {
-            case .pin1: confirmText.placeholder = prefix + Localization.string("pin_placeholder_access")
-            case .pin2: confirmText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-            case .pin3: confirmText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-            }
+            confirmText.placeholder = Localization.string("changepin_placeholder_confirm")
         }
     }
     
@@ -89,7 +84,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         lblCard.text = cardId
-        currentText.becomeFirstResponder()
+        newText.becomeFirstResponder()
     }
     
     @IBAction func btnActionTapped(_ sender: UIButton) {
@@ -100,9 +95,9 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSaveTapped(_ sender: UIButton) {
         self.dismiss(animated: true) {
-            if let currentText = self.currentText.text,
+            if /*let currentText = self.currentText.text,*/
                 let newText = self.newText.text {
-                self.completionHandler(.success((currentPin: currentText, newPin: newText)))
+                self.completionHandler(.success((currentPin: "", newPin: newText)))
             } else {
                 self.completionHandler(.failure(.unknownError))
             }
@@ -116,7 +111,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSecureEntryTapped(_ sender: UIButton) {
         btnSecureEntry.isSelected.toggle()
-        currentText.isSecureTextEntry.toggle()
+        //currentText.isSecureTextEntry.toggle()
         newText.isSecureTextEntry.toggle()
         confirmText.isSecureTextEntry.toggle()
     }
@@ -131,7 +126,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func validateInput() -> Bool {
-        guard let current = currentText.text, !current.isEmpty,
+        guard /*let current = currentText.text, !current.isEmpty,*/
             let new = newText.text, !new.isEmpty,
             let confirm = confirmText.text, !confirm.isEmpty else {
                 lblError.isHidden = true

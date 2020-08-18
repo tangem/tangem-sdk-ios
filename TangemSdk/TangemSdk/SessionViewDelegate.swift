@@ -10,6 +10,36 @@ import Foundation
 import UIKit
 import CoreHaptics
 
+/// Wrapper for a message that can be shown to user after a start of NFC session.
+public struct Message {
+    let header: String?
+    let body: String?
+    
+    var alertMessage: String? {
+        if header == nil && body == nil {
+            return nil
+        }
+        
+        var alertMessage = ""
+        
+        if let header = header {
+            alertMessage = "\(header)\n"
+        }
+        
+        if let body = body {
+            alertMessage += body
+        }
+        
+        return alertMessage
+    }
+    
+    public init(header: String?, body: String?) {
+        self.header = header
+        self.body = body
+    }
+}
+
+
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
 public protocol SessionViewDelegate: class {

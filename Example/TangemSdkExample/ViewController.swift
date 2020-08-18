@@ -251,7 +251,7 @@ class ViewController: UIViewController {
         let userData = Data(hexString: "0102030405060708")
         
         if #available(iOS 13.0, *) {
-            tangemSdk.writeUserData(cardId: cardId, userData: userData, userCounter: 1){ [unowned self] result in
+            tangemSdk.writeUserData(cardId: cardId, userData: userData, userCounter: 2){ [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -320,12 +320,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func depersonalizeTapped(_ sender: Any) {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        tangemSdk.depersonalize(cardId: cardId) { result in
+        tangemSdk.depersonalize() { result in
             switch result {
             case .success(let response):
                 self.log(response)

@@ -49,7 +49,7 @@ public class CardSession {
     public private(set) var connectedTag: NFCTagType? = nil
     
     private let reader: CardReader
-    private let initialMessage: String?
+    private let initialMessage: Message?
     private let showScanOnboarding: Bool
     private var cardId: String?
     private let storageService: StorageService
@@ -68,7 +68,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: String? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environmentService = environmentService
@@ -93,40 +93,40 @@ public class CardSession {
         }
         pin2Required = runnable.requiresPin2
         
-        requestPinIfNeeded(.pin1) {[weak self] result in
-            switch result {
-            case .success:
-                self?.requestPinIfNeeded(.pin2) {[weak self] result in
-                    switch result {
-                    case .success:
-                        self?.start() {[weak self] session, error in
-                            guard let self = self else { return }
-                            
-                            if let error = error {
-                                DispatchQueue.main.async {
-                                    completion(.failure(error))
-                                }
-                                return
-                            }
-                            
-                            runnable.run(in: self) {result in
-                                self.handleRunnableCompletion(runnableResult: result, completion: completion)
-                            }
-                        }
-                        
-                    case .failure(let error):
-                        DispatchQueue.main.async {
-                            completion(.failure(error))
-                        }
-                    }
-                }
-                
-            case .failure(let error):
+//        requestPinIfNeeded(.pin1) {[weak self] result in
+//            switch result {
+//            case .success:
+//                self?.requestPinIfNeeded(.pin2) {[weak self] result in
+//                    switch result {
+//                    case .success:
+        start() {[weak self] session, error in
+            guard let self = self else { return }
+            
+            if let error = error {
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }
+                return
+            }
+            
+            runnable.run(in: self) {result in
+                self.handleRunnableCompletion(runnableResult: result, completion: completion)
             }
         }
+//
+//                    case .failure(let error):
+//                        DispatchQueue.main.async {
+//                            completion(.failure(error))
+//                        }
+//                    }
+//                }
+//
+//            case .failure(let error):
+//                DispatchQueue.main.async {
+//                    completion(.failure(error))
+//                }
+//            }
+//        }
     }
     
     /// Starts a card session and performs preflight `Read` command.
@@ -269,7 +269,7 @@ public class CardSession {
     }
     
     func start() {
-        reader.startSession(with: initialMessage)
+        reader.startSession(with: initialMessage?.alertMessage)
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {

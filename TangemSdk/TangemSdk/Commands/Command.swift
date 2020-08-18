@@ -83,19 +83,7 @@ extension Command {
         }
         
         if session.environment.pin2.value == nil && requiresPin2 {
-            session.pause()
-            DispatchQueue.main.async {
-                session.viewDelegate.requestPin(pinType: .pin2, cardId: session.environment.card?.cardId) { pin2 in
-                    if let pin2 = pin2 {
-                        session.environment.pin2 = PinCode(.pin2, stringValue: pin2)
-                        session.resume()
-                        self.transieveInternal(in: session, completion: completion)
-                    } else {
-                        session.environment.pin2 = PinCode(.pin2, value: nil)
-                        completion(.failure(.pin2OrCvcRequired))
-                    }
-                }
-            }
+           requestPin(.pin2, session, completion: completion)
         } else {
            transieveInternal(in: session, completion: completion)
         }
@@ -196,7 +184,7 @@ extension Command {
                 switch result {
                 case .success:
                     session.resume()
-                    self.transieve(in: session, completion: completion)
+                    self.transieveInternal(in: session, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
                 }

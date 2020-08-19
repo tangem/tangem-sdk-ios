@@ -11,7 +11,7 @@ import UIKit
 import CoreHaptics
 
 /// Wrapper for a message that can be shown to user after a start of NFC session.
-public struct Message {
+public struct Message: Codable {
     let header: String?
     let body: String?
     

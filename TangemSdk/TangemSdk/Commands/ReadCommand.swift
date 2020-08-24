@@ -470,7 +470,7 @@ public struct Card: ResponseCodable {
     /// Total number of signatures allowed for the wallet when the card was personalized.
     public let maxSignatures: Int?
     /// Defines what data should be submitted to SIGN command.
-    public let signingMethod: SigningMethod?
+    public let signingMethods: SigningMethod?
     /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
     public let pauseBeforePin2: Int?
     /// Public key of the blockchain wallet.
@@ -524,7 +524,7 @@ public struct Card: ResponseCodable {
     @available(*, deprecated, message: "Will be removed in future version")
     public let walletSignature: Data?
     
-    public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethod: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: UInt32?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
+    public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: UInt32?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
         self.cardId = cardId
         self.manufacturerName = manufacturerName
         self.status = status
@@ -534,7 +534,7 @@ public struct Card: ResponseCodable {
         self.issuerPublicKey = issuerPublicKey
         self.curve = curve
         self.maxSignatures = maxSignatures
-        self.signingMethod = signingMethod
+        self.signingMethods = signingMethods
         self.pauseBeforePin2 = pauseBeforePin2
         self.walletPublicKey = walletPublicKey
         self.walletRemainingSignatures = walletRemainingSignatures
@@ -664,7 +664,7 @@ struct CardDeserializer {
             issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
             curve: try decoder.decodeOptional(.curveId),
             maxSignatures: try decoder.decodeOptional(.maxSignatures),
-            signingMethod: try decoder.decodeOptional(.signingMethod),
+            signingMethods: try decoder.decodeOptional(.signingMethod),
             pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
             walletPublicKey: try decoder.decodeOptional(.walletPublicKey),
             walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),

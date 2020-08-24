@@ -72,7 +72,7 @@ public final class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if let signingMethod = card.signingMethod, !signingMethod.contains(.signHash) {
+        if let signingMethod = card.signingMethods, !signingMethod.contains(.signHash) {
             return .signHashesNotAvailable
         }
         

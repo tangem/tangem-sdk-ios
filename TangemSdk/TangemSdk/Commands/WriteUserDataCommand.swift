@@ -121,11 +121,11 @@ public final class WriteUserDataCommand: Command {
         
         if let userProtectedCounter = userProtectedCounter {
             try tlvBuilder.append(.userProtectedCounter, value: userProtectedCounter)
-                .append(.pin2, value: environment.pin2)
+                .append(.pin2, value: environment.pin2.value)
         }
         
         if userProtectedData != nil || userProtectedCounter != nil {
-            try tlvBuilder.append(.pin2, value: environment.pin2)
+            try tlvBuilder.append(.pin2, value: environment.pin2.value)
         }
     
         return CommandApdu(.writeUserData, tlv: tlvBuilder.serialize())

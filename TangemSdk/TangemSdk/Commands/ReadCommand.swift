@@ -529,7 +529,7 @@ public struct Card: ResponseCodable {
     @available(*, deprecated, message: "Will be removed in future version")
     public let walletSignature: Data?
     
-    public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethod: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: UInt32?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
+    public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: UInt32?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
         self.cardId = cardId
         self.manufacturerName = manufacturerName
         self.status = status
@@ -539,7 +539,7 @@ public struct Card: ResponseCodable {
         self.issuerPublicKey = issuerPublicKey
         self.curve = curve
         self.maxSignatures = maxSignatures
-        self.signingMethods = signingMethod
+        self.signingMethods = signingMethods
         self.pauseBeforePin2 = pauseBeforePin2
         self.walletPublicKey = walletPublicKey
         self.walletRemainingSignatures = walletRemainingSignatures

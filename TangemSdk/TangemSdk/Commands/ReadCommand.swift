@@ -100,11 +100,6 @@ public enum EllipticCurve: String, Codable {
     case secp256k1
     case ed25519
     
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode("\(self)".capitalized)
-    }
-    
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercased()

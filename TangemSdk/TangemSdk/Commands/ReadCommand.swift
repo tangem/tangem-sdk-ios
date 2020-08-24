@@ -669,7 +669,7 @@ struct CardDeserializer {
             issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
             curve: try decoder.decodeOptional(.curveId),
             maxSignatures: try decoder.decodeOptional(.maxSignatures),
-            signingMethod: try decoder.decodeOptional(.signingMethod),
+            signingMethods: try decoder.decodeOptional(.signingMethod),
             pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
             walletPublicKey: try decoder.decodeOptional(.walletPublicKey),
             walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),

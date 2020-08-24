@@ -475,7 +475,7 @@ public struct Card: ResponseCodable {
     /// Total number of signatures allowed for the wallet when the card was personalized.
     public let maxSignatures: Int?
     /// Defines what data should be submitted to SIGN command.
-    public let signingMethod: SigningMethod?
+    public let signingMethods: SigningMethod?
     /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
     public let pauseBeforePin2: Int?
     /// Public key of the blockchain wallet.
@@ -539,7 +539,7 @@ public struct Card: ResponseCodable {
         self.issuerPublicKey = issuerPublicKey
         self.curve = curve
         self.maxSignatures = maxSignatures
-        self.signingMethod = signingMethod
+        self.signingMethods = signingMethod
         self.pauseBeforePin2 = pauseBeforePin2
         self.walletPublicKey = walletPublicKey
         self.walletRemainingSignatures = walletRemainingSignatures

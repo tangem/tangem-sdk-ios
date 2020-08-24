@@ -18,6 +18,10 @@ public final class CreateWalletTask: CardSessionRunnable {
         print ("CreateWalletTask deinit")
     }
     
+    public var requiresPin2: Bool {
+        return true
+    }
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         guard let curve = session.environment.card?.curve else {
             completion(.failure(.cardError))

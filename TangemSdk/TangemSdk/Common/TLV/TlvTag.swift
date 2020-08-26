@@ -50,17 +50,21 @@ public enum TlvTag: Byte {
     case settingsMask = 0x0A
     case cardData = 0x0C
     case ndefData = 0x0D
+    case createWalletAtPersonalize = 0x0E
     case health = 0x0F
     case newPin = 0x12
     case newPin2 = 0x13
-    case newPinHash = 0x14
-    case newPin2Hash = 0x15
+    case newPin3 = 0x1E
+    case crExKey = 0x1F
+    case publicKeyChallenge = 0x14
+    case publicKeySalt = 0x15
     case challenge = 0x16
     case salt = 0x17
     case validationCounter = 0x18
     case cvc = 0x19
     case sessionKeyA = 0x1A
     case sessionKeyB = 0x1B
+    case uid = 0x0B
     case manufacturerName = 0x20
     case manufacturerSignature = 0x21
     case issuerPublicKey = 0x30
@@ -104,6 +108,7 @@ public enum TlvTag: Byte {
     case mode = 0x23
     case offset = 0x24
     case size = 0x25
+    case acquirerPublicKey = 0x37
     
     case fullname = 0xD0
     case birthday = 0xD1

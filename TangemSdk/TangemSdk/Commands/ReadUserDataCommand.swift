@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `ReadUserDataCommand`.
-public struct ReadUserDataResponse: TlvCodable {
+public struct ReadUserDataResponse: ResponseCodable {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Data defined by user's App.
@@ -38,17 +38,29 @@ public final class ReadUserDataCommand: Command {
     
     public init() {}
     
-    public func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let status = card.status, status == .notPersonalized {
+            return .notPersonalized
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
+        return nil
+    }
+    
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.pin1)
+            .append(.pin, value: environment.pin1.value)
         
         return CommandApdu(.readUserData, tlv: tlvBuilder.serialize())
     }
     
-    public func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadUserDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadUserDataResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw SessionError.deserializeApduFailed
+            throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)

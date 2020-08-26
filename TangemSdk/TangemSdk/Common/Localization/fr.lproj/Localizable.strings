@@ -23,7 +23,7 @@
 
 "unknownStatus" = "Unknown card status";
 
-"generic_error_code" = "Operation could not be completed. Code: %@";
+"generic_error_code" = "An error occurred during the operation. Code: %@";
 
 "reading_data_progress" = "Reading data: %@%%";
 

@@ -9,14 +9,15 @@
 import Foundation
 import CoreNFC
 
-
 /// Class that provides conversion of serialized request and Instruction code
 /// to a raw data that can be sent to the card.
-public struct CommandApdu: Equatable {    
+public struct CommandApdu: Equatable {
+    /// Instruction code that determines the type of request for the card.
+    let ins: Byte
+    
     //MARK: Header
     fileprivate let cla: Byte
-    /// Instruction code that determines the type of request for the card.
-    fileprivate let ins: Byte
+
     fileprivate let p1:  Byte
     fileprivate let p2:  Byte
     
@@ -25,19 +26,11 @@ public struct CommandApdu: Equatable {
     fileprivate let data: Data
     fileprivate let le: Int
     
-    /// Optional encryption
-    private let encryptionKey: Data?
-    
     /// Convinience initializer
     /// - Parameter instruction: Instruction code
     /// - Parameter tlv: data
-    /// - Parameter encryptionMode:  optional encryption mode. Default to none
-    /// - Parameter encryptionKey:  optional encryption
-    public init(_ instruction: Instruction, tlv: Data, encryptionMode: EncryptionMode = .none, encryptionKey: Data? = nil) {
-        self.init(ins: instruction.rawValue,
-                  p1: encryptionMode.rawValue,
-                  tlv: tlv,
-                  encryptionKey: encryptionKey)
+    public init(_ instruction: Instruction, tlv: Data) {
+        self.init(ins: instruction.rawValue, tlv: tlv)
     }
     
     /// Raw initializer
@@ -53,17 +46,28 @@ public struct CommandApdu: Equatable {
                 p1: Byte = 0x0,
                 p2: Byte = 0x0,
                 le: Int = -1,
-                tlv: Data,
-                encryptionKey: Data? = nil) {
+                tlv: Data) {
         self.cla = cla
         self.ins = ins
         self.p1 = p1
         self.p2 = p2
         self.le = le
-        self.encryptionKey = encryptionKey
         data = tlv
-        
-        //TODO: implement encryption
+    }
+    
+    /// Encrypt APDU
+    /// - Parameters:
+    /// - Parameter encryptionMode: encryption mode
+    /// - Parameter encryptionKey: encryption key
+    /// - Returns: Encrypted APDU
+    public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?) throws -> CommandApdu {
+        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.rawValue else { //skip if already encrypted or empty encryptionKey
+            return self
+        }
+        let crc = data.crc16()
+        let tlvDataToEncrypt = data.count.bytes2 + crc + data
+        let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
+        return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.rawValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
     }
 }
 

@@ -12,7 +12,13 @@ import TangemSdk
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
     
-    var tangemSdk = TangemSdk()
+    lazy var tangemSdk: TangemSdk = {
+        var config = Config()
+        config.linkedTerminal = false
+        config.legacyMode = false
+        return TangemSdk(config: config)
+    }()
+    
     var card: Card?
     var issuerDataResponse: ReadIssuerDataResponse?
     var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
@@ -32,7 +38,7 @@ class ViewController: UIViewController {
     
     @IBAction func signHashesTapped(_ sender: Any) {
         if #available(iOS 13.0, *) {
-            let hashes = (0..<15).map {_ -> Data in getRandomHash()}
+            let hashes = (0..<1).map {_ -> Data in getRandomHash()}
             guard let cardId = card?.cardId else {
                 self.log("Please, scan card before")
                 return
@@ -245,7 +251,7 @@ class ViewController: UIViewController {
         let userData = Data(hexString: "0102030405060708")
         
         if #available(iOS 13.0, *) {
-            tangemSdk.writeUserData(cardId: cardId, userData: userData, userCounter: 1){ [unowned self] result in
+            tangemSdk.writeUserData(cardId: cardId, userData: userData, userCounter: 2){ [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -288,14 +294,14 @@ class ViewController: UIViewController {
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
             let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
-            cmd1!.run(in: session, completion: { result in
+            cmd1.run(in: session, completion: { result in
                 switch result {
                 case .success(let response1):
                     DispatchQueue.main.async {
                         self.log(response1)
                     }
                     let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
-                    cmd2!.run(in: session, completion: { result in
+                    cmd2.run(in: session, completion: { result in
                         switch result {
                         case .success(let response2):
                             DispatchQueue.main.async {
@@ -313,6 +319,65 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func depersonalizeTapped(_ sender: Any) {
+        tangemSdk.depersonalize() { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
+    @IBAction func verifyCardTapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.verify(cardId: cardId, online: true) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
+    @IBAction func changePin1Tapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.changePin1(cardId: cardId, pin: nil) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
+    @IBAction func changePin2Tapped(_ sender: Any) {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        tangemSdk.changePin2(cardId: cardId, pin: nil) { result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
     @IBAction func clearTapped(_ sender: Any) {
         self.logView.text = ""
     }
@@ -322,7 +387,7 @@ class ViewController: UIViewController {
         print(object)
     }
     
-    private func handle(_ error: SessionError) {
+    private func handle(_ error: TangemSdkError) {
         if !error.isUserCancelled {
             self.log("\(error.localizedDescription)")
         }

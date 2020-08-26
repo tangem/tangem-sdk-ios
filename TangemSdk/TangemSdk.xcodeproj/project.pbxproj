@@ -3,13 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
-		5D2739DB234F22A800ACDA11 /* secp256k1 in Frameworks */ = {isa = PBXBuildFile; productRef = 5D2739DA234F22A800ACDA11 /* secp256k1 */; settings = {ATTRIBUTES = (Required, ); }; };
 		5D2739F7234F270200ACDA11 /* precomp_data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739DE234F270200ACDA11 /* precomp_data.h */; };
 		5D2739F8234F270200ACDA11 /* tangemsdk_ed25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739E0234F270200ACDA11 /* tangemsdk_ed25519.h */; };
 		5D2739F9234F270200ACDA11 /* seed.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E1234F270200ACDA11 /* seed.c */; };
@@ -32,11 +32,20 @@
 		5D273A0B234F270200ACDA11 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F4234F270200ACDA11 /* Error.swift */; };
 		5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F5234F270200ACDA11 /* PrivateKey.swift */; };
 		5D273A0D234F270200ACDA11 /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F6234F270200ACDA11 /* Seed.swift */; };
+		5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06224DD82750086B5E8 /* VerifyCardCommand.swift */; };
+		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
+		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
+		5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */; };
+		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
+		5D3F77AE24B9B60800E8695B /* SessionEnvironmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */; };
+		5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B024B9B89000E8695B /* CardValues.swift */; };
+		5D3F77B324B9B8B500E8695B /* CardValuesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */; };
+		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
 		5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D41EA0523D19BAD004DE701 /* TangemTimer.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
-		5D58202224221E2B0057EF40 /* SessionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* SessionError.swift */; };
+		5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* TangemSdkError.swift */; };
 		5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58B4BE233E4C6B00F33764 /* InputStream+.swift */; };
 		5D58B4C1233E54A400F33764 /* Int+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58B4C0233E54A400F33764 /* Int+.swift */; };
 		5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6795B1237AEFB60075A330 /* ApduTests.swift */; };
@@ -57,9 +66,73 @@
 		5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */; };
 		5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */; };
 		5D7D5FB423449F2300058D69 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB323449F2300058D69 /* Command.swift */; };
+		5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */; };
+		5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */; };
+		5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E45248FCF9700A1700D /* PinViewController.swift */; };
+		5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E47248FD31700A1700D /* UIViewController.swift */; };
+		5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */; };
+		5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */; };
+		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
+		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
 		5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F6643235F30B5008149B1 /* NDEFReader.swift */; };
+		5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */; };
+		5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F378247EC275005E7A35 /* secp256k1_recovery.h */; };
+		5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */; };
+		5D83F3D4247EC276005E7A35 /* tangem_secp256k1.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */; };
+		5D83F3E5247EC276005E7A35 /* scalar_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F38E247EC276005E7A35 /* scalar_impl.h */; };
+		5D83F3E6247EC276005E7A35 /* field_10x26_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F38F247EC276005E7A35 /* field_10x26_impl.h */; };
+		5D83F3E9247EC276005E7A35 /* scratch.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F393247EC276005E7A35 /* scratch.h */; };
+		5D83F3EA247EC276005E7A35 /* ecmult_gen_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */; };
+		5D83F3EB247EC276005E7A35 /* field_10x26.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F395247EC276005E7A35 /* field_10x26.h */; };
+		5D83F3EC247EC276005E7A35 /* scalar_8x32_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */; };
+		5D83F3ED247EC276005E7A35 /* field_5x52.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F397247EC276005E7A35 /* field_5x52.h */; };
+		5D83F3EE247EC276005E7A35 /* num_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F398247EC276005E7A35 /* num_impl.h */; };
+		5D83F3F0247EC276005E7A35 /* field.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39A247EC276005E7A35 /* field.h */; };
+		5D83F3F2247EC276005E7A35 /* field_5x52_asm_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */; };
+		5D83F3F4247EC276005E7A35 /* field_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39E247EC276005E7A35 /* field_impl.h */; };
+		5D83F3F5247EC276005E7A35 /* scalar_4x64.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39F247EC276005E7A35 /* scalar_4x64.h */; };
+		5D83F3F6247EC276005E7A35 /* basic-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A0247EC276005E7A35 /* basic-config.h */; };
+		5D83F3F7247EC276005E7A35 /* num.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A1247EC276005E7A35 /* num.h */; };
+		5D83F3F8247EC276005E7A35 /* field_5x52_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */; };
+		5D83F3F9247EC276005E7A35 /* ecmult_const_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */; };
+		5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F3A4247EC276005E7A35 /* secp256k1.c */; };
+		5D83F3FB247EC276005E7A35 /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A5247EC276005E7A35 /* ecdsa.h */; };
+		5D83F3FD247EC276005E7A35 /* scalar.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A7247EC276005E7A35 /* scalar.h */; };
+		5D83F3FE247EC276005E7A35 /* ecdsa_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */; };
+		5D83F3FF247EC276005E7A35 /* ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A9247EC276005E7A35 /* ecmult_gen.h */; };
+		5D83F400247EC276005E7A35 /* scalar_low_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */; };
+		5D83F401247EC276005E7A35 /* hash_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AB247EC276005E7A35 /* hash_impl.h */; };
+		5D83F402247EC276005E7A35 /* ecmult.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AC247EC276005E7A35 /* ecmult.h */; };
+		5D83F403247EC276005E7A35 /* scratch_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AD247EC276005E7A35 /* scratch_impl.h */; };
+		5D83F405247EC276005E7A35 /* ecmult_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AF247EC276005E7A35 /* ecmult_impl.h */; };
+		5D83F406247EC276005E7A35 /* group.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B0247EC276005E7A35 /* group.h */; };
+		5D83F40A247EC276005E7A35 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B4247EC276005E7A35 /* util.h */; };
+		5D83F40B247EC276005E7A35 /* field_5x52_int128_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */; };
+		5D83F40C247EC276005E7A35 /* scalar_4x64_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */; };
+		5D83F40E247EC276005E7A35 /* group_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B8247EC276005E7A35 /* group_impl.h */; };
+		5D83F40F247EC276005E7A35 /* ecmult_const.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B9247EC276005E7A35 /* ecmult_const.h */; };
+		5D83F413247EC276005E7A35 /* recovery_main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */; };
+		5D83F416247EC276005E7A35 /* ecdh_main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */; };
+		5D83F417247EC276005E7A35 /* num_gmp.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C4247EC276005E7A35 /* num_gmp.h */; };
+		5D83F418247EC276005E7A35 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C5247EC276005E7A35 /* hash.h */; };
+		5D83F419247EC276005E7A35 /* eckey_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C6247EC276005E7A35 /* eckey_impl.h */; };
+		5D83F41C247EC276005E7A35 /* num_gmp_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */; };
+		5D83F41D247EC276005E7A35 /* scalar_8x32.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CA247EC276005E7A35 /* scalar_8x32.h */; };
+		5D83F41E247EC276005E7A35 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CB247EC276005E7A35 /* scalar_low.h */; };
+		5D83F41F247EC276005E7A35 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CC247EC276005E7A35 /* eckey.h */; };
+		5D83F421247EC9DF005E7A35 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */; };
+		5D83F423247ECA27005E7A35 /* ecmult_static_context.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F422247ECA27005E7A35 /* ecmult_static_context.h */; };
+		5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */; };
 		5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */; };
 		5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */; };
+		5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */; };
+		5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */; };
+		5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */; };
+		5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */; };
+		5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */; };
+		5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE024A113C900FB5BA7 /* CardConfig.swift */; };
+		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
+		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
 		5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D974B7D237D672F00DCDF21 /* Date+.swift */; };
 		5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B610233E11950058C720 /* CommandApdu.swift */; };
 		5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B612233E11A50058C720 /* ResponseApdu.swift */; };
@@ -74,18 +147,30 @@
 		5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */; };
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
+		5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBD7324249122C9000DF4BD /* SetPinCommand.swift */; };
 		5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC060D823E18A17001BF611 /* CreateWalletTask.swift */; };
 		5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvDecoder.swift */; };
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
 		5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */; };
+		5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD127A124F3D1A0009ACA29 /* JsonTests.swift */; };
+		5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD536892476B3FA00F5DE88 /* Success.ahap */; };
+		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
+		5DD97B3924E143CF0038E944 /* ChangePinTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD97B3824E143CF0038E944 /* ChangePinTask.swift */; };
 		5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */; };
 		5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */; };
 		5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */; };
 		5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */; };
 		5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */; };
-		5DE59F3223D9710400312DA4 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5DE59F3123D9710400312DA4 /* KeychainSwift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
+		5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */; };
+		5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */; };
+		5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40024B2F6C6007B95AF /* Scan.storyboard */; };
+		5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */; };
+		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
+		5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40724B3307F007B95AF /* Colors.xcassets */; };
+		5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40924B34799007B95AF /* SetPinViewController.swift */; };
+		5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */; };
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
 		5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC4A1233BA5E0004964E8 /* Byte+.swift */; };
@@ -102,6 +187,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
@@ -127,12 +213,21 @@
 		5D2739F4234F270200ACDA11 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		5D2739F5234F270200ACDA11 /* PrivateKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		5D2739F6234F270200ACDA11 /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
+		5D2FE06224DD82750086B5E8 /* VerifyCardCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardCommand.swift; sourceTree = "<group>"; };
+		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
+		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
+		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironmentService.swift; sourceTree = "<group>"; };
+		5D3F77B024B9B89000E8695B /* CardValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValues.swift; sourceTree = "<group>"; };
+		5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValuesStorage.swift; sourceTree = "<group>"; };
+		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
 		5D41EA0523D19BAD004DE701 /* TangemTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemTimer.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		5D58201F24221E060057EF40 /* CardSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSession.swift; sourceTree = "<group>"; };
-		5D58202124221E2B0057EF40 /* SessionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionError.swift; sourceTree = "<group>"; };
+		5D58202124221E2B0057EF40 /* TangemSdkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkError.swift; sourceTree = "<group>"; };
 		5D58B4BE233E4C6B00F33764 /* InputStream+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InputStream+.swift"; sourceTree = "<group>"; };
 		5D58B4C0233E54A400F33764 /* Int+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+.swift"; sourceTree = "<group>"; };
 		5D6795B1237AEFB60075A330 /* ApduTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApduTests.swift; sourceTree = "<group>"; };
@@ -153,9 +248,73 @@
 		5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteUtilsTest.swift; sourceTree = "<group>"; };
 		5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironment.swift; sourceTree = "<group>"; };
 		5D7D5FB323449F2300058D69 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TangemSdk+Combine.swift"; sourceTree = "<group>"; };
+		5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PinStoryboard.storyboard; sourceTree = "<group>"; };
+		5D7F4E45248FCF9700A1700D /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
+		5D7F4E47248FD31700A1700D /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
+		5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardLayoutConstraint.swift; sourceTree = "<group>"; };
+		5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkButton.swift; sourceTree = "<group>"; };
+		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
+		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		5D7F6643235F30B5008149B1 /* NDEFReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NDEFReader.swift; sourceTree = "<group>"; };
+		5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
+		5D83F378247EC275005E7A35 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
+		5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
+		5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tangem_secp256k1.h; sourceTree = "<group>"; };
+		5D83F38E247EC276005E7A35 /* scalar_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_impl.h; sourceTree = "<group>"; };
+		5D83F38F247EC276005E7A35 /* field_10x26_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26_impl.h; sourceTree = "<group>"; };
+		5D83F393247EC276005E7A35 /* scratch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch.h; sourceTree = "<group>"; };
+		5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen_impl.h; sourceTree = "<group>"; };
+		5D83F395247EC276005E7A35 /* field_10x26.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26.h; sourceTree = "<group>"; };
+		5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32_impl.h; sourceTree = "<group>"; };
+		5D83F397247EC276005E7A35 /* field_5x52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52.h; sourceTree = "<group>"; };
+		5D83F398247EC276005E7A35 /* num_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_impl.h; sourceTree = "<group>"; };
+		5D83F39A247EC276005E7A35 /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field.h; sourceTree = "<group>"; };
+		5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_asm_impl.h; sourceTree = "<group>"; };
+		5D83F39E247EC276005E7A35 /* field_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_impl.h; sourceTree = "<group>"; };
+		5D83F39F247EC276005E7A35 /* scalar_4x64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64.h; sourceTree = "<group>"; };
+		5D83F3A0247EC276005E7A35 /* basic-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "basic-config.h"; sourceTree = "<group>"; };
+		5D83F3A1247EC276005E7A35 /* num.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num.h; sourceTree = "<group>"; };
+		5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_impl.h; sourceTree = "<group>"; };
+		5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const_impl.h; sourceTree = "<group>"; };
+		5D83F3A4247EC276005E7A35 /* secp256k1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = secp256k1.c; sourceTree = "<group>"; };
+		5D83F3A5247EC276005E7A35 /* ecdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
+		5D83F3A7247EC276005E7A35 /* scalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar.h; sourceTree = "<group>"; };
+		5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa_impl.h; sourceTree = "<group>"; };
+		5D83F3A9247EC276005E7A35 /* ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen.h; sourceTree = "<group>"; };
+		5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low_impl.h; sourceTree = "<group>"; };
+		5D83F3AB247EC276005E7A35 /* hash_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_impl.h; sourceTree = "<group>"; };
+		5D83F3AC247EC276005E7A35 /* ecmult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult.h; sourceTree = "<group>"; };
+		5D83F3AD247EC276005E7A35 /* scratch_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch_impl.h; sourceTree = "<group>"; };
+		5D83F3AF247EC276005E7A35 /* ecmult_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_impl.h; sourceTree = "<group>"; };
+		5D83F3B0247EC276005E7A35 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
+		5D83F3B4247EC276005E7A35 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_int128_impl.h; sourceTree = "<group>"; };
+		5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64_impl.h; sourceTree = "<group>"; };
+		5D83F3B8247EC276005E7A35 /* group_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group_impl.h; sourceTree = "<group>"; };
+		5D83F3B9247EC276005E7A35 /* ecmult_const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const.h; sourceTree = "<group>"; };
+		5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = recovery_main_impl.h; sourceTree = "<group>"; };
+		5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdh_main_impl.h; sourceTree = "<group>"; };
+		5D83F3C4247EC276005E7A35 /* num_gmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_gmp.h; sourceTree = "<group>"; };
+		5D83F3C5247EC276005E7A35 /* hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
+		5D83F3C6247EC276005E7A35 /* eckey_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey_impl.h; sourceTree = "<group>"; };
+		5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_gmp_impl.h; sourceTree = "<group>"; };
+		5D83F3CA247EC276005E7A35 /* scalar_8x32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32.h; sourceTree = "<group>"; };
+		5D83F3CB247EC276005E7A35 /* scalar_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low.h; sourceTree = "<group>"; };
+		5D83F3CC247EC276005E7A35 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
+		5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
+		5D83F422247ECA27005E7A35 /* ecmult_static_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_static_context.h; sourceTree = "<group>"; };
+		5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CCCCryptorStatus+Error.swift"; sourceTree = "<group>"; };
 		5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
 		5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
+		5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepersonalizeCommand.swift; sourceTree = "<group>"; };
+		5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Acquirer.swift; sourceTree = "<group>"; };
+		5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Issuer.swift; sourceTree = "<group>"; };
+		5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Manufacturer.swift; sourceTree = "<group>"; };
+		5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefRecord.swift; sourceTree = "<group>"; };
+		5D86CBE024A113C900FB5BA7 /* CardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConfig.swift; sourceTree = "<group>"; };
+		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
+		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
 		5D974B7D237D672F00DCDF21 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		5DA5B610233E11950058C720 /* CommandApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandApdu.swift; sourceTree = "<group>"; };
 		5DA5B612233E11A50058C720 /* ResponseApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseApdu.swift; sourceTree = "<group>"; };
@@ -172,10 +331,15 @@
 		5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensionTests.swift; sourceTree = "<group>"; };
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		5DBD7324249122C9000DF4BD /* SetPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinCommand.swift; sourceTree = "<group>"; };
 		5DC060D823E18A17001BF611 /* CreateWalletTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletTask.swift; sourceTree = "<group>"; };
 		5DC62D3D23506CF300195A51 /* TlvDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvDecoder.swift; sourceTree = "<group>"; };
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerDataCommand.swift; sourceTree = "<group>"; };
+		5DD127A124F3D1A0009ACA29 /* JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonTests.swift; sourceTree = "<group>"; };
+		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
+		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
+		5DD97B3824E143CF0038E944 /* ChangePinTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePinTask.swift; sourceTree = "<group>"; };
 		5DDF4F89235F06F600E46EAB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserDataCommand.swift; sourceTree = "<group>"; };
 		5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteUserDataCommand.swift; sourceTree = "<group>"; };
@@ -184,6 +348,14 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageService.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
+		5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CircularIndicator.storyboard; sourceTree = "<group>"; };
+		5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorViewController.swift; sourceTree = "<group>"; };
+		5DFCE40024B2F6C6007B95AF /* Scan.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Scan.storyboard; sourceTree = "<group>"; };
+		5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5DFCE40724B3307F007B95AF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		5DFCE40924B34799007B95AF /* SetPinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinViewController.swift; sourceTree = "<group>"; };
+		5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePinViewController.swift; sourceTree = "<group>"; };
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		5DFFC4A1233BA5E0004964E8 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
@@ -194,8 +366,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DE59F3223D9710400312DA4 /* KeychainSwift in Frameworks */,
-				5D2739DB234F22A800ACDA11 /* secp256k1 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +396,6 @@
 		5D2739DD234F270200ACDA11 /* CEd25519 */ = {
 			isa = PBXGroup;
 			children = (
-				5D5369D124461F62002886E0 /* module.modulemap */,
 				5D2739DE234F270200ACDA11 /* precomp_data.h */,
 				5D2739DF234F270200ACDA11 /* include */,
 				5D2739E1234F270200ACDA11 /* seed.c */,
@@ -256,6 +425,33 @@
 			path = include;
 			sourceTree = "<group>";
 		};
+		5D2FE06824DDA84F0086B5E8 /* Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */,
+			);
+			path = Endpoints;
+			sourceTree = "<group>";
+		};
+		5D3F77AF24B9B87F00E8695B /* CardState */ = {
+			isa = PBXGroup;
+			children = (
+				5D3F77B024B9B89000E8695B /* CardValues.swift */,
+				5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */,
+			);
+			path = CardState;
+			sourceTree = "<group>";
+		};
+		5D3F77B424B9B8E700E8695B /* Verification */ = {
+			isa = PBXGroup;
+			children = (
+				5D3F77B524B9B8F600E8695B /* VerificationState.swift */,
+				5D2FE06224DD82750086B5E8 /* VerifyCardCommand.swift */,
+				5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */,
+			);
+			path = Verification;
+			sourceTree = "<group>";
+		};
 		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,6 +472,8 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				5D3F77B424B9B8E700E8695B /* Verification */,
+				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
 				5D6A92E42345F2B200158457 /* SignCommand.swift */,
@@ -288,6 +486,8 @@
 				5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */,
 				5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */,
 				5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */,
+				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
+				5DBD7324249122C9000DF4BD /* SetPinCommand.swift */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -297,8 +497,149 @@
 			children = (
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				5DC060D823E18A17001BF611 /* CreateWalletTask.swift */,
+				5DD97B3824E143CF0038E944 /* ChangePinTask.swift */,
 			);
 			path = Tasks;
+			sourceTree = "<group>";
+		};
+		5D7F4E3F248FCEFB00A1700D /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE3FF24B2F618007B95AF /* Scan */,
+				5DFCE3FA24AB89F5007B95AF /* Indicator */,
+				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
+				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
+				5D7F4E44248FCF8300A1700D /* Pin */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		5D7F4E44248FCF8300A1700D /* Pin */ = {
+			isa = PBXGroup;
+			children = (
+				5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */,
+				5D7F4E45248FCF9700A1700D /* PinViewController.swift */,
+				5DFCE40924B34799007B95AF /* SetPinViewController.swift */,
+				5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */,
+			);
+			path = Pin;
+			sourceTree = "<group>";
+		};
+		5D83F36E247EC275005E7A35 /* secp256k1 */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F38D247EC276005E7A35 /* src */,
+			);
+			path = secp256k1;
+			sourceTree = "<group>";
+		};
+		5D83F376247EC275005E7A35 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */,
+				5D83F378247EC275005E7A35 /* secp256k1_recovery.h */,
+				5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */,
+				5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		5D83F38D247EC276005E7A35 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F3A0247EC276005E7A35 /* basic-config.h */,
+				5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */,
+				5D83F3A5247EC276005E7A35 /* ecdsa.h */,
+				5D83F3C6247EC276005E7A35 /* eckey_impl.h */,
+				5D83F3CC247EC276005E7A35 /* eckey.h */,
+				5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */,
+				5D83F3B9247EC276005E7A35 /* ecmult_const.h */,
+				5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */,
+				5D83F3A9247EC276005E7A35 /* ecmult_gen.h */,
+				5D83F3AF247EC276005E7A35 /* ecmult_impl.h */,
+				5D83F422247ECA27005E7A35 /* ecmult_static_context.h */,
+				5D83F3AC247EC276005E7A35 /* ecmult.h */,
+				5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */,
+				5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */,
+				5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */,
+				5D83F397247EC276005E7A35 /* field_5x52.h */,
+				5D83F38F247EC276005E7A35 /* field_10x26_impl.h */,
+				5D83F395247EC276005E7A35 /* field_10x26.h */,
+				5D83F39E247EC276005E7A35 /* field_impl.h */,
+				5D83F39A247EC276005E7A35 /* field.h */,
+				5D83F3B8247EC276005E7A35 /* group_impl.h */,
+				5D83F3B0247EC276005E7A35 /* group.h */,
+				5D83F3AB247EC276005E7A35 /* hash_impl.h */,
+				5D83F3C5247EC276005E7A35 /* hash.h */,
+				5D83F376247EC275005E7A35 /* include */,
+				5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */,
+				5D83F3BB247EC276005E7A35 /* modules */,
+				5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */,
+				5D83F3C4247EC276005E7A35 /* num_gmp.h */,
+				5D83F398247EC276005E7A35 /* num_impl.h */,
+				5D83F3A1247EC276005E7A35 /* num.h */,
+				5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */,
+				5D83F39F247EC276005E7A35 /* scalar_4x64.h */,
+				5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */,
+				5D83F3CA247EC276005E7A35 /* scalar_8x32.h */,
+				5D83F38E247EC276005E7A35 /* scalar_impl.h */,
+				5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */,
+				5D83F3CB247EC276005E7A35 /* scalar_low.h */,
+				5D83F3A7247EC276005E7A35 /* scalar.h */,
+				5D83F3AD247EC276005E7A35 /* scratch_impl.h */,
+				5D83F393247EC276005E7A35 /* scratch.h */,
+				5D83F3A4247EC276005E7A35 /* secp256k1.c */,
+				5D83F3B4247EC276005E7A35 /* util.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		5D83F3BB247EC276005E7A35 /* modules */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F3BC247EC276005E7A35 /* recovery */,
+				5D83F3C0247EC276005E7A35 /* ecdh */,
+			);
+			path = modules;
+			sourceTree = "<group>";
+		};
+		5D83F3BC247EC276005E7A35 /* recovery */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */,
+			);
+			path = recovery;
+			sourceTree = "<group>";
+		};
+		5D83F3C0247EC276005E7A35 /* ecdh */ = {
+			isa = PBXGroup;
+			children = (
+				5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */,
+			);
+			path = ecdh;
+			sourceTree = "<group>";
+		};
+		5D86CBD624A10F3D00FB5BA7 /* Personalization */ = {
+			isa = PBXGroup;
+			children = (
+				5D86CBD724A10F5500FB5BA7 /* Entities */,
+				5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */,
+				5D86CBD424A10BA400FB5BA7 /* DepersonalizeCommand.swift */,
+				5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */,
+			);
+			path = Personalization;
+			sourceTree = "<group>";
+		};
+		5D86CBD724A10F5500FB5BA7 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				5D86CBD824A10FD800FB5BA7 /* Acquirer.swift */,
+				5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */,
+				5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */,
+				5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */,
+				5D86CBE024A113C900FB5BA7 /* CardConfig.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		5DA5B614233E11DD0058C720 /* APDU */ = {
@@ -347,17 +688,20 @@
 		5DA80C9C231D247A00A50A10 /* TangemSdk */ = {
 			isa = PBXGroup;
 			children = (
+				5D7F4E3F248FCEFB00A1700D /* UI */,
 				5DA80C9D231D247A00A50A10 /* TangemSdk.h */,
+				5D5369D124461F62002886E0 /* module.modulemap */,
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
-				5D58202124221E2B0057EF40 /* SessionError.swift */,
+				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
 				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
 				5D6A92E82345FF1300158457 /* Tasks */,
 				5D6A92E12345F28F00158457 /* Commands */,
 				5DF7CFCA233D034E00461F4D /* Common */,
 				5DFFC1A2234DC969001C2F35 /* Crypto */,
+				5DD536882476B3FA00F5DE88 /* Haptics */,
 			);
 			path = TangemSdk;
 			sourceTree = "<group>";
@@ -373,15 +717,29 @@
 				5DA79429236C64D100B33DB5 /* IntUtilsTests.swift */,
 				5D6795B1237AEFB60075A330 /* ApduTests.swift */,
 				5D437EEA237BE980009C82A8 /* TlvTests.swift */,
+				5DD127A124F3D1A0009ACA29 /* JsonTests.swift */,
 			);
 			path = TangemSdkTests;
+			sourceTree = "<group>";
+		};
+		5DD536882476B3FA00F5DE88 /* Haptics */ = {
+			isa = PBXGroup;
+			children = (
+				5DD536892476B3FA00F5DE88 /* Success.ahap */,
+				5DD5368A2476B3FB00F5DE88 /* Error.ahap */,
+			);
+			path = Haptics;
 			sourceTree = "<group>";
 		};
 		5DE59F2723D96F5C00312DA4 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				5D3F77AF24B9B87F00E8695B /* CardState */,
 				5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */,
 				5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */,
+				5DFCE40424B30589007B95AF /* StorageService.swift */,
+				5D3F77AD24B9B60800E8695B /* SessionEnvironmentService.swift */,
+				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -389,6 +747,8 @@
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				5D2FE06824DDA84F0086B5E8 /* Endpoints */,
+				5DFCE40624B33062007B95AF /* Assets */,
 				5DE59F2723D96F5C00312DA4 /* Services */,
 				5DA5B61F233E13180058C720 /* TLV */,
 				5DA5B614233E11DD0058C720 /* APDU */,
@@ -401,9 +761,37 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		5DFCE3FA24AB89F5007B95AF /* Indicator */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */,
+				5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */,
+			);
+			path = Indicator;
+			sourceTree = "<group>";
+		};
+		5DFCE3FF24B2F618007B95AF /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE40024B2F6C6007B95AF /* Scan.storyboard */,
+				5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		5DFCE40624B33062007B95AF /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				5DFCE40724B3307F007B95AF /* Colors.xcassets */,
+				5D3F77A924B4E05400E8695B /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		5DFFC1A2234DC969001C2F35 /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
+				5D83F36E247EC275005E7A35 /* secp256k1 */,
 				5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */,
 				5D2739DC234F270200ACDA11 /* Ed25519 */,
 				5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */,
@@ -425,6 +813,7 @@
 		5DFFC4A0233BA5D2004964E8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5D7F4E51249006DB00A1700D /* Bundle+.swift */,
 				5DFFC4A1233BA5E0004964E8 /* Byte+.swift */,
 				5D58B4BE233E4C6B00F33764 /* InputStream+.swift */,
 				5D58B4C0233E54A400F33764 /* Int+.swift */,
@@ -432,6 +821,10 @@
 				5DB4406E234B750200AC39F1 /* String+.swift */,
 				5D974B7D237D672F00DCDF21 /* Date+.swift */,
 				5D0A6C5C2428CF3C0094FA83 /* Error+.swift */,
+				5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */,
+				5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */,
+				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
+				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -443,13 +836,59 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D83F421247EC9DF005E7A35 /* libsecp256k1-config.h in Headers */,
+				5D83F3F6247EC276005E7A35 /* basic-config.h in Headers */,
+				5D83F401247EC276005E7A35 /* hash_impl.h in Headers */,
+				5D83F40C247EC276005E7A35 /* scalar_4x64_impl.h in Headers */,
+				5D83F41F247EC276005E7A35 /* eckey.h in Headers */,
+				5D83F3FF247EC276005E7A35 /* ecmult_gen.h in Headers */,
+				5D83F40F247EC276005E7A35 /* ecmult_const.h in Headers */,
+				5D83F40B247EC276005E7A35 /* field_5x52_int128_impl.h in Headers */,
+				5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */,
+				5D83F419247EC276005E7A35 /* eckey_impl.h in Headers */,
+				5D83F3ED247EC276005E7A35 /* field_5x52.h in Headers */,
+				5D83F3EA247EC276005E7A35 /* ecmult_gen_impl.h in Headers */,
+				5D83F417247EC276005E7A35 /* num_gmp.h in Headers */,
+				5D83F406247EC276005E7A35 /* group.h in Headers */,
+				5D83F418247EC276005E7A35 /* hash.h in Headers */,
+				5D83F3E9247EC276005E7A35 /* scratch.h in Headers */,
+				5D83F41D247EC276005E7A35 /* scalar_8x32.h in Headers */,
+				5D83F413247EC276005E7A35 /* recovery_main_impl.h in Headers */,
+				5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */,
 				5DA80CAB231D247A00A50A10 /* TangemSdk.h in Headers */,
+				5D83F40E247EC276005E7A35 /* group_impl.h in Headers */,
+				5D83F416247EC276005E7A35 /* ecdh_main_impl.h in Headers */,
+				5D83F3FE247EC276005E7A35 /* ecdsa_impl.h in Headers */,
+				5D83F405247EC276005E7A35 /* ecmult_impl.h in Headers */,
+				5D83F41C247EC276005E7A35 /* num_gmp_impl.h in Headers */,
+				5D83F3F5247EC276005E7A35 /* scalar_4x64.h in Headers */,
 				5D273A07234F270200ACDA11 /* sc.h in Headers */,
+				5D83F3F7247EC276005E7A35 /* num.h in Headers */,
+				5D83F402247EC276005E7A35 /* ecmult.h in Headers */,
+				5D83F3F9247EC276005E7A35 /* ecmult_const_impl.h in Headers */,
+				5D83F3F2247EC276005E7A35 /* field_5x52_asm_impl.h in Headers */,
+				5D83F3FB247EC276005E7A35 /* ecdsa.h in Headers */,
+				5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */,
+				5D83F423247ECA27005E7A35 /* ecmult_static_context.h in Headers */,
+				5D83F3F0247EC276005E7A35 /* field.h in Headers */,
+				5D83F3FD247EC276005E7A35 /* scalar.h in Headers */,
+				5D83F41E247EC276005E7A35 /* scalar_low.h in Headers */,
+				5D83F400247EC276005E7A35 /* scalar_low_impl.h in Headers */,
+				5D83F3D4247EC276005E7A35 /* tangem_secp256k1.h in Headers */,
+				5D83F3F8247EC276005E7A35 /* field_5x52_impl.h in Headers */,
+				5D83F3EE247EC276005E7A35 /* num_impl.h in Headers */,
+				5D83F40A247EC276005E7A35 /* util.h in Headers */,
 				5D2739F8234F270200ACDA11 /* tangemsdk_ed25519.h in Headers */,
+				5D83F3E5247EC276005E7A35 /* scalar_impl.h in Headers */,
+				5D83F403247EC276005E7A35 /* scratch_impl.h in Headers */,
 				5D2739F7234F270200ACDA11 /* precomp_data.h in Headers */,
+				5D83F3EC247EC276005E7A35 /* scalar_8x32_impl.h in Headers */,
+				5D83F3F4247EC276005E7A35 /* field_impl.h in Headers */,
 				5D273A02234F270200ACDA11 /* fe.h in Headers */,
 				5D273A05234F270200ACDA11 /* fixedint.h in Headers */,
+				5D83F3EB247EC276005E7A35 /* field_10x26.h in Headers */,
 				5D2739FF234F270200ACDA11 /* sha512.h in Headers */,
+				5D83F3E6247EC276005E7A35 /* field_10x26_impl.h in Headers */,
 				5D273A08234F270200ACDA11 /* ge.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,8 +911,6 @@
 			);
 			name = TangemSdk;
 			packageProductDependencies = (
-				5D2739DA234F22A800ACDA11 /* secp256k1 */,
-				5DE59F3123D9710400312DA4 /* KeychainSwift */,
 			);
 			productName = TangemSdk;
 			productReference = 5DA80C9A231D247A00A50A10 /* TangemSdk.framework */;
@@ -527,8 +964,6 @@
 			);
 			mainGroup = 5DA80C90231D247A00A50A10;
 			packageReferences = (
-				5D2739D9234F22A800ACDA11 /* XCRemoteSwiftPackageReference "secp256k1.swift" */,
-				5DE59F3023D9710400312DA4 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			productRefGroup = 5DA80C9B231D247A00A50A10 /* Products */;
 			projectDirPath = "";
@@ -545,8 +980,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
+				5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */,
+				5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */,
+				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
+				5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */,
+				5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */,
+				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
+				5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */,
+				5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,49 +1014,79 @@
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
+				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
+				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
+				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
+				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
+				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
+				5D3F77AE24B9B60800E8695B /* SessionEnvironmentService.swift in Sources */,
 				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
+				5D3F77B324B9B8B500E8695B /* CardValuesStorage.swift in Sources */,
+				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
+				5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */,
 				5D273A06234F270200ACDA11 /* sha512.c in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */,
+				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
+				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
 				5D2739FD234F270200ACDA11 /* sc.c in Sources */,
+				5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */,
 				5D273A0B234F270200ACDA11 /* Error.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
+				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
+				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
+				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
 				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
+				5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
+				5DD97B3924E143CF0038E944 /* ChangePinTask.swift in Sources */,
 				5D2739FE234F270200ACDA11 /* sign.c in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				5D273A04234F270200ACDA11 /* keypair.c in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
+				5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */,
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */,
 				5D2739FC234F270200ACDA11 /* ge.c in Sources */,
+				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				5D2739FB234F270200ACDA11 /* verify.c in Sources */,
 				5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */,
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
+				5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
+				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
+				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
 				5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
+				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
+				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
+				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
+				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
+				5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
-				5D58202224221E2B0057EF40 /* SessionError.swift in Sources */,
+				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
+				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D273A00234F270200ACDA11 /* key_exchange.c in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
+				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,
@@ -623,9 +1095,12 @@
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
+				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
+				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,
+				5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,6 +1111,7 @@
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,
@@ -719,7 +1195,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/Crypto/Ed25519/CEd25519/module.modulemap";
+				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
+				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -788,7 +1265,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/Crypto/Ed25519/CEd25519/module.modulemap";
+				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
+				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -839,10 +1317,10 @@
 					"-weak_framework",
 					CryptoKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdk;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.example;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/TangemSdk/Crypto/Ed25519/CEd25519";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/TangemSdk/";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -878,10 +1356,10 @@
 					"-weak_framework",
 					CryptoKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.TangemSdk;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.tangemSdk.example;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/TangemSdk/Crypto/Ed25519/CEd25519";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/TangemSdk/";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -972,38 +1450,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		5D2739D9234F22A800ACDA11 /* XCRemoteSwiftPackageReference "secp256k1.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Boilertalk/secp256k1.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.4;
-			};
-		};
-		5DE59F3023D9710400312DA4 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 19.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		5D2739DA234F22A800ACDA11 /* secp256k1 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5D2739D9234F22A800ACDA11 /* XCRemoteSwiftPackageReference "secp256k1.swift" */;
-			productName = secp256k1;
-		};
-		5DE59F3123D9710400312DA4 /* KeychainSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5DE59F3023D9710400312DA4 /* XCRemoteSwiftPackageReference "keychain-swift" */;
-			productName = KeychainSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5DA80C91231D247A00A50A10 /* Project object */;
 }

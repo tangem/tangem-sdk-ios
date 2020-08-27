@@ -61,7 +61,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
         if newPin1 == nil && newPin2 == nil && newPin3 == nil {
-            session.pause()
+            session.pause(error: TangemSdkError.from(pinType: self.pinType))
             DispatchQueue.main.async {
                 self.requestNewPin(in: session) { result in
                     switch result {

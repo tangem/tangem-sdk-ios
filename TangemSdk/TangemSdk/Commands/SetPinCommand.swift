@@ -17,7 +17,7 @@ public struct SetPinResponse: ResponseCodable {
 }
 
 @available(iOS 13.0, *)
-public class SetPinCommand: Command {
+public class SetPinCommand: Command, CardSessionPreparable {
     public typealias CommandResponse = SetPinResponse
     
     public var requiresPin2: Bool {
@@ -51,22 +51,21 @@ public class SetPinCommand: Command {
         print ("SetPinCommand deinit")
     }
     
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+        if newPin1 == nil && newPin2 == nil && newPin3 == nil {
+            self.requestNewPin(in: session, completion: completion)
+        } else {
+            completion(.success(()))
+        }
+    }
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
         if newPin1 == nil && newPin2 == nil && newPin3 == nil {
             session.pause()
             DispatchQueue.main.async {
-                session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId) { result in
+                self.requestNewPin(in: session) { result in
                     switch result {
-                    case .success(let pinChangeResult):
-                        let newPinData = pinChangeResult.newPin.sha256()
-                        switch self.pinType {
-                        case .pin1:
-                            self.newPin1 = newPinData
-                        case .pin2:
-                            self.newPin2 = newPinData
-                        case .pin3:
-                            self.newPin3 = newPinData
-                        }
+                    case .success:
                         session.resume()
                         self.transieve(in: session, completion: completion )
                     case .failure(let error):
@@ -76,6 +75,26 @@ public class SetPinCommand: Command {
             }
         } else {
             self.transieve(in: session, completion: completion )
+        }
+    }
+    
+    private func requestNewPin(in session: CardSession, completion: @escaping CompletionResult<Void>) {
+        session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId) { result in
+            switch result {
+            case .success(let pinChangeResult):
+                let newPinData = pinChangeResult.newPin.sha256()
+                switch self.pinType {
+                case .pin1:
+                    self.newPin1 = newPinData
+                case .pin2:
+                    self.newPin2 = newPinData
+                case .pin3:
+                    self.newPin3 = newPinData
+                }
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     

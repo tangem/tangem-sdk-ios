@@ -30,11 +30,11 @@
 "writing_data_progress" = "Writing data: %@%%";
 
 "pin_title_pin1" = "Enter Access Code";
-"pin_title_pin2" = "Enter Pass Code";
+"pin_title_pin2" = "Enter Passcode";
 "pin_title_pin3" = "Enter Pin3";
 
 "pin_placeholder_access" = "Access code";
-"pin_placeholder_pass" = "Pass code";
+"pin_placeholder_pass" = "Passcode";
 "pin_placeholder_pin3" = "Pin3";
 
 "changepin_placeholder_new" = "New";
@@ -43,7 +43,7 @@
 "changepin_error_mismatch" = "Codes do not match";
 
 "changepin_title_pin1" = "Change Access Code";
-"changepin_title_pin2" = "Change Pass Code";
+"changepin_title_pin2" = "Change Passcode";
 "changepin_title_pin3" = "Change Pin3";
 
 
@@ -78,3 +78,5 @@
 "error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
 "error_card_error" = "Your card is missing essential data";
 
+"error_pin1_required" = "Access code is requred";
+"error_pin2_required" = "Passcode is required";

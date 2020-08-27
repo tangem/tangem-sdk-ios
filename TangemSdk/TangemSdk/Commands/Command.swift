@@ -178,7 +178,7 @@ extension Command {
     }
     
     private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause()
+        session.pause(error: TangemSdkError.from(pinType: pinType))
         DispatchQueue.main.async {
             session.requestPinIfNeeded(pinType) { result in
                 switch result {

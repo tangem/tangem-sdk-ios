@@ -277,9 +277,9 @@ public class CardSession {
         reader.readSlix2Tag(completion: completion)
     }
     
-    func pause() {
+    func pause(error: TangemSdkError? = nil) {
         environment.encryptionKey = nil
-        reader.stopSession()
+        reader.stopSession(with: error?.localizedDescription)
     }
     
     func resume() {
@@ -417,15 +417,7 @@ public class CardSession {
                 }
                 completion(.success(()))
             } else {
-                switch pinType {
-                case .pin1:
-                    completion(.failure(.pin1Required))
-                case .pin2:
-                    completion(.failure(.pin2OrCvcRequired))
-                case .pin3:
-                    completion(.failure(.unknownError))
-                }
-
+                completion(.failure(TangemSdkError.from(pinType: pinType)))
             }
         }
     }

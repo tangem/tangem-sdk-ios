@@ -33,6 +33,11 @@ extension CardSessionRunnable {
     }
 }
 
+@available(iOS 13.0, *)
+protocol CardSessionPreparable {
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
+}
+
 /// Allows interaction with Tangem cards. Should be open before sending commands
 @available(iOS 13.0, *)
 public class CardSession {
@@ -88,45 +93,58 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
-        if let command = runnable as? PreflightReadCapable {
-            needPreflightRead = command.needPreflightRead
+        prepareSession(for: runnable) { prepareResult in
+            switch prepareResult {
+            case .success:
+                //        requestPinIfNeeded(.pin1) {[weak self] result in
+                //            switch result {
+                //            case .success:
+                //                self?.requestPinIfNeeded(.pin2) {[weak self] result in
+                //                    switch result {
+                //                    case .success:
+                self.start() {[weak self] session, error in
+                    guard let self = self else { return }
+                    
+                    if let error = error {
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                        return
+                    }
+                    
+                    runnable.run(in: self) {result in
+                        self.handleRunnableCompletion(runnableResult: result, completion: completion)
+                    }
+                }
+                //
+                //                    case .failure(let error):
+                //                        DispatchQueue.main.async {
+                //                            completion(.failure(error))
+                //                        }
+                //                    }
+                //                }
+                //
+                //            case .failure(let error):
+                //                DispatchQueue.main.async {
+                //                    completion(.failure(error))
+                //                }
+                //            }
+            //        }
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
+    }
+    
+    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
+        needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
         
-//        requestPinIfNeeded(.pin1) {[weak self] result in
-//            switch result {
-//            case .success:
-//                self?.requestPinIfNeeded(.pin2) {[weak self] result in
-//                    switch result {
-//                    case .success:
-        start() {[weak self] session, error in
-            guard let self = self else { return }
-            
-            if let error = error {
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-                return
-            }
-            
-            runnable.run(in: self) {result in
-                self.handleRunnableCompletion(runnableResult: result, completion: completion)
-            }
+        if let preparable = runnable as? CardSessionPreparable {
+            preparable.prepare(self, completion: completion)
+        } else {
+            completion(.success(()))
         }
-//
-//                    case .failure(let error):
-//                        DispatchQueue.main.async {
-//                            completion(.failure(error))
-//                        }
-//                    }
-//                }
-//
-//            case .failure(let error):
-//                DispatchQueue.main.async {
-//                    completion(.failure(error))
-//                }
-//            }
-//        }
     }
     
     /// Starts a card session and performs preflight `Read` command.

@@ -255,6 +255,8 @@ public enum TangemSdkError: Int, Error, LocalizedError, Encodable {
         case .verificationFailed: return Localization.string("error_verification_failed")
         case .wrongCardNumber: return Localization.string("error_wrong_card_number")
         case .wrongCardType: return Localization.string("error_wrong_card_type")
+        case .pin1Required: return Localization.string("error_pin1_required")
+        case .pin2OrCvcRequired: return Localization.string("error_pin2_required")
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.rawValue). \(description)")
@@ -324,6 +326,17 @@ public enum TangemSdkError: Int, Error, LocalizedError, Encodable {
             }
         } else {
             return (error as? TangemSdkError) ?? TangemSdkError.unknownError
+        }
+    }
+    
+    static func from(pinType: PinCode.PinType) -> TangemSdkError {
+        switch pinType {
+        case .pin1:
+            return .pin1Required
+        case .pin2:
+            return .pin2OrCvcRequired
+        case .pin3:
+            return .unknownError
         }
     }
     

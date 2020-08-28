@@ -101,11 +101,11 @@ public final class SignCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if error == .invalidParams {
+        if case .invalidParams = error {
             return .pin2OrCvcRequired
         }
         
-        if error == .unknownStatus {
+        if case .unknownStatus = error {
             return .nfcStuck
         }
         

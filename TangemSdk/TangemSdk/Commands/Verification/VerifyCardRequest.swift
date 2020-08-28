@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct CardVerifyAndGetInfoRequest: Codable {
+public struct CardVerifyAndGetInfoRequest: Codable {
     
-    struct Item: Codable {
+    public struct Item: Codable {
         let cardId: String
         let publicKey: String
         
@@ -25,9 +25,9 @@ struct CardVerifyAndGetInfoRequest: Codable {
     let requests: [Item]
 }
 
-struct CardVerifyAndGetInfoResponse: Codable {
+public struct CardVerifyAndGetInfoResponse: Codable {
     
-    struct Item: Codable {
+    public struct Item: Codable {
         let error: String?
         let cardId: String
         let passed: Bool
@@ -48,9 +48,9 @@ struct CardVerifyAndGetInfoResponse: Codable {
     let results: [Item]
 }
 
-struct SubstitutionInfo: Codable {
+public struct SubstitutionInfo: Codable {
     
-    struct CardSubstitutionDataModel: Codable {
+    public struct CardSubstitutionDataModel: Codable {
         let tokenSymbol: String?
         let tokenContractAddress: String?
         let tokenDecimal: Int?

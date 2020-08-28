@@ -17,9 +17,7 @@ extension ResponseApdu {
                 let decrypted = try self.decrypt(encryptionKey: encryptionKey)
                 promise(.success(decrypted))
             } catch {
-                let tangemSdkError = error.toTangemSdkError()
-                let finalError: TangemSdkError = tangemSdkError == .unknownError ? .failedToDecryptApdu : tangemSdkError
-                promise(.failure(finalError))
+                promise(.failure(error.toTangemSdkError()))
             }
             }}.eraseToAnyPublisher()
     }
@@ -34,8 +32,7 @@ extension CommandApdu {
                 promise(.success(encrypted))
             } catch {
                 let tangemSdkError = error.toTangemSdkError()
-                let finalError: TangemSdkError = tangemSdkError == .unknownError ? .failedToEncryptApdu : tangemSdkError
-                promise(.failure(finalError))
+                promise(.failure(error.toTangemSdkError()))
             }
             }}.eraseToAnyPublisher()
     }

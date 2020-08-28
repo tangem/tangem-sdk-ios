@@ -96,7 +96,7 @@ public final class WriteIssuerDataCommand: Command {
         
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay),
-            error == .invalidParams {
+            case .invalidParams = error {
             return .dataCannotBeWritten
         }
         

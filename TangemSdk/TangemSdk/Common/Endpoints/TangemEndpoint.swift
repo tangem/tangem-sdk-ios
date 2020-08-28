@@ -8,32 +8,51 @@
 
 import Foundation
 
-enum TangemEndpoint: NetworkEndpoint {
+public enum TangemEndpoint: NetworkEndpoint {
     case verifyAndGetInfo(request: CardVerifyAndGetInfoRequest)
+    case artwork(cid: String, cardPublicKey: Data, artworkId: String)
     
     private var baseURL: String {
         return "https://verify.tangem.com/"
     }
     
-    var url: URL {
+    public var url: URL {
         switch self {
         case .verifyAndGetInfo:
             return URL(string: baseURL + "card/verify-and-get-info")!
+        case .artwork(let cid, let cardPublicKey, let artworkId):
+            let parameters = ["CID" : cid,
+                              "publicKey" : cardPublicKey.asHexString(),
+                              "artworkId" : artworkId]
+            
+            var components = URLComponents(string: baseURL + "card/artwork")!
+            components.queryItems = parameters.map { (key, value) in
+                URLQueryItem(name: key, value: value)
+            }
+            return components.url!
         }
     }
     
-    var method: String {
-        return "POST"
+    public var method: String {
+        switch self {
+        case .verifyAndGetInfo:
+            return "POST"
+        case .artwork:
+            return "GET"
+        }
     }
     
-    var body: Data? {
+    public var body: Data? {
         switch self {
         case .verifyAndGetInfo(let request):
             return try? JSONEncoder().encode(request)
+        case .artwork:
+            return nil
         }
     }
     
-    var headers: [String : String] {
-        return [:]
+    public var headers: [String : String] {
+        return ["application/json" : "Content-Type"]
     }
 }
+

@@ -8,14 +8,14 @@
 
 import Foundation
 
-protocol NetworkEndpoint {
+public protocol NetworkEndpoint {
     var url: URL {get}
     var method: String {get}
     var body: Data? {get}
     var headers: [String:String] {get}
 }
 
-enum NetworkServiceError: Error {
+public enum NetworkServiceError: Error {
     case emptyResponse
     case statusCode(Int, String?)
     case urlSessionError(Error)
@@ -23,11 +23,33 @@ enum NetworkServiceError: Error {
     case mapError
 }
 
-class NetworkService {
-    func request<T: Decodable>(_ endpoint: NetworkEndpoint, responseType: T.Type, completion: @escaping (Result<T, NetworkServiceError>) -> Void) {
+public class NetworkService {
+    public init () {}
+    
+    public func request<T: Decodable>(_ endpoint: NetworkEndpoint, responseType: T.Type, completion: @escaping (Result<T, NetworkServiceError>) -> Void) {
         let request = prepareRequest(from: endpoint)
-        print("request to: \(request.url!)")
         
+        requestData(request: request) { result in
+            switch result {
+            case .success(let data):
+                if let mapped = self.map(data, type: T.self) {
+                    completion(.success(mapped))
+                } else {
+                    completion(.failure(.mapError))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    public func request(_ endpoint: NetworkEndpoint, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
+        let request = prepareRequest(from: endpoint)
+        requestData(request: request, completion: completion)
+    }
+    
+    private func requestData(request: URLRequest, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
+        print("request to: \(request.url!)")
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(NetworkServiceError.urlSessionError(error)))
@@ -51,14 +73,8 @@ class NetworkService {
             }
             
             print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
-            
-            if let mapped = self.map(data, type: T.self) {
-                completion(.success(mapped))
-            } else {
-                completion(.failure(.mapError))
-            }
+            completion(.success(data))
         }.resume()
-        
     }
     
     private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest {
@@ -70,9 +86,6 @@ class NetworkService {
             urlRequest.addValue(header.key, forHTTPHeaderField: header.value)
         }
         
-        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        }
         return urlRequest
     }
     

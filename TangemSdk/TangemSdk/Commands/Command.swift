@@ -104,10 +104,10 @@ extension Command {
                 case .failure(let error):
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
-                        if mappedError == .pin1Required {
+                        if case .pin1Required = mappedError {
                             session.environment.pin1 = PinCode(.pin1, value: nil)
                             self.requestPin(.pin1, session, completion: completion)
-                        } else if mappedError == .pin2OrCvcRequired {
+                        } else if case .pin2OrCvcRequired = mappedError {
                             session.environment.pin2 = PinCode(.pin2, value: nil)
                             self.requestPin(.pin2, session, completion: completion)
                         } else {

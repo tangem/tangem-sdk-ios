@@ -293,7 +293,7 @@ public struct SettingsMask: OptionSet, Codable {
             values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
         }
         if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
-            values.append("RestrictOverwriteIssuerExtraDara")
+            values.append("RestrictOverwriteIssuerExtraData")
         }
         if contains(SettingsMask.requireTermTxSignature) {
             values.append("RequireTermTxSignature")
@@ -372,7 +372,7 @@ public struct SettingsMask: OptionSet, Codable {
         if stringValues.contains("SkipSecurityDelayIfValidatedByLinkedTerminal") {
             mask.update(with: SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal)
         }
-        if stringValues.contains("RestrictOverwriteIssuerExtraDara") {
+        if stringValues.contains("RestrictOverwriteIssuerExtraData") {
             mask.update(with: SettingsMask.restrictOverwriteIssuerExtraData)
         }
         if stringValues.contains("RequireTermTxSignature") {

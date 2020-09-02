@@ -76,18 +76,20 @@ public final class SignCommand: Command {
             return .signHashesNotAvailable
         }
         
-        if hashes.count == 0 {
-            return .emptyHashes
-        }
-        
-        if hashes.contains(where: { $0.count != hashes.first!.count }) {
-            return .hashSizeMustBeEqual
-        }
-        
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {        
+        if hashes.count == 0 {
+            completion(.failure(.emptyHashes))
+            return
+        }
+        
+        if hashes.contains(where: { $0.count != hashes.first!.count }) {
+            completion(.failure(.hashSizeMustBeEqual))
+            return
+        }
+        
         let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000

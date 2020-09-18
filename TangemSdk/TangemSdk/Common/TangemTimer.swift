@@ -12,7 +12,6 @@ class TangemTimer {
     private var timer: Timer?
     private let completion: () -> Void
     private let timeInterval: TimeInterval
-    
     init(timeInterval: TimeInterval, completion: @escaping () -> Void) {
         self.timeInterval = timeInterval
         self.completion = completion
@@ -24,7 +23,8 @@ class TangemTimer {
             self.timer = Timer(timeInterval: self.timeInterval, repeats: false, block: {[weak self] timer in
                 self?.completion()
             })
-            self.timer!.tolerance = 0.05 * self.timeInterval
+            self.timer!.tolerance = 0.1
+
             RunLoop.main.add(self.timer!, forMode: RunLoop.Mode.common)
         }
     }

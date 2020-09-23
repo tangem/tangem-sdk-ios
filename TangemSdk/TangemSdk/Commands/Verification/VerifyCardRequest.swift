@@ -31,7 +31,7 @@ public struct CardVerifyAndGetInfoResponse: Codable {
         let error: String?
         let cardId: String
         let passed: Bool
-        let batch: String
+        let batch: String?
         let artwork: ArtworkInfo?
         let substitution: SubstitutionInfo?
         

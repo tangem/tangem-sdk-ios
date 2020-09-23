@@ -480,7 +480,7 @@ public struct Card: ResponseCodable {
     /// Total number of signed single hashes returned by the card in
     /// `SignCommand` responses since card personalization.
     /// Sums up array elements within all `SignCommand`.
-    public let walletSignedHashes: Int?
+    public var walletSignedHashes: Int?
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.

@@ -454,7 +454,7 @@ public struct Card: ResponseCodable {
     /// Name of Tangem card manufacturer.
     public let manufacturerName: String?
     /// Current status of the card.
-    public let status: CardStatus?
+    public var status: CardStatus?
     /// Version of Tangem COS.
     public let firmwareVersion: String?
     /// Public key that is used to authenticate the card against manufacturer’s database.
@@ -474,7 +474,7 @@ public struct Card: ResponseCodable {
     /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
     public let pauseBeforePin2: Int?
     /// Public key of the blockchain wallet.
-    public let walletPublicKey: Data?
+    public var walletPublicKey: Data?
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in
@@ -505,6 +505,11 @@ public struct Card: ResponseCodable {
     /// Detailed information about card contents. Format is defined by the card issuer.
     /// Cards complaint with Tangem Wallet application should have TLV format.
     public let cardData: CardData?
+    
+    /// Set by ScanTask
+    public var isPin1Default: Bool? = nil
+    /// Set by ScanTask
+    public var isPin2Default: Bool? = nil
     
     //MARK: Dynamic NDEF
     /// Remaining number of allowed transaction signatures

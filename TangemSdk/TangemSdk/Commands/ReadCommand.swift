@@ -454,7 +454,7 @@ public struct Card: ResponseCodable {
     /// Name of Tangem card manufacturer.
     public let manufacturerName: String?
     /// Current status of the card.
-    public let status: CardStatus?
+    public var status: CardStatus?
     /// Version of Tangem COS.
     public let firmwareVersion: String?
     /// Public key that is used to authenticate the card against manufacturer’s database.
@@ -474,7 +474,7 @@ public struct Card: ResponseCodable {
     /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
     public let pauseBeforePin2: Int?
     /// Public key of the blockchain wallet.
-    public let walletPublicKey: Data?
+    public var walletPublicKey: Data?
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in
@@ -506,23 +506,10 @@ public struct Card: ResponseCodable {
     /// Cards complaint with Tangem Wallet application should have TLV format.
     public let cardData: CardData?
     
-    //MARK: Dynamic NDEF
-    /// Remaining number of allowed transaction signatures
-    @available(*, deprecated, message: "Use walletRemainingSignatures instead")
-    public let remainingSignatures: Int?
-    /// Number of hashes signed after personalization (there can be
-    /// severeal hases in one transaction)
-    @available(*, deprecated, message: "Use walletSignedHashes instead")
-    public var signedHashes: Int?
-    /// First part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let challenge: Data?
-    /// Second part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let salt: Data?
-    /// [Challenge, Salt] SHA256 signature signed with Wallet_PrivateKey
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let walletSignature: Data?
+    /// Set by ScanTask
+    public var isPin1Default: Bool? = nil
+    /// Set by ScanTask
+    public var isPin2Default: Bool? = nil
     
     public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
         self.cardId = cardId
@@ -546,11 +533,36 @@ public struct Card: ResponseCodable {
         self.userCounter = userCounter
         self.terminalIsLinked = terminalIsLinked
         self.cardData = cardData
-        self.remainingSignatures = remainingSignatures
-        self.signedHashes = signedHashes
-        self.challenge = challenge
-        self.salt = salt
-        self.walletSignature = walletSignature
+    }
+    
+    public mutating func update(with response: CreateWalletResponse) {
+        guard cardId == response.cardId, response.status == .loaded else {
+            return
+        }
+    
+        status = response.status
+        walletPublicKey = response.walletPublicKey
+    }
+    
+    public func updating(with response: CreateWalletResponse) -> Card {
+        var card = self
+        card.update(with: response)
+        return card
+    }
+    
+    public mutating func update(with response: PurgeWalletResponse) {
+        guard cardId == response.cardId, response.status == .empty else {
+            return
+        }
+        
+        status = response.status
+        walletPublicKey = nil
+    }
+    
+    public func updating(with response: PurgeWalletResponse) -> Card {
+        var card = self
+        card.update(with: response)
+        return card
     }
 }
 

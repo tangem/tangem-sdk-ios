@@ -511,24 +511,6 @@ public struct Card: ResponseCodable {
     /// Set by ScanTask
     public var isPin2Default: Bool? = nil
     
-    //MARK: Dynamic NDEF
-    /// Remaining number of allowed transaction signatures
-    @available(*, deprecated, message: "Use walletRemainingSignatures instead")
-    public let remainingSignatures: Int?
-    /// Number of hashes signed after personalization (there can be
-    /// severeal hases in one transaction)
-    @available(*, deprecated, message: "Use walletSignedHashes instead")
-    public var signedHashes: Int?
-    /// First part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let challenge: Data?
-    /// Second part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let salt: Data?
-    /// [Challenge, Salt] SHA256 signature signed with Wallet_PrivateKey
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let walletSignature: Data?
-    
     public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
         self.cardId = cardId
         self.manufacturerName = manufacturerName
@@ -551,11 +533,28 @@ public struct Card: ResponseCodable {
         self.userCounter = userCounter
         self.terminalIsLinked = terminalIsLinked
         self.cardData = cardData
-        self.remainingSignatures = remainingSignatures
-        self.signedHashes = signedHashes
-        self.challenge = challenge
-        self.salt = salt
-        self.walletSignature = walletSignature
+    }
+    
+    public func updating(with response: CreateWalletResponse) -> Card {
+        guard cardId == response.cardId, response.status == .loaded else {
+            return self
+        }
+        
+        var card = self
+        card.status = response.status
+        card.walletPublicKey = response.walletPublicKey
+        return card
+    }
+    
+    public func updating(with response: PurgeWalletResponse) -> Card {
+        guard cardId == response.cardId, response.status == .empty else {
+            return self
+        }
+        
+        var card = self
+        card.status = response.status
+        card.walletPublicKey = nil
+        return card
     }
 }
 

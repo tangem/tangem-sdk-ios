@@ -535,25 +535,33 @@ public struct Card: ResponseCodable {
         self.cardData = cardData
     }
     
-    public func updating(with response: CreateWalletResponse) -> Card {
+    public mutating func update(with response: CreateWalletResponse) {
         guard cardId == response.cardId, response.status == .loaded else {
-            return self
+            return
         }
-        
+    
+        status = response.status
+        walletPublicKey = response.walletPublicKey
+    }
+    
+    public func updating(with response: CreateWalletResponse) -> Card {
         var card = self
-        card.status = response.status
-        card.walletPublicKey = response.walletPublicKey
+        card.update(with: response)
         return card
     }
     
-    public func updating(with response: PurgeWalletResponse) -> Card {
+    public mutating func update(with response: PurgeWalletResponse) {
         guard cardId == response.cardId, response.status == .empty else {
-            return self
+            return
         }
         
+        status = response.status
+        walletPublicKey = nil
+    }
+    
+    public func updating(with response: PurgeWalletResponse) -> Card {
         var card = self
-        card.status = response.status
-        card.walletPublicKey = nil
+        card.update(with: response)
         return card
     }
 }

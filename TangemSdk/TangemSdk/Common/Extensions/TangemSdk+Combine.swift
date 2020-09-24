@@ -31,7 +31,6 @@ extension CommandApdu {
                 let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey)
                 promise(.success(encrypted))
             } catch {
-                let tangemSdkError = error.toTangemSdkError()
                 promise(.failure(error.toTangemSdkError()))
             }
             }}.eraseToAnyPublisher()

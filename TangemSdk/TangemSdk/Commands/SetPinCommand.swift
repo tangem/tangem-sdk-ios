@@ -36,6 +36,11 @@ public class SetPinCommand: Command, CardSessionPreparable {
         self.pinType = pinType
     }
     
+    /// Reset pin1 and pin2 to default values
+    public convenience init() {
+        self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), newPin3: nil, pinType: .pin1)
+    }
+    
     public convenience init(pinType: PinCode.PinType, pin: Data? = nil) {
         switch pinType {
         case .pin1:

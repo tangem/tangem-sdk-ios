@@ -41,14 +41,28 @@ public class SetPinCommand: Command, CardSessionPreparable {
         self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), newPin3: nil, pinType: .pin1)
     }
     
-    public convenience init(pinType: PinCode.PinType, pin: Data? = nil) {
+    /// Change pin
+    /// - Parameters:
+    ///   - pinType: Pin to change
+    ///   - pin: If nil, pin will be requested automatically
+    ///   - isExclusive: Reset other pin codes to the default values
+    public convenience init(pinType: PinCode.PinType, pin: Data? = nil, isExclusive: Bool = false) {
         switch pinType {
         case .pin1:
-            self.init(newPin1: pin, newPin2: nil, newPin3: nil, pinType: pinType)
+            self.init(newPin1: pin,
+                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
+                      newPin3: nil,
+                      pinType: pinType)
         case .pin2:
-            self.init(newPin1: nil, newPin2: pin, newPin3: nil, pinType: pinType)
+            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
+                      newPin2: pin,
+                      newPin3: nil,
+                      pinType: pinType)
         case .pin3:
-            self.init(newPin1: nil, newPin2: nil, newPin3: pin, pinType: pinType)
+            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
+                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
+                      newPin3: pin,
+                      pinType: pinType)
         }
     }
     
@@ -65,7 +79,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
-        if newPin1 == nil && newPin2 == nil && newPin3 == nil {
+        if (newPin1 == nil && pinType == .pin1) || (newPin2 == nil && pinType == .pin2) || (newPin3 == nil && pinType == .pin3) {
             session.pause(error: TangemSdkError.from(pinType: self.pinType))
             DispatchQueue.main.async {
                 self.requestNewPin(in: session) { result in

@@ -325,6 +325,12 @@ public class CardSession {
                 if let wrongCardError = wrongCardError {
                     self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        guard self.reader.isReady else {
+                            onSessionStarted(self, .userCancelled)
+                            self.stop()
+                            return
+                        }
+                        
                         self.restartPolling()
                         self.preflightCheck(onSessionStarted)
                     }

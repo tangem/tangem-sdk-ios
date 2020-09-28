@@ -45,15 +45,20 @@ public final class ScanTask: CardSessionRunnable {
         
         card.isPin1Default = session.environment.pin1.isDefault
         
-        CheckPinCommand().run(in: session) { checkPinResult in
-            switch checkPinResult {
-            case .success(let checkPinResponse):
-                card.isPin2Default = checkPinResponse.isPin2Default
-                session.environment.card = card
-                self.runCheckWalletIfNeeded(card, session, completion)
-            case .failure(let error):
-                 completion(.failure(error))
+        if let fw = card.firmwareVersionValue, fw > 1.19 { //skip old card with persistent SD
+            CheckPinCommand().run(in: session) { checkPinResult in
+                switch checkPinResult {
+                case .success(let checkPinResponse):
+                    card.isPin2Default = checkPinResponse.isPin2Default
+                    session.environment.card = card
+                    self.runCheckWalletIfNeeded(card, session, completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
+        } else {
+            session.environment.card = card
+            runCheckWalletIfNeeded(card, session, completion)
         }
         
 //        if let pin1 = session.environment.pin1.value, let pin2 = session.environment.pin2.value {

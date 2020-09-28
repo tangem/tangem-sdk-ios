@@ -210,7 +210,6 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        state = .inactive
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
@@ -220,16 +219,17 @@ public class CardSession {
         }
         
         environmentService.saveEnvironmentValues(environment, cardId: cardId)
+        state = .inactive
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        state = .inactive
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
+        state = .inactive
     }
     
     /// Restarts the polling sequence so the reader session can discover new tags.

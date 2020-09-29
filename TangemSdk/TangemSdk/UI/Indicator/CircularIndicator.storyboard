@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17132" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17105"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -30,7 +31,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="J6S-nR-cJw" firstAttribute="centerX" secondItem="ATZ-Ga-8jF" secondAttribute="centerX" id="273-BT-WNM"/>
                                     <constraint firstAttribute="width" constant="183" id="7er-Nn-9LH"/>
@@ -45,7 +46,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="yEy-lG-Dsu"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="yEy-lG-Dsu" firstAttribute="trailing" secondItem="GmJ-wz-maO" secondAttribute="trailing" constant="16" id="ChC-Vc-WEx"/>
                             <constraint firstItem="ATZ-Ga-8jF" firstAttribute="top" secondItem="yEy-lG-Dsu" secondAttribute="top" constant="150" id="Oxa-V1-9HC"/>
@@ -53,11 +55,12 @@
                             <constraint firstItem="GmJ-wz-maO" firstAttribute="top" secondItem="yEy-lG-Dsu" secondAttribute="top" constant="84" id="qgP-Uk-zff"/>
                             <constraint firstItem="GmJ-wz-maO" firstAttribute="leading" secondItem="yEy-lG-Dsu" secondAttribute="leading" constant="16" id="uvy-z6-aL2"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="yEy-lG-Dsu"/>
                     </view>
                     <connections>
+                        <outlet property="containerTopConstraint" destination="Oxa-V1-9HC" id="OgT-OV-apy"/>
                         <outlet property="containerView" destination="ATZ-Ga-8jF" id="rZc-Zj-XNe"/>
                         <outlet property="lblHint" destination="GmJ-wz-maO" id="lMa-K6-b3f"/>
+                        <outlet property="lblHintTopConstraint" destination="qgP-Uk-zff" id="nSq-d2-HTh"/>
                         <outlet property="lbltext" destination="J6S-nR-cJw" id="m4i-Y7-gHg"/>
                     </connections>
                 </viewController>
@@ -68,7 +71,10 @@
     </scenes>
     <resources>
         <namedColor name="tngBlue">
-            <color red="0.0" green="0.16078431372549018" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.16099999845027924" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

@@ -33,6 +33,11 @@ extension CardSessionRunnable {
     }
 }
 
+@available(iOS 13.0, *)
+protocol CardSessionPreparable {
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
+}
+
 /// Allows interaction with Tangem cards. Should be open before sending commands
 @available(iOS 13.0, *)
 public class CardSession {
@@ -49,7 +54,7 @@ public class CardSession {
     public private(set) var connectedTag: NFCTagType? = nil
     
     private let reader: CardReader
-    private let initialMessage: String?
+    private let initialMessage: Message?
     private let showScanOnboarding: Bool
     private var cardId: String?
     private let storageService: StorageService
@@ -68,7 +73,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: String? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environmentService = environmentService
@@ -88,44 +93,57 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
-        if let command = runnable as? PreflightReadCapable {
-            needPreflightRead = command.needPreflightRead
-        }
-        pin2Required = runnable.requiresPin2
-        
-        requestPin1IfNeeded {[weak self] result in
-            switch result {
+        prepareSession(for: runnable) { prepareResult in
+            switch prepareResult {
             case .success:
-                self?.requestPin2IfNeeded {[weak self] result in
-                    switch result {
-                    case .success:
-                        self?.start() {[weak self] session, error in
-                            guard let self = self else { return }
-                            
-                            if let error = error {
-                                DispatchQueue.main.async {
-                                    completion(.failure(error))
-                                }
-                                return
-                            }
-                            
-                            runnable.run(in: self) {result in
-                                self.handleRunnableCompletion(runnableResult: result, completion: completion)
-                            }
-                        }
-                        
-                    case .failure(let error):
+                //        requestPinIfNeeded(.pin1) {[weak self] result in
+                //            switch result {
+                //            case .success:
+                //                self?.requestPinIfNeeded(.pin2) {[weak self] result in
+                //                    switch result {
+                //                    case .success:
+                self.start() {[weak self] session, error in
+                    guard let self = self else { return }
+                    
+                    if let error = error {
                         DispatchQueue.main.async {
                             completion(.failure(error))
                         }
+                        return
+                    }
+                    
+                    runnable.run(in: self) {result in
+                        self.handleRunnableCompletion(runnableResult: result, completion: completion)
                     }
                 }
-                
+                //
+                //                    case .failure(let error):
+                //                        DispatchQueue.main.async {
+                //                            completion(.failure(error))
+                //                        }
+                //                    }
+                //                }
+                //
+                //            case .failure(let error):
+                //                DispatchQueue.main.async {
+                //                    completion(.failure(error))
+                //                }
+                //            }
+            //        }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
+        }
+    }
+    
+    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
+        needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
+        pin2Required = runnable.requiresPin2
+        
+        if let preparable = runnable as? CardSessionPreparable {
+            preparable.prepare(self, completion: completion)
+        } else {
+            completion(.success(()))
         }
     }
     
@@ -192,26 +210,26 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        state = .inactive
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
-
+        
         if !storageService.bool(forKey: .hasSuccessfulTapIn) {
             storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
         
         environmentService.saveEnvironmentValues(environment, cardId: cardId)
+        state = .inactive
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        state = .inactive
         connectedTagSubscription = []
         sendSubscription = []
         viewDelegate.sessionStopped()
+        state = .inactive
     }
     
     /// Restarts the polling sequence so the reader session can discover new tags.
@@ -259,9 +277,9 @@ public class CardSession {
         reader.readSlix2Tag(completion: completion)
     }
     
-    func pause() {
+    func pause(error: TangemSdkError? = nil) {
         environment.encryptionKey = nil
-        reader.stopSession()
+        reader.stopSession(with: error?.localizedDescription)
     }
     
     func resume() {
@@ -269,7 +287,7 @@ public class CardSession {
     }
     
     func start() {
-        reader.startSession(with: initialMessage)
+        reader.startSession(with: initialMessage?.alertMessage)
     }
     
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {
@@ -290,34 +308,40 @@ public class CardSession {
             
             switch readResult {
             case .success(let readResponse):
+                var wrongCardError: TangemSdkError? = nil
+                
                 if let expectedCardId = self.cardId?.uppercased(),
                     let actualCardId = readResponse.cardId?.uppercased() {
-                    
-                    var wrongCardError: TangemSdkError? = nil
                     
                     if expectedCardId != actualCardId {
                         wrongCardError = .wrongCardNumber
                     }
-                    
-                    if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
-                        wrongCardError = .wrongCardType
-                    }
-                    
-                    if let wrongCardError = wrongCardError {
-                        self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                            self.restartPolling()
-                            self.preflightCheck(onSessionStarted)
+                }
+                
+                if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
+                    wrongCardError = .wrongCardType
+                }
+                
+                if let wrongCardError = wrongCardError {
+                    self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        guard self.reader.isReady else {
+                            onSessionStarted(self, .userCancelled)
+                            self.stop()
+                            return
                         }
-                        return
+                        
+                        self.restartPolling()
+                        self.preflightCheck(onSessionStarted)
                     }
+                    return
                 }
                 
                 self.cardId = readResponse.cardId
                 if let cid = self.cardId {
                     self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
                 }
-               
+                
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
@@ -366,38 +390,40 @@ public class CardSession {
         }.eraseToAnyPublisher()
     }
     
-    private func requestPin1IfNeeded(_ completion: @escaping CompletionResult<Void>) {
-        guard environment.pin1.value == nil else {
-            completion(.success(()))
-            return
-        }
-        
-        viewDelegate.requestPin1(cardId: self.cardId) {[weak self] pin1 in
-            guard let self = self else { return }
-            
-            if let pin1 = pin1 {
-                self.environment.pin1 = PinCode(.pin1, stringValue: pin1)
+    func requestPinIfNeeded(_ pinType: PinCode.PinType, _ completion: @escaping CompletionResult<Void>) {
+        switch pinType {
+        case .pin1:
+            guard environment.pin1.value == nil else {
                 completion(.success(()))
-            } else {
-                completion(.failure(.pin1Required))
+                return
+            }
+        case .pin2:
+            guard /*pin2Required &&*/ environment.pin2.value == nil else {
+                completion(.success(()))
+                return
+            }
+        case .pin3:
+            guard environment.pin3.value == nil else {
+                completion(.success(()))
+                return
             }
         }
-    }
-    
-    private func requestPin2IfNeeded(_ completion: @escaping CompletionResult<Void>) {
-        guard pin2Required && environment.pin2.value == nil else {
-            completion(.success(()))
-            return
-        }
         
-        viewDelegate.requestPin2(cardId: self.cardId) {[weak self] pin2 in
+        viewDelegate.requestPin(pinType: pinType, cardId: self.cardId) {[weak self] pin in
             guard let self = self else { return }
             
-            if let pin2 = pin2 {
-                self.environment.pin2 = PinCode(.pin2, stringValue: pin2)
+            if let pin = pin {
+                switch pinType {
+                case .pin1:
+                    self.environment.pin1 = PinCode(.pin1, stringValue: pin)
+                case .pin2:
+                    self.environment.pin2 = PinCode(.pin2, stringValue: pin)
+                case .pin3:
+                    self.environment.pin3 = PinCode(.pin3, stringValue: pin)
+                }
                 completion(.success(()))
             } else {
-                completion(.failure(.pin2OrCvcRequired))
+                completion(.failure(TangemSdkError.from(pinType: pinType)))
             }
         }
     }

@@ -72,22 +72,24 @@ public final class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if let signingMethod = card.signingMethod, !signingMethod.contains(.signHash) {
+        if let signingMethod = card.signingMethods, !signingMethod.contains(.signHash) {
             return .signHashesNotAvailable
-        }
-        
-        if hashes.count == 0 {
-            return .emptyHashes
-        }
-        
-        if hashes.contains(where: { $0.count != hashes.first!.count }) {
-            return .hashSizeMustBeEqual
         }
         
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {        
+        if hashes.count == 0 {
+            completion(.failure(.emptyHashes))
+            return
+        }
+        
+        if hashes.contains(where: { $0.count != hashes.first!.count }) {
+            completion(.failure(.hashSizeMustBeEqual))
+            return
+        }
+        
         let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000
@@ -101,11 +103,11 @@ public final class SignCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if error == .invalidParams {
+        if case .invalidParams = error {
             return .pin2OrCvcRequired
         }
         
-        if error == .unknownStatus {
+        if case .unknownStatus = error {
             return .nfcStuck
         }
         

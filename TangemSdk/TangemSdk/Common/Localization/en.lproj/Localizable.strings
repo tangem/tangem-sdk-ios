@@ -29,6 +29,26 @@
 
 "writing_data_progress" = "Writing data: %@%%";
 
+"pin_title_pin1" = "Enter Access Code";
+"pin_title_pin2" = "Enter Passcode";
+"pin_title_pin3" = "Enter Pin3";
+
+"pin_placeholder_access" = "Access code";
+"pin_placeholder_pass" = "Passcode";
+"pin_placeholder_pin3" = "Pin3";
+
+"changepin_placeholder_new" = "New";
+"changepin_placeholder_current" = "Current";
+"changepin_placeholder_confirm" = "Confirm";
+"changepin_error_mismatch" = "Codes do not match";
+
+"changepin_title_pin1" = "Change Access Code";
+"changepin_title_pin2" = "Change Passcode";
+"changepin_title_pin3" = "Change Pin3";
+
+
+"common_continue" = "Continue";
+"common_save" = "Save";
 // Errors
 "error_operation" = "An error occurred during the operation";
 "error_tag_lost" = "Tag lost.";
@@ -57,3 +77,6 @@
 "error_wrong_card_number" = "You tapped a different card. Please match the in-app Card ID to the your physical Card ID to continue this process.";
 "error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
 "error_card_error" = "Your card is missing essential data";
+
+"error_pin1_required" = "Access code is requred";
+"error_pin2_required" = "Passcode is required";

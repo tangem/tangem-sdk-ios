@@ -13,7 +13,7 @@ import CoreNFC
 /// Provides NFC communication between an application and Tangem card.
 @available(iOS 13.0, *)
 final class NFCReader: NSObject {
-    static let tagTimeout = 18.0
+    static let tagTimeout = 20.0
     static let idleTimeout = 2.0
     static let sessionTimeout = 52.0
     static let nfcStuckTimeout = 5.0
@@ -269,7 +269,9 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         stopTimers()
         let nfcError = error as! NFCReaderError
         print(nfcError.localizedDescription)
-        readerSessionError = TangemSdkError.parse(nfcError)
+        if readerSessionError == nil {
+            readerSessionError = TangemSdkError.parse(nfcError)
+        }
         tag.send(completion: .failure(readerSessionError!))
         tag = .init(nil)
     }

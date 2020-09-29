@@ -15,7 +15,7 @@ extension UIColor {
     }
     
     @nonobjc class var tngBlue: UIColor {
-        return UIColor(named: "tngBlue", in: Bundle.sdkBundle, compatibleWith: nil)!
+       return UIColor(red: 0.0, green: 41.0 / 255.0, blue: 1.0, alpha: 1.0)
     }
     
 }

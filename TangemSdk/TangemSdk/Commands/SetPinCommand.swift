@@ -17,27 +17,104 @@ public struct SetPinResponse: ResponseCodable {
 }
 
 @available(iOS 13.0, *)
-public class SetPinCommand: Command {
+public class SetPinCommand: Command, CardSessionPreparable {
     public typealias CommandResponse = SetPinResponse
     
-    private let newPin1: Data
-    private let newPin2: Data
-    private let newPin3: Data?
+    public var requiresPin2: Bool {
+        return true
+    }
     
-    public init(newPin1: Data, newPin2: Data, newPin3: Data? = nil) {
+    private let pinType: PinCode.PinType
+    private var newPin1: Data?
+    private var newPin2: Data?
+    private var newPin3: Data?
+    
+    private init(newPin1: Data?, newPin2: Data?, newPin3: Data? = nil, pinType: PinCode.PinType) {
         self.newPin1 = newPin1
         self.newPin2 = newPin2
         self.newPin3 = newPin3
+        self.pinType = pinType
     }
     
+    /// Reset pin1 and pin2 to default values
     public convenience init() {
-        self.init(newPin1: PinCode.defaultPin1.sha256(),
-                  newPin2: PinCode.defaultPin2.sha256(),
-                  newPin3: nil)
+        self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), newPin3: nil, pinType: .pin1)
+    }
+    
+    /// Change pin
+    /// - Parameters:
+    ///   - pinType: Pin to change
+    ///   - pin: If nil, pin will be requested automatically
+    ///   - isExclusive: Reset other pin codes to the default values
+    public convenience init(pinType: PinCode.PinType, pin: Data? = nil, isExclusive: Bool = false) {
+        switch pinType {
+        case .pin1:
+            self.init(newPin1: pin,
+                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
+                      newPin3: nil,
+                      pinType: pinType)
+        case .pin2:
+            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
+                      newPin2: pin,
+                      newPin3: nil,
+                      pinType: pinType)
+        case .pin3:
+            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
+                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
+                      newPin3: pin,
+                      pinType: pinType)
+        }
     }
     
     deinit {
         print ("SetPinCommand deinit")
+    }
+    
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+        if newPin1 == nil && newPin2 == nil && newPin3 == nil {
+            self.requestNewPin(in: session, completion: completion)
+        } else {
+            completion(.success(()))
+        }
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
+        if (newPin1 == nil && pinType == .pin1) || (newPin2 == nil && pinType == .pin2) || (newPin3 == nil && pinType == .pin3) {
+            session.pause(error: TangemSdkError.from(pinType: self.pinType))
+            DispatchQueue.main.async {
+                self.requestNewPin(in: session) { result in
+                    switch result {
+                    case .success:
+                        session.resume()
+                        self.transieve(in: session, completion: completion )
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            }
+        } else {
+            self.transieve(in: session, completion: completion )
+        }
+    }
+    
+    private func requestNewPin(in session: CardSession, completion: @escaping CompletionResult<Void>) {
+        session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId) { result in
+            switch result {
+            case .success(let pinChangeResult):
+                let newPinData = pinChangeResult.newPin.sha256()
+                switch self.pinType {
+                case .pin1:
+                    self.newPin1 = newPinData
+                case .pin2:
+                    self.newPin2 = newPinData
+                case .pin3:
+                    self.newPin3 = newPinData
+                }
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
@@ -45,8 +122,8 @@ public class SetPinCommand: Command {
             .append(.pin, value: environment.pin1.value)
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: newPin1)
-            .append(.newPin2, value: newPin2)
+            .append(.newPin, value: newPin1 ?? environment.pin1.value )
+            .append(.newPin2, value: newPin2 ?? environment.pin2.value)
         
         if let newPin3 = self.newPin3 {
             try tlvBuilder.append(.newPin3, value: newPin3)
@@ -73,9 +150,17 @@ public class SetPinCommand: Command {
             cardId: try decoder.decode(.cardId),
             status: status)
     }
+    
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+        if case .invalidParams = error {
+            return .pin2OrCvcRequired
+        }
+        
+        return error
+    }
 }
 
-public enum SetPinStatus: String, ResponseCodable {
+public enum SetPinStatus: String, Codable {
     case pinsNotChanged
     case pin1Changed
     case pin2Changed

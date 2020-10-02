@@ -67,6 +67,7 @@
 "error_not_activated" = "This card has not been activated";
 "error_purged" = "You cannot sign data with this wallet because the card has been purged";
 "error_verification_failed" = "Data verification failed";
+"error_card_verification_failed" = "Card verification failed";
 "error_data_size_too_large" = "Data size exceeds the max limit of 512 bytes";
 "error_data_size_too_large_extended" = "Data size exceeds the max limit of 32 Kbytes";
 "error_missing_counter" = "The data cannot be written to the card because there is no counter";
@@ -77,6 +78,5 @@
 "error_wrong_card_number" = "You tapped a different card. Please match the in-app Card ID to the your physical Card ID to continue this process.";
 "error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
 "error_card_error" = "Your card is missing essential data";
-
 "error_pin1_required" = "Access code is requred";
 "error_pin2_required" = "Passcode is required";

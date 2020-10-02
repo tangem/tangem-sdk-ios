@@ -17,7 +17,7 @@ public struct SignResponse: ResponseCodable {
     /// Remaining number of sign operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int
     /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int
+    public let walletSignedHashes: Int?
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
@@ -182,7 +182,7 @@ public final class SignCommand: Command {
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),
             walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
-            walletSignedHashes: try decoder.decode(.walletSignedHashes))
+            walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
     
     private func getChunk() -> Range<Int> {

@@ -149,6 +149,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// a card's ability to sign with its private key, or the validity of issuer data.
     case verificationFailed
     
+    case cardVerificationFailed
+    
     /// This error is returned when a [Task] checks unsuccessfully either
     /// a card's ability to sign with its private key, or the validity of issuer data.
     case dataSizeTooLarge
@@ -294,6 +296,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .unsupportedDevice: return 10004
         case .userCancelled: return 50002
         case .verificationFailed: return 40005
+        case .cardVerificationFailed: return 40011
         case .wrongCardNumber: return 50005
         case .wrongCardType: return 50006
         case .underlying: return 50010
@@ -331,6 +334,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .tooManyHashesInOneTransaction: return Localization.string("error_cannot_be_signed")
         case .userCancelled: return Localization.string("error_user_cancelled")
         case .verificationFailed: return Localization.string("error_verification_failed")
+        case .cardVerificationFailed: return Localization.string("error_card_verification_failed")
         case .wrongCardNumber: return Localization.string("error_wrong_card_number")
         case .wrongCardType: return Localization.string("error_wrong_card_type")
         case .pin1Required: return Localization.string("error_pin1_required")

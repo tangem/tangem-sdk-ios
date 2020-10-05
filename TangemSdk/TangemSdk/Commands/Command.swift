@@ -124,7 +124,7 @@ extension Command {
     }
     
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-        print("transieve: \(Instruction(rawValue: apdu.ins)!)")
+       // print("transieve: \(Instruction(rawValue: apdu.ins)!)")
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):

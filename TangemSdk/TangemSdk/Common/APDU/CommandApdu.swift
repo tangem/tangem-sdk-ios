@@ -11,7 +11,13 @@ import CoreNFC
 
 /// Class that provides conversion of serialized request and Instruction code
 /// to a raw data that can be sent to the card.
-public struct CommandApdu: Equatable {
+public struct CommandApdu: Equatable, CustomStringConvertible {
+    public var description: String {
+        let instruction = Instruction(rawValue: ins) ?? .unknown
+        let insDecription = "\(instruction)(\(ins.toHex()))"
+        return "-> C-APDU INS: \(insDecription), DATA: \(data.asHexString()), P1: \(p1.toHex()), P2: \(p2.toHex())"
+    }
+    
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
     

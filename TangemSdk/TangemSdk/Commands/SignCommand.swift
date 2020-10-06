@@ -135,7 +135,9 @@ public final class SignCommand: Command {
             case .success(let response):
                 self.responces.append(response)
                 self.currentChunk += 1
-                session.restartPolling()
+                if self.currentChunk != self.numberOfChunks {
+                    session.restartPolling()
+                }
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

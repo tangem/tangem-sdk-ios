@@ -191,6 +191,17 @@ public final class TlvDecoder {
             }
             
             return mode as! T
+		case .fileSettings:
+			guard FileSettings.self == T.self || FileSettings?.self == T.self else {
+				print("Decoding error. Failed to convert \(tag) to FileSettings")
+				throw TangemSdkError.decodingFailedTypeMismatch
+			}
+			let intValue = tagValue.toInt()
+			guard let fileSettings = FileSettings(rawValue: intValue) else {
+				print("Decoding error. Unsupported file setting")
+				throw TangemSdkError.notSupportedFileSettings
+			}
+			return fileSettings as! T
         }
     }
 }

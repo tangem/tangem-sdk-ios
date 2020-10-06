@@ -447,6 +447,12 @@ public final class TangemSdk {
                                 pin2: String? = nil,
                                 completion: @escaping CompletionResult<T.CommandResponse>)
         where T : CardSessionRunnable {
+        
+        if let existingSession = cardSession, existingSession.state == .active  {
+            completion(.failure(.busy))
+            return
+        }
+        
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
@@ -473,6 +479,12 @@ public final class TangemSdk {
                              pin1: String? = nil,
                              pin2: String? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
+        
+        if let existingSession = cardSession, existingSession.state == .active  {
+            callback(existingSession, .busy)
+            return
+        }
+        
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,

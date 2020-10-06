@@ -219,6 +219,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorTagUpdateFailure
     case ndefReaderSessionErrorTagSizeTooSmall
     case ndefReaderSessionErrorZeroLengthMessage
+	
+	// MARK: Files errors
+	
+	/// Returned when there is no files on card or when successfully read all files
+	case fileNotFound
+	
+	/// Returned when file on card has unwknown file settings
+	case notSupportedFileSettings
     
     public var code: Int {
         switch self {
@@ -300,6 +308,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardNumber: return 50005
         case .wrongCardType: return 50006
         case .underlying: return 50010
+		case .fileNotFound: return 30007
+		case .notSupportedFileSettings: return 30017  // TODO: Change to correct code error code
         }
     }
     
@@ -340,6 +350,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .pin1Required: return Localization.string("error_pin1_required")
         case .pin2OrCvcRequired: return Localization.string("error_pin2_required")
         case .underlying(let error): return error.localizedDescription
+		case .fileNotFound: return Localization.string("file_not_found")
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

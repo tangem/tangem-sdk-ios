@@ -80,3 +80,4 @@
 "error_card_error" = "Your card is missing essential data";
 "error_pin1_required" = "Access code is requred";
 "error_pin2_required" = "Passcode is required";
+"file_not_found" = "File not found";

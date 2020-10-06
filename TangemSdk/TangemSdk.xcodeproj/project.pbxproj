@@ -175,6 +175,10 @@
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
 		5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC4A1233BA5E0004964E8 /* Byte+.swift */; };
+		B0800F82252C3CAA007E04EE /* ReadFileDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */; };
+		B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F88252C4514007E04EE /* ReadFileCommand.swift */; };
+		B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F8C252C46B1007E04EE /* FileSettings.swift */; };
+		B0800F96252C6867007E04EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F95252C6867007E04EE /* File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -361,6 +365,10 @@
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		5DFFC4A1233BA5E0004964E8 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
+		B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileDataTask.swift; sourceTree = "<group>"; };
+		B0800F88252C4514007E04EE /* ReadFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommand.swift; sourceTree = "<group>"; };
+		B0800F8C252C46B1007E04EE /* FileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSettings.swift; sourceTree = "<group>"; };
+		B0800F95252C6867007E04EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -474,6 +482,7 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				B0800F87252C4508007E04EE /* Files */,
 				5D3F77B424B9B8E700E8695B /* Verification */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
@@ -501,6 +510,7 @@
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				5DC060D823E18A17001BF611 /* CreateWalletTask.swift */,
 				5DD97B3824E143CF0038E944 /* ChangePinTask.swift */,
+				B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -758,6 +768,7 @@
 				5DFFC49D233B9D4C004964E8 /* NFC */,
 				5DFFC4A0233BA5D2004964E8 /* Extensions */,
 				5D6A92D52344E2B400158457 /* Localization */,
+				B0800F94252C6859007E04EE /* Files */,
 				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5D41EA0523D19BAD004DE701 /* TangemTimer.swift */,
 			);
@@ -830,6 +841,23 @@
 				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B0800F87252C4508007E04EE /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		B0800F94252C6859007E04EE /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				B0800F95252C6867007E04EE /* File.swift */,
+				B0800F8C252C46B1007E04EE /* FileSettings.swift */,
+			);
+			path = Files;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1044,6 +1072,7 @@
 				5D273A0B234F270200ACDA11 /* Error.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
+				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
@@ -1070,6 +1099,7 @@
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
 				5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
+				B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */,
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
@@ -1082,6 +1112,8 @@
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
 				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
+				B0800F82252C3CAA007E04EE /* ReadFileDataTask.swift in Sources */,
+				B0800F96252C6867007E04EE /* File.swift in Sources */,
 				5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,

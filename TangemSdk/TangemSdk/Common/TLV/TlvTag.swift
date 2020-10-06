@@ -24,6 +24,7 @@ public enum TlvValueType {
     case byte
     case uint16
     case issuerExtraDataMode
+	case fileSettings
 }
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
@@ -117,7 +118,12 @@ public enum TlvTag: Byte {
     case issueDate = 0xD4
     case expireDate = 0xD5
     case trustedAddress = 0xD6
-    
+	
+	// MARK: - Tlv tags for files
+	case fileIndex = 0x26
+	case fileSettings = 0x27
+	
+	// MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
@@ -143,12 +149,14 @@ public enum TlvTag: Byte {
             return .cardStatus
         case .signingMethod:
             return .signingMethod
-        case .transactionOutHashSize, .legacyMode:
+		case .transactionOutHashSize, .legacyMode, .fileIndex:
             return .byte
         case .mode:
             return .issuerExtraDataMode
-        case .offset, .size:
+		case .offset, .size:
             return .uint16
+		case .fileSettings:
+			return .fileSettings
         default:
             return .data
         }

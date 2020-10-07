@@ -51,11 +51,10 @@ public class ReadFileDataTask: CardSessionRunnable {
 		command.run(in: session) { (result) in
 			switch result {
 			case .success(let response):
-				var file = response.file
-				self.files.append(response.file)
-				self.settings.shouldValidateFiles ?
-					self.performReadFileChecksumCommand(session: session, for: &file, completion: completion) :
-					self.readNextFile(session: session, lastFileIndex: file.fileIndex, completion: completion)
+				let file = File(response: response)
+				self.files.append(file)
+				self.fileIndex = file.fileIndex + 1
+				self.performReadFileDataCommand(session: session, completion: completion)
 			case .failure(let error):
 				if case TangemSdkError.fileNotFound = error {
 					completion(.success(ReadFilesResponse(files: self.files)))
@@ -63,25 +62,6 @@ public class ReadFileDataTask: CardSessionRunnable {
 					completion(.failure(error))
 				}
 			}
-		}
-	}
-	
-	private func readNextFile(session: CardSession, lastFileIndex: Int, completion: @escaping CompletionResult<ReadFilesResponse>) {
-		fileIndex = lastFileIndex + 1
-		performReadFileDataCommand(session: session, completion: completion)
-	}
-	
-	private func performReadFileChecksumCommand(session: CardSession, for file: inout File, completion: @escaping CompletionResult<ReadFilesResponse>) {
-		let command = ReadFileChecksumCommand(fileIndex: file.fileIndex, readPrivateFiles: settings.readPrivateFiles)
-		command.run(in: session) { [file] (result) in
-			switch result {
-			case .success(let response):
-				let loadedFileChecksum = file.fileData.getSha256()
-				let status: FileValidation = loadedFileChecksum == response.checksum ? .valid : .corrupted
-			case .failure(let  error):
-				print("Failed to read file checksum", error)
-			}
-			self.readNextFile(session: session, lastFileIndex: file.fileIndex, completion: completion)
 		}
 	}
 	

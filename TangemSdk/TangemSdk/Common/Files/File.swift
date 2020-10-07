@@ -16,13 +16,23 @@ public struct File: Codable {
 		self.fileData = fileData
 	}
 	
-	public init(response: ReadFileDataResponse) {
+	init(response: ReadFileDataResponse) {
 		fileIndex = response.fileIndex
 		fileSettings = response.fileSettings
 		fileData = response.fileData
 	}
 	
+	internal static let emptyFile = File(fileIndex: 0, fileSettings: nil, fileData: Data())
+	
 	let fileIndex: Int
 	let fileSettings: FileSettings?
 	let fileData: Data
+	
+	var fileValidationStatus: FileValidation = .notValidated
+	
+}
+
+@available (iOS 13.0, *)
+public enum FileValidation: String, Codable {
+	case notValidated, valid, corrupted
 }

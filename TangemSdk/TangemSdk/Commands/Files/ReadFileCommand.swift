@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-struct ReadFileDataResponse: ResponseCodable {
+public struct ReadFileDataResponse: ResponseCodable {
 	let cardId: String
 	let size: Int?
 	let fileData: Data
@@ -20,17 +20,10 @@ struct ReadFileDataResponse: ResponseCodable {
 }
 
 @available (iOS 13.0, *)
-public struct ReadFileCommandResponse: ResponseCodable {
-	let file: File
+public final class ReadFileDataCommand: Command {
+	public typealias CommandResponse = ReadFileDataResponse
 	
-	static let emptyResponse: ReadFileCommandResponse = ReadFileCommandResponse(file: .emptyFile)
-}
-
-@available (iOS 13.0, *)
-final class ReadFileDataCommand: Command {
-	typealias CommandResponse = ReadFileDataResponse
-	
-	var requiresPin2: Bool { readPrivateFiles }
+	public var requiresPin2: Bool { readPrivateFiles }
 	
 	private let fileIndex: Int
 	private let readPrivateFiles: Bool
@@ -40,12 +33,12 @@ final class ReadFileDataCommand: Command {
 	private var dataSize: Int = 0
 	private var fileSettings: FileSettings? = nil
 	
-	init(fileIndex: Int, readPrivateFiles: Bool) {
+	public init(fileIndex: Int, readPrivateFiles: Bool) {
 		self.fileIndex = fileIndex
 		self.readPrivateFiles = readPrivateFiles
 	}
 	
-	func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileCommandResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
 		readFileData(session: session, completion: completion)
 	}
 	
@@ -61,13 +54,13 @@ final class ReadFileDataCommand: Command {
 		return error
 	}
 	
-	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileCommandResponse>) {
+	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
 				if let size = response.size {
 					if size == 0 {
-						completion(.success(.emptyResponse))
+						completion(.success(response))
 						return
 					}
 					self.dataSize = size
@@ -86,8 +79,15 @@ final class ReadFileDataCommand: Command {
 		}
 	}
 	
-	private func completeTask(_ data: ReadFileDataResponse, completion: @escaping CompletionResult<ReadFileCommandResponse>) {
-		completion(.success(.init(file: File(fileIndex: fileIndex, fileSettings: data.fileSettings, fileData: fileData))))
+	private func completeTask(_ data: ReadFileDataResponse, completion: @escaping CompletionResult<ReadFileDataResponse>) {
+		let response = ReadFileDataResponse(cardId: data.cardId,
+											size: dataSize,
+											fileData: fileData,
+											fileIndex: fileIndex,
+											fileSettings: fileSettings ?? data.fileSettings,
+											fileDataSignature: data.fileDataSignature,
+											fileDataCounter: data.fileDataCounter)
+		completion(.success(response))
 	}
 	
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

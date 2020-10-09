@@ -35,6 +35,12 @@ public final class ReadFileChecksumCommand: Command {
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
 		guard card.status == CardStatus.notPersonalized else { return nil }
+		
+		guard
+			let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion >= FirmwareConstraints.minVersionForFiles
+		else { return .notSupportedFirmwareVersion }
+		
 		return .notPersonalized
 	}
 	
@@ -49,7 +55,7 @@ public final class ReadFileChecksumCommand: Command {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
-				break
+				completion(.success(response))
 			case .failure(let error):
 				completion(.failure(error))
 			}
@@ -61,7 +67,7 @@ public final class ReadFileChecksumCommand: Command {
 			.append(.pin, value: environment.pin1.value)
 			.append(.cardId, value: environment.card?.cardId)
 			.append(.fileIndex, value: fileIndex)
-			.append(.mode, value: 1)
+			.append(.interactionMode, value: FileDataMode.readFileHash)
 		if readPrivateFiles {
 			tlvBuilder = try tlvBuilder.append(.pin2, value: environment.pin2.value)
 		}
@@ -74,7 +80,7 @@ public final class ReadFileChecksumCommand: Command {
 		}
 		let decoder = TlvDecoder(tlv: tlv)
 		return ReadFileChecksumResponse(cardId: try decoder.decode(.cardId),
-										checksum: try decoder.decode(.cardData),
+										checksum: try decoder.decode(.codeHash),
 										fileIndex: try decoder.decode(.fileIndex))
 	}
 }

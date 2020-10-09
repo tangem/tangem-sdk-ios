@@ -11,7 +11,7 @@
 
 "nfc_alert_sign_completed" = "La transaction a été signée avec succès";
 
-"dialog_security_delay" = "Délai de sécurité";
+"view_delegate_security_delay" = "Délai de sécurité";
 
 "nfc_seconds_left" = "Encore %@";
 

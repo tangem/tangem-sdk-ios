@@ -43,8 +43,18 @@ public final class ReadFileDataCommand: Command {
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		guard card.status == CardStatus.notPersonalized else { return nil }
-		return .notPersonalized
+		guard
+			let firmware = card.firmwareVersionValue,
+			firmware >= FirmwareConstraints.minVersionForFiles
+		else {
+			return .notSupportedFirmwareVersion
+		}
+		
+		if card.status == CardStatus.notPersonalized {
+			return .notPersonalized
+		}
+		
+		return nil
 	}
 	
 	func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
@@ -91,13 +101,13 @@ public final class ReadFileDataCommand: Command {
 	}
 	
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-		var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
 			.append(.pin, value: environment.pin1.value)
 			.append(.cardId, value: environment.card?.cardId)
 			.append(.fileIndex, value: fileIndex)
 			.append(.offset, value: offset)
 		if readPrivateFiles {
-			tlvBuilder = try tlvBuilder.append(.pin2, value: environment.pin2.value)
+			try tlvBuilder.append(.pin2, value: environment.pin2.value)
 		}
 		return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
 	}

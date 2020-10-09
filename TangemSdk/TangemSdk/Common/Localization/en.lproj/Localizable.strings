@@ -81,3 +81,5 @@
 "error_pin1_required" = "Access code is requred";
 "error_pin2_required" = "Passcode is required";
 "file_not_found" = "File not found";
+"wrong_interaction_mode" = "Unsupported interaction mode";
+"not_supported_firmware_version" = "Card firmware does not meet requirements";

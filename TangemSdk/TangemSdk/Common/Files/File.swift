@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13, *)
-public struct File: Codable {
+public class File: Codable {
 	public init(fileIndex: Int, fileSettings: FileSettings?, fileData: Data) {
 		self.fileIndex = fileIndex
 		self.fileSettings = fileSettings
@@ -24,11 +24,11 @@ public struct File: Codable {
 	
 	internal static let emptyFile = File(fileIndex: 0, fileSettings: nil, fileData: Data())
 	
-	let fileIndex: Int
-	let fileSettings: FileSettings?
-	let fileData: Data
+	public let fileIndex: Int
+	public let fileSettings: FileSettings?
+	public let fileData: Data
 	
-	var fileValidationStatus: FileValidation = .notValidated
+	public var fileValidationStatus: FileValidation = .notValidated
 	
 }
 

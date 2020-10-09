@@ -10,19 +10,19 @@ import Foundation
 
 @available (iOS 13.0, *)
 public struct ReadFilesResponse: ResponseCodable {
-	let files: [File]
+	public let files: [File]
 }
 
 @available (iOS 13.0, *)
 public struct ReadFileDataTaskSettings {
-	public init(readPrivateFiles: Bool, shouldValidateFiles: Bool) {
+	public init(readPrivateFiles: Bool, readSettings: Set<ReadCommandSettings> = []) {
 		self.readPrivateFiles = readPrivateFiles
-		self.shouldValidateFiles = shouldValidateFiles
+		self.readSettings = readSettings
 	}
 	
 	let readPrivateFiles: Bool
 	let fileIndex: Int = 0
-	let shouldValidateFiles: Bool
+	let readSettings: Set<ReadCommandSettings>
 }
 
 @available (iOS 13.0, *)

@@ -80,6 +80,11 @@ public final class WriteIssuerExtraDataCommand: Command {
             && issuerDataCounter == nil {
             return .missingCounter
         }
+		
+		guard
+			let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion < FirmwareConstraints.minVersionForFiles
+		else { return .notSupportedFirmwareVersion }
         
         if let cardId = card.cardId, !verify(with: cardId) {
             return .verificationFailed
@@ -167,7 +172,7 @@ public final class WriteIssuerExtraDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.mode, value: mode)
+            .append(.interactionMode, value: mode)
         
         switch mode {
         case .readOrStartWrite:

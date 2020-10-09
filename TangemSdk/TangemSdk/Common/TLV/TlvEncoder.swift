@@ -83,6 +83,10 @@ public final class TlvEncoder {
             try typeCheck(value, IssuerExtraDataMode.self)
             let mode = value as! IssuerExtraDataMode
             return Data([mode.rawValue])
+		case .fileSettings:
+			try typeCheck(value, FileSettings.self)
+			let settings = value as! FileSettings
+			return settings.rawValue.bytes2
         }
     }
     

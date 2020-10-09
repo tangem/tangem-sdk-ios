@@ -79,10 +79,17 @@ public final class TlvEncoder {
             try typeCheck(value, SigningMethod.self)
             let method = value as! SigningMethod
             return method.rawValue.byte
-        case .issuerExtraDataMode:
-            try typeCheck(value, IssuerExtraDataMode.self)
-            let mode = value as! IssuerExtraDataMode
-            return Data([mode.rawValue])
+        case .interactionMode:
+			do {
+				try typeCheck(value, IssuerExtraDataMode.self)
+				let mode = value as! IssuerExtraDataMode
+				return Data([mode.rawValue])
+			} catch {
+				print("Interaction mode is not and issuer. Trying to check FileDataMode")
+			}
+			try typeCheck(value, FileDataMode.self)
+			let mode = value as! FileDataMode
+			return Data([mode.rawValue])
 		case .fileSettings:
 			try typeCheck(value, FileSettings.self)
 			let settings = value as! FileSettings

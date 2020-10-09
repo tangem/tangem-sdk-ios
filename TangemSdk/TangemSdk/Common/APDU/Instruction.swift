@@ -29,4 +29,5 @@ public enum Instruction: Byte {
     case readUserData = 0xE1
     case personalize = 0xF1
     case depersonalize = 0xE3
+	case readFileData = 0xD1
 }

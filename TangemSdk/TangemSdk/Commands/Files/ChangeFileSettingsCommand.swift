@@ -56,7 +56,6 @@ public final class ChangeFileSettingsCommand: Command {
 			.append(.interactionMode, value: FileDataMode.changeFileSettings)
 			.append(.fileIndex, value: fileIndex)
 			.append(.fileSettings, value: newSettings)
-		print(tlvBuilder.tlvToPrint)
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
 	}
 	

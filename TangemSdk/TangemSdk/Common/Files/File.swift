@@ -25,13 +25,13 @@ public class File: Codable, CustomStringConvertible {
 	internal static let emptyFile = File(fileIndex: 0, fileSettings: nil, fileData: Data())
 	
 	public let fileIndex: Int
-	public let fileSettings: FileSettings?
 	public let fileData: Data
 	
+	public var fileSettings: FileSettings?
 	public var fileValidationStatus: FileValidation = .notValidated
 	
 	public var description: String {
-		"File \(fileData) at index \(fileIndex) with settings: \(fileSettings) and validation statur: \(fileValidationStatus)"
+		"File \(fileData) at index \(fileIndex) with settings: \(String(describing: fileSettings)) and validation statur: \(fileValidationStatus)"
 	}
 	
 }

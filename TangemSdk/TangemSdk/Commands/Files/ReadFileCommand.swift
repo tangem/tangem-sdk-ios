@@ -93,7 +93,7 @@ public final class ReadFileDataCommand: Command {
 		let response = ReadFileDataResponse(cardId: data.cardId,
 											size: dataSize,
 											fileData: fileData,
-											fileIndex: fileIndex,
+											fileIndex: data.fileIndex,
 											fileSettings: fileSettings ?? data.fileSettings,
 											fileDataSignature: data.fileDataSignature,
 											fileDataCounter: data.fileDataCounter)

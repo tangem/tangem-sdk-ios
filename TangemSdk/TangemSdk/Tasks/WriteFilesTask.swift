@@ -58,7 +58,15 @@ public final class WriteFilesTask: CardSessionRunnable {
 	}
 	
 	private func deleteFiles(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		getFileCounter(session: session, completion: completion)
+		let task = DeleteAllFilesTask()
+		task.run(in: session) { (result) in
+			switch result {
+			case .success:
+				self.getFileCounter(session: session, completion: completion)
+			case .failure(let error):
+				completion(.failure(error))
+			}
+		}
 	}
 	
 	private func getFileCounter(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {

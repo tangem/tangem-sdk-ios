@@ -104,15 +104,15 @@ public final class WriteFileDataCommand: Command {
 		switch mode {
 		case .initiateWritingFile:
 			try tlvBuilder.append(.size, value: data.count)
-			try tlvBuilder.append(.issuerDataSignature, value: startingSignature)
-			try tlvBuilder.append(.issuerDataCounter, value: dataCounter)
+				.append(.issuerDataSignature, value: startingSignature)
+				.append(.issuerDataCounter, value: dataCounter)
 		case .writeFile:
 			try tlvBuilder.append(.issuerData, value: getDataToWrite())
-			try tlvBuilder.append(.offset, value: offset)
-			try tlvBuilder.append(.fileIndex, value: fileIndex)
+				.append(.offset, value: offset)
+				.append(.fileIndex, value: fileIndex)
 		case .confirmWritingFile:
 			try tlvBuilder.append(.fileIndex, value: fileIndex)
-			try tlvBuilder.append(.issuerDataSignature, value: finalizingSignature)
+				.append(.issuerDataSignature, value: finalizingSignature)
 		default:
 			break
 		}
@@ -148,7 +148,7 @@ public final class WriteFileDataCommand: Command {
 					}
 					self.writeFileData(session: session, completion: completion)
 				case .confirmWritingFile:
-					completion(.success(WriteFileDataResponse(cardId: response.cardId, fileIndex: response.fileIndex)))
+					completion(.success(WriteFileDataResponse(cardId: response.cardId, fileIndex: self.fileIndex)))
 				default:
 					completion(.failure(.wrongInteractionMode))
 				}

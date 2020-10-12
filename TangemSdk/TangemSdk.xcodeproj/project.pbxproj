@@ -182,7 +182,7 @@
 		B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */; };
 		B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B333A252EED5000A9FE96 /* FileDataMode.swift */; };
 		B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */; };
-		B01B99F2253039AB00ECB6BF /* CommandSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B99F1253039AB00ECB6BF /* CommandSettings.swift */; };
+		B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */; };
 		B01B9A572530871800ECB6BF /* FileSignatureGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileSignatureGenerator.swift */; };
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
@@ -190,6 +190,7 @@
 		B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F88252C4514007E04EE /* ReadFileCommand.swift */; };
 		B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F8C252C46B1007E04EE /* FileSettings.swift */; };
 		B0800F96252C6867007E04EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F95252C6867007E04EE /* File.swift */; };
+		B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -383,7 +384,7 @@
 		B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataToWrite.swift; sourceTree = "<group>"; };
 		B00B333A252EED5000A9FE96 /* FileDataMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDataMode.swift; sourceTree = "<group>"; };
 		B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareConstraints.swift; sourceTree = "<group>"; };
-		B01B99F1253039AB00ECB6BF /* CommandSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandSettings.swift; sourceTree = "<group>"; };
+		B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommandSettings.swift; sourceTree = "<group>"; };
 		B01B9A562530871800ECB6BF /* FileSignatureGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSignatureGenerator.swift; sourceTree = "<group>"; };
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
@@ -391,6 +392,7 @@
 		B0800F88252C4514007E04EE /* ReadFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommand.swift; sourceTree = "<group>"; };
 		B0800F8C252C46B1007E04EE /* FileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSettings.swift; sourceTree = "<group>"; };
 		B0800F95252C6867007E04EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFilesTask.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -534,6 +536,7 @@
 				5DD97B3824E143CF0038E944 /* ChangePinTask.swift */,
 				B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */,
 				B00B32CF252DC89700A9FE96 /* WriteFileDataTask.swift */,
+				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -872,7 +875,7 @@
 			isa = PBXGroup;
 			children = (
 				B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */,
-				B01B99F1253039AB00ECB6BF /* CommandSettings.swift */,
+				B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */,
 				B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */,
 			);
 			path = Settings;
@@ -1126,6 +1129,7 @@
 				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
 				5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
+				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
 				5DD97B3924E143CF0038E944 /* ChangePinTask.swift in Sources */,
@@ -1175,7 +1179,7 @@
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
-				B01B99F2253039AB00ECB6BF /* CommandSettings.swift in Sources */,
+				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,
 				5DA3A2EF251CA507009A8E08 /* CheckPinCommand.swift in Sources */,
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,

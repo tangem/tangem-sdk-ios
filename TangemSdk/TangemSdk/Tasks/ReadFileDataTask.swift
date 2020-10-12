@@ -15,14 +15,14 @@ public struct ReadFilesResponse: ResponseCodable {
 
 @available (iOS 13.0, *)
 public struct ReadFileDataTaskSettings {
-	public init(readPrivateFiles: Bool, readSettings: Set<ReadCommandSettings> = []) {
+	public init(readPrivateFiles: Bool, readSettings: Set<ReadFileCommandSettings> = []) {
 		self.readPrivateFiles = readPrivateFiles
 		self.readSettings = readSettings
 	}
 	
 	let readPrivateFiles: Bool
 	let fileIndex: Int = 0
-	let readSettings: Set<ReadCommandSettings>
+	let readSettings: Set<ReadFileCommandSettings>
 }
 
 @available (iOS 13.0, *)

@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public enum ReadCommandSettings: FirmwareRestictible {
+public enum ReadFileCommandSettings: FirmwareRestictible {
 	case checkFileValidationHash
 	
 	public var minFirmwareVersion: Double {

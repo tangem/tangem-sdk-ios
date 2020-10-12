@@ -26,29 +26,30 @@ public final class WriteFileDataTask: CardSessionRunnable {
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileDataResponse>) {
 		if let fileDataCounter = fileDataCounter, let cardId = session.environment.card?.cardId {
-			performWriteCommand(in: session, filesCount: fileDataCounter, cardId: cardId, completion: completion)
+			performWriteCommand(in: session, counter: fileDataCounter, cardId: cardId, completion: completion)
 			return
 		}
 		ReadFileDataCommand(fileIndex: 0, readPrivateFiles: false).run(in: session) { (result) in
 			switch result {
 			case .success(let response):
-				let filesCount = (response.fileDataCounter ?? 0) + 1
-				self.performWriteCommand(in: session, filesCount: filesCount, cardId: response.cardId, completion: completion)
+				let counter = (response.fileDataCounter ?? 0)
+				self.performWriteCommand(in: session, counter: counter, cardId: response.cardId, completion: completion)
 			case .failure(let error):
 				completion(.failure(error))
 			}
 		}
 	}
 	
-	private func performWriteCommand(in session: CardSession, filesCount: Int, cardId: String, completion: @escaping CompletionResult<WriteFileDataResponse>) {
+	private func performWriteCommand(in session: CardSession, counter: Int, cardId: String, completion: @escaping CompletionResult<WriteFileDataResponse>) {
+		let newCounter = counter + 1
 		guard
-			let startingSignature = getStartingSignature(data: file.data, counter: filesCount, cardId: cardId),
-			let finalizingSignature = getFinalizingSignature(data: file.data, counter: filesCount, cardId: cardId)
+			let startingSignature = getStartingSignature(data: file.data, counter: newCounter, cardId: cardId),
+			let finalizingSignature = getFinalizingSignature(data: file.data, counter: newCounter, cardId: cardId)
 		else {
 			completion(.failure(.cryptoUtilsError))
 			return
 		}
-		WriteFileDataCommand(data: file.data, startingSignature: startingSignature, finalizingSignature: finalizingSignature, dataCounter: filesCount, issuerPublicKey: issuerKeys.publicKey)
+		WriteFileDataCommand(data: file.data, startingSignature: startingSignature, finalizingSignature: finalizingSignature, dataCounter: newCounter, issuerPublicKey: issuerKeys.publicKey)
 			.run(in: session) { (result) in
 				switch result {
 				case .success(let response):

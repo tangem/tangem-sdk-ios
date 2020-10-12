@@ -205,7 +205,7 @@ extension Data {
 			return Secp256k1Utils.sign(self, with: privateKey)
 		default:
 			// [REDACTED_TODO_COMMENT]
-			return self
+			fatalError("Not implemented data sign for ED25519 curve")
 		}
 	}
 }

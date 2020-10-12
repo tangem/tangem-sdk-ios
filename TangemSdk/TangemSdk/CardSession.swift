@@ -48,6 +48,7 @@ public class CardSession {
     /// Allows interaction with users and shows visual elements.
     public let viewDelegate: SessionViewDelegate
     
+    var state: CardSessionState = .inactive
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
     public internal(set) var environment: SessionEnvironment
@@ -61,7 +62,6 @@ public class CardSession {
     private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
     private var connectedTagSubscription: [AnyCancellable] = []
-    private var state: CardSessionState = .inactive
     
     private var needPreflightRead = true
     private var pin2Required = false
@@ -264,7 +264,6 @@ public class CardSession {
                     completion(.failure(error))
                 }
             }, receiveValue: { responseApdu in
-                print("receiveValue")
                 self.sendSubscription = []
                 completion(.success(responseApdu))
             })
@@ -340,6 +339,16 @@ public class CardSession {
                 self.cardId = readResponse.cardId
                 if let cid = self.cardId {
                     self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
+                }
+                
+                if let nfcReader = self.reader as? NFCReader {
+                    if NfcUtils.isPoorNfcQualityDevice,
+                       let fw = readResponse.firmwareVersionValue, fw < 2.39,
+                       let sd = readResponse.pauseBeforePin2, sd > 500 {
+                        nfcReader.oldCardSignCompatibilityMode = true
+                    } else {
+                        nfcReader.oldCardSignCompatibilityMode = false
+                    }
                 }
                 
                 self.viewDelegate.sessionInitialized()

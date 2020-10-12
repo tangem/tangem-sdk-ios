@@ -1,5 +1,5 @@
 //
-//  DeleteFilesTask.swift
+//  ChangeFilesSettingsTask.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 10/12/20.
@@ -9,35 +9,34 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public final class DeleteFilesTask: CardSessionRunnable {
+public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
-	public init(filesToDelete: [File]) {
-		self.filesToDelete = filesToDelete.sorted(by: { $0.fileIndex < $1.fileIndex })
+	public init(files: [File]) {
+		self.files = files
 	}
 	
 	public var requiresPin2: Bool { true }
 	
-	private var filesToDelete: [File]
+	private var files: [File]
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
-		deleteFile(session: session, completion: completion)
+		changeFileSettings(session: session, completion: completion)
 	}
 	
-	private func deleteFile(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
-		guard let file = filesToDelete.popLast() else {
+	private func changeFileSettings(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+		guard let file = files.popLast() else {
 			completion(.success(SimpleResponse(cardId: session.environment.card?.cardId ?? "")))
 			return
 		}
-		let command = DeleteFileCommand(fileAt: file.fileIndex)
+		let command = ChangeFileSettingsCommand(fileIndex: file.fileIndex, newSettings: file.fileSettings ?? .public)
 		command.run(in: session) { (result) in
 			switch result {
 			case .success:
-				self.deleteFile(session: session, completion: completion)
+				self.changeFileSettings(session: session, completion: completion)
 			case .failure(let error):
 				completion(.failure(error))
 			}
 		}
 	}
-	
 }

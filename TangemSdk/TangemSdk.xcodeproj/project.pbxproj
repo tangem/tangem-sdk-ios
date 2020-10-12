@@ -186,6 +186,9 @@
 		B01B9A572530871800ECB6BF /* FileSignatureGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileSignatureGenerator.swift */; };
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
+		B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BA253442AD0056A887 /* DeleteFileCommand.swift */; };
+		B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BE2534570B0056A887 /* DeleteFilesTask.swift */; };
+		B06947C3253460480056A887 /* DeleteAllFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947C2253460480056A887 /* DeleteAllFilesTask.swift */; };
 		B0800F82252C3CAA007E04EE /* ReadFileDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */; };
 		B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F88252C4514007E04EE /* ReadFileCommand.swift */; };
 		B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F8C252C46B1007E04EE /* FileSettings.swift */; };
@@ -388,6 +391,9 @@
 		B01B9A562530871800ECB6BF /* FileSignatureGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSignatureGenerator.swift; sourceTree = "<group>"; };
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
+		B06947BA253442AD0056A887 /* DeleteFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileCommand.swift; sourceTree = "<group>"; };
+		B06947BE2534570B0056A887 /* DeleteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFilesTask.swift; sourceTree = "<group>"; };
+		B06947C2253460480056A887 /* DeleteAllFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAllFilesTask.swift; sourceTree = "<group>"; };
 		B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileDataTask.swift; sourceTree = "<group>"; };
 		B0800F88252C4514007E04EE /* ReadFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommand.swift; sourceTree = "<group>"; };
 		B0800F8C252C46B1007E04EE /* FileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSettings.swift; sourceTree = "<group>"; };
@@ -537,6 +543,8 @@
 				B0800F81252C3CAA007E04EE /* ReadFileDataTask.swift */,
 				B00B32CF252DC89700A9FE96 /* WriteFileDataTask.swift */,
 				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
+				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
+				B06947C2253460480056A887 /* DeleteAllFilesTask.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -888,6 +896,7 @@
 				B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */,
 				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
 				B00B32C9252DC77600A9FE96 /* WriteFileDataCommand.swift */,
+				B06947BA253442AD0056A887 /* DeleteFileCommand.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -1085,6 +1094,7 @@
 				5D2739FA234F270200ACDA11 /* fe.c in Sources */,
 				5D2739F9234F270200ACDA11 /* seed.c in Sources */,
 				5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */,
+				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				B00B3331252E0B5A00A9FE96 /* FileWriteSettings.swift in Sources */,
@@ -1130,6 +1140,7 @@
 				5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
+				B06947C3253460480056A887 /* DeleteAllFilesTask.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
 				5DD97B3924E143CF0038E944 /* ChangePinTask.swift in Sources */,
@@ -1189,6 +1200,7 @@
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
+				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,

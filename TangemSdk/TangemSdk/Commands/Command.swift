@@ -214,6 +214,9 @@ extension ResponseCodable {
     }
 }
 
+public struct SimpleResponse: ResponseCodable {
+	public let cardId: String
+}
 
 extension JSONDecoder {
     public static var tangemSdkDecoder: JSONDecoder  {

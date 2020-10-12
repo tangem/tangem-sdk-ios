@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13, *)
-public class File: Codable {
+public class File: Codable, CustomStringConvertible {
 	public init(fileIndex: Int, fileSettings: FileSettings?, fileData: Data) {
 		self.fileIndex = fileIndex
 		self.fileSettings = fileSettings
@@ -29,6 +29,10 @@ public class File: Codable {
 	public let fileData: Data
 	
 	public var fileValidationStatus: FileValidation = .notValidated
+	
+	public var description: String {
+		"File \(fileData) at index \(fileIndex) with settings: \(fileSettings) and validation statur: \(fileValidationStatus)"
+	}
 	
 }
 

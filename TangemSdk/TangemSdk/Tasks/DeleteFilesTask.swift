@@ -13,9 +13,7 @@ public final class DeleteFilesTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
 	public init(filesToDelete: [File]) {
-		print("Files to delete input", filesToDelete)
 		self.filesToDelete = filesToDelete.sorted(by: { $0.fileIndex < $1.fileIndex })
-		print("Sorted files to delete", self.filesToDelete)
 	}
 	
 	public var requiresPin2: Bool { true }

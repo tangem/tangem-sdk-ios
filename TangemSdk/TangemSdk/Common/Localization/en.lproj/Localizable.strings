@@ -11,7 +11,7 @@
 
 "nfc_alert_sign_completed" = "Transaction has been successfully signed";
 
-"dialog_security_delay" = "Security delay";
+"view_delegate_security_delay" = "Security delay";
 
 "nfc_seconds_left" = "%@ left";
 
@@ -29,26 +29,22 @@
 
 "writing_data_progress" = "Writing data: %@%%";
 
-"pin_title_pin1" = "Enter Access Code";
-"pin_title_pin2" = "Enter Passcode";
-"pin_title_pin3" = "Enter Pin3";
+"pin1" = "Access code";
+"pin2" = "Passcode";
+"pin_enter" = "Enter %@";
+"pin_confirm_error_format" = "Codes do not match";
+"pin_change_code_format" = "Change %@";
+"pin_change_new_code_format" = "New %@";
+"pin_change_current_code_format" = "Current %@";
+"pin_set_code_confirm_format" = "Confirm %@";
 
-"pin_placeholder_access" = "Access code";
-"pin_placeholder_pass" = "Passcode";
-"pin_placeholder_pin3" = "Pin3";
-
-"changepin_placeholder_new" = "New";
-"changepin_placeholder_current" = "Current";
-"changepin_placeholder_confirm" = "Confirm";
-"changepin_error_mismatch" = "Codes do not match";
-
-"changepin_title_pin1" = "Change Access Code";
-"changepin_title_pin2" = "Change Passcode";
-"changepin_title_pin3" = "Change Pin3";
-
-
+"common_ok" = "OK";
+"common_cancel" = "Cancel";
 "common_continue" = "Continue";
 "common_save" = "Save";
+"common_success" = "Success";
+"common_error" = "Error";
+
 // Errors
 "error_operation" = "An error occurred during the operation";
 "error_tag_lost" = "Tag lost.";
@@ -80,4 +76,30 @@
 "error_card_error" = "Your card is missing essential data";
 "error_pin1_required" = "Access code is requred";
 "error_pin2_required" = "Passcode is required";
-"file_not_found" = "File not found";
+"error_file_not_found" = "File not found";
+"error_wrong_card" = "Wrong Card";
+"error_invalid_response" = "Invalid Response";
+
+
+//Android only
+
+"dialog_nfc_enable_title" = "Enable NFC?";
+"dialog_nfc_enable_text" = "This app is useless when NFC is disabled. Reader mode depends on it. Hit OK to go to Settings, where you can enable NFC.";
+"view_delegate_security_delay_description" = "This card has enforced security delay. Please hold the card firmly until the operation is completed…";
+"pin_change_new_code_confirm_format" = "New $@ (Confirm)";
+"pin_set_code_format" = "Set %@";
+"view_delegate_delay" = "Operation in process";
+"view_delegate_delay_description" = "Please hold the card firmly until the operation is completed…";
+"view_delegate_scan" = "Ready to Scan";
+"view_delegate_scan_description" = "Scan card with your phone as shown above";
+"view_delegate_header_card" = "Card";
+"view_delegate_header_any_card" = "Any card";
+"how_to_unknown_tap_card" = "Tap your card to the back of the phone";
+"how_to_unknown_move_card" = "To detect where your NFC antenna is located, move the card up and down until confirmation.";
+"how_to_unknown_nothing_happened" = "Nothing happened? Try removing your card from the phone and then put it back.";
+"how_to_unknown_detected" = "NFC Detected. This is the placement of your NFC antenna";
+"tap_in_button" = "Tap in";
+"tap_in_known_info_message" = "Hold your card to the phone as demonstrated when you tap in to connect.";
+"tap_in_known_show_how_tap_in_button" = "Show me how to tap in";
+"tap_in_unknown_info_message" = "Watch the video to see how to tap in and\nconnect the NFC in your phone to the card.";
+"tap_in_unknown_how_to_tap_in_button" = "How to tap in";

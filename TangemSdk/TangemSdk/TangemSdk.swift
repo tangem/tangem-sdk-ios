@@ -429,6 +429,104 @@ public final class TangemSdk {
         let command = SetPinCommand(pinType: .pin2, pin: pin)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
+	
+	/// This command reads all files stored on card.
+	///
+	/// By default command trying to read all files (including private), to change this behaviour - setup your ` ReadFileDataTaskSetting `
+	/// - Note: When performing reading private files command, you must  provide `pin2`
+	/// - Warning: Command available only for cards with COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - readSettings: `ReadFileDataTaskSettings` - that define should sdk read private files or not and some additional read file settings
+	///   - completion: Returns `Swift.Result<ReadFilesResponse,TangemSdkError>`
+	public func readFiles(cardId: String? = nil,
+						  initialMessage: Message? = nil,
+						  pin1: String? = nil,
+						  pin2: String? = nil,
+						  readSettings: ReadFileDataTaskSettings = .init(readPrivateFiles: true, readSettings: []),
+						  completion: @escaping CompletionResult<ReadFilesResponse>) {
+		let task = ReadFileDataTask(settings: readSettings)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	public func readFilesCounter(cardId: String? = nil,
+								 initialMessage: Message? = nil,
+								 pin1: String? = nil,
+								 completion: @escaping CompletionResult<Int>) {
+		startSession(with: ReadFileDataCommand(fileIndex: 0, readPrivateFiles: false), cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: { (result) in
+			switch result {
+			case .success(let response):
+				completion(.success(response.fileDataCounter ?? 0))
+			case .failure(let error):
+				completion(.failure(error))
+			}
+		})
+	}
+	
+	/// This command deletes selected files from card. This operation can't be undone.
+	///
+	/// To perform file deletion you should initially read all files (`readFiles` command) and add them to `filesToDelete` array. When files deleted from card, other files change their indexies.
+	/// After deleting files you should additionally perform `readFiles` command to actualize files indexes
+	/// - Warning: This command available for COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - files: Files that should be deleted from card
+	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+	public func deleteFiles(cardId: String? = nil,
+							pin1: String? = nil,
+							pin2: String? = nil,
+							initialMessage: Message? = nil,
+							filesToDelete files: [File],
+							completion: @escaping CompletionResult<SimpleResponse>) {
+		let task = DeleteFilesTask(filesToDelete: files)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	/// This command deletes all files from card. This operation can't be undone
+	///
+	/// No need to perform any additional commands.
+	/// - Warning: This command available for COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+	public func deleteAllFiles(cardId: String? = nil,
+							   initialMessage: Message? = nil,
+							   pin1: String? = nil,
+							   pin2: String? = nil,
+							   completion: @escaping CompletionResult<SimpleResponse>) {
+		startSession(with: DeleteAllFilesTask(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	/// Updates selected file settings provided within `File`.
+	///
+	/// To perform file settings update you should initially read all files (`readFiles` command), select files that you want to update, change their settings in `File.fileSettings` and add them to `files` array.
+	/// - Note: In COS 3.29 and higher only file visibility option (public or private) available to update
+	/// - Warning: This method works with COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - files: Files that should update their settings
+	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+	public func updateFilesSettings(cardId: String? = nil,
+									initialMessage: Message? = nil,
+									pin1: String? = nil,
+									pin2: String? = nil,
+									files: [File],
+									completion: @escaping CompletionResult<SimpleResponse>) {
+		let task = ChangeFilesSettingsTask(files: files)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.

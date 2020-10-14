@@ -5,101 +5,127 @@
   Created by Alexander Osokin on 02/10/2019.
   Copyright © 2019 Tangem AG. All rights reserved.
 */
-"nfc_session_timeout" = "Session timeout. Please, try again";
+// Error message. When NFC session time is over
+"nfc_session_timeout" = "Die Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.";
 
-"nfc_alert_default" = "Hold your iPhone near a card";
+// Label. When session is started and we ask user to hold the card near the phone
+"nfc_alert_default" = "Halten Sie Ihr iPhone an der Karte";
 
-"nfc_alert_sign_completed" = "Transaction has been successfully signed";
+// Label. When transaction has been signed
+"nfc_alert_sign_completed" = "Die Transaktion wurde erfolgreich signiert";
 
-"view_delegate_security_delay" = "Security delay";
+// Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
+"view_delegate_security_delay" = "Langes Drücken";
 
-"nfc_seconds_left" = "%@ left";
+// Label. During the “Long Tap” we show to the user how many seconds he has to hold the card and count them down.
+"nfc_seconds_left" = "%@ geblieben";
 
-"nfc_unknown_card_state" = "Unknown card state";
+// Label. Operation is finished.
+"nfc_alert_default_done" = "Erledigt";
 
-"nfc_alert_default_done" = "Done";
+// Error Label.
+"nfc_stuck_error" = "Es scheint, dass NFC auf Ihrem iPhone nicht richtig funktioniert";
 
-"nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone";
+// Error Label.
+"unknownStatus" = "Unbekannter Kartenstatus";
 
-"unknownStatus" = "Unknown card status";
+// Error Label. Generic error with error code.
+"generic_error_code" = "Während des Vorgangs ist ein Fehler aufgetreten. Code: %@";
 
-"generic_error_code" = "An error occurred during the operation. Code: %@";
+// Label. Reading data: 30%
+"reading_data_progress" = "Die Daten werden abgelesen: %@%%";
 
-"reading_data_progress" = "Reading data: %@%%";
+// Label. Writing data: 30%
+"writing_data_progress" = "Die Daten werden geschrieben: %@%%";
 
-"writing_data_progress" = "Writing data: %@%%";
 
-"pin1" = "Access code";
+"pin1" = "Zugangscode";
 "pin2" = "Passcode";
-"pin_enter" = "Enter %@";
-"pin_confirm_error_format" = "Codes do not match";
-"pin_change_code_format" = "Change %@";
-"pin_change_new_code_format" = "New $@";
-"pin_change_current_code_format" = "Current %@";
-"pin_set_code_confirm_format" = "Confirm %@";
+"pin_enter" = "Anmelden %@";
+"pin_confirm_error_format" = "Die Codes stimmen nicht überein";
+"pin_change_code_format" = "Ändern %@";
+"pin_change_new_code_format" = "Neu $@";
+"pin_change_current_code_format" = "Aktuell %@";
+"pin_set_code_confirm_format" = "Bestätigen %@";
+
 
 "common_ok" = "OK";
-"common_cancel" = "Cancel";
-"common_continue" = "Continue";
-"common_save" = "Save";
-"common_success" = "Success";
-"common_error" = "Error";
+"common_cancel" = "Abbrechen";
+"common_continue" = "Fortsetzen";
+"common_save" = "Speichern";
+"common_success" = "Erfolg";
+"common_error" = "Fehler";
 
 // Errors
-"error_operation" = "An error occurred during the operation";
-"error_tag_lost" = "Tag lost.";
-"error_already_personalized" = "This card has already been personalized";
-"error_cannot_be_depersonalized" = "This card cannot be depersonalized";
-"error_already_created" = "A wallet has already been created";
-"error_purge_prohibited" = "This card’s configuration does not allow you to erase the wallet";
-"error_pin1_cannot_be_changed" = "PIN1 Access Code cannot be changed";
-"error_pin2_cannot_be_changed" = "PIN2 Passcode cannot be changed";
-"error_pin1_cannot_be_default" = " PIN1 Access Code cannot be changed to the default value. Please create a new PIN1 Access Code.";
-"error_no_remaining_signatures" = " You cannot sign data with this wallet because the card has reached its signature limit";
-"error_empty_hashes" = "There is nothing to sign here";
-"error_cannot_be_signed" = " This data cannot be signed";
-"error_card_is_empty" = "Please create a wallet to sign data";
-"error_not_personalized" = "This card has not been personalized";
-"error_not_activated" = "This card has not been activated";
-"error_purged" = "You cannot sign data with this wallet because the card has been purged";
-"error_verification_failed" = "Data verification failed";
-"error_card_verification_failed" = "Card verification failed";
-"error_data_size_too_large" = "Data size exceeds the max limit of 512 bytes";
-"error_data_size_too_large_extended" = "Data size exceeds the max limit of 32 Kbytes";
-"error_missing_counter" = "The data cannot be written to the card because there is no counter";
-"error_data_cannot_be_written" = "The data cannot be written to the card";
-"error_missing_issuer_public_key" = "The issuer public key is missing";
-"error_user_cancelled" = "The user cancelled the operation";
-"error_busy" = "The CardSession is running a command. Please wait and try again";
-"error_wrong_card_number" = "You tapped a different card. Please match the in-app Card ID to the your physical Card ID to continue this process.";
-"error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
-"error_card_error" = "Your card is missing essential data";
-"error_pin1_required" = "Access code is requred";
-"error_pin2_required" = "Passcode is required";
-"error_file_not_found" = "File not found";
-"error_wrong_card" = "Wrong Card";
-"error_invalid_response" = "Invalid Response";
+"error_operation" = "Während des Vorgangs ist ein Fehler aufgetreten";
+"error_tag_lost" = "Marke verloren";
+"error_already_personalized" = "Diese Karte wurde bereits personalisiert";
+"error_cannot_be_depersonalized" = "Diese Karte kann nicht depersonalisiert werden";
+"error_already_created" = "Ein Wallet ist bereits erstellt worden";
+"error_purge_prohibited" = "Die Konfiguration der Karte erlaubt nicht, das Wallet zu löschen";
+"error_pin1_cannot_be_changed" = "PIN1 Der Zugangscode konnte nicht geändert werden";
+"error_pin2_cannot_be_changed" = "PIN2 Der Passcode konnte nicht geändert werden ";
+"error_pin1_cannot_be_default" = " PIN1 Der Zugangscode konnte durch einen Default-Wert nicht geändert werden. Bitte erstellen Sie einen neuen PIN1-Zugangscode.";
+"error_no_remaining_signatures" = "Sie können die Daten mit diesem Wallet nicht signieren, weil die Karte die Unterschriftsbeschränkung erreicht hat";
+"error_empty_hashes" = "Hier gibt es nichts zu signieren";
+"error_cannot_be_signed" = "Diese Daten können nicht signiert werden";
+"error_card_is_empty" = "Bitte erstellen Sie ein Wallet um die Daten zu signieren";
+"error_not_personalized" = "Diese Karte ist nicht personalisiert worden";
+"error_not_activated" = "Diese Karte ist nicht aktiviert worden";
+"error_purged" = " Sie können die Daten mit diesem Wallet nicht signieren, weil ist Karte gelöscht worden ist";
+"error_verification_failed" = "Die Datenverifizierung ist fehlgeschlagen";
+"error_card_verification_failed" = "Die Kartenverifizierung ist fehlgeschlagen";
+"error_data_size_too_large" = "Die Datengröße überschreitet die Höchstgrenze von 512 B";
+"error_data_size_too_large_extended" = "Die Datengröße überschreitet die Höchstgrenze von 32 KB";
+"error_missing_counter" = "Die Daten können auf die Karte nicht geschrieben werden, da kein Zähler vorhanden ist";
+"error_data_cannot_be_written" = "Die Daten können auf die Karte nicht geschrieben werden";
+"error_missing_issuer_public_key" = "Der öffentliche Schlüssel des Emittenten ist nicht vorhanden";
+"error_user_cancelled" = "Der Benutzer hat den Vorgang unterbrochen";
+"error_busy" = "Die Kartensitzung führt einen Befehl aus. Bitte warten Sie und versuchen Sie erneut";
+"error_wrong_card_number" = "Sie haben eine andere Karte eingegeben. Bitte bringen Sie die in-app Card ID mit Ihrer physischen KatenID in Übereinstimmung um fortzusetzen.";
+"error_wrong_card_type" = "Diese Karte ist für eine andere App konfiguriert. Sehen Sie sich die Informationen auf Ihrer Karte an und laden Sie die entsprechende App herunter.";
+"error_card_error" = "Ihrer Karte fehlen wichtige Daten";
+"error_pin1_required" = "Der Zugangscode ist erforderlich";
+"error_pin2_required" = "Der Passcode ist erforderlich";
+"error_wrong_card" = "Falsche Karte";
+"error_invalid_response" = "Ungültige Antwort";
 
+"error_file_not_found" = "File not found";
 
 //Android only
 
-"dialog_nfc_enable_title" = "Enable NFC?";
-"dialog_nfc_enable_text" = "This app is useless when NFC is disabled. Reader mode depends on it. Hit OK to go to Settings, where you can enable NFC.";
-"view_delegate_security_delay_description" = "This card has enforced security delay. Please hold the card firmly until the operation is completed…";
-"pin_change_new_code_confirm_format" = "New $@ (Confirm)";
-"pin_set_code_format" = "Set %@";
-"view_delegate_delay" = "Operation in process";
-"view_delegate_delay_description" = "Please hold the card firmly until the operation is completed…";
-"view_delegate_scan" = "Ready to Scan";
-"view_delegate_scan_description" = "Scan card with your phone as shown above";
-"view_delegate_header_card" = "Card";
-"view_delegate_header_any_card" = "Any card";
-"how_to_unknown_tap_card" = "Tap your card to the back of the phone";
-"how_to_unknown_move_card" = "To detect where your NFC antenna is located, move the card up and down until confirmation.";
-"how_to_unknown_nothing_happened" = "Nothing happened? Try removing your card from the phone and then put it back.";
-"how_to_unknown_detected" = "NFC Detected. This is the placement of your NFC antenna";
-"tap_in_button" = "Tap in";
-"tap_in_known_info_message" = "Hold your card to the phone as demonstrated when you tap in to connect.";
-"tap_in_known_show_how_tap_in_button" = "Show me how to tap in";
-"tap_in_unknown_info_message" = "Watch the video to see how to tap in and\nconnect the NFC in your phone to the card.";
-"tap_in_unknown_how_to_tap_in_button" = "How to tap in";
+// Label. Need NFC to be switched on.
+"dialog_nfc_enable_title" = "Soll NFC aktiviert werden?";
+"dialog_nfc_enable_text" = "Diese App braucht NFC eingeschaltet. Drücken Sie auf OK, um zu den Einstellungen zu übergehen, wo Sie NFC aktivieren können.";
+
+// Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
+"view_delegate_security_delay_description" = "Diese Karte hat Sicherheitsverzögerungen initiiert. Bitte halten Sie die Karte fest, bis der Vorgang abgeschlossen ist.";
+
+// Label. Something is happening.
+"view_delegate_delay" = "Der Vorgang läuft";
+
+// Label. The user has to hold the card near the phone so as not to lose the connection between his phone and his card.
+"view_delegate_delay_description" = "Bitte halten Sie die Karte fest, bis der Vorgang abgeschlossen ist";
+
+// Label. Shows that the app is ready to scan the card.
+"view_delegate_scan" = "Bereit zum Scannen";
+"view_delegate_scan_description" = "Scannen Sie die Karte mit Ihrem Handy wie oben gezeigt";
+
+// Label. Shows card number. Card 1234 5678 1234 5678 or any card if number is not important.
+"view_delegate_header_card" = "Karte";
+"view_delegate_header_any_card" = "Eine beliebige Karte";
+
+// This is a tutorial how to scan (tap) the card with the phone
+"how_to_unknown_tap_card" = "Halten Sie die Karte hinter dem Handy und scannen Sie sie";
+"how_to_unknown_move_card" = "Um festzustellen, wo die Ihre NFC-Antenne ist, bewegen Sie die Karte nach oben und nach unten, bis eine Bestätigung erscheint.";
+"how_to_unknown_nothing_happened" = "Nichts passiert? Versuchen Sie die Karte vom Handy wegzunehmen und wieder darauf zu legen.";
+"how_to_unknown_detected" = "Die Verbindung wurde hergestellt. Hier ist die Position Ihrer NFC-Antenne";
+
+"tap_in_button" = "Eintippen";
+"tap_in_known_info_message" = "Halten Sie Ihre Karte vor dem Handy wie gezeigt, wenn Sie eintippen um die Verbindung herzustellen.";
+"tap_in_known_show_how_tap_in_button" = "Lassen Sie mich zeigen, wie man eintippt";
+"tap_in_unknown_info_message" = "Sehen Sie sich das Video an um zu sehen wie man eintippt und verbinden Sie NFC auf Ihrem Handy zu der Karte.";
+"tap_in_unknown_how_to_tap_in_button" = "Wie man eintippt";
+
+"pin_change_new_code_confirm_format" = "Neu $@ (Bestätigen)";
+"pin_set_code_format" = "Vorgeben %@";

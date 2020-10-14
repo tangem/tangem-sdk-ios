@@ -193,6 +193,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
@@ -995,6 +996,7 @@
 				en,
 				Base,
 				fr,
+				de,
 			);
 			mainGroup = 5DA80C90231D247A00A50A10;
 			packageReferences = (
@@ -1175,6 +1177,7 @@
 			children = (
 				5D6A92D92344E2D700158457 /* en */,
 				5D06DF6823D8A1EE0041DD2B /* fr */,
+				5D011A252530BC2F00758010 /* de */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

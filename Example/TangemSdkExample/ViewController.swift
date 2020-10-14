@@ -22,6 +22,7 @@ class ViewController: UIViewController {
     var card: Card?
     var issuerDataResponse: ReadIssuerDataResponse?
     var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
+	var savedFiles: [File]?
     
     @IBAction func scanCardTapped(_ sender: Any) {
         tangemSdk.scanCard {[unowned self] result in
@@ -377,6 +378,111 @@ class ViewController: UIViewController {
             }
         }
     }
+	
+	@IBAction func readFilesTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			self.log("Please, scan card before")
+			return
+		}
+		tangemSdk.readFiles(cardId: cardId) { result in
+			switch result {
+			case .success(let response):
+				self.log(response)
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
+	
+	@IBAction func readPublicFilesTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			self.log("Please, scan card before")
+			return
+		}
+		tangemSdk.readFiles(cardId: cardId, readSettings: ReadFileDataTaskSettings(readPrivateFiles: false)) { (result) in
+			switch result {
+			case .success(let response):
+				self.savedFiles = response.files
+				self.log(response)
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
+	
+	@IBAction func deleteFirstFileTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			self.log("Please, scan card before")
+			return
+		}
+		guard let savedFiles = self.savedFiles else {
+			log("Please, read files before")
+			return
+		}
+		guard savedFiles.count > 0 else {
+			log("No saved files on card")
+			return
+		}
+		tangemSdk.deleteFiles(cardId: cardId, filesToDelete: [savedFiles[0]]) { (result) in
+			switch result {
+			case .success:
+				self.savedFiles = nil
+				self.log("First file deleted from card. Please, perform read files command")
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
+	
+	@IBAction func deleteAllFilesTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			self.log("Please, scan card before")
+			return
+		}
+		guard let savedFiles = self.savedFiles else {
+			log("Please, read files before")
+			return
+		}
+		guard savedFiles.count > 0 else {
+			log("No saved files on card")
+			return
+		}
+		tangemSdk.deleteAllFiles(cardId: cardId) { (result) in
+			switch result {
+			case .success:
+				self.savedFiles = nil
+				self.log("All files where deleted from card. Please, perform read files command")
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
+	
+	@IBAction func updateFirstFileSettingsTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			log("Please, scan card before")
+			return
+		}
+		guard let savedFiles = self.savedFiles else {
+			log("Please, read files before")
+			return
+		}
+		guard savedFiles.count > 0 else {
+			log("No saved files on card")
+			return
+		}
+		let file = savedFiles[0]
+		file.fileSettings = file.fileSettings == .public ? .private : .public
+		tangemSdk.updateFilesSettings(cardId: cardId, files: [file]) { (result) in
+			switch result {
+			case .success:
+				self.savedFiles = nil
+				self.log("File settings updated to \(file.fileSettings!). Please, perform read files command")
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
     
     @IBAction func clearTapped(_ sender: Any) {
         self.logView.text = ""

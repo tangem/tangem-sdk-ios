@@ -314,10 +314,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardNumber: return 50005
         case .wrongCardType: return 50006
         case .underlying: return 50010
-		case .fileNotFound: return 30007
-		case .notSupportedFileSettings: return 30017  // TODO: Change to correct code error code
-		case .wrongInteractionMode: return 30027
-		case .notSupportedFirmwareVersion: return 30038
+		case .fileNotFound: return 50007
+		case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
+		case .wrongInteractionMode: return 50027
+		case .notSupportedFirmwareVersion: return 50007
         }
     }
     

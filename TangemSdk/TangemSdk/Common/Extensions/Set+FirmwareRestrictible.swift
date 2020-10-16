@@ -17,4 +17,12 @@ extension Set where Element: FirmwareRestictible {
 		}
 		return version
 	}
+	
+	func maxFirmwareVersion() -> Double {
+		var version = 0.0
+		forEach {
+			version = Swift.min($0.maxFirmwareVersion, version)
+		}
+		return version
+	}
 }

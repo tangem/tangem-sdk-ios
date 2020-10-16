@@ -8,12 +8,12 @@
 
 import Foundation
 
-struct FileSignatureGenerator {
-	static func generateStartingSignature(forCardWith cardId: String, data: Data, fileCounter: Int) -> Data {
+public struct FileSignatureGenerator {
+	public static func generateStartingSignature(forCardWith cardId: String, data: Data, fileCounter: Int) -> Data {
 		Data(hexString: cardId) + fileCounter.bytes4 + data.count.bytes2
 	}
 	
-	static func generateFinalizingSignature(forCardWith cardId: String, data: Data, fileCounter: Int) -> Data {
+	public static func generateFinalizingSignature(forCardWith cardId: String, data: Data, fileCounter: Int) -> Data {
 		Data(hexString: cardId) + data + fileCounter.bytes4
 	}
 }

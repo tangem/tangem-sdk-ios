@@ -452,18 +452,30 @@ public final class TangemSdk {
 		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
 	}
 	
-	public func readFilesCounter(cardId: String? = nil,
-								 initialMessage: Message? = nil,
-								 pin1: String? = nil,
-								 completion: @escaping CompletionResult<Int>) {
-		startSession(with: ReadFileDataCommand(fileIndex: 0, readPrivateFiles: false), cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: { (result) in
-			switch result {
-			case .success(let response):
-				completion(.success(response.fileDataCounter ?? 0))
-			case .failure(let error):
-				completion(.failure(error))
-			}
-		})
+	/// This command write all files provided in `files` to card.
+	///
+	/// There are 2 main implementation of `DataToWrite` protocol:
+	///  1. `FileDataProtectedBySignature` - for files  signed by Issuer (specified on card during personalization)
+	///  2. `FileDataProtectedByPasscode` - write files protected by Pin2
+	/// - Warning: This command available for COS 3.29 and higher
+	/// - Note: Writing files protected by Pin2 only available for COS 3.34 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - files: List of files that should be written to card
+	///   - writeFilesSettings: Settings for writing files (ie. you can specify `WriteFilesSettings.overwriteAllFiles` if you want to delete all previous files from card. Default value - no additional settings
+	///   - completion: Returns `Swift.Result<WriteFilesResponse, TangemSdkError>`
+	public func writeFiles(cardId: String? = nil,
+						   initialMessage: Message? = nil,
+						   pin1: String? = nil,
+						   pin2: String? = nil,
+						   files: [DataToWrite],
+						   writeFilesSettings: Set<WriteFilesSettings> = [],
+						   completion: @escaping CompletionResult<WriteFilesResponse>) {
+		let task = WriteFilesTask(files: files, settings: writeFilesSettings)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
 	}
 	
 	/// This command deletes selected files from card. This operation can't be undone.
@@ -476,34 +488,16 @@ public final class TangemSdk {
 	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
 	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
 	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-	///   - files: Files that should be deleted from card
+	///   - indexes: Indexes of files that should be deleteled. If nil - deletes all files from card
 	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
 	public func deleteFiles(cardId: String? = nil,
 							pin1: String? = nil,
 							pin2: String? = nil,
 							initialMessage: Message? = nil,
-							filesToDelete files: [File],
+							indexesToDelete indexes: [Int]?,
 							completion: @escaping CompletionResult<SimpleResponse>) {
-		let task = DeleteFilesTask(filesToDelete: files)
+		let task = DeleteFilesTask(filesToDelete: indexes)
 		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
-	}
-	
-	/// This command deletes all files from card. This operation can't be undone
-	///
-	/// No need to perform any additional commands.
-	/// - Warning: This command available for COS 3.29 and higher
-	/// - Parameters:
-	///   - cardId: CID, Unique Tangem card ID number.
-	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
-	public func deleteAllFiles(cardId: String? = nil,
-							   initialMessage: Message? = nil,
-							   pin1: String? = nil,
-							   pin2: String? = nil,
-							   completion: @escaping CompletionResult<SimpleResponse>) {
-		startSession(with: DeleteAllFilesTask(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
 	}
 	
 	/// Updates selected file settings provided within `File`.
@@ -518,7 +512,7 @@ public final class TangemSdk {
 	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
 	///   - files: Files that should update their settings
 	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
-	public func updateFilesSettings(cardId: String? = nil,
+	public func changeFilesSettings(cardId: String? = nil,
 									initialMessage: Message? = nil,
 									pin1: String? = nil,
 									pin2: String? = nil,

@@ -23,13 +23,8 @@ public struct FileDataToWrite {
 
 @available (iOS 13.0, *)
 public final class WriteFileDataCommand: Command {
-	public init(data: Data, startingSignature: Data, finalizingSignature: Data, dataCounter: Int?, issuerPublicKey: Data?) {
-		self.data = data
-		self.startingSignature = startingSignature
-		self.finalizingSignature = finalizingSignature
-		self.dataCounter = dataCounter
-		self.issuerPublicKey = issuerPublicKey
-		fileDataToWrite = FileDataToWrite(data: DataToWrite(data: data, settings: []), startingSignature: startingSignature, finalizingSignature: finalizingSignature)
+	public init(dataToWrite: DataToWrite) {
+		self.dataToWrite = dataToWrite
 	}
 	
 	public typealias CommandResponse = WriteFileDataResponse
@@ -37,12 +32,7 @@ public final class WriteFileDataCommand: Command {
 	private static let singleWriteSize = 1524
 	private static let maxSize = 48 * 1024
 	
-	private let fileDataToWrite: FileDataToWrite
-	private let data: Data
-	private let startingSignature: Data
-	private let finalizingSignature: Data
-	private let dataCounter: Int?
-	private let issuerPublicKey: Data?
+	private let dataToWrite: DataToWrite
 	
 	private var mode: FileDataMode = .initiateWritingFile
 	private var offset: Int = 0
@@ -56,31 +46,35 @@ public final class WriteFileDataCommand: Command {
 		guard
 			let firmwareVersion = card.firmwareVersionValue,
 			firmwareVersion >= FirmwareConstraints.minVersionForFiles,
-			firmwareVersion >= fileDataToWrite.data.settings.minFirmwareVersion()
+			firmwareVersion >= dataToWrite.minFirmwareVersion
 			else {
 			return .notSupportedFirmwareVersion
 		}
 		
-		guard let publicKey = issuerPublicKey ?? card.issuerPublicKey else {
-			return .missingIssuerPublicKey
-		}
+		
 		if card.status == .notPersonalized {
 			return .notPersonalized
 		}
 		if card.isActivated {
 			return .notActivated
 		}
-		if data.count > WriteFileDataCommand.maxSize {
+		if dataToWrite.data.count > WriteFileDataCommand.maxSize {
 			return .dataSizeTooLarge
 		}
-		guard isCounterValid(issuerDataCounter: dataCounter, card: card) else {
-			return .missingCounter
+		if let dataToWrite = dataToWrite as? FileDataProtectedBySignature {
+			if !isCounterValid(issuerDataCounter: dataToWrite.counter, card: card) {
+				return .missingCounter
+			}
+			guard let publicKey = dataToWrite.issuerPublicKey else {
+				return .missingIssuerPublicKey
+			}
+			guard
+				let cardId = card.cardId,
+				verifySignatures(publicKey: publicKey, cardId: cardId) else {
+				return .verificationFailed
+			}
 		}
-		guard
-			let cardId = card.cardId,
-			verifySignatures(publicKey: publicKey, cardId: cardId) else {
-			return .verificationFailed
-		}
+		
 		return nil
 	}
 	
@@ -103,16 +97,15 @@ public final class WriteFileDataCommand: Command {
 			.append(.interactionMode, value: mode)
 		switch mode {
 		case .initiateWritingFile:
-			try tlvBuilder.append(.size, value: data.count)
-				.append(.issuerDataSignature, value: startingSignature)
-				.append(.issuerDataCounter, value: dataCounter)
+			try dataToWrite.addStartingTlvData(tlvBuilder, withEnvironment: environment)
+				.append(.size, value: dataToWrite.data.count)
 		case .writeFile:
 			try tlvBuilder.append(.issuerData, value: getDataToWrite())
 				.append(.offset, value: offset)
 				.append(.fileIndex, value: fileIndex)
 		case .confirmWritingFile:
-			try tlvBuilder.append(.fileIndex, value: fileIndex)
-				.append(.issuerDataSignature, value: finalizingSignature)
+			try dataToWrite.addFinalizingTlvData(tlvBuilder, withEnvironment: environment)
+				.append(.fileIndex, value: fileIndex)
 		default:
 			break
 		}
@@ -143,7 +136,7 @@ public final class WriteFileDataCommand: Command {
 					self.writeFileData(session: session, completion: completion)
 				case .writeFile:
 					self.offset += WriteFileDataCommand.singleWriteSize
-					if self.offset >= self.data.count {
+					if self.offset >= self.dataToWrite.data.count {
 						self.mode = .confirmWritingFile
 					}
 					self.writeFileData(session: session, completion: completion)
@@ -164,11 +157,11 @@ public final class WriteFileDataCommand: Command {
 	}
 	
 	private func getDataToWrite() -> Data {
-		data[offset..<offset+calculatePartSize()]
+		dataToWrite.data[offset..<offset+calculatePartSize()]
 	}
 	
 	private func calculatePartSize() -> Int {
-		let bytesLeft = data.count - offset
+		let bytesLeft = dataToWrite.data.count - offset
 		return min(WriteFileDataCommand.singleWriteSize, bytesLeft)
 	}
 	
@@ -183,8 +176,19 @@ public final class WriteFileDataCommand: Command {
 	}
 	
 	private func verifySignatures(publicKey: Data, cardId: String) -> Bool {
-		let startingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId, issuerDataSize: data.count, issuerDataCounter: dataCounter, publicKey: publicKey, signature: startingSignature)
-	let finalizingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId, issuerData: data, issuerDataCounter: dataCounter, publicKey: publicKey, signature: finalizingSignature)
+		guard let dataToWrite = dataToWrite as? FileDataProtectedBySignature else {
+			return true
+		}
+		let startingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId,
+																 issuerDataSize: dataToWrite.data.count,
+																 issuerDataCounter: dataToWrite.counter,
+																 publicKey: publicKey,
+																 signature: dataToWrite.startingSignature)
+		let finalizingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId,
+																   issuerData: dataToWrite.data,
+																   issuerDataCounter: dataToWrite.counter,
+																   publicKey: publicKey,
+																   signature: dataToWrite.finalizingSignature)
 		return startingSignatureIsValid && finalizingSignatureIsValid
 	}
 	

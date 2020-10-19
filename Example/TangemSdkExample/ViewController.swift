@@ -430,6 +430,38 @@ class ViewController: UIViewController {
 		}
 	}
 	
+	@IBAction func writeSingleSignedFileTapped(_ sender: Any) {
+		guard let cardId = card?.cardId else {
+			self.log("Please, scan card before")
+			return
+		}
+		let demoData = Data(repeating: UInt8(1), count: 500)
+		let counter = 1
+		let startingSignature = FileSignatureGenerator.generateStartingSignature(forCardWith: cardId, data: demoData, fileCounter: counter)
+		let finalizingSignature = FileSignatureGenerator.generateFinalizingSignature(forCardWith: cardId, data: demoData, fileCounter: counter)
+		guard
+			let startSignature = Utils.signDataWithIssuer(startingSignature),
+			let finalSignature = Utils.signDataWithIssuer(finalizingSignature)
+		else {
+			self.log("Failed to sign data with issuer signature")
+			return
+		}
+		tangemSdk.writeFiles(files: [
+			FileDataProtectedBySignature(data: demoData,
+										 startingSignature: startSignature,
+										 finalizingSignature: finalSignature,
+										 counter: counter,
+										 issuerPublicKey: Utils.issuer.publicKey)
+		]) { (result) in
+			switch result {
+			case .success(let response):
+				self.log(response)
+			case .failure(let error):
+				self.handle(error)
+			}
+		}
+	}
+	
 	@IBAction func writeMultipleFilesTapped(_ sender: Any) {
 		guard let _ = card?.cardId else {
 			self.log("Please, scan card before")

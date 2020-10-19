@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Use this generator when creating signatures for files that signed by issuer
 public struct FileSignatureGenerator {
 	public static func generateStartingSignature(forCardWith cardId: String, data: Data, fileCounter: Int) -> Data {
 		Data(hexString: cardId) + fileCounter.bytes4 + data.count.bytes2

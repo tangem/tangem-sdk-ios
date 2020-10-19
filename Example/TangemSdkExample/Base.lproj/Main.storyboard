@@ -33,10 +33,10 @@
                                         <rect key="frame" x="0.0" y="261.5" width="375" height="405.5"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bkJ-1i-jvA">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="538"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="580"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" axis="vertical" distribution="fillProportionally" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="fbi-qN-21L">
-                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="538"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="580"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="sV8-e7-m7M">
                                                                 <rect key="frame" x="83.5" y="0.0" width="208" height="34"/>
@@ -249,8 +249,22 @@
                                                                 </subviews>
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="cdM-dL-ygl">
+                                                                <rect key="frame" x="96.5" y="420" width="182" height="34"/>
+                                                                <subviews>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qp5-de-N3g">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="182" height="34"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                        <state key="normal" title="Write single signed file"/>
+                                                                        <connections>
+                                                                            <action selector="writeSingleSignedFileTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3Gx-NK-tAF"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                                <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
+                                                            </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="OTr-ot-hNh">
-                                                                <rect key="frame" x="62.5" y="420" width="250" height="34"/>
+                                                                <rect key="frame" x="62.5" y="462" width="250" height="34"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C1m-Uc-x9U">
                                                                         <rect key="frame" x="0.0" y="0.0" width="117" height="34"/>
@@ -272,7 +286,7 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Zqj-Hv-p84">
-                                                                <rect key="frame" x="94" y="462" width="187" height="34"/>
+                                                                <rect key="frame" x="94" y="504" width="187" height="34"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXo-bL-5TT">
                                                                         <rect key="frame" x="0.0" y="0.0" width="187" height="34"/>
@@ -286,7 +300,7 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WNt-K3-8Wj">
-                                                                <rect key="frame" x="166" y="504" width="43" height="34"/>
+                                                                <rect key="frame" x="166" y="546" width="43" height="34"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                 <state key="normal" title="Clear"/>
                                                                 <connections>

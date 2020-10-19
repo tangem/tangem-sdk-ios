@@ -30,7 +30,7 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	let issuerPublicKey: Data?
 	var settings: Set<FileWriteSettings> = [.none]
 	
-	/// Use this initializer when verifiyin data with issuer data signature. To generate starting and finalizing signatures use `FileSignatureGenerator`
+	/// Use this initializer when protecting data with issuer data signature. To generate starting and finalizing signatures use `FileSignatureGenerator`
 	public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int, issuerPublicKey: Data?) {
 		self.data = data
 		self.startingSignature = startingSignature
@@ -60,8 +60,6 @@ public struct FileDataProtectedByPasscode: DataToWrite {
 	public var maxFirmwareVersion: Double { settings.maxFirmwareVersion() }
 	
 	var settings: Set<FileWriteSettings> = [.verifiedWithPin2]
-	
-	
 	
 	public init(data: Data) {
 		self.data = data

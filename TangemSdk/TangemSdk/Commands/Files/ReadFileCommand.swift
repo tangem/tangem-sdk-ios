@@ -10,13 +10,13 @@ import Foundation
 
 @available (iOS 13.0, *)
 public struct ReadFileDataResponse: ResponseCodable {
-	let cardId: String
-	let size: Int?
-	let fileData: Data
-	let fileIndex: Int
-	let fileSettings: FileSettings
-	let fileDataSignature: Data?
-	let fileDataCounter: Int?
+	public let cardId: String
+	public let size: Int?
+	public let fileData: Data
+	public let fileIndex: Int
+	public let fileSettings: FileSettings
+	public let fileDataSignature: Data?
+	public let fileDataCounter: Int?
 }
 
 @available (iOS 13.0, *)

@@ -26,6 +26,15 @@ public enum WriteFilesSettings {
 @available (iOS 13.0, *)
 public final class WriteFilesTask: CardSessionRunnable {
 	
+	public var requiresPin2: Bool { _requiresPin2 }
+	
+	private let files: [DataToWrite]
+	private let settings: Set<WriteFilesSettings>
+		
+	private var _requiresPin2: Bool = false
+	private var currentFileIndex: Int = 0
+	private var savedFilesIndices: [Int] = []
+	
 	public init(files: [DataToWrite], settings: Set<WriteFilesSettings> = [.overwriteAllFiles]) {
 		self.files = files
 		self.settings = settings
@@ -36,15 +45,6 @@ public final class WriteFilesTask: CardSessionRunnable {
 			}
 		}
 	}
-	
-	public var requiresPin2: Bool { _requiresPin2 }
-	
-	private let files: [DataToWrite]
-	private let settings: Set<WriteFilesSettings>
-		
-	private var _requiresPin2: Bool = false
-	private var currentFileIndex: Int = 0
-	private var savedFilesIndices: [Int] = []
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
 		guard files.count > 0 else {

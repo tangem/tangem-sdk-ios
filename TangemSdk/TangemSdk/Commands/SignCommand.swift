@@ -17,7 +17,7 @@ public struct SignResponse: ResponseCodable {
     /// Remaining number of sign operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int
     /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int
+    public let walletSignedHashes: Int?
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
@@ -76,18 +76,20 @@ public final class SignCommand: Command {
             return .signHashesNotAvailable
         }
         
-        if hashes.count == 0 {
-            return .emptyHashes
-        }
-        
-        if hashes.contains(where: { $0.count != hashes.first!.count }) {
-            return .hashSizeMustBeEqual
-        }
-        
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {        
+        if hashes.count == 0 {
+            completion(.failure(.emptyHashes))
+            return
+        }
+        
+        if hashes.contains(where: { $0.count != hashes.first!.count }) {
+            completion(.failure(.hashSizeMustBeEqual))
+            return
+        }
+        
         let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let delay = session.environment.card?.pauseBeforePin2 ?? 3000
@@ -101,11 +103,11 @@ public final class SignCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if error == .invalidParams {
+        if case .invalidParams = error {
             return .pin2OrCvcRequired
         }
         
-        if error == .unknownStatus {
+        if case .unknownStatus = error {
             return .nfcStuck
         }
         
@@ -133,7 +135,9 @@ public final class SignCommand: Command {
             case .success(let response):
                 self.responces.append(response)
                 self.currentChunk += 1
-                session.restartPolling()
+                if self.currentChunk != self.numberOfChunks {
+                    session.restartPolling()
+                }
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -180,7 +184,7 @@ public final class SignCommand: Command {
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),
             walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
-            walletSignedHashes: try decoder.decode(.walletSignedHashes))
+            walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
     
     private func getChunk() -> Range<Int> {

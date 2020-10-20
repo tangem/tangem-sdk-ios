@@ -9,6 +9,7 @@
 import Foundation
 import CryptoKit
 import CommonCrypto
+import TangemSdk_CEd25519
 
 extension Data {
     public func asHexString() -> String {
@@ -197,4 +198,14 @@ extension Data {
                                      dataIn: self)
         
     }
+	
+	public func signed(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+		switch curve {
+		case .secp256k1:
+			return Secp256k1Utils.sign(self, with: privateKey)
+		default:
+			// TODO: Create sign for ED25519 curve
+			fatalError("Not implemented data sign for ED25519 curve")
+		}
+	}
 }

@@ -15,22 +15,17 @@ public struct ReadFilesResponse: ResponseCodable {
 
 @available (iOS 13.0, *)
 public struct ReadFileDataTaskSettings {
+	let readPrivateFiles: Bool
+	let readSettings: Set<ReadFileCommandSettings>
+	
 	public init(readPrivateFiles: Bool, readSettings: Set<ReadFileCommandSettings> = []) {
 		self.readPrivateFiles = readPrivateFiles
 		self.readSettings = readSettings
 	}
-	
-	let readPrivateFiles: Bool
-	let readSettings: Set<ReadFileCommandSettings>
 }
 
 @available (iOS 13.0, *)
 public class ReadFileDataTask: CardSessionRunnable {
-	
-	public init(settings: ReadFileDataTaskSettings, fileIndex: Int = 0) {
-		self.settings = settings
-		self.fileIndex = fileIndex
-	}
 	
 	public typealias CommandResponse = ReadFilesResponse
 	
@@ -40,6 +35,11 @@ public class ReadFileDataTask: CardSessionRunnable {
 	
 	private var fileIndex: Int
 	private var files: [File] = []
+	
+	public init(settings: ReadFileDataTaskSettings, fileIndex: Int = 0) {
+		self.settings = settings
+		self.fileIndex = fileIndex
+	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
 		performReadFileDataCommand(session: session, completion: completion)

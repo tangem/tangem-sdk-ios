@@ -10,9 +10,9 @@ import Foundation
 
 @available (iOS 13.0, *)
 public struct ReadFileChecksumResponse: ResponseCodable {
-	let cardId: String
-	let checksum: Data
-	let fileIndex: Int?
+	public let cardId: String
+	public let checksum: Data
+	public let fileIndex: Int?
 }
 
 @available (iOS 13.0, *)

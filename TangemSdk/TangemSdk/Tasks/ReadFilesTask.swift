@@ -1,5 +1,5 @@
 //
-//  ReadFileDataTask.swift
+//  ReadFilesTask.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 10/6/20.
@@ -14,7 +14,7 @@ public struct ReadFilesResponse: ResponseCodable {
 }
 
 @available (iOS 13.0, *)
-public struct ReadFileDataTaskSettings {
+public struct ReadFilesTaskSettings {
 	let readPrivateFiles: Bool
 	let readSettings: Set<ReadFileCommandSettings>
 	
@@ -25,18 +25,18 @@ public struct ReadFileDataTaskSettings {
 }
 
 @available (iOS 13.0, *)
-public class ReadFileDataTask: CardSessionRunnable {
+public class ReadFilesTask: CardSessionRunnable {
 	
 	public typealias CommandResponse = ReadFilesResponse
 	
 	public var requiresPin2: Bool { settings.readPrivateFiles }
 	
-	private let settings: ReadFileDataTaskSettings
+	private let settings: ReadFilesTaskSettings
 	
 	private var fileIndex: Int
 	private var files: [File] = []
 	
-	public init(settings: ReadFileDataTaskSettings, fileIndex: Int = 0) {
+	public init(settings: ReadFilesTaskSettings, fileIndex: Int = 0) {
 		self.settings = settings
 		self.fileIndex = fileIndex
 	}
@@ -46,7 +46,7 @@ public class ReadFileDataTask: CardSessionRunnable {
 	}
 	
 	private func performReadFileDataCommand(session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
-		let command = ReadFileDataCommand(fileIndex: fileIndex, readPrivateFiles: settings.readPrivateFiles)
+		let command = ReadFileCommand(fileIndex: fileIndex, readPrivateFiles: settings.readPrivateFiles)
 		command.run(in: session) { (result) in
 			switch result {
 			case .success(let response):

@@ -293,7 +293,7 @@ public struct SettingsMask: OptionSet, Codable {
             values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
         }
         if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
-            values.append("RestrictOverwriteIssuerExtraDara")
+            values.append("RestrictOverwriteIssuerExtraData")
         }
         if contains(SettingsMask.requireTermTxSignature) {
             values.append("RequireTermTxSignature")
@@ -372,7 +372,7 @@ public struct SettingsMask: OptionSet, Codable {
         if stringValues.contains("SkipSecurityDelayIfValidatedByLinkedTerminal") {
             mask.update(with: SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal)
         }
-        if stringValues.contains("RestrictOverwriteIssuerExtraDara") {
+        if stringValues.contains("RestrictOverwriteIssuerExtraData") {
             mask.update(with: SettingsMask.restrictOverwriteIssuerExtraData)
         }
         if stringValues.contains("RequireTermTxSignature") {
@@ -454,7 +454,7 @@ public struct Card: ResponseCodable {
     /// Name of Tangem card manufacturer.
     public let manufacturerName: String?
     /// Current status of the card.
-    public let status: CardStatus?
+    public var status: CardStatus?
     /// Version of Tangem COS.
     public let firmwareVersion: String?
     /// Public key that is used to authenticate the card against manufacturer’s database.
@@ -474,13 +474,13 @@ public struct Card: ResponseCodable {
     /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
     public let pauseBeforePin2: Int?
     /// Public key of the blockchain wallet.
-    public let walletPublicKey: Data?
+    public var walletPublicKey: Data?
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in
     /// `SignCommand` responses since card personalization.
     /// Sums up array elements within all `SignCommand`.
-    public let walletSignedHashes: Int?
+    public var walletSignedHashes: Int?
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.
@@ -494,7 +494,7 @@ public struct Card: ResponseCodable {
     /// Returned only if `SigningMethod.SignPos` enabling POS transactions is supported by card
     public let paymentFlowVersion: Data?
     /// This value can be initialized by terminal and will be increased by COS on execution of every `SignCommand`.
-    /// For example, this field can store blockchain “nonce” for quick one-touch transaction on POS terminals.
+    /// For example, this field can store blockchain “nonce" for quick one-touch transaction on POS terminals.
     /// Returned only if `SigningMethod.SignPos`  enabling POS transactions is supported by card.
     public let userCounter: Int?
     /// When this value is true, it means that the application is linked to the card,
@@ -506,23 +506,10 @@ public struct Card: ResponseCodable {
     /// Cards complaint with Tangem Wallet application should have TLV format.
     public let cardData: CardData?
     
-    //MARK: Dynamic NDEF
-    /// Remaining number of allowed transaction signatures
-    @available(*, deprecated, message: "Use walletRemainingSignatures instead")
-    public let remainingSignatures: Int?
-    /// Number of hashes signed after personalization (there can be
-    /// severeal hases in one transaction)
-    @available(*, deprecated, message: "Use walletSignedHashes instead")
-    public var signedHashes: Int?
-    /// First part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let challenge: Data?
-    /// Second part of a message signed by card
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let salt: Data?
-    /// [Challenge, Salt] SHA256 signature signed with Wallet_PrivateKey
-    @available(*, deprecated, message: "Will be removed in future version")
-    public let walletSignature: Data?
+    /// Set by ScanTask
+    public var isPin1Default: Bool? = nil
+    /// Set by ScanTask
+    public var isPin2Default: Bool? = nil
     
     public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
         self.cardId = cardId
@@ -546,11 +533,36 @@ public struct Card: ResponseCodable {
         self.userCounter = userCounter
         self.terminalIsLinked = terminalIsLinked
         self.cardData = cardData
-        self.remainingSignatures = remainingSignatures
-        self.signedHashes = signedHashes
-        self.challenge = challenge
-        self.salt = salt
-        self.walletSignature = walletSignature
+    }
+    
+    public mutating func update(with response: CreateWalletResponse) {
+        guard cardId == response.cardId, response.status == .loaded else {
+            return
+        }
+    
+        status = response.status
+        walletPublicKey = response.walletPublicKey
+    }
+    
+    public func updating(with response: CreateWalletResponse) -> Card {
+        var card = self
+        card.update(with: response)
+        return card
+    }
+    
+    public mutating func update(with response: PurgeWalletResponse) {
+        guard cardId == response.cardId, response.status == .empty else {
+            return
+        }
+        
+        status = response.status
+        walletPublicKey = nil
+    }
+    
+    public func updating(with response: PurgeWalletResponse) -> Card {
+        var card = self
+        card.update(with: response)
+        return card
     }
 }
 
@@ -620,7 +632,7 @@ public final class ReadCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if error == .invalidParams {
+        if case .invalidParams = error {
             return .pin1Required
         }
         

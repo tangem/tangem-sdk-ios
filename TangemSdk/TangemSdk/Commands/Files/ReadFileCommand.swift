@@ -9,19 +9,19 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public struct ReadFileDataResponse: ResponseCodable {
-	let cardId: String
-	let size: Int?
-	let fileData: Data
-	let fileIndex: Int
-	let fileSettings: FileSettings
-	let fileDataSignature: Data?
-	let fileDataCounter: Int?
+public struct ReadFileResponse: ResponseCodable {
+	public let cardId: String
+	public let size: Int?
+	public let fileData: Data
+	public let fileIndex: Int
+	public let fileSettings: FileSettings
+	public let fileDataSignature: Data?
+	public let fileDataCounter: Int?
 }
 
 @available (iOS 13.0, *)
-public final class ReadFileDataCommand: Command {
-	public typealias CommandResponse = ReadFileDataResponse
+public final class ReadFileCommand: Command {
+	public typealias CommandResponse = ReadFileResponse
 	
 	public var requiresPin2: Bool { readPrivateFiles }
 	
@@ -38,13 +38,21 @@ public final class ReadFileDataCommand: Command {
 		self.readPrivateFiles = readPrivateFiles
 	}
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
 		readFileData(session: session, completion: completion)
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		guard card.status == CardStatus.notPersonalized else { return nil }
-		return .notPersonalized
+		if let firmware = card.firmwareVersionValue,
+			firmware < FirmwareConstraints.minVersionForFiles {
+			return .notSupportedFirmwareVersion
+		}
+		
+		if card.status == CardStatus.notPersonalized {
+			return .notPersonalized
+		}
+		
+		return nil
 	}
 	
 	func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
@@ -54,7 +62,7 @@ public final class ReadFileDataCommand: Command {
 		return error
 	}
 	
-	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
+	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
@@ -79,11 +87,11 @@ public final class ReadFileDataCommand: Command {
 		}
 	}
 	
-	private func completeTask(_ data: ReadFileDataResponse, completion: @escaping CompletionResult<ReadFileDataResponse>) {
-		let response = ReadFileDataResponse(cardId: data.cardId,
+	private func completeTask(_ data: ReadFileResponse, completion: @escaping CompletionResult<ReadFileResponse>) {
+		let response = ReadFileResponse(cardId: data.cardId,
 											size: dataSize,
 											fileData: fileData,
-											fileIndex: fileIndex,
+											fileIndex: data.fileIndex,
 											fileSettings: fileSettings ?? data.fileSettings,
 											fileDataSignature: data.fileDataSignature,
 											fileDataCounter: data.fileDataCounter)
@@ -91,23 +99,23 @@ public final class ReadFileDataCommand: Command {
 	}
 	
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-		var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
 			.append(.pin, value: environment.pin1.value)
 			.append(.cardId, value: environment.card?.cardId)
 			.append(.fileIndex, value: fileIndex)
 			.append(.offset, value: offset)
 		if readPrivateFiles {
-			tlvBuilder = try tlvBuilder.append(.pin2, value: environment.pin2.value)
+			try tlvBuilder.append(.pin2, value: environment.pin2.value)
 		}
 		return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
 	}
 	
-	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileDataResponse {
+	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileResponse {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		let decoder = TlvDecoder(tlv: tlv)
-		return ReadFileDataResponse(cardId: try decoder.decode(.cardId),
+		return ReadFileResponse(cardId: try decoder.decode(.cardId),
 									size: try decoder.decodeOptional(.size),
 									fileData: try decoder.decodeOptional(.issuerData) ?? Data(),
 									fileIndex: try decoder.decodeOptional(.fileIndex) ?? 0,

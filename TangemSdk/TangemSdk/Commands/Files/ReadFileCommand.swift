@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public struct ReadFileDataResponse: ResponseCodable {
+public struct ReadFileResponse: ResponseCodable {
 	public let cardId: String
 	public let size: Int?
 	public let fileData: Data
@@ -20,8 +20,8 @@ public struct ReadFileDataResponse: ResponseCodable {
 }
 
 @available (iOS 13.0, *)
-public final class ReadFileDataCommand: Command {
-	public typealias CommandResponse = ReadFileDataResponse
+public final class ReadFileCommand: Command {
+	public typealias CommandResponse = ReadFileResponse
 	
 	public var requiresPin2: Bool { readPrivateFiles }
 	
@@ -38,7 +38,7 @@ public final class ReadFileDataCommand: Command {
 		self.readPrivateFiles = readPrivateFiles
 	}
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
 		readFileData(session: session, completion: completion)
 	}
 	
@@ -62,7 +62,7 @@ public final class ReadFileDataCommand: Command {
 		return error
 	}
 	
-	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileDataResponse>) {
+	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
@@ -87,8 +87,8 @@ public final class ReadFileDataCommand: Command {
 		}
 	}
 	
-	private func completeTask(_ data: ReadFileDataResponse, completion: @escaping CompletionResult<ReadFileDataResponse>) {
-		let response = ReadFileDataResponse(cardId: data.cardId,
+	private func completeTask(_ data: ReadFileResponse, completion: @escaping CompletionResult<ReadFileResponse>) {
+		let response = ReadFileResponse(cardId: data.cardId,
 											size: dataSize,
 											fileData: fileData,
 											fileIndex: data.fileIndex,
@@ -110,12 +110,12 @@ public final class ReadFileDataCommand: Command {
 		return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
 	}
 	
-	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileDataResponse {
+	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileResponse {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		let decoder = TlvDecoder(tlv: tlv)
-		return ReadFileDataResponse(cardId: try decoder.decode(.cardId),
+		return ReadFileResponse(cardId: try decoder.decode(.cardId),
 									size: try decoder.decodeOptional(.size),
 									fileData: try decoder.decodeOptional(.issuerData) ?? Data(),
 									fileIndex: try decoder.decodeOptional(.fileIndex) ?? 0,

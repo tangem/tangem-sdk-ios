@@ -445,9 +445,9 @@ public final class TangemSdk {
 						  initialMessage: Message? = nil,
 						  pin1: String? = nil,
 						  pin2: String? = nil,
-						  readSettings: ReadFileDataTaskSettings = .init(readPrivateFiles: true, readSettings: []),
+						  readSettings: ReadFilesTaskSettings = .init(readPrivateFiles: true, readSettings: []),
 						  completion: @escaping CompletionResult<ReadFilesResponse>) {
-		let task = ReadFileDataTask(settings: readSettings)
+		let task = ReadFilesTask(settings: readSettings)
 		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
 	}
 	
@@ -479,7 +479,7 @@ public final class TangemSdk {
 	
 	/// This command deletes selected files from card. This operation can't be undone.
 	///
-	/// To perform file deletion you should initially read all files (`readFiles` command) and add them to `filesToDelete` array. When files deleted from card, other files change their indexies.
+	/// To perform file deletion you should initially read all files (`readFiles` command) and add them to `indices` array. When files deleted from card, other files change their indexies.
 	/// After deleting files you should additionally perform `readFiles` command to actualize files indexes
 	/// - Warning: This command available for COS 3.29 and higher
 	/// - Parameters:

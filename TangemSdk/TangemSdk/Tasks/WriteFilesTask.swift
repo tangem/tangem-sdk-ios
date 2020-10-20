@@ -82,7 +82,7 @@ public final class WriteFilesTask: CardSessionRunnable {
 			completion(.success(.init(cardId: cardId, filesIndices: savedFilesIndices)))
 			return
 		}
-		WriteFileDataCommand(dataToWrite: files[currentFileIndex])
+		WriteFileCommand(dataToWrite: files[currentFileIndex])
 			.run(in: session) { (result) in
 				switch result {
 				case .success(let response):

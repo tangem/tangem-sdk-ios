@@ -81,10 +81,10 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .missingCounter
         }
 		
-		guard
-			let firmwareVersion = card.firmwareVersionValue,
-			firmwareVersion < FirmwareConstraints.minVersionForFiles
-		else { return .notSupportedFirmwareVersion }
+		if let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion >= FirmwareConstraints.minVersionForFiles {
+			return .notSupportedFirmwareVersion
+		}
         
         if let cardId = card.cardId, !verify(with: cardId) {
             return .verificationFailed

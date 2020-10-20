@@ -80,6 +80,11 @@ public final class WriteIssuerExtraDataCommand: Command {
             && issuerDataCounter == nil {
             return .missingCounter
         }
+		
+		if let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion >= FirmwareConstraints.minVersionForFiles {
+			return .notSupportedFirmwareVersion
+		}
         
         if let cardId = card.cardId, !verify(with: cardId) {
             return .verificationFailed
@@ -97,11 +102,11 @@ public final class WriteIssuerExtraDataCommand: Command {
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay) {
             
-            if error == .invalidParams {
+            if case .invalidParams = error {
                 return .dataCannotBeWritten
             }
             
-            if error == .invalidState {
+            if case .invalidState = error {
                 return .overwritingDataIsProhibited
             }
         }
@@ -167,7 +172,7 @@ public final class WriteIssuerExtraDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.mode, value: mode)
+            .append(.interactionMode, value: mode)
         
         switch mode {
         case .readOrStartWrite:

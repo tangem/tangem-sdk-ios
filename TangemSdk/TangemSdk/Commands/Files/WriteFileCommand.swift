@@ -1,5 +1,5 @@
 //
-//  WriteFileDataCommand.swift
+//  WriteFileCommand.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 10/7/20.
@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public struct WriteFileDataResponse: ResponseCodable {
+public struct WriteFileResponse: ResponseCodable {
 	public let cardId: String
 	public let fileIndex: Int?
 }
@@ -22,8 +22,8 @@ public struct FileDataToWrite {
 }
 
 @available (iOS 13.0, *)
-public final class WriteFileDataCommand: Command {
-	public typealias CommandResponse = WriteFileDataResponse
+public final class WriteFileCommand: Command {
+	public typealias CommandResponse = WriteFileResponse
 	
 	private static let singleWriteSize = 1524
 	private static let maxSize = 48 * 1024
@@ -38,7 +38,7 @@ public final class WriteFileDataCommand: Command {
 		self.dataToWrite = dataToWrite
 	}
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileDataResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
 		writeFileData(session: session, completion: completion)
 	}
 	
@@ -55,7 +55,7 @@ public final class WriteFileDataCommand: Command {
 		if card.isActivated {
 			return .notActivated
 		}
-		if dataToWrite.data.count > WriteFileDataCommand.maxSize {
+		if dataToWrite.data.count > WriteFileCommand.maxSize {
 			return .dataSizeTooLarge
 		}
 		if let dataToWrite = dataToWrite as? FileDataProtectedBySignature {
@@ -110,18 +110,18 @@ public final class WriteFileDataCommand: Command {
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
 	}
 	
-	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteFileDataResponse {
+	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteFileResponse {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		let decoder = TlvDecoder(tlv: tlv)
-		return WriteFileDataResponse(cardId: try decoder.decode(.cardId),
+		return WriteFileResponse(cardId: try decoder.decode(.cardId),
 									 fileIndex: try decoder.decodeOptional(.fileIndex))
 	}
 	
 	// MARK: Private functions
 	
-	private func writeFileData(session: CardSession, completion: @escaping CompletionResult<WriteFileDataResponse>) {
+	private func writeFileData(session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
 		// TODO: Insert view delegate method to display progress to user
 		transieve(in: session) { (result) in
 			switch result {
@@ -132,13 +132,13 @@ public final class WriteFileDataCommand: Command {
 					self.mode = .writeFile
 					self.writeFileData(session: session, completion: completion)
 				case .writeFile:
-					self.offset += WriteFileDataCommand.singleWriteSize
+					self.offset += WriteFileCommand.singleWriteSize
 					if self.offset >= self.dataToWrite.data.count {
 						self.mode = .confirmWritingFile
 					}
 					self.writeFileData(session: session, completion: completion)
 				case .confirmWritingFile:
-					completion(.success(WriteFileDataResponse(cardId: response.cardId, fileIndex: self.fileIndex)))
+					completion(.success(WriteFileResponse(cardId: response.cardId, fileIndex: self.fileIndex)))
 				default:
 					completion(.failure(.wrongInteractionMode))
 				}
@@ -154,7 +154,7 @@ public final class WriteFileDataCommand: Command {
 	
 	private func calculatePartSize() -> Int {
 		let bytesLeft = dataToWrite.data.count - offset
-		return min(WriteFileDataCommand.singleWriteSize, bytesLeft)
+		return min(WriteFileCommand.singleWriteSize, bytesLeft)
 	}
 	
 	private func isCounterValid(issuerDataCounter: Int?, card: Card) -> Bool {

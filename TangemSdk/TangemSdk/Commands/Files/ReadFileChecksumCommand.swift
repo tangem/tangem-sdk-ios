@@ -36,10 +36,10 @@ public final class ReadFileChecksumCommand: Command {
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
 		guard card.status == CardStatus.notPersonalized else { return nil }
 		
-		guard
-			let firmwareVersion = card.firmwareVersionValue,
-			firmwareVersion >= FirmwareConstraints.minVersionForFiles
-		else { return .notSupportedFirmwareVersion }
+		if let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion < FirmwareConstraints.minVersionForFiles {
+			return .notSupportedFirmwareVersion
+		}
 		
 		return .notPersonalized
 	}

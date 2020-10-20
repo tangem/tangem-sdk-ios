@@ -227,6 +227,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	
 	/// Returned when file on card has unwknown file settings
 	case notSupportedFileSettings
+	
+	/// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
+	case wrongInteractionMode
+	
+	/// Returned when command  is not met firmware version requirements (ex. for file writing COD must be 3.29 or greater)
+	case notSupportedFirmwareVersion
     
     public var code: Int {
         switch self {
@@ -308,8 +314,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardNumber: return 50005
         case .wrongCardType: return 50006
         case .underlying: return 50010
-		case .fileNotFound: return 30007
-		case .notSupportedFileSettings: return 30017  // TODO: Change to correct code error code
+		case .fileNotFound: return 50007
+		case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
+		case .wrongInteractionMode: return 50027
+		case .notSupportedFirmwareVersion: return 50007
         }
     }
     
@@ -351,6 +359,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .pin2OrCvcRequired: return "error_pin2_required".localized
         case .underlying(let error): return error.localizedDescription
 		case .fileNotFound: return "error_file_not_found".localized
+		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
+		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

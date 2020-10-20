@@ -104,10 +104,10 @@ extension Command {
                 case .failure(let error):
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
-                        if mappedError == .pin1Required {
+                        if case .pin1Required = mappedError {
                             session.environment.pin1 = PinCode(.pin1, value: nil)
                             self.requestPin(.pin1, session, completion: completion)
-                        } else if mappedError == .pin2OrCvcRequired {
+                        } else if case .pin2OrCvcRequired = mappedError {
                             session.environment.pin2 = PinCode(.pin2, value: nil)
                             self.requestPin(.pin2, session, completion: completion)
                         } else {
@@ -124,7 +124,7 @@ extension Command {
     }
     
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-        print("transieve: \(Instruction(rawValue: apdu.ins)!)")
+//		print("transieve: \(Instruction(rawValue: apdu.ins)!), raw:", apdu.ins.toHex())
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
@@ -178,7 +178,7 @@ extension Command {
     }
     
     private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause()
+        session.pause(error: TangemSdkError.from(pinType: pinType))
         DispatchQueue.main.async {
             session.requestPinIfNeeded(pinType) { result in
                 switch result {
@@ -214,6 +214,9 @@ extension ResponseCodable {
     }
 }
 
+public struct SimpleResponse: ResponseCodable {
+	public let cardId: String
+}
 
 extension JSONDecoder {
     public static var tangemSdkDecoder: JSONDecoder  {

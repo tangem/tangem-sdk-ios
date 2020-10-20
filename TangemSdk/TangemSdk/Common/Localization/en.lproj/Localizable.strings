@@ -86,9 +86,13 @@
 "error_card_error" = "Your card is missing essential data";
 "error_pin1_required" = "Access code is required";
 "error_pin2_required" = "Passcode is required";
-"error_file_not_found" = "File not found";
 "error_wrong_card" = "Wrong Card";
 "error_invalid_response" = "Invalid Response";
+
+"error_file_not_found" = "File not found";
+"error_wrong_interaction_mode" = "Unsupported interaction mode";
+"error_not_supported_firmware_version" = "Card firmware does not meet requirements";
+
 
 
 //Android only

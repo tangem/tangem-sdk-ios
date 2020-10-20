@@ -23,7 +23,7 @@ public enum TlvValueType {
     case signingMethod
     case byte
     case uint16
-    case issuerExtraDataMode
+    case interactionMode
 	case fileSettings
 }
 /// Contains all TLV tags, with their code and descriptive name.
@@ -106,7 +106,7 @@ public enum TlvTag: Byte {
     case terminalPublicKey = 0x5C
     case terminalTransactionSignature = 0x57
     case legacyMode = 0x29
-    case mode = 0x23
+    case interactionMode = 0x23
     case offset = 0x24
     case size = 0x25
     case acquirerPublicKey = 0x37
@@ -151,8 +151,8 @@ public enum TlvTag: Byte {
             return .signingMethod
 		case .transactionOutHashSize, .legacyMode, .fileIndex:
             return .byte
-        case .mode:
-            return .issuerExtraDataMode
+        case .interactionMode:
+            return .interactionMode
 		case .offset, .size:
             return .uint16
 		case .fileSettings:

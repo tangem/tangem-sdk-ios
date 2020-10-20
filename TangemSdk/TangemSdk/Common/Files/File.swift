@@ -25,7 +25,7 @@ public class File: Codable, CustomStringConvertible {
 		self.fileData = fileData
 	}
 	
-	init(response: ReadFileDataResponse) {
+	init(response: ReadFileResponse) {
 		fileIndex = response.fileIndex
 		fileSettings = response.fileSettings
 		fileData = response.fileData

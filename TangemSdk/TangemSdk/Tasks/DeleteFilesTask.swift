@@ -12,13 +12,13 @@ import Foundation
 public final class DeleteFilesTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
-	public init(filesToDelete: [Int]?) {
-		self.filesToDelete = filesToDelete?.sorted(by: <)
-	}
-	
 	public var requiresPin2: Bool { true }
 	
 	private var filesToDelete: [Int]?
+	
+	public init(filesToDelete: [Int]?) {
+		self.filesToDelete = filesToDelete?.sorted(by: <)
+	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
 		guard let filesToDelete = filesToDelete else {

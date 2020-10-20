@@ -12,13 +12,13 @@ import Foundation
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
-	public init(files: [File]) {
-		self.files = files
-	}
-	
 	public var requiresPin2: Bool { true }
 	
 	private var files: [File]
+	
+	public init(files: [File]) {
+		self.files = files
+	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
 		changeFileSettings(session: session, completion: completion)

@@ -403,7 +403,7 @@ class ViewController: UIViewController {
 			return
 		}
 		
-		tangemSdk.readFiles(cardId: cardId, readSettings: ReadFileDataTaskSettings(readPrivateFiles: false)) { (result) in
+		tangemSdk.readFiles(cardId: cardId, readSettings: ReadFilesTaskSettings(readPrivateFiles: false)) { (result) in
 			switch result {
 			case .success(let response):
 				self.savedFiles = response.files
@@ -440,11 +440,10 @@ class ViewController: UIViewController {
 		
 		let demoData = Data(repeating: UInt8(1), count: 500)
 		let counter = 1
-		let startingSignature = FileSignatureGenerator.generateStartingSignature(forCardWith: cardId, data: demoData, fileCounter: counter)
-		let finalizingSignature = FileSignatureGenerator.generateFinalizingSignature(forCardWith: cardId, data: demoData, fileCounter: counter)
+		let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
 		guard
-			let startSignature = Utils.signDataWithIssuer(startingSignature),
-			let finalSignature = Utils.signDataWithIssuer(finalizingSignature)
+			let startSignature = fileHash.startingSignature,
+			let finalSignature = fileHash.finalizingSignature
 		else {
 			self.log("Failed to sign data with issuer signature")
 			return

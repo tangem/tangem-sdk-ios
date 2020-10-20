@@ -92,6 +92,8 @@
 
 
 "error_file_not_found" = "File not found";
+"error_wrong_interaction_mode" = "Unsupported interaction mode";
+"error_not_supported_firmware_version" = "Card firmware does not meet requirements";
 
 
 //Android only

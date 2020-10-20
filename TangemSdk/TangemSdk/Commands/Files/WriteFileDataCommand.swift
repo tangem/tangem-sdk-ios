@@ -23,10 +23,6 @@ public struct FileDataToWrite {
 
 @available (iOS 13.0, *)
 public final class WriteFileDataCommand: Command {
-	public init(dataToWrite: DataToWrite) {
-		self.dataToWrite = dataToWrite
-	}
-	
 	public typealias CommandResponse = WriteFileDataResponse
 	
 	private static let singleWriteSize = 1524
@@ -38,19 +34,20 @@ public final class WriteFileDataCommand: Command {
 	private var offset: Int = 0
 	private var fileIndex: Int = 0
 	
+	public init(dataToWrite: DataToWrite) {
+		self.dataToWrite = dataToWrite
+	}
+	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileDataResponse>) {
 		writeFileData(session: session, completion: completion)
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		guard
-			let firmwareVersion = card.firmwareVersionValue,
-			firmwareVersion >= FirmwareConstraints.minVersionForFiles,
-			firmwareVersion >= dataToWrite.minFirmwareVersion
-			else {
+		if let firmwareVersion = card.firmwareVersionValue,
+			firmwareVersion < FirmwareConstraints.minVersionForFiles,
+			firmwareVersion < dataToWrite.minFirmwareVersion {
 			return .notSupportedFirmwareVersion
 		}
-		
 		
 		if card.status == .notPersonalized {
 			return .notPersonalized
@@ -146,11 +143,6 @@ public final class WriteFileDataCommand: Command {
 					completion(.failure(.wrongInteractionMode))
 				}
 			case .failure(let error):
-				if session.environment.handleErrors {
-					let error = self.mapError(session.environment.card, error)
-					completion(.failure(error))
-					return
-				}
 				completion(.failure(error))
 			}
 		}

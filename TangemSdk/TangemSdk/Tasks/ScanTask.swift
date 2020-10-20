@@ -38,9 +38,27 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        guard let card = session.environment.card else {
+        guard var card = session.environment.card else {
             completion(.failure(.cardError))
             return
+        }
+        
+        card.isPin1Default = session.environment.pin1.isDefault
+        
+        if let fw = card.firmwareVersionValue, fw > 1.19 { //skip old card with persistent SD
+            CheckPinCommand().run(in: session) { checkPinResult in
+                switch checkPinResult {
+                case .success(let checkPinResponse):
+                    card.isPin2Default = checkPinResponse.isPin2Default
+                    session.environment.card = card
+                    self.runCheckWalletIfNeeded(card, session, completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } else {
+            session.environment.card = card
+            runCheckWalletIfNeeded(card, session, completion)
         }
         
 //        if let pin1 = session.environment.pin1.value, let pin2 = session.environment.pin2.value {
@@ -57,7 +75,7 @@ public final class ScanTask: CardSessionRunnable {
 //                self.runCheckWalletIfNeeded(card, session, completion)
 //            }
 //        } else {
-            runCheckWalletIfNeeded(card, session, completion)
+//            runCheckWalletIfNeeded(card, session, completion)
 //        }
     }
     

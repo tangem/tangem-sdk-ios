@@ -163,19 +163,19 @@ public final class TangemSdk {
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
     
-    /**
-     * This task retrieves Issuer Extra Data field and its issuer’s signature.
-     * Issuer Extra Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,
-     * format and payload of Issuer Data. . For example, this field may contain photo or
-     * biometric information for ID card product. Because of the large size of Issuer_Extra_Data,
-     * a series of these commands have to be executed to read the entire Issuer_Extra_Data.
-     *
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
-     */
+    
+	/// This task retrieves Issuer Extra Data field and its issuer’s signature.
+	/// Issuer Extra Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,
+	/// format and payload of Issuer Data. . For example, this field may contain photo or
+	/// biometric information for ID card product. Because of the large size of Issuer_Extra_Data,
+	/// a series of these commands have to be executed to read the entire Issuer_Extra_Data.
+	///
+	/// - Warning: This command is not supported for COS 3.29 and higher. Use files api instead
+	/// - Parameters:
+	///   - cardId:  CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
     @available(iOS 13.0, *)
     public func readIssuerExtraData(cardId: String? = nil,
                                     initialMessage: Message? = nil,
@@ -184,30 +184,29 @@ public final class TangemSdk {
         let command = ReadIssuerExtraDataCommand(issuerPublicKey: config.issuerPublicKey)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
-    
-    /**
-     * This task writes Issuer Extra Data field and its issuer’s signature.
-     * Issuer Extra Data is never changed or parsed from within the Tangem COS.
-     * The issuer defines purpose of use, format and payload of Issuer Data.
-     * For example, this field may contain a photo or biometric information for ID card products.
-     * Because of the large size of Issuer_Extra_Data, a series of these commands have to be executed
-     * to write entire Issuer_Extra_Data.
-     *
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - issuerData: Data provided by issuer.
-     *   - startingSignature: Issuer’s signature with Issuer Data Private Key of [cardId],
-     *   [issuerDataCounter] (if flags Protect_Issuer_Data_Against_Replay and
-     *   Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]) and size of [issuerData].
-     *   - finalizingSignature:  Issuer’s signature with Issuer Data Private Key of [cardId],
-     *   [issuerData] and [issuerDataCounter] (the latter one only if flags Protect_Issuer_Data_Against_Replay
-     *   and Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]).
-     *   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
-     */
-    @available(iOS 13.0, *)
+	
+	/// This task writes Issuer Extra Data field and its issuer’s signature.
+	/// Issuer Extra Data is never changed or parsed from within the Tangem COS.
+	/// The issuer defines purpose of use, format and payload of Issuer Data.
+	/// For example, this field may contain a photo or biometric information for ID card products.
+	/// Because of the large size of Issuer_Extra_Data, a series of these commands have to be executed
+	/// to write entire Issuer_Extra_Data.
+	///
+	/// - Warning: This command is not supported for COS 3.29 and higher. Use files api instead
+	/// - Parameters:
+	///   - cardId:  CID, Unique Tangem card ID number.
+	///   - issuerData: Data provided by issuer.
+	///   - startingSignature: Issuer’s signature with Issuer Data Private Key of [cardId],
+	///   [issuerDataCounter] (if flags Protect_Issuer_Data_Against_Replay and
+	///   Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]) and size of [issuerData].
+	///   - finalizingSignature:  Issuer’s signature with Issuer Data Private Key of [cardId],
+	///   [issuerData] and [issuerDataCounter] (the latter one only if flags Protect_Issuer_Data_Against_Replay
+	///   and Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]).
+	///   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
+	@available(iOS 13.0, *)
     public func writeIssuerExtraData(cardId: String? = nil,
                                      issuerData: Data,
                                      startingSignature: Data,
@@ -488,15 +487,15 @@ public final class TangemSdk {
 	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
 	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
 	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-	///   - indexes: Indexes of files that should be deleteled. If nil - deletes all files from card
+	///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
 	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
 	public func deleteFiles(cardId: String? = nil,
 							pin1: String? = nil,
 							pin2: String? = nil,
 							initialMessage: Message? = nil,
-							indexesToDelete indexes: [Int]?,
+							indicesToDelete indices: [Int]?,
 							completion: @escaping CompletionResult<SimpleResponse>) {
-		let task = DeleteFilesTask(filesToDelete: indexes)
+		let task = DeleteFilesTask(filesToDelete: indices)
 		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
 	}
 	

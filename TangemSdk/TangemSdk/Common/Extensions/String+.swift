@@ -30,4 +30,8 @@ public extension String {
     internal func lowercasingFirst() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
+    
+    var localized: String {
+        Localization.getFormat(for: self)
+    }
 }

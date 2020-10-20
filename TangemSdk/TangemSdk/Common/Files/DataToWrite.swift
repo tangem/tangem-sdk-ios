@@ -30,7 +30,7 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	let issuerPublicKey: Data?
 	var settings: Set<FileWriteSettings> = [.none]
 	
-	/// Use this initializer when protecting data with issuer data signature. To generate starting and finalizing signatures use `FileSignatureGenerator`
+	/// Use this initializer when protecting data with issuer data signature. To generate starting and finalizing signatures use `FileHashHelper`
 	public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int, issuerPublicKey: Data?) {
 		self.data = data
 		self.startingSignature = startingSignature

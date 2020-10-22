@@ -14,13 +14,18 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     let cardId: String?
     var validationTimer: Timer? = nil
     
+    private var pinLocalized: String {
+        switch state {
+        case .pin1: return "pin1".localized
+        case .pin2: return "pin2".localized
+        case .pin3: return "pin3"
+        }
+    }
+    
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
-            switch state {
-            case .pin1: lblTitle.text = Localization.string("changepin_title_pin1")
-            case .pin2: lblTitle.text = Localization.string("changepin_title_pin2")
-            case .pin3: lblTitle.text = Localization.string("changepin_title_pin3")
-            }
+            let format = "pin_change_code_format".localized
+            lblTitle.text = String(format: format, pinLocalized)
         }
     }
     
@@ -31,7 +36,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
 //    @IBOutlet weak var currentText: UITextField! {
 //        didSet {
 //            currentText.delegate = self
-//            let prefix = "\(Localization.string("changepin_placeholder_current")) "
+//            let prefix = "\(Localization.string("pin_change_current_code_format")) "
 //            switch state {
 //            case .pin1: currentText.placeholder = prefix + Localization.string("pin_placeholder_access")
 //            case .pin2: currentText.placeholder = prefix + Localization.string("pin_placeholder_pass")
@@ -43,26 +48,23 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var newText: UITextField! {
         didSet {
             newText.delegate = self
-            let prefix = "\(Localization.string("changepin_placeholder_new")) "
-            switch state {
-            case .pin1: newText.placeholder = prefix + Localization.string("pin_placeholder_access")
-            case .pin2: newText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-            case .pin3: newText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-            }
+            let format = "pin_change_new_code_format".localized
+            newText.placeholder = String(format: format, pinLocalized)
         }
     }
     
     @IBOutlet weak var confirmText: UITextField! {
         didSet {
             confirmText.delegate = self
-            confirmText.placeholder = Localization.string("changepin_placeholder_confirm")
+            let format = "pin_set_code_confirm_format".localized
+            confirmText.placeholder = String(format: format, pinLocalized)
         }
     }
     
     @IBOutlet weak var btnSave: UIButton! {
         didSet {
             btnSave.isEnabled = false
-            btnSave.setTitle(Localization.string("common_save"), for: .normal)
+            btnSave.setTitle("common_save".localized, for: .normal)
         }
     }
     
@@ -134,7 +136,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
         }
         
         if new != confirm {
-            lblError.text = Localization.string("changepin_error_mismatch")
+            lblError.text = "pin_confirm_error_format".localized
             lblError.isHidden = false
             return false
         }

@@ -178,19 +178,39 @@ public final class TlvDecoder {
             let intValue = tagValue.toInt()
             let signingMethod = SigningMethod(rawValue: intValue)
             return signingMethod as! T
-        case .issuerExtraDataMode:
-            guard IssuerExtraDataMode.self == T.self || IssuerExtraDataMode?.self == T.self else {
+        case .interactionMode:
+            guard
+				IssuerExtraDataMode.self == T.self || IssuerExtraDataMode?.self == T.self ||
+					FileDataMode.self == T.self || FileDataMode?.self == T.self
+			else {
                 print("Decoding error. Type for tag: \(tag) must be IssuerExtraDataMode")
                 throw TangemSdkError.decodingFailedTypeMismatch
             }
             
-            guard let byte = tagValue.toBytes.first,
-                let mode = IssuerExtraDataMode(rawValue: byte) else {
-                    print("Decoding error. Failed convert \(tag) to IssuerExtraDataMode")
-                    throw TangemSdkError.decodingFailed
-            }
+			guard let byte = tagValue.toBytes.first else {
+				print("Decoding error. Failed convert \(tag) to IssuerExtraDataMode")
+				throw TangemSdkError.decodingFailed
+			}
+			
+			if let mode = IssuerExtraDataMode(rawValue: byte)  {
+				return mode as! T
+			} else if let mode = FileDataMode(rawValue: byte) {
+				return mode as! T
+			} else {
+				throw TangemSdkError.decodingFailed
+			}
             
-            return mode as! T
+		case .fileSettings:
+			guard FileSettings.self == T.self || FileSettings?.self == T.self else {
+				print("Decoding error. Failed to convert \(tag) to FileSettings")
+				throw TangemSdkError.decodingFailedTypeMismatch
+			}
+			let intValue = tagValue.toInt()
+			guard let fileSettings = FileSettings(rawValue: intValue) else {
+				print("Decoding error. Unsupported file setting")
+				throw TangemSdkError.notSupportedFileSettings
+			}
+			return fileSettings as! T
         }
     }
 }

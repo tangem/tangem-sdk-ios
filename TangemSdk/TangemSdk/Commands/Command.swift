@@ -124,7 +124,7 @@ extension Command {
     }
     
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-       // print("transieve: \(Instruction(rawValue: apdu.ins)!)")
+//		print("transieve: \(Instruction(rawValue: apdu.ins)!), raw:", apdu.ins.toHex())
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
@@ -214,6 +214,9 @@ extension ResponseCodable {
     }
 }
 
+public struct SimpleResponse: ResponseCodable {
+	public let cardId: String
+}
 
 extension JSONDecoder {
     public static var tangemSdkDecoder: JSONDecoder  {

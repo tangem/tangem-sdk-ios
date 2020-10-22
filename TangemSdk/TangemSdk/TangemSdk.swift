@@ -163,19 +163,19 @@ public final class TangemSdk {
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
     
-    /**
-     * This task retrieves Issuer Extra Data field and its issuer’s signature.
-     * Issuer Extra Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,
-     * format and payload of Issuer Data. . For example, this field may contain photo or
-     * biometric information for ID card product. Because of the large size of Issuer_Extra_Data,
-     * a series of these commands have to be executed to read the entire Issuer_Extra_Data.
-     *
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
-     */
+    
+	/// This task retrieves Issuer Extra Data field and its issuer’s signature.
+	/// Issuer Extra Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,
+	/// format and payload of Issuer Data. . For example, this field may contain photo or
+	/// biometric information for ID card product. Because of the large size of Issuer_Extra_Data,
+	/// a series of these commands have to be executed to read the entire Issuer_Extra_Data.
+	///
+	/// - Warning: This command is not supported for COS 3.29 and higher. Use files api instead
+	/// - Parameters:
+	///   - cardId:  CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
     @available(iOS 13.0, *)
     public func readIssuerExtraData(cardId: String? = nil,
                                     initialMessage: Message? = nil,
@@ -184,30 +184,29 @@ public final class TangemSdk {
         let command = ReadIssuerExtraDataCommand(issuerPublicKey: config.issuerPublicKey)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
-    
-    /**
-     * This task writes Issuer Extra Data field and its issuer’s signature.
-     * Issuer Extra Data is never changed or parsed from within the Tangem COS.
-     * The issuer defines purpose of use, format and payload of Issuer Data.
-     * For example, this field may contain a photo or biometric information for ID card products.
-     * Because of the large size of Issuer_Extra_Data, a series of these commands have to be executed
-     * to write entire Issuer_Extra_Data.
-     *
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - issuerData: Data provided by issuer.
-     *   - startingSignature: Issuer’s signature with Issuer Data Private Key of [cardId],
-     *   [issuerDataCounter] (if flags Protect_Issuer_Data_Against_Replay and
-     *   Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]) and size of [issuerData].
-     *   - finalizingSignature:  Issuer’s signature with Issuer Data Private Key of [cardId],
-     *   [issuerData] and [issuerDataCounter] (the latter one only if flags Protect_Issuer_Data_Against_Replay
-     *   and Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]).
-     *   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
-     */
-    @available(iOS 13.0, *)
+	
+	/// This task writes Issuer Extra Data field and its issuer’s signature.
+	/// Issuer Extra Data is never changed or parsed from within the Tangem COS.
+	/// The issuer defines purpose of use, format and payload of Issuer Data.
+	/// For example, this field may contain a photo or biometric information for ID card products.
+	/// Because of the large size of Issuer_Extra_Data, a series of these commands have to be executed
+	/// to write entire Issuer_Extra_Data.
+	///
+	/// - Warning: This command is not supported for COS 3.29 and higher. Use files api instead
+	/// - Parameters:
+	///   - cardId:  CID, Unique Tangem card ID number.
+	///   - issuerData: Data provided by issuer.
+	///   - startingSignature: Issuer’s signature with Issuer Data Private Key of [cardId],
+	///   [issuerDataCounter] (if flags Protect_Issuer_Data_Against_Replay and
+	///   Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]) and size of [issuerData].
+	///   - finalizingSignature:  Issuer’s signature with Issuer Data Private Key of [cardId],
+	///   [issuerData] and [issuerDataCounter] (the latter one only if flags Protect_Issuer_Data_Against_Replay
+	///   and Restrict_Overwrite_Issuer_Extra_Data are set in [SettingsMask]).
+	///   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
+	@available(iOS 13.0, *)
     public func writeIssuerExtraData(cardId: String? = nil,
                                      issuerData: Data,
                                      startingSignature: Data,
@@ -429,6 +428,98 @@ public final class TangemSdk {
         let command = SetPinCommand(pinType: .pin2, pin: pin)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
+	
+	/// This command reads all files stored on card.
+	///
+	/// By default command trying to read all files (including private), to change this behaviour - setup your ` ReadFileDataTaskSetting `
+	/// - Note: When performing reading private files command, you must  provide `pin2`
+	/// - Warning: Command available only for cards with COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - readSettings: `ReadFileDataTaskSettings` - that define should sdk read private files or not and some additional read file settings
+	///   - completion: Returns `Swift.Result<ReadFilesResponse,TangemSdkError>`
+	public func readFiles(cardId: String? = nil,
+						  initialMessage: Message? = nil,
+						  pin1: String? = nil,
+						  pin2: String? = nil,
+						  readSettings: ReadFilesTaskSettings = .init(readPrivateFiles: true, readSettings: []),
+						  completion: @escaping CompletionResult<ReadFilesResponse>) {
+		let task = ReadFilesTask(settings: readSettings)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	/// This command write all files provided in `files` to card.
+	///
+	/// There are 2 main implementation of `DataToWrite` protocol:
+	///  1. `FileDataProtectedBySignature` - for files  signed by Issuer (specified on card during personalization)
+	///  2. `FileDataProtectedByPasscode` - write files protected by Pin2
+	/// - Warning: This command available for COS 3.29 and higher
+	/// - Note: Writing files protected by Pin2 only available for COS 3.34 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - files: List of files that should be written to card
+	///   - writeFilesSettings: Settings for writing files (ie. you can specify `WriteFilesSettings.overwriteAllFiles` if you want to delete all previous files from card. Default value - no additional settings
+	///   - completion: Returns `Swift.Result<WriteFilesResponse, TangemSdkError>`
+	public func writeFiles(cardId: String? = nil,
+						   initialMessage: Message? = nil,
+						   pin1: String? = nil,
+						   pin2: String? = nil,
+						   files: [DataToWrite],
+						   writeFilesSettings: Set<WriteFilesSettings> = [],
+						   completion: @escaping CompletionResult<WriteFilesResponse>) {
+		let task = WriteFilesTask(files: files, settings: writeFilesSettings)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	/// This command deletes selected files from card. This operation can't be undone.
+	///
+	/// To perform file deletion you should initially read all files (`readFiles` command) and add them to `indices` array. When files deleted from card, other files change their indexies.
+	/// After deleting files you should additionally perform `readFiles` command to actualize files indexes
+	/// - Warning: This command available for COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
+	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+	public func deleteFiles(cardId: String? = nil,
+							pin1: String? = nil,
+							pin2: String? = nil,
+							initialMessage: Message? = nil,
+							indicesToDelete indices: [Int]?,
+							completion: @escaping CompletionResult<SimpleResponse>) {
+		let task = DeleteFilesTask(filesToDelete: indices)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
+	
+	/// Updates selected file settings provided within `File`.
+	///
+	/// To perform file settings update you should initially read all files (`readFiles` command), select files that you want to update, change their settings in `File.fileSettings` and add them to `files` array.
+	/// - Note: In COS 3.29 and higher only file visibility option (public or private) available to update
+	/// - Warning: This method works with COS 3.29 and higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - files: Files that should update their settings
+	///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+	public func changeFilesSettings(cardId: String? = nil,
+									initialMessage: Message? = nil,
+									pin1: String? = nil,
+									pin2: String? = nil,
+									files: [File],
+									completion: @escaping CompletionResult<SimpleResponse>) {
+		let task = ChangeFilesSettingsTask(files: files)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+	}
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.

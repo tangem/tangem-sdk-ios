@@ -107,6 +107,11 @@ public final class ReadIssuerExtraDataCommand: Command {
         if issuerPublicKey == nil {
             return .missingIssuerPublicKey
         }
+		
+		if let cardFirmwareVersion = card.firmwareVersionValue,
+			cardFirmwareVersion >= FirmwareConstraints.minVersionForFiles {
+			return .notSupportedFirmwareVersion
+		}
         
         return nil
     }
@@ -170,7 +175,7 @@ public final class ReadIssuerExtraDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.mode, value: IssuerExtraDataMode.readOrStartWrite)
+            .append(.interactionMode, value: IssuerExtraDataMode.readOrStartWrite)
             .append(.offset, value: issuerData.count)
         
         return CommandApdu(.readIssuerData, tlv: tlvBuilder.serialize())

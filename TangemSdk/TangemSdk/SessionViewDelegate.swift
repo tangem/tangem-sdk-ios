@@ -71,6 +71,8 @@ public protocol SessionViewDelegate: class {
     func sessionStopped()
     
     func sessionInitialized()
+	
+	func onDelay(total: Int, current: Int, step: Int)
     
     @available(iOS 13.0, *)
     func showScanUI(session: CardSession, cancelledHandler: @escaping () -> Void)
@@ -243,6 +245,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         hideUI(nil)
         stopHapticsEngine()
     }
+	
+	func onDelay(total: Int, current: Int, step: Int) {
+		
+	}
     
     private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
         let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)

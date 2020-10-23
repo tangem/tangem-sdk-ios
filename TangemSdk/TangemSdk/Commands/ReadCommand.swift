@@ -15,7 +15,7 @@ public struct SigningMethod: OptionSet, Codable {
     public let rawValue: Byte
     
     public init(rawValue: Byte) {
-        if rawValue & 0x08 != 0 {
+        if rawValue & 0x80 != 0 {
             self.rawValue = rawValue
         } else {
             self.rawValue = 0b10000000|(1 << rawValue)

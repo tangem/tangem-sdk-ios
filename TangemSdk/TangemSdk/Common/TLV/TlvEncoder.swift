@@ -25,7 +25,7 @@ public final class TlvEncoder {
             return Data(hexString: value as! String)
         case .utf8String:
             try typeCheck(value, String.self)
-            let string = value as! String + "\0"
+            let string = value as! String
             if let data = string.data(using: .utf8) {
                 return data
             } else {
@@ -42,14 +42,16 @@ public final class TlvEncoder {
             try typeCheck(value, Int.self)
             return (value as! Int).bytes2
         case .boolValue:
-            fatalError("Unsupported")
+            try typeCheck(value, Bool.self)
+            let value = value as! Bool
+            return value ? Data([Byte(1)]) : Data([Byte(0)])
         case .data:
             try typeCheck(value, Data.self)
             return value as! Data
         case .ellipticCurve:
             try typeCheck(value, EllipticCurve.self)
             let curve = value as! EllipticCurve
-            if let data = (curve.rawValue + "\0").data(using: .utf8) {
+            if let data = curve.rawValue.data(using: .utf8) {
                 return data
             } else {
                 print("Encoding error. Failed to convert EllipticCurve to utf8 Data")
@@ -70,7 +72,7 @@ public final class TlvEncoder {
         case .settingsMask:
             try typeCheck(value, SettingsMask.self)
             let mask = value as! SettingsMask
-            return mask.rawValue.bytes2
+            return mask.rawValue.bytes4
         case .cardStatus:
             try typeCheck(value, CardStatus.self)
             let status = value as! CardStatus
@@ -78,7 +80,7 @@ public final class TlvEncoder {
         case .signingMethod:
             try typeCheck(value, SigningMethod.self)
             let method = value as! SigningMethod
-            return method.rawValue.byte
+            return Data([method.rawValue])
         case .interactionMode:
 			do {
 				try typeCheck(value, IssuerExtraDataMode.self)

@@ -175,8 +175,12 @@ public final class TlvDecoder {
                 throw TangemSdkError.decodingFailedTypeMismatch
             }
             
-            let intValue = tagValue.toInt()
-            let signingMethod = SigningMethod(rawValue: intValue)
+            guard let byte = tagValue.toBytes.first else {
+                print("Decoding error. Failed convert \(tag) to SigningMethod")
+                throw TangemSdkError.decodingFailed
+            }
+            
+            let signingMethod = SigningMethod(rawValue: byte)
             return signingMethod as! T
         case .interactionMode:
             guard

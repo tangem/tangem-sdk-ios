@@ -127,17 +127,16 @@ public enum TlvTag: Byte {
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId:
+        case .cardId, .batchId, .crExKey:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress,
              .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress:
             return .utf8String
         case .curveId:
             return .ellipticCurve
-        case .maxSignatures, .pauseBeforePin2,
-             .walletRemainingSignatures, .walletSignedHashes, .health, .userProtectedCounter, .userCounter, .tokenDecimal, .issuerDataCounter:
+        case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter, .userCounter, .tokenDecimal, .issuerDataCounter:
             return .intValue
-        case .isActivated, .isLinked:
+        case .isActivated, .isLinked, .createWalletAtPersonalize:
             return .boolValue
         case .manufactureDateTime:
             return .dateTime
@@ -149,11 +148,11 @@ public enum TlvTag: Byte {
             return .cardStatus
         case .signingMethod:
             return .signingMethod
-		case .transactionOutHashSize, .legacyMode, .fileIndex:
+		case .transactionOutHashSize, .legacyMode, .fileIndex, .health:
             return .byte
         case .interactionMode:
             return .interactionMode
-		case .offset, .size:
+		case .offset, .size, .pauseBeforePin2:
             return .uint16
 		case .fileSettings:
 			return .fileSettings

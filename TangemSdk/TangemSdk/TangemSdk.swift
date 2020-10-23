@@ -386,6 +386,7 @@ public final class TangemSdk {
     /// Command available on SDK cards only
     ///  Personalization is an initialization procedure, required before starting using a card.
     /// During this procedure a card setting is set up. During this procedure all data exchange is encrypted.
+    /// - Warning: Command available only for cards with COS 3.34 and higher
     /// - Parameters:
     ///   - config: is a configuration file with all the card settings that are written on the card during personalization.
     ///   - issuer: Issuer is a third-party team or company wishing to use Tangem cards.

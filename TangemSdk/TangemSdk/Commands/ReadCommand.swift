@@ -12,10 +12,10 @@ public typealias ReadResponse = Card
 
 /// Determines which type of data is required for signing.
 public struct SigningMethod: OptionSet, Codable {
-    public let rawValue: Int
+    public let rawValue: Byte
     
-    public init(rawValue: Int) {
-        if rawValue & 0x80 != 0 {
+    public init(rawValue: Byte) {
+        if rawValue & 0x08 != 0 {
             self.rawValue = rawValue
         } else {
             self.rawValue = 0b10000000|(1 << rawValue)

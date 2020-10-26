@@ -10,8 +10,8 @@ import Foundation
 
 @available (iOS 13.0, *)
 public struct WriteFilesResponse: ResponseCodable {
-	let cardId: String
-	let filesIndices: [Int]
+	public let cardId: String
+	public let filesIndices: [Int]
 }
 
 @available (iOS 13.0, *)

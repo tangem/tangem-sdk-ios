@@ -23,9 +23,9 @@ class PinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
             switch state {
-            case .pin1: lblTitle.text = Localization.string("pin_title_pin1")
-            case .pin2: lblTitle.text = Localization.string("pin_title_pin2")
-            case .pin3: lblTitle.text = Localization.string("pin_title_pin3")
+            case .pin1: lblTitle.text = String(format: "pin_enter".localized, "pin1".localized)
+            case .pin2: lblTitle.text = String(format: "pin_enter".localized, "pin2".localized)
+            case .pin3: lblTitle.text = "Pin3"
             }
         }
     }
@@ -36,16 +36,16 @@ class PinViewController: UIViewController, UITextFieldDelegate {
         didSet {
             pinText.delegate = self
             switch state {
-            case .pin1: pinText.placeholder = Localization.string("pin_placeholder_access")
-            case .pin2: pinText.placeholder = Localization.string("pin_placeholder_pass")
-            case .pin3: pinText.placeholder = Localization.string("pin_placeholder_pin3")
+            case .pin1: pinText.placeholder = "pin1".localized
+            case .pin2: pinText.placeholder = "pin2".localized
+            case .pin3: pinText.placeholder = "Pin3"
             }
         }
     }
     @IBOutlet weak var btnContinue: UIButton! {
         didSet {
             btnContinue.isEnabled = false
-            btnContinue.setTitle(Localization.string("common_continue"), for: .normal)
+            btnContinue.setTitle("common_continue".localized, for: .normal)
         }
     }
     

@@ -12,28 +12,38 @@ import Foundation
 public final class DeleteFilesTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
-	public init(filesToDelete: [File]) {
-		self.filesToDelete = filesToDelete.sorted(by: { $0.fileIndex < $1.fileIndex })
-	}
-	
 	public var requiresPin2: Bool { true }
 	
-	private var filesToDelete: [File]
+	private var filesToDelete: [Int]?
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
-		deleteFile(session: session, completion: completion)
+	public init(filesToDelete: [Int]?) {
+		self.filesToDelete = filesToDelete?.sorted(by: <)
 	}
 	
-	private func deleteFile(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
-		guard let file = filesToDelete.popLast() else {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+		guard let filesToDelete = filesToDelete else {
+			deleteAllFiles(session: session, completion: completion)
+			return
+		}
+		deleteFiles(indexes: filesToDelete, session: session, completion: completion)
+	}
+	
+	private func deleteAllFiles(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+		let deleteAllFilesTask = DeleteAllFilesTask()
+		deleteAllFilesTask.run(in: session, completion: completion)
+	}
+	
+	private func deleteFiles(indexes: [Int], session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+		var indexesToDelete = indexes
+		guard let index = indexesToDelete.popLast() else {
 			completion(.success(SimpleResponse(cardId: session.environment.card?.cardId ?? "")))
 			return
 		}
-		let command = DeleteFileCommand(fileAt: file.fileIndex)
+		let command = DeleteFileCommand(fileAt: index)
 		command.run(in: session) { (result) in
 			switch result {
 			case .success:
-				self.deleteFile(session: session, completion: completion)
+				self.deleteFiles(indexes: indexesToDelete, session: session, completion: completion)
 			case .failure(let error):
 				completion(.failure(error))
 			}

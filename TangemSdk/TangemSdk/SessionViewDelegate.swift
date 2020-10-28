@@ -121,6 +121,30 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
             }
         }
     }
+	
+	private func showScanUI() {
+		let storyboard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
+		if scanController == nil {
+			scanController = storyboard.instantiateViewController(identifier: "ScanViewController")
+			scanController?.modalPresentationStyle = .fullScreen
+		}
+		
+		let action = { [weak self] in
+			guard let self = self else { return }
+			if self.scanController?.isBeingPresented ?? false { return }
+			if let topmostViewController = UIApplication.shared.topMostViewController {
+				topmostViewController.present(self.scanController!, animated: true) {
+				}
+			}
+		}
+		guard Thread.isMainThread else {
+			DispatchQueue.main.async {
+				action()
+			}
+			return
+		}
+		action()
+	}
     
     func hideUI(_ indicatorMode: IndicatorMode?) {
         guard let indicatorMode = indicatorMode else {
@@ -134,6 +158,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         if let indicatorController = self.indicatorController, indicatorMode == indicatorController.mode {
             DispatchQueue.main.async {
                 self.indicatorController?.dismiss(animated: true, completion: nil)
+				self.scanController?.dismiss(animated: true, completion: nil)
             }
         }
     }
@@ -234,14 +259,18 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     }
     
     func sessionStarted() {
+		print("Session started")
+		showScanUI()
         startHapticsEngine()
     }
     
     func sessionInitialized() {
+		print("Session initialized")
         playSuccess()
     }
     
     func sessionStopped() {
+		print("Session stopped")
         hideUI(nil)
         stopHapticsEngine()
     }

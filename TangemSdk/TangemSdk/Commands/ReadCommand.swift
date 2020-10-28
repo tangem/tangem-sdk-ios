@@ -12,9 +12,9 @@ public typealias ReadResponse = Card
 
 /// Determines which type of data is required for signing.
 public struct SigningMethod: OptionSet, Codable {
-    public let rawValue: Int
+    public let rawValue: Byte
     
-    public init(rawValue: Int) {
+    public init(rawValue: Byte) {
         if rawValue & 0x80 != 0 {
             self.rawValue = rawValue
         } else {
@@ -494,7 +494,7 @@ public struct Card: ResponseCodable {
     /// Returned only if `SigningMethod.SignPos` enabling POS transactions is supported by card
     public let paymentFlowVersion: Data?
     /// This value can be initialized by terminal and will be increased by COS on execution of every `SignCommand`.
-    /// For example, this field can store blockchain “nonce” for quick one-touch transaction on POS terminals.
+    /// For example, this field can store blockchain “nonce" for quick one-touch transaction on POS terminals.
     /// Returned only if `SigningMethod.SignPos`  enabling POS transactions is supported by card.
     public let userCounter: Int?
     /// When this value is true, it means that the application is linked to the card,

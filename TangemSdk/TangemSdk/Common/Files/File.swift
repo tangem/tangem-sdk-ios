@@ -10,17 +10,6 @@ import Foundation
 
 @available (iOS 13, *)
 public class File: Codable, CustomStringConvertible {
-	public init(fileIndex: Int, fileSettings: FileSettings?, fileData: Data) {
-		self.fileIndex = fileIndex
-		self.fileSettings = fileSettings
-		self.fileData = fileData
-	}
-	
-	init(response: ReadFileDataResponse) {
-		fileIndex = response.fileIndex
-		fileSettings = response.fileSettings
-		fileData = response.fileData
-	}
 	
 	internal static let emptyFile = File(fileIndex: 0, fileSettings: nil, fileData: Data())
 	
@@ -30,8 +19,20 @@ public class File: Codable, CustomStringConvertible {
 	public var fileSettings: FileSettings?
 	public var fileValidationStatus: FileValidation = .notValidated
 	
+	public init(fileIndex: Int, fileSettings: FileSettings?, fileData: Data) {
+		self.fileIndex = fileIndex
+		self.fileSettings = fileSettings
+		self.fileData = fileData
+	}
+	
+	init(response: ReadFileResponse) {
+		fileIndex = response.fileIndex
+		fileSettings = response.fileSettings
+		fileData = response.fileData
+	}
+	
 	public var description: String {
-		"File \(fileData) at index \(fileIndex) with settings: \(String(describing: fileSettings)) and validation statur: \(fileValidationStatus)"
+		"File \(fileData) at index \(fileIndex) with settings: \(String(describing: fileSettings)) and validation status: \(fileValidationStatus)"
 	}
 	
 }

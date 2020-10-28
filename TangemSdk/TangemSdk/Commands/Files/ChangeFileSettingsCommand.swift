@@ -12,25 +12,23 @@ import Foundation
 public final class ChangeFileSettingsCommand: Command {
 	public typealias CommandResponse = SimpleResponse
 	
-	public init(fileIndex: Int, newSettings: FileSettings) {
-		self.fileIndex = fileIndex
-		self.newSettings = newSettings
-	}
-	
 	public var requiresPin2: Bool { true }
 	
 	private let fileIndex: Int
 	private let newSettings: FileSettings
+	
+	public init(fileIndex: Int, newSettings: FileSettings) {
+		self.fileIndex = fileIndex
+		self.newSettings = newSettings
+	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
 		if card.status == .notPersonalized {
 			return .notPersonalized
 		}
 		
-		guard
-			let firmware = card.firmwareVersionValue,
-			firmware >= FirmwareConstraints.minVersionForFiles
-		else {
+		if let firmware = card.firmwareVersionValue,
+			firmware < FirmwareConstraints.minVersionForFiles {
 			return .notSupportedFirmwareVersion
 		}
 		

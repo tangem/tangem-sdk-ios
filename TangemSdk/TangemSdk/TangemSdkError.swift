@@ -314,10 +314,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardNumber: return 50005
         case .wrongCardType: return 50006
         case .underlying: return 50010
-		case .fileNotFound: return 30007
-		case .notSupportedFileSettings: return 30017  // TODO: Change to correct code error code
-		case .wrongInteractionMode: return 30027
-		case .notSupportedFirmwareVersion: return 30038
+		case .fileNotFound: return 50007
+		case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
+		case .wrongInteractionMode: return 50027
+		case .notSupportedFirmwareVersion: return 50007
         }
     }
     
@@ -325,42 +325,42 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         switch self {
         case .nfcTimeout: return Localization.nfcSessionTimeout
         case .nfcStuck: return Localization.nfcStuckError
-        case .alreadyCreated: return Localization.string("error_already_created")
-        case .alreadyPersonalized: return Localization.string("error_already_personalized")
-        case .busy: return Localization.string("error_busy")
-        case .cannotBeDepersonalized: return Localization.string("error_cannot_be_depersonalized")
-        case .cardError: return Localization.string("error_card_error")
-        case .cardIsEmpty: return Localization.string("error_card_is_empty")
-        case .cardIsPurged: return Localization.string("error_purged")
-        case .dataCannotBeWritten: return Localization.string("error_data_cannot_be_written")
-        case .dataSizeTooLarge: return Localization.string("error_data_size_too_large")
-        case .emptyHashes: return Localization.string("error_empty_hashes")
-        case .extendedDataSizeTooLarge: return Localization.string("error_data_size_too_large_extended")
-        case .hashSizeMustBeEqual: return Localization.string("error_cannot_be_signed")
-        case .missingCounter: return Localization.string("error_missing_counter")
-        case .missingIssuerPublicKey: return Localization.string("error_missing_issuer_public_key")
-        case .noRemainingSignatures: return Localization.string("error_no_remaining_signatures")
-        case .notActivated: return Localization.string("error_not_activated")
-        case .notPersonalized: return Localization.string("error_not_personalized")
-        case .overwritingDataIsProhibited: return Localization.string("error_data_cannot_be_written")
-        case .pin1CannotBeChanged: return Localization.string("error_pin1_cannot_be_changed")
-        case .pin1CannotBeDefault: return Localization.string("error_pin1_cannot_be_default")
-        case .pin2CannotBeChanged: return Localization.string("error_pin2_cannot_be_changed")
-        case .purgeWalletProhibited: return Localization.string("error_purge_prohibited")
-        case .signHashesNotAvailable: return Localization.string("error_cannot_be_signed")
-        case .tagLost: return Localization.string("error_tag_lost")
-        case .tooManyHashesInOneTransaction: return Localization.string("error_cannot_be_signed")
-        case .userCancelled: return Localization.string("error_user_cancelled")
-        case .verificationFailed: return Localization.string("error_verification_failed")
-        case .cardVerificationFailed: return Localization.string("error_card_verification_failed")
-        case .wrongCardNumber: return Localization.string("error_wrong_card_number")
-        case .wrongCardType: return Localization.string("error_wrong_card_type")
-        case .pin1Required: return Localization.string("error_pin1_required")
-        case .pin2OrCvcRequired: return Localization.string("error_pin2_required")
+        case .alreadyCreated: return "error_already_created".localized
+        case .alreadyPersonalized: return "error_already_personalized".localized
+        case .busy: return "error_busy".localized
+        case .cannotBeDepersonalized: return "error_cannot_be_depersonalized".localized
+        case .cardError: return "error_card_error".localized
+        case .cardIsEmpty: return "error_card_is_empty".localized
+        case .cardIsPurged: return "error_purged".localized
+        case .dataCannotBeWritten: return "error_data_cannot_be_written".localized
+        case .dataSizeTooLarge: return "error_data_size_too_large".localized
+        case .emptyHashes: return "error_empty_hashes".localized
+        case .extendedDataSizeTooLarge: return "error_data_size_too_large_extended".localized
+        case .hashSizeMustBeEqual: return "error_cannot_be_signed".localized
+        case .missingCounter: return "error_missing_counter".localized
+        case .missingIssuerPublicKey: return "error_missing_issuer_public_key".localized
+        case .noRemainingSignatures: return "error_no_remaining_signatures".localized
+        case .notActivated: return "error_not_activated".localized
+        case .notPersonalized: return "error_not_personalized".localized
+        case .overwritingDataIsProhibited: return "error_data_cannot_be_written".localized
+        case .pin1CannotBeChanged: return "error_pin1_cannot_be_changed".localized
+        case .pin1CannotBeDefault: return "error_pin1_cannot_be_default".localized
+        case .pin2CannotBeChanged: return "error_pin2_cannot_be_changed".localized
+        case .purgeWalletProhibited: return "error_purge_prohibited".localized
+        case .signHashesNotAvailable: return "error_cannot_be_signed".localized
+        case .tagLost: return "error_tag_lost".localized
+        case .tooManyHashesInOneTransaction: return "error_cannot_be_signed".localized
+        case .userCancelled: return "error_user_cancelled".localized
+        case .verificationFailed: return "error_verification_failed".localized
+        case .cardVerificationFailed: return "error_card_verification_failed".localized
+        case .wrongCardNumber: return "error_wrong_card_number".localized
+        case .wrongCardType: return "error_wrong_card_type".localized
+        case .pin1Required: return "error_pin1_required".localized
+        case .pin2OrCvcRequired: return "error_pin2_required".localized
         case .underlying(let error): return error.localizedDescription
-		case .fileNotFound: return Localization.string("file_not_found")
-		case .wrongInteractionMode: return Localization.string("wrong_interaction_mode")
-		case .notSupportedFirmwareVersion: return Localization.string("not_supported_firmware_version")
+		case .fileNotFound: return "error_file_not_found".localized
+		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
+		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

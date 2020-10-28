@@ -10,8 +10,8 @@ import Foundation
 
 @available (iOS 13.0, *)
 public struct WriteFilesResponse: ResponseCodable {
-	let cardId: String
-	let filesIndices: [Int]
+	public let cardId: String
+	public let filesIndices: [Int]
 }
 
 @available (iOS 13.0, *)
@@ -19,31 +19,32 @@ public enum WriteFilesSettings {
 	case overwriteAllFiles
 }
 
+/// This task allows to write multiple files to a card.
+/// There are two secure ways to write files.
+/// 1. Data can be signed by Issuer (the one specified on card during personalization) - `FileDataProtectedBySignature`.
+/// 2. Data can be protected by Passcode (PIN2). `FileDataProtectedByPasscode` In this case,  Passcode (PIN2) is required for the command.
 @available (iOS 13.0, *)
 public final class WriteFilesTask: CardSessionRunnable {
 	
-	public init(files: [DataToWrite], settings: Set<WriteFilesSettings> = [.overwriteAllFiles], issuerKeys: KeyPair) {
+	public var requiresPin2: Bool { _requiresPin2 }
+	
+	private let files: [DataToWrite]
+	private let settings: Set<WriteFilesSettings>
+		
+	private var _requiresPin2: Bool = false
+	private var currentFileIndex: Int = 0
+	private var savedFilesIndices: [Int] = []
+	
+	public init(files: [DataToWrite], settings: Set<WriteFilesSettings> = [.overwriteAllFiles]) {
 		self.files = files
-		self.issuerKeys = issuerKeys
 		self.settings = settings
 		files.forEach {
-			let requiredPin2 = $0.settings.contains(.verifiedWithPin2)
+			let requiredPin2 = $0.requiredPin2
 			if requiredPin2 {
 				_requiresPin2 = requiredPin2
 			}
 		}
 	}
-	
-	public var requiresPin2: Bool { _requiresPin2 }
-	
-	private let files: [DataToWrite]
-	private let issuerKeys: KeyPair
-	private let settings: Set<WriteFilesSettings>
-		
-	private var _requiresPin2: Bool = false
-	private var currentFileIndex: Int = 0
-	private var fileDataCounter: Int?
-	private var savedFilesIndices: [Int] = []
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
 		guard files.count > 0 else {
@@ -54,27 +55,14 @@ public final class WriteFilesTask: CardSessionRunnable {
 			deleteFiles(session: session, completion: completion)
 			return
 		}
-		getFileCounter(session: session, completion: completion)
+		writeFile(session: session, completion: completion)
 	}
 	
 	private func deleteFiles(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		let task = DeleteAllFilesTask()
+		let task = DeleteFilesTask(filesToDelete: nil)
 		task.run(in: session) { (result) in
 			switch result {
 			case .success:
-				self.getFileCounter(session: session, completion: completion)
-			case .failure(let error):
-				completion(.failure(error))
-			}
-		}
-	}
-	
-	private func getFileCounter(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		let read = ReadFileDataCommand(fileIndex: 0, readPrivateFiles: false)
-		read.run(in: session) { (result) in
-			switch result {
-			case .success(let response):
-				self.fileDataCounter = response.fileDataCounter
 				self.writeFile(session: session, completion: completion)
 			case .failure(let error):
 				completion(.failure(error))
@@ -94,18 +82,17 @@ public final class WriteFilesTask: CardSessionRunnable {
 			completion(.success(.init(cardId: cardId, filesIndices: savedFilesIndices)))
 			return
 		}
-		let task = WriteFileDataTask(file: files[currentFileIndex], issuerKeys: issuerKeys, fileDataCounter: fileDataCounter)
-		task.run(in: session) { (result) in
-			switch result {
-			case .success(let response):
-				self.currentFileIndex += 1
-				self.fileDataCounter? += 1
-				self.savedFilesIndices.append(response.fileIndex ?? 0)
-				self.writeFile(session: session, completion: completion)
-			case .failure(let error):
-				completion(.failure(error))
+		WriteFileCommand(dataToWrite: files[currentFileIndex])
+			.run(in: session) { (result) in
+				switch result {
+				case .success(let response):
+					self.currentFileIndex += 1
+					self.savedFilesIndices.append(response.fileIndex ?? 0)
+					self.writeFile(session: session, completion: completion)
+				case .failure(let error):
+					completion(.failure(error))
+				}
 			}
-		}
 	}
 	
 }

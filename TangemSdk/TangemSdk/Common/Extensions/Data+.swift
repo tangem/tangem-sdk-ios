@@ -199,7 +199,7 @@ extension Data {
         
     }
 	
-	public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+	public func signed(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
 		switch curve {
 		case .secp256k1:
 			return Secp256k1Utils.sign(self, with: privateKey)

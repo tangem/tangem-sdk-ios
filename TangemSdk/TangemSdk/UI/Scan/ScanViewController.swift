@@ -10,8 +10,8 @@ import UIKit
 
 @available(iOS 13.0, *)
 class ScanViewController: UIViewController {
-    var cardSession: CardSession
-    var cancelledHandler: () -> Void
+    var cardSession: CardSession?
+    var cancelledHandler: (() -> Void)?
     private static let handLeadingFrom = -50.0
     private var handLeadingTo = 0.0 //calculate later
     
@@ -44,7 +44,7 @@ class ScanViewController: UIViewController {
     }
     
     func startAnimation() {
-        UIView.animateKeyframes(withDuration: 3.0, delay: 0.2, options: [.repeat, .calculationModeLinear], animations: {
+        UIView.animateKeyframes(withDuration: 3.0, delay: 0.2, options: [.calculationModeLinear], animations: {
             
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.6) {
                 self.imageHandLeading.constant = CGFloat(self.handLeadingTo)
@@ -52,24 +52,24 @@ class ScanViewController: UIViewController {
             }
             
             UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.3) {
-                self.imageHand.alpha = 0.0
+//                self.imageHand.alpha = 0.0
             }
             
             UIView.addKeyframe(withRelativeStartTime: 0.9, relativeDuration: 0.1) {}
             
         }) { completed in
             self.imageHand.alpha = 1.0
-            self.imageHandLeading.constant = CGFloat(ScanViewController.handLeadingFrom)
+//            self.imageHandLeading.constant = CGFloat(ScanViewController.handLeadingFrom)
         }
     }
     
     @IBAction func buttonCancelTapped(_ sender: Any) {
-        self.cancelledHandler()
+        self.cancelledHandler?()
         self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func buttonTapInTapped(_ sender: Any) {
-        cardSession.start()
+        cardSession?.start()
     }
     
     init?(coder: NSCoder, session: CardSession, cancelledHandler: @escaping () -> Void) {
@@ -79,17 +79,8 @@ class ScanViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+		super.init(coder: coder)
+//        fatalError("init(coder:) has not been implemented")
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }

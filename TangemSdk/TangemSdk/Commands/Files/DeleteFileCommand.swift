@@ -12,21 +12,19 @@ import Foundation
 public final class DeleteFileCommand: Command {
 	public typealias CommandResponse = SimpleResponse
 	
+	private let fileIndex: Int
+	
 	public init(fileAt index: Int) {
 		fileIndex = index
 	}
-	
-	private let fileIndex: Int
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
 		if card.status == .notPersonalized {
 			return .notPersonalized
 		}
 		
-		guard
-			let firmware = card.firmwareVersionValue,
-			firmware >= FirmwareConstraints.minVersionForFiles
-		else {
+		if let firmware = card.firmwareVersionValue,
+			firmware < FirmwareConstraints.minVersionForFiles {
 			return .notSupportedFirmwareVersion
 		}
 		if card.isActivated {

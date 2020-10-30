@@ -195,13 +195,13 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
         
-        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
-            viewDelegate.showScanUI(session: self) {
-                onSessionStarted(self, TangemSdkError.userCancelled)
-            }
-        } else {
-            start()
-        }
+//        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
+//            viewDelegate.showScanUI(session: self) {
+//                onSessionStarted(self, TangemSdkError.userCancelled)
+//            }
+//        } else {
+		start()
+//        }
     }
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show

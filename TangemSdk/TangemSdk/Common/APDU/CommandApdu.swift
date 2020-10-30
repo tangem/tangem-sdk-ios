@@ -15,7 +15,8 @@ public struct CommandApdu: Equatable, CustomStringConvertible {
     public var description: String {
         let instruction = Instruction(rawValue: ins) ?? .unknown
         let insDecription = "\(instruction)(\(ins.toHex()))"
-        return "-> C-APDU INS: \(insDecription), DATA: \(data.asHexString()), P1: \(p1.toHex()), P2: \(p2.toHex())"
+		return ""
+//        return "-> C-APDU INS: \(insDecription), DATA: \(data.asHexString()), P1: \(p1.toHex()), P2: \(p2.toHex())"
     }
     
     /// Instruction code that determines the type of request for the card.

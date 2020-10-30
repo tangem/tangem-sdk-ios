@@ -11,6 +11,7 @@ import UIKit
 public enum IndicatorMode {
     case sd
     case percent
+	case spinner
 }
 
 class CircularIndicatorViewController: UIViewController {    
@@ -19,29 +20,40 @@ class CircularIndicatorViewController: UIViewController {
     @IBOutlet weak var lblHint: UILabel!
     @IBOutlet weak var lblHintTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var containerTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var spinner: UIImageView!
     
     var totalValue: Float = 0
     var isClockwise: Bool = false
-    var mode: IndicatorMode = .sd
+    
     private let shapeLayer = CAShapeLayer()
     private let trackLayer = CAShapeLayer()
+	
+	private(set) var mode: IndicatorMode = .sd
+	
+	private var shouldAnimateSpinner: Bool = false
     private var currentPercentValue: Int = 0
+	
+	private var pendingMode: IndicatorMode?
+	private var isSpinnerIdle = true
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-         setupUI()
+		super.viewDidLoad()
+		setupUI()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         lbltext.text = ""
-        lblHint.text = ""
+		shouldAnimateSpinner = false
         currentPercentValue = 0
         shapeLayer.removeAllAnimations()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+		if let pendingMode = pendingMode {
+			setMode(pendingMode, animated: false)
+		}
         if isClockwise || mode == .percent {
             shapeLayer.strokeEnd = 0
         } else {
@@ -53,6 +65,11 @@ class CircularIndicatorViewController: UIViewController {
        let topOffset = height / coeff
        containerTopConstraint.constant = topOffset
        lblHintTopConstraint.constant = topOffset/3
+		
+		if mode == .spinner {
+			shouldAnimateSpinner = true
+			animateSpinner()
+		}
     }
     
     func setupUI() {
@@ -81,6 +98,37 @@ class CircularIndicatorViewController: UIViewController {
             containerView.layer.addSublayer(shapeLayer)
         }
     }
+	
+	public func setMode(_ mode: IndicatorMode, animated: Bool) {
+		guard
+			let containerView = containerView,
+			let spinner = spinner
+		else {
+			pendingMode = mode
+			return
+		}
+		if pendingMode == nil, mode == self.mode { return }
+		let spinnerTargetAlpha: CGFloat
+		let containerTargetAlpha: CGFloat
+		self.mode = mode
+		pendingMode = nil
+		switch mode {
+		case .spinner:
+			spinnerTargetAlpha = 1.0
+			containerTargetAlpha = 0.0
+			lblHint.text = Localization.nfcAlertDefault
+			shouldAnimateSpinner = true
+		default:
+			spinnerTargetAlpha = 0.0
+			containerTargetAlpha = 1.0
+			shouldAnimateSpinner = false
+		}
+		animateSpinner()
+		UIView.animate(withDuration: animated ? 0.3 : 0.0) {
+			containerView.alpha = containerTargetAlpha
+			spinner.alpha = spinnerTargetAlpha
+		}
+	}
     
     public func tickSD(remainingValue: Float, message: String, hint: String? = nil) {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
@@ -112,4 +160,15 @@ class CircularIndicatorViewController: UIViewController {
         lblHint.text = hint
         currentPercentValue = percentValue
     }
+	
+	private func animateSpinner() {
+		guard shouldAnimateSpinner, isSpinnerIdle else { return }
+		isSpinnerIdle = false
+		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
+			self.spinner.transform = self.spinner.transform.rotated(by: .pi * 0.9999)
+		}, completion: { _ in
+			self.isSpinnerIdle = true
+			self.animateSpinner()
+		})
+	}
 }

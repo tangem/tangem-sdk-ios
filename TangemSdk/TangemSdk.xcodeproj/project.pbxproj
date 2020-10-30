@@ -196,6 +196,7 @@
 		B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */; };
 		B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B091C0F7253EF3EE003D57E7 /* FileHashData.swift */; };
 		B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */; };
+		B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -404,6 +405,7 @@
 		B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFilesTask.swift; sourceTree = "<group>"; };
 		B091C0F7253EF3EE003D57E7 /* FileHashData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashData.swift; sourceTree = "<group>"; };
 		B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteAllFilesTask.swift; sourceTree = "<group>"; };
+		B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -557,6 +559,7 @@
 		5D7F4E3F248FCEFB00A1700D /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				B0C6B4B3254C1CFF00C0A1E1 /* Transitions */,
 				5DFCE3FF24B2F618007B95AF /* Scan */,
 				5DFCE3FA24AB89F5007B95AF /* Indicator */,
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
@@ -920,6 +923,14 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
+		B0C6B4B3254C1CFF00C0A1E1 /* Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */,
+			);
+			path = Transitions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1186,6 +1197,7 @@
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
+				B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */,
 				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,

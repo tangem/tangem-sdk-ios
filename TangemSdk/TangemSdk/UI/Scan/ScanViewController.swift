@@ -12,8 +12,8 @@ import UIKit
 class ScanViewController: UIViewController {
     var cardSession: CardSession?
     var cancelledHandler: (() -> Void)?
-    private static let handLeadingFrom = -50.0
-    private var handLeadingTo = 0.0 //calculate later
+	private static let handLeadingFrom: CGFloat = -50.0
+	private var handLeadingTo: CGFloat = 0.0 //calculate later
     
     @IBOutlet weak var hintLabel: UILabel!
     @IBOutlet weak var buttonTapIn: UIButton! {
@@ -29,7 +29,8 @@ class ScanViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let offset = view.frame.width/2.0 - imageHand.frame.width/2.0 - 30.0
-        handLeadingTo = ScanViewController.handLeadingFrom + Double(offset)
+        handLeadingTo = ScanViewController.handLeadingFrom + offset
+		imageHand.alpha = 0
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -44,24 +45,40 @@ class ScanViewController: UIViewController {
     }
     
     func startAnimation() {
-        UIView.animateKeyframes(withDuration: 3.0, delay: 0.2, options: [.calculationModeLinear], animations: {
+		UIView.animateKeyframes(withDuration: 5.0, delay: 0.2, options: [.repeat, .calculationModeLinear], animations: {
             
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.6) {
-                self.imageHandLeading.constant = CGFloat(self.handLeadingTo)
+			UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.1) {
+				self.imageHand.alpha = 1
+			}
+			
+            UIView.addKeyframe(withRelativeStartTime: 0.1, relativeDuration: 0.3) {
+                self.imageHandLeading.constant = self.handLeadingTo
                 self.view.layoutIfNeeded()
             }
             
-            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.3) {
-//                self.imageHand.alpha = 0.0
+			UIView.addKeyframe(withRelativeStartTime: 0.4, relativeDuration: 0.4) {}
+			
+            UIView.addKeyframe(withRelativeStartTime: 0.8, relativeDuration: 0.1) {
+                self.imageHand.alpha = 0.0
             }
-            
-            UIView.addKeyframe(withRelativeStartTime: 0.9, relativeDuration: 0.1) {}
+			
+			UIView.addKeyframe(withRelativeStartTime: 0.9, relativeDuration: 0.1, animations: {})
             
         }) { completed in
-            self.imageHand.alpha = 1.0
-//            self.imageHandLeading.constant = CGFloat(ScanViewController.handLeadingFrom)
+            self.imageHandLeading.constant = ScanViewController.handLeadingFrom
         }
     }
+	
+	func dismissController(animated: Bool, completion: (() -> Void)?) {
+		dismiss(animated: animated, completion: completion)
+		postDismissSetup()
+	}
+	
+	func postDismissSetup() {
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			self.imageHandLeading.constant = ScanViewController.handLeadingFrom
+		}
+	}
     
     @IBAction func buttonCancelTapped(_ sender: Any) {
         self.cancelledHandler?()

@@ -50,7 +50,6 @@ public class ReadFilesTask: CardSessionRunnable {
 		command.run(in: session) { (result) in
 			switch result {
 			case .success(let response):
-				print("Success file response: \(response)")
 				if !response.fileData.isEmpty {
 					let file = File(response: response)
 					self.files.append(file)

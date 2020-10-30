@@ -93,6 +93,16 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
+        guard TangemSdk.isNFCAvailable else {
+            completion(.failure(.unsupportedDevice))
+            return
+        }
+        
+        guard state == .inactive && !reader.isReady else {
+            completion(.failure(.busy))
+            return
+        }
+        
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
@@ -155,7 +165,7 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive else {
+        guard state == .inactive && !reader.isReady else {
             onSessionStarted(self, .busy)
             return
         }

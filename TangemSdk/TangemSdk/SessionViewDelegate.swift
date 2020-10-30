@@ -84,17 +84,20 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     private let reader: CardReader
     private var engine: CHHapticEngine?
     private var engineNeedsStart = true
+	private let transitioningDelegate: FadeTransitionDelegate
 	
 	private lazy var indicatorController: CircularIndicatorViewController = {
 		let storyBoard = UIStoryboard(name: "CircularIndicator", bundle: .sdkBundle)
 		let indicatorController: CircularIndicatorViewController = storyBoard.instantiateViewController(identifier: "CircularIndicatorViewController")
-		indicatorController.modalPresentationStyle = .fullScreen
+		indicatorController.modalPresentationStyle = .custom
+		indicatorController.transitioningDelegate = transitioningDelegate
 		return indicatorController
 	}()
 	private lazy var scanController: ScanViewController = {
 		let storyboard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
 		let scanController: ScanViewController = storyboard.instantiateViewController(identifier: "ScanViewController")
-		scanController.modalPresentationStyle = .fullScreen
+		scanController.modalPresentationStyle = .custom
+		scanController.transitioningDelegate = transitioningDelegate
 		return scanController
 	}()
     
@@ -111,6 +114,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     init(reader: CardReader) {
         self.reader = reader
+		self.transitioningDelegate = FadeTransitionDelegate()
         createHapticEngine()
     }
     

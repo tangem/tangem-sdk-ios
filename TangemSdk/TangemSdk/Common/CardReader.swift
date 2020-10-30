@@ -10,7 +10,7 @@ import Foundation
 import CoreNFC
 import Combine
 
-public enum NFCTagType{
+public enum NFCTagType: Equatable {
     case tag(uid: Data)
     case slix2
     case unknown

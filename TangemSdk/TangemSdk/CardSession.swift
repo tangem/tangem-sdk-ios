@@ -172,17 +172,30 @@ public class CardSession {
         
         state = .active
         viewDelegate.sessionStarted()
+        
+        reader.tag //Subscription for dispatch tag lost/connected events into viewdelegate
+            .dropFirst()
+            .debounce(for: 0.3, scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink(receiveCompletion: {_ in},
+                  receiveValue: {[unowned self] tag in
+                    if tag != nil {
+                        self.viewDelegate.tagConnected()
+                    } else {
+                        self.viewDelegate.tagLost()
+                    }
+            })
+            .store(in: &connectedTagSubscription)
+        
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.connectedTag = tag
-                        self.viewDelegate.tagConnected()
                     } else {
                         self.connectedTag = nil
                         self.environment.encryptionKey = nil
-                        self.viewDelegate.tagLost()
                     }
             })
             .store(in: &connectedTagSubscription)

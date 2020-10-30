@@ -131,7 +131,7 @@ extension Command {
                 switch responseApdu.statusWord {
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                      .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
-                    session.viewDelegate.hideUI(.sd)
+                    session.viewDelegate.showUndefinedSpinner()
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {

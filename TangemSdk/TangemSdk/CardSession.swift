@@ -93,6 +93,16 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
+        guard TangemSdk.isNFCAvailable else {
+            completion(.failure(.unsupportedDevice))
+            return
+        }
+        
+        guard state == .inactive && !reader.isReady else {
+            completion(.failure(.busy))
+            return
+        }
+        
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
@@ -155,24 +165,37 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive else {
+        guard state == .inactive && !reader.isReady else {
             onSessionStarted(self, .busy)
             return
         }
         
         state = .active
         viewDelegate.sessionStarted()
+        
+        reader.tag //Subscription for dispatch tag lost/connected events into viewdelegate
+            .dropFirst()
+            .debounce(for: 0.3, scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink(receiveCompletion: {_ in},
+                  receiveValue: {[unowned self] tag in
+                    if tag != nil {
+                        self.viewDelegate.tagConnected()
+                    } else {
+                        self.viewDelegate.tagLost()
+                    }
+            })
+            .store(in: &connectedTagSubscription)
+        
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.connectedTag = tag
-                        self.viewDelegate.tagConnected()
                     } else {
                         self.connectedTag = nil
                         self.environment.encryptionKey = nil
-                        self.viewDelegate.tagLost()
                     }
             })
             .store(in: &connectedTagSubscription)

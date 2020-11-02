@@ -39,6 +39,22 @@ public struct Message: Codable {
     }
 }
 
+public enum ViewDelegateMessage {
+	case empty
+	case systemScanUiDisplayed
+	case systemScanUiDisappeared
+	case userCancelled
+	case hideUI
+	
+	var debounce: TimeInterval {
+		switch self {
+		case .empty: return 0
+		case .systemScanUiDisplayed: return 0.2
+		case .systemScanUiDisappeared, .userCancelled, .hideUI: return 0
+		}
+	}
+}
+
 
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
@@ -73,6 +89,8 @@ public protocol SessionViewDelegate: class {
     func sessionInitialized()
 	
 	func showUndefinedSpinner()
+	
+	func showInfoScreen()
     
     @available(iOS 13.0, *)
     func showScanUI(session: CardSession, cancelledHandler: @escaping () -> Void)
@@ -86,19 +104,22 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
 	
-	private lazy var indicatorController: CircularIndicatorViewController = {
-		let storyBoard = UIStoryboard(name: "CircularIndicator", bundle: .sdkBundle)
-		let indicatorController: CircularIndicatorViewController = storyBoard.instantiateViewController(identifier: "CircularIndicatorViewController")
-		indicatorController.modalPresentationStyle = .custom
-		indicatorController.transitioningDelegate = transitioningDelegate
-		return indicatorController
-	}()
-	private lazy var scanController: ScanViewController = {
-		let storyboard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
-		let scanController: ScanViewController = storyboard.instantiateViewController(identifier: "ScanViewController")
-		scanController.modalPresentationStyle = .custom
-		scanController.transitioningDelegate = transitioningDelegate
-		return scanController
+//	private lazy var indicatorController: CircularIndicatorViewController = {
+//		let storyBoard = UIStoryboard(name: "CircularIndicator", bundle: .sdkBundle)
+//		let indicatorController: CircularIndicatorViewController = storyBoard.instantiateViewController(identifier: "CircularIndicatorViewController")
+//		indicatorController.modalPresentationStyle = .custom
+//		indicatorController.transitioningDelegate = transitioningDelegate
+//		return indicatorController
+//	}()
+//	private lazy var scanController: ScanViewController = {
+//		let storyboard = UIStoryboard(name: "Scan", bundle: .sdkBundle)
+//		let scanController: ScanViewController = storyboard.instantiateViewController(identifier: "ScanViewController")
+//		scanController.modalPresentationStyle = .custom
+//		scanController.transitioningDelegate = transitioningDelegate
+//		return scanController
+//	}()
+	private lazy var infoScreen: InformationScreenViewController = {
+		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
 	}()
     
     private lazy var delayFormatter: DateComponentsFormatter = {
@@ -141,18 +162,19 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		print("Session view delegate hideUI with mode: \(indicatorMode)")
         guard let indicatorMode = indicatorMode else {
             DispatchQueue.main.async {
-				self.dismissControllers()
+				self.dismissInfoScreen()
             }
             return
         }
 		
 		DispatchQueue.main.async {
-			switch indicatorMode {
-			case .sd:
-				self.indicatorController.setMode(.spinner, animated: true)
-			case .percent, .spinner:
-				self.dismissControllers()
-			}
+			self.dismissInfoScreen()
+//			switch indicatorMode {
+//			case .sd:
+//				self.indicatorController.setMode(.spinner, animated: true)
+//			case .percent, .spinner:
+//				self.dismissControllers()
+//			}
 		}
     }
     
@@ -166,28 +188,28 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         //}
         DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
-				self.indicatorController.setMode(.spinner, animated: true)
+//				self.indicatorController.setMode(.spinner, animated: true)
 				return
 			}
 			let remainingSeconds = Float(remainingMilliseconds/100)
 			self.remainingSecurityDelaySec = remainingSeconds
 			
-			if self.indicatorController.mode != .sd {
-				self.indicatorController.totalValue = remainingSeconds + 1
-			}
-			self.indicatorController.setMode(.sd, animated: true)
+//			if self.indicatorController.mode != .sd {
+//				self.indicatorController.totalValue = remainingSeconds + 1
+//			}
+//			self.indicatorController.setMode(.sd, animated: true)
 					
 			if let topmostViewController = UIApplication.shared.topMostViewController {
 				
-				if self.indicatorController.presentingViewController == nil {
-					topmostViewController.present(self.indicatorController, animated: true)
-				} else if topmostViewController is ScanViewController {
-					self.scanController.dismissController(animated: true, completion: nil)
-				}
+//				if self.indicatorController.presentingViewController == nil {
+//					topmostViewController.present(self.indicatorController, animated: true)
+//				} else if topmostViewController is ScanViewController {
+//					self.scanController.dismissController(animated: true, completion: nil)
+//				}
 			}
 			
             
-            self.indicatorController.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: Localization.nfcAlertDefault)
+//            self.indicatorController.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: Localization.nfcAlertDefault)
         }
     }
     
@@ -197,17 +219,17 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         showAlertMessage(Localization.nfcAlertDefault)
         
         DispatchQueue.main.async {
-			self.indicatorController.setMode(.percent, animated: true)
-            
-            if self.indicatorController.view.window == nil {
-                if let topmostViewController = UIApplication.shared.topMostViewController {
-                    topmostViewController.present(self.indicatorController, animated: true) {
-                        self.indicatorController.modalPresentationStyle = .fullScreen
-                    }
-                }
-            }
-            
-            self.indicatorController.tickPercent(percentValue: percent, message: String(format: "%@%%", percent.description), hint: hint)
+//			self.indicatorController.setMode(.percent, animated: true)
+//
+//            if self.indicatorController.view.window == nil {
+//                if let topmostViewController = UIApplication.shared.topMostViewController {
+//                    topmostViewController.present(self.indicatorController, animated: true) {
+//                        self.indicatorController.modalPresentationStyle = .fullScreen
+//                    }
+//                }
+//            }
+//
+//            self.indicatorController.tickPercent(percentValue: percent, message: String(format: "%@%%", percent.description), hint: hint)
         }
     }
 	
@@ -216,10 +238,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 //		playTick()
 		
 		DispatchQueue.main.async {
-			if self.indicatorController.presentingViewController == nil, let topmostVC = UIApplication.shared.topMostViewController {
-				topmostVC.present(self.indicatorController, animated: true, completion: nil)
-			}
-			self.indicatorController.setMode(.spinner, animated: true)
+//			if self.indicatorController.presentingViewController == nil, let topmostVC = UIApplication.shared.topMostViewController {
+//				topmostVC.present(self.indicatorController, animated: true, completion: nil)
+//			}
+//			self.indicatorController.setMode(.spinner, animated: true)
 		}
 	}
     
@@ -269,7 +291,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
 		print("Session started")
-		showScanUI()
+//		showScanUI()
         startHapticsEngine()
     }
     
@@ -280,23 +302,50 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStopped() {
 		print("Session stopped")
-        hideUI(nil)
+//        hideUI(nil)
         stopHapticsEngine()
     }
 	
-	private func dismissControllers() {
-		var parentController: UIViewController?
-		defer {
-			parentController?.dismiss(animated: true, completion: nil)
-			scanController.postDismissSetup()
+	func showInfoScreen() {
+		let action = { [weak infoScreen] in
+			guard
+				let infoScreen = infoScreen,
+				infoScreen.presentingViewController == nil,
+				let topmostViewController = UIApplication.shared.topMostViewController
+			else { return }
+			
+			topmostViewController.present(infoScreen, animated: true, completion: nil)
 		}
-		if let parent = scanController.presentingViewController, !(parent is CircularIndicatorViewController) {
-			parentController = parent
+		
+		guard Thread.isMainThread else {
+			DispatchQueue.main.async {
+				action()
+			}
 			return
 		}
-		if let parent = indicatorController.presentingViewController, !(parent is ScanViewController) {
-			parentController = parent
+		action()
+	}
+	
+	private func dismissInfoScreen() {
+		if infoScreen.presentingViewController == nil || infoScreen.isBeingDismissed {
+			return
 		}
+		infoScreen.dismiss(animated: true, completion: nil)
+//		var parentController: UIViewController?
+//		defer {
+//			parentController?.dismiss(animated: true, completion: nil)
+//			scanController.postDismissSetup()
+//		}
+//		if let parent = scanController.presentingViewController, !(parent is CircularIndicatorViewController) {
+//			parentController = parent
+//			return
+//		}
+//		if let parent = indicatorController.presentingViewController, !(parent is ScanViewController) {
+//			parentController = parent
+//		}
+//		if let parent = infoScreen.presentingViewController {
+//			parent.dismiss(animated: true, completion: nil)
+//		}
 	}
     
     private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
@@ -326,29 +375,29 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     }
 	
 	private func showScanUI() {
-		let action = { [weak scanController] in
-			guard let scanController = scanController else { return }
-			
-			
-			if scanController.presentingViewController != nil {
-				if scanController.presentedViewController is CircularIndicatorViewController {
-					scanController.dismiss(animated: true, completion: nil)
-				}
-				return
-			}
-			
-			if let topmostViewController = UIApplication.shared.topMostViewController {
-				topmostViewController.present(scanController, animated: true) {
-				}
-			}
-		}
-		guard Thread.isMainThread else {
-			DispatchQueue.main.async {
-				action()
-			}
-			return
-		}
-		action()
+//		let action = { [weak scanController] in
+//			guard let scanController = scanController else { return }
+//
+//
+//			if scanController.presentingViewController != nil {
+//				if scanController.presentedViewController is CircularIndicatorViewController {
+//					scanController.dismiss(animated: true, completion: nil)
+//				}
+//				return
+//			}
+//
+//			if let topmostViewController = UIApplication.shared.topMostViewController {
+//				topmostViewController.present(scanController, animated: true) {
+//				}
+//			}
+//		}
+//		guard Thread.isMainThread else {
+//			DispatchQueue.main.async {
+//				action()
+//			}
+//			return
+//		}
+//		action()
 	}
     
     private func playSuccess() {

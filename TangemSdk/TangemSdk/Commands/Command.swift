@@ -159,7 +159,7 @@ extension Command {
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }
             case .failure(let error):
-                session.viewDelegate.hideUI(nil)
+				session.handleViewDelegateMessage(.hideUI)
                 completion(.failure(error))
             }
         }

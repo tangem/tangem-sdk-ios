@@ -19,6 +19,11 @@ final class NDEFReader: NSObject {
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> {
         fatalError("Unsupported")
     }
+	
+	@available (iOS 13.0, *)
+	var messages: CurrentValueSubject<ViewDelegateMessage, Never> {
+		fatalError("Unsupported")
+	}
     
     private var readerSession: NFCNDEFReaderSession?
     private var completion: ((Result<ResponseApdu, TangemSdkError>) -> Void)?

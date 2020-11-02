@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait" appearance="dark"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Information Screen View Controller-->
+        <scene sceneID="rG8-oZ-fDd">
+            <objects>
+                <viewController storyboardIdentifier="InformationScreenViewController" id="aGJ-gJ-qGj" customClass="InformationScreenViewController" customModule="TangemSdk" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="J2S-wa-PCA">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to close" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AuN-4z-MtI">
+                                <rect key="frame" x="141.66666666666666" y="718" width="92" height="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0aU-Tk-Ith">
+                                <rect key="frame" x="32" y="54" width="311" height="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ltu-QS-Kh4" customClass="ScanCardAnimatedView" customModule="TangemSdk" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="375" height="280"/>
+                                <subviews>
+                                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="hand" translatesAutoresizingMaskIntoConstraints="NO" id="yo6-vg-CM2">
+                                        <rect key="frame" x="-11" y="9" width="311" height="254"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </imageView>
+                                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="phone" translatesAutoresizingMaskIntoConstraints="NO" id="Wkm-gz-JEy">
+                                        <rect key="frame" x="186" y="33" width="105" height="193"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="280" id="gi0-9A-fRR"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="bNB-Pe-X6m"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="bNB-Pe-X6m" firstAttribute="bottom" secondItem="AuN-4z-MtI" secondAttribute="bottom" constant="40" id="1yY-BN-Jvv"/>
+                            <constraint firstItem="0aU-Tk-Ith" firstAttribute="top" secondItem="bNB-Pe-X6m" secondAttribute="top" constant="10" id="6Km-Rr-p7v"/>
+                            <constraint firstItem="ltu-QS-Kh4" firstAttribute="centerX" secondItem="bNB-Pe-X6m" secondAttribute="centerX" id="FPH-rs-ume"/>
+                            <constraint firstItem="ltu-QS-Kh4" firstAttribute="leading" secondItem="bNB-Pe-X6m" secondAttribute="leading" id="VNU-67-4iu"/>
+                            <constraint firstItem="AuN-4z-MtI" firstAttribute="centerX" secondItem="bNB-Pe-X6m" secondAttribute="centerX" id="XjE-qd-66n"/>
+                            <constraint firstItem="0aU-Tk-Ith" firstAttribute="centerX" secondItem="bNB-Pe-X6m" secondAttribute="centerX" id="aVd-1c-34C"/>
+                            <constraint firstItem="0aU-Tk-Ith" firstAttribute="leading" secondItem="bNB-Pe-X6m" secondAttribute="leading" constant="32" id="ocs-Oi-t36"/>
+                            <constraint firstItem="ltu-QS-Kh4" firstAttribute="top" secondItem="bNB-Pe-X6m" secondAttribute="top" id="odm-s2-gEr"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="hintLabel" destination="0aU-Tk-Ith" id="pmR-lx-YN2"/>
+                        <outlet property="howToScanContainer" destination="ltu-QS-Kh4" id="YkP-hU-WdX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GRN-h2-389" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-148" y="178.56071964017991"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="hand" width="311" height="255"/>
+        <image name="phone" width="105" height="192"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

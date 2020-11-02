@@ -199,6 +199,13 @@ public class CardSession {
                     }
             })
             .store(in: &connectedTagSubscription)
+		
+		reader.messages
+			.dropFirst()
+			.sink(receiveValue: { [unowned self] message in
+				self.handleViewDelegateMessage(message)
+			})
+			.store(in: &connectedTagSubscription)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .compactMap{ $0 }
@@ -459,6 +466,21 @@ public class CardSession {
             }
         }
     }
+	
+	func handleViewDelegateMessage(_ message: ViewDelegateMessage) {
+		print("Receive view delegate message:", message)
+		DispatchQueue.main.asyncAfter(deadline: .now() + message.debounce) {
+			let viewDelegate = self.viewDelegate
+			switch message {
+			case .systemScanUiDisplayed:
+				viewDelegate.showInfoScreen()
+			case .systemScanUiDisappeared,  .userCancelled, .hideUI:
+				viewDelegate.hideUI(nil)
+			case .empty:
+				print("Empty view delegate message, nothing to do")
+			}
+		}
+	}
 }
 
 //ed25519 from cryptokit?

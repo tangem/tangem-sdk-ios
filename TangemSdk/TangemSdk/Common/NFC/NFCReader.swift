@@ -25,6 +25,7 @@ final class NFCReader: NSObject {
     var oldCardSignCompatibilityMode = true
     
     private(set) var tag: CurrentValueSubject<NFCTagType?, TangemSdkError> = .init(nil)
+	private(set) var messages: CurrentValueSubject<ViewDelegateMessage, Never> = .init(.empty)
     let enableSessionInvalidateByTimer = true
     
     private let loggingEnabled = true
@@ -82,6 +83,9 @@ final class NFCReader: NSObject {
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .sink {[weak self] value in
                 print ("become active")
+				if self?.isSheetActive ?? false {
+					self?.messages.send(.systemScanUiDisappeared)
+				}
                 self?.isSheetActive = false
             }
             .store(in: &bag)
@@ -311,11 +315,15 @@ extension NFCReader: CardReader {
 @available(iOS 13.0, *)
 extension NFCReader: NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {
+		print("Tag reader session did becode active")
+		isSheetActive = true
+		messages.send(.systemScanUiDisplayed)
         nfcStuckTimer.stop()
         sessionTimer.start()
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
+		print("Tage reader session did invalidate with error: \(error)")
         cancelled = true
         readerSession = nil
         stopTimers()
@@ -326,11 +334,15 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         if readerSessionError == nil {
             readerSessionError = TangemSdkError.parse(nfcError)
         }
+		if case .userCancelled = readerSessionError {
+			messages.send(.userCancelled)
+		}
         tag.send(completion: .failure(readerSessionError!))
         tag = .init(nil)
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
+		print("Tag reader session did detect tags \(tags)")
         currentRetryCount = NFCReader.retryCount
         cancelled = false
         let nfcTag = tags.first!

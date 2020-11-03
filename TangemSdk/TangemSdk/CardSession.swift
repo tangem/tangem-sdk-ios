@@ -474,7 +474,7 @@ public class CardSession {
 			switch message {
 			case .systemScanUiDisplayed:
 				viewDelegate.showInfoScreen()
-			case .systemScanUiDisappeared,  .userCancelled, .hideUI:
+			case .systemScanUiDisappeared, .userCancelled, .hideUI:
 				viewDelegate.hideUI(nil)
 			case .empty:
 				print("Empty view delegate message, nothing to do")

@@ -113,6 +113,7 @@ class ScanCardAnimatedView: UIView {
 	
 	func stopAnimation() {
 		handImageView.layer.removeAllAnimations()
+		checkmarkLayer?.sublayers?.forEach { $0.removeAllAnimations() }
 		layoutHand()
 	}
 	

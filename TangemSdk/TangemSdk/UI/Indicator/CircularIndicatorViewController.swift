@@ -131,7 +131,7 @@ class CircularIndicatorViewController: UIViewController {
 	}
     
     public func tickSD(remainingValue: Float, message: String, hint: String? = nil) {
-        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+		let basicAnimation = CABasicAnimation(keyPath: AnimKeyPaths.strokeEnd)
         if isClockwise {
             basicAnimation.fromValue = (totalValue - remainingValue)/totalValue
             basicAnimation.toValue = (totalValue - remainingValue+1.0)/totalValue
@@ -149,7 +149,7 @@ class CircularIndicatorViewController: UIViewController {
     
     
     public func tickPercent(percentValue: Int, message: String, hint: String? = nil) {
-        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+		let basicAnimation = CABasicAnimation(keyPath: AnimKeyPaths.strokeEnd)
         basicAnimation.fromValue = Float(currentPercentValue)/100.0
         basicAnimation.toValue = Float(percentValue)/100.0
         basicAnimation.duration = 0.2

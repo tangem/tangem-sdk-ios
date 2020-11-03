@@ -12,13 +12,7 @@ import UIKit
 class ScanCardAnimatedView: UIView {
 	
 	enum AnimType: String {
-		case handAppear, handDisappear, pulse
-	}
-	
-	struct AnimKeyPaths {
-		static let transScale = "transform.scale"
-		static let opacity = "opacity"
-		static let position = "position"
+		case handAppear, handDisappear, pulse, checkmark
 	}
 	
 	var isAnimating: Bool {
@@ -28,13 +22,13 @@ class ScanCardAnimatedView: UIView {
 	private let photoImage: UIImage? = UIImage(named: "phone", in: .sdkBundle, with: .none)
 	private let handImage: UIImage? = UIImage(named: "hand", in: .sdkBundle, with: .none)
 	
-	private let phoneOffset = CGPoint(x: 11, y: 35)
-	private let handEndOffset = CGPoint(x: 40, y: 0)
+	private let phoneOffset = CGPoint(x: 8, y: 34)
+	private let handEndOffset = CGPoint(x: -38, y: 0)
+	private let handStartOffset = CGPoint(x: -278, y: 0)
 	private let topOffset: CGFloat = 20
 	private let hiddenHandScale: CGFloat = 0.5
 	private let hiddenHandOpacity: CGFloat = 0.0
 	private let displayedHandOpacity: CGFloat = 1.0
-	
 	
 	private lazy var phoneImageView: UIImageView = {
 		let view = UIImageView(image: photoImage)
@@ -64,6 +58,14 @@ class ScanCardAnimatedView: UIView {
 		phonePosition != phoneImageView.frame.origin
 	}
 	
+	private let pulseLayerName = "pulse_layer"
+	private let checkLayerName = "check_layer"
+	private let checkmarkCircleLayerName = "checkmark_circle_layer"
+	private let checkmarkLayerName = "checkmark_layer"
+	private let animTypeKey = "anim_type"
+	private let moveAnimKey = "movingHandAnim"
+	private let pulseAnimKey = "pulseAnim"
+	private let iosBlueColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 	
 	private var handDefaultSize: CGSize = .zero
 	private var handHiddenSize: CGSize = .zero
@@ -74,12 +76,7 @@ class ScanCardAnimatedView: UIView {
 	private var pulseAnim: CAAnimationGroup?
 	private var firstPulseWave: CAShapeLayer?
 	private var secondPulseWave: CAShapeLayer?
-	
-	private let pulseLayerName = "pulse_layer"
-	private let animTypeKey = "anim_type"
-	private let moveAnimKey = "movingHandAnim"
-	private let pulseAnimKey = "pulseAnim"
-	private let pulseColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+	private var checkmarkLayer: CAShapeLayer?
 	
 	init() {
 		super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250))
@@ -119,6 +116,8 @@ class ScanCardAnimatedView: UIView {
 		layoutHand()
 	}
 	
+	// MARK: Layout
+	
 	private func layoutPulse() {
 		if pulseView.superview == nil {
 			insertSubview(pulseView, aboveSubview: handImageView)
@@ -135,15 +134,87 @@ class ScanCardAnimatedView: UIView {
 		let pulseD = pulseR * 2
 		let waveWidth: CGFloat = 1.4
 		let waveCenter = CGPoint(x: pulseView.bounds.width / 2, y: pulseR)
-		let firstWave = wave(withDiameter: pulseD, color: pulseColor, lineWidth: waveWidth)
+		let firstWave = wave(withDiameter: pulseD, color: iosBlueColor, lineWidth: waveWidth)
 		firstWave.position = waveCenter
-		let secondWave = wave(withDiameter: pulseD, color: pulseColor, lineWidth: waveWidth)
+		let secondWave = wave(withDiameter: pulseD, color: iosBlueColor, lineWidth: waveWidth)
 		secondWave.position = waveCenter
 		pulseLayer.addSublayer(firstWave)
 		pulseLayer.addSublayer(secondWave)
 		firstPulseWave = firstWave
 		secondPulseWave = secondWave
 		pulseView.layer.addSublayer(pulseLayer)
+	}
+	
+	private func layoutItems() {
+		phoneImageView.sizeToFit()
+		handImageView.sizeToFit()
+		addSubview(handImageView)
+		addSubview(phoneImageView)
+	}
+	
+	private func calculatePositions() {
+		handEndPos = handEndOffset +^ topOffset
+		handStartPos = handStartOffset +^ topOffset + handHiddenSize.height / 2
+	}
+	
+	private func layoutPhone() {
+		phoneImageView.frame.origin = phonePosition
+		
+		let circleSize = CGSize(width: 45, height: 45)
+		func checkmarkPos() -> CGPoint {
+			let halfSize = circleSize / 2
+			let phoneSize = phoneImageView.bounds.size
+			let bottomOffset = (phoneSize * 0.2).height
+			return CGPoint(x: phoneSize.width / 2,
+						   y: phoneSize.height - bottomOffset - halfSize.height)
+		}
+		
+		func addCheckmarkToPhone(_ checkLayer: CAShapeLayer) {
+			phoneImageView.layer.addSublayer(checkLayer)
+		}
+		
+		if let checkmark = checkmarkLayer {
+			checkmark.position = checkmarkPos()
+			if checkmark.superlayer == nil {
+				addCheckmarkToPhone(checkmark)
+			}
+		} else {
+			let checkLayer = CAShapeLayer()
+			checkLayer.name = checkLayerName
+			checkLayer.bounds = CGRect(origin: .zero, size: circleSize)
+			let circle = UIBezierPath(roundedRect: checkLayer.bounds, cornerRadius: circleSize.width / 2)
+			let circleLayer = CAShapeLayer()
+			circleLayer.name = checkmarkCircleLayerName
+			circleLayer.path = circle.cgPath
+			circleLayer.fillColor = UIColor.clear.cgColor
+			circleLayer.strokeColor = iosBlueColor.cgColor
+			circleLayer.lineWidth = 2
+			circleLayer.opacity = 0
+			checkLayer.addSublayer(circleLayer)
+			let checkmark = UIBezierPath()
+			checkmark.move(to: CGPoint(x: 14, y: 24))
+			checkmark.addLine(to: CGPoint(x: 20, y: 31))
+			checkmark.addLine(to: CGPoint(x: 30, y: 15))
+			let checkmarkLayer = CAShapeLayer()
+			checkmarkLayer.name = checkmarkLayerName
+			checkmarkLayer.path = checkmark.cgPath
+			checkmarkLayer.fillColor = UIColor.clear.cgColor
+			checkmarkLayer.strokeColor = iosBlueColor.cgColor
+			checkmarkLayer.lineCap = .round
+			checkmarkLayer.lineJoin = .round
+			checkmarkLayer.lineWidth = 3
+			checkmarkLayer.strokeEnd = 0
+			checkLayer.addSublayer(checkmarkLayer)
+			checkLayer.position = checkmarkPos()
+			self.checkmarkLayer = checkLayer
+			addCheckmarkToPhone(checkLayer)
+		}
+	}
+	
+	private func layoutHand() {
+		handImageView.frame.origin = handStartPos
+		handImageView.layer.transform = hiddenHandTransform
+		handImageView.layer.opacity = 0
 	}
 	
 	private func wave(withDiameter d: CGFloat, color: UIColor, lineWidth: CGFloat) -> CAShapeLayer {
@@ -157,27 +228,7 @@ class ScanCardAnimatedView: UIView {
 		return wave
 	}
 	
-	private func layoutItems() {
-		phoneImageView.sizeToFit()
-		handImageView.sizeToFit()
-		addSubview(handImageView)
-		addSubview(phoneImageView)
-	}
-	
-	private func calculatePositions() {
-		handEndPos = handEndOffset +^ topOffset
-		handStartPos = CGPoint(x: -100, y: topOffset + handHiddenSize.height / 2)
-	}
-	
-	private func layoutPhone() {
-		phoneImageView.frame.origin = phonePosition
-	}
-	
-	private func layoutHand() {
-		handImageView.frame.origin = handStartPos
-		handImageView.layer.transform = hiddenHandTransform
-		handImageView.layer.opacity = 0
-	}
+	// MARK: - Firing animations
 	
 	private func fireAppearAnim() {
 		handImageView.layer.removeAllAnimations()
@@ -223,6 +274,26 @@ class ScanCardAnimatedView: UIView {
 		secondPulseWave?.add(anim, forKey: "pulse_anim")
 	}
 	
+	private func fireCheckmarkAnim(isDisappearing: Bool) {
+		guard
+			let checklayer = phoneImageView.layer.sublayer(with: checkLayerName),
+			let circleLayer = checklayer.sublayer(with: checkmarkCircleLayerName),
+			let checkmarkLayer = checklayer.sublayer(with: checkmarkLayerName) as? CAShapeLayer
+		else { return }
+		circleLayer.removeAllAnimations()
+		checkmarkLayer.removeAllAnimations()
+		let opacityAnim = CAKeyframeAnimation(keyPath: AnimKeyPaths.opacity, values: [0, 1], keyTimes: [0, 1], reversed: isDisappearing, duration: 0.3)
+		let checkmarkAnim = CAKeyframeAnimation(keyPath: AnimKeyPaths.strokeEnd, values: [-1, 1], keyTimes: [0, 1], reversed: isDisappearing, duration: 0.3)
+		if !isDisappearing {
+			checkmarkAnim.setValue(AnimType.checkmark, forKey: animTypeKey)
+			checkmarkAnim.delegate = self
+		}
+		circleLayer.add(opacityAnim, forKey: "opacity_anim")
+		checkmarkLayer.add(checkmarkAnim, forKey: "checkmark_anim")
+	}
+	
+	// MARK: - Animation calculations and setup
+	
 	private func handAnimPoints() -> (start: CGPoint, end: CGPoint) {
 		let handHalfSize = handDefaultSize / 2
 		let endPoint = handEndPos + handHalfSize
@@ -259,7 +330,6 @@ class ScanCardAnimatedView: UIView {
 		curvedPath.move(to: startPoint)
 		curvedPath.addCurve(to: endPoint, controlPoint1: controlPoint, controlPoint2: controlPoint)
 		let path = reversed ? curvedPath.reversing().cgPath : curvedPath.cgPath
-		print("Anim curved path", path)
 		pathAnim.path = path
 		
 		let group = CAAnimationGroup()
@@ -274,19 +344,18 @@ class ScanCardAnimatedView: UIView {
 	}
 	
 	private func createPulseAnim(delay: Double, withDelegate: Bool) -> CAAnimationGroup {
-		let opacity = CAKeyframeAnimation(keyPath: AnimKeyPaths.opacity)
-		opacity.values = [1, 0.8, 0.01, 0]
-		opacity.keyTimes = [0, 0.2, 0.9, 1]
-		opacity.fillMode = .forwards
-		opacity.beginTime = delay
-		opacity.isRemovedOnCompletion = false
+		let opacity = CAKeyframeAnimation(keyPath: AnimKeyPaths.opacity,
+										  values: [1, 0.8, 0.01, 0],
+										  keyTimes: [0, 0.2, 0.9, 1],
+										  reversed: false,
+										  delay: delay)
 		
-		let scale = CAKeyframeAnimation(keyPath: AnimKeyPaths.transScale)
-		scale.values = [CATransform3DIdentity, CATransform3DMakeScale(3, 3, 1)]
-		scale.keyTimes = [0, 1]
-		scale.fillMode = .forwards
-		scale.beginTime = delay
-		scale.isRemovedOnCompletion = true
+		let scale = CAKeyframeAnimation(keyPath: AnimKeyPaths.transScale,
+										values: [CATransform3DIdentity, CATransform3DMakeScale(3, 3, 1)],
+										keyTimes: [0, 1],
+										reversed: false,
+										isRemovedOnCompletion: true,
+										delay: delay)
 		
 		let group = CAAnimationGroup()
 		group.duration = 1 + delay * 2
@@ -318,10 +387,16 @@ extension ScanCardAnimatedView: CAAnimationDelegate {
 			action = { self.firePulseAnim() }
 			delay = 0
 		case .pulse:
-			action = { self.fireDisappearAnim() }
+			action = { self.fireCheckmarkAnim(isDisappearing: false) }
 			delay = 0.5
 		case .handDisappear:
 			action = { self.fireAppearAnim() }
+			delay = 1
+		case .checkmark:
+			action = {
+				self.fireCheckmarkAnim(isDisappearing: true)
+				self.fireDisappearAnim()
+			}
 			delay = 1
 		}
 		DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: action)

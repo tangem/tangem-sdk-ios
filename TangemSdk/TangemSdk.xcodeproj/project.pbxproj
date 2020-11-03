@@ -195,6 +195,8 @@
 		B0800F96252C6867007E04EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F95252C6867007E04EE /* File.swift */; };
 		B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */; };
 		B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B091C0F7253EF3EE003D57E7 /* FileHashData.swift */; };
+		B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */; };
+		B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */; };
 		B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */; };
 		B0C5A2A0254DA284007A0932 /* ScanCardAnimatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */; };
 		B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */; };
@@ -410,6 +412,8 @@
 		B0800F95252C6867007E04EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFilesTask.swift; sourceTree = "<group>"; };
 		B091C0F7253EF3EE003D57E7 /* FileHashData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashData.swift; sourceTree = "<group>"; };
+		B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAAnimations+.swift"; sourceTree = "<group>"; };
+		B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimKeyPaths.swift; sourceTree = "<group>"; };
 		B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteAllFilesTask.swift; sourceTree = "<group>"; };
 		B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCardAnimatedView.swift; sourceTree = "<group>"; };
 		B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
@@ -578,6 +582,7 @@
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
 				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
 				5D7F4E44248FCF8300A1700D /* Pin */,
+				B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -899,6 +904,7 @@
 				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
 				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
 				B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */,
+				B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1196,6 +1202,7 @@
 				5D2739FE234F270200ACDA11 /* sign.c in Sources */,
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
+				B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				5D273A04234F270200ACDA11 /* keypair.c in Sources */,
@@ -1238,6 +1245,7 @@
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D273A00234F270200ACDA11 /* key_exchange.c in Sources */,
+				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,

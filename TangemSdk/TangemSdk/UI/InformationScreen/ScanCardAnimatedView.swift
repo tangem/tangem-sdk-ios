@@ -80,24 +80,21 @@ class ScanCardAnimatedView: UIView {
 	
 	init() {
 		super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 250))
-		layoutItems()
+		setupItems()
 	}
 	
 	required init?(coder: NSCoder) {
 		super.init(coder: coder)
-		layoutItems()
+		setupItems()
 	}
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		guard isNeedLayoutUpdate else { return }
-		layoutItems()
+		setupItems()
 		handAppearAnim = nil
 		handDisappearAnim = nil
-		calculatePositions()
-		layoutPhone()
-		layoutHand()
-		layoutPulse()
+		layoutItems()
 	}
 	
 	func startAnimation() {
@@ -114,10 +111,17 @@ class ScanCardAnimatedView: UIView {
 	func stopAnimation() {
 		handImageView.layer.removeAllAnimations()
 		checkmarkLayer?.sublayers?.forEach { $0.removeAllAnimations() }
-		layoutHand()
+		layoutItems()
 	}
 	
 	// MARK: Layout
+	
+	private func layoutItems() {
+		calculatePositions()
+		layoutPhone()
+		layoutHand()
+		layoutPulse()
+	}
 	
 	private func layoutPulse() {
 		if pulseView.superview == nil {
@@ -146,11 +150,15 @@ class ScanCardAnimatedView: UIView {
 		pulseView.layer.addSublayer(pulseLayer)
 	}
 	
-	private func layoutItems() {
+	private func setupItems() {
 		phoneImageView.sizeToFit()
 		handImageView.sizeToFit()
-		addSubview(handImageView)
-		addSubview(phoneImageView)
+		if handImageView.superview == nil {
+			addSubview(handImageView)
+		}
+		if phoneImageView.superview == nil {
+			addSubview(phoneImageView)
+		}
 	}
 	
 	private func calculatePositions() {
@@ -388,7 +396,8 @@ extension ScanCardAnimatedView: CAAnimationDelegate {
 			action = { self.firePulseAnim() }
 			delay = 0
 		case .pulse:
-			action = { self.fireCheckmarkAnim(isDisappearing: false) }
+			action = { self.fireDisappearAnim() }
+//			action = { self.fireCheckmarkAnim(isDisappearing: false) }
 			delay = 0.5
 		case .handDisappear:
 			action = { self.fireAppearAnim() }

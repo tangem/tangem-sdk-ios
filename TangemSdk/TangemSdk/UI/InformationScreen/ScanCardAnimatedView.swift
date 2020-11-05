@@ -15,9 +15,7 @@ class ScanCardAnimatedView: UIView {
 		case handAppear, handDisappear, pulse, checkmark
 	}
 	
-	var isAnimating: Bool {
-		handImageView.layer.animationKeys()?.count ?? 0 > 0
-	}
+	private(set) var isAnimating: Bool = false
 	
 	private let photoImage: UIImage? = UIImage(named: "phone", in: .sdkBundle, with: .none)
 	private let handImage: UIImage? = UIImage(named: "hand", in: .sdkBundle, with: .none)
@@ -380,7 +378,12 @@ class ScanCardAnimatedView: UIView {
 
 @available(iOS 13.0, *)
 extension ScanCardAnimatedView: CAAnimationDelegate {
+	
+	func animationDidStart(_ anim: CAAnimation) {
+		isAnimating = true
+	}
 	func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+		isAnimating = false
 		guard
 			flag,
 			let type = anim.value(forKey: animTypeKey) as? AnimType

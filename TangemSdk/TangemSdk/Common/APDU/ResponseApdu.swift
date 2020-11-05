@@ -17,8 +17,7 @@ public struct ResponseApdu: CustomStringConvertible {
     public var statusWord: StatusWord { return StatusWord(rawValue: sw) ?? .unknown }
     
     public var description: String {
-		""
-//        return "<- R-APDU SW: \(statusWord), DATA: \(data.asHexString())"
+        return "<- R-APDU SW: \(statusWord), DATA: \(data.asHexString())"
     }
     
     private let sw1: Byte

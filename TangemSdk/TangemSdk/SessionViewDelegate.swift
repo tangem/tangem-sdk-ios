@@ -45,12 +45,13 @@ public enum ViewDelegateMessage {
 	case systemScanUiDisappeared
 	case userCancelled
 	case hideUI
+	case showUndefinedSpinner
 	
 	var debounce: TimeInterval {
 		switch self {
 		case .empty: return 0
 		case .systemScanUiDisplayed: return 0.2
-		case .systemScanUiDisappeared, .userCancelled, .hideUI: return 0
+		case .systemScanUiDisappeared, .userCancelled, .hideUI, .showUndefinedSpinner: return 0
 		}
 	}
 }

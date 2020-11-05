@@ -16,7 +16,7 @@ class ScanCardAnimatedView: UIView {
 	}
 	
 	var isAnimating: Bool {
-		handImageView.isAnimating
+		handImageView.layer.animationKeys()?.count ?? 0 > 0
 	}
 	
 	private let photoImage: UIImage? = UIImage(named: "phone", in: .sdkBundle, with: .none)
@@ -98,14 +98,11 @@ class ScanCardAnimatedView: UIView {
 	}
 	
 	func startAnimation() {
+		if isAnimating { return }
 		if handAppearAnim == nil {
 			fireAppearAnim()
 		}
 		handImageView.layer.add(handAppearAnim!, forKey: moveAnimKey)
-	}
-	
-	func startPulseAnim() {
-		firePulseAnim()
 	}
 	
 	func stopAnimation() {
@@ -251,9 +248,9 @@ class ScanCardAnimatedView: UIView {
 			
 		}
 		
-		handImageView.layer.position = points.start
-		handImageView.layer.opacity = 0
-		handImageView.layer.transform = hiddenHandTransform
+//		handImageView.layer.position = points.start
+//		handImageView.layer.opacity = 0
+//		handImageView.layer.transform = hiddenHandTransform
 		handImageView.layer.add(group, forKey: moveAnimKey)
 	}
 	
@@ -267,10 +264,9 @@ class ScanCardAnimatedView: UIView {
 			group = movementAnim(startPoint: points.start, endPoint: points.end, reversed: true)
 			handDisappearAnim = group
 		}
-		
-		handImageView.layer.position = points.end
-		handImageView.layer.opacity = 1
-		handImageView.layer.transform = CATransform3DIdentity
+//		handImageView.layer.position = points.end
+//		handImageView.layer.opacity = 1
+//		handImageView.layer.transform = CATransform3DIdentity
 		handImageView.layer.add(group, forKey: moveAnimKey)
 	}
 	

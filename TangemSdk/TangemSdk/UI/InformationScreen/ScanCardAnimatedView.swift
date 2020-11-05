@@ -43,12 +43,12 @@ class ScanCardAnimatedView: UIView {
 	private let displayedHandOpacity: CGFloat = 1.0
 	
 	private lazy var phoneBackImageView: UIImageView = {
-		let view = UIImageView(image: UIImage(named: "phone_back", in: .sdkBundle, with: .none)?.withRenderingMode(.alwaysTemplate))
+		let view = UIImageView(image: UIImage(named: "phone_back", in: .sdkBundle, with: .none))
 		view.sizeToFit()
 		return view
 	}()
 	private lazy var phoneOutlineImageView: UIImageView = {
-		let view = UIImageView(image: UIImage(named: "phone_outline", in: .sdkBundle, with: .none)?.withRenderingMode(.alwaysTemplate))
+		let view = UIImageView(image: UIImage(named: "phone_outline", in: .sdkBundle, with: .none))
 		view.sizeToFit()
 		return view
 	}()

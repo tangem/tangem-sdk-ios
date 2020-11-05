@@ -25,6 +25,8 @@ public struct FileDataToWrite {
 public final class WriteFileCommand: Command {
 	public typealias CommandResponse = WriteFileResponse
 	
+	public var requiresPin2: Bool { dataToWrite.requiredPin2 }
+	
 	private static let singleWriteSize = 1524
 	private static let maxSize = 48 * 1024
 	
@@ -81,9 +83,15 @@ public final class WriteFileCommand: Command {
 		   isCounterRequired(card: card) {
 			return .dataCannotBeWritten
 		}
+		
 		if case .invalidState = error, card?.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true {
 			return .overwritingDataIsProhibited
 		}
+		
+		if case .invalidParams = error {
+			return .pin2OrCvcRequired
+		}
+		
 		return error
 	}
 	
@@ -164,7 +172,8 @@ public final class WriteFileCommand: Command {
 	}
 	
 	private func isCounterRequired(card: Card) -> Bool {
-		card.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true
+		if dataToWrite.requiredPin2 { return false }
+		return card.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true
 	}
 	
 	private func verifySignatures(publicKey: Data, cardId: String) -> Bool {

@@ -476,6 +476,8 @@ public class CardSession {
 				viewDelegate.showInfoScreen()
 			case .systemScanUiDisappeared, .userCancelled, .hideUI:
 				viewDelegate.hideUI(nil)
+			case .showUndefinedSpinner:
+				viewDelegate.showUndefinedSpinner()
 			case .empty:
 				print("Empty view delegate message, nothing to do")
 			}

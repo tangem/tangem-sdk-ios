@@ -11,14 +11,28 @@ import UIKit
 @available (iOS 13.0, *)
 class ScanCardAnimatedView: UIView {
 	
+	private struct ColorSet {
+		let handColor: UIColor
+		let phoneColor: UIColor
+		let phoneScreenColor: UIColor
+		
+		static func colorSet(for trait: UIUserInterfaceStyle) -> ColorSet {
+			switch trait {
+			case .dark:
+				return ColorSet(handColor: .white, phoneColor: .white, phoneScreenColor: .phoneGray)
+			default:
+				return ColorSet(handColor: .handBlack, phoneColor: .phoneGray, phoneScreenColor: .white)
+			}
+		}
+	}
+	
 	enum AnimType: String {
 		case handAppear, handDisappear, pulse, checkmark
 	}
 	
 	private(set) var isAnimating: Bool = false
 	
-	private let photoImage: UIImage? = UIImage(named: "phone", in: .sdkBundle, with: .none)
-	private let handImage: UIImage? = UIImage(named: "hand", in: .sdkBundle, with: .none)
+	private let handImage: UIImage? = UIImage(named: "hand_outline", in: .sdkBundle, with: .none)
 	
 	private let phoneOffset = CGPoint(x: 8, y: 34)
 	private let handEndOffset = CGPoint(x: -38, y: 0)
@@ -28,8 +42,13 @@ class ScanCardAnimatedView: UIView {
 	private let hiddenHandOpacity: CGFloat = 0.0
 	private let displayedHandOpacity: CGFloat = 1.0
 	
-	private lazy var phoneImageView: UIImageView = {
-		let view = UIImageView(image: photoImage)
+	private lazy var phoneBackImageView: UIImageView = {
+		let view = UIImageView(image: UIImage(named: "phone_back", in: .sdkBundle, with: .none)?.withRenderingMode(.alwaysTemplate))
+		view.sizeToFit()
+		return view
+	}()
+	private lazy var phoneOutlineImageView: UIImageView = {
+		let view = UIImageView(image: UIImage(named: "phone_outline", in: .sdkBundle, with: .none)?.withRenderingMode(.alwaysTemplate))
 		view.sizeToFit()
 		return view
 	}()
@@ -41,19 +60,19 @@ class ScanCardAnimatedView: UIView {
 		return view
 	}()
 	private lazy var pulseView: UIView = {
-		let view = UIView(frame: CGRect(origin: phoneImageView.frame.origin,
-										size: CGSize(width: phoneImageView.bounds.width, height: 20)))
+		let view = UIView(frame: CGRect(origin: phoneOutlineImageView.frame.origin,
+										size: CGSize(width: phoneOutlineImageView.bounds.width, height: 20)))
 		view.clipsToBounds = false
 		return view
 	}()
 	private lazy var hiddenHandTransform: CATransform3D = { CATransform3DMakeScale(hiddenHandScale, hiddenHandScale, 1) }()
 	
 	private var phonePosition: CGPoint {
-		handEndPos + CGPoint(x: handDefaultSize.width - phoneOffset.x - phoneImageView.bounds.size.width,
+		handEndPos + CGPoint(x: handDefaultSize.width - phoneOffset.x - phoneOutlineImageView.bounds.size.width,
 							 y: phoneOffset.y)
 	}
 	private var isNeedLayoutUpdate: Bool {
-		phonePosition != phoneImageView.frame.origin
+		phonePosition != phoneOutlineImageView.frame.origin
 	}
 	
 	private let pulseLayerName = "pulse_layer"
@@ -63,7 +82,7 @@ class ScanCardAnimatedView: UIView {
 	private let animTypeKey = "anim_type"
 	private let moveAnimKey = "movingHandAnim"
 	private let pulseAnimKey = "pulseAnim"
-	private let iosBlueColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+	private let iosBlueColor = UIColor.systemBlue
 	
 	private var handDefaultSize: CGSize = .zero
 	private var handHiddenSize: CGSize = .zero
@@ -84,6 +103,13 @@ class ScanCardAnimatedView: UIView {
 	required init?(coder: NSCoder) {
 		super.init(coder: coder)
 		setupItems()
+	}
+	
+	override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+		if previousTraitCollection?.userInterfaceStyle == traitCollection.userInterfaceStyle {
+			return
+		}
+		setImagesColor()
 	}
 	
 	override func layoutSubviews() {
@@ -146,14 +172,26 @@ class ScanCardAnimatedView: UIView {
 	}
 	
 	private func setupItems() {
-		phoneImageView.sizeToFit()
 		handImageView.sizeToFit()
+		phoneOutlineImageView.sizeToFit()
+		phoneBackImageView.sizeToFit()
 		if handImageView.superview == nil {
 			addSubview(handImageView)
 		}
-		if phoneImageView.superview == nil {
-			addSubview(phoneImageView)
+		if phoneBackImageView.superview == nil {
+			addSubview(phoneBackImageView)
 		}
+		if phoneOutlineImageView.superview == nil {
+			addSubview(phoneOutlineImageView)
+		}
+		setImagesColor()
+	}
+	
+	private func setImagesColor() {
+		let set = ColorSet.colorSet(for: traitCollection.userInterfaceStyle)
+		handImageView.tintColor = set.handColor
+		phoneOutlineImageView.tintColor = set.phoneColor
+		phoneBackImageView.tintColor = set.phoneScreenColor
 	}
 	
 	private func calculatePositions() {
@@ -162,19 +200,20 @@ class ScanCardAnimatedView: UIView {
 	}
 	
 	private func layoutPhone() {
-		phoneImageView.frame.origin = phonePosition
+		phoneOutlineImageView.frame.origin = phonePosition
+		phoneBackImageView.center = phoneOutlineImageView.center
 		
 		let circleSize = CGSize(width: 45, height: 45)
 		func checkmarkPos() -> CGPoint {
 			let halfSize = circleSize / 2
-			let phoneSize = phoneImageView.bounds.size
+			let phoneSize = phoneOutlineImageView.bounds.size
 			let bottomOffset = (phoneSize * 0.2).height
 			return CGPoint(x: phoneSize.width / 2,
 						   y: phoneSize.height - bottomOffset - halfSize.height)
 		}
 		
 		func addCheckmarkToPhone(_ checkLayer: CAShapeLayer) {
-			phoneImageView.layer.addSublayer(checkLayer)
+			phoneBackImageView.layer.addSublayer(checkLayer)
 		}
 		
 		if let checkmark = checkmarkLayer {
@@ -246,9 +285,6 @@ class ScanCardAnimatedView: UIView {
 			
 		}
 		
-//		handImageView.layer.position = points.start
-//		handImageView.layer.opacity = 0
-//		handImageView.layer.transform = hiddenHandTransform
 		handImageView.layer.add(group, forKey: moveAnimKey)
 	}
 	
@@ -262,9 +298,7 @@ class ScanCardAnimatedView: UIView {
 			group = movementAnim(startPoint: points.start, endPoint: points.end, reversed: true)
 			handDisappearAnim = group
 		}
-//		handImageView.layer.position = points.end
-//		handImageView.layer.opacity = 1
-//		handImageView.layer.transform = CATransform3DIdentity
+		
 		handImageView.layer.add(group, forKey: moveAnimKey)
 	}
 	
@@ -279,7 +313,7 @@ class ScanCardAnimatedView: UIView {
 	
 	private func fireCheckmarkAnim(isDisappearing: Bool) {
 		guard
-			let checklayer = phoneImageView.layer.sublayer(with: checkLayerName),
+			let checklayer = phoneBackImageView.layer.sublayer(with: checkLayerName),
 			let circleLayer = checklayer.sublayer(with: checkmarkCircleLayerName),
 			let checkmarkLayer = checklayer.sublayer(with: checkmarkLayerName) as? CAShapeLayer
 		else { return }
@@ -410,4 +444,10 @@ extension ScanCardAnimatedView: CAAnimationDelegate {
 		}
 		DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: action)
 	}
+}
+
+
+fileprivate extension UIColor {
+	@nonobjc class var phoneGray: UIColor {	#colorLiteral(red: 0.1058823529, green: 0.1098039216, blue: 0.1254901961, alpha: 1) }
+	@nonobjc class var handBlack: UIColor { #colorLiteral(red: 0.1725490196, green: 0.1725490196, blue: 0.1803921569, alpha: 1) }
 }

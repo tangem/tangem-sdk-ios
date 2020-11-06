@@ -43,9 +43,6 @@ class InformationScreenViewController: UIViewController {
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		if state == .howToScan {
-			howToScanView.startAnimation()
-		}
 		
 		indicatorView.didAppear()
 		
@@ -69,14 +66,19 @@ class InformationScreenViewController: UIViewController {
 			self.state = .idle
 			return
 		}
+		
+		if self.state == state { return }
+		
 		var spinnerTargetAlpha: CGFloat = 0
 		var howToScanTargetAlpha: CGFloat = 0
 		var indicatorTargetAlpha: CGFloat = 0
 		var hintText: String = ""
 		self.state = state
+		
 		switch state {
 		case .howToScan:
 			howToScanTargetAlpha = 1
+			howToScan.stopAnimation()
 		case .percentProgress, .securityDelay:
 			indicatorTargetAlpha = 1
 		case .spinner:
@@ -86,8 +88,10 @@ class InformationScreenViewController: UIViewController {
 			spinner.stopAnimation()
 			howToScan.stopAnimation()
 		}
+		
 		state == .spinner ? spinner.startAnimation() : spinner.stopAnimation()
 		hintLabel.text = hintText
+		
 		UIView.animate(withDuration: animated ? 0.3 : 0.0, animations: {
 			howToScan.alpha = howToScanTargetAlpha
 			indicator.alpha = indicatorTargetAlpha

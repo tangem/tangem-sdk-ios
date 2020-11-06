@@ -16,7 +16,7 @@
 "nfc_alert_sign_completed" = "La transazione è stata firmata con successo";
 
 // Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
-"view_delegate_security_delay" = "Pressione lunga"
+"view_delegate_security_delay" = "Pressione lunga";
 
 // Label. During the Long Tap we show to the user how many seconds he has to hold the card and count them down.
 "nfc_seconds_left" = "%@ rimasti";

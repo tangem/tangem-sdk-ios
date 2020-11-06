@@ -188,6 +188,8 @@ public class CardSession {
 		
 		reader.uiMessages
 			.dropFirst()
+			.debounce(for: 0.3, scheduler: RunLoop.main)
+			.removeDuplicates()
 			.sink(receiveValue: { [unowned self] message in
 				self.handleViewDelegateMessage(message)
 			})
@@ -449,22 +451,20 @@ public class CardSession {
 	
 	func handleViewDelegateMessage(_ message: ViewDelegateMessage) {
 		print("Receive view delegate message:", message)
-		DispatchQueue.main.asyncAfter(deadline: .now() + message.debounce) {
-			let viewDelegate = self.viewDelegate
-			switch message {
-			case .systemScanUiDisplayed:
-				viewDelegate.showInfoScreen()
-			case .systemScanUiDisappeared, .userCancelled, .hideUI:
-				viewDelegate.hideUI(nil)
-			case .showUndefinedSpinner:
-				viewDelegate.showUndefinedSpinner()
-			case .tagLost:
-				viewDelegate.tagLost()
-			case .tagConnected:
-				viewDelegate.tagConnected()
-			case .empty:
-				print("Empty view delegate message, nothing to do")
-			}
+		let viewDelegate = self.viewDelegate
+		switch message {
+		case .systemScanUiDisplayed:
+			viewDelegate.showInfoScreen()
+		case .systemScanUiDisappeared, .hideUI:
+			viewDelegate.hideUI(nil)
+		case .showUndefinedSpinner:
+			viewDelegate.showUndefinedSpinner()
+		case .tagLost:
+			viewDelegate.tagLost()
+		case .tagConnected:
+			viewDelegate.tagConnected()
+		case .empty:
+			print("Empty view delegate message, nothing to do")
 		}
 	}
 }

@@ -21,7 +21,7 @@ final class NDEFReader: NSObject {
     }
 	
 	@available (iOS 13.0, *)
-	var messages: CurrentValueSubject<ViewDelegateMessage, Never> {
+	var uiMessages: CurrentValueSubject<ViewDelegateMessage, Never> {
 		fatalError("Unsupported")
 	}
     

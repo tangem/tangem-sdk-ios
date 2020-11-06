@@ -39,6 +39,7 @@ public struct Message: Codable {
     }
 }
 
+/// Messages that NFC reader sending to CardSession to notify user about progress of interacting with card
 public enum ViewDelegateMessage {
 	case empty
 	case systemScanUiDisplayed
@@ -46,12 +47,14 @@ public enum ViewDelegateMessage {
 	case userCancelled
 	case hideUI
 	case showUndefinedSpinner
+	case tagLost, tagConnected
 	
 	var debounce: TimeInterval {
 		switch self {
 		case .empty: return 0
 		case .systemScanUiDisplayed: return 0.2
 		case .systemScanUiDisappeared, .userCancelled, .hideUI, .showUndefinedSpinner: return 0
+		case .tagLost, .tagConnected: return 0.3
 		}
 	}
 }
@@ -138,11 +141,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         }
 		
 		DispatchQueue.main.async {
-			self.dismissInfoScreen()
 			switch indicatorMode {
 			case .sd:
 				self.infoScreen.setState(.spinner, animated: true)
-			case .percent, .spinner:
+			case .percent:
 				self.dismissInfoScreen()
 			}
 		}
@@ -156,15 +158,16 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
 				self.infoScreen.setState(.spinner, animated: true)
-//				self.indicatorController.setMode(.spinner, animated: true)
 				return
 			}
+			
 			let remainingSeconds = Float(remainingMilliseconds/100)
 			self.remainingSecurityDelaySec = remainingSeconds
 			
 			if self.infoScreen.state != .securityDelay {
 				self.infoScreen.setupIndicatorTotal(remainingSeconds + 1)
 			}
+			
 			self.infoScreen.setState(.securityDelay, animated: true)
 				
 			self.presentInfoScreen()
@@ -186,7 +189,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	
 	func showUndefinedSpinner() {
 		guard remainingSecurityDelaySec <= 1 else { return }
-//		playTick()
 		
 		DispatchQueue.main.async {
 			self.presentInfoScreen()
@@ -275,6 +277,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			if self.infoScreen.presentingViewController == nil || self.infoScreen.isBeingDismissed {
 				return
 			}
+			
 			self.infoScreen.dismiss(animated: true, completion: nil)
 		}
 	}

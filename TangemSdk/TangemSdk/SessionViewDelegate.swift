@@ -44,19 +44,9 @@ public enum ViewDelegateMessage {
 	case empty
 	case systemScanUiDisplayed
 	case systemScanUiDisappeared
-	case userCancelled
 	case hideUI
 	case showUndefinedSpinner
 	case tagLost, tagConnected
-	
-	var debounce: TimeInterval {
-		switch self {
-		case .empty: return 0
-		case .systemScanUiDisplayed: return 0.2
-		case .systemScanUiDisappeared, .userCancelled, .hideUI, .showUndefinedSpinner: return 0
-		case .tagLost, .tagConnected: return 0.3
-		}
-	}
 }
 
 

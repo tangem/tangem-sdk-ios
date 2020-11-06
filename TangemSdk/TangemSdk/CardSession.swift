@@ -173,20 +173,6 @@ public class CardSession {
         state = .active
         viewDelegate.sessionStarted()
         
-        reader.tag //Subscription for dispatch tag lost/connected events into viewdelegate
-            .dropFirst()
-            .debounce(for: 0.3, scheduler: RunLoop.main)
-            .removeDuplicates()
-            .sink(receiveCompletion: {_ in},
-                  receiveValue: {[unowned self] tag in
-                    if tag != nil {
-                        self.viewDelegate.tagConnected()
-                    } else {
-                        self.viewDelegate.tagLost()
-                    }
-            })
-            .store(in: &connectedTagSubscription)
-        
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
             .sink(receiveCompletion: {_ in},
@@ -200,7 +186,7 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
 		
-		reader.messages
+		reader.uiMessages
 			.dropFirst()
 			.sink(receiveValue: { [unowned self] message in
 				self.handleViewDelegateMessage(message)
@@ -225,13 +211,7 @@ public class CardSession {
             })
             .store(in: &connectedTagSubscription)
         
-//        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
-//            viewDelegate.showScanUI(session: self) {
-//                onSessionStarted(self, TangemSdkError.userCancelled)
-//            }
-//        } else {
 		start()
-//        }
     }
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
@@ -478,6 +458,10 @@ public class CardSession {
 				viewDelegate.hideUI(nil)
 			case .showUndefinedSpinner:
 				viewDelegate.showUndefinedSpinner()
+			case .tagLost:
+				viewDelegate.tagLost()
+			case .tagConnected:
+				viewDelegate.tagConnected()
 			case .empty:
 				print("Empty view delegate message, nothing to do")
 			}

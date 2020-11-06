@@ -43,7 +43,7 @@
 "pin_enter" = "Saisir %@";
 "pin_confirm_error_format" = "Codes ne correspondent pas";
 "pin_change_code_format" = "Modifier %@";
-"pin_change_new_code_format" = "Nouveau $@";
+"pin_change_new_code_format" = "Nouveau %@";
 "pin_change_current_code_format" = "Actuel %@";
 "pin_set_code_confirm_format" = "Confirmer %@";
 
@@ -124,6 +124,16 @@
 "how_to_unknown_move_card" = "Pour déterminer où se trouve votre antenne NFC, déplacez la carte de haut en bas jusqu'à ce que la confirmation soit reçue";
 "how_to_unknown_nothing_happened" = "Aucun résultat? Essayez de retirer la carte de votre téléphone, puis de la reappuyer";
 "how_to_unknown_detected" = "La connexion a été établie. Votre antenne NFC se trouve ici";
+"how_to_nfc_detected" = "Vous venez de trouver l’emplacement de votre antenne NFC. Veuillez le mémoriser";
+"how_to_known_here_how_to_use" = "Ici est expliqué comment utiliser les cartes Tangem avec (le téléphone)";
+"how_to_known_antenna_is_here" = "Votre antenne NFC est ici";
+"how_to_known_tap_card_to_the_back" = "Posez votre carte sur le dos du téléphone";
+"how_to_known_tap_card_to_the_front" = "Posez votre carte sur l’écran du téléphone";
+"how_to_button" = "Consigne";
+"how_to_got_it_button" = "OK, j’ai compris !";
+"how_to_try_other_way_button" = "Ceci ne fonctionne toujours pas";
+"how_to_show_again_button" = "Montrer encore une fois";
+
 
 "tap_in_button" = "Connecter";
 "tap_in_known_info_message" = "Tenez fermement la carte près du téléphone comme indiqué sur l'image lorsque vous l'utilisez pour vous connecter";
@@ -131,5 +141,5 @@
 "tap_in_unknown_info_message" = "Regardez la vidéo pour découvrir comment accéder et connecter le NFC de votre téléphone à la carte";
 "tap_in_unknown_how_to_tap_in_button" = "Comment vous connecter";
 
-"pin_change_new_code_confirm_format" = "Nouveau $@ (Confirmer)";
+"pin_change_new_code_confirm_format" = "Nouveau %@ (Confirmer)";
 "pin_set_code_format" = "Saisir %@";

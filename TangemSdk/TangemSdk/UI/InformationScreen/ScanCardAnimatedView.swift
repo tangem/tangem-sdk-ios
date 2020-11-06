@@ -47,11 +47,13 @@ class ScanCardAnimatedView: UIView {
 		view.sizeToFit()
 		return view
 	}()
+	
 	private lazy var phoneOutlineImageView: UIImageView = {
 		let view = UIImageView(image: UIImage(named: "phone_outline", in: .sdkBundle, with: .none))
 		view.sizeToFit()
 		return view
 	}()
+	
 	private lazy var handImageView: UIImageView = {
 		let view = UIImageView(image: handImage)
 		view.sizeToFit()
@@ -59,21 +61,27 @@ class ScanCardAnimatedView: UIView {
 		handHiddenSize = handDefaultSize * hiddenHandScale
 		return view
 	}()
+	
 	private lazy var pulseView: UIView = {
 		let view = UIView(frame: CGRect(origin: phoneOutlineImageView.frame.origin,
 										size: CGSize(width: phoneOutlineImageView.bounds.width, height: 20)))
 		view.clipsToBounds = false
 		return view
 	}()
+	
 	private lazy var hiddenHandTransform: CATransform3D = { CATransform3DMakeScale(hiddenHandScale, hiddenHandScale, 1) }()
 	
 	private var phonePosition: CGPoint {
 		handEndPos + CGPoint(x: handDefaultSize.width - phoneOffset.x - phoneOutlineImageView.bounds.size.width,
 							 y: phoneOffset.y)
 	}
+	
 	private var isNeedLayoutUpdate: Bool {
 		phonePosition != phoneOutlineImageView.frame.origin
 	}
+	
+	/// If true checkmark animation will be added to anim sequence
+	private let isWithCheckmark: Bool = false
 	
 	private let pulseLayerName = "pulse_layer"
 	private let checkLayerName = "check_layer"
@@ -114,7 +122,9 @@ class ScanCardAnimatedView: UIView {
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
+		
 		guard isNeedLayoutUpdate else { return }
+		
 		setupItems()
 		handAppearAnim = nil
 		handDisappearAnim = nil
@@ -123,9 +133,11 @@ class ScanCardAnimatedView: UIView {
 	
 	func startAnimation() {
 		if isAnimating { return }
+		
 		if handAppearAnim == nil {
 			fireAppearAnim()
 		}
+		
 		handImageView.layer.add(handAppearAnim!, forKey: moveAnimKey)
 	}
 	
@@ -148,6 +160,7 @@ class ScanCardAnimatedView: UIView {
 		if pulseView.superview == nil {
 			insertSubview(pulseView, aboveSubview: handImageView)
 		}
+		
 		if pulseView.layer.sublayers?.contains(where: { $0.name == pulseLayerName }) ?? false {
 			return
 		}
@@ -178,12 +191,15 @@ class ScanCardAnimatedView: UIView {
 		if handImageView.superview == nil {
 			addSubview(handImageView)
 		}
+		
 		if phoneBackImageView.superview == nil {
 			addSubview(phoneBackImageView)
 		}
+		
 		if phoneOutlineImageView.superview == nil {
 			addSubview(phoneOutlineImageView)
 		}
+		
 		setImagesColor()
 	}
 	
@@ -202,6 +218,8 @@ class ScanCardAnimatedView: UIView {
 	private func layoutPhone() {
 		phoneOutlineImageView.frame.origin = phonePosition
 		phoneBackImageView.center = phoneOutlineImageView.center
+		
+		guard isWithCheckmark else { return }
 		
 		let circleSize = CGSize(width: 45, height: 45)
 		func checkmarkPos() -> CGPoint {
@@ -277,6 +295,7 @@ class ScanCardAnimatedView: UIView {
 		handImageView.layer.removeAllAnimations()
 		let points = handAnimPoints()
 		let group: CAAnimationGroup
+		
 		if let anim = handAppearAnim {
 			group = anim
 		} else {
@@ -292,6 +311,7 @@ class ScanCardAnimatedView: UIView {
 		handImageView.layer.removeAllAnimations()
 		let points = handAnimPoints()
 		let group: CAAnimationGroup
+		
 		if let anim = handDisappearAnim {
 			group = anim
 		} else {
@@ -317,6 +337,7 @@ class ScanCardAnimatedView: UIView {
 			let circleLayer = checklayer.sublayer(with: checkmarkCircleLayerName),
 			let checkmarkLayer = checklayer.sublayer(with: checkmarkLayerName) as? CAShapeLayer
 		else { return }
+		
 		circleLayer.removeAllAnimations()
 		checkmarkLayer.removeAllAnimations()
 		let opacityAnim = CAKeyframeAnimation(keyPath: AnimKeyPaths.opacity, values: [0, 1], keyTimes: [0, 1], reversed: isDisappearing, duration: 0.3)
@@ -416,12 +437,15 @@ extension ScanCardAnimatedView: CAAnimationDelegate {
 	func animationDidStart(_ anim: CAAnimation) {
 		isAnimating = true
 	}
+	
 	func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
 		isAnimating = false
+		
 		guard
 			flag,
 			let type = anim.value(forKey: animTypeKey) as? AnimType
 		else { return }
+		
 		let action: () -> Void
 		let delay: TimeInterval
 		switch type {
@@ -429,8 +453,12 @@ extension ScanCardAnimatedView: CAAnimationDelegate {
 			action = { self.firePulseAnim() }
 			delay = 0
 		case .pulse:
-			action = { self.fireDisappearAnim() }
-//			action = { self.fireCheckmarkAnim(isDisappearing: false) }
+			if isWithCheckmark {
+				action = { self.fireCheckmarkAnim(isDisappearing: false) }
+			} else {
+				action = { self.fireDisappearAnim() }
+			}
+			
 			delay = 0.5
 		case .handDisappear:
 			action = { self.fireAppearAnim() }

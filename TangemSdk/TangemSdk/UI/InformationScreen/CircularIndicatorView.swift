@@ -8,7 +8,12 @@
 
 import UIKit
 
-class CircularIndicatorView: UIView {
+public enum IndicatorMode {
+	case sd
+	case percent
+}
+
+public class CircularIndicatorView: UIView {
 	
 	var currentPercentValue: Int = 0
 	var totalValue: Float = 0
@@ -21,6 +26,9 @@ class CircularIndicatorView: UIView {
 	private var boundsCenter: CGPoint {
 		CGPoint(x: bounds.maxX / 2.0, y: bounds.maxY / 2.0)
 	}
+	private var radius: CGFloat {
+		bounds.width > bounds.height ? bounds.height / 2 : bounds.width / 2
+	}
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -32,9 +40,11 @@ class CircularIndicatorView: UIView {
 		setupItems()
 	}
 	
-	override func layoutSubviews() {
+	public override func layoutSubviews() {
 		super.layoutSubviews()
+		
 		if trackLayer.position == boundsCenter { return }
+		
 		setupItems()
 	}
 	
@@ -48,6 +58,7 @@ class CircularIndicatorView: UIView {
 	
 	public func tickSD(remainingValue: Float) {
 		let basicAnimation = CABasicAnimation(keyPath: AnimKeyPaths.strokeEnd)
+		
 		if isClockwise {
 			basicAnimation.fromValue = (totalValue - remainingValue) / totalValue
 			basicAnimation.toValue = (totalValue - remainingValue + 1.0) / totalValue
@@ -55,6 +66,7 @@ class CircularIndicatorView: UIView {
 			basicAnimation.fromValue = remainingValue / totalValue
 			basicAnimation.toValue = (remainingValue - 1.0) / totalValue
 		}
+		
 		basicAnimation.duration = 0.9
 		basicAnimation.fillMode = CAMediaTimingFillMode.forwards
 		basicAnimation.isRemovedOnCompletion = false
@@ -78,7 +90,7 @@ class CircularIndicatorView: UIView {
 		let center = boundsCenter
 		// create my track layer
 		
-		let circularPath = UIBezierPath(arcCenter: center, radius: 92, startAngle: -CGFloat.pi / 2, endAngle: 1.5 * CGFloat.pi, clockwise: true)
+		let circularPath = UIBezierPath(arcCenter: center, radius: radius, startAngle: -CGFloat.pi / 2, endAngle: 1.5 * CGFloat.pi, clockwise: true)
 		trackLayer.path = circularPath.cgPath
 		trackLayer.strokeColor = UIColor(red: 215.0/255.0, green: 229.0/255.0, blue: 247.0/255.0, alpha: 1.0).cgColor
 		trackLayer.lineWidth = 6

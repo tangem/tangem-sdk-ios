@@ -25,7 +25,7 @@ public protocol CardReader: class {
     @available(iOS 13.0, *)
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> {get}
 	@available (iOS 13.0, *)
-	var messages: CurrentValueSubject<ViewDelegateMessage, Never> { get }
+	var uiMessages: CurrentValueSubject<ViewDelegateMessage, Never> { get }
     func startSession(with message: String?)
     func resumeSession()
     func stopSession(with errorMessage: String?)

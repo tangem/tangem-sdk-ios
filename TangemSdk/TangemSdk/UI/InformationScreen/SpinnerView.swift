@@ -10,21 +10,15 @@ import UIKit
 
 class SpinnerView: UIView {
 	
+	private(set) var shouldAnimateSpinner = false
+	
 	private var radius: CGFloat {
 		return frame.width > frame.height ? frame.height / 2 : frame.width / 2
 	}
 	
-	private(set) var shouldAnimateSpinner = false
-	
 	private var isSpinnerIdle = true
 	private var stroke: CGFloat = 6
 	private var padding: CGFloat = 0
-	
-	//MARK: - Drawing
-	override func draw(_ rect: CGRect) {
-		super.draw(rect)
-		drawSpinner(outerRadius: radius - padding, innerRadius: radius - stroke - padding, resolution: 1)
-	}
 	
 	init(frame: CGRect, lineHeight: CGFloat) {
 		super.init(frame: frame)
@@ -33,6 +27,11 @@ class SpinnerView: UIView {
 	}
 	
 	required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+	
+	override func draw(_ rect: CGRect) {
+		super.draw(rect)
+		drawSpinner(outerRadius: radius - padding, innerRadius: radius - stroke - padding, resolution: 1)
+	}
 	
 	func startAnimation() {
 		shouldAnimateSpinner = true
@@ -45,7 +44,9 @@ class SpinnerView: UIView {
 	
 	private func animateRotation() {
 		guard (alpha > 0 || shouldAnimateSpinner), isSpinnerIdle else { return }
+		
 		isSpinnerIdle = false
+		
 		UIView.animate(withDuration: 0.5, delay: 0, options: [.curveLinear], animations: {
 			self.transform = self.transform.rotated(by: .pi)
 		}, completion: { _ in
@@ -54,11 +55,10 @@ class SpinnerView: UIView {
 		})
 	}
 	
-	/*
-	Resolution should be between 0.1 and 1
-	*/
+	/// Resolution should be between 0.1 and 1
 	private func drawSpinner(outerRadius: CGFloat, innerRadius: CGFloat, resolution: Float) {
 		guard let context = UIGraphicsGetCurrentContext() else { return }
+		
 		context.saveGState()
 		context.translateBy(x: self.bounds.midX, y: self.bounds.midY) //Move context to center
 		

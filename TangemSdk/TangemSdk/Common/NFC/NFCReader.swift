@@ -25,7 +25,7 @@ final class NFCReader: NSObject {
     var oldCardSignCompatibilityMode = true
     
     private(set) var tag: CurrentValueSubject<NFCTagType?, TangemSdkError> = .init(nil)
-	private(set) var uiMessages: CurrentValueSubject<ViewDelegateMessage, Never> = .init(.empty)
+	private(set) var isSessionReady: CurrentValueSubject<Bool, Never> = .init(false)
     let enableSessionInvalidateByTimer = true
     
     private let loggingEnabled = true
@@ -89,10 +89,7 @@ final class NFCReader: NSObject {
 }
 
 @available(iOS 13.0, *)
-extension NFCReader: CardReader {    
-    var isReady: Bool {
-        return readerSession?.isReady ?? false
-    }
+extension NFCReader: CardReader {
     
     var alertMessage: String {
         get { return _alertMessage ?? "" }
@@ -145,7 +142,6 @@ extension NFCReader: CardReader {
         readerSessionError = nil
         connectedTag = nil
         log("Restart polling")
-		uiMessages.send(.tagLost)
         tag.send(nil)
         session.restartPolling()
     }
@@ -167,7 +163,6 @@ extension NFCReader: CardReader {
         }
         
         guard let connectedTag = connectedTag else {
-			uiMessages.send(.tagLost)
             completion(.failure(.tagLost))
             return
         }
@@ -240,7 +235,6 @@ extension NFCReader: CardReader {
         }
         
         guard let connectedTag = connectedTag else {
-			uiMessages.send(.tagLost)
             completion(.failure(.tagLost))
             return
         }
@@ -280,8 +274,8 @@ extension NFCReader: CardReader {
                         }
                         self.readSlix2Tag(completion: completion)
                     } else {
-                        let jonedData = Data((data1 + data2).joined())
-                        if let responseApdu = ResponseApdu(slix2Data: jonedData)  {
+                        let joinedData = Data((data1 + data2).joined())
+                        if let responseApdu = ResponseApdu(slix2Data: joinedData)  {
                             completion(.success(responseApdu))
                         } else {
                             if self.currentRetryCount > 0 {
@@ -305,24 +299,13 @@ extension NFCReader: CardReader {
 extension NFCReader: NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {
 		log("Tag reader session did becode active")
-		uiMessages.send(.systemScanUiDisplayed)
+		isSessionReady.send(true)
         nfcStuckTimer.stop()
         sessionTimer.start()
-		
-		NotificationCenter
-			.default
-			.publisher(for: UIApplication.didBecomeActiveNotification)
-			.sink { [weak self] value in
-				self?.log("become active")
-				if self?.isReady ?? false {
-					self?.uiMessages.send(.systemScanUiDisappeared)
-				}
-			}
-			.store(in: &bag)
 	}
     
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
-		log("Tage reader session did invalidate with error: \(error)")
+		log("Tag reader session did invalidate with error: \(error)")
         cancelled = true
         readerSession = nil
         stopTimers()
@@ -333,6 +316,7 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         }
         tag.send(completion: .failure(readerSessionError!))
         tag = .init(nil)
+		isSessionReady.send(false)
 		bag.removeAll()
     }
     
@@ -351,7 +335,6 @@ extension NFCReader: NFCTagReaderSessionDelegate {
             self.connectedTag = nfcTag
             let tagType = self.getTagType(nfcTag)
             self.tag.send(tagType)
-			self.uiMessages.send(.tagConnected)
             
             if case .tag = tagType {
                 self.idleTimer.start()

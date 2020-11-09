@@ -39,16 +39,6 @@ public struct Message: Codable {
     }
 }
 
-/// Messages that NFC reader sending to CardSession to notify user about progress of interacting with card
-public enum ViewDelegateMessage {
-	case empty
-	case systemScanUiDisplayed
-	case systemScanUiDisappeared
-	case hideUI
-	case showUndefinedSpinner
-	case tagLost, tagConnected
-}
-
 
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
@@ -232,6 +222,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
 		print("Session started")
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			self.showInfoScreen()
+		}
         startHapticsEngine()
     }
     

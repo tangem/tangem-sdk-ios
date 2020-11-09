@@ -61,7 +61,7 @@ public class CardSession {
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
-    private var connectedTagSubscription: [AnyCancellable] = []
+    private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
     private var pin2Required = false
@@ -98,7 +98,7 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive && !reader.isReady else {
+		guard state == .inactive && !reader.isSessionReady.value else {
             completion(.failure(.busy))
             return
         }
@@ -165,35 +165,38 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive && !reader.isReady else {
+		guard state == .inactive && !reader.isSessionReady.value else {
             onSessionStarted(self, .busy)
             return
         }
         
         state = .active
-        viewDelegate.sessionStarted()
         
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
+			.debounce(for: 0.3, scheduler: RunLoop.main)
+			.removeDuplicates()
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.connectedTag = tag
+						self.viewDelegate.tagConnected()
                     } else {
                         self.connectedTag = nil
+						self.viewDelegate.tagLost()
                         self.environment.encryptionKey = nil
                     }
             })
-            .store(in: &connectedTagSubscription)
-		
-		reader.uiMessages
+            .store(in: &nfcReaderSubscriptions)
+
+		reader.isSessionReady
 			.dropFirst()
-			.debounce(for: 0.3, scheduler: RunLoop.main)
-			.removeDuplicates()
-			.sink(receiveValue: { [unowned self] message in
-				self.handleViewDelegateMessage(message)
+			.sink(receiveValue: { [unowned self] isReady in
+				isReady ?
+					self.viewDelegate.sessionStarted() :
+					self.viewDelegate.sessionStopped()
 			})
-			.store(in: &connectedTagSubscription)
+			.store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .compactMap{ $0 }
@@ -203,7 +206,6 @@ public class CardSession {
                     self.stop(error: error)
                     onSessionStarted(self, error)
                 }}, receiveValue: { [unowned self] tag in
-                    self.viewDelegate.sessionStarted()
                     if case .tag = tag, self.needPreflightRead {
                         self.preflightCheck(onSessionStarted)
                     } else {
@@ -211,7 +213,7 @@ public class CardSession {
                         onSessionStarted(self, nil)
                     }
             })
-            .store(in: &connectedTagSubscription)
+            .store(in: &nfcReaderSubscriptions)
         
 		start()
     }
@@ -222,7 +224,7 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        connectedTagSubscription = []
+        nfcReaderSubscriptions = []
         sendSubscription = []
         viewDelegate.sessionStopped()
         
@@ -238,7 +240,7 @@ public class CardSession {
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        connectedTagSubscription = []
+        nfcReaderSubscriptions = []
         sendSubscription = []
         viewDelegate.sessionStopped()
         state = .inactive
@@ -336,7 +338,7 @@ public class CardSession {
                 if let wrongCardError = wrongCardError {
                     self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isReady else {
+						guard self.reader.isSessionReady.value else {
                             onSessionStarted(self, .userCancelled)
                             self.stop()
                             return
@@ -448,25 +450,6 @@ public class CardSession {
             }
         }
     }
-	
-	func handleViewDelegateMessage(_ message: ViewDelegateMessage) {
-		print("Receive view delegate message:", message)
-		let viewDelegate = self.viewDelegate
-		switch message {
-		case .systemScanUiDisplayed:
-			viewDelegate.showInfoScreen()
-		case .systemScanUiDisappeared, .hideUI:
-			viewDelegate.hideUI(nil)
-		case .showUndefinedSpinner:
-			viewDelegate.showUndefinedSpinner()
-		case .tagLost:
-			viewDelegate.tagLost()
-		case .tagConnected:
-			viewDelegate.tagConnected()
-		case .empty:
-			print("Empty view delegate message, nothing to do")
-		}
-	}
 }
 
 //ed25519 from cryptokit?

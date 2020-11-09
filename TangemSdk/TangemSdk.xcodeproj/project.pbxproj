@@ -366,6 +366,7 @@
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DD127A124F3D1A0009ACA29 /* JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonTests.swift; sourceTree = "<group>"; };
+		5DD1D62D25557E7F007910EF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
 		5DD97B3824E143CF0038E944 /* ChangePinTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePinTask.swift; sourceTree = "<group>"; };
@@ -1071,6 +1072,7 @@
 				Base,
 				fr,
 				de,
+				it,
 			);
 			mainGroup = 5DA80C90231D247A00A50A10;
 			packageReferences = (
@@ -1274,6 +1276,7 @@
 				5D6A92D92344E2D700158457 /* en */,
 				5D06DF6823D8A1EE0041DD2B /* fr */,
 				5D011A252530BC2F00758010 /* de */,
+				5DD1D62D25557E7F007910EF /* it */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

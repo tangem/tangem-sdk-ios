@@ -58,7 +58,7 @@ public final class TangemSdk {
     ///   - config: Allows to change a number of parameters for communication with Tangem cards.
     ///   Do not change the default values unless you know what you are doing.
     public init(cardReader: CardReader? = nil, viewDelegate: SessionViewDelegate? = nil, config: Config = Config()) {
-        let reader = cardReader ?? CardReaderFactory().createDefaultReader()
+        let reader = cardReader ?? NFCReader()
         self.reader = reader
         self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader)
         self.config = config

@@ -61,7 +61,7 @@ public class CardSession {
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
-    private var connectedTagSubscription: [AnyCancellable] = []
+    private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
     private var pin2Required = false
@@ -98,7 +98,7 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive && !reader.isReady else {
+		guard state == .inactive && !reader.isSessionReady.value else {
             completion(.failure(.busy))
             return
         }
@@ -165,27 +165,26 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive && !reader.isReady else {
+		guard state == .inactive && !reader.isSessionReady.value else {
             onSessionStarted(self, .busy)
             return
         }
         
         state = .active
-        viewDelegate.sessionStarted()
-        
-        reader.tag //Subscription for dispatch tag lost/connected events into viewdelegate
-            .dropFirst()
-            .debounce(for: 0.3, scheduler: RunLoop.main)
-            .removeDuplicates()
-            .sink(receiveCompletion: {_ in},
-                  receiveValue: {[unowned self] tag in
-                    if tag != nil {
-                        self.viewDelegate.tagConnected()
-                    } else {
-                        self.viewDelegate.tagLost()
-                    }
-            })
-            .store(in: &connectedTagSubscription)
+		
+		reader.tag
+			.dropFirst()
+			.debounce(for: 0.3, scheduler: RunLoop.main)
+			.removeDuplicates()
+			.sink(receiveCompletion: { _ in },
+				  receiveValue: { [unowned self] tag in
+					if tag != nil {
+						self.viewDelegate.tagConnected()
+					} else {
+						self.viewDelegate.tagLost()
+					}
+				  })
+			.store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
@@ -198,7 +197,16 @@ public class CardSession {
                         self.environment.encryptionKey = nil
                     }
             })
-            .store(in: &connectedTagSubscription)
+            .store(in: &nfcReaderSubscriptions)
+
+		reader.isSessionReady
+			.dropFirst()
+			.sink(receiveValue: { [unowned self] isReady in
+				isReady ?
+					self.viewDelegate.sessionStarted() :
+					self.viewDelegate.sessionStopped()
+			})
+			.store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .compactMap{ $0 }
@@ -208,7 +216,6 @@ public class CardSession {
                     self.stop(error: error)
                     onSessionStarted(self, error)
                 }}, receiveValue: { [unowned self] tag in
-                    self.viewDelegate.sessionStarted()
                     if case .tag = tag, self.needPreflightRead {
                         self.preflightCheck(onSessionStarted)
                     } else {
@@ -216,15 +223,9 @@ public class CardSession {
                         onSessionStarted(self, nil)
                     }
             })
-            .store(in: &connectedTagSubscription)
+            .store(in: &nfcReaderSubscriptions)
         
-        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
-            viewDelegate.showScanUI(session: self) {
-                onSessionStarted(self, TangemSdkError.userCancelled)
-            }
-        } else {
-            start()
-        }
+		start()
     }
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
@@ -233,7 +234,7 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        connectedTagSubscription = []
+        nfcReaderSubscriptions = []
         sendSubscription = []
         viewDelegate.sessionStopped()
         
@@ -249,7 +250,7 @@ public class CardSession {
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        connectedTagSubscription = []
+        nfcReaderSubscriptions = []
         sendSubscription = []
         viewDelegate.sessionStopped()
         state = .inactive
@@ -347,7 +348,7 @@ public class CardSession {
                 if let wrongCardError = wrongCardError {
                     self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isReady else {
+						guard self.reader.isSessionReady.value else {
                             onSessionStarted(self, .userCancelled)
                             self.stop()
                             return

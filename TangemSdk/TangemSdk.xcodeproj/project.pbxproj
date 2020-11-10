@@ -74,7 +74,6 @@
 		5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */; };
 		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
 		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
-		5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F6643235F30B5008149B1 /* NDEFReader.swift */; };
 		5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */; };
 		5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F378247EC275005E7A35 /* secp256k1_recovery.h */; };
 		5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */; };
@@ -164,10 +163,6 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
-		5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */; };
-		5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */; };
-		5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40024B2F6C6007B95AF /* Scan.storyboard */; };
-		5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */; };
 		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
 		5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40724B3307F007B95AF /* Colors.xcassets */; };
 		5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40924B34799007B95AF /* SetPinViewController.swift */; };
@@ -185,6 +180,7 @@
 		B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileHashHelper.swift */; };
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
+		B03BC4982551726300A8F1C4 /* CircularIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */; };
 		B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BA253442AD0056A887 /* DeleteFileCommand.swift */; };
 		B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BE2534570B0056A887 /* DeleteFilesTask.swift */; };
 		B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */; };
@@ -195,7 +191,17 @@
 		B0800F96252C6867007E04EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F95252C6867007E04EE /* File.swift */; };
 		B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */; };
 		B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B091C0F7253EF3EE003D57E7 /* FileHashData.swift */; };
+		B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */; };
+		B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */; };
+		B0AAEBF425514DFA00CF52BC /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBF325514DFA00CF52BC /* SpinnerView.swift */; };
 		B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */; };
+		B0C5A2A0254DA284007A0932 /* ScanCardAnimatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */; };
+		B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */; };
+		B0C6B4C0254C45B800C0A1E1 /* InformationScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */; };
+		B0C6B4C4254C45CC00C0A1E1 /* InformationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4C3254C45CC00C0A1E1 /* InformationScreen.swift */; };
+		B0F9F611255032C5001CA52D /* CustomInfixOpeators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F9F60E255032C5001CA52D /* CustomInfixOpeators.swift */; };
+		B0F9F612255032C5001CA52D /* CGPoint+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F9F60F255032C5001CA52D /* CGPoint+.swift */; };
+		B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F9F610255032C5001CA52D /* CGSize+.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,7 +285,6 @@
 		5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkButton.swift; sourceTree = "<group>"; };
 		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
-		5D7F6643235F30B5008149B1 /* NDEFReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NDEFReader.swift; sourceTree = "<group>"; };
 		5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
 		5D83F378247EC275005E7A35 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
 		5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
@@ -373,10 +378,6 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageService.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
-		5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CircularIndicator.storyboard; sourceTree = "<group>"; };
-		5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorViewController.swift; sourceTree = "<group>"; };
-		5DFCE40024B2F6C6007B95AF /* Scan.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Scan.storyboard; sourceTree = "<group>"; };
-		5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		5DFCE40724B3307F007B95AF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		5DFCE40924B34799007B95AF /* SetPinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinViewController.swift; sourceTree = "<group>"; };
@@ -394,6 +395,7 @@
 		B01B9A562530871800ECB6BF /* FileHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashHelper.swift; sourceTree = "<group>"; };
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
+		B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorView.swift; sourceTree = "<group>"; };
 		B06947BA253442AD0056A887 /* DeleteFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileCommand.swift; sourceTree = "<group>"; };
 		B06947BE2534570B0056A887 /* DeleteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFilesTask.swift; sourceTree = "<group>"; };
 		B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFileSettingsCommand.swift; sourceTree = "<group>"; };
@@ -404,7 +406,17 @@
 		B0800F95252C6867007E04EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFilesTask.swift; sourceTree = "<group>"; };
 		B091C0F7253EF3EE003D57E7 /* FileHashData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashData.swift; sourceTree = "<group>"; };
+		B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAAnimations+.swift"; sourceTree = "<group>"; };
+		B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimKeyPaths.swift; sourceTree = "<group>"; };
+		B0AAEBF325514DFA00CF52BC /* SpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
 		B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteAllFilesTask.swift; sourceTree = "<group>"; };
+		B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCardAnimatedView.swift; sourceTree = "<group>"; };
+		B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
+		B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InformationScreen.storyboard; sourceTree = "<group>"; };
+		B0C6B4C3254C45CC00C0A1E1 /* InformationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationScreen.swift; sourceTree = "<group>"; };
+		B0F9F60E255032C5001CA52D /* CustomInfixOpeators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomInfixOpeators.swift; sourceTree = "<group>"; };
+		B0F9F60F255032C5001CA52D /* CGPoint+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+.swift"; sourceTree = "<group>"; };
+		B0F9F610255032C5001CA52D /* CGSize+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGSize+.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -558,11 +570,12 @@
 		5D7F4E3F248FCEFB00A1700D /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				5DFCE3FF24B2F618007B95AF /* Scan */,
-				5DFCE3FA24AB89F5007B95AF /* Indicator */,
+				B0C6B4BE254C459600C0A1E1 /* InformationScreen */,
+				B0C6B4B3254C1CFF00C0A1E1 /* Transitions */,
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
 				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
 				5D7F4E44248FCF8300A1700D /* Pin */,
+				B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -816,24 +829,6 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		5DFCE3FA24AB89F5007B95AF /* Indicator */ = {
-			isa = PBXGroup;
-			children = (
-				5DFCE3FB24AB8A0F007B95AF /* CircularIndicator.storyboard */,
-				5DFCE3FD24AB8A37007B95AF /* CircularIndicatorViewController.swift */,
-			);
-			path = Indicator;
-			sourceTree = "<group>";
-		};
-		5DFCE3FF24B2F618007B95AF /* Scan */ = {
-			isa = PBXGroup;
-			children = (
-				5DFCE40024B2F6C6007B95AF /* Scan.storyboard */,
-				5DFCE40224B2F6F1007B95AF /* ScanViewController.swift */,
-			);
-			path = Scan;
-			sourceTree = "<group>";
-		};
 		5DFCE40624B33062007B95AF /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -860,7 +855,6 @@
 			children = (
 				5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */,
 				5DFFC49E233B9D69004964E8 /* NFCReader.swift */,
-				5D7F6643235F30B5008149B1 /* NDEFReader.swift */,
 			);
 			path = NFC;
 			sourceTree = "<group>";
@@ -868,6 +862,9 @@
 		5DFFC4A0233BA5D2004964E8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B0F9F60F255032C5001CA52D /* CGPoint+.swift */,
+				B0F9F610255032C5001CA52D /* CGSize+.swift */,
+				B0F9F60E255032C5001CA52D /* CustomInfixOpeators.swift */,
 				5D7F4E51249006DB00A1700D /* Bundle+.swift */,
 				5DFFC4A1233BA5E0004964E8 /* Byte+.swift */,
 				5D58B4BE233E4C6B00F33764 /* InputStream+.swift */,
@@ -881,6 +878,7 @@
 				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
 				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
 				B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */,
+				B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -919,6 +917,26 @@
 				B091C0F7253EF3EE003D57E7 /* FileHashData.swift */,
 			);
 			path = Files;
+			sourceTree = "<group>";
+		};
+		B0C6B4B3254C1CFF00C0A1E1 /* Transitions */ = {
+			isa = PBXGroup;
+			children = (
+				B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */,
+			);
+			path = Transitions;
+			sourceTree = "<group>";
+		};
+		B0C6B4BE254C459600C0A1E1 /* InformationScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */,
+				B0C6B4C3254C45CC00C0A1E1 /* InformationScreen.swift */,
+				B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */,
+				B0AAEBF325514DFA00CF52BC /* SpinnerView.swift */,
+				B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */,
+			);
+			path = InformationScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1075,10 +1093,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */,
-				5DFCE3FC24AB8A0F007B95AF /* CircularIndicator.storyboard in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
+				B0C6B4C0254C45B800C0A1E1 /* InformationScreen.storyboard in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
-				5DFCE40124B2F6C7007B95AF /* Scan.storyboard in Resources */,
 				5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */,
 				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
 				5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */,
@@ -1124,10 +1141,12 @@
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
 				5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */,
+				B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */,
 				5D273A06234F270200ACDA11 /* sha512.c in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
+				B0F9F612255032C5001CA52D /* CGPoint+.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */,
@@ -1138,6 +1157,7 @@
 				5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */,
 				5D273A0B234F270200ACDA11 /* Error.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
+				B0C6B4C4254C45CC00C0A1E1 /* InformationScreen.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
@@ -1157,6 +1177,7 @@
 				5D2739FE234F270200ACDA11 /* sign.c in Sources */,
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
+				B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				5D273A04234F270200ACDA11 /* keypair.c in Sources */,
@@ -1179,7 +1200,6 @@
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
 				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
-				5D7F6644235F30B5008149B1 /* NDEFReader.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
@@ -1188,35 +1208,39 @@
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
+				B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */,
 				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,
-				5DFCE40324B2F6F1007B95AF /* ScanViewController.swift in Sources */,
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D273A00234F270200ACDA11 /* key_exchange.c in Sources */,
+				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,
+				B03BC4982551726300A8F1C4 /* CircularIndicatorView.swift in Sources */,
+				B0C5A2A0254DA284007A0932 /* ScanCardAnimatedView.swift in Sources */,
 				5DA3A2EF251CA507009A8E08 /* CheckPinCommand.swift in Sources */,
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
+				B0F9F611255032C5001CA52D /* CustomInfixOpeators.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
+				B0AAEBF425514DFA00CF52BC /* SpinnerView.swift in Sources */,
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,
-				5DFCE3FE24AB8A37007B95AF /* CircularIndicatorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

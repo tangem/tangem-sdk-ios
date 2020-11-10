@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol NetworkEndpoint {
     var url: URL {get}
@@ -48,6 +49,12 @@ public class NetworkService {
         requestData(request: request, completion: completion)
     }
     
+    @available(iOS 13.0, *)
+    public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
+        let request = prepareRequest(from: endpoint)
+        return requestDataPublisher(request: request)
+    }
+    
     private func requestData(request: URLRequest, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
         print("request to: \(request.url!)")
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -75,6 +82,33 @@ public class NetworkService {
             print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
             completion(.success(data))
         }.resume()
+    }
+    
+    @available(iOS 13.0, *)
+    private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
+        print("request to: \(request.url!)")
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .subscribe(on: DispatchQueue.global())
+            .tryMap { data, response -> Data in
+                guard let response = response as? HTTPURLResponse else {
+                    throw NetworkServiceError.emptyResponse
+                }
+                
+                guard (200 ..< 300) ~= response.statusCode else {
+                    throw NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
+                }
+                
+                print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+                return data
+            }
+            .mapError { error in
+                if let nse = error as? NetworkServiceError {
+                    return nse
+                } else {
+                    return NetworkServiceError.urlSessionError(error)
+                }
+            }
+            .eraseToAnyPublisher()
     }
     
     private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest {

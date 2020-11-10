@@ -171,19 +171,29 @@ public class CardSession {
         }
         
         state = .active
+		
+		reader.tag
+			.dropFirst()
+			.debounce(for: 0.3, scheduler: RunLoop.main)
+			.removeDuplicates()
+			.sink(receiveCompletion: { _ in },
+				  receiveValue: { [unowned self] tag in
+					if tag != nil {
+						self.viewDelegate.tagConnected()
+					} else {
+						self.viewDelegate.tagLost()
+					}
+				  })
+			.store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
-			.debounce(for: 0.3, scheduler: RunLoop.main)
-			.removeDuplicates()
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.connectedTag = tag
-						self.viewDelegate.tagConnected()
                     } else {
                         self.connectedTag = nil
-						self.viewDelegate.tagLost()
                         self.environment.encryptionKey = nil
                     }
             })

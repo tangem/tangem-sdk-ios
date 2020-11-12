@@ -119,6 +119,12 @@ public enum TlvTag: Byte {
     case expireDate = 0xD5
     case trustedAddress = 0xD6
 	
+	// MARK: - Multi-wallet
+	case walletIndex = 0x65
+	case walletsCount = 0x66
+	case walletData = 0x67
+	case walletInfo = 0x68
+	
 	// MARK: - Tlv tags for files
 	case fileIndex = 0x26
 	case fileSettings = 0x27
@@ -148,7 +154,7 @@ public enum TlvTag: Byte {
             return .cardStatus
         case .signingMethod:
             return .signingMethod
-		case .transactionOutHashSize, .legacyMode, .fileIndex, .health:
+		case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount:
             return .byte
         case .interactionMode:
             return .interactionMode

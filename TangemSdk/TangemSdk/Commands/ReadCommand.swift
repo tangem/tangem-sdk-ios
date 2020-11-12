@@ -510,8 +510,13 @@ public struct Card: ResponseCodable {
     public var isPin1Default: Bool? = nil
     /// Set by ScanTask
     public var isPin2Default: Bool? = nil
+	
+	/// Index of corresponding wallet
+	public var walletIndex: Int? = nil
+	/// Maximum number of wallets that can be created for this card
+	public var walletsCount: Int? = nil
     
-    public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil) {
+	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
         self.cardId = cardId
         self.manufacturerName = manufacturerName
         self.status = status
@@ -533,6 +538,8 @@ public struct Card: ResponseCodable {
         self.userCounter = userCounter
         self.terminalIsLinked = terminalIsLinked
         self.cardData = cardData
+		self.walletIndex = walletIndex
+		self.walletsCount = walletsCount
     }
     
     public mutating func update(with response: CreateWalletResponse) {
@@ -692,7 +699,9 @@ struct CardDeserializer {
             signedHashes: try decoder.decodeOptional(.walletSignedHashes),
             challenge: try decoder.decodeOptional(.challenge),
             salt: try decoder.decodeOptional(.salt),
-            walletSignature: try decoder.decodeOptional(.walletSignature))
+            walletSignature: try decoder.decodeOptional(.walletSignature),
+			walletIndex: try decoder.decodeOptional(.walletIndex),
+			walletsCount: try decoder.decodeOptional(.walletsCount))
         
         return card
     }

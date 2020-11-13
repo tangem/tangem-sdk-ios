@@ -10,4 +10,9 @@ import Foundation
 
 struct FirmwareConstraints {
 	static let minVersionForFiles = 3.29
+	
+	struct DeprecationVersions {
+		static let walletRemainingSignatures = 4.0
+	}
+	
 }

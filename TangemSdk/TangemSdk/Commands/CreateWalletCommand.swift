@@ -28,14 +28,18 @@ public struct CreateWalletResponse: ResponseCodable {
  * RemainingSignature is set to MaxSignatures.
  */
 @available(iOS 13.0, *)
-public final class CreateWalletCommand: Command {
+public final class CreateWalletCommand: Command, WalletPointable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
     
-    public init() {}
+	private(set) public var pointer: WalletPointer?
+	
+	public init(walletPointer: WalletIndexPointer?) {
+		pointer = walletPointer
+	}
     
     deinit {
         print ("CreateWalletCommand deinit")
@@ -79,6 +83,8 @@ public final class CreateWalletCommand: Command {
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
         }
+		
+		try pointer?.addTlvData(tlvBuilder)
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
     }

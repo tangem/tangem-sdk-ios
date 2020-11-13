@@ -195,6 +195,7 @@
 		B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */; };
 		B0AAEBF425514DFA00CF52BC /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AAEBF325514DFA00CF52BC /* SpinnerView.swift */; };
 		B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */; };
+		B0BD1C90255E58D300119D82 /* WalletPointable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BD1C8F255E58D300119D82 /* WalletPointable.swift */; };
 		B0C5A2A0254DA284007A0932 /* ScanCardAnimatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */; };
 		B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */; };
 		B0C6B4C0254C45B800C0A1E1 /* InformationScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */; };
@@ -410,6 +411,7 @@
 		B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimKeyPaths.swift; sourceTree = "<group>"; };
 		B0AAEBF325514DFA00CF52BC /* SpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
 		B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteAllFilesTask.swift; sourceTree = "<group>"; };
+		B0BD1C8F255E58D300119D82 /* WalletPointable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPointable.swift; sourceTree = "<group>"; };
 		B0C5A29F254DA284007A0932 /* ScanCardAnimatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCardAnimatedView.swift; sourceTree = "<group>"; };
 		B0C6B4B4254C1D1C00C0A1E1 /* FadeTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeTransition.swift; sourceTree = "<group>"; };
 		B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InformationScreen.storyboard; sourceTree = "<group>"; };
@@ -530,6 +532,7 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				B0BD1C8E255E58BE00119D82 /* WalletPointer */,
 				B0800F87252C4508007E04EE /* Files */,
 				5D3F77B424B9B8E700E8695B /* Verification */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
@@ -919,6 +922,14 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
+		B0BD1C8E255E58BE00119D82 /* WalletPointer */ = {
+			isa = PBXGroup;
+			children = (
+				B0BD1C8F255E58D300119D82 /* WalletPointable.swift */,
+			);
+			path = WalletPointer;
+			sourceTree = "<group>";
+		};
 		B0C6B4B3254C1CFF00C0A1E1 /* Transitions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1161,6 +1172,7 @@
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
+				B0BD1C90255E58D300119D82 /* WalletPointable.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,

@@ -11,9 +11,13 @@ import Foundation
 /// Task that allows to read Tangem card and verify its private key.
 /// It performs `CreateWallet` and `CheckWalletCommand`,  subsequently.
 @available(iOS 13.0, *)
-public final class CreateWalletTask: CardSessionRunnable {
+public final class CreateWalletTask: CardSessionRunnable, WalletPointable {
     public typealias CommandResponse = CreateWalletResponse
-    public init() {}
+	
+	public init(walletPointer: WalletIndexPointer?) {
+		self.indexPointer = walletPointer
+	}
+	
     deinit {
         print ("CreateWalletTask deinit")
     }
@@ -21,6 +25,12 @@ public final class CreateWalletTask: CardSessionRunnable {
     public var requiresPin2: Bool {
         return true
     }
+	
+	public var pointer: WalletPointer? {
+		indexPointer
+	}
+	
+	private var indexPointer: WalletIndexPointer?
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         guard let curve = session.environment.card?.curve else {
@@ -28,12 +38,12 @@ public final class CreateWalletTask: CardSessionRunnable {
             return
         }
 
-        let command = CreateWalletCommand()
+		let command = CreateWalletCommand(walletPointer: indexPointer)
         command.run(in: session) { result in
             switch result {
             case .success(let createWalletResponse):
                 if createWalletResponse.status == .loaded {
-                    CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey).run(in: session) { checkWalletResult in
+					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletPointer: self.pointer).run(in: session) { checkWalletResult in
                         switch checkWalletResult {
                         case .success(_):
                             completion(.success(createWalletResponse))

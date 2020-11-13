@@ -63,7 +63,7 @@ public struct CardConfig: ResponseCodable {
     let cardData: CardData
     let ndefRecords: [NdefRecord]
 	
-	let maxNumberOfWallets: Byte
+	let walletsCount: Byte
     
     private let Alf = "ABCDEF0123456789"
     
@@ -123,7 +123,7 @@ public struct CardConfig: ResponseCodable {
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-		maxNumberOfWallets = try values.decode(Byte.self, forKey: .maxNumberOfWallets)
+		walletsCount = try values.decode(Byte.self, forKey: .walletsCount)
     }
     
     

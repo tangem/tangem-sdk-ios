@@ -11,6 +11,9 @@ import TangemSdk
 
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
+	@IBOutlet weak var walletIndexLabel: UILabel!
+	@IBOutlet weak var walletMaxIndexLabel: UILabel!
+	@IBOutlet weak var walletIndexSlider: UISlider!
     
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -24,12 +27,25 @@ class ViewController: UIViewController {
     var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
 	var savedFiles: [File]?
 	var filesDataCounter: Int?
+	
+	var walletIndex: Int = 0
     
+	@IBAction func walletIndexUpdate(_ sender: UISlider) {
+		let step: Float = 1
+		let roundedValue = round(sender.value / step) * step
+		sender.value = roundedValue
+		walletIndex = Int(roundedValue)
+		walletIndexLabel.text = "\(walletIndex)"
+	}
+	
     @IBAction func scanCardTapped(_ sender: Any) {
-        tangemSdk.scanCard {[unowned self] result in
+		tangemSdk.scanCard(walletIndex: card == nil ? 0 : walletIndex) {[unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card
+				let maxWalletIndex = (card.walletsCount ?? 1) - 1
+				self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+				self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
                 self.logView.text = ""
                 self.log("read result: \(card)")
             case .failure(let error):
@@ -46,7 +62,7 @@ class ViewController: UIViewController {
                 return
             }
             
-            tangemSdk.sign(hashes: hashes, cardId: cardId) {[unowned self] result in
+			tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: walletIndex) {[unowned self] result in
                 switch result {
                 case .success(let signResponse):
                     self.log(signResponse)
@@ -184,7 +200,7 @@ class ViewController: UIViewController {
         }
         
         if #available(iOS 13.0, *) {
-            tangemSdk.createWallet(cardId: cardId) { [unowned self] result in
+            tangemSdk.createWallet(cardId: cardId, walletIndex: walletIndex) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -207,7 +223,7 @@ class ViewController: UIViewController {
         }
         
         if #available(iOS 13.0, *) {
-            tangemSdk.purgeWallet(cardId: cardId) { [unowned self] result in
+            tangemSdk.purgeWallet(cardId: cardId, walletIndex: walletIndex) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -294,15 +310,16 @@ class ViewController: UIViewController {
     
     @available(iOS 13.0, *)
     func chainingExample() {
+		let walletPointer = WalletIndexPointer(index: walletIndex)
         tangemSdk.startSession(cardId: nil) { session, error in
-            let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
+			let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletPointer: walletPointer)
             cmd1.run(in: session, completion: { result in
                 switch result {
                 case .success(let response1):
                     DispatchQueue.main.async {
                         self.log(response1)
                     }
-                    let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
+					let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletPointer: walletPointer)
                     cmd2.run(in: session, completion: { result in
                         switch result {
                         case .success(let response2):

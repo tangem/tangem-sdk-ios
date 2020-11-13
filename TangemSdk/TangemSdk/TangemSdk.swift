@@ -75,8 +75,8 @@ public final class TangemSdk {
      *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
      *   - completion: Returns `Swift.Result<Card,TangemSdkError>`
      */
-    public func scanCard(initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
+	public func scanCard(walletIndex: Int = 0, initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
+		startSession(with: ScanTask(walletPointer: WalletIndexPointer(index: walletIndex)), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
     
     /**
@@ -99,11 +99,12 @@ public final class TangemSdk {
     @available(iOS 13.0, *)
     public func sign(hashes: [Data],
                      cardId: String? = nil,
+					 walletIndex: Int = 0,
                      initialMessage: Message? = nil,
                      pin1: String? = nil,
                      pin2: String? = nil,
                      completion: @escaping CompletionResult<SignResponse>) {
-        startSession(with: SignCommand(hashes: hashes),
+        startSession(with: SignCommand(hashes: hashes, walletPointer: WalletIndexPointer(index: walletIndex)),
                      cardId: cardId,
                      initialMessage: initialMessage,
                      pin1: pin1,
@@ -330,11 +331,12 @@ public final class TangemSdk {
      */
     @available(iOS 13.0, *)
     public func createWallet(cardId: String? = nil,
+							 walletIndex: Int = 0,
                              initialMessage: Message? = nil,
                              pin1: String? = nil,
                              pin2: String? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-        startSession(with: CreateWalletTask(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+		startSession(with: CreateWalletTask(walletPointer: WalletIndexPointer(index: walletIndex)), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /**
@@ -351,11 +353,12 @@ public final class TangemSdk {
      */
     @available(iOS 13.0, *)
     public func purgeWallet(cardId: String? = nil,
+							walletIndex: Int = 0,
                             initialMessage: Message? = nil,
                             pin1: String? = nil,
                             pin2: String? = nil,
                             completion: @escaping CompletionResult<PurgeWalletResponse>) {
-        startSession(with: PurgeWalletCommand(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+		startSession(with: PurgeWalletCommand(walletPointer: WalletIndexPointer(index: walletIndex)), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /**

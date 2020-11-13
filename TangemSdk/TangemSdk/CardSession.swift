@@ -65,6 +65,7 @@ public class CardSession {
     
     private var needPreflightRead = true
     private var pin2Required = false
+	private var walletPointerForInteraction: WalletPointer? = nil
     
     /// Main initializer
     /// - Parameters:
@@ -149,6 +150,7 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
+		walletPointerForInteraction = (runnable as? WalletPointable)?.pointer
         
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
@@ -234,26 +236,22 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        nfcReaderSubscriptions = []
-        sendSubscription = []
-        viewDelegate.sessionStopped()
         
         if !storageService.bool(forKey: .hasSuccessfulTapIn) {
             storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
         
         environmentService.saveEnvironmentValues(environment, cardId: cardId)
-        state = .inactive
+		
+		postStopCleanUp()
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        nfcReaderSubscriptions = []
-        sendSubscription = []
-        viewDelegate.sessionStopped()
-        state = .inactive
+		
+		postStopCleanUp()
     }
     
     /// Restarts the polling sequence so the reader session can discover new tags.
@@ -313,6 +311,15 @@ public class CardSession {
         reader.startSession(with: initialMessage?.alertMessage)
     }
     
+	private func postStopCleanUp() {
+		nfcReaderSubscriptions = []
+		sendSubscription = []
+		viewDelegate.sessionStopped()
+		walletPointerForInteraction = nil
+		
+		state = .inactive
+	}
+	
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {
         switch runnableResult {
         case .success(let runnableResponse):
@@ -326,7 +333,7 @@ public class CardSession {
     
     @available(iOS 13.0, *)
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
-        ReadCommand().run(in: self) { [weak self] readResult in
+        ReadCommand(walletPointer: walletPointerForInteraction).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
             switch readResult {

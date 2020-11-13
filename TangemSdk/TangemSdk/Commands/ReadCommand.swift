@@ -620,8 +620,13 @@ public final class ReadCommand: Command {
     public var needPreflightRead: Bool {
         return false
     }
-    
-    public init() {}
+	
+	public init(walletPointer: WalletPointer?) {
+		self.walletPointer = walletPointer
+	}
+	
+	private var walletPointer: WalletPointer?
+	
     deinit {
         print("ReadCommand deinit")
     }
@@ -657,6 +662,8 @@ public final class ReadCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
+		try walletPointer?.addTlvData(tlvBuilder)
+		
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     

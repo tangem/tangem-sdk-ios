@@ -644,6 +644,8 @@ public final class ReadCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+		// TODO: - Handle incorrect wallet index. When sending wallet index that is >= Card.walletsCount card sending invalid params.
+		//	Not default PIN1 also sending invalid params.
         if case .invalidParams = error {
             return .pin1Required
         }

@@ -22,12 +22,14 @@ public struct SignResponse: ResponseCodable {
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 @available(iOS 13.0, *)
-public final class SignCommand: Command {
+public final class SignCommand: Command, WalletPointable {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
+	
+	private(set) public var pointer: WalletPointer?
     
     private let hashes: [Data]
     private var responces: [SignResponse] = []
@@ -39,11 +41,14 @@ public final class SignCommand: Command {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount
     }()
     
-    /// Command initializer
-    /// - Parameters:
-    ///   - hashes: Array of transaction hashes.
-    public init(hashes: [Data]) {
+	/// Command initializer
+	/// - Note: Wallet pointer works only on COS v.4.0 and higher. For previous version pointer will be ignored
+	/// - Parameters:
+	///   - hashes: Array of transaction hashes.
+	///   - walletPointer: Pointer to wallet for interaction.
+	public init(hashes: [Data], walletPointer: WalletPointer?) {
         self.hashes = hashes
+		pointer = walletPointer
     }
     
     deinit {
@@ -68,7 +73,9 @@ public final class SignCommand: Command {
             return .notActivated
         }
         
-        if card.walletRemainingSignatures == 0 {
+		if let cosVersion = card.firmwareVersionValue,
+		   cosVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
+		    card.walletRemainingSignatures == 0 {
             return .noRemainingSignatures
         }
         
@@ -170,6 +177,8 @@ public final class SignCommand: Command {
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
+		
+		try pointer?.addTlvData(tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
@@ -183,7 +192,7 @@ public final class SignCommand: Command {
         return SignResponse(
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),
-            walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
+            walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
             walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
     

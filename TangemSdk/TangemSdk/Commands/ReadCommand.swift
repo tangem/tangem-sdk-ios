@@ -644,6 +644,8 @@ public final class ReadCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+		// [REDACTED_TODO_COMMENT]
+		//	Not default PIN1 also sending invalid params.
         if case .invalidParams = error {
             return .pin1Required
         }

@@ -88,7 +88,7 @@ public class PersonalizeCommand: Command {
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: serializeCardData(environment: environment, cardId: cardId, cardData: config.cardData))
-			.append(.walletsCount, value: config.maxNumberOfWallets)
+			.append(.walletsCount, value: config.walletsCount)
         
         if !config.ndefRecords.isEmpty {
             try tlvBuilder.append(.ndefData, value: serializeNdef(config))

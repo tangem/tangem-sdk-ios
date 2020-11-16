@@ -39,7 +39,8 @@ class ViewController: UIViewController {
 	}
 	
     @IBAction func scanCardTapped(_ sender: Any) {
-		tangemSdk.scanCard(walletIndex: card == nil ? 0 : walletIndex) {[unowned self] result in
+		let pointer = WalletIndexPointer(index: card == nil ? 0 : walletIndex)
+		tangemSdk.scanCard(walletPointer: pointer) {[unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card
@@ -62,7 +63,7 @@ class ViewController: UIViewController {
                 return
             }
             
-			tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: walletIndex) {[unowned self] result in
+			tangemSdk.sign(hashes: hashes, cardId: cardId, walletPointer: WalletIndexPointer(index: walletIndex)) {[unowned self] result in
                 switch result {
                 case .success(let signResponse):
                     self.log(signResponse)
@@ -193,14 +194,34 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func createWalletTapped(_ sender: Any) {
+    @IBAction func createWalletTapped(_ sender: UIButton) {
         guard let cardId = card?.cardId else {
             self.log("Please, scan card before")
             return
         }
         
         if #available(iOS 13.0, *) {
-            tangemSdk.createWallet(cardId: cardId, walletIndex: walletIndex) { [unowned self] result in
+			let tag = sender.tag
+			var walletConfig: WalletConfig? = nil
+			var walletIndexPointer: WalletIndexPointer? = WalletIndexPointer(index: walletIndex)
+			if tag > 0 {
+				let walletData: WalletData
+				var curve = EllipticCurve.secp256k1
+				switch tag {
+				case 1:
+					walletData = .init(blockchainName: "ETH")
+					walletIndexPointer = nil
+				case 2: walletData = .init(blockchainName: nil)
+				case 3: walletData = .init(blockchainName: "BCH")
+				case 4:
+					walletData = .init(blockchainName: "XLM")
+					curve = .ed25519
+				default: walletData = .init(blockchainName: "BTC")
+				}
+				walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash,  walletData: walletData)
+			}
+			
+            tangemSdk.createWallet(cardId: cardId, config: walletConfig, walletIndexPointer: walletIndexPointer) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -590,7 +611,7 @@ class ViewController: UIViewController {
     
     private func log(_ object: Any) {
         self.logView.text = self.logView.text.appending("\(object)\n\n")
-        print(object)
+//        print(object)
     }
     
     private func handle(_ error: TangemSdkError) {

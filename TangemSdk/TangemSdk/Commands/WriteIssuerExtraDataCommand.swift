@@ -81,8 +81,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .missingCounter
         }
 		
-		if let firmwareVersion = card.firmwareVersionValue,
-			firmwareVersion >= FirmwareConstraints.minVersionForFiles {
+		if card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.files) {
 			return .notSupportedFirmwareVersion
 		}
         

@@ -181,6 +181,7 @@
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
 		B03BC4982551726300A8F1C4 /* CircularIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */; };
+		B04C5D1F255E6F21003AFF8B /* WalletConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */; };
 		B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BA253442AD0056A887 /* DeleteFileCommand.swift */; };
 		B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BE2534570B0056A887 /* DeleteFilesTask.swift */; };
 		B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */; };
@@ -397,6 +398,7 @@
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
 		B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorView.swift; sourceTree = "<group>"; };
+		B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConfig.swift; sourceTree = "<group>"; };
 		B06947BA253442AD0056A887 /* DeleteFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileCommand.swift; sourceTree = "<group>"; };
 		B06947BE2534570B0056A887 /* DeleteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFilesTask.swift; sourceTree = "<group>"; };
 		B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFileSettingsCommand.swift; sourceTree = "<group>"; };
@@ -532,18 +534,15 @@
 		5D6A92E12345F28F00158457 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
-				B0BD1C8E255E58BE00119D82 /* WalletPointer */,
+				B0BD1C8E255E58BE00119D82 /* Wallet */,
 				B0800F87252C4508007E04EE /* Files */,
 				5D3F77B424B9B8E700E8695B /* Verification */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
 				5D6A92E42345F2B200158457 /* SignCommand.swift */,
-				5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */,
 				5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */,
 				5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */,
-				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,
-				5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */,
 				5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */,
 				5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */,
 				5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */,
@@ -922,12 +921,16 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		B0BD1C8E255E58BE00119D82 /* WalletPointer */ = {
+		B0BD1C8E255E58BE00119D82 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
 				B0BD1C8F255E58D300119D82 /* WalletPointable.swift */,
+				5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */,
+				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,
+				5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */,
+				B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */,
 			);
-			path = WalletPointer;
+			path = Wallet;
 			sourceTree = "<group>";
 		};
 		B0C6B4B3254C1CFF00C0A1E1 /* Transitions */ = {
@@ -1234,6 +1237,7 @@
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
+				B04C5D1F255E6F21003AFF8B /* WalletConfig.swift in Sources */,
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,

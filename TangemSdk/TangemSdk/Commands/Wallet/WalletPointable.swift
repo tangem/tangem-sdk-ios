@@ -26,7 +26,7 @@ public protocol WalletPointer {
 /// Pointer to wallet by index.
 /// - Note: Available for cards with COS v.4.0 and higher
 public struct WalletIndexPointer: WalletPointer {
-	private let index: Int
+	private(set) var index: Int
 	
 	public init(index: Int) {
 		self.index = index

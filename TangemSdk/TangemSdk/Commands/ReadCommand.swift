@@ -385,13 +385,48 @@ public struct SettingsMask: OptionSet, Codable {
             mask.update(with: SettingsMask.checkPIN3OnCard)
         }
         
-        
         self = mask
     }
     
 }
 
-
+/// Stores and maps Wallet settings
+/// - Note: Available only for cards with COS v.4.0
+public struct WalletSettingsMask: Codable, OptionSet {
+	public var rawValue: Int
+	
+	public init(rawValue: Int) {
+		self.rawValue = rawValue
+	}
+	
+	public static let isReusable = WalletSettingsMask(rawValue: 0x0001)
+	public static let prohibitPurgeWallet = WalletSettingsMask(rawValue: 0x0004)
+	
+	public func encode(to encoder: Encoder) throws {
+		var values = [String]()
+		if contains(.isReusable) {
+			values.append("IsReusable")
+		}
+		if contains(.prohibitPurgeWallet) {
+			values.append("ProhibitPurgeWallet")
+		}
+		var container = encoder.singleValueContainer()
+		try container.encode(values)
+	}
+	
+	public init(from decoder: Decoder) throws {
+		let values = try decoder.singleValueContainer()
+		let stringValues = try values.decode([String].self)
+		var mask = WalletSettingsMask()
+		if stringValues.contains("IsReusable") {
+			mask.update(with: .isReusable)
+		}
+		if stringValues.contains("ProhibitPurgeWallet") {
+			mask.update(with: .prohibitPurgeWallet)
+		}
+		self = mask
+	}
+}
 
 class SettingsMaskBuilder {
     private var settingsMaskValue = 0
@@ -403,6 +438,18 @@ class SettingsMaskBuilder {
     func build() -> SettingsMask {
         return SettingsMask(rawValue: settingsMaskValue)
     }
+}
+
+class WalletSettingsMaskBuilder {
+	private var settingsMaskValue = 0
+	
+	func add(_ settings: WalletSettingsMask) {
+		settingsMaskValue |= settings.rawValue
+	}
+	
+	func build() -> WalletSettingsMask {
+		WalletSettingsMask(rawValue: settingsMaskValue)
+	}
 }
 
 /// Detailed information about card contents.
@@ -511,6 +558,9 @@ public struct Card: ResponseCodable {
     /// Set by ScanTask
     public var isPin2Default: Bool? = nil
 	
+	/// Available only for cards with COS v.4.0 and higher.
+	public var pin2IsDefault: Bool? = nil
+	
 	/// Index of corresponding wallet
 	public var walletIndex: Int? = nil
 	/// Maximum number of wallets that can be created for this card
@@ -571,6 +621,16 @@ public struct Card: ResponseCodable {
         card.update(with: response)
         return card
     }
+	
+	public func isCosLower(than version: Double) -> Bool {
+		guard let firmware = firmwareVersionValue else { return true }
+		return firmware < version
+	}
+	
+	public func isCosGreaterOrEqual(than version: Double) -> Bool {
+		guard let firmware = firmwareVersionValue else { return false }
+		return firmware >= version
+	}
 }
 
 public enum CardType {
@@ -682,7 +742,7 @@ struct CardDeserializer {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        let card = ReadResponse(
+        var card = ReadResponse(
             cardId: try decoder.decodeOptional(.cardId),
             manufacturerName: try decoder.decodeOptional(.manufacturerName),
             status: try decoder.decodeOptional(.status),
@@ -712,6 +772,10 @@ struct CardDeserializer {
 			walletIndex: try decoder.decodeOptional(.walletIndex),
 			walletsCount: try decoder.decodeOptional(.walletsCount))
         
+		if card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.pin2IsDefault) {
+			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
+			card.pin2IsDefault = pin2IsDefault != nil
+		}
         return card
     }
     

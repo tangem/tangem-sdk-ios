@@ -119,6 +119,8 @@ public enum TlvTag: Byte {
     case expireDate = 0xD5
     case trustedAddress = 0xD6
 	
+	case pin2IsDefault = 0x59
+	
 	// MARK: - Multi-wallet
 	case walletIndex = 0x65
 	case walletsCount = 0x66
@@ -133,7 +135,7 @@ public enum TlvTag: Byte {
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId, .crExKey:
+        case .cardId, .batchId, .crExKey, .pin2IsDefault:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress,
              .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress:

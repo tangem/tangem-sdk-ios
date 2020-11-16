@@ -244,7 +244,7 @@ class ViewController: UIViewController {
         }
         
         if #available(iOS 13.0, *) {
-            tangemSdk.purgeWallet(cardId: cardId, walletIndex: walletIndex) { [unowned self] result in
+            tangemSdk.purgeWallet(cardId: cardId, walletPointer: WalletIndexPointer(index: walletIndex)) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)

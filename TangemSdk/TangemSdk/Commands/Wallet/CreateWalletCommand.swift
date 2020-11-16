@@ -69,12 +69,12 @@ public final class CreateWalletCommand: Command, WalletPointable {
 			}
 		}
 		
-		let isCosCapableForWalletData = card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.walletData)
+		let isWalletDataAvailable = card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.walletData)
 		
         if let status = card.status {
 			let statusErr = statusError(status)
 			
-			if isCosCapableForWalletData {
+			if isWalletDataAvailable {
 				
 				if walletIndexPointer?.index == card.walletIndex, let error = statusErr {
 					return error
@@ -86,7 +86,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
             
         }
 		
-		if isCosCapableForWalletData,
+		if isWalletDataAvailable,
 		   let targetIndex = walletIndexPointer?.index,
 		   targetIndex >= card.walletsCount ?? 1 {
 			return .walletIndexExceedsMaxValue

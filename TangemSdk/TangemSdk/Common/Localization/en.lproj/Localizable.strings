@@ -93,7 +93,7 @@
 "error_wrong_interaction_mode" = "Unsupported interaction mode";
 "error_not_supported_firmware_version" = "Card firmware does not meet requirements";
 
-
+"error_no_space_for_new_wallet" = "Max number of wallets already created";
 
 //Android only
 

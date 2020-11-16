@@ -75,8 +75,8 @@ public final class TangemSdk {
      *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
      *   - completion: Returns `Swift.Result<Card,TangemSdkError>`
      */
-	public func scanCard(walletIndex: Int = 0, initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
-		startSession(with: ScanTask(walletPointer: WalletIndexPointer(index: walletIndex)), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
+	public func scanCard(walletPointer: WalletPointer? = nil, initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
+		startSession(with: ScanTask(walletPointer: walletPointer), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
     
     /**
@@ -99,12 +99,12 @@ public final class TangemSdk {
     @available(iOS 13.0, *)
     public func sign(hashes: [Data],
                      cardId: String? = nil,
-					 walletIndex: Int = 0,
+					 walletPointer: WalletPointer? = nil,
                      initialMessage: Message? = nil,
                      pin1: String? = nil,
                      pin2: String? = nil,
                      completion: @escaping CompletionResult<SignResponse>) {
-        startSession(with: SignCommand(hashes: hashes, walletPointer: WalletIndexPointer(index: walletIndex)),
+        startSession(with: SignCommand(hashes: hashes, walletPointer: walletPointer),
                      cardId: cardId,
                      initialMessage: initialMessage,
                      pin1: pin1,
@@ -331,12 +331,14 @@ public final class TangemSdk {
      */
     @available(iOS 13.0, *)
     public func createWallet(cardId: String? = nil,
-							 walletIndex: Int = 0,
+							 config: WalletConfig? = nil,
+							 walletIndexPointer: WalletIndexPointer? = nil,
                              initialMessage: Message? = nil,
                              pin1: String? = nil,
                              pin2: String? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-		startSession(with: CreateWalletTask(walletPointer: WalletIndexPointer(index: walletIndex)), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+		let task = CreateWalletTask(config: config, walletPointer: walletIndexPointer)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /**

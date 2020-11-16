@@ -33,8 +33,10 @@ public class TlvBuilder {
 				var val: String = "\(value)"
 				if let data = value as? Data {
 					val = data.asHexString()
+				} else {
+					val += " --- \(tlv.value.asHexString())"
 				}
-				print("TAG_\(tlv.tag) [0x\(String(format: "%02x", tlv.tagRaw)):\(tlv.tag.valueType)]: \(val)")
+				print("TAG_\(tlv.tag) [0x\(String(format: "%02x", tlv.tagRaw)):\(tlv.tag.valueType)]: " + val)
 			}
 			print("")
 		}

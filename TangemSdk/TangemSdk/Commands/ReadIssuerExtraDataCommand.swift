@@ -108,8 +108,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return .missingIssuerPublicKey
         }
 		
-		if let cardFirmwareVersion = card.firmwareVersionValue,
-			cardFirmwareVersion >= FirmwareConstraints.minVersionForFiles {
+		if card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.files) {
 			return .notSupportedFirmwareVersion
 		}
         

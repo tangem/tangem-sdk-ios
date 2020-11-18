@@ -236,6 +236,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	
 	case walletIndexExceedsMaxValue
 	case maxNumberOfWalletsCreated
+	case walletNotFound
     
     public var code: Int {
         switch self {
@@ -323,6 +324,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .notSupportedFirmwareVersion: return 50007
 		case .walletIndexExceedsMaxValue: return 47901
 		case .maxNumberOfWalletsCreated: return 47902
+		case .walletNotFound: return 47903
         }
     }
     

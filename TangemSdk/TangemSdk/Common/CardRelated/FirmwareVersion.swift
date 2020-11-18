@@ -59,9 +59,10 @@ public struct FirmwareVersion: Codable {
 		self.hotFix = hotFix
 		self.type = type
 		
+		let hotFixSuffix = ".\(hotFix)"
 		var version = "\(major).\(minor)"
-		versionStr = version + ".\(hotFix)"
-		version += hotFix != 0 ? ".\(hotFix)" : ""
+		versionStr = version + hotFixSuffix
+		version += hotFix != 0 ? hotFixSuffix : ""
 		version += type.rawValue
 		
 		self.version = version

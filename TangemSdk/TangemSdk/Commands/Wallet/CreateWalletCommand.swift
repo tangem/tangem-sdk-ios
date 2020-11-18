@@ -69,7 +69,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
 			}
 		}
 		
-		let isWalletDataAvailable = card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.walletData)
+		let isWalletDataAvailable = card.cosVersion >= FirmwareConstraints.AvailabilityVersions.walletData
 		
         if let status = card.status {
 			let statusErr = statusError(status)
@@ -101,13 +101,16 @@ public final class CreateWalletCommand: Command, WalletPointable {
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
-			if let walletsCount = card?.walletsCount,
+			
+			guard let card = card else { return .pin2OrCvcRequired }
+			
+			if let walletsCount = card.walletsCount,
 			   (walletIndexPointer?.index ?? 0) >= walletsCount {
 				return .walletIndexExceedsMaxValue
 			}
 			
-			if card?.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.pin2IsDefault) ?? false,
-			   card?.pin2IsDefault ?? false {
+			if card.cosVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
+			   card.pin2IsDefault ?? false {
 				return .alreadyCreated
 			}
 			
@@ -129,9 +132,9 @@ public final class CreateWalletCommand: Command, WalletPointable {
 		
 		try (walletIndexPointer ?? WalletIndexPointer(index: 0)).addTlvData(tlvBuilder)
 		
-		if let firmware = environment.card?.firmwareVersionValue,
-		   firmware >= FirmwareConstraints.AvailabilityVersions.walletData,
+		if environment.card?.cosVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {
+			
 			try tlvBuilder.append(.settingsMask, value: config.settingsMask)
 				.append(.curveId, value: config.curveId)
 			

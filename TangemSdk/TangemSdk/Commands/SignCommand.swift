@@ -73,8 +73,7 @@ public final class SignCommand: Command, WalletPointable {
             return .notActivated
         }
         
-		if let cosVersion = card.firmwareVersionValue,
-		   cosVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
+		if card.cosVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
 		    card.walletRemainingSignatures == 0 {
             return .noRemainingSignatures
         }

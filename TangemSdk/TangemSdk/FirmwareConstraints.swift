@@ -11,13 +11,13 @@ import Foundation
 struct FirmwareConstraints {
 	
 	struct AvailabilityVersions {
-		static let walletData = 4.0
-		static let pin2IsDefault = 4.0
-		static let files = 3.29
+		static let walletData = FirmwareVersion(version: "4.0")
+		static let pin2IsDefault = FirmwareVersion(version: "4.0")
+		static let files = FirmwareVersion(version: "3.29")
 	}
 	
 	struct DeprecationVersions {
-		static let walletRemainingSignatures = 4.0
+		static let walletRemainingSignatures = FirmwareVersion(version: "4.0")
 	}
 	
 }

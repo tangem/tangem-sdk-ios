@@ -23,7 +23,7 @@ public final class DeleteFileCommand: Command {
 			return .notPersonalized
 		}
 		
-		if card.isCosLower(than: FirmwareConstraints.AvailabilityVersions.files) {
+		if card.cosVersion < FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
 		if card.isActivated {

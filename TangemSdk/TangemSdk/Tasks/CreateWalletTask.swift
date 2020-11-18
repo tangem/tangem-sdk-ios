@@ -57,7 +57,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletPointable {
 		}
 		
 		// This check need to exclude cases when WalletConfig parameters is added but card has COS lower than 4.0
-		if session.environment.card?.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.walletData) ?? false {
+		if session.environment.card?.cosVersion >= FirmwareConstraints.AvailabilityVersions.walletData {
 			
 			if let config = config {
 				curve = config.curveId

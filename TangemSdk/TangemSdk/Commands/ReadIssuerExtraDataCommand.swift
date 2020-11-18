@@ -108,7 +108,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return .missingIssuerPublicKey
         }
 		
-		if card.isCosGreaterOrEqual(than: FirmwareConstraints.AvailabilityVersions.files) {
+		if card.cosVersion >= FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
         

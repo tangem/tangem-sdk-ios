@@ -14,7 +14,7 @@ public enum ReadFileCommandSettings: FirmwareRestictible {
 	
 	public var minFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .checkFileValidationHash: return FirmwareVersion(version: "3.34")
+		case .checkFileValidationHash: return FirmwareVersion(major: 3, minor: 34)
 		}
 	}
 	

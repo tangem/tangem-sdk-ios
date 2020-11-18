@@ -14,8 +14,8 @@ public enum FileWriteSettings: Hashable, FirmwareRestictible {
 	
 	public var minFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .none: return FirmwareVersion(version: "3.29")
-		case .verifiedWithPin2: return FirmwareVersion(version: "3.34")
+		case .none: return FirmwareVersion(major: 3, minor: 29)
+		case .verifiedWithPin2: return FirmwareVersion(major: 3, minor: 34)
 		}
 	}
 	

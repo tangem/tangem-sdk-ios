@@ -69,7 +69,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
 			}
 		}
 		
-		let isWalletDataAvailable = card.cosVersion >= FirmwareConstraints.AvailabilityVersions.walletData
+		let isWalletDataAvailable = card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData
 		
         if let status = card.status {
 			let statusErr = statusError(status)
@@ -109,7 +109,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
 				return .walletIndexExceedsMaxValue
 			}
 			
-			if card.cosVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
+			if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
 			   card.pin2IsDefault ?? false {
 				return .alreadyCreated
 			}
@@ -132,7 +132,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
 		
 		try (walletIndexPointer ?? WalletIndexPointer(index: 0)).addTlvData(tlvBuilder)
 		
-		if environment.card?.cosVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
+		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {
 			
 			try tlvBuilder.append(.settingsMask, value: config.settingsMask)

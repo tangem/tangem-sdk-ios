@@ -81,7 +81,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .missingCounter
         }
 		
-		if card.cosVersion >= FirmwareConstraints.AvailabilityVersions.files {
+		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
         

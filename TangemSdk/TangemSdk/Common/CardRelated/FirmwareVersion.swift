@@ -8,17 +8,33 @@
 
 import Foundation
 
+public enum FirmwareType: String, Codable, CaseIterable {
+	case sdk = "d SDK"
+	case release = "r"
+	case special
+	
+	static func type(for str: String) -> FirmwareType {
+		FirmwareType(rawValue: str) ?? .special
+	}
+}
+
+@available(*, unavailable, renamed: "FirmwareType")
+typealias CardType = FirmwareType
+
+/// Holds information about card firmware version included version saved on card `version`,
+/// splitted to `major`, `minor` and `hotFix` and `FirmwareType`
 public struct FirmwareVersion: Codable {
 	
 	public static let zero = FirmwareVersion(major: 0, minor: 0)
 	public static let max = FirmwareVersion(major: Int.max, minor: 0)
 	
+	/// Version that saved on card
 	public let version: String
 	
 	private(set) public var major: Int = 0
 	private(set) public var minor: Int = 0
 	private(set) public var hotFix: Int = 0
-	private(set) public var type: CardType? = nil
+	private(set) public var type: FirmwareType? = nil
 	
 	public var versionDouble: Double {
 		Double("\(major).\(minor)")!
@@ -50,7 +66,7 @@ public struct FirmwareVersion: Codable {
 		type = .type(for: cardTypeStr)
 	}
 	
-	public init(major: Int, minor: Int, hotFix: Int = 0, type: CardType = .sdk) {
+	public init(major: Int, minor: Int, hotFix: Int = 0, type: FirmwareType = .sdk) {
 		self.major = major
 		self.minor = minor
 		self.hotFix = hotFix

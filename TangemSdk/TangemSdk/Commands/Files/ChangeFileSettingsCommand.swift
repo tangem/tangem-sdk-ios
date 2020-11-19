@@ -27,7 +27,7 @@ public final class ChangeFileSettingsCommand: Command {
 			return .notPersonalized
 		}
 		
-		if card.cosVersion < FirmwareConstraints.AvailabilityVersions.files {
+		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
 		

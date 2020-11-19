@@ -8,16 +8,6 @@
 
 import Foundation
 
-public enum CardType: String, Codable, CaseIterable {
-	case sdk = "d SDK"
-	case release = "r"
-	case unknown
-	
-	static func type(for str: String) -> CardType {
-		CardType(rawValue: str) ?? .unknown
-	}
-}
-
 ///Response for `ReadCommand`. Contains detailed card information.
 public struct Card: ResponseCodable {
 	/// Unique Tangem card ID number.
@@ -27,7 +17,7 @@ public struct Card: ResponseCodable {
 	/// Current status of the card.
 	public var status: CardStatus?
 	/// Version of Tangem COS.
-	public let firmwareVersion: String?
+	public let firmwareVersion: FirmwareVersion?
 	/// Public key that is used to authenticate the card against manufacturer’s database.
 	/// It is generated one time during card manufacturing.
 	public let cardPublicKey: Data?
@@ -90,13 +80,10 @@ public struct Card: ResponseCodable {
 	/// Maximum number of wallets that can be created for this card
 	public var walletsCount: Int? = nil
 	
-	public let cosVersion: FirmwareVersion?
-	
 	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
 		self.cardId = cardId
 		self.manufacturerName = manufacturerName
 		self.status = status
-		self.firmwareVersion = firmwareVersion
 		self.cardPublicKey = cardPublicKey
 		self.settingsMask = settingsMask
 		self.issuerPublicKey = issuerPublicKey
@@ -118,9 +105,9 @@ public struct Card: ResponseCodable {
 		self.walletsCount = walletsCount
 		
 		if let version = firmwareVersion {
-			cosVersion = FirmwareVersion(version: version)
+			self.firmwareVersion = FirmwareVersion(version: version)
 		} else {
-			cosVersion = nil
+			self.firmwareVersion = nil
 		}
 	}
 	
@@ -159,14 +146,14 @@ public struct Card: ResponseCodable {
 public extension Card {
 	
 	var firmwareVersionValue: Double? {
-		cosVersion?.versionDouble
+		firmwareVersion?.versionDouble
 	}
 	
 	var isLinkedTerminalSupported: Bool {
 		return settingsMask?.contains(SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal) ?? false
 	}
 	
-	var cardType: CardType {
-		return cosVersion?.type ?? .unknown
+	var cardType: FirmwareType {
+		return firmwareVersion?.type ?? .special
 	}
 }

@@ -20,9 +20,7 @@ public struct FirmwareVersion: Codable {
 	private(set) public var hotFix: Int = 0
 	private(set) public var type: CardType? = nil
 	
-	private(set) var versionForCompare: String = "0.0.0"
-	
-	var versionDouble: Double {
+	public var versionDouble: Double {
 		Double("\(major).\(minor)")!
 	}
 	
@@ -49,7 +47,6 @@ public struct FirmwareVersion: Codable {
 			self.hotFix = hotFix
 		}
 		
-		versionForCompare = "\(major).\(minor).\(hotFix)"
 		type = .type(for: cardTypeStr)
 	}
 	
@@ -61,7 +58,6 @@ public struct FirmwareVersion: Codable {
 		
 		let hotFixSuffix = ".\(hotFix)"
 		var version = "\(major).\(minor)"
-		versionForCompare = version + hotFixSuffix
 		version += hotFix != 0 ? hotFixSuffix : ""
 		version += type.rawValue
 		
@@ -71,12 +67,27 @@ public struct FirmwareVersion: Codable {
 
 extension FirmwareVersion: Comparable {
 	public static func < (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
-		return lhs.versionForCompare.compare(rhs.versionForCompare, options: .numeric) == .orderedAscending
+		if lhs.major != rhs.major {
+			return lhs.major < rhs.major
+		} else if lhs.minor != rhs.minor {
+			return lhs.minor < rhs.minor
+		} else {
+			return lhs.hotFix < rhs.hotFix
+		}
 	}
-
+	
+	public static func == (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
+		lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.hotFix == rhs.hotFix
+	}
+	
 	public static func >= (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
-		let result = lhs.versionForCompare.compare(rhs.versionForCompare, options: .numeric)
-		return result == .orderedDescending || result == .orderedSame
+		if lhs.major != rhs.major {
+			return lhs.major > rhs.major
+		} else if lhs.minor != rhs.minor {
+			return lhs.minor > rhs.minor
+		} else {
+			return lhs.hotFix >= rhs.hotFix
+		}
 	}
 	
 	public static func < (lhs: FirmwareVersion?, rhs: FirmwareVersion) -> Bool {

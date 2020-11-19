@@ -46,7 +46,7 @@ struct CardDeserializer {
 			walletIndex: try decoder.decodeOptional(.walletIndex),
 			walletsCount: try decoder.decodeOptional(.walletsCount))
 		
-		if card.cosVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault {
+		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault {
 			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
 			card.pin2IsDefault = pin2IsDefault != nil
 		}

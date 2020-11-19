@@ -45,8 +45,8 @@ public final class WriteFileCommand: Command {
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		if card.cosVersion < FirmwareConstraints.AvailabilityVersions.files,
-			card.cosVersion < dataToWrite.minFirmwareVersion {
+		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files,
+			card.firmwareVersion < dataToWrite.minFirmwareVersion {
 			return .notSupportedFirmwareVersion
 		}
 		

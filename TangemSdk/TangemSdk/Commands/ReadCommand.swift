@@ -152,6 +152,7 @@ public struct ProductMask: OptionSet, Codable {
     public static let tag = ProductMask(rawValue: 0x02)
     public static let idCard = ProductMask(rawValue: 0x04)
     public static let idIssuer = ProductMask(rawValue: 0x08)
+	public static let twinCard = ProductMask(rawValue: 0x10)
     
     public func encode(to encoder: Encoder) throws {
         var values = [String]()

@@ -39,8 +39,8 @@ class ViewController: UIViewController {
 	}
 	
     @IBAction func scanCardTapped(_ sender: Any) {
-		let pointer = WalletIndexPointer(index: card == nil ? 0 : walletIndex)
-		tangemSdk.scanCard(walletPointer: pointer) {[unowned self] result in
+		let index = WalletIndex.index(card == nil ? 0 : walletIndex)
+		tangemSdk.scanCard(walletIndex: index) {[unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card
@@ -63,7 +63,7 @@ class ViewController: UIViewController {
                 return
             }
             
-			tangemSdk.sign(hashes: hashes, cardId: cardId, walletPointer: WalletIndexPointer(index: walletIndex)) {[unowned self] result in
+			tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex)) { [unowned self] result in
                 switch result {
                 case .success(let signResponse):
                     self.log(signResponse)
@@ -203,14 +203,14 @@ class ViewController: UIViewController {
         if #available(iOS 13.0, *) {
 			let tag = sender.tag
 			var walletConfig: WalletConfig? = nil
-			var walletIndexPointer: WalletIndexPointer? = WalletIndexPointer(index: walletIndex)
+			var walletIndex: Int? = self.walletIndex
 			if tag > 0 {
 				let walletData: WalletData
 				var curve = EllipticCurve.secp256k1
 				switch tag {
 				case 1:
 					walletData = .init(blockchainName: "ETH")
-					walletIndexPointer = nil
+					walletIndex = nil
 				case 2: walletData = .init(blockchainName: nil)
 				case 3: walletData = .init(blockchainName: "BCH")
 				case 4:
@@ -221,7 +221,7 @@ class ViewController: UIViewController {
 				walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash,  walletData: walletData)
 			}
 			
-            tangemSdk.createWallet(cardId: cardId, config: walletConfig, walletIndexPointer: walletIndexPointer) { [unowned self] result in
+            tangemSdk.createWallet(cardId: cardId, config: walletConfig, walletIndex: walletIndex) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -244,7 +244,7 @@ class ViewController: UIViewController {
         }
         
         if #available(iOS 13.0, *) {
-            tangemSdk.purgeWallet(cardId: cardId, walletPointer: WalletIndexPointer(index: walletIndex)) { [unowned self] result in
+			tangemSdk.purgeWallet(cardId: cardId, walletIndex: WalletIndex.index(walletIndex)) { [unowned self] result in
                 switch result {
                 case .success(let response):
                     self.log(response)
@@ -331,16 +331,16 @@ class ViewController: UIViewController {
     
     @available(iOS 13.0, *)
     func chainingExample() {
-		let walletPointer = WalletIndexPointer(index: walletIndex)
+		let walletIndex = WalletIndex.index(self.walletIndex)
         tangemSdk.startSession(cardId: nil) { session, error in
-			let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletPointer: walletPointer)
+			let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletIndex: walletIndex)
             cmd1.run(in: session, completion: { result in
                 switch result {
                 case .success(let response1):
                     DispatchQueue.main.async {
                         self.log(response1)
                     }
-					let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletPointer: walletPointer)
+					let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!, walletIndex: walletIndex)
                     cmd2.run(in: session, completion: { result in
                         switch result {
                         case .success(let response2):

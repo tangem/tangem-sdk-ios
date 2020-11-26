@@ -256,8 +256,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	
 	private func dismissInfoScreen() {
 		DispatchQueue.main.async {
-			if self.infoScreen.presentedViewController is PinViewController { return }
-			if self.infoScreen.presentingViewController == nil || self.infoScreen.isBeingDismissed {
+			if self.infoScreen.presentedViewController != nil ||
+				self.infoScreen.presentingViewController == nil ||
+				self.infoScreen.isBeingDismissed {
 				return
 			}
 			

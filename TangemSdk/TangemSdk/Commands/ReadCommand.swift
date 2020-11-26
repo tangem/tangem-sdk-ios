@@ -22,8 +22,8 @@ public final class ReadCommand: Command {
 	
 	private var walletIndex: WalletIndex?
 	
-	public init(walletPointer: WalletIndex? = nil) {
-		self.walletIndex = walletPointer
+	public init(walletIndex: WalletIndex? = nil) {
+		self.walletIndex = walletIndex
 	}
 	
     deinit {
@@ -67,6 +67,24 @@ public final class ReadCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
-        return try CardDeserializer.deserialize(with: environment, from: apdu)
+		let readResponse = try CardDeserializer.deserialize(with: environment, from: apdu)
+        
+		if readResponse.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
+		   let index = walletIndex {
+			
+			switch index {
+			case .index(let i):
+				if readResponse.walletIndex != i {
+					throw TangemSdkError.cardReadWrongWallet
+				}
+			case .publicKey(let pubKey):
+				if let publicKeyOnCard = readResponse.walletPublicKey, publicKeyOnCard != pubKey {
+					throw TangemSdkError.cardReadWrongWallet
+				}
+			}
+			
+		}
+		
+		return readResponse
     }
 }

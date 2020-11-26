@@ -234,9 +234,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	/// Returned when command  is not met firmware version requirements (ex. for file writing COD must be 3.29 or greater)
 	case notSupportedFirmwareVersion
 	
+	// MARK: Wallet errors
+	
 	case walletIndexExceedsMaxValue
 	case maxNumberOfWalletsCreated
 	case walletNotFound
+	case cardReadWrongWallet
     
     public var code: Int {
         switch self {
@@ -325,6 +328,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .walletIndexExceedsMaxValue: return 47901
 		case .maxNumberOfWalletsCreated: return 47902
 		case .walletNotFound: return 47903
+		case .cardReadWrongWallet: return 47904
         }
     }
     
@@ -369,6 +373,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
 		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
 		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
+		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

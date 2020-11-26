@@ -22,14 +22,14 @@ public struct SignResponse: ResponseCodable {
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 @available(iOS 13.0, *)
-public final class SignCommand: Command {
+public final class SignCommand: Command, WalletSelectable {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
-	private var walletIndex: WalletIndex?
+	private(set) public var walletIndex: WalletIndex?
     
     private let hashes: [Data]
     private var responces: [SignResponse] = []

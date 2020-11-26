@@ -85,6 +85,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     private var engine: CHHapticEngine?
     private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
+	private var infoScreenAppearWork: DispatchWorkItem?
 	
 	private lazy var infoScreen: InformationScreenViewController = {
 		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
@@ -169,7 +170,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	
 	func showUndefinedSpinner() {
 		guard remainingSecurityDelaySec <= 1 else { return }
-		
+		infoScreenAppearWork?.cancel()
 		DispatchQueue.main.async {
 			self.presentInfoScreen()
 			self.infoScreen.setState(.spinner, animated: true)
@@ -222,9 +223,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
 		print("Session started")
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+		infoScreenAppearWork = DispatchWorkItem(block: {
 			self.showInfoScreen()
-		}
+		})
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: infoScreenAppearWork!)
         startHapticsEngine()
     }
     
@@ -234,6 +236,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     }
     
     func sessionStopped() {
+		infoScreenAppearWork?.cancel()
 		print("Session stopped")
 		dismissInfoScreen()
         stopHapticsEngine()

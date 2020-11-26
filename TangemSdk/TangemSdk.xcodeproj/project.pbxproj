@@ -836,7 +836,7 @@
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				B0A9436525651E2600A7958E /* CardRelated */,
+				B0A9436525651E2600A7958E /* Card */,
 				5D2FE06824DDA84F0086B5E8 /* Endpoints */,
 				5DFCE40624B33062007B95AF /* Assets */,
 				5DE59F2723D96F5C00312DA4 /* Services */,
@@ -952,7 +952,7 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		B0A9436525651E2600A7958E /* CardRelated */ = {
+		B0A9436525651E2600A7958E /* Card */ = {
 			isa = PBXGroup;
 			children = (
 				B0390F8A25658F990061E5ED /* Masks */,
@@ -964,7 +964,7 @@
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
 			);
-			path = CardRelated;
+			path = Card;
 			sourceTree = "<group>";
 		};
 		B0BD1C8E255E58BE00119D82 /* Wallet */ = {

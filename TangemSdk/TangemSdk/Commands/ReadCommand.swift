@@ -20,11 +20,11 @@ public final class ReadCommand: Command {
         return false
     }
 	
-	public init(walletPointer: WalletPointer?) {
-		self.walletPointer = walletPointer
-	}
+	private var walletIndex: WalletIndex?
 	
-	private var walletPointer: WalletPointer?
+	public init(walletPointer: WalletIndex? = nil) {
+		self.walletIndex = walletPointer
+	}
 	
     deinit {
         print("ReadCommand deinit")
@@ -61,7 +61,7 @@ public final class ReadCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-		try walletPointer?.addTlvData(tlvBuilder)
+		try walletIndex?.addTlvData(to: tlvBuilder)
 		
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }

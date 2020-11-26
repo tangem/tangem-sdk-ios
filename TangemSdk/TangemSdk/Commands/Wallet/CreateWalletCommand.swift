@@ -31,19 +31,23 @@ public struct CreateWalletResponse: ResponseCodable {
  * RemainingSignature is set to MaxSignatures.
  */
 @available(iOS 13.0, *)
-public final class CreateWalletCommand: Command {
+public final class CreateWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
-	private var walletIndex: Int?
+	public var walletIndex: WalletIndex? {
+		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
+	}
+	
+	private var walletIndexValue: Int?
 	private let config: WalletConfig?
 	
 	public init(config: WalletConfig?, walletIndex: Int?) {
 		self.config = config
-		self.walletIndex = walletIndex
+		self.walletIndexValue = walletIndex
 	}
     
     deinit {
@@ -72,7 +76,7 @@ public final class CreateWalletCommand: Command {
 			
 			if isWalletDataAvailable {
 				
-				if walletIndex == card.walletIndex {
+				if walletIndexValue == card.walletIndex {
 					return error
 				}
 				
@@ -83,7 +87,7 @@ public final class CreateWalletCommand: Command {
         }
 		
 		if isWalletDataAvailable,
-		   let targetIndex = walletIndex,
+		   let targetIndex = walletIndexValue,
 		   targetIndex >= card.walletsCount ?? 1 {
 			return .walletIndexExceedsMaxValue
 		}
@@ -101,7 +105,7 @@ public final class CreateWalletCommand: Command {
 			guard let card = card else { return .pin2OrCvcRequired }
 			
 			if let walletsCount = card.walletsCount,
-			   (walletIndex ?? 0) >= walletsCount {
+			   (walletIndexValue ?? 0) >= walletsCount {
 				return .walletIndexExceedsMaxValue
 			}
 			
@@ -126,7 +130,7 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cvc, value: cvc)
         }
 		
-		if let index = walletIndex {
+		if let index = walletIndexValue {
 			try WalletIndex.index(index).addTlvData(to: tlvBuilder)
 		}
 		

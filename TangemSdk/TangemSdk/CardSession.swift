@@ -311,6 +311,7 @@ public class CardSession {
     
 	private func postStopCleanUp() {
 		nfcReaderSubscriptions = []
+		walletIndexForInteraction = nil
 		sendSubscription = []
 		viewDelegate.sessionStopped()
 		

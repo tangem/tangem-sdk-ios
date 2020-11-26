@@ -56,7 +56,6 @@ public class CardSession {
     
     private let reader: CardReader
     private let initialMessage: Message?
-    private let showScanOnboarding: Bool
     private var cardId: String?
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
@@ -65,7 +64,6 @@ public class CardSession {
     
     private var needPreflightRead = true
     private var pin2Required = false
-	private var walletPointerForInteraction: WalletPointer? = nil
     
     /// Main initializer
     /// - Parameters:
@@ -74,7 +72,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environmentService = environmentService
@@ -82,7 +80,6 @@ public class CardSession {
         self.initialMessage = initialMessage
         self.cardId = cardId
         self.storageService = storageService
-        self.showScanOnboarding = showScanOnboarding
     }
     
     deinit {
@@ -150,7 +147,6 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
-		walletPointerForInteraction = (runnable as? WalletPointable)?.pointer
         
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
@@ -315,7 +311,6 @@ public class CardSession {
 		nfcReaderSubscriptions = []
 		sendSubscription = []
 		viewDelegate.sessionStopped()
-		walletPointerForInteraction = nil
 		
 		state = .inactive
 	}
@@ -333,7 +328,7 @@ public class CardSession {
     
     @available(iOS 13.0, *)
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
-        ReadCommand(walletPointer: walletPointerForInteraction).run(in: self) { [weak self] readResult in
+        ReadCommand().run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
             switch readResult {

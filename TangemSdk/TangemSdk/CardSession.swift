@@ -64,6 +64,7 @@ public class CardSession {
     
     private var needPreflightRead = true
     private var pin2Required = false
+	private var walletIndexForInteraction: WalletIndex?
     
     /// Main initializer
     /// - Parameters:
@@ -147,6 +148,7 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
+		walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
         
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
@@ -328,7 +330,7 @@ public class CardSession {
     
     @available(iOS 13.0, *)
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
-        ReadCommand().run(in: self) { [weak self] readResult in
+        ReadCommand(walletIndex: walletIndexForInteraction).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
             switch readResult {

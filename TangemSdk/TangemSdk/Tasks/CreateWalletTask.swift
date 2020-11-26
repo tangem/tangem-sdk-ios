@@ -18,17 +18,20 @@ import Foundation
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
 @available(iOS 13.0, *)
-public final class CreateWalletTask: CardSessionRunnable {
+public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
+	public var walletIndex: WalletIndex? {
+		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
+	}
 	
 	private let config: WalletConfig?
 	
-	private var walletIndex: Int?
+	private var walletIndexValue: Int?
 	private var firstAttemptWalletIndex: Int?
 	private var shouldCreateAtAnyIndex: Bool = false
 
@@ -37,7 +40,7 @@ public final class CreateWalletTask: CardSessionRunnable {
 	///   - walletIndex: Index at which new wallet will be created.
 	public init(config: WalletConfig?, walletIndex: Int?) {
 		self.config = config
-		self.walletIndex = walletIndex
+		self.walletIndexValue = walletIndex
 	}
 	
 	deinit {
@@ -60,10 +63,16 @@ public final class CreateWalletTask: CardSessionRunnable {
 				curve = config.curveId
 			}
 			
-			shouldCreateAtAnyIndex = walletIndex == nil
+			if walletIndexValue == nil {
+				shouldCreateAtAnyIndex = true
+				
+				// If wallet index wasn't specified, attempt to create wallet at first position
+				walletIndexValue = 0
+			}
+			
 		}
 
-		createWallet(in: session, forCard: card, at: walletIndex, with: curve, completion: completion)
+		createWallet(in: session, forCard: card, at: walletIndexValue, with: curve, completion: completion)
     }
 	
 	private func createWallet(in session: CardSession, forCard card: Card, at index: Int?, with curve: EllipticCurve, completion: @escaping CompletionResult<CreateWalletResponse>) {
@@ -75,7 +84,7 @@ public final class CreateWalletTask: CardSessionRunnable {
 			case .success(let createWalletResponse):
 				if createWalletResponse.status == .loaded {
 					
-					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletIndex: self.walletIndex != nil ? .index(self.walletIndex!) : nil)
+					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletIndex: self.walletIndexValue != nil ? .index(self.walletIndexValue!) : nil)
 						.run(in: session) { checkWalletResult in
 							switch checkWalletResult {
 							case .success(_):
@@ -94,7 +103,7 @@ public final class CreateWalletTask: CardSessionRunnable {
 					switch error {
 					case .alreadyCreated, .cardIsPurged, .invalidState:
 						if let nextIndex = self.updateWalletPointerToNext(currentIndex: index, walletsCount: card.walletsCount) {
-							self.walletIndex = nextIndex
+							self.walletIndexValue = nextIndex
 							self.createWallet(in: session, forCard: card, at: nextIndex, with: curve, completion: completion)
 							return
 						}

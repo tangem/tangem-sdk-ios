@@ -31,23 +31,19 @@ public struct CreateWalletResponse: ResponseCodable {
  * RemainingSignature is set to MaxSignatures.
  */
 @available(iOS 13.0, *)
-public final class CreateWalletCommand: Command, WalletPointable {
+public final class CreateWalletCommand: Command {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
-    
-	public var pointer: WalletPointer? {
-		walletIndexPointer
-	}
 	
-	private var walletIndexPointer: WalletIndexPointer?
+	private var walletIndex: Int?
 	private let config: WalletConfig?
 	
-	public init(config: WalletConfig?, walletPointer: WalletIndexPointer?) {
+	public init(config: WalletConfig?, walletIndex: Int?) {
 		self.config = config
-		self.walletIndexPointer = walletPointer
+		self.walletIndex = walletIndex
 	}
     
     deinit {
@@ -71,23 +67,23 @@ public final class CreateWalletCommand: Command, WalletPointable {
 		
 		let isWalletDataAvailable = card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData
 		
-        if let status = card.status {
-			let statusErr = statusError(status)
+        if let status = card.status,
+		   let error = statusError(status) {
 			
 			if isWalletDataAvailable {
 				
-				if walletIndexPointer?.index == card.walletIndex, let error = statusErr {
+				if walletIndex == card.walletIndex {
 					return error
 				}
 				
-			} else if let error = statusErr {
+			} else {
 				return error
 			}
             
         }
 		
 		if isWalletDataAvailable,
-		   let targetIndex = walletIndexPointer?.index,
+		   let targetIndex = walletIndex,
 		   targetIndex >= card.walletsCount ?? 1 {
 			return .walletIndexExceedsMaxValue
 		}
@@ -105,7 +101,7 @@ public final class CreateWalletCommand: Command, WalletPointable {
 			guard let card = card else { return .pin2OrCvcRequired }
 			
 			if let walletsCount = card.walletsCount,
-			   (walletIndexPointer?.index ?? 0) >= walletsCount {
+			   (walletIndex ?? 0) >= walletsCount {
 				return .walletIndexExceedsMaxValue
 			}
 			
@@ -130,7 +126,9 @@ public final class CreateWalletCommand: Command, WalletPointable {
             try tlvBuilder.append(.cvc, value: cvc)
         }
 		
-		try (walletIndexPointer ?? WalletIndexPointer(index: 0)).addTlvData(tlvBuilder)
+		if let index = walletIndex {
+			try WalletIndex.index(index).addTlvData(to: tlvBuilder)
+		}
 		
 		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {

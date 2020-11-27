@@ -85,6 +85,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     private var engine: CHHapticEngine?
     private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
+	private var infoScreenAppearWork: DispatchWorkItem?
 	
 	private lazy var infoScreen: InformationScreenViewController = {
 		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
@@ -170,6 +171,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func showUndefinedSpinner() {
 		guard remainingSecurityDelaySec <= 1 else { return }
 		
+		infoScreenAppearWork?.cancel()
 		DispatchQueue.main.async {
 			self.presentInfoScreen()
 			self.infoScreen.setState(.spinner, animated: true)
@@ -222,9 +224,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
 		print("Session started")
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+		infoScreenAppearWork = DispatchWorkItem(block: {
 			self.showInfoScreen()
-		}
+		})
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: infoScreenAppearWork!)
         startHapticsEngine()
     }
     
@@ -235,6 +238,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     
     func sessionStopped() {
 		print("Session stopped")
+		infoScreenAppearWork?.cancel()
 		dismissInfoScreen()
         stopHapticsEngine()
     }
@@ -247,6 +251,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		DispatchQueue.main.async {
 			guard
 				self.infoScreen.presentingViewController == nil,
+				!self.infoScreen.isBeingPresented,
 				let topmostViewController = UIApplication.shared.topMostViewController
 			else { return }
 			
@@ -256,8 +261,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	
 	private func dismissInfoScreen() {
 		DispatchQueue.main.async {
-			if self.infoScreen.presentedViewController is PinViewController { return }
-			if self.infoScreen.presentingViewController == nil || self.infoScreen.isBeingDismissed {
+			if self.infoScreen.presentedViewController != nil ||
+				self.infoScreen.presentingViewController == nil ||
+				self.infoScreen.isBeingDismissed {
 				return
 			}
 			
@@ -277,6 +283,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
+			infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {
             completion(nil)
@@ -290,6 +297,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
+			infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {
             completion(.failure(.unknownError))

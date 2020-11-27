@@ -456,7 +456,7 @@ public class CardSession {
                 }
                 completion(.success(()))
             } else {
-                completion(.failure(TangemSdkError.from(pinType: pinType)))
+                completion(.failure(.userCancelled))
             }
         }
     }

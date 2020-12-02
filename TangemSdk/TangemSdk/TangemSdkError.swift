@@ -325,10 +325,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .notSupportedFileSettings: return 50017  // [REDACTED_TODO_COMMENT]
 		case .wrongInteractionMode: return 50027
 		case .notSupportedFirmwareVersion: return 50007
-		case .walletIndexExceedsMaxValue: return 47901
-		case .maxNumberOfWalletsCreated: return 47902
-		case .walletNotFound: return 47903
-		case .cardReadWrongWallet: return 47904
+		case .walletIndexExceedsMaxValue: return 40502
+		case .maxNumberOfWalletsCreated: return 40503
+		case .walletNotFound: return 30008
+		case .cardReadWrongWallet: return 40402
         }
     }
     

@@ -74,7 +74,7 @@ public final class ReadFileCommand: Command {
 					self.fileSettings = response.fileSettings
 				}
 				self.fileData += response.fileData
-				guard response.fileDataCounter == nil else {
+				guard self.fileData.count < self.dataSize else {
 					self.completeTask(response, completion: completion)
 					return
 				}

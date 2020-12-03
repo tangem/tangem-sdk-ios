@@ -196,6 +196,7 @@
 		B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F88252C4514007E04EE /* ReadFileCommand.swift */; };
 		B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F8C252C46B1007E04EE /* FileSettings.swift */; };
 		B0800F96252C6867007E04EE /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F95252C6867007E04EE /* File.swift */; };
+		B089AD8A2577B075001BC1E5 /* DefaultSessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B089AD892577B075001BC1E5 /* DefaultSessionViewDelegate.swift */; };
 		B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */; };
 		B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B091C0F7253EF3EE003D57E7 /* FileHashData.swift */; };
 		B0A9447B256546DE00A7958E /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A9447A256546DE00A7958E /* Card.swift */; };
@@ -423,6 +424,7 @@
 		B0800F88252C4514007E04EE /* ReadFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommand.swift; sourceTree = "<group>"; };
 		B0800F8C252C46B1007E04EE /* FileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSettings.swift; sourceTree = "<group>"; };
 		B0800F95252C6867007E04EE /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		B089AD892577B075001BC1E5 /* DefaultSessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionViewDelegate.swift; sourceTree = "<group>"; };
 		B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFilesTask.swift; sourceTree = "<group>"; };
 		B091C0F7253EF3EE003D57E7 /* FileHashData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashData.swift; sourceTree = "<group>"; };
 		B0A9447A256546DE00A7958E /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -594,9 +596,11 @@
 			children = (
 				B0C6B4BE254C459600C0A1E1 /* InformationScreen */,
 				B0C6B4B3254C1CFF00C0A1E1 /* Transitions */,
+				5D7F4E44248FCF8300A1700D /* Pin */,
+				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
+				B089AD892577B075001BC1E5 /* DefaultSessionViewDelegate.swift */,
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
 				5D7F4E4B248FF81A00A1700D /* TangemSdkButton.swift */,
-				5D7F4E44248FCF8300A1700D /* Pin */,
 				B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */,
 			);
 			path = UI;
@@ -784,7 +788,6 @@
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
-				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
 				B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */,
 				5D6A92E82345FF1300158457 /* Tasks */,
 				5D6A92E12345F28F00158457 /* Commands */,
@@ -1191,6 +1194,7 @@
 				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
 				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
 				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
+				B089AD8A2577B075001BC1E5 /* DefaultSessionViewDelegate.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,

@@ -131,6 +131,10 @@ public enum TlvTag: Byte {
 	case fileIndex = 0x26
 	case fileSettings = 0x27
 	
+	case fileTypeName = 0x70
+	case fileData = 0x71
+	case fileOwnerIndex = 0x75
+	
 	// MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
@@ -138,7 +142,7 @@ public enum TlvTag: Byte {
         case .cardId, .batchId, .crExKey, .pin2IsDefault:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress,
-             .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress:
+			 .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:
             return .utf8String
         case .curveId:
             return .ellipticCurve
@@ -156,7 +160,7 @@ public enum TlvTag: Byte {
             return .cardStatus
         case .signingMethod:
             return .signingMethod
-		case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount:
+		case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex:
             return .byte
         case .interactionMode:
             return .interactionMode

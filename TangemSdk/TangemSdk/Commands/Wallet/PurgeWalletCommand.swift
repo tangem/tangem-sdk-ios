@@ -64,6 +64,18 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
         
         return nil
     }
+	
+	public func run(in session: CardSession, completion: @escaping CompletionResult<PurgeWalletResponse>) {
+		transieve(in: session) { (result) in
+			switch result {
+			case .success(let response):
+				session.environment.card?.status = .empty
+				completion(.success(response))
+			case .failure(let error):
+				completion(.failure(error))
+			}
+		}
+	}
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {

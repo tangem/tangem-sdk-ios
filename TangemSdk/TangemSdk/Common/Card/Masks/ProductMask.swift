@@ -19,6 +19,7 @@ public struct ProductMask: OptionSet, Codable {
 	public static let tag = ProductMask(rawValue: 0x02)
 	public static let idCard = ProductMask(rawValue: 0x04)
 	public static let idIssuer = ProductMask(rawValue: 0x08)
+	public static let twinCard = ProductMask(rawValue: 0x10)
 	
 	public func encode(to encoder: Encoder) throws {
 		var values = [String]()
@@ -33,6 +34,9 @@ public struct ProductMask: OptionSet, Codable {
 		}
 		if contains(ProductMask.idIssuer) {
 			values.append("IdIssuer")
+		}
+		if contains(ProductMask.twinCard) {
+			values.append("TwinCard")
 		}
 		
 		var container = encoder.singleValueContainer()
@@ -58,6 +62,10 @@ public struct ProductMask: OptionSet, Codable {
 		
 		if stringValues.contains("IdIssuer") {
 			mask.update(with: ProductMask.idIssuer)
+		}
+		
+		if stringValues.contains("TwinCard") {
+			mask.update(with: ProductMask.twinCard)
 		}
 		
 		self = mask

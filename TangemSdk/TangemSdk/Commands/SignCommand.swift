@@ -22,12 +22,14 @@ public struct SignResponse: ResponseCodable {
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 @available(iOS 13.0, *)
-public final class SignCommand: Command {
+public final class SignCommand: Command, WalletSelectable {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
+	
+	private(set) public var walletIndex: WalletIndex?
     
     private let hashes: [Data]
     private var responces: [SignResponse] = []
@@ -39,11 +41,14 @@ public final class SignCommand: Command {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount
     }()
     
-    /// Command initializer
-    /// - Parameters:
-    ///   - hashes: Array of transaction hashes.
-    public init(hashes: [Data]) {
+	/// Command initializer
+	/// - Note: Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
+	/// - Parameters:
+	///   - hashes: Array of transaction hashes.
+	///   - walletIndex: Index to wallet for interaction.
+	public init(hashes: [Data], walletIndex: WalletIndex?) {
         self.hashes = hashes
+		self.walletIndex = walletIndex
     }
     
     deinit {
@@ -68,7 +73,8 @@ public final class SignCommand: Command {
             return .notActivated
         }
         
-        if card.walletRemainingSignatures == 0 {
+		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
+		    card.walletRemainingSignatures == 0 {
             return .noRemainingSignatures
         }
         
@@ -170,6 +176,8 @@ public final class SignCommand: Command {
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
+		
+		try walletIndex?.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
@@ -183,7 +191,7 @@ public final class SignCommand: Command {
         return SignResponse(
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),
-            walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
+            walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
             walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
     

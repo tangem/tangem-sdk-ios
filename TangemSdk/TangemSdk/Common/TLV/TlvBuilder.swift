@@ -9,24 +9,24 @@
 import Foundation
 
 public class TlvBuilder {
-	private var tlvs = [Tlv]()
-	private let encoder = TlvEncoder()
+    private var tlvs = [Tlv]()
+    private let encoder = TlvEncoder()
 	
 	private var loggingValues: [Any] = []
 	private let isWithLogging = true
-	
-	public init() {}
-	
-	@discardableResult
-	public func append<T>(_ tag: TlvTag, value: T?) throws -> TlvBuilder {
-		tlvs.append(try encoder.encode(tag, value: value))
+    
+    public init() {}
+    
+    @discardableResult
+    public func append<T>(_ tag: TlvTag, value: T?) throws -> TlvBuilder {
+        tlvs.append(try encoder.encode(tag, value: value))
 		if isWithLogging {
 			loggingValues.append(value ?? "nil")
 		}
-		return self
-	}
-	
-	public func serialize() -> Data {
+        return self
+    }
+    
+    public func serialize() -> Data {
 		if isWithLogging {
 			print("\nTlvBuilder. Data for Command APDU:")
 			for (tlv, value) in zip(tlvs, loggingValues) {
@@ -40,6 +40,6 @@ public class TlvBuilder {
 			}
 			print("")
 		}
-		return tlvs.serialize()
-	}
+        return tlvs.serialize()
+    }
 }

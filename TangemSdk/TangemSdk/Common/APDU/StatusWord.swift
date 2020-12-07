@@ -26,6 +26,7 @@ public enum StatusWord: UInt16 {
     case pins23Changed = 0x9006
     case pins123Changed = 0x9007
 	case fileNotFound = 0x6A82
+	case walletNotFound = 0x6A88
     //case pinsNotChanged = 0x9000 //equal to processCompleted
     
     func toTangemSdkError() -> TangemSdkError? {
@@ -44,6 +45,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.insNotSupported
 		case .fileNotFound:
 			return TangemSdkError.fileNotFound
+		case .walletNotFound:
+			return TangemSdkError.walletNotFound
         case .unknown:
             return TangemSdkError.unknownStatus
         default:

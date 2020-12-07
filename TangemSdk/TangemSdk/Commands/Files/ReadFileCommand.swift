@@ -43,8 +43,7 @@ public final class ReadFileCommand: Command {
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		if let firmware = card.firmwareVersionValue,
-			firmware < FirmwareConstraints.minVersionForFiles {
+		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
 		

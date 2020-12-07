@@ -184,7 +184,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 				self.infoScreen.presentingViewController == nil,
 				!self.infoScreen.isBeingPresented,
 				let topmostViewController = UIApplication.shared.topMostViewController,
-				!(topmostViewController is PinViewController)
+				!(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)
 			else { return }
 			
 			topmostViewController.present(self.infoScreen, animated: true, completion: nil)

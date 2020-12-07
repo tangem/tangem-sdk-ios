@@ -10,11 +10,11 @@ import Foundation
 
 @available (iOS 13.0, *)
 extension Set where Element: FirmwareRestictible {
-	func minFirmwareVersion() -> Double {
-		map { $0.minFirmwareVersion }.max() ?? 0.0
+	func minFirmwareVersion() -> FirmwareVersion {
+		map { $0.minFirmwareVersion }.max() ?? .zero
 	}
 	
-	func maxFirmwareVersion() -> Double {
-		map { $0.maxFirmwareVersion }.min() ?? 0.0
+	func maxFirmwareVersion() -> FirmwareVersion {
+		map { $0.maxFirmwareVersion }.min() ?? .zero
 	}
 }

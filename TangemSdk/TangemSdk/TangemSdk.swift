@@ -63,47 +63,48 @@ public final class TangemSdk {
         self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader)
         self.config = config
     }
-    
-    /**
-     * To start using any card, you first need to read it using the `scanCard()` method.
-     * This method launches an NFC session, and once it’s connected with the card,
-     * it obtains the card data. Optionally, if the card contains a wallet (private and public key pair),
-     * it proves that the wallet owns a private key that corresponds to a public one.
-     *
-     * - Parameters:
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - completion: Returns `Swift.Result<Card,TangemSdkError>`
-     */
-    public func scanCard(initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
+	
+	/// To start using any card, you first need to read it using the `scanCard()` method.
+	/// This method launches an NFC session, and once it’s connected with the card,
+	/// it obtains the card data. Optionally, if the card contains a wallet (private and public key pair),
+	/// it proves that the wallet owns a private key that corresponds to a public one.
+	///
+	/// - Note: `WalletIndex` available for cards with COS v.4.0 or higher
+	/// - Parameters:
+	///   - walletIndex: Index to wallet which data should be read.  if not specified - wallet at default index will be read. See `WalletIndex` for more info
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
+	public func scanCard(walletIndex: WalletIndex? = nil, initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
+		startSession(with: ScanTask(walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
-    
-    /**
-     * This method allows you to sign one or multiple hashes.
-     * Simultaneous signing of array of hashes in a single `SignCommand` is required to support
-     * Bitcoin-type multi-input blockchains (UTXO).
-     * The `SignCommand` will return a corresponding array of signatures.
-     * Please note that Tangem cards usually protect the signing with a security delay
-     * that may last up to 45 seconds, depending on a card.
-     * It is for `SessionViewDelegate` to notify users of security delay.
-     *
-     * - Parameters:
-     *   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
-     *   - cardId: CID, Unique Tangem card ID number
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-     *   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
-     */
+	
+	/// This method allows you to sign one or multiple hashes.
+	/// Simultaneous signing of array of hashes in a single `SignCommand` is required to support
+	/// Bitcoin-type multi-input blockchains (UTXO).
+	/// The `SignCommand` will return a corresponding array of signatures.
+	/// Please note that Tangem cards usually protect the signing with a security delay
+	/// that may last up to 45 seconds, depending on a card.
+	/// It is for `SessionViewDelegate` to notify users of security delay.
+	///
+	/// - Note: `WalletIndex` available for cards with COS v.4.0 and higher
+	/// - Parameters:
+	///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
+	///   - cardId: CID, Unique Tangem card ID number
+	///   - walletIndex: Index to wallet that should sign hashes.  if not specified - wallet at default index will sign hashes. See `WalletIndex` for more info
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
     @available(iOS 13.0, *)
     public func sign(hashes: [Data],
                      cardId: String? = nil,
+					 walletIndex: WalletIndex? = nil,
                      initialMessage: Message? = nil,
                      pin1: String? = nil,
                      pin2: String? = nil,
                      completion: @escaping CompletionResult<SignResponse>) {
-        startSession(with: SignCommand(hashes: hashes),
+        startSession(with: SignCommand(hashes: hashes, walletIndex: walletIndex),
                      cardId: cardId,
                      initialMessage: initialMessage,
                      pin1: pin1,
@@ -312,50 +313,58 @@ public final class TangemSdk {
         let writeUserDataCommand = WriteUserDataCommand(userProtectedData: userProtectedData, userProtectedCounter: userProtectedCounter)
         startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
     }
-    
-    /**
-     * This command will create a new wallet on the card having ‘Empty’ state.
-     * A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.
-     * App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand` or `ReadCommand`
-     * and then transform it into an address of corresponding blockchain wallet
-     * according to a specific blockchain algorithm.
-     * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
-     * RemainingSignature is set to MaxSignatures.
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-     *   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
-     */
+	
+	/// This command will create a new wallet on the card having ‘Empty’ state.
+	/// A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.
+	/// App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand` or `ReadCommand`
+	/// and then transform it into an address of corresponding blockchain wallet
+	/// according to a specific blockchain algorithm.
+	/// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
+	/// RemainingSignature is set to MaxSignatures.
+	///
+	/// - Note: `WalletConfig` and `walletIndex` available for cards with COS v.4.0 or higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - config: Configuration for wallet that should be created (blockchain name, token...). This parameter available for cards with COS v.4.0 and higher. For earlier versions it will be ignored
+	///   - walletIndex: Index at which wallet should be created, if not specified - wallet will be created at default index.
+	///   This parameter available for cards with COS v.4.0 and higher. For earlier versions it will be ignored
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     @available(iOS 13.0, *)
     public func createWallet(cardId: String? = nil,
+							 config: WalletConfig? = nil,
+							 walletIndex: Int? = nil,
                              initialMessage: Message? = nil,
                              pin1: String? = nil,
                              pin2: String? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-        startSession(with: CreateWalletTask(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+		let task = CreateWalletTask(config: config, walletIndex: walletIndex)
+		startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
-    
-    /**
-     * This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
-     * the card changes state to ‘Empty’ and a new wallet can be created by `CREATE_WALLET` command.
-     * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
-     * ‘Purged’ state is final, it makes the card useless.
-     * - Parameters:
-     *   - cardId:  CID, Unique Tangem card ID number.
-     *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
-     *   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
-     *   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
-     */
+	
+	/// This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
+	/// the card changes state to ‘Empty’ and a new wallet can be created by `CREATE_WALLET` command.
+	/// If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
+	/// ‘Purged’ state is final, it makes the card useless.
+	///
+	/// - Note: Wallet pointer available for cards with COS v.4.0 or higher
+	/// - Parameters:
+	///   - cardId: CID, Unique Tangem card ID number.
+	///   - walletIndex: Index to wallet that should be purged.  if not specified - wallet at default index will be purged. See `WalletIndex` for more info
+	///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+	///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
+	///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
+	///   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
     @available(iOS 13.0, *)
     public func purgeWallet(cardId: String? = nil,
+							walletIndex: WalletIndex? = nil,
                             initialMessage: Message? = nil,
                             pin1: String? = nil,
                             pin2: String? = nil,
                             completion: @escaping CompletionResult<PurgeWalletResponse>) {
-        startSession(with: PurgeWalletCommand(), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+		startSession(with: PurgeWalletCommand(walletIndex: walletIndex), cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
     
     /**
@@ -548,7 +557,6 @@ public final class TangemSdk {
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
-                                  showScanOnboarding: config.showScanOnboarding,
                                   cardReader: reader,
                                   viewDelegate: viewDelegate,
                                   storageService: storageService)
@@ -580,7 +588,6 @@ public final class TangemSdk {
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
-                                  showScanOnboarding: config.showScanOnboarding,
                                   cardReader: reader,
                                   viewDelegate: viewDelegate,
                                   storageService: storageService)

@@ -10,6 +10,6 @@ import Foundation
 
 @available (iOS 13.0, *)
 public protocol FirmwareRestictible {
-	var minFirmwareVersion: Double { get }
-	var maxFirmwareVersion: Double { get }
+	var minFirmwareVersion: FirmwareVersion { get }
+	var maxFirmwareVersion: FirmwareVersion { get }
 }

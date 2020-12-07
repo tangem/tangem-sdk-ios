@@ -12,15 +12,15 @@ import Foundation
 public enum ReadFileCommandSettings: FirmwareRestictible {
 	case checkFileValidationHash
 	
-	public var minFirmwareVersion: Double {
+	public var minFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .checkFileValidationHash: return 3.34
+		case .checkFileValidationHash: return FirmwareVersion(major: 3, minor: 34)
 		}
 	}
 	
-	public var maxFirmwareVersion: Double {
+	public var maxFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .checkFileValidationHash: return .infinity
+		case .checkFileValidationHash: return .max
 		}
 	}
 }

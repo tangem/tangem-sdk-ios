@@ -23,14 +23,18 @@ public struct PurgeWalletResponse: ResponseCodable {
  * ‘Purged’ state is final, it makes the card useless.
  */
 @available(iOS 13.0, *)
-public final class PurgeWalletCommand: Command {
+public final class PurgeWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
+	
+	private(set) public var walletIndex: WalletIndex?
     
-    public init() {}
+	public init(walletIndex: WalletIndex?) {
+		self.walletIndex = walletIndex
+	}
     
     deinit {
          print("PurgeWalletCommand deinit")
@@ -87,6 +91,8 @@ public final class PurgeWalletCommand: Command {
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
         
+		try walletIndex?.addTlvData(to: tlvBuilder)
+		
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
     

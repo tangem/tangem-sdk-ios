@@ -37,15 +37,14 @@ public struct Config {
     
 
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
-    public var allowedCardTypes: [CardType] = [.sdk, .release, .unknown]
+    public var allowedCardTypes: [FirmwareType] = [.sdk, .release, .special]
 
     public var handleErrors: Bool = true
 
     public var savePin1InStaticField: Bool = true
     
     public var savePin2InStaticField: Bool = true
-    
-    public var showScanOnboarding: Bool = false
+	
 }
 
 

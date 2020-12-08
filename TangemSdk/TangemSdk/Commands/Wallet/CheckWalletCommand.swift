@@ -35,7 +35,7 @@ public final class CheckWalletCommand: Command, WalletSelectable {
     private let publicKey: Data
 	
     
-	public init(curve: EllipticCurve, publicKey: Data, walletIndex: WalletIndex?) {
+	public init(curve: EllipticCurve, publicKey: Data, walletIndex: WalletIndex? = nil) {
         self.curve = curve
         self.publicKey = publicKey
 		self.walletIndex = walletIndex

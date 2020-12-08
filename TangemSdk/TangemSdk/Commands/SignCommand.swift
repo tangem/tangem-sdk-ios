@@ -46,7 +46,7 @@ public final class SignCommand: Command, WalletSelectable {
 	/// - Parameters:
 	///   - hashes: Array of transaction hashes.
 	///   - walletIndex: Index to wallet for interaction.
-	public init(hashes: [Data], walletIndex: WalletIndex?) {
+	public init(hashes: [Data], walletIndex: WalletIndex? = nil) {
         self.hashes = hashes
 		self.walletIndex = walletIndex
     }

@@ -45,7 +45,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 	private var walletIndexValue: Int?
 	private let config: WalletConfig?
 	
-	public init(config: WalletConfig?, walletIndex: Int?) {
+	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
 		self.config = config
 		self.walletIndexValue = walletIndex
 	}

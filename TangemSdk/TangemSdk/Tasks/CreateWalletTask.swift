@@ -38,7 +38,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 	/// - Parameters:
 	///   - config: Specified wallet settings including blockchain name.
 	///   - walletIndex: Index at which new wallet will be created.
-	public init(config: WalletConfig?, walletIndex: Int?) {
+	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
 		self.config = config
 		self.walletIndexValue = walletIndex
 	}

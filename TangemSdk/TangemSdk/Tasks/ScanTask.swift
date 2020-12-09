@@ -16,7 +16,7 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
 	
 	private(set) public var walletIndex: WalletIndex?
 	
-	public init(walletIndex: WalletIndex?) {
+	public init(walletIndex: WalletIndex? = nil) {
 		self.walletIndex = walletIndex
 	}
     

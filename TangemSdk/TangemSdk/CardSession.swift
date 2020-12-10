@@ -278,12 +278,12 @@ public class CardSession {
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(encryptionKey: self.environment.encryptionKey) }
-            .sink(receiveCompletion: { readerCompletion in
+            .sink(receiveCompletion: {[unowned self] readerCompletion in
                 self.sendSubscription = []
                 if case let .failure(error) = readerCompletion {
                     completion(.failure(error))
                 }
-            }, receiveValue: { responseApdu in
+            }, receiveValue: {[unowned self] responseApdu in
                 self.sendSubscription = []
                 completion(.success(responseApdu))
             })

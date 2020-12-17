@@ -82,6 +82,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 		command.run(in: session) { result in
 			switch result {
 			case .success(let createWalletResponse):
+                session.environment.card?.status = createWalletResponse.status
 				if createWalletResponse.status == .loaded {
 					
 					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletIndex: self.walletIndexValue != nil ? .index(self.walletIndexValue!) : nil)

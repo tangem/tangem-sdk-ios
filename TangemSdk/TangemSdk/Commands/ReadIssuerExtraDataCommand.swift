@@ -166,7 +166,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(issuerData.count)/Float(issuerDataSize) * 100.0))
-        viewDelegate?.showPercentLoading(progress, hint: nil)
+        viewDelegate?.showPercentLoading(progress, message: nil, hint: nil)
         //viewDelegate?.showAlertMessage(Localization.readProgress(progress.description))
     }
     

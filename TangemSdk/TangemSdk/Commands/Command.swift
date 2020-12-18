@@ -47,7 +47,7 @@ protocol Command: ApduSerializable, CardSessionRunnable, PreflightReadCapable {
 }
 
 protocol PreflightReadCapable {
-    var needPreflightRead: Bool {get}
+    var needPreflightRead: Bool { get }
 }
 
 

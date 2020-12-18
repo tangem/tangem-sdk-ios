@@ -15,7 +15,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 /// Base protocol for run tasks in a card session
 @available(iOS 13.0, *)
 public protocol CardSessionRunnable {    
-    var requiresPin2: Bool {get}
+    var requiresPin2: Bool { get }
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
     

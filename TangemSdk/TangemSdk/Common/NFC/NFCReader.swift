@@ -29,6 +29,7 @@ final class NFCReader: NSObject {
     let enableSessionInvalidateByTimer = true
     
     private let loggingEnabled = true
+    private var isPaused = false
     private var connectedTag: NFCTag? = nil
     private var readerSessionError: TangemSdkError? = nil
     private var readerSession: NFCTagReaderSession?
@@ -46,8 +47,6 @@ final class NFCReader: NSObject {
     // Idle timer
     private var idleTimer: TangemTimer!
     private var _alertMessage: String? = nil
-    
-    private var bag = Set<AnyCancellable>()
     
     /// Invalidate session before session will close automatically
     @objc private func timerTimeout() {
@@ -102,6 +101,7 @@ extension NFCReader: CardReader {
     /// Start session and try to connect with tag
     func startSession(with message: String?) {
         if let existingSession = readerSession, existingSession.isReady { return }
+        isPaused = false
         readerSessionError = nil
         connectedTag = nil
         readerSession = NFCTagReaderSession(pollingOption: [.iso14443, .iso15693], delegate: self)!
@@ -113,7 +113,13 @@ extension NFCReader: CardReader {
     }
     
     func resumeSession() {
+        isPaused = false
         startSession(with: _alertMessage)
+    }
+    
+    func pauseSession(with errorMessage: String? = nil) {
+        isPaused = true
+        stopSession(with: errorMessage)
     }
     
     func stopSession(with errorMessage: String? = nil) {
@@ -143,7 +149,9 @@ extension NFCReader: CardReader {
         connectedTag = nil
         log("Restart polling")
         tag.send(nil)
-        session.restartPolling()
+        DispatchQueue.global().async {
+            session.restartPolling()
+        }
     }
     
     /// Send apdu command to connected tag
@@ -184,7 +192,7 @@ extension NFCReader: CardReader {
                 return
             }
             
-            func retry(_ distance: TimeInterval ) {
+            func retry(_ distance: TimeInterval) {
                 guard session.isReady else {
 					self.log("skip, session not ready")
                     return
@@ -314,10 +322,14 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         if readerSessionError == nil {
             readerSessionError = TangemSdkError.parse(nfcError)
         }
-        tag.send(completion: .failure(readerSessionError!))
-        tag = .init(nil)
+        tag.send(nil)
+        
+        if !isPaused { //skip completion event for paused session. Actually we need this stuff for immediate cancel(or error) handling only, before the session detect any tags
+            tag.send(completion: .failure(readerSessionError!))
+            tag = .init(nil)
+        }
+    
 		isSessionReady.send(false)
-		bag.removeAll()
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {

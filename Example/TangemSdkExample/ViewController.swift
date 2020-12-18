@@ -63,7 +63,7 @@ class ViewController: UIViewController {
                 return
             }
             
-			tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex)) { [unowned self] result in
+			tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex), initialMessage: Message(header: "Custom header", body: "Custom body")) { [unowned self] result in
                 switch result {
                 case .success(let signResponse):
                     self.log(signResponse)

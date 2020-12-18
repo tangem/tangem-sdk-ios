@@ -44,8 +44,8 @@ public struct Config {
     public var savePin1InStaticField: Bool = true
     
     public var savePin2InStaticField: Bool = true
-	
+    
+    /// Full CID will be displayed, if nil
+    public var cardIdDisplayedNumbersCount: Int? = nil
 }
-
-
 

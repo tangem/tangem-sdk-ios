@@ -42,8 +42,6 @@ public struct Message: Codable {
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
 public protocol SessionViewDelegate: class {
-    func pinMessage(_ text: String?)
-    
     func showAlertMessage(_ text: String)
     
     /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.

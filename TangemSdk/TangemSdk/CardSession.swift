@@ -297,8 +297,7 @@ public class CardSession {
     }
     
     func pause(error: TangemSdkError? = nil) {
-        environment.encryptionKey = nil
-        reader.stopSession(with: error?.localizedDescription)
+        reader.pauseSession(with: error?.localizedDescription)
     }
     
     func resume() {
@@ -400,7 +399,6 @@ public class CardSession {
         
         let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
         let openSesssionApdu = try! openSessionCommand.serialize(with: self.environment)
-        
         return reader
             .sendPublisher(apdu: openSesssionApdu)
             .flatMap { responseApdu -> AnyPublisher<Void, TangemSdkError> in

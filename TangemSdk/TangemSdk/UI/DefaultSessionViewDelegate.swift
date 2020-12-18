@@ -139,7 +139,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func tagConnected() {
         if let pinnedMessage = pinnedMessage {
             showAlertMessage(pinnedMessage)
-            pinnedMessage = nil
+            self.pinnedMessage = nil
         }
         
 		showUndefinedSpinner()

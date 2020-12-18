@@ -19,8 +19,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
 	private var infoScreenAppearWork: DispatchWorkItem?
-    private var pinMessage: String?
-	
+    private var pinnedMessage: String?
+    private var remainingSecurityDelaySec: Float = 0
+    
 	private lazy var infoScreen: InformationScreenViewController = {
 		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
 	}()
@@ -42,14 +43,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		self.transitioningDelegate = FadeTransitionDelegate()
 		createHapticEngine()
 	}
-    
-    func pinMessage(_ text: String?) {
-        pinMessage = text
-        
-        guard let message = text else { return }
-        
-        showAlertMessage(message)
-    }
 	
 	func showAlertMessage(_ text: String) {
 		reader.alertMessage = text
@@ -74,17 +67,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		}
 	}
 	
-	private var remainingSecurityDelaySec: Float = 0
+
 	func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
 		print("Showing security delay")
 		playTick()
-        
-        let unwrappedMessage = message?.alertMessage ?? Localization.nfcAlertDefault
-        if let pinnedMessage = pinMessage {
-            showAlertMessage(pinnedMessage + "\n" + unwrappedMessage)
-        } else {
-            showAlertMessage(unwrappedMessage)
-        }
         
 		DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
@@ -151,11 +137,18 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	func tagConnected() {
+        if let pinnedMessage = pinnedMessage {
+            showAlertMessage(pinnedMessage)
+            pinnedMessage = nil
+        }
+        
 		showUndefinedSpinner()
 		print("tag did connect")
 	}
 	
 	func tagLost() {
+        pinnedMessage = reader.alertMessage
+        showAlertMessage(Localization.nfcAlertDefault)
 		switchInfoScreen(to: .howToScan, animated: true)
 		print("tag lost")
 	}
@@ -189,7 +182,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func sessionStopped() {
 		print("Session stopped")
 		infoScreenAppearWork?.cancel()
-        pinMessage = nil
+        pinnedMessage = nil
 		dismissInfoScreen()
 		stopHapticsEngine()
 	}

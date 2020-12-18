@@ -63,10 +63,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	private var remainingSecurityDelaySec: Float = 0
-	func showSecurityDelay(remainingMilliseconds: Int) {
+	func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
 		print("Showing security delay")
 		playTick()
-		showAlertMessage(Localization.nfcAlertDefault)
+        showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
 		DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
 				self.infoScreen.setState(.spinner, animated: true)
@@ -83,14 +83,14 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			self.infoScreen.setState(.securityDelay, animated: true)
 				
 			self.presentInfoScreen()
-			self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: Localization.nfcAlertDefault)
+			self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: hint ?? Localization.nfcAlertDefault)
 		}
 	}
 	
 	
-	func showPercentLoading(_ percent: Int, hint: String?) {
+	func showPercentLoading(_ percent: Int, message: Message?, hint: String?) {
 		playTick()
-		showAlertMessage(Localization.nfcAlertDefault)
+		showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
 		
 		DispatchQueue.main.async {
 			self.infoScreen.setState(.percentProgress, animated: true)

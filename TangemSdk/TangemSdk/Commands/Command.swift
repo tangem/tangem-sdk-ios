@@ -47,7 +47,7 @@ protocol Command: ApduSerializable, CardSessionRunnable, PreflightReadCapable {
 }
 
 protocol PreflightReadCapable {
-    var needPreflightRead: Bool {get}
+    var needPreflightRead: Bool { get }
 }
 
 
@@ -135,7 +135,7 @@ extension Command {
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
-                        session.viewDelegate.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds)
+                        session.viewDelegate.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds, message: nil, hint: nil)
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
                             session.restartPolling()
                         }

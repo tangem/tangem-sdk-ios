@@ -163,6 +163,7 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
+		5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */; };
 		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
 		5DFCE40824B3307F007B95AF /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DFCE40724B3307F007B95AF /* Colors.xcassets */; };
 		5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40924B34799007B95AF /* SetPinViewController.swift */; };
@@ -391,6 +392,7 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageService.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
+		5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardIdFormatter.swift; sourceTree = "<group>"; };
 		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 		5DFCE40724B3307F007B95AF /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		5DFCE40924B34799007B95AF /* SetPinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinViewController.swift; sourceTree = "<group>"; };
@@ -851,6 +853,7 @@
 				B0800F94252C6859007E04EE /* Files */,
 				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5D41EA0523D19BAD004DE701 /* TangemTimer.swift */,
+				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1241,6 +1244,7 @@
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
 				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
 				B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */,
+				5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */,
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,

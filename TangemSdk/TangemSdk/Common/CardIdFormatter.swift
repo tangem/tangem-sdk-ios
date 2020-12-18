@@ -12,10 +12,8 @@ public struct CardIdFormatter {
     public init() {}
     
     public func formatted(cid: String, numbers: Int? = nil) -> String {
-        guard let numbers = numbers else{
-            return cid
-        }
-        
-        return String(cid.dropLast().suffix(numbers))
+        let format = "cid_format".localized
+        let croppedCid = numbers == nil ? cid : String(cid.dropLast().suffix(numbers!))
+        return String(format: format, croppedCid)
     }
 }

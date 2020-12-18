@@ -17,6 +17,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
 	private var infoScreenAppearWork: DispatchWorkItem?
+    private var pinMessage: String?
 	
 	private lazy var infoScreen: InformationScreenViewController = {
 		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
@@ -38,6 +39,14 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		self.transitioningDelegate = FadeTransitionDelegate()
 		createHapticEngine()
 	}
+    
+    func pinMessage(_ text: String?) {
+        pinMessage = text
+        
+        guard let message = text else { return }
+        
+        showAlertMessage(message)
+    }
 	
 	func showAlertMessage(_ text: String) {
 		reader.alertMessage = text
@@ -66,7 +75,14 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
 		print("Showing security delay")
 		playTick()
-        showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
+        
+        let unwrappedMessage = message?.alertMessage ?? Localization.nfcAlertDefault
+        if let pinnedMessage = pinMessage {
+            showAlertMessage(pinnedMessage + "\n" + unwrappedMessage)
+        } else {
+            showAlertMessage(unwrappedMessage)
+        }
+        
 		DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
 				self.infoScreen.setState(.spinner, animated: true)
@@ -170,6 +186,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func sessionStopped() {
 		print("Session stopped")
 		infoScreenAppearWork?.cancel()
+        pinMessage = nil
 		dismissInfoScreen()
 		stopHapticsEngine()
 	}

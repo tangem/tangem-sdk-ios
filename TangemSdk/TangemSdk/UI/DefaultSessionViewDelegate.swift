@@ -12,12 +12,16 @@ import CoreHaptics
 
 @available(iOS 13.0, *)
 final class DefaultSessionViewDelegate: SessionViewDelegate {
+    public var config: Config
+    
 	private let reader: CardReader
 	private var engine: CHHapticEngine?
 	private var engineNeedsStart = true
 	private let transitioningDelegate: FadeTransitionDelegate
 	private var infoScreenAppearWork: DispatchWorkItem?
-	
+    private var pinnedMessage: String?
+    private var remainingSecurityDelaySec: Float = 0
+    
 	private lazy var infoScreen: InformationScreenViewController = {
 		InformationScreenViewController.instantiateController(transitioningDelegate: transitioningDelegate)
 	}()
@@ -33,8 +37,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		return CHHapticEngine.capabilitiesForHardware().supportsHaptics
 	}()
 	
-	init(reader: CardReader) {
+    init(reader: CardReader, config: Config) {
 		self.reader = reader
+        self.config = config
 		self.transitioningDelegate = FadeTransitionDelegate()
 		createHapticEngine()
 	}
@@ -44,7 +49,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	func hideUI(_ indicatorMode: IndicatorMode?) {
-		print("Session view delegate hideUI with mode: \(indicatorMode)")
+        print("Session view delegate hideUI with mode: \(String(describing: indicatorMode))")
 		guard let indicatorMode = indicatorMode else {
 			DispatchQueue.main.async {
 				self.dismissInfoScreen()
@@ -62,11 +67,11 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		}
 	}
 	
-	private var remainingSecurityDelaySec: Float = 0
-	func showSecurityDelay(remainingMilliseconds: Int) {
+
+	func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
 		print("Showing security delay")
 		playTick()
-		showAlertMessage(Localization.nfcAlertDefault)
+        
 		DispatchQueue.main.async {
 			guard remainingMilliseconds >= 100 else {
 				self.infoScreen.setState(.spinner, animated: true)
@@ -83,14 +88,14 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			self.infoScreen.setState(.securityDelay, animated: true)
 				
 			self.presentInfoScreen()
-			self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: Localization.nfcAlertDefault)
+			self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: hint ?? Localization.nfcAlertDefault)
 		}
 	}
 	
 	
-	func showPercentLoading(_ percent: Int, hint: String?) {
+	func showPercentLoading(_ percent: Int, message: Message?, hint: String?) {
 		playTick()
-		showAlertMessage(Localization.nfcAlertDefault)
+		showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
 		
 		DispatchQueue.main.async {
 			self.infoScreen.setState(.percentProgress, animated: true)
@@ -132,11 +137,18 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	func tagConnected() {
+        if let pinnedMessage = pinnedMessage {
+            showAlertMessage(pinnedMessage)
+            self.pinnedMessage = nil
+        }
+        
 		showUndefinedSpinner()
 		print("tag did connect")
 	}
 	
 	func tagLost() {
+        pinnedMessage = reader.alertMessage
+        showAlertMessage(Localization.nfcAlertDefault)
 		switchInfoScreen(to: .howToScan, animated: true)
 		print("tag lost")
 	}
@@ -170,6 +182,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	func sessionStopped() {
 		print("Session stopped")
 		infoScreenAppearWork?.cancel()
+        pinnedMessage = nil
 		dismissInfoScreen()
 		stopHapticsEngine()
 	}
@@ -178,6 +191,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		switchInfoScreen(to: .howToScan, animated: false)
 	}
 	
+    func setConfig(_ config: Config) {
+        self.config = config
+    }
+    
 	private func presentInfoScreen() {
 		DispatchQueue.main.async {
 			guard
@@ -209,6 +226,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
+        let cardId = formatCardId(cardId)
 		let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
 		let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
 			return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
@@ -223,6 +241,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+        let cardId = formatCardId(cardId)
 		let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
 		let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
 			return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
@@ -355,4 +374,13 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			print("CHHapticEngine error: \(error)")
 		}
 	}
+    
+    private func formatCardId(_ cid: String?) -> String? {
+        guard let cid = cid else {
+            return nil
+        }
+        
+        let cidFormatter = CardIdFormatter()
+        return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
+    }
 }

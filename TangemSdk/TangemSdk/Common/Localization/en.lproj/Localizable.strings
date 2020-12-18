@@ -142,3 +142,5 @@
 
 "pin_change_new_code_confirm_format" = "New %@ (Confirm)";
 "pin_set_code_format" = "Set %@";
+
+"cid_format" = "Card #%@";

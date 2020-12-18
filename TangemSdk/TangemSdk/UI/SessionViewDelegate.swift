@@ -45,9 +45,9 @@ public protocol SessionViewDelegate: class {
     func showAlertMessage(_ text: String)
     
     /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.
-    func showSecurityDelay(remainingMilliseconds: Int) //todo: rename santiseconds
+    func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) //todo: rename santiseconds
     
-    func showPercentLoading(_ percent: Int, hint: String?)
+    func showPercentLoading(_ percent: Int, message: Message?, hint: String?)
     
     /// It is called when a user is expected to enter pin1 code.
     func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void)

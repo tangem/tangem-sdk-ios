@@ -75,4 +75,5 @@ public protocol SessionViewDelegate: class {
 	
 	func showInfoScreen()
     
+    func setConfig(_ config: Config)
 }

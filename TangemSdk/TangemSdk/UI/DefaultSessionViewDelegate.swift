@@ -12,6 +12,8 @@ import CoreHaptics
 
 @available(iOS 13.0, *)
 final class DefaultSessionViewDelegate: SessionViewDelegate {
+    public var config: Config
+    
 	private let reader: CardReader
 	private var engine: CHHapticEngine?
 	private var engineNeedsStart = true
@@ -34,8 +36,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		return CHHapticEngine.capabilitiesForHardware().supportsHaptics
 	}()
 	
-	init(reader: CardReader) {
+    init(reader: CardReader, config: Config) {
 		self.reader = reader
+        self.config = config
 		self.transitioningDelegate = FadeTransitionDelegate()
 		createHapticEngine()
 	}
@@ -53,7 +56,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	func hideUI(_ indicatorMode: IndicatorMode?) {
-		print("Session view delegate hideUI with mode: \(indicatorMode)")
+        print("Session view delegate hideUI with mode: \(String(describing: indicatorMode))")
 		guard let indicatorMode = indicatorMode else {
 			DispatchQueue.main.async {
 				self.dismissInfoScreen()
@@ -195,6 +198,10 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		switchInfoScreen(to: .howToScan, animated: false)
 	}
 	
+    func setConfig(_ config: Config) {
+        self.config = config
+    }
+    
 	private func presentInfoScreen() {
 		DispatchQueue.main.async {
 			guard
@@ -226,6 +233,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
+        let cardId = formatCardId(cardId)
 		let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
 		let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
 			return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
@@ -240,6 +248,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	}
 	
 	private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+        let cardId = formatCardId(cardId)
 		let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
 		let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
 			return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
@@ -372,4 +381,13 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			print("CHHapticEngine error: \(error)")
 		}
 	}
+    
+    private func formatCardId(_ cid: String?) -> String? {
+        guard let cid = cid else {
+            return nil
+        }
+        
+        let cidFormatter = CardIdFormatter()
+        return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
+    }
 }

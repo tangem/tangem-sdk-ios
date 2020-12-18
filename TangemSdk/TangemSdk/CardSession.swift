@@ -15,7 +15,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 /// Base protocol for run tasks in a card session
 @available(iOS 13.0, *)
 public protocol CardSessionRunnable {    
-    var requiresPin2: Bool {get}
+    var requiresPin2: Bool { get }
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
     
@@ -51,12 +51,14 @@ public class CardSession {
     var state: CardSessionState = .inactive
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
+    
+    private(set) var cardId: String?
+    
     public internal(set) var environment: SessionEnvironment
     public private(set) var connectedTag: NFCTagType? = nil
     
     private let reader: CardReader
     private let initialMessage: Message?
-    private var cardId: String?
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
@@ -445,7 +447,7 @@ public class CardSession {
             }
         }
         
-        viewDelegate.requestPin(pinType: pinType, cardId: self.cardId) {[weak self] pin in
+        viewDelegate.requestPin(pinType: pinType, cardId: environment.card?.cardId ?? cardId) {[weak self] pin in
             guard let self = self else { return }
             
             if let pin = pin {

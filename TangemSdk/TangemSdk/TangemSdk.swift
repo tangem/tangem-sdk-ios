@@ -37,13 +37,6 @@ public final class TangemSdk {
     
     private var cardSession: CardSession? = nil
     
-    private lazy var environmentService: SessionEnvironmentService = {
-        let service = SessionEnvironmentService(config: config,
-                                                terminalKeysService: terminalKeysService,
-                                                cardValuesStorage: CardValuesStorage(storageService: storageService))
-        return service
-    }()
-    
     private lazy var terminalKeysService: TerminalKeysService = {
         let service = TerminalKeysService(secureStorageService: secureStorageService)
         return service
@@ -60,7 +53,7 @@ public final class TangemSdk {
     public init(cardReader: CardReader? = nil, viewDelegate: SessionViewDelegate? = nil, config: Config = Config()) {
         let reader = cardReader ?? NFCReader()
         self.reader = reader
-        self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader)
+        self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader, config: config)
         self.config = config
     }
 	
@@ -553,7 +546,7 @@ public final class TangemSdk {
             completion(.failure(.busy))
             return
         }
-        
+        viewDelegate.setConfig(config)
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
@@ -584,7 +577,7 @@ public final class TangemSdk {
             callback(existingSession, .busy)
             return
         }
-        
+        viewDelegate.setConfig(config)
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
@@ -595,6 +588,9 @@ public final class TangemSdk {
     }
     
     private func prepareEnvironmentService(_ pin1: String?, _ pin2: String?) -> SessionEnvironmentService {
+        let environmentService = SessionEnvironmentService(config: config,
+                                                           terminalKeysService: terminalKeysService,
+                                                           cardValuesStorage: CardValuesStorage(storageService: storageService))
         if let pin1 = pin1 {
             environmentService.pin1 = PinCode(.pin1, stringValue: pin1)
         }

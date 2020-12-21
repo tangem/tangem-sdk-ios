@@ -50,7 +50,8 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
         
         card.isPin1Default = session.environment.pin1.isDefault
         
-        if let fw = card.firmwareVersionValue, fw > 1.19 { //skip old card with persistent SD
+        if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
+           !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {
             CheckPinCommand().run(in: session) { checkPinResult in
                 switch checkPinResult {
                 case .success(let checkPinResponse):

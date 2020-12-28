@@ -9,5 +9,15 @@
 import Foundation
 
 struct FirmwareConstraints {
-	static let minVersionForFiles = 3.29
+	
+	struct AvailabilityVersions {
+		static let walletData = FirmwareVersion(major: 4, minor: 0)
+		static let pin2IsDefault = FirmwareVersion(major: 4, minor: 0)
+		static let files = FirmwareVersion(major: 3, minor: 29)
+	}
+	
+	struct DeprecationVersions {
+		static let walletRemainingSignatures = FirmwareVersion(major: 4, minor: 0)
+	}
+	
 }

@@ -23,14 +23,18 @@ public struct PurgeWalletResponse: ResponseCodable {
  * ‘Purged’ state is final, it makes the card useless.
  */
 @available(iOS 13.0, *)
-public final class PurgeWalletCommand: Command {
+public final class PurgeWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
+	
+	private(set) public var walletIndex: WalletIndex?
     
-    public init() {}
+	public init(walletIndex: WalletIndex? = nil) {
+		self.walletIndex = walletIndex
+	}
     
     deinit {
          print("PurgeWalletCommand deinit")
@@ -60,6 +64,18 @@ public final class PurgeWalletCommand: Command {
         
         return nil
     }
+	
+	public func run(in session: CardSession, completion: @escaping CompletionResult<PurgeWalletResponse>) {
+		transieve(in: session) { (result) in
+			switch result {
+			case .success(let response):
+				session.environment.card?.status = .empty
+				completion(.success(response))
+			case .failure(let error):
+				completion(.failure(error))
+			}
+		}
+	}
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
@@ -75,6 +91,8 @@ public final class PurgeWalletCommand: Command {
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
         
+		try walletIndex?.addTlvData(to: tlvBuilder)
+		
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
     

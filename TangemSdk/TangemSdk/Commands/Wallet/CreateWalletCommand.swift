@@ -14,6 +14,9 @@ public struct CreateWalletResponse: ResponseCodable {
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
     public let status: CardStatus
+	/// Wallet index on card.
+	/// - Note: Available only for cards with COS v.4.0 and higher
+	public let walletIndex: Int
     /// Public key of a newly created blockchain wallet.
     public let walletPublicKey: Data
 }
@@ -28,32 +31,66 @@ public struct CreateWalletResponse: ResponseCodable {
  * RemainingSignature is set to MaxSignatures.
  */
 @available(iOS 13.0, *)
-public final class CreateWalletCommand: Command {
+public final class CreateWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
-    
-    public init() {}
+	
+	public var walletIndex: WalletIndex? {
+		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
+	}
+	
+	private var walletIndexValue: Int?
+	private let config: WalletConfig?
+	
+	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
+		self.config = config
+		self.walletIndexValue = walletIndex
+	}
     
     deinit {
         print ("CreateWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                  break
-            case .loaded:
-                return .alreadyCreated
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+		
+		func statusError(_ status: CardStatus) -> TangemSdkError? {
+			switch status {
+			case .empty:
+				  return nil
+			case .loaded:
+				return .alreadyCreated
+			case .notPersonalized:
+				return .notPersonalized
+			case .purged:
+				return .cardIsPurged
+			}
+		}
+		
+		let isWalletDataAvailable = card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData
+		
+        if let status = card.status,
+		   let error = statusError(status) {
+			
+			if isWalletDataAvailable {
+				
+				if walletIndexValue == card.walletIndex {
+					return error
+				}
+				
+			} else {
+				return error
+			}
+            
         }
+		
+		if isWalletDataAvailable,
+		   let targetIndex = walletIndexValue,
+		   targetIndex >= card.walletsCount ?? 1 {
+			return .walletIndexExceedsMaxValue
+		}
         
         if card.isActivated {
             return .notActivated
@@ -64,6 +101,19 @@ public final class CreateWalletCommand: Command {
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
+			
+			guard let card = card else { return .pin2OrCvcRequired }
+			
+			if let walletsCount = card.walletsCount,
+			   (walletIndexValue ?? 0) >= walletsCount {
+				return .walletIndexExceedsMaxValue
+			}
+			
+			if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
+			   card.pin2IsDefault ?? false {
+				return .alreadyCreated
+			}
+			
             return .pin2OrCvcRequired
         }
         
@@ -79,6 +129,21 @@ public final class CreateWalletCommand: Command {
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
         }
+		
+		if let index = walletIndexValue {
+			try WalletIndex.index(index).addTlvData(to: tlvBuilder)
+		}
+		
+		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
+		   let config = config {
+			
+			try tlvBuilder.append(.settingsMask, value: config.settingsMask)
+				.append(.curveId, value: config.curveId)
+			
+			if let walletData = try serializeWalletData(config.walletData) {
+				try tlvBuilder.append(.walletData, value: walletData)
+			}
+		}
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
     }
@@ -92,6 +157,25 @@ public final class CreateWalletCommand: Command {
         return CreateWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status),
+			walletIndex: try decoder.decodeOptional(.walletIndex) ?? 0,
             walletPublicKey: try decoder.decode(.walletPublicKey))
     }
+	
+	private func serializeWalletData(_ walletData: WalletData) throws -> Data? {
+		guard let blockchainName = walletData.blockchainName else {
+			return nil
+		}
+		
+		let tlvBuilder = try TlvBuilder()
+			.append(.blockchainName, value: blockchainName)
+		
+		if walletData.tokenSymbol != nil {
+			try tlvBuilder
+				.append(.tokenSymbol, value: walletData.tokenSymbol)
+				.append(.tokenContractAddress, value: walletData.tokenContractAddress)
+				.append(.tokenDecimal, value: walletData.tokenDecimal)
+		}
+		
+		return tlvBuilder.serialize()
+	}
 }

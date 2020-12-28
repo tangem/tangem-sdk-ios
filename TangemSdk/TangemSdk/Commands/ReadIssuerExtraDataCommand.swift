@@ -108,8 +108,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return .missingIssuerPublicKey
         }
 		
-		if let cardFirmwareVersion = card.firmwareVersionValue,
-			cardFirmwareVersion >= FirmwareConstraints.minVersionForFiles {
+		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
         
@@ -167,7 +166,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(issuerData.count)/Float(issuerDataSize) * 100.0))
-        viewDelegate?.showPercentLoading(progress, hint: nil)
+        viewDelegate?.showPercentLoading(progress, message: nil, hint: nil)
         //viewDelegate?.showAlertMessage(Localization.readProgress(progress.description))
     }
     

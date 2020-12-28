@@ -42,7 +42,9 @@ public final class TlvEncoder {
             try typeCheck(value, Int.self)
             return (value as! Int).bytes2
         case .boolValue:
-            fatalError("Unsupported")
+            try typeCheck(value, Bool.self)
+            let value = value as! Bool
+            return value ? Data([Byte(1)]) : Data([Byte(0)])
         case .data:
             try typeCheck(value, Data.self)
             return value as! Data
@@ -68,9 +70,22 @@ public final class TlvEncoder {
             let mask = value as! ProductMask
             return Data([mask.rawValue])
         case .settingsMask:
-            try typeCheck(value, SettingsMask.self)
-            let mask = value as! SettingsMask
-            return mask.rawValue.bytes2
+			do {
+				try typeCheck(value, SettingsMask.self)
+				let mask = value as! SettingsMask
+				let rawValue = mask.rawValue
+				if 0xFFFF0000 & rawValue != 0 {
+					 return rawValue.bytes4
+				} else {
+					 return rawValue.bytes2
+				}
+			} catch {
+				print("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
+			}
+			
+			try typeCheck(value, WalletSettingsMask.self)
+			let mask = value as! WalletSettingsMask
+			return mask.rawValue.bytes4
         case .cardStatus:
             try typeCheck(value, CardStatus.self)
             let status = value as! CardStatus
@@ -78,7 +93,7 @@ public final class TlvEncoder {
         case .signingMethod:
             try typeCheck(value, SigningMethod.self)
             let method = value as! SigningMethod
-            return method.rawValue.byte
+            return Data([method.rawValue])
         case .interactionMode:
 			do {
 				try typeCheck(value, IssuerExtraDataMode.self)

@@ -87,7 +87,7 @@ public struct SessionEnvironment {
     
     var legacyMode: Bool = true
     
-    public var allowedCardTypes: [CardType] = [.sdk, .release, .unknown]
+    public var allowedCardTypes: [FirmwareType] = [.sdk, .release, .special]
     
     public var handleErrors: Bool = true
     

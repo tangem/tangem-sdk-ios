@@ -98,7 +98,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
     }
     
     private func requestNewPin(in session: CardSession, completion: @escaping CompletionResult<Void>) {
-        session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId) { result in
+        session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId ?? session.cardId) { result in
             switch result {
             case .success(let pinChangeResult):
                 let newPinData = pinChangeResult.newPin.sha256()

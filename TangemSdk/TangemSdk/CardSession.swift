@@ -15,7 +15,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 /// Base protocol for run tasks in a card session
 @available(iOS 13.0, *)
 public protocol CardSessionRunnable {    
-    var requiresPin2: Bool {get}
+    var requiresPin2: Bool { get }
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: ResponseCodable
     
@@ -51,20 +51,22 @@ public class CardSession {
     var state: CardSessionState = .inactive
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
+    
+    private(set) var cardId: String?
+    
     public internal(set) var environment: SessionEnvironment
     public private(set) var connectedTag: NFCTagType? = nil
     
     private let reader: CardReader
     private let initialMessage: Message?
-    private let showScanOnboarding: Bool
-    private var cardId: String?
     private let storageService: StorageService
     private let environmentService: SessionEnvironmentService
     private var sendSubscription: [AnyCancellable] = []
-    private var connectedTagSubscription: [AnyCancellable] = []
+    private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
     private var pin2Required = false
+	private var walletIndexForInteraction: WalletIndex?
     
     /// Main initializer
     /// - Parameters:
@@ -73,7 +75,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, showScanOnboarding: Bool, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
+    public init(environmentService: SessionEnvironmentService, cardId: String? = nil, initialMessage: Message? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate, storageService: StorageService) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environmentService = environmentService
@@ -81,7 +83,6 @@ public class CardSession {
         self.initialMessage = initialMessage
         self.cardId = cardId
         self.storageService = storageService
-        self.showScanOnboarding = showScanOnboarding
     }
     
     deinit {
@@ -93,6 +94,16 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
+        guard TangemSdk.isNFCAvailable else {
+            completion(.failure(.unsupportedDevice))
+            return
+        }
+        
+		guard state == .inactive && !reader.isSessionReady.value else {
+            completion(.failure(.busy))
+            return
+        }
+        
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
@@ -139,6 +150,7 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
+		walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
         
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
@@ -155,27 +167,48 @@ public class CardSession {
             return
         }
         
-        guard state == .inactive else {
+		guard state == .inactive && !reader.isSessionReady.value else {
             onSessionStarted(self, .busy)
             return
         }
         
         state = .active
-        viewDelegate.sessionStarted()
+		
+		reader.tag
+			.dropFirst()
+			.debounce(for: 0.3, scheduler: RunLoop.main)
+			.removeDuplicates()
+			.sink(receiveCompletion: { _ in },
+				  receiveValue: { [unowned self] tag in
+					if tag != nil {
+						self.viewDelegate.tagConnected()
+					} else {
+						self.viewDelegate.tagLost()
+					}
+				  })
+			.store(in: &nfcReaderSubscriptions)
+        
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.connectedTag = tag
-                        self.viewDelegate.tagConnected()
                     } else {
                         self.connectedTag = nil
                         self.environment.encryptionKey = nil
-                        self.viewDelegate.tagLost()
                     }
             })
-            .store(in: &connectedTagSubscription)
+            .store(in: &nfcReaderSubscriptions)
+
+		reader.isSessionReady
+			.dropFirst()
+			.sink(receiveValue: { [unowned self] isReady in
+				isReady ?
+					self.viewDelegate.sessionStarted() :
+					self.viewDelegate.sessionStopped()
+			})
+			.store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .compactMap{ $0 }
@@ -185,7 +218,6 @@ public class CardSession {
                     self.stop(error: error)
                     onSessionStarted(self, error)
                 }}, receiveValue: { [unowned self] tag in
-                    self.viewDelegate.sessionStarted()
                     if case .tag = tag, self.needPreflightRead {
                         self.preflightCheck(onSessionStarted)
                     } else {
@@ -193,15 +225,9 @@ public class CardSession {
                         onSessionStarted(self, nil)
                     }
             })
-            .store(in: &connectedTagSubscription)
+            .store(in: &nfcReaderSubscriptions)
         
-        if !storageService.bool(forKey: .hasSuccessfulTapIn) && showScanOnboarding {
-            viewDelegate.showScanUI(session: self) {
-                onSessionStarted(self, TangemSdkError.userCancelled)
-            }
-        } else {
-            start()
-        }
+		start()
     }
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
@@ -210,26 +236,22 @@ public class CardSession {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        connectedTagSubscription = []
-        sendSubscription = []
-        viewDelegate.sessionStopped()
         
         if !storageService.bool(forKey: .hasSuccessfulTapIn) {
             storageService.set(boolValue: true, forKey: .hasSuccessfulTapIn)
         }
         
         environmentService.saveEnvironmentValues(environment, cardId: cardId)
-        state = .inactive
+		
+		postStopCleanUp()
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
     public func stop(error: Error) {
         reader.stopSession(with: error.localizedDescription)
-        connectedTagSubscription = []
-        sendSubscription = []
-        viewDelegate.sessionStopped()
-        state = .inactive
+		
+		postStopCleanUp()
     }
     
     /// Restarts the polling sequence so the reader session can discover new tags.
@@ -258,12 +280,12 @@ public class CardSession {
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(encryptionKey: self.environment.encryptionKey) }
-            .sink(receiveCompletion: { readerCompletion in
+            .sink(receiveCompletion: {[unowned self] readerCompletion in
                 self.sendSubscription = []
                 if case let .failure(error) = readerCompletion {
                     completion(.failure(error))
                 }
-            }, receiveValue: { responseApdu in
+            }, receiveValue: {[unowned self] responseApdu in
                 self.sendSubscription = []
                 completion(.success(responseApdu))
             })
@@ -277,8 +299,7 @@ public class CardSession {
     }
     
     func pause(error: TangemSdkError? = nil) {
-        environment.encryptionKey = nil
-        reader.stopSession(with: error?.localizedDescription)
+        reader.pauseSession(with: error?.localizedDescription)
     }
     
     func resume() {
@@ -289,6 +310,15 @@ public class CardSession {
         reader.startSession(with: initialMessage?.alertMessage)
     }
     
+	private func postStopCleanUp() {
+		nfcReaderSubscriptions = []
+		walletIndexForInteraction = nil
+		sendSubscription = []
+		viewDelegate.sessionStopped()
+		
+		state = .inactive
+	}
+	
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {
         switch runnableResult {
         case .success(let runnableResponse):
@@ -302,7 +332,7 @@ public class CardSession {
     
     @available(iOS 13.0, *)
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
-        ReadCommand().run(in: self) { [weak self] readResult in
+        ReadCommand(walletIndex: walletIndexForInteraction).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
             switch readResult {
@@ -324,7 +354,7 @@ public class CardSession {
                 if let wrongCardError = wrongCardError {
                     self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isReady else {
+						guard self.reader.isSessionReady.value else {
                             onSessionStarted(self, .userCancelled)
                             self.stop()
                             return
@@ -371,7 +401,6 @@ public class CardSession {
         
         let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
         let openSesssionApdu = try! openSessionCommand.serialize(with: self.environment)
-        
         return reader
             .sendPublisher(apdu: openSesssionApdu)
             .flatMap { responseApdu -> AnyPublisher<Void, TangemSdkError> in
@@ -418,7 +447,7 @@ public class CardSession {
             }
         }
         
-        viewDelegate.requestPin(pinType: pinType, cardId: self.cardId) {[weak self] pin in
+        viewDelegate.requestPin(pinType: pinType, cardId: environment.card?.cardId ?? cardId) {[weak self] pin in
             guard let self = self else { return }
             
             if let pin = pin {
@@ -432,7 +461,7 @@ public class CardSession {
                 }
                 completion(.success(()))
             } else {
-                completion(.failure(TangemSdkError.from(pinType: pinType)))
+                completion(.failure(.userCancelled))
             }
         }
     }

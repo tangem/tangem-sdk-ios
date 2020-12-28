@@ -12,16 +12,16 @@ import Foundation
 public enum FileWriteSettings: Hashable, FirmwareRestictible {
 	case none, verifiedWithPin2
 	
-	public var minFirmwareVersion: Double {
+	public var minFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .none: return 3.29
-		case .verifiedWithPin2: return 3.34
+		case .none: return FirmwareVersion(major: 3, minor: 29)
+		case .verifiedWithPin2: return FirmwareVersion(major: 3, minor: 34)
 		}
 	}
 	
-	public var maxFirmwareVersion: Double {
+	public var maxFirmwareVersion: FirmwareVersion {
 		switch self {
-		case .none, .verifiedWithPin2: return .infinity
+		case .none, .verifiedWithPin2: return .max
 		}
 	}
 }

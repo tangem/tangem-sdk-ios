@@ -56,6 +56,7 @@ public struct Tlv: Equatable {
         dataStream.open()
         defer { dataStream.close() }
         
+		print("\nDeserializing TLV")
         var tags = [Tlv]()
         while dataStream.hasBytesAvailable {
             guard let tagCode = dataStream.readByte(),
@@ -66,6 +67,13 @@ public struct Tlv: Equatable {
             }
             
             let tlvItem = Tlv(tagRaw: tagCode, value: data)
+			var val: String = "\(data)"
+			if let data = data as? Data {
+				val = data.asHexString()
+			} else {
+				val += " --- \(tlvItem.value.asHexString())"
+			}
+			print("TAG_\(tlvItem.tag) [0x\(String(format: "%02x", tlvItem.tagRaw)):\(tlvItem.tag.valueType)]: " + val)
             tags.append(tlvItem)
         }
         

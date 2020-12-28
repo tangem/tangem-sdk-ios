@@ -44,7 +44,7 @@
 "pin_enter" = "Anmelden %@";
 "pin_confirm_error_format" = "Die Codes stimmen nicht überein";
 "pin_change_code_format" = "Ändern %@";
-"pin_change_new_code_format" = "Neu $@";
+"pin_change_new_code_format" = "Neu %@";
 "pin_change_current_code_format" = "Aktuell %@";
 "pin_set_code_confirm_format" = "Bestätigen %@";
 
@@ -94,6 +94,8 @@
 "error_wrong_interaction_mode" = "Unsupported interaction mode";
 "error_not_supported_firmware_version" = "Card firmware does not meet requirements";
 
+"error_no_space_for_new_wallet" = "Max number of wallets already created";
+
 //Android only
 
 // Label. Need NFC to be switched on.
@@ -122,6 +124,15 @@
 "how_to_unknown_move_card" = "Um festzustellen, wo die Ihre NFC-Antenne ist, bewegen Sie die Karte nach oben und nach unten, bis eine Bestätigung erscheint.";
 "how_to_unknown_nothing_happened" = "Nichts passiert? Versuchen Sie die Karte vom Handy wegzunehmen und wieder darauf zu legen.";
 "how_to_unknown_detected" = "Die Verbindung wurde hergestellt. Hier ist die Position Ihrer NFC-Antenne";
+"how_to_nfc_detected" = "Sie haben gerade den Standort Ihrer NFC-Antenne gefunden. Bitte merken Sie sich diesen Standort.";
+"how_to_known_here_how_to_use" = "Hier finden Sie Informationen, wie man Tangem Cards mit (Telefon) verwendet";
+"how_to_known_antenna_is_here" = "Ihre NFC-Antenne ist hier";
+"how_to_known_tap_card_to_the_back" = "Legen Sie Ihre Karte zu der Rückseite des Telefons an";
+"how_to_known_tap_card_to_the_front" = "Legen Sie Ihre Karte zu der Vorderseite des Telefons an";
+"how_to_button" = "Anweisungen";
+"how_to_got_it_button" = "Ok, verstanden!";
+"how_to_try_other_way_button" = "Funktioniert immer noch nicht";
+"how_to_show_again_button" = "Noch einmal anzeigen";
 
 "tap_in_button" = "Eintippen";
 "tap_in_known_info_message" = "Halten Sie Ihre Karte vor dem Handy wie gezeigt, wenn Sie eintippen um die Verbindung herzustellen.";
@@ -129,5 +140,7 @@
 "tap_in_unknown_info_message" = "Sehen Sie sich das Video an um zu sehen wie man eintippt und verbinden Sie NFC auf Ihrem Handy zu der Karte.";
 "tap_in_unknown_how_to_tap_in_button" = "Wie man eintippt";
 
-"pin_change_new_code_confirm_format" = "Neu $@ (Bestätigen)";
+"pin_change_new_code_confirm_format" = "Neu %@ (Bestätigen)";
 "pin_set_code_format" = "Vorgeben %@";
+
+"cid_format" = "Card #%@";

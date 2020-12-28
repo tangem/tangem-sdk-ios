@@ -88,6 +88,7 @@ public class PersonalizeCommand: Command {
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: serializeCardData(environment: environment, cardId: cardId, cardData: config.cardData))
+			.append(.walletsCount, value: config.walletsCount)
         
         if !config.ndefRecords.isEmpty {
             try tlvBuilder.append(.ndefData, value: serializeNdef(config))
@@ -96,18 +97,18 @@ public class PersonalizeCommand: Command {
         if let acquirer = acquirer {
             try tlvBuilder.append(.acquirerPublicKey, value: acquirer.keyPair.publicKey)
         }
-        
+
         return tlvBuilder.serialize()
     }
     
     private func serializeNdef(_ config: CardConfig) throws -> Data {
         return try NdefEncoder(ndefRecords: config.ndefRecords,
-                               useDynamicNdef: config.useDynamicNdef)
+                               useDynamicNdef: config.useDynamicNDEF)
             .encode()
     }
     
     private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+        let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)
             .append(.productMask, value: cardData.productMask)
             .append(.manufactureDateTime, value: cardData.manufactureDateTime)

@@ -21,8 +21,8 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	public let data: Data
 	
 	public var requiredPin2: Bool { false }
-	public var minFirmwareVersion: Double { settings.minFirmwareVersion() }
-	public var maxFirmwareVersion: Double { settings.maxFirmwareVersion() }
+	public var minFirmwareVersion: FirmwareVersion { settings.minFirmwareVersion() }
+	public var maxFirmwareVersion: FirmwareVersion { settings.maxFirmwareVersion() }
 	
 	let startingSignature: Data
 	let finalizingSignature: Data
@@ -56,8 +56,8 @@ public struct FileDataProtectedByPasscode: DataToWrite {
 	public let data: Data
 	
 	public var requiredPin2: Bool { true }
-	public var minFirmwareVersion: Double { settings.minFirmwareVersion() }
-	public var maxFirmwareVersion: Double { settings.maxFirmwareVersion() }
+	public var minFirmwareVersion: FirmwareVersion { settings.minFirmwareVersion() }
+	public var maxFirmwareVersion: FirmwareVersion { settings.maxFirmwareVersion() }
 	
 	var settings: Set<FileWriteSettings> = [.verifiedWithPin2]
 	

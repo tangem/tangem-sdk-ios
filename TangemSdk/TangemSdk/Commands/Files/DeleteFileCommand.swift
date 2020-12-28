@@ -23,8 +23,7 @@ public final class DeleteFileCommand: Command {
 			return .notPersonalized
 		}
 		
-		if let firmware = card.firmwareVersionValue,
-			firmware < FirmwareConstraints.minVersionForFiles {
+		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files {
 			return .notSupportedFirmwareVersion
 		}
 		if card.isActivated {

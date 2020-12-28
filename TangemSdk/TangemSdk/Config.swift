@@ -37,7 +37,7 @@ public struct Config {
     
 
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
-    public var allowedCardTypes: [CardType] = [.sdk, .release, .unknown]
+    public var allowedCardTypes: [FirmwareType] = [.sdk, .release, .special]
 
     public var handleErrors: Bool = true
 
@@ -45,8 +45,7 @@ public struct Config {
     
     public var savePin2InStaticField: Bool = true
     
-    public var showScanOnboarding: Bool = false
+    /// Full CID will be displayed, if nil
+    public var cardIdDisplayedNumbersCount: Int? = nil
 }
-
-
 

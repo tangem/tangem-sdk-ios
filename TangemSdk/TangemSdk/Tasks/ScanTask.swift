@@ -11,9 +11,14 @@ import Foundation
 /// Task that allows to read Tangem card and verify its private key.
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
 @available(iOS 13.0, *)
-public final class ScanTask: CardSessionRunnable {
+public final class ScanTask: CardSessionRunnable, WalletSelectable {
     public typealias CommandResponse = Card
-    public init() {}
+	
+	private(set) public var walletIndex: WalletIndex?
+	
+	public init(walletIndex: WalletIndex? = nil) {
+		self.walletIndex = walletIndex
+	}
     
     deinit {
         print("ScanTask deinit")
@@ -45,7 +50,8 @@ public final class ScanTask: CardSessionRunnable {
         
         card.isPin1Default = session.environment.pin1.isDefault
         
-        if let fw = card.firmwareVersionValue, fw > 1.19 { //skip old card with persistent SD
+        if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
+           !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {
             CheckPinCommand().run(in: session) { checkPinResult in
                 switch checkPinResult {
                 case .success(let checkPinResponse):
@@ -96,7 +102,7 @@ public final class ScanTask: CardSessionRunnable {
                 return
         }
         
-        CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in
+		CheckWalletCommand(curve: curve, publicKey: publicKey, walletIndex: walletIndex).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 completion(.success(card))

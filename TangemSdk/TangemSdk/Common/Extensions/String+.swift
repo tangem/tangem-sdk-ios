@@ -31,7 +31,7 @@ public extension String {
         return prefix(1).lowercased() + dropFirst()
     }
     
-    var localized: String {
+    internal var localized: String {
         Localization.getFormat(for: self)
     }
 }

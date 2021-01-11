@@ -51,7 +51,7 @@ class CheckPinCommand: Command {
         guard let _ = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
-        
-        return CheckPinResponse(isPin2Default: true)
+
+        return CheckPinResponse(isPin2Default: environment.pin2.isDefault)
     }
 }

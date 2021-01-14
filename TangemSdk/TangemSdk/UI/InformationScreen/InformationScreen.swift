@@ -14,8 +14,8 @@ class InformationScreenViewController: UIViewController {
 	static func instantiateController(transitioningDelegate: UIViewControllerTransitioningDelegate? = nil) -> InformationScreenViewController {
 		let storyboard = UIStoryboard(name: "InformationScreen", bundle: .sdkBundle)
 		let controller: InformationScreenViewController = storyboard.instantiateViewController(identifier: String(describing: self))
-//		controller.transitioningDelegate = transitioningDelegate
-		controller.modalPresentationStyle = .fullScreen
+		controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
 		return controller
 	}
 	

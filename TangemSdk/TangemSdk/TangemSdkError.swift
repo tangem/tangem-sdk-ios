@@ -336,8 +336,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .maxNumberOfWalletsCreated: return 40503
 		case .walletNotFound: return 30008
 		case .cardReadWrongWallet: return 40402
-        case .wrongPin1: return 40011
-        case .wrongPin2: return 40012
+        case .wrongPin1: return 40012
+        case .wrongPin2: return 40013
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
         }

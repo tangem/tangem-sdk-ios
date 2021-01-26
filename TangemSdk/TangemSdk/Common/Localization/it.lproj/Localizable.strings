@@ -112,9 +112,9 @@
 "error_cannot_be_depersonalized" = "Questa scheda non può essere generica";
 "error_already_created" = "Portafoglio già creato";
 "error_purge_prohibited" = "La configurazione di questa carta non consente la cancellazione del portafoglio";
-"error_pin1_cannot_be_changed" = "Il codice di accesso PIN1 non può essere modificato";
-"error_pin2_cannot_be_changed" = "La password PIN2 non può essere modificata";
-"error_pin1_cannot_be_default" = "Il codice di accesso PIN1 non può essere modificato in base all'impostazione predefinita. Crea un nuovo codice di accesso PIN1.";
+"error_pin1_cannot_be_changed" = "Il codice di accesso non può essere modificato";
+"error_pin2_cannot_be_changed" = "La password non può essere modificata";
+"error_pin1_cannot_be_default" = "Il codice di accesso non può essere modificato in base all'impostazione predefinita. Crea un nuovo codice di accesso";
 "error_no_remaining_signatures" = "Non puoi firmare dati con questo portafoglio perché la carta ha raggiunto il limite di firma";
 "error_empty_hashes" = "Non c' è nulla da firmare qui";
 "error_cannot_be_signed" = "Questi dati non possono essere firmati";
@@ -139,5 +139,15 @@
 "error_pin1_required" = "Richiesto un codice di accesso";
 "error_pin2_required" = "Richiesta una password";
 "error_invalid_response" = "Risposta non valida";
+
+"error_file_not_found" = "File not found";
+"error_wrong_interaction_mode" = "Unsupported interaction mode";
+"error_not_supported_firmware_version" = "Card firmware does not meet requirements";
+
+"error_no_space_for_new_wallet" = "Max number of wallets already created";
+"error_card_read_wrong_wallet" = "Card read wrong wallet";
+
+"error_wrong_pin1" = "Wrong Access Сode";
+"error_wrong_pin2" = "Wrong Passcode";
 
 "cid_format" = "Card #%@";

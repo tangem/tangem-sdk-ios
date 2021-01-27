@@ -176,8 +176,8 @@ public class CardSession {
 		
 		reader.tag
 			.dropFirst()
+            .removeDuplicates()
 			.debounce(for: 0.3, scheduler: RunLoop.main)
-			.removeDuplicates()
 			.sink(receiveCompletion: { _ in },
 				  receiveValue: { [unowned self] tag in
 					if tag != nil {

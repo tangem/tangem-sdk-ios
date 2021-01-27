@@ -63,9 +63,9 @@
 "error_cannot_be_depersonalized" = "Diese Karte kann nicht depersonalisiert werden";
 "error_already_created" = "Ein Wallet ist bereits erstellt worden";
 "error_purge_prohibited" = "Die Konfiguration der Karte erlaubt nicht, das Wallet zu löschen";
-"error_pin1_cannot_be_changed" = "PIN1 Der Zugangscode konnte nicht geändert werden";
-"error_pin2_cannot_be_changed" = "PIN2 Der Passcode konnte nicht geändert werden ";
-"error_pin1_cannot_be_default" = " PIN1 Der Zugangscode konnte durch einen Default-Wert nicht geändert werden. Bitte erstellen Sie einen neuen PIN1-Zugangscode.";
+"error_pin1_cannot_be_changed" = "Der Zugangscode konnte nicht geändert werden";
+"error_pin2_cannot_be_changed" = "Der Passcode konnte nicht geändert werden";
+"error_pin1_cannot_be_default" = "Der Zugangscode konnte durch einen Default-Wert nicht geändert werden. Bitte erstellen Sie einen neuen Zugangscode";
 "error_no_remaining_signatures" = "Sie können die Daten mit diesem Wallet nicht signieren, weil die Karte die Unterschriftsbeschränkung erreicht hat";
 "error_empty_hashes" = "Hier gibt es nichts zu signieren";
 "error_cannot_be_signed" = "Diese Daten können nicht signiert werden";
@@ -95,7 +95,9 @@
 "error_not_supported_firmware_version" = "Card firmware does not meet requirements";
 
 "error_no_space_for_new_wallet" = "Max number of wallets already created";
-
+"error_card_read_wrong_wallet" = "Card read wrong wallet";
+"error_wrong_pin1" = "Wrong Access Сode";
+"error_wrong_pin2" = "Wrong Passcode";
 //Android only
 
 // Label. Need NFC to be switched on.

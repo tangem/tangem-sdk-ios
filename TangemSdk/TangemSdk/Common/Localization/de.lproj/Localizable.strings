@@ -69,10 +69,9 @@
 "error_no_remaining_signatures" = "Sie können die Daten mit diesem Wallet nicht signieren, weil die Karte die Unterschriftsbeschränkung erreicht hat";
 "error_empty_hashes" = "Hier gibt es nichts zu signieren";
 "error_cannot_be_signed" = "Diese Daten können nicht signiert werden";
-"error_card_is_empty" = "Bitte erstellen Sie ein Wallet um die Daten zu signieren";
+"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
 "error_not_personalized" = "Diese Karte ist nicht personalisiert worden";
 "error_not_activated" = "Diese Karte ist nicht aktiviert worden";
-"error_purged" = " Sie können die Daten mit diesem Wallet nicht signieren, weil ist Karte gelöscht worden ist";
 "error_verification_failed" = "Die Datenverifizierung ist fehlgeschlagen";
 "error_card_verification_failed" = "Die Kartenverifizierung ist fehlgeschlagen";
 "error_data_size_too_large" = "Die Datengröße überschreitet die Höchstgrenze von 512 B";

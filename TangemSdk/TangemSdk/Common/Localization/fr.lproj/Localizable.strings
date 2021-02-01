@@ -69,10 +69,9 @@
 "error_no_remaining_signatures" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a atteint sa limite de signatures";
 "error_empty_hashes" = "Il n'y a rien à signer ici";
 "error_cannot_be_signed" = "Ces données ne peuvent pas être signées";
-"error_card_is_empty" = "Créez un portefeuille pour signer les données";
+"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
 "error_not_personalized" = "Cette carte n'a pas été personnalisée";
 "error_not_activated" = "Cette carte n'a pas été activée";
-"error_purged" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a été effacée";
 "error_verification_failed" = "Erreur de validation des données";
 "error_card_verification_failed" = "Erreur de validation de la carte";
 "error_data_size_too_large" = "La taille des données dépasse la limite maximale de 512 bytes";

@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
         config.linkedTerminal = false
-        config.legacyMode = false
+        config.legacyMode = true
         return TangemSdk(config: config)
     }()
     

@@ -352,8 +352,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .busy: return "error_busy".localized
         case .cannotBeDepersonalized: return "error_cannot_be_depersonalized".localized
         case .cardError: return "error_card_error".localized
-        case .cardIsEmpty: return "error_card_is_empty".localized
-        case .cardIsPurged: return "error_purged".localized
+        case .cardIsEmpty, .cardIsPurged: return "error_card_is_empty".localized
         case .dataCannotBeWritten: return "error_data_cannot_be_written".localized
         case .dataSizeTooLarge: return "error_data_size_too_large".localized
         case .emptyHashes: return "error_empty_hashes".localized

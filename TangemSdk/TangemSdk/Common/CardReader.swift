@@ -29,7 +29,6 @@ public protocol CardReader: class {
     func resumeSession()
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
-    func send(apdu: CommandApdu, completion: @escaping (Result<ResponseApdu,TangemSdkError>) -> Void)
     @available(iOS 13.0, *)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
     func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) 

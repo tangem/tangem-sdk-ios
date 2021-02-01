@@ -68,10 +68,9 @@
 "error_no_remaining_signatures" = "You cannot sign data with this wallet because the card has reached its signature limit";
 "error_empty_hashes" = "There is nothing to sign here";
 "error_cannot_be_signed" = "This data cannot be signed";
-"error_card_is_empty" = "Please create a wallet to sign data";
+"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
 "error_not_personalized" = "This card has not been personalized";
 "error_not_activated" = "This card has not been activated";
-"error_purged" = "You cannot sign data with this wallet because the card has been purged";
 "error_verification_failed" = "Data verification failed";
 "error_card_verification_failed" = "Card verification failed";
 "error_data_size_too_large" = "Data size exceeds the max limit of 512 bytes";

@@ -70,7 +70,7 @@ public final class CheckWalletCommand: Command, WalletSelectable {
                 if verifyResult {
                     completion(.success(checkWalletResponse))
                 } else {
-                    completion(.failure(.verificationFailed))
+                    completion(.failure(.cardVerificationFailed))
                 }
             case .failure(let error):
                 completion(.failure(error))

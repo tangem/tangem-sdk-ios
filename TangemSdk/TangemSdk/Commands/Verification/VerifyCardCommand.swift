@@ -92,7 +92,7 @@ public class VerifyCardCommand: Command {
                 }
                 
                 if !verified {
-                    completion(.failure(.verificationFailed))
+                    completion(.failure(.cardVerificationFailed))
                     return
                 }
                 
@@ -125,7 +125,7 @@ public class VerifyCardCommand: Command {
                                                                           verificationState: VerifyCardState.online,
                                                                           artworkInfo: firstResult.artwork)))
                 } else {
-                    completion(.failure(.verificationFailed))
+                    completion(.failure(.cardVerificationFailed))
                 }
             case .failure(let networkError):
                 print(networkError.localizedDescription)

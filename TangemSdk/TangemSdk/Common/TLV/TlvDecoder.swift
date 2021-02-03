@@ -163,8 +163,8 @@ public final class TlvDecoder {
         }
     }
     
-    private func typeCheck<T1, T2>(_ expected: T1, _ current: T2, for tag: TlvTag) throws {
-        guard T1.self == T2.self || T1?.self == T2.self else {
+    private func typeCheck<T1, T2>(_ expected: T1.Type, _ current: T2.Type, for tag: TlvTag) throws {
+        guard T2.self is T1.Type || T2.self is Optional<T1>.Type else {
             throw TangemSdkError.decodingFailedTypeMismatch("Decoding error. Tag: \(tag). Type is \(current). Expected: \(expected)")
         }
     }

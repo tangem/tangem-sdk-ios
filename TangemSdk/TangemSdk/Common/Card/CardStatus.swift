@@ -33,7 +33,7 @@ public enum CardStatus: Int, Codable {
 		case "purged":
 			self = .purged
 		default:
-			throw TangemSdkError.decodingFailed
+			throw TangemSdkError.decodingFailed("Failed to decode CardStatus")
 		}
 	}
 }

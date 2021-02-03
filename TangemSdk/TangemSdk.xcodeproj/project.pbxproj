@@ -41,7 +41,6 @@
 		5D3F77B124B9B89000E8695B /* CardValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B024B9B89000E8695B /* CardValues.swift */; };
 		5D3F77B324B9B8B500E8695B /* CardValuesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */; };
 		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
-		5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D41EA0523D19BAD004DE701 /* TangemTimer.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
@@ -265,7 +264,6 @@
 		5D3F77B024B9B89000E8695B /* CardValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValues.swift; sourceTree = "<group>"; };
 		5D3F77B224B9B8B500E8695B /* CardValuesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardValuesStorage.swift; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
-		5D41EA0523D19BAD004DE701 /* TangemTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemTimer.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
@@ -852,7 +850,6 @@
 				5D6A92D52344E2B400158457 /* Localization */,
 				B0800F94252C6859007E04EE /* Files */,
 				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
-				5D41EA0523D19BAD004DE701 /* TangemTimer.swift */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 			);
 			path = Common;
@@ -1219,7 +1216,6 @@
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
-				5D41EA0623D19BAD004DE701 /* TangemTimer.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,

@@ -142,7 +142,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
         }
         
         guard let status = SetPinStatus.fromStatusWord(apdu.statusWord) else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to parse set pin status")
         }
         
         let decoder = TlvDecoder(tlv: tlv)

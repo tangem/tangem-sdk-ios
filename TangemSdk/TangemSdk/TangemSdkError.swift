@@ -45,19 +45,19 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case deserializeApduFailed
     
     /// This error is returned when the `TlvEncoder` failed to encode value not matching `TlvTag` value type
-    case encodingFailedTypeMismatch
+    case encodingFailedTypeMismatch(_ message: String)
     
     /// This error is returned when the `TlvEncoder` failed to encode nil value or failed to encode stiring with utf8 encoding
-    case encodingFailed
+    case encodingFailed(_ message: String)
     
     /// This error is returned when the `TlvDecoder` cannot find desired tag. You can use `decodeOptional` to handle this error automatically
-    case decodingFailedMissingTag
+    case decodingFailedMissingTag(_ message: String)
     
     /// This error is returned when the `TlvDecoder` failed to decode value not matching `TlvTag` value type
-    case decodingFailedTypeMismatch
+    case decodingFailedTypeMismatch(_ message: String)
     
     /// This error is returned when the `TlvDecoder` failed to decode value. Please let us know
-    case decodingFailed
+    case decodingFailed(_ message: String)
     
     case failedToEncryptApdu
     
@@ -386,6 +386,16 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
         case .wrongPin1: return "error_wrong_pin1".localized
         case .wrongPin2: return "error_wrong_pin2".localized
+        case .encodingFailed(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .encodingFailedTypeMismatch(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailed(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailedTypeMismatch(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailedMissingTag(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

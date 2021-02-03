@@ -119,9 +119,9 @@ public final class TlvEncoder {
         }
     }
     
-    private func typeCheck<FromType, ToType>(_ value: FromType, _ to: ToType, for tag: TlvTag) throws {
+    private func typeCheck<Value, ToType>(_ value: Value, _ to: ToType, for tag: TlvTag) throws {
         guard type(of: value) is ToType else {
-            throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag). Value is \(value) of type \(FromType.self). Expected: \(to).")
+            throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag). Value is \(value) of type \(Value.self). Expected: \(to).")
         }
     }
 }

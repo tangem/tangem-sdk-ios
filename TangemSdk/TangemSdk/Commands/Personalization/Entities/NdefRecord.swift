@@ -28,7 +28,7 @@ struct NdefRecord: Codable {
         if let type = NdefRecordType(rawValue: typeString.lowercased()) {
             self.type = type
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode NdefRecordType")
         }
         value = try values.decode(String.self, forKey: .value)
     }

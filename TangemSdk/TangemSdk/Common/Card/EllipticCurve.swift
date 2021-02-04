@@ -19,7 +19,7 @@ public enum EllipticCurve: String, Codable {
 		if let curve = EllipticCurve(rawValue: stringValue) {
 			self = curve
 		} else {
-			throw TangemSdkError.decodingFailed
+			throw TangemSdkError.decodingFailed("Failed to decode elliptic curve value")
 		}
 	}
 }

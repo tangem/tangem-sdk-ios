@@ -86,14 +86,14 @@ public struct CardConfig: ResponseCodable {
         if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
             self.curveID = curveID
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
         }
         
         let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
         if let rawValue = signingMethodsDictionary["rawValue"]  {
             signingMethods = SigningMethod(rawValue: rawValue)
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
         }
         
         maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)

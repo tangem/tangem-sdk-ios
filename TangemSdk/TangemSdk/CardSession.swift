@@ -99,7 +99,7 @@ public class CardSession {
             return
         }
         
-		guard state == .inactive && !reader.isSessionReady.value else {
+		guard state == .inactive /*&& !reader.isSessionReady.value */ else {
             completion(.failure(.busy))
             return
         }
@@ -167,7 +167,7 @@ public class CardSession {
             return
         }
         
-		guard state == .inactive && !reader.isSessionReady.value else {
+		guard state == .inactive /*&& !reader.isSessionReady.value*/ else {
             onSessionStarted(self, .busy)
             return
         }
@@ -176,8 +176,8 @@ public class CardSession {
 		
 		reader.tag
 			.dropFirst()
+            .removeDuplicates()
 			.debounce(for: 0.3, scheduler: RunLoop.main)
-			.removeDuplicates()
 			.sink(receiveCompletion: { _ in },
 				  receiveValue: { [unowned self] tag in
 					if tag != nil {
@@ -371,15 +371,15 @@ public class CardSession {
                     self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
                 }
                 
-                if let nfcReader = self.reader as? NFCReader {
-                    if NfcUtils.isPoorNfcQualityDevice,
-                       let fw = readResponse.firmwareVersionValue, fw < 2.39,
-                       let sd = readResponse.pauseBeforePin2, sd > 500 {
-                        nfcReader.oldCardSignCompatibilityMode = true
-                    } else {
-                        nfcReader.oldCardSignCompatibilityMode = false
-                    }
-                }
+//                if let nfcReader = self.reader as? NFCReader {
+//                    if NfcUtils.isPoorNfcQualityDevice,
+//                       let fw = readResponse.firmwareVersionValue, fw < 2.39,
+//                       let sd = readResponse.pauseBeforePin2, sd > 500 {
+//                        nfcReader.oldCardSignCompatibilityMode = true
+//                    } else {
+//                        nfcReader.oldCardSignCompatibilityMode = false
+//                    }
+//                }
                 
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)

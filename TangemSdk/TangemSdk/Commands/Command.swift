@@ -41,7 +41,7 @@ extension ApduSerializable {
 
 /// The basic protocol for card commands
 @available(iOS 13.0, *)
-protocol Command: ApduSerializable, CardSessionRunnable, PreflightReadCapable {
+protocol Command: class, ApduSerializable, CardSessionRunnable, PreflightReadCapable {
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
@@ -105,10 +105,8 @@ extension Command {
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
                         if case .pin1Required = mappedError {
-                            session.environment.pin1 = PinCode(.pin1, value: nil)
                             self.requestPin(.pin1, session, completion: completion)
                         } else if case .pin2OrCvcRequired = mappedError {
-                            session.environment.pin2 = PinCode(.pin2, value: nil)
                             self.requestPin(.pin2, session, completion: completion)
                         } else {
                             completion(.failure(mappedError))
@@ -178,7 +176,17 @@ extension Command {
     }
     
     private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause(error: TangemSdkError.from(pinType: pinType))
+        session.pause(error: TangemSdkError.from(pinType: pinType, environment: session.environment))
+        
+        switch pinType {
+        case .pin1:
+            session.environment.pin1 = PinCode(.pin1, value: nil)
+        case .pin2:
+            session.environment.pin2 = PinCode(.pin2, value: nil)
+        default:
+            break
+        }
+        
         DispatchQueue.main.async {
             session.requestPinIfNeeded(pinType) { result in
                 switch result {

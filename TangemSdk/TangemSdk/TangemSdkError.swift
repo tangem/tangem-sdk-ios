@@ -45,19 +45,19 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case deserializeApduFailed
     
     /// This error is returned when the `TlvEncoder` failed to encode value not matching `TlvTag` value type
-    case encodingFailedTypeMismatch
+    case encodingFailedTypeMismatch(_ message: String)
     
     /// This error is returned when the `TlvEncoder` failed to encode nil value or failed to encode stiring with utf8 encoding
-    case encodingFailed
+    case encodingFailed(_ message: String)
     
     /// This error is returned when the `TlvDecoder` cannot find desired tag. You can use `decodeOptional` to handle this error automatically
-    case decodingFailedMissingTag
+    case decodingFailedMissingTag(_ message: String)
     
     /// This error is returned when the `TlvDecoder` failed to decode value not matching `TlvTag` value type
-    case decodingFailedTypeMismatch
+    case decodingFailedTypeMismatch(_ message: String)
     
     /// This error is returned when the `TlvDecoder` failed to decode value. Please let us know
-    case decodingFailed
+    case decodingFailed(_ message: String)
     
     case failedToEncryptApdu
     
@@ -166,6 +166,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when `issuerPublicKey` requires to perform operation
     case missingIssuerPublicKey
     
+    ///User entered wrong pin
+    case wrongPin1
+    
+    ///User entered wrong pin
+    case wrongPin2
     
     //MARK: SDK errors
     
@@ -219,6 +224,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorTagUpdateFailure
     case ndefReaderSessionErrorTagSizeTooSmall
     case ndefReaderSessionErrorZeroLengthMessage
+    case readerErrorRadioDisabled
+    case readerTransceiveErrorPacketTooLong
 	
 	// MARK: Files errors
 	
@@ -240,7 +247,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	case maxNumberOfWalletsCreated
 	case walletNotFound
 	case cardReadWrongWallet
-    
+
     public var code: Int {
         switch self {
         case .alreadyCreated: return 40501
@@ -329,6 +336,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .maxNumberOfWalletsCreated: return 40503
 		case .walletNotFound: return 30008
 		case .cardReadWrongWallet: return 40402
+        case .wrongPin1: return 40012
+        case .wrongPin2: return 40013
+        case .readerErrorRadioDisabled: return 90021
+        case .readerTransceiveErrorPacketTooLong: return 90022
         }
     }
     
@@ -341,8 +352,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .busy: return "error_busy".localized
         case .cannotBeDepersonalized: return "error_cannot_be_depersonalized".localized
         case .cardError: return "error_card_error".localized
-        case .cardIsEmpty: return "error_card_is_empty".localized
-        case .cardIsPurged: return "error_purged".localized
+        case .cardIsEmpty, .cardIsPurged: return "error_card_is_empty".localized
         case .dataCannotBeWritten: return "error_data_cannot_be_written".localized
         case .dataSizeTooLarge: return "error_data_size_too_large".localized
         case .emptyHashes: return "error_empty_hashes".localized
@@ -374,6 +384,18 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
 		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
 		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
+        case .wrongPin1: return "error_wrong_pin1".localized
+        case .wrongPin2: return "error_wrong_pin2".localized
+        case .encodingFailed(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .encodingFailedTypeMismatch(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailed(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailedTypeMismatch(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
+        case .decodingFailedMissingTag(let message):
+            return Localization.genericErrorCode("\(self.code). \(message)")
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")
@@ -438,6 +460,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .ndefReaderSessionErrorTagSizeTooSmall
             case .ndefReaderSessionErrorZeroLengthMessage:
                 return .ndefReaderSessionErrorZeroLengthMessage
+            case .readerErrorRadioDisabled:
+                return .readerErrorRadioDisabled
+            case .readerTransceiveErrorPacketTooLong:
+                return .readerTransceiveErrorPacketTooLong
             @unknown default:
                 return .nfcReaderError
             }
@@ -454,12 +480,17 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         try container.encode(error)
     }
     
-    static func from(pinType: PinCode.PinType) -> TangemSdkError {
+    /// Get error according to the pin type
+    /// - Parameters:
+    ///   - pinType: Specific pin type
+    ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
+    /// - Returns: TangemSdkError
+    static func from(pinType: PinCode.PinType, environment: SessionEnvironment?) -> TangemSdkError {
         switch pinType {
         case .pin1:
-            return .pin1Required
+            return (environment?.pin1.isDefault ?? true) ? .pin1Required : .wrongPin1
         case .pin2:
-            return .pin2OrCvcRequired
+            return (environment?.pin2.isDefault ?? true) ? .pin2OrCvcRequired : .wrongPin2
         case .pin3:
             return .unknownError
         }

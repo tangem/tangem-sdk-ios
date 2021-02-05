@@ -13,7 +13,7 @@ public class TlvBuilder {
     private let encoder = TlvEncoder()
 	
 	private var loggingValues: [Any] = []
-	private let isWithLogging = true
+	private let isWithLogging = false
     
     public init() {}
     

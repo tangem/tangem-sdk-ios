@@ -141,7 +141,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
             showAlertMessage(pinnedMessage)
             self.pinnedMessage = nil
         }
-        
+        playSuccess()
 		showUndefinedSpinner()
 		print("tag did connect")
 	}
@@ -176,7 +176,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 	
 	func sessionInitialized() {
 		print("Session initialized")
-		playSuccess()
 	}
 	
 	func sessionStopped() {

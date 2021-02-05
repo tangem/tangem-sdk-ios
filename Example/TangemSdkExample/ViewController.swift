@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
         config.linkedTerminal = false
-        config.legacyMode = false
+        config.legacyMode = true
         return TangemSdk(config: config)
     }()
     
@@ -39,6 +39,7 @@ class ViewController: UIViewController {
 	}
 	
     @IBAction func scanCardTapped(_ sender: Any) {
+        (sender as! UIButton).showActivityIndicator()
 		let index = WalletIndex.index(card == nil ? 0 : walletIndex)
 		tangemSdk.scanCard(walletIndex: index) {[unowned self] result in
             switch result {
@@ -52,6 +53,7 @@ class ViewController: UIViewController {
             case .failure(let error):
                 self.handle(error)
             }
+            (sender as! UIButton).hideActivityIndicator()
         }
     }
     

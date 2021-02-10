@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `ReadUserDataCommand`.
-public struct ReadUserDataResponse: ResponseCodable {
+public struct ReadUserDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Data defined by user's App.

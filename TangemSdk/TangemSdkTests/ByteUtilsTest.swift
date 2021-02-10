@@ -13,8 +13,8 @@ import XCTest
 class ByteUtilsTests: XCTestCase {
     func testHexConversion() {
         let testData = UInt8(0x1B)
-        let testString = "1B"
-        XCTAssert(testString == testData.toHex())
+        let testString = "0x1B"
+        XCTAssert(testString == testData.asHexString()())
     }
     
     func testInputStream() {

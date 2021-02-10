@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public struct ReadFilesResponse: ResponseCodable {
+public struct ReadFilesResponse: JSONStringConvertible {
 	public let files: [File]
 }
 
@@ -58,7 +58,7 @@ public class ReadFilesTask: CardSessionRunnable {
 				self.performReadFileDataCommand(session: session, completion: completion)
 			case .failure(let error):
 				if case TangemSdkError.fileNotFound = error {
-					print("Receive files not found error. Files: \(self.files)")
+                    Log.debug("Receive files not found error. Files: \(self.files)")
 					completion(.success(ReadFilesResponse(files: self.files)))
 				} else {
 					completion(.failure(error))

@@ -9,7 +9,7 @@
 import Foundation
 
 ///Response for `ReadCommand`. Contains detailed card information.
-public struct Card: ResponseCodable {
+public struct Card: JSONStringConvertible {
 	/// Unique Tangem card ID number.
 	public let cardId: String?
 	/// Name of Tangem card manufacturer.

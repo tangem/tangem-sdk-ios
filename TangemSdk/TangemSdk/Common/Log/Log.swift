@@ -142,7 +142,7 @@ public extension Log {
             case .custom(let logLevel, _):
                 return logLevel
             case .debug:
-                return [.warning, .error, .command]
+                return [.warning, .error]
             case .release:
                 return [.error]
             case .verbose:

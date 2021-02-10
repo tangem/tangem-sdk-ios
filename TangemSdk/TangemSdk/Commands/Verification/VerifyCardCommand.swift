@@ -16,7 +16,7 @@ public enum VerifyCardState: String, Codable {
 
 
 /// Deserialized response from the Tangem card after `VerifyCardResponseCommand`.
-public struct VerifyCardResponse: ResponseCodable {
+public struct VerifyCardResponse: JSONStringConvertible {
     public let cardId: String
     public let verificationState: VerifyCardState?
     public let artworkInfo: ArtworkInfo?
@@ -56,7 +56,7 @@ public class VerifyCardCommand: Command {
     }
     
     deinit {
-        print("VerifyCardCommand deinit")
+        Log.debug("VerifyCardCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -128,7 +128,7 @@ public class VerifyCardCommand: Command {
                     completion(.failure(.cardVerificationFailed))
                 }
             case .failure(let networkError):
-                print(networkError.localizedDescription)
+                Log.network(networkError.localizedDescription)
                 completion(.success(VerifyCardResponse(cardId: response.cardId,
                                                        salt: response.salt,
                                                        cardSignature: response.cardSignature,

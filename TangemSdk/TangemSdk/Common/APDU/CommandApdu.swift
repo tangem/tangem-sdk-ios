@@ -11,13 +11,7 @@ import CoreNFC
 
 /// Class that provides conversion of serialized request and Instruction code
 /// to a raw data that can be sent to the card.
-public struct CommandApdu: Equatable, CustomStringConvertible {
-    public var description: String {
-        let instruction = Instruction(rawValue: ins) ?? .unknown
-        let insDecription = "\(instruction)(\(ins.toHex()))"
-        return "-> C-APDU INS: \(insDecription), DATA: \(data.asHexString()), P1: \(p1.toHex()), P2: \(p2.toHex())"
-    }
-    
+public struct CommandApdu: Equatable {
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
     
@@ -77,9 +71,22 @@ public struct CommandApdu: Equatable, CustomStringConvertible {
     }
 }
 
+extension CommandApdu: CustomStringConvertible {
+    public var description: String {
+        let instruction = Instruction(rawValue: ins) ?? .unknown
+        let lc = data.count.byte
+        return "--> \(instruction) [\(data.count + 4) bytes]: \(cla) \(ins) \(p1) \(p2) \(lc) \(data)"
+    }
+}
+
 @available(iOS 13.0, *)
 extension NFCISO7816APDU {
     convenience init(_ commandApdu: CommandApdu) {
-        self.init(instructionClass: commandApdu.cla, instructionCode: commandApdu.ins, p1Parameter: commandApdu.p1, p2Parameter: commandApdu.p2, data: commandApdu.data, expectedResponseLength: commandApdu.le)
+        self.init(instructionClass: commandApdu.cla,
+                  instructionCode: commandApdu.ins,
+                  p1Parameter: commandApdu.p1,
+                  p2Parameter: commandApdu.p2,
+                  data: commandApdu.data,
+                  expectedResponseLength: commandApdu.le)
     }
 }

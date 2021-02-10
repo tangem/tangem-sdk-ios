@@ -98,7 +98,7 @@ public class KeyboardLayoutConstraint: NSLayoutConstraint {
                     delay: 0,
                     options: options,
                     animations: {
-                        UIApplication.shared.keyWindow?.layoutIfNeeded()
+                        UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.layoutIfNeeded()
                         return
                     }, completion: { finished in
                 })

@@ -58,7 +58,6 @@ public class NetworkService {
         requestData(request: request, completion: completion)
     }
     
-    @available(iOS 13.0, *)
     public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
         let request = prepareRequest(from: endpoint)
         return requestDataPublisher(request: request)
@@ -92,7 +91,6 @@ public class NetworkService {
         }.resume()
     }
     
-    @available(iOS 13.0, *)
     private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
         Log.network("request to: \(request.url!)")
         return URLSession.shared.dataTaskPublisher(for: request)

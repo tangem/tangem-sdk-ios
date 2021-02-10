@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DepersonalizeResponse: ResponseCodable {
+public struct DepersonalizeResponse: JSONStringConvertible {
     let success: Bool
 }
 

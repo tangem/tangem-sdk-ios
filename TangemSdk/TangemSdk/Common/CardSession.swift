@@ -17,7 +17,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 public protocol CardSessionRunnable {    
     var requiresPin2: Bool { get }
     /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype CommandResponse: ResponseCodable
+    associatedtype CommandResponse: JSONStringConvertible
     
     /// The starting point for custom business logic. Adopt this protocol and use `TangemSdk.startSession` to run
     /// - Parameters:
@@ -86,7 +86,7 @@ public class CardSession {
     }
     
     deinit {
-        print ("Card session deinit")
+        Log.debug("Card session deinit")
     }
     
     /// This metod starts a card session, performs preflight `Read` command,  invokes the `run ` method of `CardSessionRunnable` and closes the session.
@@ -103,7 +103,7 @@ public class CardSession {
             completion(.failure(.busy))
             return
         }
-        
+        Log.session("Start card session with runnable")
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
@@ -122,6 +122,8 @@ public class CardSession {
                         }
                         return
                     }
+                    
+                    Log.session("Start runnable")
                     
                     runnable.run(in: self) {result in
                         self.handleRunnableCompletion(runnableResult: result, completion: completion)
@@ -148,10 +150,11 @@ public class CardSession {
     }
     
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
+        Log.session("Prepare card session")
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         pin2Required = runnable.requiresPin2
 		walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
-        
+      
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
         } else {
@@ -172,6 +175,7 @@ public class CardSession {
             return
         }
         
+        Log.session("Start card session with delegate")
         state = .active
 		
 		reader.tag
@@ -195,7 +199,7 @@ public class CardSession {
                     if tag != nil {
                         self.connectedTag = tag
                     } else {
-                        self.connectedTag = nil
+                        self.connectedTag = nil //todo check it!
                         self.environment.encryptionKey = nil
                     }
             })
@@ -232,6 +236,7 @@ public class CardSession {
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
     public func stop(message: String? = nil) {
+        Log.session("Stop session")
         if let message = message {
             viewDelegate.showAlertMessage(message)
         }
@@ -249,6 +254,7 @@ public class CardSession {
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
     public func stop(error: Error) {
+        Log.session("Stop session")
         reader.stopSession(with: error.localizedDescription)
 		
 		postStopCleanUp()
@@ -256,6 +262,7 @@ public class CardSession {
     
     /// Restarts the polling sequence so the reader session can discover new tags.
     public func restartPolling() {
+        Log.session("Restart polling")
         reader.restartPolling()
     }
     
@@ -264,6 +271,7 @@ public class CardSession {
     ///   - apdu: The apdu to send
     ///   - completion: Completion handler. Invoked by nfc-reader
     public final func send(apdu: CommandApdu, completion: @escaping CompletionResult<ResponseApdu>) {
+        Log.session("Send")
         guard sendSubscription.isEmpty else {
             completion(.failure(.busy))
             return
@@ -320,6 +328,7 @@ public class CardSession {
 	}
 	
     private func handleRunnableCompletion<TResponse>(runnableResult: Result<TResponse, TangemSdkError>, completion: @escaping CompletionResult<TResponse>) {
+        Log.session("Runnable completed")
         switch runnableResult {
         case .success(let runnableResponse):
             stop(message: Localization.nfcAlertDefaultDone)
@@ -332,6 +341,7 @@ public class CardSession {
     
     @available(iOS 13.0, *)
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
+        Log.session("Start preflight check")
         ReadCommand(walletIndex: walletIndexForInteraction).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
@@ -394,7 +404,7 @@ public class CardSession {
         if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
             return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
         }
-        
+        Log.session("Try establish encryption")
         guard let encryptionHelper = EncryptionHelperFactory.make(for: self.environment.encryptionMode) else {
             return Fail(error: .cryptoUtilsError).eraseToAnyPublisher()
         }
@@ -410,7 +420,7 @@ public class CardSession {
                 if let uidFromResponse = response.uid {
                     uid = uidFromResponse
                 } else {
-                    if case let .tag(tagUid) = self.connectedTag {
+                    if case let .tag(tagUid) = self.reader.tag.value {
                         uid = tagUid
                     } else {
                         return Fail(error: .failedToEstablishEncryption).eraseToAnyPublisher()
@@ -446,7 +456,7 @@ public class CardSession {
                 return
             }
         }
-        
+        Log.session("Request pin of type: \(pinType)")
         viewDelegate.requestPin(pinType: pinType, cardId: environment.card?.cardId ?? cardId) {[weak self] pin in
             guard let self = self else { return }
             

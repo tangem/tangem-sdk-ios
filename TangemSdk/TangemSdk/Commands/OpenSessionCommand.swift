@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct OpenSessionResponse: ResponseCodable {
+struct OpenSessionResponse: JSONStringConvertible {
     let sessionKeyB: Data
     let uid: Data?
 }

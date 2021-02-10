@@ -22,7 +22,6 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-@available(iOS 13.0, *)
 public final class PurgeWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = PurgeWalletResponse
     

@@ -32,15 +32,12 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
 public protocol CardReader: class {
 	/// For setting alertMessage into NFC popup
     var alertMessage: String { get set }
-    @available(iOS 13.0, *)
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> { get }
-	@available (iOS 13.0, *)
 	var isSessionReady: CurrentValueSubject<Bool, Never> { get }
     func startSession(with message: String?)
     func resumeSession()
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
-    @available(iOS 13.0, *)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
     func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) 
     func restartPolling()

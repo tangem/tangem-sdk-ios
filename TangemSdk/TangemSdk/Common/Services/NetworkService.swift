@@ -16,12 +16,21 @@ public protocol NetworkEndpoint {
     var headers: [String:String] {get}
 }
 
-public enum NetworkServiceError: Error {
+public enum NetworkServiceError: Error, LocalizedError {
     case emptyResponse
     case statusCode(Int, String?)
     case urlSessionError(Error)
     case emptyResponseData
     case mapError
+    
+    public var errorDescription: String? {
+        switch self {
+        case .urlSessionError(let error):
+            return error.localizedDescription
+        default:
+            return "\(self)"
+        }
+    }
 }
 
 public class NetworkService {
@@ -56,11 +65,10 @@ public class NetworkService {
     }
     
     private func requestData(request: URLRequest, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
-        print("request to: \(request.url!)")
+        Log.network("request to: \(request.url!)")
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(NetworkServiceError.urlSessionError(error)))
-                print(error.localizedDescription)
                 return
             }
             
@@ -79,14 +87,14 @@ public class NetworkService {
                 return
             }
             
-            print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+            Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
             completion(.success(data))
         }.resume()
     }
     
     @available(iOS 13.0, *)
     private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
-        print("request to: \(request.url!)")
+        Log.network("request to: \(request.url!)")
         return URLSession.shared.dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
             .tryMap { data, response -> Data in
@@ -98,7 +106,7 @@ public class NetworkService {
                     throw NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
                 }
                 
-                print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+                Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
                 return data
             }
             .mapError { error in

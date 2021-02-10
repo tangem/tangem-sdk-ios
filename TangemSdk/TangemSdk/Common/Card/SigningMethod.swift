@@ -9,7 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
-public struct SigningMethod: OptionSet, Codable {
+public struct SigningMethod: OptionSet, Codable, StringArrayConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {
@@ -29,31 +29,8 @@ public struct SigningMethod: OptionSet, Codable {
 	public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6))
 	
 	public func encode(to encoder: Encoder) throws {
-		var values = [String]()
-		if contains(SigningMethod.signHash) {
-			values.append("SignHash")
-		}
-		if contains(SigningMethod.signRaw) {
-			values.append("SignRaw")
-		}
-		if contains(SigningMethod.signHashSignedByIssuer) {
-			values.append("SignHashSignedByIssuer")
-		}
-		if contains(SigningMethod.signRawSignedByIssuer) {
-			values.append("SignRawSignedByIssuer")
-		}
-		if contains(SigningMethod.signHashSignedByIssuerAndUpdateIssuerData) {
-			values.append("SignHashSignedByIssuerAndUpdateIssuerData")
-		}
-		if contains(SigningMethod.signRawSignedByIssuerAndUpdateIssuerData) {
-			values.append("SignRawSignedByIssuerAndUpdateIssuerData")
-		}
-		if contains(SigningMethod.signPos) {
-			values.append("SignPos")
-		}
-		
 		var container = encoder.singleValueContainer()
-		try container.encode(values)
+		try container.encode(toArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -91,4 +68,33 @@ public struct SigningMethod: OptionSet, Codable {
 		
 		self = mask
 	}
+    
+    func toArray() -> [String] {
+        var values = [String]()
+        if contains(SigningMethod.signHash) {
+            values.append("SignHash")
+        }
+        if contains(SigningMethod.signRaw) {
+            values.append("SignRaw")
+        }
+        if contains(SigningMethod.signHashSignedByIssuer) {
+            values.append("SignHashSignedByIssuer")
+        }
+        if contains(SigningMethod.signRawSignedByIssuer) {
+            values.append("SignRawSignedByIssuer")
+        }
+        if contains(SigningMethod.signHashSignedByIssuerAndUpdateIssuerData) {
+            values.append("SignHashSignedByIssuerAndUpdateIssuerData")
+        }
+        if contains(SigningMethod.signRawSignedByIssuerAndUpdateIssuerData) {
+            values.append("SignRawSignedByIssuerAndUpdateIssuerData")
+        }
+        if contains(SigningMethod.signPos) {
+            values.append("SignPos")
+        }
+        return values
+    }
 }
+
+
+extension SigningMethod: LogStringConvertible {}

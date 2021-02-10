@@ -10,7 +10,7 @@ import Foundation
 
 /// Stores and maps Wallet settings
 /// - Note: Available only for cards with COS v.4.0
-public struct WalletSettingsMask: Codable, OptionSet {
+public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible {
 	public var rawValue: Int
 	
 	public init(rawValue: Int) {
@@ -21,15 +21,8 @@ public struct WalletSettingsMask: Codable, OptionSet {
 	public static let prohibitPurgeWallet = WalletSettingsMask(rawValue: 0x0004)
 	
 	public func encode(to encoder: Encoder) throws {
-		var values = [String]()
-		if contains(.isReusable) {
-			values.append("IsReusable")
-		}
-		if contains(.prohibitPurgeWallet) {
-			values.append("ProhibitPurgeWallet")
-		}
 		var container = encoder.singleValueContainer()
-		try container.encode(values)
+		try container.encode(toArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -44,7 +37,20 @@ public struct WalletSettingsMask: Codable, OptionSet {
 		}
 		self = mask
 	}
+    
+    func toArray() -> [String] {
+        var values = [String]()
+        if contains(.isReusable) {
+            values.append("IsReusable")
+        }
+        if contains(.prohibitPurgeWallet) {
+            values.append("ProhibitPurgeWallet")
+        }
+        return values
+    }
 }
+
+extension WalletSettingsMask: LogStringConvertible {}
 
 class WalletSettingsMaskBuilder {
 	private var settingsMaskValue = 0

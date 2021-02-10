@@ -12,6 +12,10 @@ import CommonCrypto
 import TangemSdk_CEd25519
 
 extension Data {
+    public var description: String {
+        return asHexString()
+    }
+    
     public func asHexString() -> String {
         return self.map { return String(format: "%02X", $0) }.joined()
     }
@@ -199,7 +203,7 @@ extension Data {
         
     }
 	
-	public func signed(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+	public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
 		switch curve {
 		case .secp256k1:
 			return Secp256k1Utils.sign(self, with: privateKey)

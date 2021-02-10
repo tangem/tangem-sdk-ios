@@ -10,12 +10,12 @@ import Foundation
 /// Decode value fields in `Tlv` from raw bytes to concrete types
 /// according to their `TlvTag` and corresponding `TlvValueType`.
 public final class TlvDecoder {
-    let tlv: [Tlv]
+    let tlv: [TlvTag: Tlv]
     
     /// Initializer
     /// - Parameter tlv: array of TLVs, which values are to be converted to particular classes.
     public init(tlv: [Tlv]) {
-        self.tlv = tlv
+        self.tlv = Dictionary(uniqueKeysWithValues: tlv.map { ($0.tag, $0) })
     }
     
     /**
@@ -29,11 +29,12 @@ public final class TlvDecoder {
     public func decodeOptional<T>(_ tag: TlvTag) throws -> T? {
         do {
             let decoded: T = try innerDecode(tag, asOptional: true)
+            logTlv(tag, decoded)
             return decoded
         } catch TangemSdkError.decodingFailedMissingTag {
             return nil
         } catch {
-            print(error)
+            Log.error(error)
             throw error
         }
     }
@@ -50,16 +51,17 @@ public final class TlvDecoder {
      */
     public func decode<T>(_ tag: TlvTag) throws -> T {
         do {
-            return try innerDecode(tag, asOptional: false)
+            let decoded: T = try innerDecode(tag, asOptional: false)
+            logTlv(tag, decoded)
+            return decoded
         } catch {
-            print(error)
+            Log.error(error)
             throw error
         }
     }
     
-    
     private func innerDecode<T>(_ tag: TlvTag, asOptional: Bool) throws -> T {
-        guard let tagValue = tlv.value(for: tag) else {
+        guard let tagValue = tlv[tag]?.value else {
             if tag.valueType == .boolValue {
                 guard Bool.self == T.self || Bool?.self == T.self else {
                     throw TangemSdkError.decodingFailedTypeMismatch("Decoding error. Tag: \(tag). Type is \(T.self). Expected: \(Bool.self)")
@@ -168,4 +170,11 @@ public final class TlvDecoder {
             throw TangemSdkError.decodingFailedTypeMismatch("Decoding error. Tag: \(tag). Type is \(current). Expected: \(expected)")
         }
     }
+    
+    private func logTlv<T>(_ tag: TlvTag, _ value: T) {
+        let tlvItem = tlv[tag] ?? Tlv(tag, value: Data(hexString: "00")) //dummy tlv for boolean values
+        logTlv(tlvItem, value)
+    }
 }
+
+extension TlvDecoder: TlvLogging {}

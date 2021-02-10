@@ -47,7 +47,7 @@ extension NFCISO7816Tag {
                     promise(.failure(sdkError))
                 } else {
                     let dateDiff = Calendar.current.dateComponents([.nanosecond], from: requestDate, to: Date())
-                    Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms.")
+                    Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
                     
                     let rApdu = ResponseApdu(data, sw1, sw2)
                     promise(.success(rApdu))

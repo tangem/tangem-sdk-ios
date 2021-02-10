@@ -21,7 +21,6 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-@available(iOS 13.0, *)
 public final class SignCommand: Command, WalletSelectable {
     public typealias CommandResponse = SignResponse
     

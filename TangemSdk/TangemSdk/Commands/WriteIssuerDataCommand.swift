@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `WriteIssuerDataCommand`.
-public struct WriteIssuerDataResponse: ResponseCodable {
+public struct WriteIssuerDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
 }
@@ -58,7 +58,7 @@ public final class WriteIssuerDataCommand: Command {
     }
     
     deinit {
-        print("WriteIssuerDataCommand deinit")
+        Log.debug("WriteIssuerDataCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

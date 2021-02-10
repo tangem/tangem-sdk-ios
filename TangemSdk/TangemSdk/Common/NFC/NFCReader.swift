@@ -88,7 +88,7 @@ extension NFCReader: CardReader {
     
     /// Start session and try to connect with tag
     func startSession(with message: String?) {
-        Log.nfc("Start reader session")
+        Log.nfc("Start NFC session")
         queue = DispatchQueue(label: "tangem_sdk_reader_queue")
         bag = Set<AnyCancellable>()
         isPaused = false
@@ -145,7 +145,7 @@ extension NFCReader: CardReader {
             .dropFirst()
             .removeDuplicates()
             .sink {[unowned self] isReady in
-                Log.nfc("Reader session is ready: \(isReady)")
+                Log.nfc("NFC session is active: \(isReady)")
                 if isReady {
                     self.nfcStuckTimerCancellable = nil
                     self.startSessionTimer()
@@ -392,14 +392,14 @@ extension NFCReader: NFCTagReaderSessionDelegate {
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
-        Log.nfc("didInvalidateWithError: \(error.localizedDescription)")
+        Log.nfc("NFC Session did invalidate with: \(error.localizedDescription)")
         if nfcStuckTimerCancellable == nil { //handle stuck retries ios14
             invalidatedWithError = TangemSdkError.parse(error as! NFCReaderError)
         }
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
-        Log.nfc("Reader session did detect tags \(tags)")
+        Log.nfc("NFC tag detected: \(tags)")
         let nfcTag = tags.first!
         
         sessionConnectCancellable = session.connectPublisher(tag: nfcTag)

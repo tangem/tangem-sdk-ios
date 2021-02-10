@@ -19,7 +19,6 @@ public struct CheckWalletResponse: JSONStringConvertible {
 }
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
-@available(iOS 13.0, *)
 public final class CheckWalletCommand: Command, WalletSelectable {
     deinit {
         Log.debug("CheckWalletCommand deinit")

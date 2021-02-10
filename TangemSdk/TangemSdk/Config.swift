@@ -49,6 +49,6 @@ public struct Config {
     public var cardIdDisplayedNumbersCount: Int? = nil
     
     /// Logger configuration
-    public var logСonfig: Log.Config = .verbose
+    public var logСonfig: Log.Config = .debug
 }
 

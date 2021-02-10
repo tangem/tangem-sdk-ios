@@ -75,7 +75,6 @@ extension ResponseApdu: CustomStringConvertible {
 }
 
 //Slix2 tag support. TODO: Refactor
-@available(iOS 13.0, *)
 extension ResponseApdu {
     init?(slix2Data: Data) {
         let ndefTlvData = slix2Data[4...] //cut e1402801 (CC)

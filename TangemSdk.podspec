@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TangemSdk'
-  s.version          = '2.0.2'
+  s.version          = '2.3.2'
   s.summary          = 'Use TangemSdk for Tangem cards integration'
 
 # This description is used to generate tags and improve search results.
@@ -27,7 +27,7 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
   s.source           = { :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/Tangem'
   s.platform = :ios
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '13.0'
   s.swift_version = '5.0'
 
   s.source_files = 'TangemSdk/TangemSdk/**/*.{swift}', 

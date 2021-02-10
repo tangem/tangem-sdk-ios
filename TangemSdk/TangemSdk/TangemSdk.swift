@@ -546,7 +546,7 @@ public final class TangemSdk {
             completion(.failure(.busy))
             return
         }
-        viewDelegate.setConfig(config)
+        configure()
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
@@ -577,7 +577,7 @@ public final class TangemSdk {
             callback(existingSession, .busy)
             return
         }
-        viewDelegate.setConfig(config)
+        configure()
         cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
@@ -587,6 +587,10 @@ public final class TangemSdk {
         cardSession?.start(callback)
     }
     
+    private func configure() {
+        viewDelegate.setConfig(config)
+        Log.config = config.logСonfig
+    }
     private func prepareEnvironmentService(_ pin1: String?, _ pin2: String?) -> SessionEnvironmentService {
         let environmentService = SessionEnvironmentService(config: config,
                                                            terminalKeysService: terminalKeysService,

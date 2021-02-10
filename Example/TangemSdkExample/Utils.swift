@@ -20,7 +20,7 @@ struct Utils {
 	}()
 	
 	static func signDataWithIssuer(_ data: Data) -> Data? {
-		data.signed(privateKey: issuer.privateKey, curve: .secp256k1)
+		data.sign(privateKey: issuer.privateKey, curve: .secp256k1)
 	}
 	
 }

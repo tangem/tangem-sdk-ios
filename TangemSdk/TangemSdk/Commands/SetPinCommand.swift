@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Deserialized response from the Tangem card after `SetPintCommand`.
-public struct SetPinResponse: ResponseCodable {
+public struct SetPinResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     public let status: SetPinStatus
@@ -67,7 +67,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
     }
     
     deinit {
-        print ("SetPinCommand deinit")
+        Log.debug("SetPinCommand deinit")
     }
     
     func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {

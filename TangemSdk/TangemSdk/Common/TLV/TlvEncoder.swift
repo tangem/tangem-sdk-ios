@@ -12,12 +12,14 @@ public final class TlvEncoder {
     public func encode<T>(_ tag: TlvTag, value: T?) throws -> Tlv {
         do {
             if let value = value {
-                return try Tlv(tag, value: encode(value, for: tag))
+                let tlv = try Tlv(tag, value: encode(value, for: tag))
+                logTlv(tlv, value)
+                return tlv
             } else {
                 throw TangemSdkError.encodingFailed("Encoding error. Value for tag \(tag) is nil")
             }
         } catch {
-            print(error)
+            Log.error(error)
             throw error
         }
     }
@@ -87,7 +89,7 @@ public final class TlvEncoder {
 					 return rawValue.bytes2
 				}
 			} catch {
-				print("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
+                Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
 			}
 			
 			try typeCheck(value, WalletSettingsMask.self, for: tag)
@@ -107,7 +109,7 @@ public final class TlvEncoder {
 				let mode = value as! IssuerExtraDataMode
 				return Data([mode.rawValue])
 			} catch {
-				print("Interaction mode is not and issuer. Trying to check FileDataMode")
+                Log.warning("Interaction mode is not and issuer. Trying to check FileDataMode")
 			}
 			try typeCheck(value, FileDataMode.self, for: tag)
 			let mode = value as! FileDataMode
@@ -125,3 +127,5 @@ public final class TlvEncoder {
         }
     }
 }
+
+extension TlvEncoder: TlvLogging {}

@@ -13,7 +13,6 @@ struct CheckPinResponse:  JSONStringConvertible {
     let isPin2Default: Bool
 }
 
-@available(iOS 13.0, *)
 class CheckPinCommand: Command {
     var requiresPin2: Bool { true }
     

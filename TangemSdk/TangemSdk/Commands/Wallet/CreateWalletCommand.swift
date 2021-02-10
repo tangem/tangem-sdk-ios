@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `CheckWalletCommand`.
-public struct CreateWalletResponse: ResponseCodable {
+public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
@@ -51,7 +51,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 	}
     
     deinit {
-        print ("CreateWalletCommand deinit")
+        Log.debug("CreateWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

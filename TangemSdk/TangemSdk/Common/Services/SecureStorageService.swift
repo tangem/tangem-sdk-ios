@@ -18,22 +18,23 @@ class SecureStorageService: NSObject {
             kSecMatchLimit as String  : kSecMatchLimitOne,
             kSecReturnData as String : true
         ]
-        
+
         var result: AnyObject?
         let status = withUnsafeMutablePointer(to: &result) {
             SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
         }
-        
+
         if status == noErr, let data = result as? Data {
-            return NSKeyedUnarchiver.unarchiveObject(with: data)
+            return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
         }
-        
         return nil
     }
     
     @discardableResult
     func store(object: Any, key: String) -> Bool {
-        let data = NSKeyedArchiver.archivedData(withRootObject: object)
+        guard let data = try? NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding: true) else {
+            return false
+        }
         
         let query: [String : Any] = [
             kSecClass as String : kSecClassGenericPassword,

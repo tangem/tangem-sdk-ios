@@ -121,8 +121,9 @@ extension Array where Element == Tlv {
 
 extension Tlv: CustomStringConvertible {
     public var description: String {
-        let tagName = "TAG_\(tag)"
-        let size = String(format: "%02d",  self.value.count)
-        return "\(tagName) [0x\(self.tagRaw):\(size)]: \(value)"
+        let tagName = "\(tag)".capitalizingFirst()
+        let tagFullName = "TAG_\(tagName)"
+        let size = String(format: "%02d",  value.count)
+        return "\(tagFullName) [0x\(tagRaw):\(size)]: \(value)"
     }
 }

@@ -12,7 +12,7 @@ import CoreNFC
 
 protocol ApduSerializable {
     /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype CommandResponse: ResponseCodable
+    associatedtype CommandResponse: JSONStringConvertible
     
     /// Serializes data into an array of `Tlv`, then creates `CommandApdu` with this data.
     /// - Parameter environment: `SessionEnvironment` of the current card
@@ -70,6 +70,10 @@ extension Command {
     }
     
     func transieve(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        let commandName = "\(self)".remove("TangemSdk.").remove("Command")
+        Log.command("=======================")
+        Log.command("Send command: \(commandName)")
+        Log.command("=======================")
         if needPreflightRead && session.environment.card == nil {
             completion(.failure(.missingPreflightRead))
             return
@@ -91,12 +95,16 @@ extension Command {
     
     private func transieveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
+            Log.apdu("----Serialize command:-----")
             let commandApdu = try serialize(with: session.environment)
+            Log.apdu("---------------------------")
             transieve(apdu: commandApdu, in: session) { result in
                 switch result {
                 case .success(let responseApdu):
                     do {
+                        Log.apdu("-----Deserialize response:-----")
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
+                        Log.apdu("-------------------------------")
                         completion(.success(responseData))
                     } catch {
                         completion(.failure(error.toTangemSdkError()))
@@ -122,7 +130,6 @@ extension Command {
     }
     
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-//		print("transieve: \(Instruction(rawValue: apdu.ins)!), raw:", apdu.ins.toHex())
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
@@ -142,11 +149,11 @@ extension Command {
                 case .needEcryption:
                     switch session.environment.encryptionMode {
                     case .none:
-                        print("try fast encryption")
+                        Log.session("Try change to fast encryption")
                         session.environment.encryptionKey = nil
                         session.environment.encryptionMode = .fast
                     case .fast:
-                        print("try strong encryption")
+                        Log.session("Try change to strong encryption")
                         session.environment.encryptionKey = nil
                         session.environment.encryptionMode = .strong
                     case .strong:
@@ -198,47 +205,5 @@ extension Command {
                 }
             }
         }
-    }
-}
-
-/// The basic protocol for command response
-public protocol ResponseCodable: Codable, CustomStringConvertible {}
-
-extension ResponseCodable {
-    public var description: String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
-        encoder.dataEncodingStrategy = .custom{ data, encoder in
-            var container = encoder.singleValueContainer()
-            return try container.encode(data.asHexString())
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateStyle = .medium
-        encoder.dateEncodingStrategy = .formatted(dateFormatter)
-        let data = (try? encoder.encode(self)) ?? Data()
-        return String(data: data, encoding: .utf8)!
-    }
-}
-
-public struct SimpleResponse: ResponseCodable {
-	public let cardId: String
-}
-
-extension JSONDecoder {
-    public static var tangemSdkDecoder: JSONDecoder  {
-        let decoder = JSONDecoder()
-        decoder.dataDecodingStrategy = .custom { decoder in
-            let container = try decoder.singleValueContainer()
-            let hex = try container.decode(String.self)
-            return Data(hexString: hex)
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "YYYY-MM-DD"
-        decoder.dateDecodingStrategy  = .formatted(dateFormatter)
-        return decoder
     }
 }

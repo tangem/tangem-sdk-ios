@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `PurgeWalletCommand`.
-public struct PurgeWalletResponse: ResponseCodable {
+public struct PurgeWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
@@ -37,7 +37,7 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
 	}
     
     deinit {
-         print("PurgeWalletCommand deinit")
+        Log.debug("PurgeWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

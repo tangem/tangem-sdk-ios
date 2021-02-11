@@ -9,7 +9,7 @@
 import Foundation
 
 /// Response for `SignCommand`.
-public struct SignResponse: ResponseCodable {
+public struct SignResponse: JSONStringConvertible {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hashes (array of resulting signatures)
@@ -52,7 +52,7 @@ public final class SignCommand: Command, WalletSelectable {
     }
     
     deinit {
-        print("SignCommand deinit")
+        Log.debug("SignCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

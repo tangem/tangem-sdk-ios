@@ -21,7 +21,7 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
 	}
     
     deinit {
-        print("ScanTask deinit")
+        Log.debug("ScanTask deinit")
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {

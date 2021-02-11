@@ -18,7 +18,6 @@ class ViewController: UIViewController {
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
         config.linkedTerminal = false
-        config.legacyMode = true
         return TangemSdk(config: config)
     }()
     
@@ -613,7 +612,6 @@ class ViewController: UIViewController {
     
     private func log(_ object: Any) {
         self.logView.text = self.logView.text.appending("\(object)\n\n")
-//        print(object)
     }
     
     private func handle(_ error: TangemSdkError) {

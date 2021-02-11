@@ -52,7 +52,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     }
     
     deinit {
-        print("WriteIssuerExtraDataCommand deinit")
+        Log.debug("WriteIssuerExtraDataCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -164,7 +164,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(offset)/Float(issuerData.count) * 100.0))
-        viewDelegate?.showAlertMessage(Localization.writeProgress(progress.description))
+        viewDelegate?.showAlertMessage(Localization.writeProgress(String(describing: progress)))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

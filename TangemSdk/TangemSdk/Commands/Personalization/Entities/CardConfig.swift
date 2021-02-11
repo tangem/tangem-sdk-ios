@@ -62,8 +62,9 @@ public struct CardConfig: JSONStringConvertible {
     
     let cardData: CardData
     let ndefRecords: [NdefRecord]
-	
-	let walletsCount: Byte
+    
+    /// Number of wallets supported by card, by default - 1
+	let walletsCount: Byte?
     
     private let Alf = "ABCDEF0123456789"
     
@@ -123,7 +124,7 @@ public struct CardConfig: JSONStringConvertible {
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-		walletsCount = try values.decode(Byte.self, forKey: .walletsCount)
+		walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
     }
     
     

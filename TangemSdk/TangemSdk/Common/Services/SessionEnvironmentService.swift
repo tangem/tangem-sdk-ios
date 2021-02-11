@@ -9,7 +9,6 @@
 import Foundation
 
 
-@available(iOS 13.0, *)
 public class SessionEnvironmentService {
     let config: Config
     let terminalKeysService: TerminalKeysService

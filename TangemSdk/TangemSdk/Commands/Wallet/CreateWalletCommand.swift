@@ -30,7 +30,6 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-@available(iOS 13.0, *)
 public final class CreateWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     

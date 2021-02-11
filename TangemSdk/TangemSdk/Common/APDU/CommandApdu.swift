@@ -79,7 +79,6 @@ extension CommandApdu: CustomStringConvertible {
     }
 }
 
-@available(iOS 13.0, *)
 extension NFCISO7816APDU {
     convenience init(_ commandApdu: CommandApdu) {
         self.init(instructionClass: commandApdu.cla,

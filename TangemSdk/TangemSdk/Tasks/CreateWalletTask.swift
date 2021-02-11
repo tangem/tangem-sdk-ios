@@ -17,7 +17,6 @@ import Foundation
 ///
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
-@available(iOS 13.0, *)
 public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     

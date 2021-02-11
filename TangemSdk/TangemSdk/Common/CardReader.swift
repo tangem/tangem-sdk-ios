@@ -7,22 +7,18 @@
 //
 
 import Foundation
-import CoreNFC
 import Combine
 
 public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
-    case slix2
     case unknown
-    
+
     public var description: String {
         switch self {
-        case .slix2:
-            return "Slix2 tag"
         case .tag(let uid):
-            return "iso7816 tag with uid: \(uid)"
+            return "iso7816 Tag with uid: \(uid)"
         case .unknown:
-            return "Unknown tag type"
+            return "Unknown NFC Tag type"
         }
     }
 }
@@ -39,7 +35,6 @@ public protocol CardReader: class {
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
-    func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) 
     func restartPolling()
 }
 

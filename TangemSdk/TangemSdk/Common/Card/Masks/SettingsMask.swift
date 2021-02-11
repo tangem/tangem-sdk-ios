@@ -9,7 +9,7 @@
 import Foundation
 
 /// Stores and maps Tangem card settings.
-public struct SettingsMask: OptionSet, Codable {
+public struct SettingsMask: OptionSet, Codable, StringArrayConvertible {
 	public let rawValue: Int
 	
 	public init(rawValue: Int) {
@@ -42,83 +42,10 @@ public struct SettingsMask: OptionSet, Codable {
 	public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000)
 	
 	public func encode(to encoder: Encoder) throws {
-		var values = [String]()
-		if contains(SettingsMask.isReusable) {
-			values.append("IsReusable")
-		}
-		if contains(SettingsMask.useActivation) {
-			values.append("UseActivation")
-		}
-		if contains(SettingsMask.prohibitPurgeWallet) {
-			values.append("ProhibitPurgeWallet")
-		}
-		if contains(SettingsMask.useBlock) {
-			values.append("UseBlock")
-		}
-		if contains(SettingsMask.allowSetPIN1) {
-			values.append("AllowSetPIN1")
-		}
-		if contains(SettingsMask.allowSetPIN2) {
-			values.append("AllowSetPIN2")
-		}
-		if contains(SettingsMask.useCvc) {
-			values.append("UseCvc")
-		}
-		if contains(SettingsMask.prohibitDefaultPIN1) {
-			values.append("ProhibitDefaultPIN1")
-		}
-		if contains(SettingsMask.useOneCommandAtTime) {
-			values.append("UseOneCommandAtTime")
-		}
-		if contains(SettingsMask.useNDEF) {
-			values.append("UseNDEF")
-		}
-		if contains(SettingsMask.useDynamicNDEF) {
-			values.append("UseDynamicNDEF")
-		}
-		if contains(SettingsMask.smartSecurityDelay) {
-			values.append("SmartSecurityDelay")
-		}
-		if contains(SettingsMask.allowUnencrypted) {
-			values.append("AllowUnencrypted")
-		}
-		if contains(SettingsMask.allowFastEncryption) {
-			values.append("AllowFastEncryption")
-		}
-		if contains(SettingsMask.protectIssuerDataAgainstReplay) {
-			values.append("ProtectIssuerDataAgainstReplay")
-		}
-		if contains(SettingsMask.allowSelectBlockchain) {
-			values.append("AllowSelectBlockchain")
-		}
-		if contains(SettingsMask.disablePrecomputedNDEF) {
-			values.append("DisablePrecomputedNDEF")
-		}
-		if contains(SettingsMask.skipSecurityDelayIfValidatedByIssuer) {
-			values.append("SkipSecurityDelayIfValidatedByIssuer")
-		}
-		if contains(SettingsMask.skipCheckPIN2CVCIfValidatedByIssuer) {
-			values.append("SkipCheckPIN2CVCIfValidatedByIssuer")
-		}
-		if contains(SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal) {
-			values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
-		}
-		if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
-			values.append("RestrictOverwriteIssuerExtraData")
-		}
-		if contains(SettingsMask.requireTermTxSignature) {
-			values.append("RequireTermTxSignature")
-		}
-		if contains(SettingsMask.requireTermCertSignature) {
-			values.append("RequireTermCertSignature")
-		}
-		if contains(SettingsMask.checkPIN3OnCard) {
-			values.append("CheckPIN3OnCard")
-		}
 		var container = encoder.singleValueContainer()
-		try container.encode(values)
+		try container.encode(toArray())
 	}
-	
+    
 	public init(from decoder: Decoder) throws {
 		let values = try decoder.singleValueContainer()
 		let stringValues = try values.decode([String].self)
@@ -199,7 +126,85 @@ public struct SettingsMask: OptionSet, Codable {
 		self = mask
 	}
 	
+    func toArray() -> [String] {
+        var values = [String]()
+        if contains(SettingsMask.isReusable) {
+            values.append("IsReusable")
+        }
+        if contains(SettingsMask.useActivation) {
+            values.append("UseActivation")
+        }
+        if contains(SettingsMask.prohibitPurgeWallet) {
+            values.append("ProhibitPurgeWallet")
+        }
+        if contains(SettingsMask.useBlock) {
+            values.append("UseBlock")
+        }
+        if contains(SettingsMask.allowSetPIN1) {
+            values.append("AllowSetPIN1")
+        }
+        if contains(SettingsMask.allowSetPIN2) {
+            values.append("AllowSetPIN2")
+        }
+        if contains(SettingsMask.useCvc) {
+            values.append("UseCvc")
+        }
+        if contains(SettingsMask.prohibitDefaultPIN1) {
+            values.append("ProhibitDefaultPIN1")
+        }
+        if contains(SettingsMask.useOneCommandAtTime) {
+            values.append("UseOneCommandAtTime")
+        }
+        if contains(SettingsMask.useNDEF) {
+            values.append("UseNDEF")
+        }
+        if contains(SettingsMask.useDynamicNDEF) {
+            values.append("UseDynamicNDEF")
+        }
+        if contains(SettingsMask.smartSecurityDelay) {
+            values.append("SmartSecurityDelay")
+        }
+        if contains(SettingsMask.allowUnencrypted) {
+            values.append("AllowUnencrypted")
+        }
+        if contains(SettingsMask.allowFastEncryption) {
+            values.append("AllowFastEncryption")
+        }
+        if contains(SettingsMask.protectIssuerDataAgainstReplay) {
+            values.append("ProtectIssuerDataAgainstReplay")
+        }
+        if contains(SettingsMask.allowSelectBlockchain) {
+            values.append("AllowSelectBlockchain")
+        }
+        if contains(SettingsMask.disablePrecomputedNDEF) {
+            values.append("DisablePrecomputedNDEF")
+        }
+        if contains(SettingsMask.skipSecurityDelayIfValidatedByIssuer) {
+            values.append("SkipSecurityDelayIfValidatedByIssuer")
+        }
+        if contains(SettingsMask.skipCheckPIN2CVCIfValidatedByIssuer) {
+            values.append("SkipCheckPIN2CVCIfValidatedByIssuer")
+        }
+        if contains(SettingsMask.skipSecurityDelayIfValidatedByLinkedTerminal) {
+            values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
+        }
+        if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
+            values.append("RestrictOverwriteIssuerExtraData")
+        }
+        if contains(SettingsMask.requireTermTxSignature) {
+            values.append("RequireTermTxSignature")
+        }
+        if contains(SettingsMask.requireTermCertSignature) {
+            values.append("RequireTermCertSignature")
+        }
+        if contains(SettingsMask.checkPIN3OnCard) {
+            values.append("CheckPIN3OnCard")
+        }
+        return values
+    }
 }
+
+extension SettingsMask: LogStringConvertible {}
 
 class SettingsMaskBuilder {
 	private var settingsMaskValue = 0
@@ -212,3 +217,4 @@ class SettingsMaskBuilder {
 		return SettingsMask(rawValue: settingsMaskValue)
 	}
 }
+

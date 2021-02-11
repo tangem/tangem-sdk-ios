@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ProductMask: OptionSet, Codable {
+public struct ProductMask: OptionSet, Codable, StringArrayConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {
@@ -22,25 +22,8 @@ public struct ProductMask: OptionSet, Codable {
 	public static let twinCard = ProductMask(rawValue: 0x20)
 	
 	public func encode(to encoder: Encoder) throws {
-		var values = [String]()
-		if contains(ProductMask.note) {
-			values.append("Note")
-		}
-		if contains(ProductMask.tag) {
-			values.append("Tag")
-		}
-		if contains(ProductMask.idCard) {
-			values.append("IdCard")
-		}
-		if contains(ProductMask.idIssuer) {
-			values.append("IdIssuer")
-		}
-		if contains(ProductMask.twinCard) {
-			values.append("TwinCard")
-		}
-		
 		var container = encoder.singleValueContainer()
-		try container.encode(values)
+		try container.encode(toArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -70,4 +53,27 @@ public struct ProductMask: OptionSet, Codable {
 		
 		self = mask
 	}
+    
+    func toArray() -> [String] {
+        var values = [String]()
+        if contains(ProductMask.note) {
+            values.append("Note")
+        }
+        if contains(ProductMask.tag) {
+            values.append("Tag")
+        }
+        if contains(ProductMask.idCard) {
+            values.append("IdCard")
+        }
+        if contains(ProductMask.idIssuer) {
+            values.append("IdIssuer")
+        }
+        if contains(ProductMask.twinCard) {
+            values.append("TwinCard")
+        }
+        return values
+    }
 }
+
+
+extension ProductMask: LogStringConvertible {}

@@ -9,13 +9,18 @@
 import Foundation
 
 
-struct CheckPinResponse:  ResponseCodable {
+struct CheckPinResponse:  JSONStringConvertible {
     let isPin2Default: Bool
 }
 
 @available(iOS 13.0, *)
 class CheckPinCommand: Command {
     var requiresPin2: Bool { true }
+    
+    deinit {
+        Log.debug("CheckPinCommand deinit")
+    }
+    
     
     func run(in session: CardSession, completion: @escaping CompletionResult<CheckPinResponse>) {
         transieve(in: session) { result in

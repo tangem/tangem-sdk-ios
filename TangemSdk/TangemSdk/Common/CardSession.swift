@@ -51,8 +51,7 @@ public class CardSession {
     private(set) var cardId: String?
     
     public internal(set) var environment: SessionEnvironment
-    public private(set) var connectedTag: NFCTagType? = nil
-    
+
     private let reader: CardReader
     private let initialMessage: Message?
     private let storageService: StorageService
@@ -190,14 +189,10 @@ public class CardSession {
         
         reader.tag //Subscription for handle tag lost/connected events
             .dropFirst()
+            .filter { $0 == nil }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
-                    if tag != nil {
-                        self.connectedTag = tag
-                    } else {
-                        self.connectedTag = nil //todo check it!
-                        self.environment.encryptionKey = nil
-                    }
+                    self.environment.encryptionKey = nil
             })
             .store(in: &nfcReaderSubscriptions)
 
@@ -294,12 +289,6 @@ public class CardSession {
                 completion(.success(responseApdu))
             })
             .store(in: &sendSubscription)
-    }
-    
-    /// Perform read slix2 tags
-    /// - Parameter completion: Completion handler. Invoked by nfc-reader
-    public final func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void)  {
-        reader.readSlix2Tag(completion: completion)
     }
     
     func pause(error: TangemSdkError? = nil) {

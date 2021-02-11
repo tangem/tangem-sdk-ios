@@ -512,7 +512,7 @@ public final class TangemSdk {
     ///     - cardId: CID, Unique Tangem card ID number.
     ///     - fileData: File data that will be written on card
     ///     - fileCounter:  A counter that protects issuer data against replay attack.
-    ///     - privateKey: Optional private key that will be used for signing files hashes. f it is provided, then  `FileHashData` will contain signed file signatures.
+    ///     - privateKey: Optional private key that will be used for signing files hashes. If it is provided, then  `FileHashData` will contain signed file signatures.
     /// - Returns:
     /// `FileHashData` with hashes to sign and signatures if `privateKey` was provided.
     

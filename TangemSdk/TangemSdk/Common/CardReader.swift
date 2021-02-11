@@ -10,10 +10,21 @@ import Foundation
 import CoreNFC
 import Combine
 
-public enum NFCTagType: Equatable {
+public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
     case slix2
     case unknown
+    
+    public var description: String {
+        switch self {
+        case .slix2:
+            return "Slix2 tag"
+        case .tag(let uid):
+            return "iso7816 tag with uid: \(uid)"
+        case .unknown:
+            return "Unknown tag type"
+        }
+    }
 }
 
 /// Allows interaction between the phone or any other terminal and Tangem card.

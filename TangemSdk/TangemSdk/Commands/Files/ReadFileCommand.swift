@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13.0, *)
-public struct ReadFileResponse: ResponseCodable {
+public struct ReadFileResponse: JSONStringConvertible {
 	public let cardId: String
 	public let size: Int?
 	public let fileData: Data

@@ -35,3 +35,14 @@ public extension String {
         Localization.getFormat(for: self)
     }
 }
+
+
+extension DefaultStringInterpolation {
+    mutating func appendInterpolation(_ data: Data) {
+        appendLiteral(data.asHexString())
+    }
+    
+    mutating func appendInterpolation(_ byte: Byte) {
+        appendLiteral(byte.asHexString())
+    }
+}

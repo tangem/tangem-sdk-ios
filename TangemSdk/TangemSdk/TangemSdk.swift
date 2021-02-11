@@ -476,9 +476,9 @@ public final class TangemSdk {
     ///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
     ///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
     public func deleteFiles(cardId: String? = nil,
+                            initialMessage: Message? = nil,
                             pin1: String? = nil,
                             pin2: String? = nil,
-                            initialMessage: Message? = nil,
                             indicesToDelete indices: [Int]?,
                             completion: @escaping CompletionResult<SimpleResponse>) {
         let task = DeleteFilesTask(filesToDelete: indices)
@@ -505,6 +505,19 @@ public final class TangemSdk {
                                     completion: @escaping CompletionResult<SimpleResponse>) {
         let task = ChangeFilesSettingsTask(files: files)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
+    }
+    
+    /// Creates hashes and signatures for files that signed by issuer
+    /// - Parameters:
+    ///     - cardId: CID, Unique Tangem card ID number.
+    ///     - fileData: File data that will be written on card
+    ///     - fileCounter:  A counter that protects issuer data against replay attack.
+    ///     - privateKey: Optional private key that will be used for signing files hashes. f it is provided, then  `FileHashData` will contain signed file signatures.
+    /// - Returns:
+    /// `FileHashData` with hashes to sign and signatures if `privateKey` was provided.
+    
+    public func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) -> FileHashData {
+        return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,

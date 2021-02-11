@@ -16,7 +16,6 @@ public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
  * The issuer defines purpose of use, format and payload of Issuer Data.
  * For example, this field may contain a photo or biometric information for ID card products.
  */
-@available(iOS 13.0, *)
 public final class WriteIssuerExtraDataCommand: Command {
     public typealias CommandResponse = WriteIssuerExtraDataResponse
     

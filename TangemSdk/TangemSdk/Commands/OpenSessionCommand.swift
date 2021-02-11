@@ -17,7 +17,6 @@ struct OpenSessionResponse: JSONStringConvertible {
 /// In case of encrypted communication, App should setup a session before calling any further command.
 /// [OpenSessionCommand] generates secret session_key that is used by both host and card
 /// to encrypt and decrypt commands’ payload.
-@available(iOS 13.0, *)
 class OpenSessionCommand: ApduSerializable {
     typealias CommandResponse = OpenSessionResponse
     

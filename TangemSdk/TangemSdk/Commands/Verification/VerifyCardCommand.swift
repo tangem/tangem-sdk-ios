@@ -41,7 +41,6 @@ public struct VerifyCardResponse: JSONStringConvertible {
     }
 }
 
-@available(iOS 13.0, *)
 public class VerifyCardCommand: Command {
     public typealias CommandResponse = VerifyCardResponse
     

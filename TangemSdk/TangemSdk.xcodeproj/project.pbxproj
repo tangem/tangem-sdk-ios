@@ -164,6 +164,8 @@
 		5DDD6C6C25D30B0D00E48D7B /* SimpleResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C6B25D30B0D00E48D7B /* SimpleResponse.swift */; };
 		5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C7225D30C1400E48D7B /* TangemSdkLogger.swift */; };
 		5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C7825D30C2D00E48D7B /* ConsoleLogger.swift */; };
+		5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4725D57F0900E48D7B /* SLIX+.swift */; };
+		5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */; };
 		5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */; };
 		5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */; };
 		5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */; };
@@ -399,6 +401,8 @@
 		5DDD6C6B25D30B0D00E48D7B /* SimpleResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleResponse.swift; sourceTree = "<group>"; };
 		5DDD6C7225D30C1400E48D7B /* TangemSdkLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkLogger.swift; sourceTree = "<group>"; };
 		5DDD6C7825D30C2D00E48D7B /* ConsoleLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleLogger.swift; sourceTree = "<group>"; };
+		5DDD6D4725D57F0900E48D7B /* SLIX+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SLIX+.swift"; sourceTree = "<group>"; };
+		5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCTag+.swift"; sourceTree = "<group>"; };
 		5DDF4F89235F06F600E46EAB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserDataCommand.swift; sourceTree = "<group>"; };
 		5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteUserDataCommand.swift; sourceTree = "<group>"; };
@@ -945,6 +949,8 @@
 				B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */,
 				B0AAEBEB255148BE00CF52BC /* CAAnimations+.swift */,
 				5DDD6C5D25D2E01800E48D7B /* JSONDecoder+.swift */,
+				5DDD6D4725D57F0900E48D7B /* SLIX+.swift */,
+				5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1261,6 +1267,7 @@
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
+				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
 				5D2739FD234F270200ACDA11 /* sc.c in Sources */,
 				5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */,
@@ -1341,6 +1348,7 @@
 				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
+				5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */,
 				B0390F8E25658FE80061E5ED /* CardStatus.swift in Sources */,
 				5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,

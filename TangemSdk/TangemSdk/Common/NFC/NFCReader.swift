@@ -68,6 +68,11 @@ final class NFCReader: NSObject {
     
     private var sendRetryCount = Constants.retryCount
     private var startRetryCount = Constants.startRetryCount
+    private let pollingOption: NFCTagReaderSession.PollingOption
+    
+    init(pollingOption: NFCTagReaderSession.PollingOption = [.iso14443]) {
+        self.pollingOption = pollingOption
+    }
     
     deinit {
         Log.debug("Reader deinit")
@@ -265,58 +270,9 @@ extension NFCReader: CardReader {
             .eraseToAnyPublisher()
     }
     
-    func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) {
-        guard let connectedTag = connectedTag else {
-            completion(.failure(.tagLost))
-            return
-        }
-        
-        guard case let .iso15693(tag) = connectedTag else {
-            completion(.failure(.unsupportedCommand))
-            return
-        }
-        
-        tag.readMultipleBlocks(requestFlags: [.highDataRate], blockRange: NSRange(location: 0, length: 40)) { [weak self] data1, error in
-            guard let self = self,
-                  let session = self.readerSession,
-                  session.isReady else {
-                return
-            }
-            
-            if let error = error as NSError? {
-                Log.nfc(error.userInfo)
-                Log.nfc(error.localizedDescription)
-                self.readSlix2Tag(completion: completion)
-            } else {
-                tag.readMultipleBlocks(requestFlags: [.highDataRate], blockRange: NSRange(location: 40, length: 38)) {[weak self] data2, error in
-                    guard let self = self,
-                          let session = self.readerSession,
-                          session.isReady else {
-                        return
-                    }
-                    
-                    if let error = error as NSError? {
-                        Log.nfc(error.userInfo)
-                        Log.nfc(error.localizedDescription)
-                        self.readSlix2Tag(completion: completion)
-                    } else {
-                        let joinedData = Data((data1 + data2).joined())
-                        if let responseApdu = ResponseApdu(slix2Data: joinedData)  {
-                            completion(.success(responseApdu))
-                        } else {
-                            Log.nfc("invoke restart due error")
-                            self.restartPolling()
-                        }
-                        
-                    }
-                }
-            }
-        }
-    }
-    
     private func start() {
         readerSession?.invalidate() //Important! We must keep invalidate/begin in balance after start retries
-        readerSession = NFCTagReaderSession(pollingOption: [.iso14443, .iso15693], delegate: self, queue: queue)!
+        readerSession = NFCTagReaderSession(pollingOption: self.pollingOption, delegate: self, queue: queue)!
         readerSession!.alertMessage = _alertMessage!
         readerSession!.begin()
     }
@@ -415,19 +371,8 @@ extension NFCReader: NFCTagReaderSessionDelegate {
                 guard let self = self else { return }
                 
                 self.connectedTag = nfcTag
-                self.tag.send(self.getTagType(nfcTag))
+                self.tag.send(nfcTag.tagType)
             }
-    }
-    
-    private func getTagType(_ nfcTag: NFCTag) -> NFCTagType {
-        switch nfcTag {
-        case .iso7816(let iso7816Tag):
-            return .tag(uid: iso7816Tag.identifier)
-        case .iso15693:
-            return .slix2
-        default:
-            return .unknown
-        }
     }
 }
 

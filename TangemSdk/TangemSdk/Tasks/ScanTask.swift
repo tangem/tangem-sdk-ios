@@ -24,24 +24,6 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        if let tag = session.connectedTag, case .slix2 = tag {
-            session.readSlix2Tag() { result in
-                switch result {
-                case .success(let responseApdu):
-                    do {
-                        let card = try CardDeserializer.deserialize(with: session.environment, from: responseApdu)
-                        completion(.success(card))
-                    } catch {
-                        let sessionError = error.toTangemSdkError()
-                        completion(.failure(sessionError))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-            return
-        }
-        
         guard var card = session.environment.card else {
             completion(.failure(.cardError))
             return

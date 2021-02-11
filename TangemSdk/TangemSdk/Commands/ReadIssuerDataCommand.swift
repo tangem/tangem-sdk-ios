@@ -42,7 +42,6 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
  * format and payload of Issuer Data. For example, this field may contain information about
  * wallet balance signed by the issuer or additional issuer’s attestation data.
  */
-@available(iOS 13.0, *)
 public final class ReadIssuerDataCommand: Command {
     public typealias CommandResponse = ReadIssuerDataResponse
     

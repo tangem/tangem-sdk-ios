@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct FileHashData: Codable {
+public struct FileHashData: JSONStringConvertible {
 	public let startingHash: Data
 	public let finalizingHash: Data
 	

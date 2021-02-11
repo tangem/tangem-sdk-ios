@@ -16,7 +16,6 @@ public struct SetPinResponse: JSONStringConvertible {
     public let status: SetPinStatus
 }
 
-@available(iOS 13.0, *)
 public class SetPinCommand: Command, CardSessionPreparable {
     public typealias CommandResponse = SetPinResponse
     

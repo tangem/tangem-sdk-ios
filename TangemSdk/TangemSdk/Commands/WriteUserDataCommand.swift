@@ -26,7 +26,6 @@ public struct WriteUserDataResponse: JSONStringConvertible {
 * Writing of User_Counter and User_Data protected only by PIN1.
 * User_ProtectedCounter and User_ProtectedData additionaly need PIN2 to confirmation.
 */
-@available(iOS 13.0, *)
 public final class WriteUserDataCommand: Command {
     public typealias CommandResponse = WriteUserDataResponse
     

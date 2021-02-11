@@ -13,7 +13,6 @@ import CommonCrypto
 public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 
 /// Base protocol for run tasks in a card session
-@available(iOS 13.0, *)
 public protocol CardSessionRunnable {    
     var requiresPin2: Bool { get }
     /// Simple interface for responses received after sending commands to Tangem cards.
@@ -26,20 +25,17 @@ public protocol CardSessionRunnable {
     func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>)
 }
 
-@available(iOS 13.0, *)
 extension CardSessionRunnable {    
     public var requiresPin2: Bool {
         return false
     }
 }
 
-@available(iOS 13.0, *)
 protocol CardSessionPreparable {
     func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
 }
 
 /// Allows interaction with Tangem cards. Should be open before sending commands
-@available(iOS 13.0, *)
 public class CardSession {
     enum CardSessionState {
         case inactive
@@ -338,8 +334,7 @@ public class CardSession {
             DispatchQueue.main.async { completion(.failure(error)) }
         }
     }
-    
-    @available(iOS 13.0, *)
+        
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
         ReadCommand(walletIndex: walletIndexForInteraction).run(in: self) { [weak self] readResult in

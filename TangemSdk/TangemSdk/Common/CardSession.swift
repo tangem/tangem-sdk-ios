@@ -133,7 +133,7 @@ public class CardSession {
         Log.session("Prepare card session")
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
         walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
-        
+
         if let preparable = runnable as? CardSessionPreparable {
             preparable.prepare(self, completion: completion)
         } else {
@@ -157,7 +157,7 @@ public class CardSession {
         Log.session("Start card session with delegate")
         state = .active
         
-        reader.tag
+        reader.tag //Subscription for handle tag lost/connected events and invoke viewDelegate
             .dropFirst()
             .removeDuplicates()
             .debounce(for: 0.3, scheduler: RunLoop.main)
@@ -180,7 +180,7 @@ public class CardSession {
                   })
             .store(in: &nfcReaderSubscriptions)
         
-        reader.isSessionReady
+        reader.isSessionReady //Subscription for handle session events and invoke viewDelegate
             .dropFirst()
             .sink(receiveValue: { [unowned self] isReady in
                 isReady ?

@@ -60,7 +60,6 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
-    private var pin2Required = false
 	private var walletIndexForInteraction: WalletIndex?
     
     /// Main initializer
@@ -102,12 +101,6 @@ public class CardSession {
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
-                //        requestPinIfNeeded(.pin1) {[weak self] result in
-                //            switch result {
-                //            case .success:
-                //                self?.requestPinIfNeeded(.pin2) {[weak self] result in
-                //                    switch result {
-                //                    case .success:
                 self.start() {[weak self] session, error in
                     guard let self = self else { return }
                     
@@ -124,20 +117,6 @@ public class CardSession {
                         self.handleRunnableCompletion(runnableResult: result, completion: completion)
                     }
                 }
-                //
-                //                    case .failure(let error):
-                //                        DispatchQueue.main.async {
-                //                            completion(.failure(error))
-                //                        }
-                //                    }
-                //                }
-                //
-                //            case .failure(let error):
-                //                DispatchQueue.main.async {
-                //                    completion(.failure(error))
-                //                }
-                //            }
-            //        }
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -147,7 +126,6 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
-        pin2Required = runnable.requiresPin2
 		walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
       
         if let preparable = runnable as? CardSessionPreparable {
@@ -377,16 +355,6 @@ public class CardSession {
                     self.environment = self.environmentService.updateEnvironment(self.environment, for: cid)
                 }
                 
-//                if let nfcReader = self.reader as? NFCReader {
-//                    if NfcUtils.isPoorNfcQualityDevice,
-//                       let fw = readResponse.firmwareVersionValue, fw < 2.39,
-//                       let sd = readResponse.pauseBeforePin2, sd > 500 {
-//                        nfcReader.oldCardSignCompatibilityMode = true
-//                    } else {
-//                        nfcReader.oldCardSignCompatibilityMode = false
-//                    }
-//                }
-                
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
@@ -442,7 +410,7 @@ public class CardSession {
                 return
             }
         case .pin2:
-            guard /*pin2Required &&*/ environment.pin2.value == nil else {
+            guard environment.pin2.value == nil else {
                 completion(.success(()))
                 return
             }

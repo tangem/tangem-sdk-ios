@@ -446,11 +446,6 @@ public class CardSession {
                 completion(.success(()))
                 return
             }
-        case .pin3:
-            guard environment.pin3.value == nil else {
-                completion(.success(()))
-                return
-            }
         }
         Log.session("Request pin of type: \(pinType)")
         viewDelegate.requestPin(pinType: pinType, cardId: environment.card?.cardId ?? cardId) {[weak self] pin in
@@ -462,8 +457,6 @@ public class CardSession {
                     self.environment.pin1 = PinCode(.pin1, stringValue: pin)
                 case .pin2:
                     self.environment.pin2 = PinCode(.pin2, stringValue: pin)
-                case .pin3:
-                    self.environment.pin3 = PinCode(.pin3, stringValue: pin)
                 }
                 completion(.success(()))
             } else {

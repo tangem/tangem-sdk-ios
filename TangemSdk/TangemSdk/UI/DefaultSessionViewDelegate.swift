@@ -124,8 +124,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			requestPin(.pin1, cardId: cardId, completion: completion)
 		case .pin2:
 			requestPin(.pin2, cardId: cardId, completion: completion)
-		case .pin3:
-			requestPin(.pin3, cardId: cardId, completion: completion)
 		}
 	}
 	
@@ -136,8 +134,6 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 			requestChangePin(.pin1, cardId: cardId, completion: completion)
 		case .pin2:
 			requestChangePin(.pin2, cardId: cardId, completion: completion)
-		case .pin3:
-			requestChangePin(.pin3, cardId: cardId, completion: completion)
 		}
 	}
 	

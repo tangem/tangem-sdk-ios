@@ -273,8 +273,20 @@ public class CardSession {
             return
         }
         
+        let currentTag = reader.tag.value
         reader.tag
             .compactMap{ $0 }
+            .filter {[unowned self] tag in
+                if tag != currentTag { //handle wrong tag connection during any operation
+                    self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber.localizedDescription)
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                        self.restartPolling()
+                    }
+                    return false
+                } else {
+                    return true
+                }
+            }
             .flatMap { _ in self.establishEncryptionIfNeeded() }
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }

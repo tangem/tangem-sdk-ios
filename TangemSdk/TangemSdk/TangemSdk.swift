@@ -26,7 +26,6 @@ public final class TangemSdk {
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
     private let secureStorageService = SecureStorageService()
-    private let storageService = StorageService()
     
     private var cardSession: CardSession? = nil
     
@@ -543,12 +542,11 @@ public final class TangemSdk {
             return
         }
         configure()
-        cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
+        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
                                   cardReader: reader,
-                                  viewDelegate: viewDelegate,
-                                  storageService: storageService)
+                                  viewDelegate: viewDelegate)
         
         cardSession!.start(with: runnable, completion: completion)
     }
@@ -573,12 +571,11 @@ public final class TangemSdk {
             return
         }
         configure()
-        cardSession = CardSession(environmentService: prepareEnvironmentService(pin1, pin2),
+        cardSession = CardSession(environment: buildEnvironment(pin1, pin2),
                                   cardId: cardId,
                                   initialMessage: initialMessage,
                                   cardReader: reader,
-                                  viewDelegate: viewDelegate,
-                                  storageService: storageService)
+                                  viewDelegate: viewDelegate)
         cardSession?.start(callback)
     }
     
@@ -586,33 +583,23 @@ public final class TangemSdk {
         viewDelegate.setConfig(config)
         Log.config = config.logСonfig
     }
-    private func prepareEnvironmentService(_ pin1: String?, _ pin2: String?) -> SessionEnvironmentService {
-        let environmentService = SessionEnvironmentService(config: config,
-                                                           terminalKeysService: terminalKeysService,
-                                                           cardValuesStorage: CardValuesStorage(storageService: storageService))
+    
+    private func buildEnvironment(_ pin1: String?, _ pin2: String?) -> SessionEnvironment{
+        var environment = SessionEnvironment()
+        environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
+        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
+            environment.terminalKeys = terminalKeysService.getKeys()
+        }
+        environment.allowedCardTypes = config.allowedCardTypes
+        environment.handleErrors = config.handleErrors
+        
         if let pin1 = pin1 {
-            environmentService.pin1 = PinCode(.pin1, stringValue: pin1)
+            environment.pin1 = PinCode(.pin1, stringValue: pin1)
         }
         if let pin2 = pin2 {
-            environmentService.pin2 = PinCode(.pin2, stringValue: pin2)
+            environment.pin2 = PinCode(.pin2, stringValue: pin2)
         }
-        return environmentService
+        
+        return environment
     }
-    
-    //    private func buildEnvironment(_ pin1: String?, _ pin2: String?) -> SessionEnvironment {
-    //        var environment = SessionEnvironment()
-    //        environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
-    //        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
-    //            environment.terminalKeys = terminalKeysService.getKeys()
-    //        }
-    //        environment.allowedCardTypes = config.allowedCardTypes
-    //        environment.handleErrors = config.handleErrors
-    //        if let pin1 = pin1 {
-    //            environment.set(pin1: pin1)
-    //        }
-    //        if let pin2 = pin2 {
-    //            environment.set(pin2: pin2)
-    //        }
-    //        return environment
-    //    }
 }

@@ -72,13 +72,10 @@ public struct SessionEnvironment {
     public var terminalKeys: KeyPair? = nil
     
     public var encryptionMode: EncryptionMode = .none
+    
     public var encryptionKey: Data? = nil
     
     public var cvc: Data? = nil
-    
-    public var cardVerification: VerificationState?
-    public var cardValidation: VerificationState?
-    public var codeVerification: VerificationState?
     
     var legacyMode: Bool = true
     

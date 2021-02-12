@@ -27,7 +27,6 @@ public struct PinCode {
     public enum PinType {
         case pin1
         case pin2
-        case pin3
     }
     
     let type: PinType
@@ -39,8 +38,6 @@ public struct PinCode {
             return PinCode.defaultPin1.sha256() == value
         case .pin2:
             return PinCode.defaultPin2.sha256() == value
-        case .pin3:
-            return false
         }
     }
 
@@ -50,8 +47,6 @@ public struct PinCode {
             self.value = PinCode.defaultPin1.sha256()
         case .pin2:
             self.value = PinCode.defaultPin2.sha256()
-        case .pin3:
-            self.value = nil
         }
         self.type = type
     }
@@ -94,8 +89,6 @@ public struct SessionEnvironment {
     var pin1: PinCode = PinCode(.pin1)
     
     var pin2: PinCode = PinCode(.pin2)
-    
-    var pin3: PinCode = PinCode(.pin3)
     
     public init() {}
 }

@@ -491,8 +491,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return (environment?.pin1.isDefault ?? true) ? .pin1Required : .wrongPin1
         case .pin2:
             return (environment?.pin2.isDefault ?? true) ? .pin2OrCvcRequired : .wrongPin2
-        case .pin3:
-            return .unknownError
         }
     }
 }

@@ -188,8 +188,6 @@ extension Command {
             session.environment.pin1 = PinCode(.pin1, value: nil)
         case .pin2:
             session.environment.pin2 = PinCode(.pin2, value: nil)
-        default:
-            break
         }
         
         DispatchQueue.main.async {

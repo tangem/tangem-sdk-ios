@@ -77,7 +77,7 @@ class PinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnContinueTapped(_ sender: UIButton) {
         self.dismiss(animated: true) {
-            self.completionHandler(self.pinText.text)
+            self.completionHandler(self.pinText.text?.trim())
         }
     }
     

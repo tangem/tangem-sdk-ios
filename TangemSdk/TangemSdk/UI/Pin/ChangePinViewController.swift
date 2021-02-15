@@ -32,17 +32,6 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var btnClose: UIButton!
     @IBOutlet weak var lblCard: UILabel!
     @IBOutlet weak var lblError: UILabel!
-//    @IBOutlet weak var currentText: UITextField! {
-//        didSet {
-//            currentText.delegate = self
-//            let prefix = "\(Localization.string("pin_change_current_code_format")) "
-//            switch state {
-//            case .pin1: currentText.placeholder = prefix + Localization.string("pin_placeholder_access")
-//            case .pin2: currentText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-//            case .pin3: currentText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-//            }
-//        }
-//    }
     
     @IBOutlet weak var newText: UITextField! {
         didSet {
@@ -96,8 +85,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSaveTapped(_ sender: UIButton) {
         self.dismiss(animated: true) {
-            if /*let currentText = self.currentText.text,*/
-                let newText = self.newText.text {
+            if let newText = self.newText.text?.trim() {
                 self.completionHandler(.success((currentPin: "", newPin: newText)))
             } else {
                 self.completionHandler(.failure(.unknownError))
@@ -112,7 +100,6 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSecureEntryTapped(_ sender: UIButton) {
         btnSecureEntry.isSelected.toggle()
-        //currentText.isSecureTextEntry.toggle()
         newText.isSecureTextEntry.toggle()
         confirmText.isSecureTextEntry.toggle()
     }
@@ -127,11 +114,10 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func validateInput() -> Bool {
-        guard /*let current = currentText.text, !current.isEmpty,*/
-            let new = newText.text, !new.isEmpty,
-            let confirm = confirmText.text, !confirm.isEmpty else {
-                lblError.isHidden = true
-                return false
+        guard let new = newText.text, !new.isEmpty,
+              let confirm = confirmText.text, !confirm.isEmpty else {
+            lblError.isHidden = true
+            return false
         }
         
         if new != confirm {

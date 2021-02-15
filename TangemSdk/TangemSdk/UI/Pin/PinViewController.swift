@@ -11,7 +11,6 @@ import UIKit
 enum PinViewControllerState {
     case pin1
     case pin2
-    case pin3
 }
 
 class PinViewController: UIViewController, UITextFieldDelegate {
@@ -25,7 +24,6 @@ class PinViewController: UIViewController, UITextFieldDelegate {
             switch state {
             case .pin1: lblTitle.text = String(format: "pin_enter".localized, "pin1".localized)
             case .pin2: lblTitle.text = String(format: "pin_enter".localized, "pin2".localized)
-            case .pin3: lblTitle.text = "Pin3"
             }
         }
     }
@@ -38,7 +36,6 @@ class PinViewController: UIViewController, UITextFieldDelegate {
             switch state {
             case .pin1: pinText.placeholder = "pin1".localized
             case .pin2: pinText.placeholder = "pin2".localized
-            case .pin3: pinText.placeholder = "Pin3"
             }
         }
     }

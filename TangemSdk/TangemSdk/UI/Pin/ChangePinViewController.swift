@@ -18,7 +18,6 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
         switch state {
         case .pin1: return "pin1".localized
         case .pin2: return "pin2".localized
-        case .pin3: return "pin3"
         }
     }
     

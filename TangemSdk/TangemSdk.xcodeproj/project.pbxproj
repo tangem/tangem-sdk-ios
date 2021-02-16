@@ -172,7 +172,6 @@
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
 		5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */; };
 		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
-		5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40924B34799007B95AF /* SetPinViewController.swift */; };
 		5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */; };
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
@@ -407,7 +406,6 @@
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
 		5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardIdFormatter.swift; sourceTree = "<group>"; };
 		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
-		5DFCE40924B34799007B95AF /* SetPinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinViewController.swift; sourceTree = "<group>"; };
 		5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePinViewController.swift; sourceTree = "<group>"; };
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -627,7 +625,6 @@
 			children = (
 				5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */,
 				5D7F4E45248FCF9700A1700D /* PinViewController.swift */,
-				5DFCE40924B34799007B95AF /* SetPinViewController.swift */,
 				5DFCE40B24B347A8007B95AF /* ChangePinViewController.swift */,
 			);
 			path = Pin;
@@ -1316,7 +1313,6 @@
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
 				B0A944812565470900A7958E /* CardData.swift in Sources */,
 				B0C6B4B5254C1D1C00C0A1E1 /* FadeTransition.swift in Sources */,
-				5DFCE40A24B34799007B95AF /* SetPinViewController.swift in Sources */,
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,

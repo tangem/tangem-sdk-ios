@@ -34,6 +34,10 @@ public extension String {
     internal var localized: String {
         Localization.getFormat(for: self)
     }
+    
+    internal func trim() -> String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 }
 
 

@@ -93,10 +93,12 @@ extension Command {
     
     private func transieveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
+            session.rememberTag()
             Log.apdu("----Serialize command:-----")
             let commandApdu = try serialize(with: session.environment)
             Log.apdu("---------------------------")
             transieve(apdu: commandApdu, in: session) { result in
+                session.releaseTag()
                 switch result {
                 case .success(let responseApdu):
                     do {

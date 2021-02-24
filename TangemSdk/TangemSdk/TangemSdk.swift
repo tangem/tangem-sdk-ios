@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreNFC
+import Combine
 
 /// The main interface of Tangem SDK that allows your app to communicate with Tangem cards.
 public final class TangemSdk {
@@ -19,16 +20,12 @@ public final class TangemSdk {
     
     /// Configuration of the SDK. Do not change the default values unless you know what you are doing
     public var config = Config()
-    
-    //    static var pin1: PinCode? = nil
-    //    static var pins2 = [String:PinCode?]()
-    
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
     private let secureStorageService = SecureStorageService()
-    
+    private let onlineCardVerifier = OnlineCardVerifier()
     private var cardSession: CardSession? = nil
-    
+    private var onlineVerificationCancellable: AnyCancellable? = nil
     private lazy var terminalKeysService: TerminalKeysService = {
         let service = TerminalKeysService(secureStorageService: secureStorageService)
         return service
@@ -56,12 +53,36 @@ public final class TangemSdk {
     ///
     /// - Note: `WalletIndex` available for cards with COS v.4.0 or higher
     /// - Parameters:
+    ///   - onlineVerification: Verify the card online with Tangem backend. Do not use for developer cards
     ///   - walletIndex: Index to wallet which data should be read.  if not specified - wallet at default index will be read. See `WalletIndex` for more info
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
     ///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
-    public func scanCard(walletIndex: WalletIndex? = nil, initialMessage: Message? = nil, pin1: String? = nil, completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1, completion: completion)
+    public func scanCard(onlineVerification: Bool = true,
+                         walletIndex: WalletIndex? = nil,
+                         initialMessage: Message? = nil,
+                         pin1: String? = nil,
+                         completion: @escaping CompletionResult<Card>) {
+        startSession(with: ScanTask(walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1) { result in
+            switch result {
+            case .success(let response):
+                if onlineVerification, let cid = response.cardId,
+                   let cardPublicKey = response.cardPublicKey {
+                    self.getCardInfo(cardId: cid, cardPublicKey: cardPublicKey) { onlineVerifyResult in
+                        switch onlineVerifyResult {
+                        case .success:
+                            completion(.success(response))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                } else {
+                    completion(.success(response))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     /// This method allows you to sign one or multiple hashes.
@@ -353,7 +374,7 @@ public final class TangemSdk {
      *
      *
      * @param cardId CID, Unique Tangem card ID number.
-     * @param online flag that allows disable online verification
+     * @param online flag that allows disable online verification. Do not use for developer cards
      * @param callback is triggered on the completion of the [VerifyCardCommand] and provides
      * card response in the form of [VerifyCardResponse] if the task was performed successfully
      * or [TangemSdkError] in case of an error.
@@ -363,8 +384,51 @@ public final class TangemSdk {
                        initialMessage: Message? = nil,
                        pin1: String? = nil,
                        completion: @escaping CompletionResult<VerifyCardResponse>) {
-        let command = VerifyCardCommand(onlineVerification: online)
-        startSession(with: command, cardId: cardId, initialMessage: initialMessage, pin1: pin1, completion: completion)
+        startSession(with: VerifyCardCommand(), cardId: cardId, initialMessage: initialMessage, pin1: pin1) { result in
+            switch result {
+            case .success(let response):
+                if online {
+                    self.getCardInfo(cardId: response.cardId, cardPublicKey: response.cardPublicKey) { onlineVerifyResult in
+                        switch onlineVerifyResult {
+                        case .success(let onlineVerifyResponse):
+                            let response = VerifyCardResponse(cardId: response.cardId,
+                                                              salt: response.salt,
+                                                              cardSignature: response.cardSignature,
+                                                              cardPublicKey: response.cardPublicKey,
+                                                              verificationState: .online,
+                                                              artworkInfo: onlineVerifyResponse.artwork)
+                            completion(.success(response))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                } else {
+                    completion(.success(response))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    /// Get the card info and verify with Tangem backend. Do not use for developer cards
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - cardPublicKey: CardPublicKey returned by [ReadCommand]
+    ///   - completion: `CardVerifyAndGetInfoResponse.Item`
+    public func getCardInfo(cardId: String,
+                             cardPublicKey: Data,
+                             completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
+        onlineVerificationCancellable = onlineCardVerifier
+            .getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { receivedCompletion in
+                if case let .failure(error) = receivedCompletion {
+                    completion(.failure(error.toTangemSdkError()))
+                }
+            }, receiveValue: { response in
+                completion(.success(response))
+            })
     }
     
     /// Command available on SDK cards only

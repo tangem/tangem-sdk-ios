@@ -47,31 +47,9 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
             session.environment.card = card
             runCheckWalletIfNeeded(card, session, completion)
         }
-        
-//        if let pin1 = session.environment.pin1.value, let pin2 = session.environment.pin2.value {
-//            let checkPinCommand = SetPinCommand(newPin1: pin1, newPin2: pin2)
-//            checkPinCommand.run(in: session) {result in
-//                switch result {
-//                case .success:
-//                    break
-//                case .failure(let error):
-//                    if error == .invalidParams {
-//                        session.environment.pin2 = PinCode(.pin2, value: nil)
-//                    }
-//                }
-//                self.runCheckWalletIfNeeded(card, session, completion)
-//            }
-//        } else {
-//            runCheckWalletIfNeeded(card, session, completion)
-//        }
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        if let productMask = card.cardData?.productMask, productMask.contains(.tag) {
-            completion(.success(card))
-            return
-        }
-        
         guard let cardStatus = card.status, cardStatus == .loaded else {
             completion(.success(card))
             return
@@ -93,67 +71,3 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
         }
     }
 }
-
-
-/// Task that allows to read Tangem card and verify its private key on iOS 11 and iOS 12 only. You should use `ScanTask` for iOS 13 and newer
-/*public final class ScanTaskLegacy: CardSessionRunnable {
-    public typealias CommandResponse = Card
-    public init() {}
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let readCommand = ReadCommand()
-        readCommand.run(in: session) {firstResult in
-            switch firstResult {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(var firstResponse):
-                guard let firstChallenge = firstResponse.challenge,
-                    let firstSalt = firstResponse.salt,
-                    let publicKey = firstResponse.walletPublicKey,
-                    let firstHashes = firstResponse.signedHashes else {
-                        completion(.success(firstResponse))
-                        return
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    readCommand.run(in: session) {secondResult in
-                        switch secondResult {
-                        case .failure(let error):
-                            completion(.failure(error))
-                        case .success(let secondResponse):
-                            guard let secondHashes = secondResponse.signedHashes,
-                                let secondChallenge = secondResponse.challenge,
-                                let walletSignature = secondResponse.walletSignature,
-                                let secondSalt  = secondResponse.salt else {
-                                    completion(.failure(.cardError))
-                                    return
-                            }
-                            
-                            if secondHashes > firstHashes {
-                                firstResponse.signedHashes = secondHashes
-                            }
-                            
-                            if firstChallenge == secondChallenge || firstSalt == secondSalt {
-                                completion(.failure(.verificationFailed))
-                                return
-                            }
-                            
-                            if let verifyResult = CryptoUtils.vefify(curve: publicKey.count == 65 ? EllipticCurve.secp256k1 : EllipticCurve.ed25519,
-                                                                     publicKey: publicKey,
-                                                                     message: firstChallenge + firstSalt,
-                                                                     signature: walletSignature) {
-                                if verifyResult == true {
-                                    completion(.success(secondResponse))
-                                } else {
-                                    completion(.failure(.cryptoUtilsError))
-                                }
-                            } else {
-                                completion(.failure(.verificationFailed))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}*/

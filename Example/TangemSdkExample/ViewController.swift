@@ -326,7 +326,7 @@ class ViewController: UIViewController {
             self.log("Please, scan card before")
             return
         }
-        
+        (sender as! UIButton).showActivityIndicator()
         tangemSdk.verify(cardId: cardId, online: true) { result in
             switch result {
             case .success(let response):
@@ -334,6 +334,7 @@ class ViewController: UIViewController {
             case .failure(let error):
                 self.handle(error)
             }
+            (sender as! UIButton).hideActivityIndicator()
         }
     }
     

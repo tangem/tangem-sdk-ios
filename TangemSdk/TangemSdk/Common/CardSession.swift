@@ -60,6 +60,7 @@ public class CardSession {
     private var needPreflightRead = true
     private var walletIndexForInteraction: WalletIndex?
     
+    private var currentTag: NFCTagType? = nil
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -249,10 +250,11 @@ public class CardSession {
             return
         }
         
-        let currentTag = reader.tag.value
         reader.tag
             .compactMap{ $0 }
             .filter {[unowned self] tag in
+                guard let currentTag = currentTag else { return true } //Skip filtration because we have nothing to compare with
+                
                 if tag != currentTag { //handle wrong tag connection during any operation
                     self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
@@ -285,6 +287,16 @@ public class CardSession {
     
     func resume() {
         reader.resumeSession()
+    }
+    
+    /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
+    func rememberTag() {
+        currentTag = reader.tag.value
+    }
+    
+    /// The command has been completed. We don't need this tag anymore
+    func releaseTag() {
+        currentTag = nil
     }
     
     private func sessionDidStop() {

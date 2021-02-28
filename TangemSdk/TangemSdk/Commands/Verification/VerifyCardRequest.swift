@@ -20,8 +20,6 @@ public struct CardVerifyAndGetInfoRequest: Codable {
         }
     }
     
-    
-    
     let requests: [Item]
 }
 

@@ -14,8 +14,8 @@ class InformationScreenViewController: UIViewController {
 	static func instantiateController(transitioningDelegate: UIViewControllerTransitioningDelegate? = nil) -> InformationScreenViewController {
 		let storyboard = UIStoryboard(name: "InformationScreen", bundle: .sdkBundle)
 		let controller: InformationScreenViewController = storyboard.instantiateViewController(identifier: String(describing: self))
-//		controller.transitioningDelegate = transitioningDelegate
-		controller.modalPresentationStyle = .fullScreen
+		controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
 		return controller
 	}
 	
@@ -41,17 +41,15 @@ class InformationScreenViewController: UIViewController {
 		view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissController)))
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-		indicatorView.didAppear()
-		
-		let height = UIScreen.main.bounds.height
-		let coeff: CGFloat = height > 667 ? 6.0 : 14.0
-		let topOffset = height / coeff
-		indicatorTopConstraint.constant = topOffset
-		hintLabelTopConstraint.constant = topOffset / 3
-	}
+    override func viewWillAppear(_ animated: Bool) {
+        indicatorView.didAppear()
+        
+        let height = UIScreen.main.bounds.height
+        let coeff: CGFloat = height > 667 ? 6.0 : 14.0
+        let topOffset = height / coeff
+        indicatorTopConstraint.constant = topOffset
+        hintLabelTopConstraint.constant = topOffset / 3
+    }
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)

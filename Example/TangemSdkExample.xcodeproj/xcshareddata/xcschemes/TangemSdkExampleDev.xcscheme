@@ -17,7 +17,7 @@
                BlueprintIdentifier = "5DBC25B6235F053F005F0C79"
                BuildableName = "TangemSdkExampleDevelopment.app"
                BlueprintName = "TangemSdkExampleDevelopment"
-               ReferencedContainer = "container:TangemSdkExample.xcodeproj">
+               ReferencedContainer = "container:TangemSDKExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "E53EB3E323F2C7C90079CC11"
                BuildableName = "TangemSdkExampleDevelopmentUITests.xctest"
                BlueprintName = "TangemSdkExampleDevelopmentUITests"
-               ReferencedContainer = "container:TangemSdkExample.xcodeproj">
+               ReferencedContainer = "container:TangemSDKExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -44,11 +44,13 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      disableMainThreadChecker = "YES"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
+      enableGPUValidationMode = "1"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
@@ -57,7 +59,7 @@
             BlueprintIdentifier = "5DBC25B6235F053F005F0C79"
             BuildableName = "TangemSdkExampleDevelopment.app"
             BlueprintName = "TangemSdkExampleDevelopment"
-            ReferencedContainer = "container:TangemSdkExample.xcodeproj">
+            ReferencedContainer = "container:TangemSDKExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -74,7 +76,7 @@
             BlueprintIdentifier = "5DBC25B6235F053F005F0C79"
             BuildableName = "TangemSdkExampleDevelopment.app"
             BlueprintName = "TangemSdkExampleDevelopment"
-            ReferencedContainer = "container:TangemSdkExample.xcodeproj">
+            ReferencedContainer = "container:TangemSDKExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

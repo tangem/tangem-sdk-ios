@@ -25,7 +25,7 @@ public enum IssuerExtraDataMode: Byte {
     case finalizeWrite = 3
 }
 
-public struct ReadIssuerExtraDataResponse: ResponseCodable {
+public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Size of all Issuer_Extra_Data field.
@@ -77,7 +77,6 @@ public struct ReadIssuerExtraDataResponse: ResponseCodable {
  * format and payload of Issuer Data. . For example, this field may contain photo or
  * biometric information for ID card product.
  */
-@available(iOS 13.0, *)
 public final class ReadIssuerExtraDataCommand: Command {
     public typealias CommandResponse = ReadIssuerExtraDataResponse
     
@@ -92,7 +91,7 @@ public final class ReadIssuerExtraDataCommand: Command {
     }
     
     deinit {
-        print("ReadIssuerExtraDataCommand deinit")
+        Log.debug("ReadIssuerExtraDataCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -167,7 +166,6 @@ public final class ReadIssuerExtraDataCommand: Command {
         }
         let progress = Int(round(Float(issuerData.count)/Float(issuerDataSize) * 100.0))
         viewDelegate?.showPercentLoading(progress, message: nil, hint: nil)
-        //viewDelegate?.showAlertMessage(Localization.readProgress(progress.description))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `CheckWalletCommand`.
-public struct CreateWalletResponse: ResponseCodable {
+public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
@@ -30,7 +30,6 @@ public struct CreateWalletResponse: ResponseCodable {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-@available(iOS 13.0, *)
 public final class CreateWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     
@@ -51,7 +50,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 	}
     
     deinit {
-        print ("CreateWalletCommand deinit")
+        Log.debug("CreateWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

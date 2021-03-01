@@ -47,5 +47,8 @@ public struct Config {
     
     /// Full CID will be displayed, if nil
     public var cardIdDisplayedNumbersCount: Int? = nil
+    
+    /// Logger configuration
+    public var logСonfig: Log.Config = .debug
 }
 

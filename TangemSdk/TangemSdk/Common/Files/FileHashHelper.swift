@@ -24,8 +24,8 @@ public struct FileHashHelper {
 		var startSignature: Data?
 		var finalSignature: Data?
 		if let privateKey = privateKey {
-			startSignature = startHash.signed(privateKey: privateKey)
-			finalSignature = finalHash.signed(privateKey: privateKey)
+			startSignature = startHash.sign(privateKey: privateKey)
+			finalSignature = finalHash.sign(privateKey: privateKey)
 		}
 		
 		return FileHashData(startingHash: startHash,

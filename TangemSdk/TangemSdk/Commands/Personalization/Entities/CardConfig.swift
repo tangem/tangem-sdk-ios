@@ -16,7 +16,7 @@ import Foundation
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
-public struct CardConfig: ResponseCodable {
+public struct CardConfig: JSONStringConvertible {
     let issuerName: String?
     let acquirerName: String?
     let series: String?
@@ -62,8 +62,9 @@ public struct CardConfig: ResponseCodable {
     
     let cardData: CardData
     let ndefRecords: [NdefRecord]
-	
-	let walletsCount: Byte
+    
+    /// Number of wallets supported by card, by default - 1
+	let walletsCount: Byte?
     
     private let Alf = "ABCDEF0123456789"
     
@@ -86,14 +87,14 @@ public struct CardConfig: ResponseCodable {
         if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
             self.curveID = curveID
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
         }
         
         let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
         if let rawValue = signingMethodsDictionary["rawValue"]  {
             signingMethods = SigningMethod(rawValue: rawValue)
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
         }
         
         maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
@@ -123,7 +124,7 @@ public struct CardConfig: ResponseCodable {
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-		walletsCount = try values.decode(Byte.self, forKey: .walletsCount)
+		walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
     }
     
     

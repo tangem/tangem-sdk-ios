@@ -25,18 +25,14 @@ class ApduTests: XCTestCase {
         let le: Int = -1
         let tlv = [Tlv(.cardId, value: Data([UInt8(0x00), UInt8(0x01), UInt8(0x02), UInt8(0x03)]))]
         let commandApdu3 = CommandApdu(cla: cla, ins: ins, p1: p1, p2: p2, le: le, tlv: tlv.serialize())
-        if #available(iOS 13.0, *) {
-            let nfcApdu = NFCISO7816APDU(commandApdu3)
-            
-            XCTAssertEqual(nfcApdu.instructionClass, cla)
-            XCTAssertEqual(nfcApdu.instructionCode, ins)
-            XCTAssertEqual(nfcApdu.p1Parameter, p1)
-            XCTAssertEqual(nfcApdu.p2Parameter, p2)
-            XCTAssertEqual(nfcApdu.expectedResponseLength, le)
-            XCTAssertEqual(nfcApdu.data, tlv.serialize())
-        } else {
-            // Fallback on earlier versions
-        }
+        let nfcApdu = NFCISO7816APDU(commandApdu3)
+        
+        XCTAssertEqual(nfcApdu.instructionClass, cla)
+        XCTAssertEqual(nfcApdu.instructionCode, ins)
+        XCTAssertEqual(nfcApdu.p1Parameter, p1)
+        XCTAssertEqual(nfcApdu.p2Parameter, p2)
+        XCTAssertEqual(nfcApdu.expectedResponseLength, le)
+        XCTAssertEqual(nfcApdu.data, tlv.serialize())
     }
     
     func testResponse() {
@@ -55,7 +51,7 @@ class ApduTests: XCTestCase {
         let responseUnknownStatusApdu = ResponseApdu(badData, sw1, UInt8(0x69))
         XCTAssertEqual(responseUnknownStatusApdu.sw, UInt16(0x9069))
         XCTAssertEqual(responseUnknownStatusApdu.statusWord, StatusWord.unknown)
-                
+        
         let responseApdu = ResponseApdu(testData, sw1, sw2)
         let tlvData = responseApdu.getTlvData()
         XCTAssertNotNil(tlvData)

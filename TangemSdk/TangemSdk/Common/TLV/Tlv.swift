@@ -56,24 +56,16 @@ public struct Tlv: Equatable {
         dataStream.open()
         defer { dataStream.close() }
         
-		print("\nDeserializing TLV")
         var tags = [Tlv]()
         while dataStream.hasBytesAvailable {
             guard let tagCode = dataStream.readByte(),
                 let dataLength = readTagLength(dataStream),
                 let data = dataLength > 0 ? dataStream.readBytes(count: dataLength) : Data()  else {
-                    print("Warning: Failed to read tag from stream")
+                Log.warning("Failed to read tag from stream")
                     return tags.count > 0 ? tags : nil
             }
             
             let tlvItem = Tlv(tagRaw: tagCode, value: data)
-			var val: String = "\(data)"
-			if let data = data as? Data {
-				val = data.asHexString()
-			} else {
-				val += " --- \(tlvItem.value.asHexString())"
-			}
-			print("TAG_\(tlvItem.tag) [0x\(String(format: "%02x", tlvItem.tagRaw)):\(tlvItem.tag.valueType)]: " + val)
             tags.append(tlvItem)
         }
         
@@ -84,13 +76,13 @@ public struct Tlv: Equatable {
     /// - Parameter dataStream: dataStream initialized with raw tlv
     private static func readTagLength(_ dataStream: InputStream) -> Int? {
         guard let shortLengthBytes = dataStream.readByte() else {
-             print("Failed to read tag lenght")
+            Log.error("Failed to read tag lenght")
             return nil
         }
         
         if (shortLengthBytes == 0xFF) {
             guard let longLengthBytes = dataStream.readBytes(count: 2) else {
-                print("Failed to read tag long lenght")
+                Log.error("Failed to read tag long lenght")
                 return nil
             }
             
@@ -114,8 +106,24 @@ extension Array where Element == Tlv {
         return self.first(where: {$0.tag == tag})?.value
     }
     
+    /// Convinience getter for tlv item
+    /// - Parameter tag: tag to find
+    public func item(for tag: TlvTag) -> Element? {
+        return self.first(where: {$0.tag == tag})
+    }
+    
     /// - Parameter tag: tag to check
     public func contains(tag: TlvTag) -> Bool {
         return value(for: tag) != nil
+    }
+}
+
+
+extension Tlv: CustomStringConvertible {
+    public var description: String {
+        let tagName = "\(tag)".capitalizingFirst()
+        let tagFullName = "TAG_\(tagName)"
+        let size = String(format: "%02d",  value.count)
+        return "\(tagFullName) [0x\(tagRaw):\(size)]: \(value)"
     }
 }

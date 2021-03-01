@@ -7,13 +7,20 @@
 //
 
 import Foundation
-import CoreNFC
 import Combine
 
-public enum NFCTagType: Equatable {
+public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
-    case slix2
     case unknown
+
+    public var description: String {
+        switch self {
+        case .tag(let uid):
+            return "iso7816 Tag with uid: \(uid)"
+        case .unknown:
+            return "Unknown NFC Tag type"
+        }
+    }
 }
 
 /// Allows interaction between the phone or any other terminal and Tangem card.
@@ -21,18 +28,13 @@ public enum NFCTagType: Equatable {
 public protocol CardReader: class {
 	/// For setting alertMessage into NFC popup
     var alertMessage: String { get set }
-    @available(iOS 13.0, *)
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> { get }
-	@available (iOS 13.0, *)
 	var isSessionReady: CurrentValueSubject<Bool, Never> { get }
     func startSession(with message: String?)
     func resumeSession()
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
-    func send(apdu: CommandApdu, completion: @escaping (Result<ResponseApdu,TangemSdkError>) -> Void)
-    @available(iOS 13.0, *)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
-    func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) 
     func restartPolling()
 }
 

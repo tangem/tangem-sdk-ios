@@ -63,16 +63,15 @@
 "error_cannot_be_depersonalized" = "Cette carte ne peut pas être dépersonnalisée.";
 "error_already_created" = "Le portefeuille a déjà été créé";
 "error_purge_prohibited" = "La configuration de cette carte ne permet pas d'effacer le portefeuille";
-"error_pin1_cannot_be_changed" = "Le code d'accès PIN1 ne peut pas être modifié";
-"error_pin2_cannot_be_changed" = "Le mot de passe PIN2 ne peut pas être modifié";
-"error_pin1_cannot_be_default" = "Le code d'accès PIN1 ne peut pas être remplacé par la valeur par défaut. Créer un nouveau code d'accès PIN1";
+"error_pin1_cannot_be_changed" = "Le code d'accès ne peut pas être modifié";
+"error_pin2_cannot_be_changed" = "Le mot de passe ne peut pas être modifié";
+"error_pin1_cannot_be_default" = "Le code d'accès ne peut pas être remplacé par la valeur par défaut. Créer un nouveau code d'accès";
 "error_no_remaining_signatures" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a atteint sa limite de signatures";
 "error_empty_hashes" = "Il n'y a rien à signer ici";
 "error_cannot_be_signed" = "Ces données ne peuvent pas être signées";
-"error_card_is_empty" = "Créez un portefeuille pour signer les données";
+"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
 "error_not_personalized" = "Cette carte n'a pas été personnalisée";
 "error_not_activated" = "Cette carte n'a pas été activée";
-"error_purged" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a été effacée";
 "error_verification_failed" = "Erreur de validation des données";
 "error_card_verification_failed" = "Erreur de validation de la carte";
 "error_data_size_too_large" = "La taille des données dépasse la limite maximale de 512 bytes";
@@ -96,7 +95,9 @@
 "error_not_supported_firmware_version" = "Card firmware does not meet requirements";
 
 "error_no_space_for_new_wallet" = "Max number of wallets already created";
-
+"error_card_read_wrong_wallet" = "Card read wrong wallet";
+"error_wrong_pin1" = "Wrong Access Сode";
+"error_wrong_pin2" = "Wrong Passcode";
 //Android only
 
 // Label. Need NFC to be switched on.

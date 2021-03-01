@@ -17,7 +17,6 @@ import Foundation
 ///
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
-@available(iOS 13.0, *)
 public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
     public typealias CommandResponse = CreateWalletResponse
     
@@ -44,7 +43,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 	}
 	
 	deinit {
-		print ("CreateWalletTask deinit")
+        Log.debug("CreateWalletTask deinit")
 	}
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
@@ -77,7 +76,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 	
 	private func createWallet(in session: CardSession, forCard card: Card, at index: Int?, with curve: EllipticCurve, completion: @escaping CompletionResult<CreateWalletResponse>) {
 		
-		print("Attempt to create wallet at index: \(index ?? 0)")
+        Log.debug("Attempt to create wallet at index: \(index ?? 0)")
 		let command = CreateWalletCommand(config: config, walletIndex: index)
 		command.run(in: session) { result in
 			switch result {
@@ -100,7 +99,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 				}
 			case .failure(let error):
 				if self.shouldCreateAtAnyIndex {
-					print("Failure while creating wallet. \(error)")
+                    Log.debug("Failure while creating wallet. \(error)")
 					switch error {
 					case .alreadyCreated, .cardIsPurged, .invalidState:
 						if let nextIndex = self.updateWalletPointerToNext(currentIndex: index, walletsCount: card.walletsCount) {
@@ -111,7 +110,7 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 						completion(.failure(TangemSdkError.maxNumberOfWalletsCreated))
 						return
 					default:
-						print("Default error case while creating wallet.", error)
+                        Log.debug("Default error case while creating wallet. Error: \(error)")
 						break
 					}
 				}

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Contains all possible value types that value for `TlvTag` can contain.
-public enum TlvValueType {
+public enum TlvValueType: String {
     case hexString
     case utf8String
     case intValue

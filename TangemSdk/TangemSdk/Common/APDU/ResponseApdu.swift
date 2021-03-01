@@ -10,15 +10,11 @@ import Foundation
 import CoreNFC
 
 /// Stores response data from the card and parses it to `Tlv` and `StatusWord`.
-public struct ResponseApdu: CustomStringConvertible {
+public struct ResponseApdu {
     /// Status word code, reflecting the status of the response
     public var sw: UInt16 { return UInt16( (UInt16(sw1) << 8) | UInt16(sw2) ) }
     /// Parsed status word.
     public var statusWord: StatusWord { return StatusWord(rawValue: sw) ?? .unknown }
-    
-    public var description: String {
-        return "<- R-APDU SW: \(statusWord), DATA: \(data.asHexString())"
-    }
     
     private let sw1: Byte
     private let sw2: Byte
@@ -72,24 +68,8 @@ public struct ResponseApdu: CustomStringConvertible {
     }
 }
 
-
-
-
-//Slix2 tag support. TODO: Refactor
-@available(iOS 13.0, *)
-extension ResponseApdu {
-    init?(slix2Data: Data) {
-        let ndefTlvData = slix2Data[4...] //cut e1402801 (CC)
-        if let ndefTlv = Tlv.deserialize(ndefTlvData),
-            let ndefValue = ndefTlv.value(for: .cardPublicKey),
-            let ndefMessage = NFCNDEFMessage(data: Data(ndefValue)) {
-               print(ndefValue.asHexString())
-            let payloads = ndefMessage.records.filter({ String(data: $0.type, encoding: String.Encoding.utf8) == "tangem.com:wallet"})
-            if let payload = payloads.first?.payload  {
-                self.init(payload, Byte(0x90), Byte(0x00))
-                return
-            }
-        }
-        return nil
+extension ResponseApdu: CustomStringConvertible {
+    public var description: String {
+        return "<-- RECEIVED [\(data.count + 2) bytes]: \(data) \(sw1) \(sw2) (SW: \(statusWord))"
     }
 }

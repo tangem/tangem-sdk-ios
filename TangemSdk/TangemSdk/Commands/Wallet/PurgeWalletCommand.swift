@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `PurgeWalletCommand`.
-public struct PurgeWalletResponse: ResponseCodable {
+public struct PurgeWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
@@ -22,7 +22,6 @@ public struct PurgeWalletResponse: ResponseCodable {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-@available(iOS 13.0, *)
 public final class PurgeWalletCommand: Command, WalletSelectable {
     public typealias CommandResponse = PurgeWalletResponse
     
@@ -37,7 +36,7 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
 	}
     
     deinit {
-         print("PurgeWalletCommand deinit")
+        Log.debug("PurgeWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

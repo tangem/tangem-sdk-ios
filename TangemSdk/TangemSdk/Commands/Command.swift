@@ -12,7 +12,7 @@ import CoreNFC
 
 protocol ApduSerializable {
     /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype CommandResponse: ResponseCodable
+    associatedtype CommandResponse: JSONStringConvertible
     
     /// Serializes data into an array of `Tlv`, then creates `CommandApdu` with this data.
     /// - Parameter environment: `SessionEnvironment` of the current card
@@ -40,8 +40,8 @@ extension ApduSerializable {
 }
 
 /// The basic protocol for card commands
-@available(iOS 13.0, *)
-protocol Command: ApduSerializable, CardSessionRunnable, PreflightReadCapable {
+
+protocol Command: class, ApduSerializable, CardSessionRunnable, PreflightReadCapable {
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
@@ -50,8 +50,6 @@ protocol PreflightReadCapable {
     var needPreflightRead: Bool { get }
 }
 
-
-@available(iOS 13.0, *)
 extension Command {
     public var needPreflightRead: Bool {
         return true
@@ -70,6 +68,10 @@ extension Command {
     }
     
     func transieve(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        let commandName = "\(self)".remove("TangemSdk.").remove("Command")
+        Log.command("=======================")
+        Log.command("Send command: \(commandName)")
+        Log.command("=======================")
         if needPreflightRead && session.environment.card == nil {
             completion(.failure(.missingPreflightRead))
             return
@@ -91,12 +93,18 @@ extension Command {
     
     private func transieveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
+            session.rememberTag()
+            Log.apdu("----Serialize command:-----")
             let commandApdu = try serialize(with: session.environment)
+            Log.apdu("---------------------------")
             transieve(apdu: commandApdu, in: session) { result in
+                session.releaseTag()
                 switch result {
                 case .success(let responseApdu):
                     do {
+                        Log.apdu("-----Deserialize response:-----")
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
+                        Log.apdu("-------------------------------")
                         completion(.success(responseData))
                     } catch {
                         completion(.failure(error.toTangemSdkError()))
@@ -105,10 +113,8 @@ extension Command {
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
                         if case .pin1Required = mappedError {
-                            session.environment.pin1 = PinCode(.pin1, value: nil)
                             self.requestPin(.pin1, session, completion: completion)
                         } else if case .pin2OrCvcRequired = mappedError {
-                            session.environment.pin2 = PinCode(.pin2, value: nil)
                             self.requestPin(.pin2, session, completion: completion)
                         } else {
                             completion(.failure(mappedError))
@@ -124,7 +130,6 @@ extension Command {
     }
     
     private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-//		print("transieve: \(Instruction(rawValue: apdu.ins)!), raw:", apdu.ins.toHex())
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
@@ -144,11 +149,11 @@ extension Command {
                 case .needEcryption:
                     switch session.environment.encryptionMode {
                     case .none:
-                        print("try fast encryption")
+                        Log.session("Try change to fast encryption")
                         session.environment.encryptionKey = nil
                         session.environment.encryptionMode = .fast
                     case .fast:
-                        print("try strong encryption")
+                        Log.session("Try change to strong encryption")
                         session.environment.encryptionKey = nil
                         session.environment.encryptionMode = .strong
                     case .strong:
@@ -178,7 +183,15 @@ extension Command {
     }
     
     private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause(error: TangemSdkError.from(pinType: pinType))
+        session.pause(error: TangemSdkError.from(pinType: pinType, environment: session.environment))
+        
+        switch pinType {
+        case .pin1:
+            session.environment.pin1 = PinCode(.pin1, value: nil)
+        case .pin2:
+            session.environment.pin2 = PinCode(.pin2, value: nil)
+        }
+        
         DispatchQueue.main.async {
             session.requestPinIfNeeded(pinType) { result in
                 switch result {
@@ -190,47 +203,5 @@ extension Command {
                 }
             }
         }
-    }
-}
-
-/// The basic protocol for command response
-public protocol ResponseCodable: Codable, CustomStringConvertible {}
-
-extension ResponseCodable {
-    public var description: String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
-        encoder.dataEncodingStrategy = .custom{ data, encoder in
-            var container = encoder.singleValueContainer()
-            return try container.encode(data.asHexString())
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateStyle = .medium
-        encoder.dateEncodingStrategy = .formatted(dateFormatter)
-        let data = (try? encoder.encode(self)) ?? Data()
-        return String(data: data, encoding: .utf8)!
-    }
-}
-
-public struct SimpleResponse: ResponseCodable {
-	public let cardId: String
-}
-
-extension JSONDecoder {
-    public static var tangemSdkDecoder: JSONDecoder  {
-        let decoder = JSONDecoder()
-        decoder.dataDecodingStrategy = .custom { decoder in
-            let container = try decoder.singleValueContainer()
-            let hex = try container.decode(String.self)
-            return Data(hexString: hex)
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "YYYY-MM-DD"
-        decoder.dateDecodingStrategy  = .formatted(dateFormatter)
-        return decoder
     }
 }

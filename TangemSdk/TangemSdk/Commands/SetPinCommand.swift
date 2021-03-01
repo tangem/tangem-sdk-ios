@@ -10,13 +10,12 @@ import Foundation
 
 
 /// Deserialized response from the Tangem card after `SetPintCommand`.
-public struct SetPinResponse: ResponseCodable {
+public struct SetPinResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     public let status: SetPinStatus
 }
 
-@available(iOS 13.0, *)
 public class SetPinCommand: Command, CardSessionPreparable {
     public typealias CommandResponse = SetPinResponse
     
@@ -27,18 +26,16 @@ public class SetPinCommand: Command, CardSessionPreparable {
     private let pinType: PinCode.PinType
     private var newPin1: Data?
     private var newPin2: Data?
-    private var newPin3: Data?
     
-    private init(newPin1: Data?, newPin2: Data?, newPin3: Data? = nil, pinType: PinCode.PinType) {
+    private init(newPin1: Data?, newPin2: Data?, pinType: PinCode.PinType) {
         self.newPin1 = newPin1
         self.newPin2 = newPin2
-        self.newPin3 = newPin3
         self.pinType = pinType
     }
     
     /// Reset pin1 and pin2 to default values
     public convenience init() {
-        self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), newPin3: nil, pinType: .pin1)
+        self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), pinType: .pin1)
     }
     
     /// Change pin
@@ -51,27 +48,20 @@ public class SetPinCommand: Command, CardSessionPreparable {
         case .pin1:
             self.init(newPin1: pin,
                       newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
-                      newPin3: nil,
                       pinType: pinType)
         case .pin2:
             self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
                       newPin2: pin,
-                      newPin3: nil,
-                      pinType: pinType)
-        case .pin3:
-            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
-                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
-                      newPin3: pin,
                       pinType: pinType)
         }
     }
     
     deinit {
-        print ("SetPinCommand deinit")
+        Log.debug("SetPinCommand deinit")
     }
     
     func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
-        if newPin1 == nil && newPin2 == nil && newPin3 == nil {
+        if newPin1 == nil && newPin2 == nil {
             self.requestNewPin(in: session, completion: completion)
         } else {
             completion(.success(()))
@@ -79,8 +69,8 @@ public class SetPinCommand: Command, CardSessionPreparable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
-        if (newPin1 == nil && pinType == .pin1) || (newPin2 == nil && pinType == .pin2) || (newPin3 == nil && pinType == .pin3) {
-            session.pause(error: TangemSdkError.from(pinType: self.pinType))
+        if (newPin1 == nil && pinType == .pin1) || (newPin2 == nil && pinType == .pin2) {
+            session.pause(error: TangemSdkError.from(pinType: self.pinType, environment: nil))
             DispatchQueue.main.async {
                 self.requestNewPin(in: session) { result in
                     switch result {
@@ -107,8 +97,6 @@ public class SetPinCommand: Command, CardSessionPreparable {
                     self.newPin1 = newPinData
                 case .pin2:
                     self.newPin2 = newPinData
-                case .pin3:
-                    self.newPin3 = newPinData
                 }
                 completion(.success(()))
             case .failure(let error):
@@ -125,10 +113,6 @@ public class SetPinCommand: Command, CardSessionPreparable {
             .append(.newPin, value: newPin1 ?? environment.pin1.value )
             .append(.newPin2, value: newPin2 ?? environment.pin2.value)
         
-        if let newPin3 = self.newPin3 {
-            try tlvBuilder.append(.newPin3, value: newPin3)
-        }
-        
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
         }
@@ -142,7 +126,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
         }
         
         guard let status = SetPinStatus.fromStatusWord(apdu.statusWord) else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to parse set pin status")
         }
         
         let decoder = TlvDecoder(tlv: tlv)

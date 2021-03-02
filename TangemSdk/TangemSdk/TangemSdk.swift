@@ -63,7 +63,7 @@ public final class TangemSdk {
                          initialMessage: Message? = nil,
                          pin1: String? = nil,
                          completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1) { result in
+        startSession(with: ScanTask(cardVerification: onlineVerification, walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1) { result in
             switch result {
             case .success(let response):
                 if onlineVerification, let cid = response.cardId,

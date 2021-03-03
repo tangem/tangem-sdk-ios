@@ -368,7 +368,7 @@ class ScanCardAnimatedView: UIView {
 		opacityAnim.timingFunction = .init(controlPoints: 0.5, 0.2, 0.8, 0.35)
 		opacityAnim.isRemovedOnCompletion = false
 		
-		let scaleAnim = CAKeyframeAnimation(keyPath: AnimKeyPaths.transScale)
+		let scaleAnim = CAKeyframeAnimation(keyPath: AnimKeyPaths.transform)
 		scaleAnim.values = reversed ? [CATransform3DIdentity, hiddenHandTransform] : [hiddenHandTransform, CATransform3DIdentity]
 		scaleAnim.beginTime = reversed ? 0 : 0.3
 		scaleAnim.duration = 1.2
@@ -408,7 +408,7 @@ class ScanCardAnimatedView: UIView {
 										  reversed: false,
 										  delay: delay)
 		
-		let scale = CAKeyframeAnimation(keyPath: AnimKeyPaths.transScale,
+		let scale = CAKeyframeAnimation(keyPath: AnimKeyPaths.transform,
 										values: [CATransform3DIdentity, CATransform3DMakeScale(3, 3, 1)],
 										keyTimes: [0, 1],
 										reversed: false,

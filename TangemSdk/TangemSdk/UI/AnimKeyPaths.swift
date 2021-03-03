@@ -9,7 +9,7 @@
 import Foundation
 
 struct AnimKeyPaths {
-	static let transScale = "transform.scale"
+	static let transform = "transform"
 	static let opacity = "opacity"
 	static let position = "position"
 	static let strokeEnd = "strokeEnd"

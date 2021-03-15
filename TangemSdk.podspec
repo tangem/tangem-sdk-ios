@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TangemSdk'
-  s.version          = '2.4.1'
+  s.version          = '2.4.2'
   s.summary          = 'Use TangemSdk for Tangem cards integration'
 
 # This description is used to generate tags and improve search results.

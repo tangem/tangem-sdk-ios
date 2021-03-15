@@ -53,7 +53,7 @@ public final class TangemSdk {
     ///
     /// - Note: `WalletIndex` available for cards with COS v.4.0 or higher
     /// - Parameters:
-    ///   - onlineVerification: Verify the card online with Tangem backend. Do not use for developer cards
+    ///   - onlineVerification: Verify the card offline and online with Tangem backend. Do not use for developer cards
     ///   - walletIndex: Index to wallet which data should be read.  if not specified - wallet at default index will be read. See `WalletIndex` for more info
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used

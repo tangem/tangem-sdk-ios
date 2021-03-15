@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     @IBAction func scanCardTapped(_ sender: Any) {
         (sender as! UIButton).showActivityIndicator()
         let index = WalletIndex.index(card == nil ? 0 : walletIndex)
-        tangemSdk.scanCard(walletIndex: index) {[unowned self] result in
+        tangemSdk.scanCard(onlineVerification: false, walletIndex: index) {[unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card

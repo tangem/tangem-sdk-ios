@@ -10,7 +10,7 @@ import Foundation
 
 /// Task that allows to read Tangem card and verify its private key.
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
-public final class ScanTask: CardSessionRunnable, WalletSelectable {
+public final class ScanTask: CardSessionRunnable, WalletInteractable {
     public typealias CommandResponse = Card
 	
 	private(set) public var walletIndex: WalletIndex?
@@ -30,6 +30,9 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
         }
         
         card.isPin1Default = session.environment.pin1.isDefault
+        
+        completion(.success(card))
+        return
         
         if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
            !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {

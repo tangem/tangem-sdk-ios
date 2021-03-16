@@ -21,7 +21,7 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public final class SignCommand: Command, WalletSelectable {
+public final class SignCommand: Command, WalletInteractable {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
@@ -186,7 +186,7 @@ public final class SignCommand: Command, WalletSelectable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return SignResponse(
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),

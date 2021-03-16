@@ -104,16 +104,31 @@ public final class TlvEncoder {
             let method = value as! SigningMethod
             return Data([method.rawValue])
         case .interactionMode:
-			do {
-				try typeCheck(value, IssuerExtraDataMode.self, for: tag)
-				let mode = value as! IssuerExtraDataMode
-				return Data([mode.rawValue])
-			} catch {
-                Log.warning("Interaction mode is not and issuer. Trying to check FileDataMode")
-			}
-			try typeCheck(value, FileDataMode.self, for: tag)
-			let mode = value as! FileDataMode
-			return Data([mode.rawValue])
+//            try typeCheck(value, InteractionMode.self, for: tag)
+            guard let mode = value as? InteractionMode else {
+                throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
+            }
+            return Data([mode.rawValue])
+            
+//            switch value.self {
+//            case is IssuerExtraDataMode:
+//                let mode = value as! IssuerExtraDataMode
+//                return Data([mode.rawValue])
+//            case is FileDataMode:
+//                let mode = value as! FileDataMode
+//            default:
+//                <#code#>
+//            }
+//			do {
+//				try typeCheck(value, IssuerExtraDataMode.self, for: tag)
+//				let mode = value as! IssuerExtraDataMode
+//				return Data([mode.rawValue])
+//			} catch {
+//                Log.warning("Interaction mode is not and issuer. Trying to check FileDataMode")
+//			}
+//			try typeCheck(value, FileDataMode.self, for: tag)
+//			let mode = value as! FileDataMode
+//			return Data([mode.rawValue])
 		case .fileSettings:
 			try typeCheck(value, FileSettings.self, for: tag)
 			let settings = value as! FileSettings

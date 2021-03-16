@@ -113,7 +113,7 @@ public final class ReadFileCommand: Command {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
-		let decoder = TlvDecoder(tlv: tlv)
+		let decoder = DefaultTlvDecoder(tlv: tlv)
 		return ReadFileResponse(cardId: try decoder.decode(.cardId),
 									size: try decoder.decodeOptional(.size),
 									fileData: try decoder.decodeOptional(.issuerData) ?? Data(),

@@ -10,18 +10,26 @@ import Foundation
 
 public typealias ReadResponse = Card
 
+enum ReadMode: Byte, InteractionMode {
+    case readCard = 0x01
+    case readWallet = 0x02
+    case readWalletList = 0x03
+}
+
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
-public final class ReadCommand: Command {
-    public typealias CommandResponse = ReadResponse
+final class ReadCommand: Command {
+    typealias CommandResponse = ReadResponse
     
-    public var needPreflightRead: Bool {
+    var needPreflightRead: Bool {
         return false
     }
 	
 	private var walletIndex: WalletIndex?
+    private var readMode: ReadMode?
 	
-	public init(walletIndex: WalletIndex? = nil) {
+    init(mode: ReadMode? = nil, walletIndex: WalletIndex? = nil) {
+        self.readMode = mode
 		self.walletIndex = walletIndex
 	}
 	
@@ -29,7 +37,7 @@ public final class ReadCommand: Command {
         Log.debug("ReadCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
         transieve(in: session) { result in
             switch result {
             case .success(let readResponse):

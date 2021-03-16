@@ -118,7 +118,7 @@ public class VerifyCardCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return VerifyCardResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),

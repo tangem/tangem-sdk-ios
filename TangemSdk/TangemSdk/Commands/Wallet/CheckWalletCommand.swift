@@ -19,7 +19,7 @@ public struct CheckWalletResponse: JSONStringConvertible {
 }
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
-public final class CheckWalletCommand: Command, WalletSelectable {
+public final class CheckWalletCommand: Command, WalletInteractable {
     deinit {
         Log.debug("CheckWalletCommand deinit")
     }
@@ -94,7 +94,7 @@ public final class CheckWalletCommand: Command, WalletSelectable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return CheckWalletResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),

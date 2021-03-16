@@ -58,7 +58,7 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
-    private var walletIndexForInteraction: WalletIndex?
+    private var preflightReadingSettings: PreflightReadTask.ReadSettings = .readCardOnly
     
     private var currentTag: NFCTagType? = nil
     /// Main initializer
@@ -80,6 +80,22 @@ public class CardSession {
         Log.debug("Card session deinit")
     }
     
+    // MARK: - Prepearing session
+    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
+        Log.session("Prepare card session")
+        needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
+        if let walletInteractable = runnable as? WalletInteractable {
+            preflightReadingSettings = walletInteractable.walletIndex == nil ? .fullCardRead : .readWallet(index: walletInteractable.walletIndex!)
+        }
+
+        if let preparable = runnable as? CardSessionPreparable {
+            preparable.prepare(self, completion: completion)
+        } else {
+            completion(.success(()))
+        }
+    }
+    
+    // MARK: - Session start
     /// This metod starts a card session, performs preflight `Read` command,  invokes the `run ` method of `CardSessionRunnable` and closes the session.
     /// - Parameters:
     ///   - runnable: The CardSessionRunnable implemetation
@@ -130,18 +146,7 @@ public class CardSession {
         }
     }
     
-    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
-        Log.session("Prepare card session")
-        needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
-        walletIndexForInteraction = (runnable as? WalletSelectable)?.walletIndex
-
-        if let preparable = runnable as? CardSessionPreparable {
-            preparable.prepare(self, completion: completion)
-        } else {
-            completion(.success(()))
-        }
-    }
-    
+    // MARK: - Session subscriptions
     /// Starts a card session and performs preflight `Read` command.
     /// - Parameter onSessionStarted: Delegate with the card session. Can contain error
     public func start(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
@@ -209,6 +214,8 @@ public class CardSession {
         
         reader.startSession(with: initialMessage?.alertMessage)
     }
+    
+    // MARK: - Session stop and pause
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
     public func stop(message: String? = nil) {
@@ -228,12 +235,24 @@ public class CardSession {
         sessionDidStop()
     }
     
+    func pause(error: TangemSdkError? = nil) {
+        reader.pauseSession(with: error?.localizedDescription)
+    }
+    
+    func resume() {
+        reader.resumeSession()
+    }
+    
+    // MARK: - Restart polling
     /// Restarts the polling sequence so the reader session can discover new tags.
     public func restartPolling() {
         Log.session("Restart polling")
         reader.restartPolling()
     }
     
+    
+    
+    // MARK: - APDU sending
     /// Sends `CommandApdu` to the current card
     /// - Parameters:
     ///   - apdu: The apdu to send
@@ -281,14 +300,6 @@ public class CardSession {
             .store(in: &sendSubscription)
     }
     
-    func pause(error: TangemSdkError? = nil) {
-        reader.pauseSession(with: error?.localizedDescription)
-    }
-    
-    func resume() {
-        reader.resumeSession()
-    }
-    
     /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
     func rememberTag() {
         currentTag = reader.tag.value
@@ -301,17 +312,18 @@ public class CardSession {
     
     private func sessionDidStop() {
         nfcReaderSubscriptions = []
-        walletIndexForInteraction = nil
+        preflightReadingSettings = .readCardOnly
         sendSubscription = []
         viewDelegate.sessionStopped()
         state = .inactive
     }
     
+    // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        ReadCommand(walletIndex: walletIndexForInteraction).run(in: self) { [weak self] readResult in
+        PreflightReadTask(readSettings: preflightReadingSettings).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
-            
+
             switch readResult {
             case .success(let readResponse):
                 var wrongCardError: TangemSdkError? = nil
@@ -391,6 +403,7 @@ public class CardSession {
             }.eraseToAnyPublisher()
     }
     
+    // MARK: - Request PIN
     func requestPinIfNeeded(_ pinType: PinCode.PinType, _ completion: @escaping CompletionResult<Void>) {
         switch pinType {
         case .pin1:

@@ -9,7 +9,7 @@
 //import Foundation
 //
 ///// This enum specifies modes for `ReadIssuerExtraDataCommand` and  `WriteIssuerExtraDataCommand`.
-public enum IssuerExtraDataMode: Byte {
+public enum IssuerExtraDataMode: Byte, InteractionMode {
     ///This mode is required to read issuer extra data from the card. This mode is required to initiate writing issuer extra data to the card.
     case readOrStartWrite = 1
     
@@ -183,7 +183,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return ReadIssuerExtraDataResponse(
             cardId: try decoder.decode(.cardId),
             size: try decoder.decodeOptional(.size),

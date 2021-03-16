@@ -30,7 +30,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-public final class CreateWalletCommand: Command, WalletSelectable {
+public final class CreateWalletCommand: Command, WalletInteractable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
@@ -108,6 +108,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 				return .walletIndexExceedsMaxValue
 			}
 			
+            // If card returns "Invalid params" when it shouldn't, try to check in card SettingsMask "AllowSelectBlockchain" flag :)
 			if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
 			   card.pin2IsDefault ?? false {
 				return .alreadyCreated
@@ -152,7 +153,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return CreateWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status),

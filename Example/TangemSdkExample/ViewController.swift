@@ -9,6 +9,26 @@
 import UIKit
 import TangemSdk
 
+class MillisecTimer {
+    private let logger: ((String) -> Void)?
+    
+    private var startTime: DispatchTime?
+    
+    init(logger: ((String) -> Void)?) {
+        self.logger = logger
+    }
+    
+    func start() {
+        startTime = .now()
+    }
+    
+    func stop() {
+        let nanoSec = Double(DispatchTime.now().uptimeNanoseconds - (startTime?.uptimeNanoseconds ?? DispatchTime.now().uptimeNanoseconds))
+        logger?("Elapsed time in nano sec: \(nanoSec)")
+        logger?("Elapsed time in mili sec: \(nanoSec / 1_000_000)")
+    }
+}
+
 @available(iOS 13.0, *)
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
@@ -18,8 +38,13 @@ class ViewController: UIViewController {
     
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
+        config.logСonfig = .verbose
         config.linkedTerminal = false
         return TangemSdk(config: config)
+    }()
+    lazy var timer: MillisecTimer = {
+       let timer = MillisecTimer(logger: log(_:))
+        return timer
     }()
     
     var card: Card?
@@ -29,6 +54,9 @@ class ViewController: UIViewController {
     var filesDataCounter: Int?
     
     var walletIndex: Int = 0
+    var walIn: WalletIndex? {
+        WalletIndex.index(walletIndex)
+    }
     
     @IBAction func walletIndexUpdate(_ sender: UISlider) {
         let step: Float = 1
@@ -38,10 +66,10 @@ class ViewController: UIViewController {
         walletIndexLabel.text = "\(walletIndex)"
     }
     
-    @IBAction func scanCardTapped(_ sender: Any) {
-        (sender as! UIButton).showActivityIndicator()
-        let index = WalletIndex.index(card == nil ? 0 : walletIndex)
-        tangemSdk.scanCard(walletIndex: index) {[unowned self] result in
+    @IBAction func scanCardTapped(_ sender: UIButton) {
+        sender.showActivityIndicator()
+        timer.start()
+        tangemSdk.scanCard(onlineVerification: false) {[unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card
@@ -49,13 +77,96 @@ class ViewController: UIViewController {
                 self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
                 self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
                 self.logView.text = ""
+                self.timer.stop()
                 self.log("read result: \(card)")
             case .failure(let error):
                 self.handle(error)
             }
-            (sender as! UIButton).hideActivityIndicator()
+            sender.hideActivityIndicator()
         }
     }
+    
+    @IBAction func scanWalletByIndexTapped(_ sender: UIButton) {
+        sender.showActivityIndicator()
+        timer.start()
+        tangemSdk.scanCard(onlineVerification: false, walletIndex: walIn) { [unowned self] (result) in
+            switch result {
+            case .success(let card):
+                self.card = card
+                let maxWalletIndex = (card.walletsCount ?? 1) - 1
+                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
+                self.logView.text = ""
+                self.timer.stop()
+                self.log("read result: \(card)")
+            case .failure(let error):
+                self.handle(error)
+            }
+            sender.hideActivityIndicator()
+        }
+    }
+    
+//    @IBAction func readModeTapped(_ sender: UIButton) {
+//        clearTapped(sender)
+//        sender.showActivityIndicator()
+//        timer.start()
+//        tangemSdk.startSession(with: PreflightReadTask(readSettings: .readCard)) { [unowned self] result in
+//            switch result {
+//            case .success(let card):
+//                self.card = card
+//                let maxWalletIndex = (card.walletsCount ?? 1) - 1
+//                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+//                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
+//                self.timer.stop()
+//                self.log("Read card read mode: \(card)")
+//            case .failure(let error):
+//                self.handle(error)
+//            }
+//            sender.hideActivityIndicator()
+//        }
+//    }
+//
+//    @IBAction func readWalletModeTapped(_ sender: UIButton) {
+//        clearTapped(sender)
+//        sender.showActivityIndicator()
+//        timer.start()
+//        let index = PreflightReadTask.ReadSettings.readWallet(index: walIn ?? .index(walletIndex))
+//        tangemSdk.startSession(with: PreflightReadTask(readSettings: index)) { [unowned self] result in
+//            switch result {
+//            case .success(let card):
+//                self.card = card
+//                let maxWalletIndex = (card.walletsCount ?? 1) - 1
+//                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+//                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
+//                self.timer.stop()
+//                self.log("Read card read mode: \(card)")
+//            case .failure(let error):
+//                self.handle(error)
+//            }
+//            sender.hideActivityIndicator()
+//        }
+//    }
+//
+//    @IBAction func readCardDefaultTapped(_ sender: UIButton) {
+//        clearTapped(sender)
+//        sender.showActivityIndicator()
+//        timer.start()
+//        tangemSdk.startSession(with: PreflightReadTask(readSettings: .defaultRead)) { [unowned self] result in
+//            switch result {
+//            case .success(let card):
+//                self.card = card
+//                let maxWalletIndex = (card.walletsCount ?? 1) - 1
+//                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+//                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
+//                self.timer.stop()
+//                self.log("Read card read mode: \(card)")
+//            case .failure(let error):
+//                self.handle(error)
+//            }
+//            sender.hideActivityIndicator()
+//        }
+//    }
+    
     
     @IBAction func signHashesTapped(_ sender: Any) {
         let hashes = (0..<1).map {_ -> Data in getRandomHash()}
@@ -64,7 +175,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex), initialMessage: Message(header: "Custom header", body: "Custom body")) { [unowned self] result in
+        tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex), initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet at index: \(walletIndex)")) { [unowned self] result in
             switch result {
             case .success(let signResponse):
                 self.log(signResponse)

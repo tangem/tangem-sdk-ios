@@ -10,13 +10,13 @@ import Foundation
 
 /// Use this to identify that CardSessionRunnable type can select specific wallet for interaction
 ///	- Note: Available for cards with COS v.4.0 and higher
-public protocol WalletSelectable {
+public protocol WalletInteractable {
 	var walletIndex: WalletIndex? { get }
 }
 
 /// Index to specific wallet for interaction
 /// - Note: Available for cards with COS v.4.0 and higher
-public enum WalletIndex {
+public enum WalletIndex: Equatable {
 	case index(Int), publicKey(Data)
 	
 	@discardableResult

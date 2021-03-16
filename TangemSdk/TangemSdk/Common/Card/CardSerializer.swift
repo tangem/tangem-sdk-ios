@@ -14,7 +14,7 @@ struct CardDeserializer {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		
-		let decoder = TlvDecoder(tlv: tlv)
+		let decoder = DefaultTlvDecoder(tlv: tlv)
 		
 		var card = ReadResponse(
 			cardId: try decoder.decodeOptional(.cardId),
@@ -50,6 +50,8 @@ struct CardDeserializer {
 			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
 			card.pin2IsDefault = pin2IsDefault != nil
 		}
+        
+        // Add condition for creating new wallet info structure for old cards
 		return card
 	}
 	
@@ -59,7 +61,7 @@ struct CardDeserializer {
 				return nil
 		}
 		
-		let decoder = TlvDecoder(tlv: cardDataTlv)
+		let decoder = DefaultTlvDecoder(tlv: cardDataTlv)
 		let cardData = CardData(
 			batchId: try decoder.decodeOptional(.batchId),
 			manufactureDateTime: try decoder.decodeOptional(.manufactureDateTime),

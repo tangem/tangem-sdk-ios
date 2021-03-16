@@ -129,7 +129,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
             throw TangemSdkError.decodingFailed("Failed to parse set pin status")
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return SetPinResponse(
             cardId: try decoder.decode(.cardId),
             status: status)

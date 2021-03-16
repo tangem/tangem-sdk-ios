@@ -99,7 +99,7 @@ extension Data {
             return nil
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return try? decoder.decode(tag)
     }
     

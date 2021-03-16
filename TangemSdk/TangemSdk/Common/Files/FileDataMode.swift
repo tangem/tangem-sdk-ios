@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum FileDataMode: Byte {
+enum FileDataMode: Byte, InteractionMode {
 	
 	/// Use this mode when reading file
 	case read = 0

@@ -22,7 +22,7 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-public final class PurgeWalletCommand: Command, WalletSelectable {
+public final class PurgeWalletCommand: Command, WalletInteractable {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
@@ -100,7 +100,7 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = DefaultTlvDecoder(tlv: tlv)
         return PurgeWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status))

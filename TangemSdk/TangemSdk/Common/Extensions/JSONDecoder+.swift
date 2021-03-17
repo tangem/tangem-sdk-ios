@@ -18,8 +18,10 @@ extension JSONDecoder {
         }
         
         let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.calendar = Calendar(identifier: .gregorian)
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateFormat = "YYYY-MM-DD"
         decoder.dateDecodingStrategy  = .formatted(dateFormatter)
         return decoder
     }

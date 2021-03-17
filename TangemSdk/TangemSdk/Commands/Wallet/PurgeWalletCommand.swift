@@ -29,9 +29,9 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
         return true
     }
 	
-	private(set) public var walletIndex: WalletIndex?
+    public var walletIndex: WalletIndex?
     
-	public init(walletIndex: WalletIndex? = nil) {
+    public init(walletIndex: WalletIndex?) {
 		self.walletIndex = walletIndex
 	}
     
@@ -40,17 +40,18 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                return .cardIsEmpty
-            case .loaded:
-                break
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+        let wallet: CardWallet
+        do {
+            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
+        } catch { return error.toTangemSdkError() }
+        
+        switch wallet.status {
+        case .empty:
+            return .cardIsEmpty
+        case .loaded:
+            break
+        case .purged:
+            return .cardIsPurged
         }
         
         if card.isActivated {
@@ -69,6 +70,12 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
 			switch result {
 			case .success(let response):
 				session.environment.card?.status = .empty
+                if var card = session.environment.card,
+                   let wallet = try? CardWalletExtractor.extract(from: card, at: self.walletIndex) {
+                    card.wallets[wallet.index] = wallet.emptyCopy
+                    session.environment.card = card
+                }
+                Log.debug(session.environment.card)
 				completion(.success(response))
 			case .failure(let error):
 				completion(.failure(error))

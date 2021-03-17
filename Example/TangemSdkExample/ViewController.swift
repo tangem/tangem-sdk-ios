@@ -175,7 +175,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.sign(hashes: hashes, cardId: cardId, walletIndex: WalletIndex.index(walletIndex), initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet at index: \(walletIndex)")) { [unowned self] result in
+        tangemSdk.sign(hashes: hashes, cardId: cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet at index: \(walletIndex)")) { [unowned self] result in
             switch result {
             case .success(let signResponse):
                 self.log(signResponse)

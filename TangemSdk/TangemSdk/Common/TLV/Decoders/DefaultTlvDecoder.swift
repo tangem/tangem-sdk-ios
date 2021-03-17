@@ -122,14 +122,24 @@ extension TlvDecoder {
             let intValue = tagValue.toInt()
             let settingsMask = SettingsMask(rawValue: intValue)
             return settingsMask as! T
-        case .cardStatus:
-            try typeCheck(CardStatus.self, T.self, for: tag)
-            let intValue = tagValue.toInt()
-            guard let cardStatus = CardStatus(rawValue: intValue) else {
-                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
+        case .status:
+            do {
+                try typeCheck(CardStatus.self, T.self, for: tag)
+                let intValue = tagValue.toInt()
+                guard let cardStatus = CardStatus(rawValue: intValue) else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
+                }
+                
+                return cardStatus as! T
+            } catch TangemSdkError.decodingFailedTypeMismatch {
+                try typeCheck(WalletStatus.self, T.self, for: tag)
+                let intValue = tagValue.toInt()
+                guard let walletStatus = WalletStatus(rawValue: intValue) else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and WalletStatus")
+                }
+                return walletStatus as! T
             }
             
-            return cardStatus as! T
         case .signingMethod:
             try typeCheck(SigningMethod.self, T.self, for: tag)
             guard let byte = tagValue.toBytes.first else {

@@ -9,14 +9,12 @@
 import Foundation
 
 class WalletInfoDeserializerUtility {
-    static func deserializeWalletInfo(from decoder: DefaultTlvDecoder) throws -> WalletInfo {
-        WalletInfo(index: try decoder.decode(.walletIndex),
+    static func deserializeWalletInfo(from decoder: DefaultTlvDecoder) throws -> CardWallet {
+        CardWallet(index: try decoder.decode(.walletIndex),
                    status: try decoder.decode(.status),
                    curve: try decoder.decodeOptional(.curveId),
                    settingsMask: try decoder.decodeOptional(.settingsMask),
                    publicKey: try decoder.decodeOptional(.walletPublicKey),
-                   signedHashes: try decoder.decodeOptional(.walletSignedHashes),
-                   userCounter: try decoder.decodeOptional(.userCounter),
-                   userProtectedCounter: try decoder.decodeOptional(.userProtectedCounter))
+                   signedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
 }

@@ -53,7 +53,7 @@ public final class TangemSdk {
     ///
     /// - Note: `WalletIndex` available for cards with COS v.4.0 or higher
     /// - Parameters:
-    ///   - onlineVerification: Verify the card online with Tangem backend. Do not use for developer cards
+    ///   - onlineVerification: Verify the card offline and online with Tangem backend. Do not use for developer cards
     ///   - walletIndex: Index to wallet which data should be read.  if not specified - wallet at default index will be read. See `WalletIndex` for more info
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - pin1: PIN1 string. Hash will be calculated automatically. If nil, the default PIN1 value will be used
@@ -63,7 +63,7 @@ public final class TangemSdk {
                          initialMessage: Message? = nil,
                          pin1: String? = nil,
                          completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1) { result in
+        startSession(with: ScanTask(cardVerification: onlineVerification, walletIndex: walletIndex), cardId: nil, initialMessage: initialMessage, pin1: pin1) { result in
             switch result {
             case .success(let response):
                 if onlineVerification, let cid = response.cardId,

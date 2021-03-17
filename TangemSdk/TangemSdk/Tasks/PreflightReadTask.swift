@@ -8,24 +8,20 @@
 
 import Foundation
 
-final class PreflightReadTask: CardSessionRunnable {
+final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
-    enum ReadSettings: Equatable {
+    enum Settings: Equatable {
         case readCardOnly
         case fullCardRead
         case readWallet(index: WalletIndex)
     }
     
-    var needPreflightRead: Bool { false }
-    
-    private var readMode: ReadMode = .readCard
-    
-    private var readSettings: ReadSettings
+    private var readSettings: Settings
     
     private var walletIndex: WalletIndex?
     
-    init(readSettings: ReadSettings) {
+    init(readSettings: Settings) {
         self.readSettings = readSettings
         if case let .readWallet(index) = readSettings {
             self.walletIndex = index
@@ -37,7 +33,7 @@ final class PreflightReadTask: CardSessionRunnable {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
-        ReadCommand(mode: readMode).run(in: session) { (result) in
+        ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
                 self.finalizeRead(in: session, with: readResponse, completion: completion)
@@ -47,14 +43,6 @@ final class PreflightReadTask: CardSessionRunnable {
         }
     }
     
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidParams = error {
-            return .pin1Required
-        }
-        
-        return error
-    }
-    
     private func finalizeRead(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
         if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData || self.readSettings == .readCardOnly {
             completion(.success(readResponse))
@@ -62,10 +50,10 @@ final class PreflightReadTask: CardSessionRunnable {
         }
         
         switch readSettings {
-        case .fullCardRead:
-            readWalletsList(in: session, with: readResponse, completion: completion)
         case .readWallet(let index):
             readWallet(at: index, in: session, with: readResponse, completion: completion)
+        case .fullCardRead:
+            readWalletsList(in: session, with: readResponse, completion: completion)
         default:
             break
         }
@@ -85,7 +73,8 @@ final class PreflightReadTask: CardSessionRunnable {
             switch result {
             case .success(let walletResponse):
                 var card = readResponse
-                card.walletsInfo = [walletResponse.walletInfo]
+                let wallet = walletResponse.walletInfo
+                card.wallets = [wallet.index: wallet]
                 session.environment.card = card
                 completion(.success(card))
             case .failure(let error):
@@ -99,7 +88,11 @@ final class PreflightReadTask: CardSessionRunnable {
             switch result {
             case .success(let listRepsonse):
                 var card = readResponse
-                card.walletsInfo = listRepsonse.wallets
+                var wallets: [Int: CardWallet] = [:]
+                listRepsonse.wallets.forEach {
+                    wallets[$0.index] = $0
+                }
+                card.wallets = wallets
                 session.environment.card = card
                 completion(.success(card))
             case .failure(let error):

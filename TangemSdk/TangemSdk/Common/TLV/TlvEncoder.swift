@@ -95,7 +95,7 @@ public final class TlvEncoder {
 			try typeCheck(value, WalletSettingsMask.self, for: tag)
 			let mask = value as! WalletSettingsMask
 			return mask.rawValue.bytes4
-        case .cardStatus:
+        case .status:
             try typeCheck(value, CardStatus.self, for: tag)
             let status = value as! CardStatus
             return status.rawValue.byte

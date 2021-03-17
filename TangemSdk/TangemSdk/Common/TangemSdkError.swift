@@ -245,6 +245,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	
 	case walletIndexExceedsMaxValue
     case walletIndexNotSpecified
+    case walletIndexNotCorrect
 	case maxNumberOfWalletsCreated
 	case walletNotFound
 	case cardReadWrongWallet
@@ -341,6 +342,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .alreadyCreated: return 40501
         case .walletIndexExceedsMaxValue: return 40502
         case .maxNumberOfWalletsCreated: return 40503
+        case .walletIndexNotCorrect: return 40504
             
         case .purgeWalletProhibited: return 40601
             
@@ -356,6 +358,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .tooManyHashesInOneTransaction: return 40906
             
         case .extendedDataSizeTooLarge: return 41101
+            
+        // MARK: 5xxxx Errors
+        // SDK error. Errors, that occurred in the apper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
+        
+        
         }
     }
     

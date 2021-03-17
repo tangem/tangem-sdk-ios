@@ -355,7 +355,7 @@ public final class TangemSdk {
     ///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
     ///   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
     public func purgeWallet(cardId: String? = nil,
-                            walletIndex: WalletIndex? = nil,
+                            walletIndex: WalletIndex?,
                             initialMessage: Message? = nil,
                             pin1: String? = nil,
                             pin2: String? = nil,
@@ -417,8 +417,8 @@ public final class TangemSdk {
     ///   - cardPublicKey: CardPublicKey returned by [ReadCommand]
     ///   - completion: `CardVerifyAndGetInfoResponse.Item`
     public func getCardInfo(cardId: String,
-                             cardPublicKey: Data,
-                             completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
+                            cardPublicKey: Data,
+                            completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
         onlineVerificationCancellable = onlineCardVerifier
             .getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
             .receive(on: DispatchQueue.main)

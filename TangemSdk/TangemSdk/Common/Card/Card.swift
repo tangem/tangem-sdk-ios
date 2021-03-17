@@ -80,7 +80,19 @@ public struct Card: JSONStringConvertible {
 	/// Maximum number of wallets that can be created for this card
 	public var walletsCount: Int? = nil
     
-    public var walletsInfo: [WalletInfo] = []
+    public var wallets: [Int: CardWallet] = [:]
+    public var sortedWallets: [CardWallet] {
+        wallets.values.sorted(by: { $0.index > $1.index })
+    }
+    
+    public func wallet(at index: WalletIndex) -> CardWallet? {
+        switch index {
+        case .index(let int):
+            return wallets[int]
+        case .publicKey(let pubkey):
+            return wallets.values.first(where: { $0.publicKey == pubkey })
+        }
+    }
 	
 	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
 		self.cardId = cardId

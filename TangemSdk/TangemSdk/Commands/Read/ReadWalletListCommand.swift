@@ -10,7 +10,7 @@ import Foundation
 
 struct WalletListResponse: JSONStringConvertible {
     let cid: String
-    let wallets: [WalletInfo]
+    let wallets: [CardWallet]
 }
 
 class ReadWalletListCommand: Command {
@@ -18,7 +18,7 @@ class ReadWalletListCommand: Command {
     var needPreflightRead: Bool { false }
     
     private var walletIndex: WalletIndex?
-    private var tempWalletList: [WalletInfo] = []
+    private var tempWalletList: [CardWallet] = []
     
     deinit {
         Log.debug("ReadWalletCommand deinit")
@@ -89,7 +89,7 @@ class ReadWalletListCommand: Command {
             return DefaultTlvDecoder(tlv: infoTlvs)
         }
         
-        let wallets: [WalletInfo] = try walletDecoders.map {
+        let wallets: [CardWallet] = try walletDecoders.map {
             try WalletInfoDeserializerUtility.deserializeWalletInfo(from: $0)
         }
         return WalletListResponse(cid: cid, wallets: wallets)

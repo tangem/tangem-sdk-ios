@@ -55,17 +55,18 @@ public final class SignCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                return .cardIsEmpty
-            case .loaded:
-                break
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+        let wallet: CardWallet
+        do {
+            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
+        } catch { return error.toTangemSdkError() }
+        
+        switch wallet.status {
+        case .empty:
+            return .cardIsEmpty
+        case .loaded:
+            break
+        case .purged:
+            return .cardIsPurged
         }
         
         if card.isActivated {

@@ -75,13 +75,18 @@ public final class CreateWalletTask: CardSessionRunnable, WalletInteractable {
     }
 	
 	private func createWallet(in session: CardSession, forCard card: Card, at index: Int?, with curve: EllipticCurve, completion: @escaping CompletionResult<CreateWalletResponse>) {
-		
         Log.debug("Attempt to create wallet at index: \(index ?? 0)")
-		let command = CreateWalletCommand(config: config, walletIndex: index)
+		let command = CreateWalletCommand(config: config, walletIndex: index ?? 0)
 		command.run(in: session) { result in
 			switch result {
 			case .success(let createWalletResponse):
-                session.environment.card?.status = createWalletResponse.status
+                var card = session.environment.card
+                card?.status = createWalletResponse.status
+                let settings = card?.settingsMask
+                if let index = index {
+                    card?.wallets[index] = CardWallet(from: createWalletResponse, with: curve, settings: settings)
+                }
+                session.environment.card = card
 				if createWalletResponse.status == .loaded {
 					
 					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletIndex: self.walletIndexValue != nil ? .index(self.walletIndexValue!) : nil)

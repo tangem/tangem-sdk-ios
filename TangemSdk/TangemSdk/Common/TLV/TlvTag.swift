@@ -19,7 +19,7 @@ public enum TlvValueType: String {
     case dateTime
     case productMask
     case settingsMask
-    case cardStatus
+    case status
     case signingMethod
     case byte
     case uint16
@@ -157,7 +157,7 @@ public enum TlvTag: Byte {
         case .settingsMask:
             return .settingsMask
         case .status:
-            return .cardStatus
+            return .status
         case .signingMethod:
             return .signingMethod
 		case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex:

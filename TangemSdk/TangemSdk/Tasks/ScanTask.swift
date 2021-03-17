@@ -14,9 +14,11 @@ public final class ScanTask: CardSessionRunnable, WalletInteractable {
     public typealias CommandResponse = Card
 	
 	private(set) public var walletIndex: WalletIndex?
-	
-	public init(walletIndex: WalletIndex? = nil) {
+    private let cardVerification: Bool
+    
+    public init(cardVerification: Bool = false, walletIndex: WalletIndex? = nil) {
 		self.walletIndex = walletIndex
+        self.cardVerification = cardVerification
 	}
     
     deinit {
@@ -65,6 +67,22 @@ public final class ScanTask: CardSessionRunnable, WalletInteractable {
         }
         
 		CheckWalletCommand(curve: curve, publicKey: publicKey, walletIndex: walletIndex).run(in: session) { checkWalletResult in
+            switch checkWalletResult {
+            case .success(_):
+                self.runVerificationIfNeeded(card, session, completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func runVerificationIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+        guard cardVerification else {
+            completion(.success(card))
+            return
+        }
+        
+        VerifyCardCommand().run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 completion(.success(card))

@@ -10,7 +10,7 @@ import Foundation
 
 struct WalletResponse: JSONStringConvertible {
     let cid: String
-    let walletInfo: WalletInfo
+    let walletInfo: CardWallet
 }
 
 class ReadWalletCommand: Command {

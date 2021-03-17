@@ -37,16 +37,14 @@ public final class CreateWalletCommand: Command, WalletInteractable {
         return true
     }
 	
-	public var walletIndex: WalletIndex? {
-		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
-	}
-	
-	private var walletIndexValue: Int?
+    public var walletIndex: WalletIndex? { .index(walletIndexValue) }
+    
+    private let walletIndexValue: Int
 	private let config: WalletConfig?
 	
-	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
+	public init(config: WalletConfig? = nil, walletIndex: Int = 0) {
 		self.config = config
-		self.walletIndexValue = walletIndex
+        self.walletIndexValue = walletIndex
 	}
     
     deinit {
@@ -54,15 +52,17 @@ public final class CreateWalletCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-		
-		func statusError(_ status: CardStatus) -> TangemSdkError? {
+        let wallet: CardWallet
+        do {
+            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
+        } catch { return error.toTangemSdkError() }
+        
+		func statusError(_ status: WalletStatus) -> TangemSdkError? {
 			switch status {
 			case .empty:
 				  return nil
 			case .loaded:
 				return .alreadyCreated
-			case .notPersonalized:
-				return .notPersonalized
 			case .purged:
 				return .cardIsPurged
 			}
@@ -70,8 +70,7 @@ public final class CreateWalletCommand: Command, WalletInteractable {
 		
 		let isWalletDataAvailable = card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData
 		
-        if let status = card.status,
-		   let error = statusError(status) {
+        if let error = statusError(wallet.status) {
 			
 			if isWalletDataAvailable {
 				
@@ -86,8 +85,7 @@ public final class CreateWalletCommand: Command, WalletInteractable {
         }
 		
 		if isWalletDataAvailable,
-		   let targetIndex = walletIndexValue,
-		   targetIndex >= card.walletsCount ?? 1 {
+		   walletIndexValue >= card.walletsCount ?? 1 {
 			return .walletIndexExceedsMaxValue
 		}
         
@@ -104,7 +102,7 @@ public final class CreateWalletCommand: Command, WalletInteractable {
 			guard let card = card else { return .pin2OrCvcRequired }
 			
 			if let walletsCount = card.walletsCount,
-			   (walletIndexValue ?? 0) >= walletsCount {
+			   walletIndexValue >= walletsCount {
 				return .walletIndexExceedsMaxValue
 			}
 			
@@ -130,9 +128,7 @@ public final class CreateWalletCommand: Command, WalletInteractable {
             try tlvBuilder.append(.cvc, value: cvc)
         }
 		
-		if let index = walletIndexValue {
-			try WalletIndex.index(index).addTlvData(to: tlvBuilder)
-		}
+        try walletIndex!.addTlvData(to: tlvBuilder)
 		
 		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {

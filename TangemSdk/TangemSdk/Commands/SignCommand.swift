@@ -21,15 +21,18 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public final class SignCommand: Command, WalletInteractable {
+public final class SignCommand: Command, PreflightReadSetupable {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
-	
-	private(set) public var walletIndex: WalletIndex?
     
+    var preflightReadSettings: PreflightReadTask.Settings {
+        .readWallet(index: walletIndex)
+    }
+    
+    private let walletIndex: WalletIndex
     private let hashes: [Data]
     private var responces: [SignResponse] = []
     private var currentChunk = 0
@@ -45,7 +48,7 @@ public final class SignCommand: Command, WalletInteractable {
 	/// - Parameters:
 	///   - hashes: Array of transaction hashes.
 	///   - walletIndex: Index to wallet for interaction.
-	public init(hashes: [Data], walletIndex: WalletIndex? = nil) {
+	public init(hashes: [Data], walletIndex: WalletIndex) {
         self.hashes = hashes
 		self.walletIndex = walletIndex
     }
@@ -55,10 +58,9 @@ public final class SignCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        let wallet: CardWallet
-        do {
-            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
-        } catch { return error.toTangemSdkError() }
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletNotFound
+        }
         
         switch wallet.status {
         case .empty:
@@ -177,7 +179,7 @@ public final class SignCommand: Command, WalletInteractable {
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
 		
-		try walletIndex?.addTlvData(to: tlvBuilder)
+		try walletIndex.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }

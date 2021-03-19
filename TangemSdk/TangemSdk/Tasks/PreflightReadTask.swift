@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol PreflightReadSetupable {
+    var preflightReadSettings: PreflightReadTask.Settings { get }
+}
+
 final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
@@ -33,6 +37,7 @@ final class PreflightReadTask {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+        Log.debug("===========================Perform preflight check with settings: \(readSettings) ====================== \n")
         ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
@@ -60,15 +65,6 @@ final class PreflightReadTask {
     }
     
     private func readWallet(at index: WalletIndex, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
-        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData {
-            if case let .publicKey(pubkey) = index, readResponse.walletPublicKey == pubkey {
-                completion(.success(readResponse))
-                return
-            }
-            completion(.failure(TangemSdkError.walletIndexNotSpecified))
-            return
-        }
-        
         ReadWalletCommand(walletIndex: index).run(in: session) { (result) in
             switch result {
             case .success(let walletResponse):

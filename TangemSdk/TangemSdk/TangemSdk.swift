@@ -104,12 +104,12 @@ public final class TangemSdk {
     ///   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
     public func sign(hashes: [Data],
                      cardId: String? = nil,
-                     walletIndex: WalletIndex? = nil,
+                     walletPublicKey: Data,
                      initialMessage: Message? = nil,
                      pin1: String? = nil,
                      pin2: String? = nil,
                      completion: @escaping CompletionResult<SignResponse>) {
-        startSession(with: SignCommand(hashes: hashes, walletIndex: walletIndex),
+        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey)),
                      cardId: cardId,
                      initialMessage: initialMessage,
                      pin1: pin1,
@@ -332,12 +332,11 @@ public final class TangemSdk {
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     public func createWallet(cardId: String? = nil,
                              config: WalletConfig? = nil,
-                             walletIndex: Int? = nil,
                              initialMessage: Message? = nil,
                              pin1: String? = nil,
                              pin2: String? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let task = CreateWalletTask(config: config, walletIndex: walletIndex)
+        let task = CreateWalletTask(config: config)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, pin1: pin1, pin2: pin2, completion: completion)
     }
     
@@ -346,7 +345,7 @@ public final class TangemSdk {
     /// If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
     /// ‘Purged’ state is final, it makes the card useless.
     ///
-    /// - Note: Wallet pointer available for cards with COS v.4.0 or higher
+    /// - Note: Wallet index available for cards with COS v.4.0 or higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletIndex: Index to wallet that should be purged.  if not specified - wallet at default index will be purged. See `WalletIndex` for more info
@@ -355,7 +354,7 @@ public final class TangemSdk {
     ///   - pin2: PIN2 string. Hash will be calculated automatically. If nil, the default PIN2 value will be used
     ///   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
     public func purgeWallet(cardId: String? = nil,
-                            walletIndex: WalletIndex?,
+                            walletIndex: WalletIndex,
                             initialMessage: Message? = nil,
                             pin1: String? = nil,
                             pin2: String? = nil,

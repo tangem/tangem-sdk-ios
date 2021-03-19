@@ -10,10 +10,14 @@ import Foundation
 
 /// Task that allows to read Tangem card and verify its private key.
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
-public final class ScanTask: CardSessionRunnable, WalletInteractable {
+public final class ScanTask: CardSessionRunnable, PreflightReadSetupable {
     public typealias CommandResponse = Card
 	
-	private(set) public var walletIndex: WalletIndex?
+    var preflightReadSettings: PreflightReadTask.Settings {
+        walletIndex != nil ? .readWallet(index: walletIndex!) : .fullCardRead
+    }
+    
+	private var walletIndex: WalletIndex?
     private let cardVerification: Bool
     
     public init(cardVerification: Bool = false, walletIndex: WalletIndex? = nil) {
@@ -66,7 +70,7 @@ public final class ScanTask: CardSessionRunnable, WalletInteractable {
                 return
         }
         
-		CheckWalletCommand(curve: curve, publicKey: publicKey, walletIndex: walletIndex).run(in: session) { checkWalletResult in
+		CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 self.runVerificationIfNeeded(card, session, completion)

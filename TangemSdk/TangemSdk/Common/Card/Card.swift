@@ -82,7 +82,7 @@ public struct Card: JSONStringConvertible {
     
     public var wallets: [Int: CardWallet] = [:]
     public var sortedWallets: [CardWallet] {
-        wallets.values.sorted(by: { $0.index > $1.index })
+        wallets.values.sorted(by: { $0.index < $1.index })
     }
     
     public func wallet(at index: WalletIndex) -> CardWallet? {

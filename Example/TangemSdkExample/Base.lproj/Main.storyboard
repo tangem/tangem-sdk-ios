@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="sLk-h8-mlg">
-                                <rect key="frame" x="-28" y="0.0" width="415" height="1667"/>
+                                <rect key="frame" x="-40" y="0.0" width="415" height="1667"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="NXv-gc-biR">
                                         <rect key="frame" x="0.0" y="0.0" width="415" height="638"/>
@@ -33,13 +33,13 @@
                                         <rect key="frame" x="0.0" y="646" width="415" height="1021"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bkJ-1i-jvA">
-                                                <rect key="frame" x="0.0" y="0.0" width="415" height="3535"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="415" height="3782"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" verticalCompressionResistancePriority="250" misplaced="YES" axis="vertical" distribution="fillProportionally" alignment="center" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="fbi-qN-21L">
-                                                        <rect key="frame" x="0.0" y="0.0" width="415" height="3535"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="415" height="3782"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WNt-K3-8Wj">
-                                                                <rect key="frame" x="186" y="0.0" width="43" height="162.5"/>
+                                                                <rect key="frame" x="186" y="0.0" width="43" height="159"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                 <state key="normal" title="Clear"/>
                                                                 <connections>
@@ -47,10 +47,10 @@
                                                                 </connections>
                                                             </button>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="sV8-e7-m7M">
-                                                                <rect key="frame" x="92.5" y="163.5" width="230" height="162.5"/>
+                                                                <rect key="frame" x="92.5" y="160" width="230" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DCJ-Zk-Ede">
-                                                                        <rect key="frame" x="0.0" y="64" width="107" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="107" height="34"/>
                                                                         <accessibility key="accessibilityConfiguration" identifier="ScanCardButton"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="FullScanCard"/>
@@ -59,7 +59,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3cw-s5-our">
-                                                                        <rect key="frame" x="123" y="64" width="107" height="34"/>
+                                                                        <rect key="frame" x="123" y="62" width="107" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="SignHashes"/>
                                                                         <connections>
@@ -69,11 +69,28 @@
                                                                 </subviews>
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" id="7Yc-T9-6eH">
+                                                                <rect key="frame" x="111.5" y="319.5" width="192" height="158.5"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <subviews>
+                                                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mof-bT-mWE">
+                                                                        <rect key="frame" x="0.0" y="62.5" width="192" height="34"/>
+                                                                        <accessibility key="accessibilityConfiguration" identifier="ScanCardButton"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                        <state key="normal" title="ReadWallet with pubkey"/>
+                                                                        <connections>
+                                                                            <action selector="scanWalletByPubKeyTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0ha-XS-DqJ"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                                <viewLayoutGuide key="safeArea" id="TTN-cx-sx3"/>
+                                                                <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
+                                                            </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="P7o-Zg-HNf">
-                                                                <rect key="frame" x="114" y="327" width="187" height="162.5"/>
+                                                                <rect key="frame" x="114" y="479" width="187" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ygj-WG-Vsa">
-                                                                        <rect key="frame" x="0.0" y="64" width="187" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="187" height="34"/>
                                                                         <accessibility key="accessibilityConfiguration" identifier="ScanCardButton"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ReadWallet at index 👇"/>
@@ -85,19 +102,19 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="oda-Ol-PMP">
-                                                                <rect key="frame" x="0.0" y="490.5" width="415" height="315"/>
+                                                                <rect key="frame" x="0.0" y="639" width="415" height="308"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G3n-Za-Hlc">
-                                                                        <rect key="frame" x="96.5" y="0.0" width="222.5" height="154.5"/>
+                                                                        <rect key="frame" x="96.5" y="0.0" width="222.5" height="151"/>
                                                                         <subviews>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Interact with wallet at index:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="50" translatesAutoresizingMaskIntoConstraints="NO" id="iEi-qc-JTi">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="212" height="154.5"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="212" height="151"/>
                                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                 <nil key="textColor"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="50" translatesAutoresizingMaskIntoConstraints="NO" id="AFr-u6-pgp">
-                                                                                <rect key="frame" x="212" y="0.0" width="10.5" height="154.5"/>
+                                                                                <rect key="frame" x="212" y="0.0" width="10.5" height="151"/>
                                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                 <nil key="textColor"/>
                                                                                 <nil key="highlightedColor"/>
@@ -105,10 +122,10 @@
                                                                         </subviews>
                                                                     </stackView>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jDV-tt-Vfz">
-                                                                        <rect key="frame" x="14" y="160.5" width="387" height="154.5"/>
+                                                                        <rect key="frame" x="20" y="157" width="375" height="151"/>
                                                                         <subviews>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="50" translatesAutoresizingMaskIntoConstraints="NO" id="JZn-MH-OQL">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="20" height="154.5"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="20" height="151"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="width" constant="20" id="Iyo-mA-PJp"/>
                                                                                 </constraints>
@@ -117,13 +134,13 @@
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
                                                                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="KtY-TN-ive">
-                                                                                <rect key="frame" x="18" y="0.0" width="351" height="155.5"/>
+                                                                                <rect key="frame" x="18" y="0.0" width="339" height="152"/>
                                                                                 <connections>
                                                                                     <action selector="walletIndexUpdate:" destination="BYZ-38-t0r" eventType="valueChanged" id="tol-Fm-Xq4"/>
                                                                                 </connections>
                                                                             </slider>
                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="747" text="-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="50" translatesAutoresizingMaskIntoConstraints="NO" id="0p0-8h-oV9">
-                                                                                <rect key="frame" x="367" y="0.0" width="20" height="154.5"/>
+                                                                                <rect key="frame" x="355" y="0.0" width="20" height="151"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="width" constant="20" id="bU6-yj-Fga"/>
                                                                                 </constraints>
@@ -136,33 +153,47 @@
                                                                 </subviews>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Vf1-uM-1wA">
-                                                                <rect key="frame" x="96.5" y="806.5" width="222" height="162.5"/>
+                                                                <rect key="frame" x="156" y="948" width="103" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4wc-rX-9BO">
-                                                                        <rect key="frame" x="0.0" y="64.5" width="103" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="103" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="CreateWallet"/>
                                                                         <connections>
                                                                             <action selector="createWalletTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0n9-Du-4s7"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4HW-MU-GZu">
-                                                                        <rect key="frame" x="119" y="64.5" width="103" height="34"/>
+                                                                </subviews>
+                                                                <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="3AD-iB-5Si">
+                                                                <rect key="frame" x="39.5" y="1107.5" width="336" height="187"/>
+                                                                <subviews>
+                                                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aIW-fD-i5g">
+                                                                        <rect key="frame" x="0.0" y="76.5" width="160" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                                        <state key="normal" title="PurgeWallet"/>
+                                                                        <state key="normal" title="PurgeWallet index"/>
                                                                         <connections>
-                                                                            <action selector="purgeWalletTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Xnu-bW-gPi"/>
+                                                                            <action selector="purgeWalletTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HhG-PN-eh7"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AJw-nt-kI7">
+                                                                        <rect key="frame" x="176" y="76.5" width="160" height="34"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                                        <state key="normal" title="PurgeWallet pubkey"/>
+                                                                        <connections>
+                                                                            <action selector="purgeWalletByPubkeyTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ufh-cm-wUr"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="8" id="Psh-JX-Rgu">
-                                                                <rect key="frame" x="25" y="970" width="365" height="104.5"/>
+                                                                <rect key="frame" x="25" y="1295.5" width="365" height="104.5"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create wallet at interaction index for blockchain:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZeC-DC-WSx">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="365" height="47"/>
+                                                                        <rect key="frame" x="25" y="0.0" width="365" height="47"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="47" id="T8F-wu-qIC"/>
                                                                         </constraints>
@@ -171,7 +202,7 @@
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="7VS-R1-Dtc">
-                                                                        <rect key="frame" x="21" y="55" width="323" height="58"/>
+                                                                        <rect key="frame" x="46" y="55" width="323" height="58"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fZF-qb-tKW">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="323" height="25"/>
@@ -236,10 +267,10 @@
                                                                 <color key="backgroundColor" systemColor="separatorColor"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="rex-Wg-2eI">
-                                                                <rect key="frame" x="70.5" y="1084" width="274" height="162.5"/>
+                                                                <rect key="frame" x="70.5" y="1409.5" width="274" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ODg-Sx-gZi">
-                                                                        <rect key="frame" x="0.0" y="64.5" width="129" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="129" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ReadIssuerData"/>
                                                                         <connections>
@@ -247,7 +278,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tsW-CE-Zkw">
-                                                                        <rect key="frame" x="145" y="64.5" width="129" height="34"/>
+                                                                        <rect key="frame" x="145" y="62.5" width="129" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="WriteIssuerData"/>
                                                                         <connections>
@@ -258,10 +289,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="aAe-gq-JTO">
-                                                                <rect key="frame" x="29.5" y="1247.5" width="356" height="162.5"/>
+                                                                <rect key="frame" x="29.5" y="1569.5" width="356" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ftg-Ok-Etf">
-                                                                        <rect key="frame" x="0.0" y="64" width="170" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="170" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ReadIssuerExtraData"/>
                                                                         <connections>
@@ -269,7 +300,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mmK-A0-aJu">
-                                                                        <rect key="frame" x="186" y="64" width="170" height="34"/>
+                                                                        <rect key="frame" x="186" y="62" width="170" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="WriteIssuerExtraData"/>
                                                                         <connections>
@@ -280,10 +311,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="b1L-t0-wE9">
-                                                                <rect key="frame" x="78.5" y="1411" width="258" height="162.5"/>
+                                                                <rect key="frame" x="78.5" y="1729" width="258" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q5Y-fa-sZy">
-                                                                        <rect key="frame" x="0.0" y="64" width="121" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="121" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ReadIUserData"/>
                                                                         <connections>
@@ -291,7 +322,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sHe-eS-VB1">
-                                                                        <rect key="frame" x="137" y="64" width="121" height="34"/>
+                                                                        <rect key="frame" x="137" y="62.5" width="121" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="WriteUserData"/>
                                                                         <connections>
@@ -301,10 +332,10 @@
                                                                 </subviews>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="9bM-4V-nXU">
-                                                                <rect key="frame" x="109" y="1574.5" width="197" height="162.5"/>
+                                                                <rect key="frame" x="109" y="1889" width="197" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qqn-OU-JdN">
-                                                                        <rect key="frame" x="0.0" y="64" width="197" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="197" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="WriteUserProtectedData"/>
                                                                         <connections>
@@ -314,10 +345,10 @@
                                                                 </subviews>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="V40-Y9-jCl">
-                                                                <rect key="frame" x="84.5" y="1738" width="246" height="162"/>
+                                                                <rect key="frame" x="84.5" y="2048.5" width="246" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fwJ-v6-ifZ">
-                                                                        <rect key="frame" x="0.0" y="64" width="115" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="115" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Depersonalize"/>
                                                                         <connections>
@@ -325,7 +356,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bkg-vl-qqg">
-                                                                        <rect key="frame" x="131" y="64" width="115" height="34"/>
+                                                                        <rect key="frame" x="131" y="62.5" width="115" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="VerifyCard"/>
                                                                         <connections>
@@ -336,10 +367,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="A3v-Wz-A2x">
-                                                                <rect key="frame" x="101.5" y="1901" width="212" height="162.5"/>
+                                                                <rect key="frame" x="101.5" y="2208.5" width="212" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A2Y-Rp-TKH">
-                                                                        <rect key="frame" x="0.0" y="64.5" width="98" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="98" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ChangePin1"/>
                                                                         <connections>
@@ -347,7 +378,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Ta-gR-Y7S">
-                                                                        <rect key="frame" x="114" y="64.5" width="98" height="34"/>
+                                                                        <rect key="frame" x="114" y="62" width="98" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="ChangePin2"/>
                                                                         <connections>
@@ -358,10 +389,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="OFh-wz-pgB">
-                                                                <rect key="frame" x="67.5" y="2064.5" width="280" height="162.5"/>
+                                                                <rect key="frame" x="67.5" y="2368" width="280" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1aR-nK-Z2e">
-                                                                        <rect key="frame" x="0.0" y="64.5" width="132" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="132" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Read All Files"/>
                                                                         <connections>
@@ -369,7 +400,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jVc-IO-Uqp">
-                                                                        <rect key="frame" x="148" y="64.5" width="132" height="34"/>
+                                                                        <rect key="frame" x="148" y="62.5" width="132" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Read public files"/>
                                                                         <connections>
@@ -380,10 +411,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="cdM-dL-ygl">
-                                                                <rect key="frame" x="118.5" y="2228" width="178" height="162.5"/>
+                                                                <rect key="frame" x="118.5" y="2528" width="178" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qp5-de-N3g">
-                                                                        <rect key="frame" x="0.0" y="64.5" width="178" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="178" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Write signed by issuer"/>
                                                                         <connections>
@@ -394,10 +425,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="pc4-1n-J5c">
-                                                                <rect key="frame" x="89.5" y="2391.5" width="236" height="162.5"/>
+                                                                <rect key="frame" x="89.5" y="2687.5" width="236" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zhm-ZW-APA">
-                                                                        <rect key="frame" x="0.0" y="64" width="236" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="236" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Write file protected with PIN2"/>
                                                                         <connections>
@@ -408,10 +439,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="0ug-N3-AWi">
-                                                                <rect key="frame" x="51" y="2555" width="313" height="162.5"/>
+                                                                <rect key="frame" x="51" y="2847.5" width="313" height="158.5"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RGl-Fz-cSx">
-                                                                        <rect key="frame" x="0.0" y="64" width="313" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62" width="313" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Write multiple files protected with PIN2"/>
                                                                         <connections>
@@ -422,10 +453,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="OTr-ot-hNh">
-                                                                <rect key="frame" x="82.5" y="2718.5" width="250" height="162.5"/>
+                                                                <rect key="frame" x="82.5" y="3007" width="250" height="159"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C1m-Uc-x9U">
-                                                                        <rect key="frame" x="0.0" y="64" width="117" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="62.5" width="117" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Delete first file"/>
                                                                         <connections>
@@ -433,7 +464,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bR8-fz-JEf">
-                                                                        <rect key="frame" x="133" y="64" width="117" height="34"/>
+                                                                        <rect key="frame" x="133" y="62.5" width="117" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Delete all files"/>
                                                                         <connections>
@@ -444,10 +475,10 @@
                                                                 <variation key="heightClass=compact-widthClass=compact" axis="vertical"/>
                                                             </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Zqj-Hv-p84">
-                                                                <rect key="frame" x="114" y="2882" width="187" height="653"/>
+                                                                <rect key="frame" x="114" y="3167" width="187" height="615"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXo-bL-5TT">
-                                                                        <rect key="frame" x="0.0" y="309.5" width="187" height="34"/>
+                                                                        <rect key="frame" x="0.0" y="290.5" width="187" height="34"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                                         <state key="normal" title="Toggle first file visibility"/>
                                                                         <connections>

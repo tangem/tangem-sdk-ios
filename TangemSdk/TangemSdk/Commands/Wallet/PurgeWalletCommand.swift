@@ -22,16 +22,18 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-public final class PurgeWalletCommand: Command, WalletInteractable {
+public final class PurgeWalletCommand: Command, PreflightReadSetupable {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
-    public var walletIndex: WalletIndex?
+    var preflightReadSettings: PreflightReadTask.Settings { .readWallet(index: walletIndex) }
     
-    public init(walletIndex: WalletIndex?) {
+    public var walletIndex: WalletIndex
+    
+    public init(walletIndex: WalletIndex) {
 		self.walletIndex = walletIndex
 	}
     
@@ -40,10 +42,9 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        let wallet: CardWallet
-        do {
-            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
-        } catch { return error.toTangemSdkError() }
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletNotFound
+        }
         
         switch wallet.status {
         case .empty:
@@ -71,7 +72,7 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
 			case .success(let response):
 				session.environment.card?.status = .empty
                 if var card = session.environment.card,
-                   let wallet = try? CardWalletExtractor.extract(from: card, at: self.walletIndex) {
+                   let wallet = card.wallet(at: self.walletIndex) {
                     card.wallets[wallet.index] = wallet.emptyCopy
                     session.environment.card = card
                 }
@@ -97,7 +98,7 @@ public final class PurgeWalletCommand: Command, WalletInteractable {
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
         
-		try walletIndex?.addTlvData(to: tlvBuilder)
+		try walletIndex.addTlvData(to: tlvBuilder)
 		
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }

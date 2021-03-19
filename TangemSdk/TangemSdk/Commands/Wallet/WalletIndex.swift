@@ -10,13 +10,14 @@ import Foundation
 
 /// Use this to identify that CardSessionRunnable type can select specific wallet for interaction
 ///	- Note: Available for cards with COS v.4.0 and higher
-public protocol WalletInteractable {
-	var walletIndex: WalletIndex? { get }
-}
+//public protocol WalletInteractable {
+//	var walletIndex: WalletIndex? { get }
+//}
+
 
 /// Index to specific wallet for interaction
 /// - Note: Available for cards with COS v.4.0 and higher
-public enum WalletIndex: Equatable {
+public enum WalletIndex: Equatable, CustomStringConvertible {
 	case index(Int), publicKey(Data)
 	
 	@discardableResult
@@ -28,4 +29,13 @@ public enum WalletIndex: Equatable {
 			return try tlvBuilder.append(.walletPublicKey, value: key)
 		}
 	}
+    
+    public var description: String {
+        switch self {
+        case .index(let index):
+            return "Int wallet index \(index)"
+        case .publicKey(let pubkey):
+            return "Public key wallet index: \(pubkey.asHexString())"
+        }
+    }
 }

@@ -9,12 +9,12 @@
 import Foundation
 
 public struct CardWallet: Codable {
-    let index: Int
-    let status: WalletStatus
-    var curve: EllipticCurve?
-    var settingsMask: SettingsMask?
-    var publicKey: Data?
-    var signedHashes: Int?
+    public let index: Int
+    public let status: WalletStatus
+    public var curve: EllipticCurve?
+    public var settingsMask: SettingsMask?
+    public var publicKey: Data?
+    public var signedHashes: Int?
     
     init(index: Int, status: WalletStatus, curve: EllipticCurve? = nil, settingsMask: SettingsMask? = nil, publicKey: Data? = nil, signedHashes: Int? = nil) {
         self.index = index
@@ -27,7 +27,7 @@ public struct CardWallet: Codable {
     
     init(from response: CreateWalletResponse, with curve: EllipticCurve, settings: SettingsMask?) {
         self.index = response.walletIndex
-        self.status = (try? WalletStatus(from: response.status)) ?? .empty
+        self.status = WalletStatus(from: response.status)
         self.curve = curve
         self.settingsMask = settings
         self.publicKey = response.walletPublicKey
@@ -65,16 +65,14 @@ public enum WalletStatus: Int, Codable {
         }
     }
     
-    public init(from cardStatus: CardStatus) throws {
+    public init(from cardStatus: CardStatus) {
         switch cardStatus {
-        case .empty:
+        case .empty, .notPersonalized:
             self = .empty
         case .loaded:
             self = .loaded
         case .purged:
             self = .purged
-        default:
-            throw TangemSdkError.notPersonalized
         }
     }
 }

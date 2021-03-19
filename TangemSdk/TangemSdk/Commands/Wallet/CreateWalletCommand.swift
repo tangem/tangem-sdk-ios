@@ -30,17 +30,19 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-public final class CreateWalletCommand: Command, WalletInteractable {
+public final class CreateWalletCommand: Command, PreflightReadSetupable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
-	
-    public var walletIndex: WalletIndex? { .index(walletIndexValue) }
+    
+    var preflightReadSettings: PreflightReadTask.Settings { .readWallet(index: walletIndex) }
     
     private let walletIndexValue: Int
 	private let config: WalletConfig?
+    
+    private var walletIndex: WalletIndex { .index(walletIndexValue) }
 	
 	public init(config: WalletConfig? = nil, walletIndex: Int = 0) {
 		self.config = config
@@ -52,10 +54,9 @@ public final class CreateWalletCommand: Command, WalletInteractable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        let wallet: CardWallet
-        do {
-            wallet = try CardWalletExtractor.extract(from: card, at: walletIndex)
-        } catch { return error.toTangemSdkError() }
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletIndexNotCorrect
+        }
         
 		func statusError(_ status: WalletStatus) -> TangemSdkError? {
 			switch status {
@@ -128,7 +129,7 @@ public final class CreateWalletCommand: Command, WalletInteractable {
             try tlvBuilder.append(.cvc, value: cvc)
         }
 		
-        try walletIndex!.addTlvData(to: tlvBuilder)
+        try walletIndex.addTlvData(to: tlvBuilder)
 		
 		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {

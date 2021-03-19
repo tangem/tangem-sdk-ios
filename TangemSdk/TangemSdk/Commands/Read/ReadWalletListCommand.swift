@@ -90,7 +90,7 @@ class ReadWalletListCommand: Command {
         }
         
         let wallets: [CardWallet] = try walletDecoders.map {
-            try WalletInfoDeserializerUtility.deserializeWalletInfo(from: $0)
+            try CardWalletDeserializerUtility.deserialize(from: $0)
         }
         return WalletListResponse(cid: cid, wallets: wallets)
     }

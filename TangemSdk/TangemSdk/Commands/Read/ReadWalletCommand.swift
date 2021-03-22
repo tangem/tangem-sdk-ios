@@ -10,7 +10,7 @@ import Foundation
 
 struct WalletResponse: JSONStringConvertible {
     let cid: String
-    let walletInfo: CardWallet
+    let wallet: CardWallet
 }
 
 class ReadWalletCommand: Command {
@@ -58,7 +58,7 @@ class ReadWalletCommand: Command {
         let cid: String = try decoder.decode(.cardId)
         
         Log.debug("Read wallet at index: \(walletIndex): \(wallet)")
-        return WalletResponse(cid: cid, walletInfo: wallet)
+        return WalletResponse(cid: cid, wallet: wallet)
     }
     
 }

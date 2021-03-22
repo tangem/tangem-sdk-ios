@@ -14,7 +14,7 @@ struct CardDeserializer {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		
-		let decoder = DefaultTlvDecoder(tlv: tlv)
+		let decoder = TlvDecoder(tlv: tlv)
 		
 		var card = ReadResponse(
 			cardId: try decoder.decodeOptional(.cardId),
@@ -72,7 +72,7 @@ struct CardDeserializer {
 				return nil
 		}
 		
-		let decoder = DefaultTlvDecoder(tlv: cardDataTlv)
+		let decoder = TlvDecoder(tlv: cardDataTlv)
 		let cardData = CardData(
 			batchId: try decoder.decodeOptional(.batchId),
 			manufactureDateTime: try decoder.decodeOptional(.manufactureDateTime),

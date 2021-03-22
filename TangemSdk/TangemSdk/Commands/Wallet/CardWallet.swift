@@ -39,7 +39,7 @@ public struct CardWallet: Codable {
     }
 }
 
-public enum WalletStatus: Int, Codable {
+public enum WalletStatus: Int, Codable, StatusType {
     case empty = 1
     case loaded = 2
     case purged = 3

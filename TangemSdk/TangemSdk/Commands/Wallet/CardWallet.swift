@@ -10,7 +10,7 @@ import Foundation
 
 public struct CardWallet: Codable {
     public let index: Int
-    public let status: WalletStatus
+    public var status: WalletStatus
     public var curve: EllipticCurve?
     public var settingsMask: SettingsMask?
     public var publicKey: Data?

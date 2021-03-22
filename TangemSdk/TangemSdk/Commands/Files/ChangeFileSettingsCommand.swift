@@ -60,7 +60,7 @@ public final class ChangeFileSettingsCommand: Command {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
-		let decoder = DefaultTlvDecoder(tlv: tlv)
+		let decoder = TlvDecoder(tlv: tlv)
 		return SimpleResponse(cardId: try decoder.decode(.cardId))
 	}
 	

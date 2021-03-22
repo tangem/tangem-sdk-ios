@@ -150,7 +150,7 @@ public final class CreateWalletCommand: Command, PreflightReadSetupable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return CreateWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status),

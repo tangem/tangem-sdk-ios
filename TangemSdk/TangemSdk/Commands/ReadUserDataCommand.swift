@@ -62,7 +62,7 @@ public final class ReadUserDataCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return ReadUserDataResponse(cardId: try decoder.decode(.cardId),
                                     userData: try decoder.decode(.userData),
                                     userProtectedData: try decoder.decode(.userProtectedData),

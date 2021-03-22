@@ -73,12 +73,16 @@ class ViewController: UIViewController {
         return publicKey
     }
     
+    private func updateWalletIndex(to index: Int) {
+        walletIndex = index
+        walletIndexLabel.text = "\(walletIndex)"
+    }
+    
     @IBAction func walletIndexUpdate(_ sender: UISlider) {
         let step: Float = 1
         let roundedValue = round(sender.value / step) * step
         sender.value = roundedValue
-        walletIndex = Int(roundedValue)
-        walletIndexLabel.text = "\(walletIndex)"
+        updateWalletIndex(to: Int(roundedValue))
     }
     
     @IBAction func scanCardTapped(_ sender: UIButton) {
@@ -90,7 +94,9 @@ class ViewController: UIViewController {
                 self.card = card
                 let maxWalletIndex = (card.walletsCount ?? 1) - 1
                 self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
+                self.walletIndexSlider.value = 0
                 self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
+                self.updateWalletIndex(to: 0)
                 self.logView.text = ""
                 self.timer.stop()
                 self.log("read result: \(card)")

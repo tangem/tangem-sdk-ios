@@ -74,7 +74,7 @@ class ReadWalletListCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = MultipleTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         
         let cid: String = try decoder.decode(.cardId)
         let walletInfoData: [Data] = try decoder.decodeMultiple(.walletInfo)
@@ -83,10 +83,10 @@ class ReadWalletListCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let walletDecoders: [DefaultTlvDecoder] = walletInfoData.compactMap {
+        let walletDecoders: [TlvDecoder] = walletInfoData.compactMap {
             guard let infoTlvs = Tlv.deserialize($0) else { return nil }
             
-            return DefaultTlvDecoder(tlv: infoTlvs)
+            return TlvDecoder(tlv: infoTlvs)
         }
         
         let wallets: [CardWallet] = try walletDecoders.map {

@@ -8,6 +8,12 @@
 
 import Foundation
 
+/// Use this protocol when you need to setup preflight read task
+/// * Full card - read card info and all wallets
+/// * Read wallet - read card info and single wallet specified in associated wallet `WalletIndex`
+///
+/// If you don't use this protocol SDK will read only card information.
+/// - Note: Valid for cards with COS v.4 and higher
 protocol PreflightReadSetupable {
     var preflightReadSettings: PreflightReadTask.Settings { get }
 }
@@ -17,19 +23,14 @@ final class PreflightReadTask {
     
     enum Settings: Equatable {
         case readCardOnly
-        case fullCardRead
         case readWallet(index: WalletIndex)
+        case fullCardRead
     }
     
     private var readSettings: Settings
     
-    private var walletIndex: WalletIndex?
-    
     init(readSettings: Settings) {
         self.readSettings = readSettings
-        if case let .readWallet(index) = readSettings {
-            self.walletIndex = index
-        }
     }
     
     deinit {
@@ -37,7 +38,7 @@ final class PreflightReadTask {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
-        Log.debug("===========================Perform preflight check with settings: \(readSettings) ====================== \n")
+        Log.debug("=========================== Perform preflight check with settings: \(readSettings) ======================")
         ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
@@ -68,6 +69,18 @@ final class PreflightReadTask {
         ReadWalletCommand(walletIndex: index).run(in: session) { (result) in
             switch result {
             case .success(let walletResponse):
+                let isReadCorrectWallet: Bool
+                switch index {
+                case .index(let walletIndex):
+                    isReadCorrectWallet = walletResponse.walletInfo.index == walletIndex
+                case .publicKey(let pubkey):
+                    isReadCorrectWallet = walletResponse.walletInfo.publicKey == pubkey
+                }
+                guard isReadCorrectWallet else {
+                    completion(.failure(.cardReadWrongWallet))
+                    return
+                }
+                
                 var card = readResponse
                 let wallet = walletResponse.walletInfo
                 card.wallets = [wallet.index: wallet]

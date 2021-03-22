@@ -39,7 +39,7 @@ class OpenSessionCommand: ApduSerializable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return OpenSessionResponse(sessionKeyB: try decoder.decode(.sessionKeyB),
                                    uid: try decoder.decodeOptional(.uid))
     }

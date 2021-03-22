@@ -37,9 +37,6 @@ public final class ScanTask: CardSessionRunnable, PreflightReadSetupable {
         
         card.isPin1Default = session.environment.pin1.isDefault
         
-        completion(.success(card))
-        return
-        
         if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
            !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {
             CheckPinCommand().run(in: session) { checkPinResult in
@@ -59,15 +56,29 @@ public final class ScanTask: CardSessionRunnable, PreflightReadSetupable {
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        guard let cardStatus = card.status, cardStatus == .loaded else {
+        let index = card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData ? .index(TangemSdkConstants.oldCardDefaultWalletIndex) : walletIndex
+        
+        guard let unwrappedIndex = index else {
             completion(.success(card))
             return
         }
         
-        guard let curve = card.curve,
-            let publicKey = card.walletPublicKey else {
-                completion(.failure(.cardError))
-                return
+        guard let wallet = card.wallet(at: unwrappedIndex) else {
+            completion(.failure(.walletNotFound))
+            return
+        }
+        
+        guard wallet.status == .loaded else {
+            completion(.success(card))
+            return
+        }
+        
+        guard
+            let curve = wallet.curve,
+            let publicKey = wallet.publicKey
+        else {
+            completion(.failure(.walletError))
+            return
         }
         
 		CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in

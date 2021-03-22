@@ -83,6 +83,7 @@
 "error_wrong_card_number" = "You tapped a different card. Please match the in-app Card ID to the your physical Card ID to continue this process.";
 "error_wrong_card_type" = "This card is configured for a different app. Please see the information on your card and download the related app.";
 "error_card_error" = "Your card is missing essential data";
+"error_wallet_error" = "Selected wallet is missing essential data";
 "error_pin1_required" = "Access code is required";
 "error_pin2_required" = "Passcode is required";
 "error_wrong_card" = "Wrong Card";

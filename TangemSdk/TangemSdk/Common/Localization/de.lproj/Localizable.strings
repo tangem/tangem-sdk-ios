@@ -84,6 +84,7 @@
 "error_wrong_card_number" = "Sie haben eine andere Karte eingegeben. Bitte bringen Sie die in-app Card ID mit Ihrer physischen KatenID in Übereinstimmung um fortzusetzen.";
 "error_wrong_card_type" = "Diese Karte ist für eine andere App konfiguriert. Sehen Sie sich die Informationen auf Ihrer Karte an und laden Sie die entsprechende App herunter.";
 "error_card_error" = "Ihrer Karte fehlen wichtige Daten";
+"error_wallet_error" = "Selected wallet is missing essential data";
 "error_pin1_required" = "Der Zugangscode ist erforderlich";
 "error_pin2_required" = "Der Passcode ist erforderlich";
 "error_wrong_card" = "Falsche Karte";

@@ -135,7 +135,7 @@ public final class WriteUserDataCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return WriteUserDataResponse(cardId: try decoder.decode(.cardId))
     }
 }

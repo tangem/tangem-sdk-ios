@@ -52,7 +52,7 @@ class ReadWalletCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         
         let wallet = try CardWalletDeserializerUtility.deserialize(from: decoder)
         let cid: String = try decoder.decode(.cardId)

@@ -68,13 +68,15 @@ final class PreflightReadTask {
     private func readWallet(at index: WalletIndex, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
         ReadWalletCommand(walletIndex: index).run(in: session) { (result) in
             switch result {
-            case .success(let walletResponse):
+            case .success(let response):
+                let wallet = response.wallet
+                
                 let isReadCorrectWallet: Bool
                 switch index {
                 case .index(let walletIndex):
-                    isReadCorrectWallet = walletResponse.walletInfo.index == walletIndex
+                    isReadCorrectWallet = wallet.index == walletIndex
                 case .publicKey(let pubkey):
-                    isReadCorrectWallet = walletResponse.walletInfo.publicKey == pubkey
+                    isReadCorrectWallet = wallet.publicKey == pubkey
                 }
                 guard isReadCorrectWallet else {
                     completion(.failure(.cardReadWrongWallet))
@@ -82,7 +84,6 @@ final class PreflightReadTask {
                 }
                 
                 var card = readResponse
-                let wallet = walletResponse.walletInfo
                 card.wallets = [wallet.index: wallet]
                 session.environment.card = card
                 completion(.success(card))

@@ -1,5 +1,5 @@
 //
-//  WalletInfo.swift
+//  CardWallet.swift
 //  TangemSdk
 //
 //  Created by [REDACTED_AUTHOR]

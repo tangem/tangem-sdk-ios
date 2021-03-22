@@ -93,32 +93,6 @@ public struct Tlv: Equatable {
     }
 }
 
-extension Array where Element == Tlv {
-    /// Serialize array of tlv items to Data
-    /// - Parameter array: tlv array
-    public func serialize() -> Data {
-        return Data(self.reduce([], { $0 + $1.serialize() }))
-    }
-    
-    /// Convinience getter for tlv
-    /// - Parameter tag: tag to find
-    public func value(for tag: TlvTag) -> Data? {
-        return self.first(where: {$0.tag == tag})?.value
-    }
-    
-    /// Convinience getter for tlv item
-    /// - Parameter tag: tag to find
-    public func item(for tag: TlvTag) -> Element? {
-        return self.first(where: {$0.tag == tag})
-    }
-    
-    /// - Parameter tag: tag to check
-    public func contains(tag: TlvTag) -> Bool {
-        return value(for: tag) != nil
-    }
-}
-
-
 extension Tlv: CustomStringConvertible {
     public var description: String {
         let tagName = "\(tag)".capitalizingFirst()

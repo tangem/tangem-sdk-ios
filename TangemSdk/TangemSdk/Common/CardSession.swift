@@ -84,11 +84,7 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
         needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
-        // Runnable is wallet interactable when it is making their job with specific wallet or requires wallet for completing its commands
-        // If wallet interactable runnable wallet index is not nil, then preflight read task will be configured to read wallet at this specific index
-        // otherwise preflight read will perform full card read (read all wallets on card).
-        // If runnable is not wallet interactable, then preflight read will request only card information without wallet info.
-        // This is only valid for cards with COS v.4 and higher
+        
         if let preflightSetupable = runnable as? PreflightReadSetupable {
             preflightReadingSettings = preflightSetupable.preflightReadSettings
         }

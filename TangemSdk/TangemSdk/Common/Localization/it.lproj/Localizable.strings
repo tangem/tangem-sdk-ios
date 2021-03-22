@@ -134,6 +134,7 @@
 "error_wrong_card_number" = "Hai avvicinato un'altra carta. Abbina l'ID della carta nell'app con l'ID della tua carta fisica per continuare questo processo.";
 "error_wrong_card_type" = "Questa carta è creata per un'altra applicazione. Controlla le informazioni sulla mappa e scarica l'apposita applicazione.";
 "error_card_error" = "Sulla tua carta mancano dati importanti";
+"error_wallet_error" = "Selected wallet is missing essential data";
 
 "error_pin1_required" = "Richiesto un codice di accesso";
 "error_pin2_required" = "Richiesta una password";

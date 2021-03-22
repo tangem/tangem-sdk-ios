@@ -53,12 +53,13 @@ struct CardDeserializer {
         
         if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData, let cardStatus = card.status {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
-            card.wallets[0] = CardWallet(index: 0,
-                                         status: WalletStatus(from: cardStatus),
-                                         curve: card.curve,
-                                         settingsMask: card.settingsMask,
-                                         publicKey: card.walletPublicKey,
-                                         signedHashes: card.walletSignedHashes)
+            let index = TangemSdkConstants.oldCardDefaultWalletIndex
+            card.wallets[index] = CardWallet(index: index,
+                                             status: WalletStatus(from: cardStatus),
+                                             curve: card.curve,
+                                             settingsMask: card.settingsMask,
+                                             publicKey: card.walletPublicKey,
+                                             signedHashes: card.walletSignedHashes)
         }
         
         // Add condition for creating new wallet info structure for old cards

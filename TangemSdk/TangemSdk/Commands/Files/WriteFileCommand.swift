@@ -121,7 +121,7 @@ public final class WriteFileCommand: Command {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
-		let decoder = DefaultTlvDecoder(tlv: tlv)
+		let decoder = TlvDecoder(tlv: tlv)
 		return WriteFileResponse(cardId: try decoder.decode(.cardId),
 									 fileIndex: try decoder.decodeOptional(.fileIndex))
 	}

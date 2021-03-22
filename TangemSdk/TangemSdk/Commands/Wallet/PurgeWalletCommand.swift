@@ -14,6 +14,8 @@ public struct PurgeWalletResponse: JSONStringConvertible {
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
     public let status: CardStatus
+    /// Index of purged wallet
+    public let walletIndex: WalletIndex
 }
 
 /**
@@ -111,6 +113,7 @@ public final class PurgeWalletCommand: Command, PreflightReadSetupable {
         let decoder = DefaultTlvDecoder(tlv: tlv)
         return PurgeWalletResponse(
             cardId: try decoder.decode(.cardId),
-            status: try decoder.decode(.status))
+            status: try decoder.decode(.status),
+            walletIndex: walletIndex)
     }
 }

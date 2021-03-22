@@ -183,7 +183,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return ReadIssuerExtraDataResponse(
             cardId: try decoder.decode(.cardId),
             size: try decoder.decodeOptional(.size),

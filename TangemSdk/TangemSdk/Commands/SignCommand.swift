@@ -189,7 +189,7 @@ public final class SignCommand: Command, PreflightReadSetupable {
             throw TangemSdkError.deserializeApduFailed
         }
         
-        let decoder = DefaultTlvDecoder(tlv: tlv)
+        let decoder = TlvDecoder(tlv: tlv)
         return SignResponse(
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),

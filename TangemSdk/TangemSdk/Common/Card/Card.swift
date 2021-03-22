@@ -129,9 +129,14 @@ public struct Card: JSONStringConvertible {
 		guard cardId == response.cardId, response.status == .loaded else {
 			return
 		}
+        
+        guard var wallet = wallet(at: .index(response.walletIndex)) else {
+            return
+        }
 	
-		status = response.status
-		walletPublicKey = response.walletPublicKey
+        wallet.status = WalletStatus(from: response.status)
+        wallet.publicKey = response.walletPublicKey
+        wallets[wallet.index] = wallet
 	}
 	
 	public func updating(with response: CreateWalletResponse) -> Card {
@@ -144,9 +149,14 @@ public struct Card: JSONStringConvertible {
 		guard cardId == response.cardId, response.status == .empty else {
 			return
 		}
+        
+        guard var wallet = wallet(at: response.walletIndex) else {
+            return
+        }
 		
-		status = response.status
-		walletPublicKey = nil
+        wallet.status = WalletStatus(from: response.status)
+        wallet.publicKey =  nil
+        wallets[wallet.index] = wallet
 	}
 	
 	public func updating(with response: PurgeWalletResponse) -> Card {

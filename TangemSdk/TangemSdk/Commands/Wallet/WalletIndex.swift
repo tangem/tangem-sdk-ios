@@ -17,7 +17,7 @@ import Foundation
 
 /// Index to specific wallet for interaction
 /// - Note: Available for cards with COS v.4.0 and higher
-public enum WalletIndex: Equatable, CustomStringConvertible {
+public enum WalletIndex: Codable, Equatable, CustomStringConvertible {
 	case index(Int), publicKey(Data)
 	
 	@discardableResult

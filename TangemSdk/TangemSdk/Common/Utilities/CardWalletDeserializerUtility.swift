@@ -9,7 +9,7 @@
 import Foundation
 
 class CardWalletDeserializerUtility {
-    static func deserialize(from decoder: DefaultTlvDecoder) throws -> CardWallet {
+    static func deserialize(from decoder: TlvDecoder) throws -> CardWallet {
         CardWallet(index: try decoder.decode(.walletIndex),
                    status: try decoder.decode(.status),
                    curve: try decoder.decodeOptional(.curveId),

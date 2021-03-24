@@ -24,14 +24,14 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-public final class PurgeWalletCommand: Command, PreflightReadSetupable {
+public final class PurgeWalletCommand: Command {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
-    var preflightReadSettings: PreflightReadTask.Settings { .readWallet(index: walletIndex) }
+    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
     
     public var walletIndex: WalletIndex
     
@@ -44,6 +44,14 @@ public final class PurgeWalletCommand: Command, PreflightReadSetupable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.status == .notPersonalized {
+            return .notPersonalized
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
         guard let wallet = card.wallet(at: walletIndex) else {
             return .walletNotFound
         }
@@ -55,10 +63,6 @@ public final class PurgeWalletCommand: Command, PreflightReadSetupable {
             break
         case .purged:
             return .cardIsPurged
-        }
-        
-        if card.isActivated {
-            return .notActivated
         }
         
         if let settingsMask = card.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
@@ -75,7 +79,7 @@ public final class PurgeWalletCommand: Command, PreflightReadSetupable {
 				session.environment.card?.status = .empty
                 if var card = session.environment.card,
                    let wallet = card.wallet(at: self.walletIndex) {
-                    card.wallets[wallet.index] = wallet.emptyCopy
+                    card.updateWallet(at: self.walletIndex, with: .init(index: wallet.index, status: .empty))
                     session.environment.card = card
                 }
                 Log.debug(session.environment.card)

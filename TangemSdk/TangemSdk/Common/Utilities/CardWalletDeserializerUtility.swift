@@ -1,5 +1,5 @@
 //
-//  CardWalletDeserializerUtility.swift
+//  CardWalletDeserializer.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 16/03/21.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CardWalletDeserializerUtility {
+class CardWalletDeserializer {
     static func deserialize(from decoder: TlvDecoder) throws -> CardWallet {
         CardWallet(index: try decoder.decode(.walletIndex),
                    status: try decoder.decode(.status),

@@ -54,7 +54,7 @@ class ReadWalletCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        let wallet = try CardWalletDeserializerUtility.deserialize(from: decoder)
+        let wallet = try CardWalletDeserializer.deserialize(from: decoder)
         let cid: String = try decoder.decode(.cardId)
         
         Log.debug("Read wallet at index: \(walletIndex): \(wallet)")

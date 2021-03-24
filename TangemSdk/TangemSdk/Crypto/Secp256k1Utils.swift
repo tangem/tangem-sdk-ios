@@ -16,7 +16,7 @@ public final class Secp256k1Utils {
         secp256k1_context_destroy(Secp256k1Utils.context)
     }
     
-    public static func vefify(publicKey: Data, message: Data, signature: Data) -> Bool? {
+    public static func verify(publicKey: Data, message: Data, signature: Data) -> Bool? {
         guard let ctx = context else { return nil }
         
         let hashedMessage = message.getSha256()
@@ -31,7 +31,6 @@ public final class Secp256k1Utils {
         let result = secp256k1_ecdsa_verify(ctx, &normalized, hashedMessage.toBytes, &pubkey) == 1
         return result
     }
-    
     
     /**
      * Extension function to sign a byte array with the `Secp256k1` elliptic curve cryptography.

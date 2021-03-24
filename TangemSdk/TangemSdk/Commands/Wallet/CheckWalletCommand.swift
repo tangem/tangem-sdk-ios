@@ -106,7 +106,7 @@ public final class CheckWalletCommand: Command {
     }
     
     private func verify(response: CheckWalletResponse, challenge: Data) -> Bool? {
-        return CryptoUtils.vefify(curve: curve,
+        return CryptoUtils.verify(curve: curve,
                                   publicKey: publicKey,
                                   message: challenge + response.salt,
                                   signature: response.walletSignature)

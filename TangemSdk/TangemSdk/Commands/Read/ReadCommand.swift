@@ -10,12 +10,6 @@ import Foundation
 
 public typealias ReadResponse = Card
 
-enum ReadMode: Byte, InteractionMode {
-    case readCard = 0x01
-    case readWallet = 0x02
-    case readWalletList = 0x03
-}
-
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 final class ReadCommand: Command {

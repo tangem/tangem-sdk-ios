@@ -8,16 +8,11 @@
 
 import Foundation
 
-/// Use this to identify that CardSessionRunnable type can select specific wallet for interaction
-///	- Note: Available for cards with COS v.4.0 and higher
-//public protocol WalletInteractable {
-//	var walletIndex: WalletIndex? { get }
-//}
-
-
 /// Index to specific wallet for interaction
 /// - Note: Available for cards with COS v.4.0 and higher
-public enum WalletIndex: Codable, Equatable, CustomStringConvertible {
+public enum WalletIndex: Codable, Equatable {
+    case index(Int), publicKey(Data)
+    
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         do {
@@ -38,8 +33,6 @@ public enum WalletIndex: Codable, Equatable, CustomStringConvertible {
             try container.encode(pubkey)
         }
     }
-    
-	case index(Int), publicKey(Data)
 	
 	@discardableResult
 	public func addTlvData(to tlvBuilder: TlvBuilder) throws -> TlvBuilder {
@@ -51,6 +44,9 @@ public enum WalletIndex: Codable, Equatable, CustomStringConvertible {
 		}
 	}
     
+}
+
+extension WalletIndex: CustomStringConvertible {
     public var description: String {
         switch self {
         case .index(let index):

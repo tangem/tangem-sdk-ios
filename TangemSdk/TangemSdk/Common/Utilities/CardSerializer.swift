@@ -24,13 +24,9 @@ struct CardDeserializer {
 			cardPublicKey: try decoder.decodeOptional(.cardPublicKey),
 			settingsMask: try decoder.decodeOptional(.settingsMask),
 			issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
-			curve: try decoder.decodeOptional(.curveId),
-			maxSignatures: try decoder.decodeOptional(.maxSignatures),
+			defaultCurve: try decoder.decodeOptional(.curveId),
 			signingMethods: try decoder.decodeOptional(.signingMethod),
 			pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
-			walletPublicKey: try decoder.decodeOptional(.walletPublicKey),
-			walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
-			walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
 			health: try decoder.decodeOptional(.health),
 			isActivated: try decoder.decode(.isActivated),
 			activationSeed: try decoder.decodeOptional(.activationSeed),
@@ -38,13 +34,11 @@ struct CardDeserializer {
 			userCounter: try decoder.decodeOptional(.userCounter),
 			terminalIsLinked: try decoder.decode(.isLinked),
 			cardData: try deserializeCardData(tlv: tlv),
-			remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
-			signedHashes: try decoder.decodeOptional(.walletSignedHashes),
 			challenge: try decoder.decodeOptional(.challenge),
 			salt: try decoder.decodeOptional(.salt),
-			walletSignature: try decoder.decodeOptional(.walletSignature),
 			walletIndex: try decoder.decodeOptional(.walletIndex),
-			walletsCount: try decoder.decodeOptional(.walletsCount))
+			walletsCount: try decoder.decodeOptional(.walletsCount)
+        )
 		
 		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault {
 			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
@@ -54,12 +48,14 @@ struct CardDeserializer {
         if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData, let cardStatus = card.status {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let index = TangemSdkConstants.oldCardDefaultWalletIndex
-            card.wallets[index] = CardWallet(index: index,
-                                             status: WalletStatus(from: cardStatus),
-                                             curve: card.curve,
-                                             settingsMask: card.settingsMask,
-                                             publicKey: card.walletPublicKey,
-                                             signedHashes: card.walletSignedHashes)
+            card.setWallets([
+                CardWallet(index: index,
+                           status: WalletStatus(from: cardStatus),
+                           curve: card.defaultCurve,
+                           settingsMask: card.settingsMask,
+                           publicKey: try decoder.decodeOptional(.walletPublicKey),
+                           signedHashes: try decoder.decodeOptional(.walletSignedHashes))
+            ])
         }
         
         // Add condition for creating new wallet info structure for old cards

@@ -10,7 +10,7 @@ import Foundation
 
 /// Decode value fields in `Tlv` from raw bytes to concrete types
 /// according to their `TlvTag` and corresponding `TlvValueType`.
-public final class TlvDecoder: TlvLogging {
+public final class TlvDecoder {
     let tlv: [Tlv]
     
     /// Initializer
@@ -61,7 +61,7 @@ public final class TlvDecoder: TlvLogging {
         }
     }
     
-    public func decodeMultiple<T>(_ tag: TlvTag) throws -> [T] {
+    public func decodeArray<T>(_ tag: TlvTag) throws -> [T] {
         let tlvs = tlv.items(for: tag)
         guard tlvs.count > 0 else {
             return []
@@ -193,8 +193,10 @@ public final class TlvDecoder: TlvLogging {
         }
     }
     
-    func logTlv<T>(_ tag: TlvTag, _ value: T) {
+    private func logTlv<T>(_ tag: TlvTag, _ value: T) {
         let tlvItem = tlv.item(for: tag) ?? Tlv(tag, value: Data(hexString: "00")) //dummy tlv for boolean values
         logTlv(tlvItem, value)
     }
 }
+
+extension TlvDecoder: TlvLogging { }

@@ -30,14 +30,14 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-public final class CreateWalletCommand: Command, PreflightReadSetupable {
+public final class CreateWalletCommand: Command {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
     
-    var preflightReadSettings: PreflightReadTask.Settings { .readWallet(index: walletIndex) }
+    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
     
     private let walletIndexValue: Int
 	private let config: WalletConfig?
@@ -54,6 +54,14 @@ public final class CreateWalletCommand: Command, PreflightReadSetupable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.status == .notPersonalized {
+            return .notPersonalized
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
         guard let wallet = card.wallet(at: walletIndex) else {
             return .walletIndexNotCorrect
         }
@@ -90,9 +98,6 @@ public final class CreateWalletCommand: Command, PreflightReadSetupable {
 			return .walletIndexExceedsMaxValue
 		}
         
-        if card.isActivated {
-            return .notActivated
-        }
         
         return nil
     }

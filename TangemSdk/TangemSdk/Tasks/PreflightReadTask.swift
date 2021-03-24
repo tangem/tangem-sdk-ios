@@ -8,28 +8,35 @@
 
 import Foundation
 
-/// Use this protocol when you need to setup preflight read task
-/// * Full card - read card info and all wallets
-/// * Read wallet - read card info and single wallet specified in associated wallet `WalletIndex`
-///
-/// If you don't use this protocol SDK will read only card information.
-/// - Note: Valid for cards with COS v.4 and higher
-protocol PreflightReadSetupable {
-    var preflightReadSettings: PreflightReadTask.Settings { get }
+/// Use this protocol when you need to define if your Task or Command need to Read card at the session start.
+/// By default `needPreflightRead` set to `true` and `preflightReadSettings`  - to  `ReadCardOnly`
+public protocol PreflightReadCapable {
+    var needPreflightRead: Bool { get }
+    var preflightReadSettings: PreflightReadSettings { get }
+}
+
+extension PreflightReadCapable {
+    public var needPreflightRead: Bool { true }
+    public var preflightReadSettings: PreflightReadSettings { .readCardOnly }
+}
+
+/// Settings for preflight read task
+/// - Note: Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
+public enum PreflightReadSettings: Equatable {
+    /// Read only card info without wallet info
+    case readCardOnly
+    /// Read card info and single wallet specified in associated index `WalletIndex`
+    case readWallet(index: WalletIndex)
+    /// Read card info and all wallets
+    case fullCardRead
 }
 
 final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
-    enum Settings: Equatable {
-        case readCardOnly
-        case readWallet(index: WalletIndex)
-        case fullCardRead
-    }
+    private var readSettings: PreflightReadSettings
     
-    private var readSettings: Settings
-    
-    init(readSettings: Settings) {
+    init(readSettings: PreflightReadSettings) {
         self.readSettings = readSettings
     }
     
@@ -55,56 +62,44 @@ final class PreflightReadTask {
             return
         }
         
+        let resp: (Result<[CardWallet], TangemSdkError>) -> Void = {
+            switch $0 {
+            case .success(let wallets):
+                var card = readResponse
+                card.setWallets(wallets)
+                session.environment.card = card
+                completion(.success(card))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+            
+        }
         switch readSettings {
         case .readWallet(let index):
-            readWallet(at: index, in: session, with: readResponse, completion: completion)
+            readWallet(at: index, in: session, with: readResponse, completion: resp)
         case .fullCardRead:
-            readWalletsList(in: session, with: readResponse, completion: completion)
+            readWalletsList(in: session, with: readResponse, completion: resp)
         default:
             break
         }
     }
     
-    private func readWallet(at index: WalletIndex, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
+    private func readWallet(at index: WalletIndex, in session: CardSession, with readResponse: ReadResponse, completion: @escaping (Result<[CardWallet], TangemSdkError>) -> Void) {
         ReadWalletCommand(walletIndex: index).run(in: session) { (result) in
             switch result {
             case .success(let response):
-                let wallet = response.wallet
-                
-                let isReadCorrectWallet: Bool
-                switch index {
-                case .index(let walletIndex):
-                    isReadCorrectWallet = wallet.index == walletIndex
-                case .publicKey(let pubkey):
-                    isReadCorrectWallet = wallet.publicKey == pubkey
-                }
-                guard isReadCorrectWallet else {
-                    completion(.failure(.cardReadWrongWallet))
-                    return
-                }
-                
-                var card = readResponse
-                card.wallets = [wallet.index: wallet]
-                session.environment.card = card
-                completion(.success(card))
+                completion(.success([response.wallet]))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
+    private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping (Result<[CardWallet], TangemSdkError>) -> Void) {
         ReadWalletListCommand().run(in: session) { (result) in
             switch result {
             case .success(let listRepsonse):
-                var card = readResponse
-                var wallets: [Int: CardWallet] = [:]
-                listRepsonse.wallets.forEach {
-                    wallets[$0.index] = $0
-                }
-                card.wallets = wallets
-                session.environment.card = card
-                completion(.success(card))
+                completion(.success(listRepsonse.wallets))
             case .failure(let error):
                 completion(.failure(error))
             }

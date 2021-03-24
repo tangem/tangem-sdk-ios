@@ -7,7 +7,7 @@ target 'TangemSdkExample' do
   pod 'TangemSdk', :path => '../'
 end
 
-deployment_target = '11.0'
+deployment_target = '13.0'
 
 post_install do |installer|
     installer.generated_projects.each do |project|

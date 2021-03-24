@@ -8,6 +8,7 @@
 
 import XCTest
 @testable import TangemSdk
+import CryptoKit
 
 class CryptoUtilsTests: XCTestCase {
     
@@ -33,7 +34,7 @@ class CryptoUtilsTests: XCTestCase {
         let signature = Secp256k1Utils.sign(dummyData, with: privateKey)
         XCTAssertNotNil(signature)
         
-        let verify = CryptoUtils.vefify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
+        let verify = CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify!, true)
     }
@@ -43,8 +44,31 @@ class CryptoUtilsTests: XCTestCase {
         let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
         let signature = Data(hexString: "47F4C419E28013589433DBD771D618D990F4564BDAF6135039A8DF6A0803A3E3D84C3702514512C22E928C875495CA0EAC186AF0B23663924179D41830D6BF09")
         
-        let verify = CryptoUtils.vefify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
+        var verify: Bool? = nil
+        
+        measure {
+            verify = CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
+        }
+        
         XCTAssertNotNil(verify)
-        XCTAssertEqual(verify!, true)
+        XCTAssertEqual(verify, true)
+    }
+    
+    func testP256Verify() {
+        let privateKeyData = try! CryptoUtils.generateRandomBytes(count: 32)
+        let privateKey = try! P256.Signing.PrivateKey(rawRepresentation: privateKeyData)
+        let publicKey = privateKey.publicKey
+        let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let hash = message.getSha256()
+        let signature = try! privateKey.signature(for: hash)
+        
+        var verify: Bool? = nil
+        
+        measure {
+            verify = CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey.rawRepresentation, message: message, signature: signature.rawRepresentation)
+        }
+        
+        XCTAssertNotNil(verify)
+        XCTAssertEqual(verify, true)
     }
 }

@@ -58,7 +58,7 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
-    private var preflightReadingSettings: PreflightReadTask.Settings = .readCardOnly
+    private var preflightReadingSettings: PreflightReadSettings = .readCardOnly
     
     private var currentTag: NFCTagType? = nil
     /// Main initializer
@@ -83,10 +83,9 @@ public class CardSession {
     // MARK: - Prepearing session
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
-        needPreflightRead = (runnable as? PreflightReadCapable)?.needPreflightRead ?? self.needPreflightRead
-        
-        if let preflightSetupable = runnable as? PreflightReadSetupable {
-            preflightReadingSettings = preflightSetupable.preflightReadSettings
+        if let preflightReadCapable = runnable as? PreflightReadCapable {
+            needPreflightRead = preflightReadCapable.needPreflightRead
+            preflightReadingSettings = preflightReadCapable.preflightReadSettings
         }
 
         if let preparable = runnable as? CardSessionPreparable {
@@ -250,8 +249,6 @@ public class CardSession {
         Log.session("Restart polling")
         reader.restartPolling()
     }
-    
-    
     
     // MARK: - APDU sending
     /// Sends `CommandApdu` to the current card

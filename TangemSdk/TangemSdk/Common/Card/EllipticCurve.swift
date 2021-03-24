@@ -12,6 +12,7 @@ import Foundation
 public enum EllipticCurve: String, Codable {
 	case secp256k1
 	case ed25519
+    case secp256r1
 	
 	public init(from decoder: Decoder) throws {
 		let values = try decoder.singleValueContainer()

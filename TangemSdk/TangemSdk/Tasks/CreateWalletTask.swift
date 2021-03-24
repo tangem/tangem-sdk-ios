@@ -17,7 +17,7 @@ import Foundation
 ///
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
-public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable, PreflightReadSetupable {
+public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool { true }
@@ -26,7 +26,7 @@ public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable, 
 	
 	public var walletIndex: WalletIndex? { nil }
     
-    var preflightReadSettings: PreflightReadTask.Settings { .fullCardRead }
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 	
 	private let config: WalletConfig?
 
@@ -44,7 +44,7 @@ public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable, 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
 		guard
 			var card = session.environment.card,
-			var curve = card.curve
+			var curve = card.defaultCurve
 		else {
 			completion(.failure(.cardError))
 			return
@@ -57,7 +57,7 @@ public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable, 
 			}
 		}
 
-        guard let emptyWallet = card.sortedWallets.first(where: { $0.status == .empty }) else {
+        guard let emptyWallet = card.wallets.first(where: { $0.status == .empty }) else {
             completion(.failure(.maxNumberOfWalletsCreated))
             return
         }
@@ -69,7 +69,7 @@ public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable, 
             case .success(let response):
                 card.status = response.status
                 let settings = card.settingsMask
-                card.wallets[emptyWallet.index] = CardWallet(from: response, with: curve, settings: settings)
+                card.updateWallet(at: emptyWallet.intIndex, with: CardWallet(from: response, with: curve, settings: settings))
                 session.environment.card = card
                 completion(.success(response))
             case .failure(let error):

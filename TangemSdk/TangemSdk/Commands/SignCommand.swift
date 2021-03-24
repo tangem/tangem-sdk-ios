@@ -21,14 +21,14 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public final class SignCommand: Command, PreflightReadSetupable {
+public final class SignCommand: Command {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
     
-    var preflightReadSettings: PreflightReadTask.Settings {
+    public var preflightReadSettings: PreflightReadSettings {
         .readWallet(index: walletIndex)
     }
     
@@ -58,6 +58,10 @@ public final class SignCommand: Command, PreflightReadSetupable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        guard card.status != .notPersonalized else {
+            return .notPersonalized
+        }
+        
         guard let wallet = card.wallet(at: walletIndex) else {
             return .walletNotFound
         }
@@ -76,7 +80,7 @@ public final class SignCommand: Command, PreflightReadSetupable {
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
-		    card.walletRemainingSignatures == 0 {
+           wallet.remainingSignatures == 0 {
             return .noRemainingSignatures
         }
         

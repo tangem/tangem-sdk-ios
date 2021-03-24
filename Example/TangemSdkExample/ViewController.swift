@@ -9,26 +9,6 @@
 import UIKit
 import TangemSdk
 
-class MillisecTimer {
-    private let logger: ((String) -> Void)?
-    
-    private var startTime: DispatchTime?
-    
-    init(logger: ((String) -> Void)?) {
-        self.logger = logger
-    }
-    
-    func start() {
-        startTime = .now()
-    }
-    
-    func stop() {
-        let nanoSec = Double(DispatchTime.now().uptimeNanoseconds - (startTime?.uptimeNanoseconds ?? DispatchTime.now().uptimeNanoseconds))
-        logger?("Elapsed time in nano sec: \(nanoSec)")
-        logger?("Elapsed time in mili sec: \(nanoSec / 1_000_000)")
-    }
-}
-
 @available(iOS 13.0, *)
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
@@ -66,7 +46,7 @@ class ViewController: UIViewController {
         
         guard let publicKey = wallet.publicKey else {
             clearTapped(self)
-            self.log("Can't sign hashes: wallet doesn't contain public key. Wallet status: \(wallet.status)")
+            self.log("Wallet doesn't contain public key. Wallet status: \(wallet.status)")
             return nil
         }
         
@@ -285,16 +265,14 @@ class ViewController: UIViewController {
         var walletConfig: WalletConfig? = nil
         if tag > 0 {
             let walletData: WalletData
-            var curve = EllipticCurve.secp256k1
+            var curve: EllipticCurve
             switch tag {
-            case 1:
-                walletData = .init(blockchainName: "ETH")
-            case 2: walletData = .init(blockchainName: nil)
-            case 3: walletData = .init(blockchainName: "BCH")
-            case 4:
+            case 2:
                 walletData = .init(blockchainName: "XLM")
                 curve = .ed25519
-            default: walletData = .init(blockchainName: "BTC")
+            default:
+                walletData = .init(blockchainName: "BTC")
+                curve = .secp256k1
             }
             walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash,  walletData: walletData)
         }
@@ -406,14 +384,14 @@ class ViewController: UIViewController {
     @available(iOS 13.0, *)
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
-            let cmd1 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
+            let cmd1 = CheckWalletCommand(curve: session.environment.card!.wallets.first!.curve!, publicKey: session.environment.card!.wallets.first!.publicKey!)
             cmd1.run(in: session, completion: { result in
                 switch result {
                 case .success(let response1):
                     DispatchQueue.main.async {
                         self.log(response1)
                     }
-                    let cmd2 = CheckWalletCommand(curve: session.environment.card!.curve!, publicKey: session.environment.card!.walletPublicKey!)
+                    let cmd2 = CheckWalletCommand(curve: session.environment.card!.wallets.first!.curve!, publicKey: session.environment.card!.wallets.first!.publicKey!)
                     cmd2.run(in: session, completion: { result in
                         switch result {
                         case .success(let response2):

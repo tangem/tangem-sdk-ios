@@ -9,7 +9,6 @@
 import Foundation
 import CryptoKit
 import CommonCrypto
-import TangemSdk_CEd25519
 
 extension Data {
     public var description: String {
@@ -127,8 +126,6 @@ extension Data {
                         derivedKeyRawBytes,
                         derivedCount)
                 }
-                
-                
             }
         }
         

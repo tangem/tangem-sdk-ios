@@ -256,7 +256,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     public var code: Int {
         switch self {
         // MARK: 1xxxx Errors
-        // Errors in NFS Layer, e.g. Tag, connection and tranciesve errors.
+        // Errors in NFC Layer, e.g. Tag, connection and tranciesve errors.
         case .tagLost: return 10001
             
         case .unsupportedCommand: return 10003

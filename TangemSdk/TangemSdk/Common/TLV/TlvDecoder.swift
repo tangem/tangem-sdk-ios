@@ -7,15 +7,16 @@
 //
 
 import Foundation
+
 /// Decode value fields in `Tlv` from raw bytes to concrete types
 /// according to their `TlvTag` and corresponding `TlvValueType`.
 public final class TlvDecoder {
-    let tlv: [TlvTag: Tlv]
+    let tlv: [Tlv]
     
     /// Initializer
     /// - Parameter tlv: array of TLVs, which values are to be converted to particular classes.
     public init(tlv: [Tlv]) {
-        self.tlv = Dictionary(uniqueKeysWithValues: tlv.map { ($0.tag, $0) })
+        self.tlv = tlv
     }
     
     /**
@@ -28,7 +29,7 @@ public final class TlvDecoder {
      */
     public func decodeOptional<T>(_ tag: TlvTag) throws -> T? {
         do {
-            let decoded: T = try innerDecode(tag, asOptional: true)
+            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag), asOptional: true)
             logTlv(tag, decoded)
             return decoded
         } catch TangemSdkError.decodingFailedMissingTag {
@@ -51,7 +52,7 @@ public final class TlvDecoder {
      */
     public func decode<T>(_ tag: TlvTag) throws -> T {
         do {
-            let decoded: T = try innerDecode(tag, asOptional: false)
+            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag), asOptional: false)
             logTlv(tag, decoded)
             return decoded
         } catch {
@@ -60,8 +61,20 @@ public final class TlvDecoder {
         }
     }
     
-    private func innerDecode<T>(_ tag: TlvTag, asOptional: Bool) throws -> T {
-        guard let tagValue = tlv[tag]?.value else {
+    public func decodeArray<T>(_ tag: TlvTag) throws -> [T] {
+        let tlvs = tlv.items(for: tag)
+        guard tlvs.count > 0 else {
+            return []
+        }
+        
+        return try tlvs.map {
+            let decoded: T = try innerDecode(tag, tagValue: $0.value, asOptional: false)
+            return decoded
+        }
+    }
+    
+    func innerDecode<T>(_ tag: TlvTag, tagValue: Data?, asOptional: Bool) throws -> T {
+        guard let tagValue = tagValue else {
             if tag.valueType == .boolValue {
                 guard Bool.self == T.self || Bool?.self == T.self else {
                     throw TangemSdkError.decodingFailedTypeMismatch("Decoding error. Tag: \(tag). Type is \(T.self). Expected: \(Bool.self)")
@@ -124,14 +137,23 @@ public final class TlvDecoder {
             let intValue = tagValue.toInt()
             let settingsMask = SettingsMask(rawValue: intValue)
             return settingsMask as! T
-        case .cardStatus:
-            try typeCheck(CardStatus.self, T.self, for: tag)
-            let intValue = tagValue.toInt()
-            guard let cardStatus = CardStatus(rawValue: intValue) else {
-                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
+        case .status:
+            do {
+                try typeCheck(CardStatus.self, T.self, for: tag)
+                let intValue = tagValue.toInt()
+                guard let cardStatus = CardStatus(rawValue: intValue) else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
+                }
+                
+                return cardStatus as! T
+            } catch TangemSdkError.decodingFailedTypeMismatch {
+                try typeCheck(WalletStatus.self, T.self, for: tag)
+                let intValue = tagValue.toInt()
+                guard let walletStatus = WalletStatus(rawValue: intValue) else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and WalletStatus")
+                }
+                return walletStatus as! T
             }
-            
-            return cardStatus as! T
         case .signingMethod:
             try typeCheck(SigningMethod.self, T.self, for: tag)
             guard let byte = tagValue.toBytes.first else {
@@ -141,27 +163,27 @@ public final class TlvDecoder {
             let signingMethod = SigningMethod(rawValue: byte)
             return signingMethod as! T
         case .interactionMode:
-			guard let byte = tagValue.toBytes.first else {
-				throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to InteractionMode")
-			}
-			
-			if let mode = IssuerExtraDataMode(rawValue: byte)  {
-                try typeCheck(IssuerExtraDataMode.self, T.self, for: tag)
-				return mode as! T
-			} else if let mode = FileDataMode(rawValue: byte) {
-                try typeCheck(FileDataMode.self, T.self, for: tag)
-				return mode as! T
-			} else {
-				throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
-			}
+            guard let byte = tagValue.toBytes.first else {
+                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to InteractionMode")
+            }
             
-		case .fileSettings:
+            if let mode = IssuerExtraDataMode(rawValue: byte)  {
+                try typeCheck(IssuerExtraDataMode.self, T.self, for: tag)
+                return mode as! T
+            } else if let mode = FileDataMode(rawValue: byte) {
+                try typeCheck(FileDataMode.self, T.self, for: tag)
+                return mode as! T
+            } else {
+                throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
+            }
+            
+        case .fileSettings:
             try typeCheck(FileSettings.self, T.self, for: tag)
-			let intValue = tagValue.toInt()
-			guard let fileSettings = FileSettings(rawValue: intValue) else {
-				throw TangemSdkError.notSupportedFileSettings
-			}
-			return fileSettings as! T
+            let intValue = tagValue.toInt()
+            guard let fileSettings = FileSettings(rawValue: intValue) else {
+                throw TangemSdkError.notSupportedFileSettings
+            }
+            return fileSettings as! T
         }
     }
     
@@ -172,9 +194,9 @@ public final class TlvDecoder {
     }
     
     private func logTlv<T>(_ tag: TlvTag, _ value: T) {
-        let tlvItem = tlv[tag] ?? Tlv(tag, value: Data(hexString: "00")) //dummy tlv for boolean values
+        let tlvItem = tlv.item(for: tag) ?? Tlv(tag, value: Data(hexString: "00")) //dummy tlv for boolean values
         logTlv(tlvItem, value)
     }
 }
 
-extension TlvDecoder: TlvLogging {}
+extension TlvDecoder: TlvLogging { }

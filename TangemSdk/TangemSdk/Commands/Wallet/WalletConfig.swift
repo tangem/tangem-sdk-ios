@@ -8,38 +8,18 @@
 
 import Foundation
 
-public struct WalletData {
-	/// Name of the blockchain.
-	public let blockchainName: String?
-	/// Name of the token.
-	public let tokenSymbol: String?
-	/// Smart contract address.
-	public let tokenContractAddress: String?
-	/// Number of decimals in token value.
-	public let tokenDecimal: Int?
-	
-	public init(blockchainName: String?, tokenSymbol: String? = nil, tokenContractAddress: String? = nil, tokenDecimal: Int? = nil) {
-		self.blockchainName = blockchainName
-		self.tokenSymbol = tokenSymbol
-		self.tokenContractAddress = tokenContractAddress
-		self.tokenDecimal = tokenDecimal
-	}
-}
-
+/// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
 public struct WalletConfig {
 	let isReusable: Bool
 	let prohibitPurgeWallet: Bool
 	let curveId: EllipticCurve
 	let signingMethods: SigningMethod
 	
-	let walletData: WalletData
-	
-	public init(isReusable: Bool, prohibitPurgeWallet: Bool, curveId: EllipticCurve, signingMethods: SigningMethod, walletData: WalletData) {
+	public init(isReusable: Bool, prohibitPurgeWallet: Bool, curveId: EllipticCurve, signingMethods: SigningMethod) {
 		self.isReusable = isReusable
 		self.prohibitPurgeWallet = prohibitPurgeWallet
 		self.curveId = curveId
 		self.signingMethods = signingMethods
-		self.walletData = walletData
 	}
 	
 	var settingsMask: WalletSettingsMask {

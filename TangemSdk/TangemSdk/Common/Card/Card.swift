@@ -25,23 +25,10 @@ public struct Card: JSONStringConvertible {
 	public let settingsMask: SettingsMask?
 	/// Public key that is used by the card issuer to sign IssuerData field.
 	public let issuerPublicKey: Data?
-	/// Explicit text name of the elliptic curve used for all wallet key operations.
-	/// Supported curves: ‘secp256k1’ and ‘ed25519’.
-	public let curve: EllipticCurve?
-	/// Total number of signatures allowed for the wallet when the card was personalized.
-	public let maxSignatures: Int?
 	/// Defines what data should be submitted to SIGN command.
 	public let signingMethods: SigningMethod?
 	/// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
 	public let pauseBeforePin2: Int?
-	/// Public key of the blockchain wallet.
-	public var walletPublicKey: Data?
-	/// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
-	public let walletRemainingSignatures: Int?
-	/// Total number of signed single hashes returned by the card in
-	/// `SignCommand` responses since card personalization.
-	/// Sums up array elements within all `SignCommand`.
-	public var walletSignedHashes: Int?
 	/// Any non-zero value indicates that the card experiences some hardware problems.
 	/// User should withdraw the value to other blockchain wallet as soon as possible.
 	/// Non-zero Health tag will also appear in responses of all other commands.
@@ -79,21 +66,20 @@ public struct Card: JSONStringConvertible {
 	public var walletIndex: Int? = nil
 	/// Maximum number of wallets that can be created for this card
 	public var walletsCount: Int? = nil
+    
+    private(set) public var wallets: [CardWallet] = []
+    
+    internal let defaultCurve: EllipticCurve?
 	
-	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, curve: EllipticCurve?, maxSignatures: Int?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, walletPublicKey: Data?, walletRemainingSignatures: Int?, walletSignedHashes: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, remainingSignatures: Int? = nil, signedHashes: Int? = nil, challenge: Data? = nil, salt: Data? = nil, walletSignature: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
+	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, defaultCurve: EllipticCurve?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, challenge: Data? = nil, salt: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
 		self.cardId = cardId
 		self.manufacturerName = manufacturerName
 		self.status = status
 		self.cardPublicKey = cardPublicKey
 		self.settingsMask = settingsMask
 		self.issuerPublicKey = issuerPublicKey
-		self.curve = curve
-		self.maxSignatures = maxSignatures
 		self.signingMethods = signingMethods
 		self.pauseBeforePin2 = pauseBeforePin2
-		self.walletPublicKey = walletPublicKey
-		self.walletRemainingSignatures = walletRemainingSignatures
-		self.walletSignedHashes = walletSignedHashes
 		self.health = health
 		self.isActivated = isActivated
 		self.activationSeed = activationSeed
@@ -109,38 +95,30 @@ public struct Card: JSONStringConvertible {
 		} else {
 			self.firmwareVersion = nil
 		}
+        
+        self.defaultCurve = defaultCurve
 	}
-	
-	public mutating func update(with response: CreateWalletResponse) {
-		guard cardId == response.cardId, response.status == .loaded else {
-			return
-		}
-	
-		status = response.status
-		walletPublicKey = response.walletPublicKey
-	}
-	
-	public func updating(with response: CreateWalletResponse) -> Card {
-		var card = self
-		card.update(with: response)
-		return card
-	}
-	
-	public mutating func update(with response: PurgeWalletResponse) {
-		guard cardId == response.cardId, response.status == .empty else {
-			return
-		}
-		
-		status = response.status
-		walletPublicKey = nil
-	}
-	
-	public func updating(with response: PurgeWalletResponse) -> Card {
-		var card = self
-		card.update(with: response)
-		return card
-	}
-	
+    
+    public mutating func setWallets(_ wallets: [CardWallet]) {
+        self.wallets = wallets.sorted(by: { $0.index < $1.index })
+    }
+    
+    public func wallet(at index: WalletIndex) -> CardWallet? {
+        switch index {
+        case .index(let int):
+            return wallets.first(where: { $0.index == int })
+        case .publicKey(let pubkey):
+            return wallets.first(where: { $0.publicKey == pubkey })
+        }
+    }
+    
+    public mutating func updateWallet(at index: WalletIndex, with wallet: CardWallet) {
+        guard let index = wallets.firstIndex(where: { $0.index == wallet.index }) else {
+            return
+        }
+        
+        wallets[index] = wallet
+    }
 }
 
 public extension Card {

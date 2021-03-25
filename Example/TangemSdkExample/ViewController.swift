@@ -270,11 +270,14 @@ class ViewController: UIViewController {
             case 2:
                 walletData = .init(blockchainName: "XLM")
                 curve = .ed25519
+            case 3:
+                walletData = .init(blockchainName: nil)
+                curve = .secp256r1
             default:
                 walletData = .init(blockchainName: "BTC")
                 curve = .secp256k1
             }
-            walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash,  walletData: walletData)
+            walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash, walletData: walletData)
         }
         
         tangemSdk.createWallet(cardId: cardId, config: walletConfig) { [unowned self] result in

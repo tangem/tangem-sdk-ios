@@ -30,23 +30,23 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
-public final class CreateWalletCommand: Command, WalletSelectable {
+public final class CreateWalletCommand: Command {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
-	
-	public var walletIndex: WalletIndex? {
-		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
-	}
-	
-	private var walletIndexValue: Int?
+    
+    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
+    
+    private let walletIndexValue: Int
 	private let config: WalletConfig?
+    
+    private var walletIndex: WalletIndex { .index(walletIndexValue) }
 	
-	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
+	public init(config: WalletConfig? = nil, walletIndex: Int = 0) {
 		self.config = config
-		self.walletIndexValue = walletIndex
+        self.walletIndexValue = walletIndex
 	}
     
     deinit {
@@ -54,15 +54,24 @@ public final class CreateWalletCommand: Command, WalletSelectable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-		
-		func statusError(_ status: CardStatus) -> TangemSdkError? {
+        if card.status == .notPersonalized {
+            return .notPersonalized
+        }
+        
+        if card.isActivated {
+            return .notActivated
+        }
+        
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletIndexNotCorrect
+        }
+        
+		func statusError(_ status: WalletStatus) -> TangemSdkError? {
 			switch status {
 			case .empty:
 				  return nil
 			case .loaded:
 				return .alreadyCreated
-			case .notPersonalized:
-				return .notPersonalized
 			case .purged:
 				return .cardIsPurged
 			}
@@ -70,8 +79,7 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 		
 		let isWalletDataAvailable = card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData
 		
-        if let status = card.status,
-		   let error = statusError(status) {
+        if let error = statusError(wallet.status) {
 			
 			if isWalletDataAvailable {
 				
@@ -86,14 +94,10 @@ public final class CreateWalletCommand: Command, WalletSelectable {
         }
 		
 		if isWalletDataAvailable,
-		   let targetIndex = walletIndexValue,
-		   targetIndex >= card.walletsCount ?? 1 {
+		   walletIndexValue >= card.walletsCount ?? 1 {
 			return .walletIndexExceedsMaxValue
 		}
         
-        if card.isActivated {
-            return .notActivated
-        }
         
         return nil
     }
@@ -104,10 +108,11 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 			guard let card = card else { return .pin2OrCvcRequired }
 			
 			if let walletsCount = card.walletsCount,
-			   (walletIndexValue ?? 0) >= walletsCount {
+			   walletIndexValue >= walletsCount {
 				return .walletIndexExceedsMaxValue
 			}
 			
+            // If card returns "Invalid params" when it shouldn't, try to check in card SettingsMask "AllowSelectBlockchain" flag :)
 			if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
 			   card.pin2IsDefault ?? false {
 				return .alreadyCreated
@@ -129,19 +134,13 @@ public final class CreateWalletCommand: Command, WalletSelectable {
             try tlvBuilder.append(.cvc, value: cvc)
         }
 		
-		if let index = walletIndexValue {
-			try WalletIndex.index(index).addTlvData(to: tlvBuilder)
-		}
+        try walletIndex.addTlvData(to: tlvBuilder)
 		
 		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {
 			
 			try tlvBuilder.append(.settingsMask, value: config.settingsMask)
 				.append(.curveId, value: config.curveId)
-			
-			if let walletData = try serializeWalletData(config.walletData) {
-				try tlvBuilder.append(.walletData, value: walletData)
-			}
 		}
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -159,22 +158,4 @@ public final class CreateWalletCommand: Command, WalletSelectable {
 			walletIndex: try decoder.decodeOptional(.walletIndex) ?? 0,
             walletPublicKey: try decoder.decode(.walletPublicKey))
     }
-	
-	private func serializeWalletData(_ walletData: WalletData) throws -> Data? {
-		guard let blockchainName = walletData.blockchainName else {
-			return nil
-		}
-		
-		let tlvBuilder = try TlvBuilder()
-			.append(.blockchainName, value: blockchainName)
-		
-		if walletData.tokenSymbol != nil {
-			try tlvBuilder
-				.append(.tokenSymbol, value: walletData.tokenSymbol)
-				.append(.tokenContractAddress, value: walletData.tokenContractAddress)
-				.append(.tokenDecimal, value: walletData.tokenDecimal)
-		}
-		
-		return tlvBuilder.serialize()
-	}
 }

@@ -61,7 +61,7 @@ public class VerifyCardCommand: Command {
             return .notPersonalized
         }
         
-        if card.isActivated{
+        if card.isActivated {
             return .notActivated
         }
         

@@ -12,24 +12,18 @@ public typealias ReadResponse = Card
 
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
-public final class ReadCommand: Command {
-    public typealias CommandResponse = ReadResponse
+final class ReadCommand: Command {
+    typealias CommandResponse = ReadResponse
     
-    public var needPreflightRead: Bool {
+    var needPreflightRead: Bool {
         return false
     }
-	
-	private var walletIndex: WalletIndex?
-	
-	public init(walletIndex: WalletIndex? = nil) {
-		self.walletIndex = walletIndex
-	}
 	
     deinit {
         Log.debug("ReadCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
         transieve(in: session) { result in
             switch result {
             case .success(let readResponse):
@@ -56,11 +50,11 @@ public final class ReadCommand: Command {
         /// The card will not respond if wrong pin 1 has been submitted.
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
+            .append(.interactionMode, value: ReadMode.readCard)
         if let keys = environment.terminalKeys {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-		try walletIndex?.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
@@ -68,21 +62,6 @@ public final class ReadCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
 		let readResponse = try CardDeserializer.deserialize(with: environment, from: apdu)
         
-		if readResponse.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
-		   let index = walletIndex {
-			
-			switch index {
-			case .index(let i):
-				if readResponse.walletIndex != i {
-					throw TangemSdkError.cardReadWrongWallet
-				}
-			case .publicKey(let pubKey):
-				if let publicKeyOnCard = readResponse.walletPublicKey, publicKeyOnCard != pubKey {
-					throw TangemSdkError.cardReadWrongWallet
-				}
-			}
-			
-		}
 		return readResponse
     }
 }

@@ -95,25 +95,20 @@ public final class TlvEncoder {
 			try typeCheck(value, WalletSettingsMask.self, for: tag)
 			let mask = value as! WalletSettingsMask
 			return mask.rawValue.bytes4
-        case .cardStatus:
-            try typeCheck(value, CardStatus.self, for: tag)
-            let status = value as! CardStatus
-            return status.rawValue.byte
+        case .status:
+            guard let statusType = value as? StatusType else {
+                throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
+            }
+            return statusType.rawValue.byte
         case .signingMethod:
             try typeCheck(value, SigningMethod.self, for: tag)
             let method = value as! SigningMethod
             return Data([method.rawValue])
         case .interactionMode:
-			do {
-				try typeCheck(value, IssuerExtraDataMode.self, for: tag)
-				let mode = value as! IssuerExtraDataMode
-				return Data([mode.rawValue])
-			} catch {
-                Log.warning("Interaction mode is not and issuer. Trying to check FileDataMode")
-			}
-			try typeCheck(value, FileDataMode.self, for: tag)
-			let mode = value as! FileDataMode
-			return Data([mode.rawValue])
+            guard let mode = value as? InteractionMode else {
+                throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
+            }
+            return Data([mode.rawValue])
 		case .fileSettings:
 			try typeCheck(value, FileSettings.self, for: tag)
 			let settings = value as! FileSettings

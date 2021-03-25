@@ -46,11 +46,10 @@ public final class CryptoUtils {
             let pubKey = try? Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey?.isValidSignature(signature, for: hash)
         case .secp256r1:
-            let hash = SHA256.hash(data: message)
             let pubKey = try? P256.Signing.PublicKey(x963Representation: publicKey)
             guard let sig = try? P256.Signing.ECDSASignature(rawRepresentation: signature) else { return nil }
             
-            return pubKey?.isValidSignature(sig, for: hash)
+            return pubKey?.isValidSignature(sig, for: message)
         }
     }
     

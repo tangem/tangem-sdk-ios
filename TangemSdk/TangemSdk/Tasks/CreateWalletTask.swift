@@ -17,29 +17,24 @@ import Foundation
 ///
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
-public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
+public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable {
     public typealias CommandResponse = CreateWalletResponse
     
-    public var requiresPin2: Bool {
-        return true
-    }
+    public var requiresPin2: Bool { true }
+    
+    public var needPreflightRead: Bool { true }
 	
-	public var walletIndex: WalletIndex? {
-		walletIndexValue != nil ? WalletIndex.index(walletIndexValue!) : nil
-	}
+	public var walletIndex: WalletIndex? { nil }
+    
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 	
 	private let config: WalletConfig?
-	
-	private var walletIndexValue: Int?
-	private var firstAttemptWalletIndex: Int?
-	private var shouldCreateAtAnyIndex: Bool = false
 
 	/// - Parameters:
 	///   - config: Specified wallet settings including blockchain name.
 	///   - walletIndex: Index at which new wallet will be created.
-	public init(config: WalletConfig? = nil, walletIndex: Int? = nil) {
+	public init(config: WalletConfig? = nil) {
 		self.config = config
-		self.walletIndexValue = walletIndex
 	}
 	
 	deinit {
@@ -48,8 +43,8 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
 		guard
-			let card = session.environment.card,
-			var curve = card.curve
+			var card = session.environment.card,
+			var curve = card.defaultCurve
 		else {
 			completion(.failure(.cardError))
 			return
@@ -57,95 +52,29 @@ public final class CreateWalletTask: CardSessionRunnable, WalletSelectable {
 		
 		// This check need to exclude cases when WalletConfig parameters is added but card has COS lower than 4.0
 		if session.environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData {
-			
 			if let config = config {
 				curve = config.curveId
 			}
-			
-			if walletIndexValue == nil {
-				shouldCreateAtAnyIndex = true
-				
-				// If wallet index wasn't specified, attempt to create wallet at first position
-				walletIndexValue = 0
-			}
-			
 		}
 
-		createWallet(in: session, forCard: card, at: walletIndexValue, with: curve, completion: completion)
+        guard let emptyWallet = card.wallets.first(where: { $0.status == .empty }) else {
+            completion(.failure(.maxNumberOfWalletsCreated))
+            return
+        }
+        
+        Log.debug("------ Found empty wallet \(emptyWallet). Attempting to create wallet ---------")
+        
+        CreateWalletCommand(config: config, walletIndex: emptyWallet.index).run(in: session) { (result) in
+            switch result {
+            case .success(let response):
+                card.status = response.status
+                let settings = card.settingsMask
+                card.updateWallet(at: emptyWallet.intIndex, with: CardWallet(from: response, with: curve, settings: settings))
+                session.environment.card = card
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
-	
-	private func createWallet(in session: CardSession, forCard card: Card, at index: Int?, with curve: EllipticCurve, completion: @escaping CompletionResult<CreateWalletResponse>) {
-		
-        Log.debug("Attempt to create wallet at index: \(index ?? 0)")
-		let command = CreateWalletCommand(config: config, walletIndex: index)
-		command.run(in: session) { result in
-			switch result {
-			case .success(let createWalletResponse):
-                session.environment.card?.status = createWalletResponse.status
-				if createWalletResponse.status == .loaded {
-					
-					CheckWalletCommand(curve: curve, publicKey: createWalletResponse.walletPublicKey, walletIndex: self.walletIndexValue != nil ? .index(self.walletIndexValue!) : nil)
-						.run(in: session) { checkWalletResult in
-							switch checkWalletResult {
-							case .success(_):
-								completion(.success(createWalletResponse))
-							case .failure(let error):
-								completion(.failure(error))
-							}
-						}
-					
-				} else {
-					completion(.failure(.unknownError))
-				}
-			case .failure(let error):
-				if self.shouldCreateAtAnyIndex {
-                    Log.debug("Failure while creating wallet. \(error)")
-					switch error {
-					case .alreadyCreated, .cardIsPurged, .invalidState:
-						if let nextIndex = self.updateWalletPointerToNext(currentIndex: index, walletsCount: card.walletsCount) {
-							self.walletIndexValue = nextIndex
-							self.createWallet(in: session, forCard: card, at: nextIndex, with: curve, completion: completion)
-							return
-						}
-						completion(.failure(TangemSdkError.maxNumberOfWalletsCreated))
-						return
-					default:
-                        Log.debug("Default error case while creating wallet. Error: \(error)")
-						break
-					}
-				}
-				
-				completion(.failure(error))
-			}
-		}
-	}
-	
-	private func updateWalletPointerToNext(currentIndex: Int?, walletsCount: Int?) -> Int? {
-		guard
-			let currentIndex = currentIndex,
-			let walletsCount = walletsCount
-		else { return nil }
-		
-		var isFirstAttempt = false
-		if firstAttemptWalletIndex == nil {
-			// Needs for prevent repeating first create wallet attempt
-			firstAttemptWalletIndex = currentIndex
-			isFirstAttempt = true
-		}
-		
-		var newIndex: Int
-		if isFirstAttempt, currentIndex != 0 {
-			// This route handle case when first attempt to create wallet was not at the first index
-			newIndex = 0
-		} else {
-			// Take next index
-			newIndex = currentIndex + 1
-			// If index match with first attempt index, move to next
-			newIndex += firstAttemptWalletIndex == newIndex ? 1 : 0
-		}
-		
-		if newIndex >= walletsCount { return nil }
-		
-		return newIndex
-	}
 }

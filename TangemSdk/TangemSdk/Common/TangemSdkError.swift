@@ -198,6 +198,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when the scanned card doesn't have some essential fields.
     case cardError
+    /// This error is returned when the scanned wallet doesn't have some essential fields.
+    case walletError
     
     /// This error is returned when SDK fails to perform some low-level crypto algorithm
     case cryptoUtilsError
@@ -244,102 +246,141 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	// MARK: Wallet errors
 	
 	case walletIndexExceedsMaxValue
+    case walletIndexNotSpecified
+    case walletIndexNotCorrect
 	case maxNumberOfWalletsCreated
 	case walletNotFound
 	case cardReadWrongWallet
+    case cardWithMaxZeroWallets
 
     public var code: Int {
         switch self {
-        case .alreadyCreated: return 40501
-        case .alreadyPersonalized: return 40101
-        case .busy: return 50003
-        case .cannotBeDepersonalized: return 40201
-        case .cardError: return 50007
-        case .cardIsEmpty: return 40904
-        case .cardIsPurged: return 40003
-        case .cryptoUtilsError: return 50008
-        case .dataCannotBeWritten: return 40009
-        case .dataSizeTooLarge: return 40006
-        case .decodingFailed: return 20007
-        case .decodingFailedMissingTag: return 20005
-        case .decodingFailedTypeMismatch: return 20006
-        case .deserializeApduFailed: return 20002
-        case .emptyHashes: return 40902
-        case .encodingFailed: return 20004
-        case .encodingFailedTypeMismatch: return 20003
-        case .errorProcessingCommand: return 30002
-        case .extendedDataSizeTooLarge: return 41101
-        case .failedToDecryptApdu: return 20009
-        case .failedToEncryptApdu: return 20008
-        case .failedToEstablishEncryption: return 20010
-        case .failedToGenerateRandomSequence: return 50009
-        case .hashSizeMustBeEqual: return 40903
-        case .insNotSupported: return 30004
-        case .invalidParams: return 30005
-        case .invalidResponseApdu: return 20011
-        case .invalidState: return 30003
-        case .missingCounter: return 40007
-        case .missingIssuerPublicKey: return 40010
-        case .missingPreflightRead: return 50004
-        case .ndefReaderSessionErrorTagNotWritable: return 90017
-        case .ndefReaderSessionErrorTagSizeTooSmall: return 90019
-        case .ndefReaderSessionErrorTagUpdateFailure: return 90018
-        case .ndefReaderSessionErrorZeroLengthMessage: return 90020
-        case .needEncryption: return 30006
-        case .nfcReaderError: return 10008
+        // MARK: 1xxxx Errors
+        // Errors in NFC Layer, e.g. Tag, connection and tranciesve errors.
+        case .tagLost: return 10001
+            
+        case .unsupportedCommand: return 10003
+        case .unsupportedDevice: return 10004
+        case .sessionInactive: return 10005
         case .nfcStuck: return 10006
         case .nfcTimeout: return 10007
-        case .noRemainingSignatures: return 40901
-        case .notActivated: return 40002
+        case .nfcReaderError: return 10008
+        
+            
+        // MARK: 2xxxx Errors
+        // Errors occured during the mapping or parsing data.
+        case .serializeCommandError: return 20001
+        case .deserializeApduFailed: return 20002
+        case .encodingFailedTypeMismatch: return 20003
+        case .encodingFailed: return 20004
+        case .decodingFailedMissingTag: return 20005
+        case .decodingFailedTypeMismatch: return 20006
+        case .decodingFailed: return 20007
+        case .failedToEncryptApdu: return 20008
+        case .failedToDecryptApdu: return 20009
+        case .failedToEstablishEncryption: return 20010
+        case .invalidResponseApdu: return 20011
+            
+        // MARK: 3xxxx Errors
+        // Errors from card SW codes
+        case .unknownStatus: return 30001
+        case .errorProcessingCommand: return 30002
+        case .invalidState: return 30003
+        case .insNotSupported: return 30004
+        case .invalidParams: return 30005
+        case .needEncryption: return 30006
+        case .fileNotFound: return 30007
+        case .walletNotFound: return 30008
+            
+        // MARK: 4yyxx Errors
+        // Command Error. Business logical errors that occurred inside commands' implmentation.
+        
         case .notPersonalized: return 40001
-        case .overwritingDataIsProhibited: return 40008
-        case .pin1CannotBeChanged: return 40801
-        case .pin1CannotBeDefault: return 40803
-        case .pin1Required: return 40401
-        case .pin2CannotBeChanged: return 40802
+        case .notActivated: return 40002
+        case .cardIsPurged: return 40003
         case .pin2OrCvcRequired: return 40004
+        case .verificationFailed: return 40005
+        case .dataSizeTooLarge: return 40006
+        case .missingCounter: return 40007
+        case .overwritingDataIsProhibited: return 40008
+        case .dataCannotBeWritten: return 40009
+        case .missingIssuerPublicKey: return 40010
+        case .cardVerificationFailed: return 40011
+        case .wrongPin1: return 40012
+        case .wrongPin2: return 40013
+            
+        case .alreadyPersonalized: return 40101
+            
+        case .cannotBeDepersonalized: return 40201
+            
+        case .pin1Required: return 40401
+        case .cardReadWrongWallet: return 40402
+        case .walletIndexNotSpecified: return 40403
+        case .cardWithMaxZeroWallets: return 40404
+                
+        case .alreadyCreated: return 40501
+        case .walletIndexExceedsMaxValue: return 40502
+        case .maxNumberOfWalletsCreated: return 40503
+        case .walletIndexNotCorrect: return 40504
+            
         case .purgeWalletProhibited: return 40601
+            
+        case .pin1CannotBeChanged: return 40801
+        case .pin2CannotBeChanged: return 40802
+        case .pin1CannotBeDefault: return 40803
+        
+        case .noRemainingSignatures: return 40901
+        case .emptyHashes: return 40902
+        case .hashSizeMustBeEqual: return 40903
+        case .cardIsEmpty: return 40904
+        case .signHashesNotAvailable: return 40905
+        case .tooManyHashesInOneTransaction: return 40906
+            
+        case .extendedDataSizeTooLarge: return 41101
+            
+        // MARK: 5xxxx Errors
+        // SDK error. Errors, that occurred in the apper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
+        case .unknownError: return 50001
+        case .userCancelled: return 50002
+        case .busy: return 50003
+        case .missingPreflightRead: return 50004
+        case .wrongCardNumber: return 50005
+        case .wrongCardType: return 50006
+        case .cardError: return 50007
+        case .notSupportedFirmwareVersion: return 50008
+        case .walletError: return 50009
+        case .failedToGenerateRandomSequence: return 50010
+        case .cryptoUtilsError: return 50011
+        case .underlying: return 50012
+            
+        case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
+        
+        case .wrongInteractionMode: return 50027
+            
+        // MARK: 9xxxx Errors
+        // Reader error.
+        
+        case .readerErrorUnsupportedFeature: return 90003
+        case .readerErrorSecurityViolation: return 90004
         case .readerErrorInvalidParameter: return 90005
         case .readerErrorInvalidParameterLength: return 90006
         case .readerErrorParameterOutOfBound: return 90007
-        case .readerErrorSecurityViolation: return 90004
-        case .readerErrorUnsupportedFeature: return 90003
-        case .readerSessionInvalidationErrorFirstNDEFTagRead: return 90015
-        case .readerSessionInvalidationErrorSessionTerminatedUnexpectedly: return 90014
-        case .readerSessionInvalidationErrorSessionTimeout: return 90013
-        case .readerTransceiveErrorRetryExceeded: return 90009
-        case .readerTransceiveErrorSessionInvalidated: return 90011
         case .readerTransceiveErrorTagConnectionLost: return 90008
-        case .readerTransceiveErrorTagNotConnected: return 90012
+        case .readerTransceiveErrorRetryExceeded: return 90009
         case .readerTransceiveErrorTagResponseError: return 90010
-        case .serializeCommandError: return 20001
-        case .sessionInactive: return 10005
-        case .signHashesNotAvailable: return 40905
+        case .readerTransceiveErrorSessionInvalidated: return 90011
+        case .readerTransceiveErrorTagNotConnected: return 90012
+        case .readerSessionInvalidationErrorSessionTimeout: return 90013
+        case .readerSessionInvalidationErrorSessionTerminatedUnexpectedly: return 90014
+        case .readerSessionInvalidationErrorFirstNDEFTagRead: return 90015
         case .tagCommandConfigurationErrorInvalidParameters: return 90016
-        case .tagLost: return 10001
-        case .tooManyHashesInOneTransaction: return 40906
-        case .unknownError: return 50001
-        case .unknownStatus: return 30001
-        case .unsupportedCommand: return 10003
-        case .unsupportedDevice: return 10004
-        case .userCancelled: return 50002
-        case .verificationFailed: return 40005
-        case .cardVerificationFailed: return 40011
-        case .wrongCardNumber: return 50005
-        case .wrongCardType: return 50006
-        case .underlying: return 50010
-		case .fileNotFound: return 50007
-		case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
-		case .wrongInteractionMode: return 50027
-		case .notSupportedFirmwareVersion: return 50007
-		case .walletIndexExceedsMaxValue: return 40502
-		case .maxNumberOfWalletsCreated: return 40503
-		case .walletNotFound: return 30008
-		case .cardReadWrongWallet: return 40402
-        case .wrongPin1: return 40012
-        case .wrongPin2: return 40013
+        case .ndefReaderSessionErrorTagNotWritable: return 90017
+        case .ndefReaderSessionErrorTagUpdateFailure: return 90018
+        case .ndefReaderSessionErrorTagSizeTooSmall: return 90019
+        case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
+            
         }
     }
     
@@ -352,6 +393,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .busy: return "error_busy".localized
         case .cannotBeDepersonalized: return "error_cannot_be_depersonalized".localized
         case .cardError: return "error_card_error".localized
+        case .walletError: return "error_wallet_error".localized
         case .cardIsEmpty, .cardIsPurged: return "error_card_is_empty".localized
         case .dataCannotBeWritten: return "error_data_cannot_be_written".localized
         case .dataSizeTooLarge: return "error_data_size_too_large".localized

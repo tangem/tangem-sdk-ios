@@ -84,6 +84,7 @@
 "error_wrong_card_number" = "Vous avez connecté la mauvaise carte. Pour poursuivre ce processus, l'identificateur de la carte dans l'application doit correspondre à votre identificateur physique de la carte.";
 "error_wrong_card_type" = "Cette carte est personnalisée pour une autre application. Veuillez lire les informations sur votre carte et télécharger l'application correspondante.";
 "error_card_error" = "Des données importantes manquent sur votre carte";
+"error_wallet_error" = "Selected wallet is missing essential data";
 "error_pin1_required" = "Code d'accès est requis";
 "error_pin2_required" = "Mot de passe est requis";
 "error_wrong_card" = "Mauvaise carte";

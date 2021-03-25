@@ -141,10 +141,6 @@ public final class CreateWalletCommand: Command {
 			
 			try tlvBuilder.append(.settingsMask, value: config.settingsMask)
 				.append(.curveId, value: config.curveId)
-			
-			if let walletData = try serializeWalletData(config.walletData) {
-				try tlvBuilder.append(.walletData, value: walletData)
-			}
 		}
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -162,22 +158,4 @@ public final class CreateWalletCommand: Command {
 			walletIndex: try decoder.decodeOptional(.walletIndex) ?? 0,
             walletPublicKey: try decoder.decode(.walletPublicKey))
     }
-	
-	private func serializeWalletData(_ walletData: WalletData) throws -> Data? {
-		guard let blockchainName = walletData.blockchainName else {
-			return nil
-		}
-		
-		let tlvBuilder = try TlvBuilder()
-			.append(.blockchainName, value: blockchainName)
-		
-		if walletData.tokenSymbol != nil {
-			try tlvBuilder
-				.append(.tokenSymbol, value: walletData.tokenSymbol)
-				.append(.tokenContractAddress, value: walletData.tokenContractAddress)
-				.append(.tokenDecimal, value: walletData.tokenDecimal)
-		}
-		
-		return tlvBuilder.serialize()
-	}
 }

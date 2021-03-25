@@ -21,15 +21,18 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public final class SignCommand: Command, WalletSelectable {
+public final class SignCommand: Command {
     public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
     }
-	
-	private(set) public var walletIndex: WalletIndex?
     
+    public var preflightReadSettings: PreflightReadSettings {
+        .readWallet(index: walletIndex)
+    }
+    
+    private let walletIndex: WalletIndex
     private let hashes: [Data]
     private var responces: [SignResponse] = []
     private var currentChunk = 0
@@ -45,7 +48,7 @@ public final class SignCommand: Command, WalletSelectable {
 	/// - Parameters:
 	///   - hashes: Array of transaction hashes.
 	///   - walletIndex: Index to wallet for interaction.
-	public init(hashes: [Data], walletIndex: WalletIndex? = nil) {
+	public init(hashes: [Data], walletIndex: WalletIndex) {
         self.hashes = hashes
 		self.walletIndex = walletIndex
     }
@@ -55,17 +58,21 @@ public final class SignCommand: Command, WalletSelectable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                return .cardIsEmpty
-            case .loaded:
-                break
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+        guard card.status != .notPersonalized else {
+            return .notPersonalized
+        }
+        
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletNotFound
+        }
+        
+        switch wallet.status {
+        case .empty:
+            return .cardIsEmpty
+        case .loaded:
+            break
+        case .purged:
+            return .cardIsPurged
         }
         
         if card.isActivated {
@@ -73,7 +80,7 @@ public final class SignCommand: Command, WalletSelectable {
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
-		    card.walletRemainingSignatures == 0 {
+           wallet.remainingSignatures == 0 {
             return .noRemainingSignatures
         }
         
@@ -176,7 +183,7 @@ public final class SignCommand: Command, WalletSelectable {
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
 		
-		try walletIndex?.addTlvData(to: tlvBuilder)
+		try walletIndex.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }

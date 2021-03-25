@@ -10,10 +10,14 @@ import Foundation
 
 /// Task that allows to read Tangem card and verify its private key.
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
-public final class ScanTask: CardSessionRunnable, WalletSelectable {
+public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
     public typealias CommandResponse = Card
-	
-	private(set) public var walletIndex: WalletIndex?
+    
+    public var preflightReadSettings: PreflightReadSettings {
+        walletIndex != nil ? .readWallet(index: walletIndex!) : .fullCardRead
+    }
+    
+	private var walletIndex: WalletIndex?
     private let cardVerification: Bool
     
     public init(cardVerification: Bool = false, walletIndex: WalletIndex? = nil) {
@@ -52,18 +56,32 @@ public final class ScanTask: CardSessionRunnable, WalletSelectable {
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        guard let cardStatus = card.status, cardStatus == .loaded else {
+        let index = card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData ? .index(TangemSdkConstants.oldCardDefaultWalletIndex) : walletIndex
+        
+        guard let unwrappedIndex = index else {
             completion(.success(card))
             return
         }
         
-        guard let curve = card.curve,
-            let publicKey = card.walletPublicKey else {
-                completion(.failure(.cardError))
-                return
+        guard let wallet = card.wallet(at: unwrappedIndex) else {
+            completion(.failure(.walletNotFound))
+            return
         }
         
-		CheckWalletCommand(curve: curve, publicKey: publicKey, walletIndex: walletIndex).run(in: session) { checkWalletResult in
+        guard wallet.status == .loaded else {
+            completion(.success(card))
+            return
+        }
+        
+        guard
+            let curve = wallet.curve,
+            let publicKey = wallet.publicKey
+        else {
+            completion(.failure(.walletError))
+            return
+        }
+        
+		CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 self.runVerificationIfNeeded(card, session, completion)

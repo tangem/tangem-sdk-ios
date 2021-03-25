@@ -14,6 +14,8 @@ public struct PurgeWalletResponse: JSONStringConvertible {
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
     public let status: CardStatus
+    /// Index of purged wallet
+    public let walletIndex: WalletIndex
 }
 
 /**
@@ -22,16 +24,18 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
  * ‘Purged’ state is final, it makes the card useless.
  */
-public final class PurgeWalletCommand: Command, WalletSelectable {
+public final class PurgeWalletCommand: Command {
     public typealias CommandResponse = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true
     }
 	
-	private(set) public var walletIndex: WalletIndex?
+    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
     
-	public init(walletIndex: WalletIndex? = nil) {
+    public var walletIndex: WalletIndex
+    
+    public init(walletIndex: WalletIndex) {
 		self.walletIndex = walletIndex
 	}
     
@@ -40,21 +44,25 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                return .cardIsEmpty
-            case .loaded:
-                break
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+        if card.status == .notPersonalized {
+            return .notPersonalized
         }
         
         if card.isActivated {
             return .notActivated
+        }
+        
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletNotFound
+        }
+        
+        switch wallet.status {
+        case .empty:
+            return .cardIsEmpty
+        case .loaded:
+            break
+        case .purged:
+            return .cardIsPurged
         }
         
         if let settingsMask = card.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
@@ -69,6 +77,12 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
 			switch result {
 			case .success(let response):
 				session.environment.card?.status = .empty
+                if var card = session.environment.card,
+                   let wallet = card.wallet(at: self.walletIndex) {
+                    card.updateWallet(at: self.walletIndex, with: .init(index: wallet.index, status: .empty))
+                    session.environment.card = card
+                }
+                Log.debug(session.environment.card)
 				completion(.success(response))
 			case .failure(let error):
 				completion(.failure(error))
@@ -90,7 +104,7 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
         
-		try walletIndex?.addTlvData(to: tlvBuilder)
+		try walletIndex.addTlvData(to: tlvBuilder)
 		
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
@@ -103,6 +117,7 @@ public final class PurgeWalletCommand: Command, WalletSelectable {
         let decoder = TlvDecoder(tlv: tlv)
         return PurgeWalletResponse(
             cardId: try decoder.decode(.cardId),
-            status: try decoder.decode(.status))
+            status: try decoder.decode(.status),
+            walletIndex: walletIndex)
     }
 }

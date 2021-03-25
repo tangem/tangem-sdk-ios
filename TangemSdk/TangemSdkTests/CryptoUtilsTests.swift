@@ -57,15 +57,14 @@ class CryptoUtilsTests: XCTestCase {
     func testP256Verify() {
         let privateKeyData = try! CryptoUtils.generateRandomBytes(count: 32)
         let privateKey = try! P256.Signing.PrivateKey(rawRepresentation: privateKeyData)
-        let publicKey = privateKey.publicKey
+        let publicKey = privateKey.publicKey.x963Representation
         let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
-        let hash = SHA256.hash(data: message)
-        let signature = try! privateKey.signature(for: hash)
+        let signature = try! privateKey.signature(for: message).rawRepresentation
         
         var verify: Bool? = nil
         
         measure {
-            verify = CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey.x963Representation, message: message, signature: signature.rawRepresentation)
+            verify = CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
         }
         
         XCTAssertNotNil(verify)

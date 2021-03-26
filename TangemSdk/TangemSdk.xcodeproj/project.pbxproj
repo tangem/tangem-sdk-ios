@@ -11,28 +11,6 @@
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
-		5D2739F7234F270200ACDA11 /* precomp_data.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739DE234F270200ACDA11 /* precomp_data.h */; };
-		5D2739F8234F270200ACDA11 /* tangemsdk_ed25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739E0234F270200ACDA11 /* tangemsdk_ed25519.h */; };
-		5D2739F9234F270200ACDA11 /* seed.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E1234F270200ACDA11 /* seed.c */; };
-		5D2739FA234F270200ACDA11 /* fe.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E2234F270200ACDA11 /* fe.c */; };
-		5D2739FB234F270200ACDA11 /* verify.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E3234F270200ACDA11 /* verify.c */; };
-		5D2739FC234F270200ACDA11 /* ge.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E4234F270200ACDA11 /* ge.c */; };
-		5D2739FD234F270200ACDA11 /* sc.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E5234F270200ACDA11 /* sc.c */; };
-		5D2739FE234F270200ACDA11 /* sign.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E6234F270200ACDA11 /* sign.c */; };
-		5D2739FF234F270200ACDA11 /* sha512.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739E7234F270200ACDA11 /* sha512.h */; };
-		5D273A00234F270200ACDA11 /* key_exchange.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E8234F270200ACDA11 /* key_exchange.c */; };
-		5D273A01234F270200ACDA11 /* add_scalar.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739E9234F270200ACDA11 /* add_scalar.c */; };
-		5D273A02234F270200ACDA11 /* fe.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739EA234F270200ACDA11 /* fe.h */; };
-		5D273A04234F270200ACDA11 /* keypair.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739EC234F270200ACDA11 /* keypair.c */; };
-		5D273A05234F270200ACDA11 /* fixedint.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739ED234F270200ACDA11 /* fixedint.h */; };
-		5D273A06234F270200ACDA11 /* sha512.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739EE234F270200ACDA11 /* sha512.c */; };
-		5D273A07234F270200ACDA11 /* sc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739EF234F270200ACDA11 /* sc.h */; };
-		5D273A08234F270200ACDA11 /* ge.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2739F0234F270200ACDA11 /* ge.h */; };
-		5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F2234F270200ACDA11 /* KeyPair.swift */; };
-		5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F3234F270200ACDA11 /* PublicKey.swift */; };
-		5D273A0B234F270200ACDA11 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F4234F270200ACDA11 /* Error.swift */; };
-		5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F5234F270200ACDA11 /* PrivateKey.swift */; };
-		5D273A0D234F270200ACDA11 /* Seed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2739F6234F270200ACDA11 /* Seed.swift */; };
 		5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06224DD82750086B5E8 /* VerifyCardCommand.swift */; };
 		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
@@ -252,28 +230,6 @@
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
-		5D2739DE234F270200ACDA11 /* precomp_data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomp_data.h; sourceTree = "<group>"; };
-		5D2739E0234F270200ACDA11 /* tangemsdk_ed25519.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tangemsdk_ed25519.h; sourceTree = "<group>"; };
-		5D2739E1234F270200ACDA11 /* seed.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = seed.c; sourceTree = "<group>"; };
-		5D2739E2234F270200ACDA11 /* fe.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fe.c; sourceTree = "<group>"; };
-		5D2739E3234F270200ACDA11 /* verify.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = verify.c; sourceTree = "<group>"; };
-		5D2739E4234F270200ACDA11 /* ge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ge.c; sourceTree = "<group>"; };
-		5D2739E5234F270200ACDA11 /* sc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sc.c; sourceTree = "<group>"; };
-		5D2739E6234F270200ACDA11 /* sign.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sign.c; sourceTree = "<group>"; };
-		5D2739E7234F270200ACDA11 /* sha512.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha512.h; sourceTree = "<group>"; };
-		5D2739E8234F270200ACDA11 /* key_exchange.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = key_exchange.c; sourceTree = "<group>"; };
-		5D2739E9234F270200ACDA11 /* add_scalar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = add_scalar.c; sourceTree = "<group>"; };
-		5D2739EA234F270200ACDA11 /* fe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fe.h; sourceTree = "<group>"; };
-		5D2739EC234F270200ACDA11 /* keypair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = keypair.c; sourceTree = "<group>"; };
-		5D2739ED234F270200ACDA11 /* fixedint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fixedint.h; sourceTree = "<group>"; };
-		5D2739EE234F270200ACDA11 /* sha512.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha512.c; sourceTree = "<group>"; };
-		5D2739EF234F270200ACDA11 /* sc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sc.h; sourceTree = "<group>"; };
-		5D2739F0234F270200ACDA11 /* ge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ge.h; sourceTree = "<group>"; };
-		5D2739F2234F270200ACDA11 /* KeyPair.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyPair.swift; sourceTree = "<group>"; };
-		5D2739F3234F270200ACDA11 /* PublicKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicKey.swift; sourceTree = "<group>"; };
-		5D2739F4234F270200ACDA11 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		5D2739F5234F270200ACDA11 /* PrivateKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
-		5D2739F6234F270200ACDA11 /* Seed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seed.swift; sourceTree = "<group>"; };
 		5D2FE06224DD82750086B5E8 /* VerifyCardCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardCommand.swift; sourceTree = "<group>"; };
 		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -509,51 +465,6 @@
 				5DDD6C6325D2E48A00E48D7B /* LogStringConvertible.swift */,
 			);
 			path = Log;
-			sourceTree = "<group>";
-		};
-		5D2739DC234F270200ACDA11 /* Ed25519 */ = {
-			isa = PBXGroup;
-			children = (
-				5D2739F2234F270200ACDA11 /* KeyPair.swift */,
-				5D2739F3234F270200ACDA11 /* PublicKey.swift */,
-				5D2739F4234F270200ACDA11 /* Error.swift */,
-				5D2739F5234F270200ACDA11 /* PrivateKey.swift */,
-				5D2739F6234F270200ACDA11 /* Seed.swift */,
-				5D2739DD234F270200ACDA11 /* CEd25519 */,
-			);
-			path = Ed25519;
-			sourceTree = "<group>";
-		};
-		5D2739DD234F270200ACDA11 /* CEd25519 */ = {
-			isa = PBXGroup;
-			children = (
-				5D2739DE234F270200ACDA11 /* precomp_data.h */,
-				5D2739DF234F270200ACDA11 /* include */,
-				5D2739E1234F270200ACDA11 /* seed.c */,
-				5D2739E2234F270200ACDA11 /* fe.c */,
-				5D2739E3234F270200ACDA11 /* verify.c */,
-				5D2739E4234F270200ACDA11 /* ge.c */,
-				5D2739E5234F270200ACDA11 /* sc.c */,
-				5D2739E6234F270200ACDA11 /* sign.c */,
-				5D2739E7234F270200ACDA11 /* sha512.h */,
-				5D2739E8234F270200ACDA11 /* key_exchange.c */,
-				5D2739E9234F270200ACDA11 /* add_scalar.c */,
-				5D2739EA234F270200ACDA11 /* fe.h */,
-				5D2739EC234F270200ACDA11 /* keypair.c */,
-				5D2739ED234F270200ACDA11 /* fixedint.h */,
-				5D2739EE234F270200ACDA11 /* sha512.c */,
-				5D2739EF234F270200ACDA11 /* sc.h */,
-				5D2739F0234F270200ACDA11 /* ge.h */,
-			);
-			path = CEd25519;
-			sourceTree = "<group>";
-		};
-		5D2739DF234F270200ACDA11 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				5D2739E0234F270200ACDA11 /* tangemsdk_ed25519.h */,
-			);
-			path = include;
 			sourceTree = "<group>";
 		};
 		5D2FE06824DDA84F0086B5E8 /* Endpoints */ = {
@@ -921,7 +832,6 @@
 			children = (
 				5D83F36E247EC275005E7A35 /* secp256k1 */,
 				5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */,
-				5D2739DC234F270200ACDA11 /* Ed25519 */,
 				5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */,
 				5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */,
 			);
@@ -1113,7 +1023,6 @@
 				5D83F405247EC276005E7A35 /* ecmult_impl.h in Headers */,
 				5D83F41C247EC276005E7A35 /* num_gmp_impl.h in Headers */,
 				5D83F3F5247EC276005E7A35 /* scalar_4x64.h in Headers */,
-				5D273A07234F270200ACDA11 /* sc.h in Headers */,
 				5D83F3F7247EC276005E7A35 /* num.h in Headers */,
 				5D83F402247EC276005E7A35 /* ecmult.h in Headers */,
 				5D83F3F9247EC276005E7A35 /* ecmult_const_impl.h in Headers */,
@@ -1129,18 +1038,12 @@
 				5D83F3F8247EC276005E7A35 /* field_5x52_impl.h in Headers */,
 				5D83F3EE247EC276005E7A35 /* num_impl.h in Headers */,
 				5D83F40A247EC276005E7A35 /* util.h in Headers */,
-				5D2739F8234F270200ACDA11 /* tangemsdk_ed25519.h in Headers */,
 				5D83F3E5247EC276005E7A35 /* scalar_impl.h in Headers */,
 				5D83F403247EC276005E7A35 /* scratch_impl.h in Headers */,
-				5D2739F7234F270200ACDA11 /* precomp_data.h in Headers */,
 				5D83F3EC247EC276005E7A35 /* scalar_8x32_impl.h in Headers */,
 				5D83F3F4247EC276005E7A35 /* field_impl.h in Headers */,
-				5D273A02234F270200ACDA11 /* fe.h in Headers */,
-				5D273A05234F270200ACDA11 /* fixedint.h in Headers */,
 				5D83F3EB247EC276005E7A35 /* field_10x26.h in Headers */,
-				5D2739FF234F270200ACDA11 /* sha512.h in Headers */,
 				5D83F3E6247EC276005E7A35 /* field_10x26_impl.h in Headers */,
-				5D273A08234F270200ACDA11 /* ge.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1258,8 +1161,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */,
-				5D2739FA234F270200ACDA11 /* fe.c in Sources */,
-				5D2739F9234F270200ACDA11 /* seed.c in Sources */,
 				5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */,
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
@@ -1277,7 +1178,6 @@
 				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
 				5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */,
 				B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */,
-				5D273A01234F270200ACDA11 /* add_scalar.c in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5DDD6C6425D2E48A00E48D7B /* LogStringConvertible.swift in Sources */,
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
@@ -1285,11 +1185,9 @@
 				B0E162C325656D8400E97D07 /* CardSerializer.swift in Sources */,
 				5D7F4E4C248FF81A00A1700D /* TangemSdkButton.swift in Sources */,
 				B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */,
-				5D273A06234F270200ACDA11 /* sha512.c in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				B00BC5BE260B5CA600F0647D /* WalletStatus.swift in Sources */,
 				5DDD6C6825D2E64E00E48D7B /* StringArrayConvertible.swift in Sources */,
-				5D273A0A234F270200ACDA11 /* PublicKey.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				B0F9F612255032C5001CA52D /* CGPoint+.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
@@ -1302,9 +1200,7 @@
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
-				5D2739FD234F270200ACDA11 /* sc.c in Sources */,
 				5D7F4E4A248FF4DF00A1700D /* KeyboardLayoutConstraint.swift in Sources */,
-				5D273A0B234F270200ACDA11 /* Error.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				B0C6B4C4254C45CC00C0A1E1 /* InformationScreen.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
@@ -1318,7 +1214,6 @@
 				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */,
-				5D273A09234F270200ACDA11 /* KeyPair.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
@@ -1330,7 +1225,6 @@
 				5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
 				5DD97B3924E143CF0038E944 /* ChangePinTask.swift in Sources */,
-				5D2739FE234F270200ACDA11 /* sign.c in Sources */,
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */,
@@ -1339,7 +1233,6 @@
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */,
 				B0EC64FB26010FFD0088F03D /* CardWallet.swift in Sources */,
-				5D273A04234F270200ACDA11 /* keypair.c in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */,
@@ -1347,12 +1240,10 @@
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletListCommand.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */,
-				5D2739FC234F270200ACDA11 /* ge.c in Sources */,
 				B0EC6500260110530088F03D /* CardWalletDeserializerUtility.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				B0D3C48B26088ECD0038A5C9 /* Array+Tlv.swift in Sources */,
 				B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */,
-				5D2739FB234F270200ACDA11 /* verify.c in Sources */,
 				5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */,
 				5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */,
 				B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */,
@@ -1362,7 +1253,6 @@
 				B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */,
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
-				5D273A0D234F270200ACDA11 /* Seed.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				B0A9447B256546DE00A7958E /* Card.swift in Sources */,
 				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
@@ -1382,7 +1272,6 @@
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
-				5D273A00234F270200ACDA11 /* key_exchange.c in Sources */,
 				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
@@ -1412,7 +1301,6 @@
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
-				5D273A0C234F270200ACDA11 /* PrivateKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,7 +35,7 @@ public struct VerifyCardResponse: JSONStringConvertible {
     }
     
     func verify(publicKey: Data, challenge: Data) -> Bool? {
-        return CryptoUtils.vefify(curve: .secp256k1,
+        return CryptoUtils.verify(curve: .secp256k1,
                                   publicKey: publicKey,
                                   message: challenge + salt,
                                   signature: cardSignature)

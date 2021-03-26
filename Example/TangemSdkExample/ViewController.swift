@@ -269,7 +269,6 @@ class ViewController: UIViewController {
             case 2:
                 curve = .ed25519
             case 3:
-                walletData = .init(blockchainName: nil)
                 curve = .secp256r1
             default:
                 curve = .secp256k1

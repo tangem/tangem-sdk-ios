@@ -9,7 +9,6 @@
 import Foundation
 import CryptoKit
 import CommonCrypto
-import TangemSdk_CEd25519
 
 extension Data {
     public var description: String {
@@ -81,13 +80,13 @@ extension Data {
     }
     
     public func getSha256() -> Data {
-            let digest = SHA256.hash(data: self)
-            return Data(digest)
+        let digest = SHA256.hash(data: self)
+        return Data(digest)
     }
     
     public func getSha512() -> Data {
-            let digest = SHA512.hash(data: self)
-            return Data(digest)
+        let digest = SHA512.hash(data: self)
+        return Data(digest)
     }
     
     public var toBytes: [Byte] {
@@ -127,8 +126,6 @@ extension Data {
                         derivedKeyRawBytes,
                         derivedCount)
                 }
-                
-                
             }
         }
         

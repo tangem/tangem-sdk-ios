@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var walletIndexLabel: UILabel!
     @IBOutlet weak var walletMaxIndexLabel: UILabel!
     @IBOutlet weak var walletIndexSlider: UISlider!
+    @IBOutlet weak var prohibitPurgeWalletSwitch: UISwitch!
     
     lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -32,6 +33,7 @@ class ViewController: UIViewController {
     var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     var savedFiles: [File]?
     var filesDataCounter: Int?
+    var prohibitPurgeWallet: Bool = false
     
     var walletIndex: Int = 0
     var walIn: WalletIndex {
@@ -53,9 +55,18 @@ class ViewController: UIViewController {
         return publicKey
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        prohibitPurgeWalletSwitch.isOn = prohibitPurgeWallet
+    }
+    
     private func updateWalletIndex(to index: Int) {
         walletIndex = index
         walletIndexLabel.text = "\(walletIndex)"
+    }
+    
+    @IBAction func prohibitPurgeWalletChanged(_ sender: UISwitch) {
+        prohibitPurgeWallet = sender.isOn
     }
     
     @IBAction func walletIndexUpdate(_ sender: UISlider) {
@@ -273,7 +284,7 @@ class ViewController: UIViewController {
             default:
                 curve = .secp256k1
             }
-            walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: false, curveId: curve, signingMethods: .signHash)
+            walletConfig = WalletConfig(isReusable: true, prohibitPurgeWallet: prohibitPurgeWallet, curveId: curve, signingMethods: .signHash)
         }
         
         tangemSdk.createWallet(cardId: cardId, config: walletConfig) { [unowned self] result in

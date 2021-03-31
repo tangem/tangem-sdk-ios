@@ -152,6 +152,8 @@ extension Command {
                         break
                     }
                     self.transieve(apdu: apdu, in: session, completion: completion)
+                case .unknown:
+                    completion(.failure(.unknownStatus(responseApdu.sw.asHexString())))
                 default:
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }

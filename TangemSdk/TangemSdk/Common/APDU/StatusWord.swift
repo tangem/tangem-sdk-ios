@@ -47,8 +47,6 @@ public enum StatusWord: UInt16 {
 			return TangemSdkError.fileNotFound
 		case .walletNotFound:
 			return TangemSdkError.walletNotFound
-        case .unknown:
-            return TangemSdkError.unknownStatus
         default:
             return nil
         }

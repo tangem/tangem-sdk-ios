@@ -165,8 +165,8 @@ public class CardSession {
         
         reader.tag //Subscription for handle tag lost/connected events and invoke viewDelegate
             .dropFirst()
-            .removeDuplicates()
             .debounce(for: 0.3, scheduler: RunLoop.main)
+            .removeDuplicates()
             .sink(receiveCompletion: { _ in },
                   receiveValue: { [unowned self] tag in
                     if tag != nil {

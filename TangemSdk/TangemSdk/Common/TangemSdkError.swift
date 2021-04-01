@@ -70,7 +70,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     //MARK: Card errrors
     
     /// This error is returned when unknown `StatusWord` is received from a card.
-    case unknownStatus
+    case unknownStatus(_ sw: String)
     
     /// This error is returned when a card's reply is `StatusWord.ErrorProcessingCommand`.
     /// The card sends this status in case of internal card error

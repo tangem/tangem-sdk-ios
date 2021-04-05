@@ -16,7 +16,6 @@ public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
  * The issuer defines purpose of use, format and payload of Issuer Data.
  * For example, this field may contain a photo or biometric information for ID card products.
  */
-@available(iOS 13.0, *)
 public final class WriteIssuerExtraDataCommand: Command {
     public typealias CommandResponse = WriteIssuerExtraDataResponse
     
@@ -52,7 +51,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     }
     
     deinit {
-        print("WriteIssuerExtraDataCommand deinit")
+        Log.debug("WriteIssuerExtraDataCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -80,6 +79,10 @@ public final class WriteIssuerExtraDataCommand: Command {
             && issuerDataCounter == nil {
             return .missingCounter
         }
+		
+		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.files {
+			return .notSupportedFirmwareVersion
+		}
         
         if let cardId = card.cardId, !verify(with: cardId) {
             return .verificationFailed
@@ -160,14 +163,14 @@ public final class WriteIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(offset)/Float(issuerData.count) * 100.0))
-        viewDelegate?.showAlertMessage(Localization.writeProgress(progress.description))
+        viewDelegate?.showAlertMessage(Localization.writeProgress(String(describing: progress)))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.mode, value: mode)
+            .append(.interactionMode, value: mode)
         
         switch mode {
         case .readOrStartWrite:

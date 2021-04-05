@@ -8,8 +8,8 @@
 //
 //import Foundation
 //
-///// This enum specifies modes for `ReadIssuerExtraDataCommand` and  `WriteIssuerExtraDataCommand`.
-public enum IssuerExtraDataMode: Byte {
+/// This enum specifies modes for `ReadIssuerExtraDataCommand` and  `WriteIssuerExtraDataCommand`.
+public enum IssuerExtraDataMode: Byte, InteractionMode {
     ///This mode is required to read issuer extra data from the card. This mode is required to initiate writing issuer extra data to the card.
     case readOrStartWrite = 1
     
@@ -25,7 +25,7 @@ public enum IssuerExtraDataMode: Byte {
     case finalizeWrite = 3
 }
 
-public struct ReadIssuerExtraDataResponse: ResponseCodable {
+public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Size of all Issuer_Extra_Data field.
@@ -77,7 +77,6 @@ public struct ReadIssuerExtraDataResponse: ResponseCodable {
  * format and payload of Issuer Data. . For example, this field may contain photo or
  * biometric information for ID card product.
  */
-@available(iOS 13.0, *)
 public final class ReadIssuerExtraDataCommand: Command {
     public typealias CommandResponse = ReadIssuerExtraDataResponse
     
@@ -92,7 +91,7 @@ public final class ReadIssuerExtraDataCommand: Command {
     }
     
     deinit {
-        print("ReadIssuerExtraDataCommand deinit")
+        Log.debug("ReadIssuerExtraDataCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -107,6 +106,10 @@ public final class ReadIssuerExtraDataCommand: Command {
         if issuerPublicKey == nil {
             return .missingIssuerPublicKey
         }
+		
+		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.files {
+			return .notSupportedFirmwareVersion
+		}
         
         return nil
     }
@@ -162,15 +165,14 @@ public final class ReadIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(issuerData.count)/Float(issuerDataSize) * 100.0))
-        viewDelegate?.showPercentLoading(progress, hint: nil)
-        //viewDelegate?.showAlertMessage(Localization.readProgress(progress.description))
+        viewDelegate?.showPercentLoading(progress, message: nil, hint: nil)
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.mode, value: IssuerExtraDataMode.readOrStartWrite)
+            .append(.interactionMode, value: IssuerExtraDataMode.readOrStartWrite)
             .append(.offset, value: issuerData.count)
         
         return CommandApdu(.readIssuerData, tlv: tlvBuilder.serialize())

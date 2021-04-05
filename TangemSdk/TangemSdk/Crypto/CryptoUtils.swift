@@ -8,7 +8,7 @@
 
 import Foundation
 import CommonCrypto
-
+import CryptoKit
 
 public final class CryptoUtils {
     
@@ -37,19 +37,19 @@ public final class CryptoUtils {
      *  - Parameter message: The data that was signed
      *  - Parameter signature: Signed data
      */
-    public static func vefify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) -> Bool? {
+    public static func verify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) -> Bool? {
         switch curve {
         case .secp256k1:
-            return Secp256k1Utils.vefify(publicKey: publicKey, message: message, signature: signature)
+            return Secp256k1Utils.verify(publicKey: publicKey, message: message, signature: signature)
         case .ed25519:
-            guard let edPublicKey = try? PublicKey(publicKey.toBytes) else { return nil }
+            let hash = message.getSha512()
+            let pubKey = try? Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
+            return pubKey?.isValidSignature(signature, for: hash)
+        case .secp256r1:
+            let pubKey = try? P256.Signing.PublicKey(x963Representation: publicKey)
+            guard let sig = try? P256.Signing.ECDSASignature(rawRepresentation: signature) else { return nil }
             
-            let hashedMessage = message.getSha512()
-            guard let result = try? edPublicKey.verify(signature: signature.toBytes, message: hashedMessage.toBytes) else {
-                return nil
-            }
-            
-            return result
+            return pubKey?.isValidSignature(sig, for: message)
         }
     }
     

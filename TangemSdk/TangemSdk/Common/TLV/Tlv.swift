@@ -61,7 +61,7 @@ public struct Tlv: Equatable {
             guard let tagCode = dataStream.readByte(),
                 let dataLength = readTagLength(dataStream),
                 let data = dataLength > 0 ? dataStream.readBytes(count: dataLength) : Data()  else {
-                    print("Warning: Failed to read tag from stream")
+                Log.warning("Failed to read tag from stream")
                     return tags.count > 0 ? tags : nil
             }
             
@@ -76,13 +76,13 @@ public struct Tlv: Equatable {
     /// - Parameter dataStream: dataStream initialized with raw tlv
     private static func readTagLength(_ dataStream: InputStream) -> Int? {
         guard let shortLengthBytes = dataStream.readByte() else {
-             print("Failed to read tag lenght")
+            Log.error("Failed to read tag lenght")
             return nil
         }
         
         if (shortLengthBytes == 0xFF) {
             guard let longLengthBytes = dataStream.readBytes(count: 2) else {
-                print("Failed to read tag long lenght")
+                Log.error("Failed to read tag long lenght")
                 return nil
             }
             
@@ -93,21 +93,11 @@ public struct Tlv: Equatable {
     }
 }
 
-extension Array where Element == Tlv {
-    /// Serialize array of tlv items to Data
-    /// - Parameter array: tlv array
-    public func serialize() -> Data {
-        return Data(self.reduce([], { $0 + $1.serialize() }))
-    }
-    
-    /// Convinience getter for tlv
-    /// - Parameter tag: tag to find
-    public func value(for tag: TlvTag) -> Data? {
-        return self.first(where: {$0.tag == tag})?.value
-    }
-    
-    /// - Parameter tag: tag to check
-    public func contains(tag: TlvTag) -> Bool {
-        return value(for: tag) != nil
+extension Tlv: CustomStringConvertible {
+    public var description: String {
+        let tagName = "\(tag)".capitalizingFirst()
+        let tagFullName = "TAG_\(tagName)"
+        let size = String(format: "%02d",  value.count)
+        return "\(tagFullName) [0x\(tagRaw):\(size)]: \(value)"
     }
 }

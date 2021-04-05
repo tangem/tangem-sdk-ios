@@ -63,7 +63,7 @@ class IssuerDataVerifier {
             }
         } catch { return nil }
         
-        return CryptoUtils.vefify(curve: .secp256k1,
+        return CryptoUtils.verify(curve: .secp256k1,
                                   publicKey: publicKey,
                                   message: data,
                                   signature: signature)

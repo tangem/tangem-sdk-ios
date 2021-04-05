@@ -9,7 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `ReadUserDataCommand`.
-public struct ReadUserDataResponse: ResponseCodable {
+public struct ReadUserDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Data defined by user's App.
@@ -32,7 +32,6 @@ public struct ReadUserDataResponse: ResponseCodable {
  * of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use.
  * For example, this fields may contain blockchain nonce value.
  */
-@available(iOS 13.0, *)
 public final class ReadUserDataCommand: Command {
     public typealias CommandResponse = ReadUserDataResponse
     

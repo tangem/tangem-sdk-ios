@@ -11,6 +11,10 @@ import CryptoKit
 import CommonCrypto
 
 extension Data {
+    public var description: String {
+        return asHexString()
+    }
+    
     public func asHexString() -> String {
         return self.map { return String(format: "%02X", $0) }.joined()
     }
@@ -76,41 +80,17 @@ extension Data {
     }
     
     public func getSha256() -> Data {
-        if #available(iOS 13.0, *) {
-            let digest = SHA256.hash(data: self)
-            return Data(digest)
-        } else {
-           return sha256Old()
-        }
+        let digest = SHA256.hash(data: self)
+        return Data(digest)
     }
     
     public func getSha512() -> Data {
-        if #available(iOS 13.0, *) {
-            let digest = SHA512.hash(data: self)
-            return Data(digest)
-        } else {
-           return sha512Old()
-        }
+        let digest = SHA512.hash(data: self)
+        return Data(digest)
     }
     
     public var toBytes: [Byte] {
         return Array(self)
-    }
-    
-    func sha256Old() -> Data {
-        guard let res = NSMutableData(length: Int(CC_SHA256_DIGEST_LENGTH)) else {
-            return Data()
-        }
-        CC_SHA256((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
-        return res as Data
-    }
-    
-    func sha512Old() -> Data {
-        guard let res = NSMutableData(length: Int(CC_SHA512_DIGEST_LENGTH)) else {
-            return Data()
-        }
-        CC_SHA512((self as NSData).bytes, CC_LONG(count), res.mutableBytes.assumingMemoryBound(to: UInt8.self))
-        return res as Data
     }
     
     func decodeTlv<T>(tag: TlvTag) -> T? {
@@ -146,8 +126,6 @@ extension Data {
                         derivedKeyRawBytes,
                         derivedCount)
                 }
-                
-                
             }
         }
         
@@ -197,4 +175,14 @@ extension Data {
                                      dataIn: self)
         
     }
+	
+	public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+		switch curve {
+		case .secp256k1:
+			return Secp256k1Utils.sign(self, with: privateKey)
+		default:
+			// TODO: Create sign for ED25519 curve
+			fatalError("Not implemented data sign for ED25519 curve")
+		}
+	}
 }

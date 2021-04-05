@@ -20,20 +20,18 @@ public struct CardVerifyAndGetInfoRequest: Codable {
         }
     }
     
-    
-    
     let requests: [Item]
 }
 
 public struct CardVerifyAndGetInfoResponse: Codable {
     
     public struct Item: Codable {
-        let error: String?
-        let cardId: String
-        let passed: Bool
-        let batch: String?
-        let artwork: ArtworkInfo?
-        let substitution: SubstitutionInfo?
+        public let error: String?
+        public let cardId: String
+        public let passed: Bool
+        public let batch: String?
+        public let artwork: ArtworkInfo?
+        public let substitution: SubstitutionInfo?
         
         enum CodingKeys: String, CodingKey {
             case cardId = "CID"
@@ -45,7 +43,7 @@ public struct CardVerifyAndGetInfoResponse: Codable {
         }
     }
     
-    let results: [Item]
+    public let results: [Item]
 }
 
 public struct SubstitutionInfo: Codable {

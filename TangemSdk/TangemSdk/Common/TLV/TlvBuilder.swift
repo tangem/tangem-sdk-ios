@@ -11,7 +11,7 @@ import Foundation
 public class TlvBuilder {
     private var tlvs = [Tlv]()
     private let encoder = TlvEncoder()
-    
+	
     public init() {}
     
     @discardableResult

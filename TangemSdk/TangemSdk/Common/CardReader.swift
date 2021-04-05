@@ -7,30 +7,34 @@
 //
 
 import Foundation
-import CoreNFC
 import Combine
 
-public enum NFCTagType{
+public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
-    case slix2
     case unknown
+
+    public var description: String {
+        switch self {
+        case .tag(let uid):
+            return "iso7816 Tag with uid: \(uid)"
+        case .unknown:
+            return "Unknown NFC Tag type"
+        }
+    }
 }
 
 /// Allows interaction between the phone or any other terminal and Tangem card.
 /// Its default implementation, `NfcReader`, is in our module.
 public protocol CardReader: class {
-    /// For setting alertMessage into NFC popup
-    var isReady: Bool { get }
-    var alertMessage: String {get set}
-    @available(iOS 13.0, *)
-    var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> {get}
+	/// For setting alertMessage into NFC popup
+    var alertMessage: String { get set }
+    var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> { get }
+	var isSessionReady: CurrentValueSubject<Bool, Never> { get }
     func startSession(with message: String?)
     func resumeSession()
     func stopSession(with errorMessage: String?)
-    func send(apdu: CommandApdu, completion: @escaping (Result<ResponseApdu,TangemSdkError>) -> Void)
-    @available(iOS 13.0, *)
+    func pauseSession(with errorMessage: String?)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
-    func readSlix2Tag(completion: @escaping (Result<ResponseApdu, TangemSdkError>) -> Void) 
     func restartPolling()
 }
 
@@ -41,17 +45,5 @@ public extension CardReader {
     
     func stopSession(with errorMessage: String? = nil) {
         stopSession(with: errorMessage)
-    }
-}
-
-public class CardReaderFactory {
-    public init() {}
-    
-    public func createDefaultReader() -> CardReader {
-        if #available(iOS 13.0, *) {
-            return NFCReader()
-        } else {
-            return NDEFReader()
-        }
     }
 }

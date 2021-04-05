@@ -14,13 +14,17 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     let cardId: String?
     var validationTimer: Timer? = nil
     
+    private var pinLocalized: String {
+        switch state {
+        case .pin1: return "pin1".localized
+        case .pin2: return "pin2".localized
+        }
+    }
+    
     @IBOutlet weak var lblTitle: UILabel! {
         didSet {
-            switch state {
-            case .pin1: lblTitle.text = Localization.string("changepin_title_pin1")
-            case .pin2: lblTitle.text = Localization.string("changepin_title_pin2")
-            case .pin3: lblTitle.text = Localization.string("changepin_title_pin3")
-            }
+            let format = "pin_change_code_format".localized
+            lblTitle.text = String(format: format, pinLocalized)
         }
     }
     
@@ -28,41 +32,27 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var btnClose: UIButton!
     @IBOutlet weak var lblCard: UILabel!
     @IBOutlet weak var lblError: UILabel!
-//    @IBOutlet weak var currentText: UITextField! {
-//        didSet {
-//            currentText.delegate = self
-//            let prefix = "\(Localization.string("changepin_placeholder_current")) "
-//            switch state {
-//            case .pin1: currentText.placeholder = prefix + Localization.string("pin_placeholder_access")
-//            case .pin2: currentText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-//            case .pin3: currentText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-//            }
-//        }
-//    }
     
     @IBOutlet weak var newText: UITextField! {
         didSet {
             newText.delegate = self
-            let prefix = "\(Localization.string("changepin_placeholder_new")) "
-            switch state {
-            case .pin1: newText.placeholder = prefix + Localization.string("pin_placeholder_access")
-            case .pin2: newText.placeholder = prefix + Localization.string("pin_placeholder_pass")
-            case .pin3: newText.placeholder = prefix + Localization.string("pin_placeholder_pin3")
-            }
+            let format = "pin_change_new_code_format".localized
+            newText.placeholder = String(format: format, pinLocalized)
         }
     }
     
     @IBOutlet weak var confirmText: UITextField! {
         didSet {
             confirmText.delegate = self
-            confirmText.placeholder = Localization.string("changepin_placeholder_confirm")
+            let format = "pin_set_code_confirm_format".localized
+            confirmText.placeholder = String(format: format, pinLocalized)
         }
     }
     
     @IBOutlet weak var btnSave: UIButton! {
         didSet {
             btnSave.isEnabled = false
-            btnSave.setTitle(Localization.string("common_save"), for: .normal)
+            btnSave.setTitle("common_save".localized, for: .normal)
         }
     }
     
@@ -95,8 +85,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSaveTapped(_ sender: UIButton) {
         self.dismiss(animated: true) {
-            if /*let currentText = self.currentText.text,*/
-                let newText = self.newText.text {
+            if let newText = self.newText.text?.trim() {
                 self.completionHandler(.success((currentPin: "", newPin: newText)))
             } else {
                 self.completionHandler(.failure(.unknownError))
@@ -111,7 +100,6 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func btnSecureEntryTapped(_ sender: UIButton) {
         btnSecureEntry.isSelected.toggle()
-        //currentText.isSecureTextEntry.toggle()
         newText.isSecureTextEntry.toggle()
         confirmText.isSecureTextEntry.toggle()
     }
@@ -126,15 +114,14 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func validateInput() -> Bool {
-        guard /*let current = currentText.text, !current.isEmpty,*/
-            let new = newText.text, !new.isEmpty,
-            let confirm = confirmText.text, !confirm.isEmpty else {
-                lblError.isHidden = true
-                return false
+        guard let new = newText.text, !new.isEmpty,
+              let confirm = confirmText.text, !confirm.isEmpty else {
+            lblError.isHidden = true
+            return false
         }
         
         if new != confirm {
-            lblError.text = Localization.string("changepin_error_mismatch")
+            lblError.text = "pin_confirm_error_format".localized
             lblError.isHidden = false
             return false
         }

@@ -71,9 +71,21 @@ public struct CommandApdu: Equatable {
     }
 }
 
-@available(iOS 13.0, *)
+extension CommandApdu: CustomStringConvertible {
+    public var description: String {
+        let instruction = Instruction(rawValue: ins) ?? .unknown
+        let lc = data.count.byte
+        return "SEND --> \(instruction) [\(data.count + 4) bytes]: \(cla) \(ins) \(p1) \(p2) \(lc) \(data)"
+    }
+}
+
 extension NFCISO7816APDU {
     convenience init(_ commandApdu: CommandApdu) {
-        self.init(instructionClass: commandApdu.cla, instructionCode: commandApdu.ins, p1Parameter: commandApdu.p1, p2Parameter: commandApdu.p2, data: commandApdu.data, expectedResponseLength: commandApdu.le)
+        self.init(instructionClass: commandApdu.cla,
+                  instructionCode: commandApdu.ins,
+                  p1Parameter: commandApdu.p1,
+                  p2Parameter: commandApdu.p2,
+                  data: commandApdu.data,
+                  expectedResponseLength: commandApdu.le)
     }
 }

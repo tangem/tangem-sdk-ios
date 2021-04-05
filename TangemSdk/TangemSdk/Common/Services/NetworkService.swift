@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 public protocol NetworkEndpoint {
     var url: URL {get}
@@ -15,66 +16,68 @@ public protocol NetworkEndpoint {
     var headers: [String:String] {get}
 }
 
-public enum NetworkServiceError: Error {
+public enum NetworkServiceError: Error, LocalizedError {
     case emptyResponse
     case statusCode(Int, String?)
     case urlSessionError(Error)
     case emptyResponseData
-    case mapError
+    case mappingError(Error)
+    case underliying(Error)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .urlSessionError(let error):
+            return error.localizedDescription
+        default:
+            return "\(self)"
+        }
+    }
+    
+    static func fromError(_ error: Error) -> NetworkServiceError{
+        if let ne = error as? NetworkServiceError {
+            return ne
+        } else {
+            return .underliying(error)
+        }
+    }
 }
 
 public class NetworkService {
     public init () {}
     
-    public func request<T: Decodable>(_ endpoint: NetworkEndpoint, responseType: T.Type, completion: @escaping (Result<T, NetworkServiceError>) -> Void) {
+    public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
         let request = prepareRequest(from: endpoint)
-        
-        requestData(request: request) { result in
-            switch result {
-            case .success(let data):
-                if let mapped = self.map(data, type: T.self) {
-                    completion(.success(mapped))
-                } else {
-                    completion(.failure(.mapError))
+        return requestDataPublisher(request: request)
+    }
+    
+    private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
+        Log.network("request to: \(request.url!)")
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .subscribe(on: DispatchQueue.global())
+            .tryMap { data, response -> Data in
+                guard let response = response as? HTTPURLResponse else {
+                    let error = NetworkServiceError.emptyResponse
+                    Log.network(error.localizedDescription)
+                    throw error
                 }
-            case .failure(let error):
-                completion(.failure(error))
+                
+                guard (200 ..< 300) ~= response.statusCode else {
+                    let error = NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
+                    Log.network(error.localizedDescription)
+                    throw error
+                }
+                
+                Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+                return data
             }
-        }
-    }
-    
-    public func request(_ endpoint: NetworkEndpoint, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
-        let request = prepareRequest(from: endpoint)
-        requestData(request: request, completion: completion)
-    }
-    
-    private func requestData(request: URLRequest, completion: @escaping (Result<Data, NetworkServiceError>) -> Void) {
-        print("request to: \(request.url!)")
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(NetworkServiceError.urlSessionError(error)))
-                print(error.localizedDescription)
-                return
+            .mapError { error in
+                if let nse = error as? NetworkServiceError {
+                    return nse
+                } else {
+                    return NetworkServiceError.urlSessionError(error)
+                }
             }
-            
-            guard let response = response as? HTTPURLResponse else {
-                completion(.failure(NetworkServiceError.emptyResponse))
-                return
-            }
-            
-            guard (200 ..< 300) ~= response.statusCode else {
-                completion(.failure(NetworkServiceError.statusCode(response.statusCode, String(data: data ?? Data(), encoding: .utf8))))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NetworkServiceError.emptyResponseData))
-                return
-            }
-            
-            print("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
-            completion(.success(data))
-        }.resume()
+            .eraseToAnyPublisher()
     }
     
     private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest {
@@ -90,6 +93,6 @@ public class NetworkService {
     }
     
     private func map<T: Decodable>(_ data: Data, type: T.Type) -> T? {
-        return try? JSONDecoder().decode(T.self, from: data)
+        try? JSONDecoder().decode(T.self, from: data)
     }
 }

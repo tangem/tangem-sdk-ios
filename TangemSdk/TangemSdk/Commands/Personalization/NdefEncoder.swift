@@ -37,7 +37,7 @@ class NdefEncoder {
     
     private func encodeValue(ndefRecord: NdefRecord, headerValue: UInt8) throws -> Data {
         guard let ndefRecordBytes = ndefRecord.toBytes() else {
-            throw TangemSdkError.encodingFailed
+            throw TangemSdkError.encodingFailed("Failed to encode NDEF")
         }
         
         var data = Data()
@@ -68,11 +68,11 @@ class NdefEncoder {
                 uriIdentifierCode = 0x04
                 prefix = "https://"
             } else {
-                throw TangemSdkError.encodingFailed
+                throw TangemSdkError.encodingFailed("Failed to parse uri scheme")
             }
             
             guard let value = ndefRecord.value.remove(prefix).data(using: .utf8) else {
-                throw TangemSdkError.encodingFailed
+                throw TangemSdkError.encodingFailed("Failed to remove scheme from NDEF record")
             }
             
             data.append((value.count + 1).byte) // Length of the payload data

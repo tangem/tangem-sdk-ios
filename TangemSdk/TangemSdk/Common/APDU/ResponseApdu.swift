@@ -68,24 +68,8 @@ public struct ResponseApdu {
     }
 }
 
-
-
-
-//Slix2 tag support. TODO: Refactor
-@available(iOS 13.0, *)
-extension ResponseApdu {
-    init?(slix2Data: Data) {
-        let ndefTlvData = slix2Data[4...] //cut e1402801 (CC)
-        if let ndefTlv = Tlv.deserialize(ndefTlvData),
-            let ndefValue = ndefTlv.value(for: .cardPublicKey),
-            let ndefMessage = NFCNDEFMessage(data: Data(ndefValue)) {
-               print(ndefValue.asHexString())
-            let payloads = ndefMessage.records.filter({ String(data: $0.type, encoding: String.Encoding.utf8) == NDEFReader.tangemWalletRecordType})
-            if let payload = payloads.first?.payload  {
-                self.init(payload, Byte(0x90), Byte(0x00))
-                return
-            }
-        }
-        return nil
+extension ResponseApdu: CustomStringConvertible {
+    public var description: String {
+        return "<-- RECEIVED [\(data.count + 2) bytes]: \(data) \(sw1) \(sw2) (SW: \(statusWord))"
     }
 }

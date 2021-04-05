@@ -8,23 +8,29 @@
 
 import Foundation
 
-
-struct CheckPinResponse:  ResponseCodable {
-    let isPin2Default: Bool
+public struct CheckPinResponse: JSONStringConvertible {
+    public let isPin1Default: Bool
+    public let isPin2Default: Bool
 }
 
-@available(iOS 13.0, *)
-class CheckPinCommand: Command {
-    var requiresPin2: Bool { true }
+public final class CheckPinCommand: Command {
+    public typealias CommandResponse = CheckPinResponse
+    public var requiresPin2: Bool { true }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<CheckPinResponse>) {
+    public init() {}
+    
+    deinit {
+        Log.debug("CheckPinCommand deinit")
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<CheckPinResponse>) {
         transieve(in: session) { result in
             switch result {
             case .success(let response):
                 completion(.success(response))
             case .failure(let error):
                 if case .invalidParams = error {
-                    completion(.success(CheckPinResponse(isPin2Default: false)))
+                    completion(.success(CheckPinResponse(isPin1Default: session.environment.pin1.isDefault, isPin2Default: false)))
                 } else {
                     completion(.failure(error))
                 }
@@ -51,7 +57,7 @@ class CheckPinCommand: Command {
         guard let _ = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
-        
-        return CheckPinResponse(isPin2Default: true)
+
+        return CheckPinResponse(isPin1Default: environment.pin1.isDefault, isPin2Default: environment.pin2.isDefault)
     }
 }

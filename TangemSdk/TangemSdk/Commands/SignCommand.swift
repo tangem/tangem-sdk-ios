@@ -9,7 +9,7 @@
 import Foundation
 
 /// Response for `SignCommand`.
-public struct SignResponse: ResponseCodable {
+public struct SignResponse: JSONStringConvertible {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hashes (array of resulting signatures)
@@ -17,11 +17,10 @@ public struct SignResponse: ResponseCodable {
     /// Remaining number of sign operations before the wallet will stop signing transactions.
     public let walletRemainingSignatures: Int
     /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int
+    public let walletSignedHashes: Int?
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-@available(iOS 13.0, *)
 public final class SignCommand: Command {
     public typealias CommandResponse = SignResponse
     
@@ -29,6 +28,11 @@ public final class SignCommand: Command {
         return true
     }
     
+    public var preflightReadSettings: PreflightReadSettings {
+        .readWallet(index: walletIndex)
+    }
+    
+    private let walletIndex: WalletIndex
     private let hashes: [Data]
     private var responces: [SignResponse] = []
     private var currentChunk = 0
@@ -39,36 +43,44 @@ public final class SignCommand: Command {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount
     }()
     
-    /// Command initializer
-    /// - Parameters:
-    ///   - hashes: Array of transaction hashes.
-    public init(hashes: [Data]) {
+	/// Command initializer
+	/// - Note: Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
+	/// - Parameters:
+	///   - hashes: Array of transaction hashes.
+	///   - walletIndex: Index to wallet for interaction.
+	public init(hashes: [Data], walletIndex: WalletIndex) {
         self.hashes = hashes
+		self.walletIndex = walletIndex
     }
     
     deinit {
-        print("SignCommand deinit")
+        Log.debug("SignCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status {
-            switch status {
-            case .empty:
-                return .cardIsEmpty
-            case .loaded:
-                break
-            case .notPersonalized:
-                return .notPersonalized
-            case .purged:
-                return .cardIsPurged
-            }
+        guard card.status != .notPersonalized else {
+            return .notPersonalized
+        }
+        
+        guard let wallet = card.wallet(at: walletIndex) else {
+            return .walletNotFound
+        }
+        
+        switch wallet.status {
+        case .empty:
+            return .cardIsEmpty
+        case .loaded:
+            break
+        case .purged:
+            return .cardIsPurged
         }
         
         if card.isActivated {
             return .notActivated
         }
         
-        if card.walletRemainingSignatures == 0 {
+		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
+           wallet.remainingSignatures == 0 {
             return .noRemainingSignatures
         }
         
@@ -135,7 +147,9 @@ public final class SignCommand: Command {
             case .success(let response):
                 self.responces.append(response)
                 self.currentChunk += 1
-                session.restartPolling()
+                if self.currentChunk != self.numberOfChunks {
+                    session.restartPolling()
+                }
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -168,6 +182,8 @@ public final class SignCommand: Command {
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
+		
+		try walletIndex.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
@@ -181,8 +197,8 @@ public final class SignCommand: Command {
         return SignResponse(
             cardId: try decoder.decode(.cardId),
             signature: try decoder.decode(.walletSignature),
-            walletRemainingSignatures: try decoder.decode(.walletRemainingSignatures),
-            walletSignedHashes: try decoder.decode(.walletSignedHashes))
+            walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
+            walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
     
     private func getChunk() -> Range<Int> {

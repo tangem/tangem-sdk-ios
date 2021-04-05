@@ -12,7 +12,6 @@ import Foundation
 /// Personalization is an initialization procedure, required before starting using a card.
 /// During this procedure a card setting is set up.
 /// During this procedure all data exchange is encrypted.
-@available(iOS 13.0, *)
 public class PersonalizeCommand: Command {
     public typealias CommandResponse = Card
     
@@ -88,6 +87,10 @@ public class PersonalizeCommand: Command {
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: serializeCardData(environment: environment, cardId: cardId, cardData: config.cardData))
+			
+        if let walletsCount = config.walletsCount {
+            try tlvBuilder.append(.walletsCount, value: walletsCount)
+        }
         
         if !config.ndefRecords.isEmpty {
             try tlvBuilder.append(.ndefData, value: serializeNdef(config))
@@ -96,18 +99,18 @@ public class PersonalizeCommand: Command {
         if let acquirer = acquirer {
             try tlvBuilder.append(.acquirerPublicKey, value: acquirer.keyPair.publicKey)
         }
-        
+
         return tlvBuilder.serialize()
     }
     
     private func serializeNdef(_ config: CardConfig) throws -> Data {
         return try NdefEncoder(ndefRecords: config.ndefRecords,
-                               useDynamicNdef: config.useDynamicNdef)
+                               useDynamicNdef: config.useDynamicNDEF)
             .encode()
     }
     
     private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+        let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)
             .append(.productMask, value: cardData.productMask)
             .append(.manufactureDateTime, value: cardData.manufactureDateTime)

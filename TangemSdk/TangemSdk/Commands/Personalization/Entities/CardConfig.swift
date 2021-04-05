@@ -9,22 +9,22 @@
 import Foundation
 
 
-//{"issuerName":"TANGEM SDK","acquirerName":"Smart Cash","series":"BB","startNumber":300000000000,"count":0,"pin":"000000","pin2":"000","pin3":"","hexCrExKey":"00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF","cvc":"000","pauseBeforePin2":5000,"smartSecurityDelay":true,"curveID":"Secp256k1","signingMethods":{"rawValue":0},"maxSignatures":999999,"isReusable":true,"allowSwapPin":true,"allowSwapPin2":true,"useActivation":false,"useCvc":false,"useNdef":true,"useDynamicNdef":true,"useOneCommandAtTime":false,"useBlock":false,"allowSelectBlockchain":false,"forbidPurgeWallet":false,"protocolAllowUnencrypted":true,"protocolAllowStaticEncryption":true,"protectIssuerDataAgainstReplay":true,"forbidDefaultPin":false,"disablePrecomputedNdef":false,"skipSecurityDelayIfValidatedByIssuer":true,"skipCheckPIN2andCVCIfValidatedByIssuer":true,"skipSecurityDelayIfValidatedByLinkedTerminal":true,"restrictOverwriteIssuerDataEx":false,"requireTerminalTxSignature":false,"requireTerminalCertSignature":false,"checkPin3onCard":true,"createWallet":true,"cardData":{"issuerName":"TANGEM SDK","batchId":"FFFF","blockchainName":"ETH","manufactureDateTime":"2020-06-26","productMask":{"rawValue":1}},"ndefRecords":[{"type":"AAR","value":"com.tangem.wallet"},{"type":"URI","value":"https://tangem.com"}]}
+//“{\“issuerName\“:\“TANGEM SDK\“,\“acquirerName\“:\“Smart Cash\“,\“series\“:\“BB\“,\“startNumber\“:300000000000,\“count\“:0,\“pin\“:[145,180,209,66,130,63,125,32,197,240,141,246,145,34,222,67,243,95,5,122,152,141,150,25,246,211,19,132,133,201,162,3],\“pin2\“:[42,201,166,116,106,202,84,58,248,223,243,152,148,207,232,23,58,251,162,30,176,28,111,174,51,213,41,71,34,40,85,239],\“pin3\“:[227,176,196,66,152,252,28,20,154,251,244,200,153,111,185,36,39,174,65,228,100,155,147,76,164,149,153,27,120,82,184,85],\“hexCrExKey\“:\“00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF\“,\“cvc\“:\“000\“,\“pauseBeforePin2\“:5000,\“smartSecurityDelay\“:true,\“curveID\“:\“secp256k1\“,\“signingMethods\“:{\“rawValue\“:0},\“maxSignatures\“:999999,\“isReusable\“:true,\“allowSetPIN1\“:null,\“allowSetPIN2\“:null,\“useActivation\“:false,\“useCvc\“:null,\“useNDEF\“:true,\“useDynamicNDEF\“:true,\“useOneCommandAtTime\“:false,\“useBlock\“:false,\“allowSelectBlockchain\“:false,\“prohibitPurgeWallet\“:null,\“allowUnencrypted\“:null,\“allowFastEncryption\“:null,\“protectIssuerDataAgainstReplay\“:false,\“prohibitDefaultPIN1\“:null,\“disablePrecomputedNDEF\“:false,\“skipSecurityDelayIfValidatedByIssuer\“:true,\“skipCheckPIN2CVCIfValidatedByIssuer\“:null,\“skipSecurityDelayIfValidatedByLinkedTerminal\“:true,\“restrictOverwriteIssuerExtraData\“:null,\“requireTerminalTxSignature\“:false,\“requireTerminalCertSignature\“:false,\“checkPIN3OnCard\“:null,\“createWallet\“:true,\“cardData\“:{\“issuerName\“:\“TANGEM SDK\“,\“batchId\“:\“FFFF\“,\“blockchainName\“:\“ETH\“,\“manufactureDateTime\“:\“2020-10-05\“,\“productMask\“:{\“rawValue\“:1}},\“ndefRecords\“:[{\“type\“:\“AAR\“,\“value\“:\“com.tangem.wallet\“},{\“type\“:\“URI\“,\“value\“:\“https://tangem.com\“}]}”
 
 
 /**
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
-public struct CardConfig: ResponseCodable {
+public struct CardConfig: JSONStringConvertible {
     let issuerName: String?
     let acquirerName: String?
     let series: String?
     let startNumber: Int64
     let count: Int
-    let pin: String
-    let pin2: String
-    let pin3: String
+    let pin: Data
+    let pin2: Data
+    let pin3: Data
     let hexCrExKey: String?
     let cvc: String
     let pauseBeforePin2: Int
@@ -33,35 +33,38 @@ public struct CardConfig: ResponseCodable {
     let signingMethods: SigningMethod
     let maxSignatures: Int
     let isReusable: Bool
-    let allowSwapPin: Bool
-    let allowSwapPin2: Bool
+    let allowSetPIN1: Bool
+    let allowSetPIN2: Bool
     let useActivation: Bool
     let useCvc: Bool
-    let useNdef: Bool
-    let useDynamicNdef: Bool
+    let useNDEF: Bool
+    let useDynamicNDEF: Bool
     let useOneCommandAtTime: Bool
     let useBlock: Bool
     let allowSelectBlockchain: Bool
-    let forbidPurgeWallet: Bool
-    let protocolAllowUnencrypted: Bool
-    let protocolAllowStaticEncryption: Bool
+    let prohibitPurgeWallet: Bool
+    let allowUnencrypted: Bool
+    let allowFastEncryption: Bool
     let protectIssuerDataAgainstReplay: Bool
-    let forbidDefaultPin: Bool
-    let disablePrecomputedNdef: Bool
+    let prohibitDefaultPIN1: Bool
+    let disablePrecomputedNDEF: Bool
     let skipSecurityDelayIfValidatedByIssuer: Bool
-    let skipCheckPIN2andCVCIfValidatedByIssuer: Bool
+    let skipCheckPIN2CVCIfValidatedByIssuer: Bool
     let skipSecurityDelayIfValidatedByLinkedTerminal: Bool
     
-    let restrictOverwriteIssuerDataEx: Bool
+    let restrictOverwriteIssuerExtraData: Bool
     
     let requireTerminalTxSignature: Bool
     let requireTerminalCertSignature: Bool
-    let checkPin3onCard: Bool
+    let checkPIN3OnCard: Bool
     
     let createWallet: Bool
     
     let cardData: CardData
     let ndefRecords: [NdefRecord]
+    
+    /// Number of wallets supported by card, by default - 1
+	let walletsCount: Byte?
     
     private let Alf = "ABCDEF0123456789"
     
@@ -69,12 +72,12 @@ public struct CardConfig: ResponseCodable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         issuerName = try values.decode(String.self, forKey: .issuerName)
         acquirerName = try values.decode(String.self, forKey: .acquirerName)
-        series = try values.decode(String.self, forKey: .issuerName)
+        series = try values.decode(String.self, forKey: .series)
         startNumber = try values.decode(Int64.self, forKey: .startNumber)
         count = try values.decode(Int.self, forKey: .count)
-        pin = try values.decode(String.self, forKey: .pin)
-        pin2 = try values.decode(String.self, forKey: .pin2)
-        pin3 = try values.decode(String.self, forKey: .pin3)
+        pin = Data((try values.decode([Int].self, forKey: .pin)).map( { Byte($0) }))
+        pin2 = Data((try values.decode([Int].self, forKey: .pin2)).map( { Byte($0) }))
+        pin3 = Data((try values.decode([Int].self, forKey: .pin3)).map( { Byte($0) }))
         hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
         cvc = try values.decode(String.self, forKey: .cvc)
         pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
@@ -84,53 +87,54 @@ public struct CardConfig: ResponseCodable {
         if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
             self.curveID = curveID
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
         }
         
-        let signingMethodsDictionary = try values.decode([String:Int].self, forKey: .signingMethods)
+        let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
         if let rawValue = signingMethodsDictionary["rawValue"]  {
             signingMethods = SigningMethod(rawValue: rawValue)
         } else {
-            throw TangemSdkError.decodingFailed
+            throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
         }
         
         maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
         isReusable = try values.decode(Bool.self, forKey: .isReusable)
-        allowSwapPin = try values.decode(Bool.self, forKey: .allowSwapPin)
-        allowSwapPin2 = try values.decode(Bool.self, forKey: .allowSwapPin2)
+        allowSetPIN1 = try values.decode(Bool.self, forKey: .allowSetPIN1)
+        allowSetPIN2 = try values.decode(Bool.self, forKey: .allowSetPIN2)
         useActivation = try values.decode(Bool.self, forKey: .useActivation)
         useCvc = try values.decode(Bool.self, forKey: .useCvc)
-        useNdef = try values.decode(Bool.self, forKey: .useNdef)
-        useDynamicNdef = try values.decode(Bool.self, forKey: .useDynamicNdef)
+        useNDEF = try values.decode(Bool.self, forKey: .useNDEF)
+        useDynamicNDEF = try values.decode(Bool.self, forKey: .useDynamicNDEF)
         useOneCommandAtTime = try values.decode(Bool.self, forKey: .useOneCommandAtTime)
         useBlock = try values.decode(Bool.self, forKey: .useBlock)
         allowSelectBlockchain = try values.decode(Bool.self, forKey: .allowSelectBlockchain)
-        forbidPurgeWallet = try values.decode(Bool.self, forKey: .forbidPurgeWallet)
-        protocolAllowUnencrypted = try values.decode(Bool.self, forKey: .protocolAllowUnencrypted)
-        protocolAllowStaticEncryption = try values.decode(Bool.self, forKey: .protocolAllowStaticEncryption)
+        prohibitPurgeWallet = try values.decode(Bool.self, forKey: .prohibitPurgeWallet)
+        allowUnencrypted = try values.decode(Bool.self, forKey: .allowUnencrypted)
+        allowFastEncryption = try values.decode(Bool.self, forKey: .allowFastEncryption)
         protectIssuerDataAgainstReplay = try values.decode(Bool.self, forKey: .protectIssuerDataAgainstReplay)
-        forbidDefaultPin = try values.decode(Bool.self, forKey: .forbidDefaultPin)
-        disablePrecomputedNdef = try values.decode(Bool.self, forKey: .disablePrecomputedNdef)
+        prohibitDefaultPIN1 = try values.decode(Bool.self, forKey: .prohibitDefaultPIN1)
+        disablePrecomputedNDEF = try values.decode(Bool.self, forKey: .disablePrecomputedNDEF)
         skipSecurityDelayIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByIssuer)
-        skipCheckPIN2andCVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2andCVCIfValidatedByIssuer)
+        skipCheckPIN2CVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2CVCIfValidatedByIssuer)
         skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
-        restrictOverwriteIssuerDataEx = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerDataEx)
+        restrictOverwriteIssuerExtraData = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerExtraData)
         requireTerminalTxSignature = try values.decode(Bool.self, forKey: .requireTerminalTxSignature)
         requireTerminalCertSignature = try values.decode(Bool.self, forKey: .requireTerminalCertSignature)
-        checkPin3onCard = try values.decode(Bool.self, forKey: .checkPin3onCard)
+        checkPIN3OnCard = try values.decode(Bool.self, forKey: .checkPIN3OnCard)
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
+		walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
     }
     
     
     func createSettingsMask() -> SettingsMask {
         let builder = SettingsMaskBuilder()
         
-        if allowSwapPin {
+        if allowSetPIN1 {
             builder.add(.allowSetPIN1)
         }
-        if allowSwapPin2 {
+        if allowSetPIN2 {
             builder.add(.allowSetPIN2)
         }
         if useCvc {
@@ -142,22 +146,22 @@ public struct CardConfig: ResponseCodable {
         if useOneCommandAtTime {
             builder.add(.useOneCommandAtTime)
         }
-        if useNdef {
+        if useNDEF {
             builder.add(.useNDEF)
         }
-        if useDynamicNdef {
+        if useDynamicNDEF {
             builder.add(.useDynamicNDEF)
         }
-        if disablePrecomputedNdef {
+        if disablePrecomputedNDEF {
             builder.add(.disablePrecomputedNDEF)
         }
-        if protocolAllowUnencrypted {
+        if allowUnencrypted {
             builder.add(.allowUnencrypted)
         }
-        if protocolAllowStaticEncryption {
+        if allowFastEncryption {
             builder.add(.allowFastEncryption)
         }
-        if forbidDefaultPin {
+        if prohibitDefaultPIN1 {
             builder.add(.prohibitDefaultPIN1)
         }
         if useActivation {
@@ -172,13 +176,13 @@ public struct CardConfig: ResponseCodable {
         if protectIssuerDataAgainstReplay {
             builder.add(.protectIssuerDataAgainstReplay)
         }
-        if forbidPurgeWallet {
+        if prohibitPurgeWallet {
             builder.add(.prohibitPurgeWallet)
         }
         if allowSelectBlockchain {
             builder.add(.allowSelectBlockchain)
         }
-        if skipCheckPIN2andCVCIfValidatedByIssuer {
+        if skipCheckPIN2CVCIfValidatedByIssuer {
             builder.add(.skipCheckPIN2CVCIfValidatedByIssuer)
         }
         if skipSecurityDelayIfValidatedByIssuer {
@@ -187,7 +191,7 @@ public struct CardConfig: ResponseCodable {
         if skipSecurityDelayIfValidatedByLinkedTerminal {
             builder.add(.skipSecurityDelayIfValidatedByLinkedTerminal)
         }
-        if restrictOverwriteIssuerDataEx {
+        if restrictOverwriteIssuerExtraData {
             builder.add(.restrictOverwriteIssuerExtraData)
         }
         if requireTerminalTxSignature {
@@ -196,7 +200,7 @@ public struct CardConfig: ResponseCodable {
         if requireTerminalCertSignature {
             builder.add(.requireTermCertSignature)
         }
-        if checkPin3onCard {
+        if checkPIN3OnCard {
             builder.add(.checkPIN3OnCard)
         }
         return builder.build()
@@ -215,7 +219,12 @@ public struct CardConfig: ResponseCodable {
             return nil
         }
         
-        let tail = series.count == 2 ? String(format: "%013d", startNumber) : String(format: "%011d", startNumber)
+        let formatter = NumberFormatter()
+        formatter.minimumIntegerDigits = series.count == 2 ? 13 : 11
+        guard let tail = formatter.string(from: NSNumber(value: startNumber)) else {
+            return nil
+        }
+        
         var cardId = (series + tail).replacingOccurrences(of: " ", with: "")
         
         guard let firstCidCharacter = cardId.first, let secondCidCharacter = cardId.dropFirst().first else {

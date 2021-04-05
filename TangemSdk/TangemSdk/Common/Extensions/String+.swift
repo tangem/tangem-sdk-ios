@@ -30,4 +30,23 @@ public extension String {
     internal func lowercasingFirst() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
+    
+    internal var localized: String {
+        Localization.getFormat(for: self)
+    }
+    
+    internal func trim() -> String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+
+extension DefaultStringInterpolation {
+    mutating func appendInterpolation(_ data: Data) {
+        appendLiteral(data.asHexString())
+    }
+    
+    mutating func appendInterpolation(_ byte: Byte) {
+        appendLiteral(byte.asHexString())
+    }
 }

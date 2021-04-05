@@ -12,7 +12,7 @@ import Foundation
 public final class Localization {
     public static var localizationsBundle: Bundle?
     
-    public static let dialogSecurityDelay = string("dialog_security_delay")
+    public static let dialogSecurityDelay = string("view_delegate_security_delay")
     public static let unknownCardState = string("nfc_unknown_card_state")
     public static let nfcAlertSignCompleted = string("nfc_alert_sign_completed")
     public static let nfcSessionTimeout = string("nfc_session_timeout")
@@ -42,7 +42,7 @@ public final class Localization {
         return String(format: format, locale: Locale.current, arguments: args)
     }
     
-    private static func getFormat(for key: String) -> String {
+    public static func getFormat(for key: String) -> String {
         if let overridedBundle = localizationsBundle {
             let format = NSLocalizedString(key,  bundle: overridedBundle, comment: "")
             if format != key {

@@ -1,7 +1,6 @@
 [![Version](https://img.shields.io/cocoapods/v/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![License](https://img.shields.io/cocoapods/l/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![Platform](https://img.shields.io/cocoapods/p/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
-[![Beta](https://img.shields.io/badge/-beta-red)]()
 
 
 # Welcome to Tangem
@@ -28,6 +27,7 @@ The Tangem card is a self-custodial hardware wallet for blockchain assets. The m
 
 ### Requirements
 iOS 13+ (CoreNFC is required), Xcode 12+
+
 SDK can be imported to iOS 11, but it will work only since iOS 13.
 
 ### Installation

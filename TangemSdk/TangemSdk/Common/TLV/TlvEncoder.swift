@@ -10,53 +10,64 @@ import Foundation
 
 public final class TlvEncoder {
     public func encode<T>(_ tag: TlvTag, value: T?) throws -> Tlv {
-        if let value = value {
-            return try Tlv(tag, value: encode(value, for: tag))
-        } else {
-            print("Encoding error. Value for tag \(tag) is nil")
-            throw TangemSdkError.encodingFailed
+        do {
+            if let value = value {
+                let tlv = try Tlv(tag, value: encode(value, for: tag))
+                logTlv(tlv, value)
+                return tlv
+            } else {
+                throw TangemSdkError.encodingFailed("Encoding error. Value for tag \(tag) is nil")
+            }
+        } catch {
+            Log.error(error)
+            throw error
         }
     }
     
     private func encode<T>(_ value: T, for tag: TlvTag) throws -> Data {
         switch tag.valueType {
         case .hexString:
-            try typeCheck(value, String.self)
+            try typeCheck(value, String.self, for: tag)
             return Data(hexString: value as! String)
         case .utf8String:
-            try typeCheck(value, String.self)
+            try typeCheck(value, String.self, for: tag)
             let string = value as! String + "\0"
             if let data = string.data(using: .utf8) {
                 return data
             } else {
-                print("Encoding error. Failed to convert string to utf8 Data")
-                throw TangemSdkError.encodingFailed
+                throw TangemSdkError.encodingFailed("Encoding error. Failed to convert string to utf8 Data")
             }
         case .byte:
-            try typeCheck(value, Int.self)
-            return (value as! Int).byte
+            do {
+                try typeCheck(value, Int.self, for: tag)
+                return (value as! Int).byte
+            } catch {
+                try typeCheck(value, Byte.self, for: tag)
+                return Data([(value as! Byte)])
+            }
         case .intValue:
-            try typeCheck(value, Int.self)
+            try typeCheck(value, Int.self, for: tag)
             return (value as! Int).bytes4
         case .uint16:
-            try typeCheck(value, Int.self)
+            try typeCheck(value, Int.self, for: tag)
             return (value as! Int).bytes2
         case .boolValue:
-            fatalError("Unsupported")
+            try typeCheck(value, Bool.self, for: tag)
+            let value = value as! Bool
+            return value ? Data([Byte(1)]) : Data([Byte(0)])
         case .data:
-            try typeCheck(value, Data.self)
+            try typeCheck(value, Data.self, for: tag)
             return value as! Data
         case .ellipticCurve:
-            try typeCheck(value, EllipticCurve.self)
+            try typeCheck(value, EllipticCurve.self, for: tag)
             let curve = value as! EllipticCurve
             if let data = (curve.rawValue + "\0").data(using: .utf8) {
                 return data
             } else {
-                print("Encoding error. Failed to convert EllipticCurve to utf8 Data")
-                throw TangemSdkError.encodingFailed
+                throw TangemSdkError.encodingFailed("Encoding error. Failed to convert EllipticCurve to utf8 Data")
             }
         case .dateTime:
-            try typeCheck(value, Date.self)
+            try typeCheck(value, Date.self, for: tag)
             let date = value as! Date
             let calendar = Calendar(identifier: .gregorian)
             let y = calendar.component(.year, from: date)
@@ -64,32 +75,52 @@ public final class TlvEncoder {
             let d = calendar.component(.day, from: date)
             return y.bytes2 + m.byte + d.byte
         case .productMask:
-            try typeCheck(value, ProductMask.self)
+            try typeCheck(value, ProductMask.self, for: tag)
             let mask = value as! ProductMask
             return Data([mask.rawValue])
         case .settingsMask:
-            try typeCheck(value, SettingsMask.self)
-            let mask = value as! SettingsMask
-            return mask.rawValue.bytes2
-        case .cardStatus:
-            try typeCheck(value, CardStatus.self)
-            let status = value as! CardStatus
-            return status.rawValue.byte
+			do {
+				try typeCheck(value, SettingsMask.self, for: tag)
+				let mask = value as! SettingsMask
+				let rawValue = mask.rawValue
+				if 0xFFFF0000 & rawValue != 0 {
+					 return rawValue.bytes4
+				} else {
+					 return rawValue.bytes2
+				}
+			} catch {
+                Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
+			}
+			
+			try typeCheck(value, WalletSettingsMask.self, for: tag)
+			let mask = value as! WalletSettingsMask
+			return mask.rawValue.bytes4
+        case .status:
+            guard let statusType = value as? StatusType else {
+                throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
+            }
+            return statusType.rawValue.byte
         case .signingMethod:
-            try typeCheck(value, SigningMethod.self)
+            try typeCheck(value, SigningMethod.self, for: tag)
             let method = value as! SigningMethod
-            return method.rawValue.byte
-        case .issuerExtraDataMode:
-            try typeCheck(value, IssuerExtraDataMode.self)
-            let mode = value as! IssuerExtraDataMode
+            return Data([method.rawValue])
+        case .interactionMode:
+            guard let mode = value as? InteractionMode else {
+                throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
+            }
             return Data([mode.rawValue])
+		case .fileSettings:
+			try typeCheck(value, FileSettings.self, for: tag)
+			let settings = value as! FileSettings
+			return settings.rawValue.bytes2
         }
     }
     
-    private func typeCheck<FromType, ToType>(_ value: FromType, _ to: ToType) throws {
+    private func typeCheck<Value, ToType>(_ value: Value, _ to: ToType, for tag: TlvTag) throws {
         guard type(of: value) is ToType else {
-            print("Encoding error. Value is \(FromType.self). Expected: \(ToType.self)")
-            throw TangemSdkError.encodingFailedTypeMismatch
+            throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag). Value is \(value) of type \(Value.self). Expected: \(to).")
         }
     }
 }
+
+extension TlvEncoder: TlvLogging {}

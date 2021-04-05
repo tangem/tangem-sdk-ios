@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DepersonalizeResponse: ResponseCodable {
+public struct DepersonalizeResponse: JSONStringConvertible {
     let success: Bool
 }
 
@@ -17,11 +17,10 @@ public struct DepersonalizeResponse: ResponseCodable {
 * This command resets card to initial state,
 * erasing all data written during personalization and usage.
 */
-@available(iOS 13.0, *)
 public class DepersonalizeCommand: Command {
     public typealias CommandResponse = DepersonalizeResponse
     
-    var needPreflightRead: Bool {
+    public var needPreflightRead: Bool {
         return false
     }
     

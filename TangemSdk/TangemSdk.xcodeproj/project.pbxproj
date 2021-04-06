@@ -170,6 +170,7 @@
 		B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileHashHelper.swift */; };
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
+		B01DF033261C1BFF000E2315 /* SignatureParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01DF032261C1BFF000E2315 /* SignatureParser.swift */; };
 		B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7A25658EEE0061E5ED /* SettingsMask.swift */; };
 		B0390F7F25658F110061E5ED /* WalletSettingsMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */; };
 		B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8225658F3B0061E5ED /* ProductMask.swift */; };
@@ -394,6 +395,7 @@
 		B01B9A562530871800ECB6BF /* FileHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashHelper.swift; sourceTree = "<group>"; };
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
+		B01DF032261C1BFF000E2315 /* SignatureParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureParser.swift; sourceTree = "<group>"; };
 		B0390F7A25658EEE0061E5ED /* SettingsMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMask.swift; sourceTree = "<group>"; };
 		B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsMask.swift; sourceTree = "<group>"; };
 		B0390F8225658F3B0061E5ED /* ProductMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMask.swift; sourceTree = "<group>"; };
@@ -986,6 +988,7 @@
 				B0E162C225656D8400E97D07 /* CardSerializer.swift */,
 				B0EC64FF260110530088F03D /* CardWalletDeserializerUtility.swift */,
 				B00BC5C3260B80E600F0647D /* MillisecTimer.swift */,
+				B01DF032261C1BFF000E2315 /* SignatureParser.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1291,6 +1294,7 @@
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
+				B01DF033261C1BFF000E2315 /* SignatureParser.swift in Sources */,
 				B0F9F611255032C5001CA52D /* CustomInfixOpeators.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,

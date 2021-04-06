@@ -75,11 +75,11 @@ public final class SignCommand: Command {
         
         switch wallet.status {
         case .empty:
-            return .cardIsEmpty
+            return .walletIsNotCreated
         case .loaded:
             break
         case .purged:
-            return .cardIsPurged
+            return .walletIsPurged
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,

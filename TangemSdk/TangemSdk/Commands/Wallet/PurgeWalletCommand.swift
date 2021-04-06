@@ -118,6 +118,6 @@ public final class PurgeWalletCommand: Command {
         return PurgeWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status),
-            walletIndex: walletIndex)
+            walletIndex: .index(try decoder.decode(.walletIndex)))
     }
 }

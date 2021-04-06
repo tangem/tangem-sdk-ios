@@ -252,6 +252,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	case walletNotFound
 	case cardReadWrongWallet
     case cardWithMaxZeroWallets
+    
+    // MARK: Utils errors
+    
+    case notValidSignedSignatureSize
 
     public var code: Int {
         switch self {
@@ -339,7 +343,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .extendedDataSizeTooLarge: return 41101
             
         // MARK: 5xxxx Errors
-        // SDK error. Errors, that occurred in the apper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
+        // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001
         case .userCancelled: return 50002
         case .busy: return 50003
@@ -352,6 +356,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
+        case .notValidSignedSignatureSize: return 50013
             
         case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
         

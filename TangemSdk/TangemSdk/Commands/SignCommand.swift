@@ -8,21 +8,11 @@
 
 import Foundation
 
-/// Response for `SignCommand`.
-public struct SignResponse: JSONStringConvertible {
-    /// CID, Unique Tangem card ID number
-    public let cardId: String
-    /// Signed hashes (array of resulting signatures)
-    public let signature: Data
-    /// Remaining number of sign operations before the wallet will stop signing transactions.
-    public let walletRemainingSignatures: Int
-    /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int?
-}
+extension Array: JSONStringConvertible where Element == Data  {}
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 public final class SignCommand: Command {
-    public typealias CommandResponse = SignResponse
+    public typealias CommandResponse = [Data]
     
     public var requiresPin2: Bool {
         return true
@@ -34,7 +24,8 @@ public final class SignCommand: Command {
     
     private let walletIndex: WalletIndex
     private let hashes: [Data]
-    private var responces: [SignResponse] = []
+    private var responces: [Data] = []
+    private var respondedSignature: Data = Data()
     private var currentChunk = 0
     private lazy var chunkSize: Int = {
         return NfcUtils.isPoorNfcQualityDevice ? 2 : 10
@@ -62,6 +53,10 @@ public final class SignCommand: Command {
             return .notPersonalized
         }
         
+        if card.isActivated {
+            return .notActivated
+        }
+        
         guard let wallet = card.wallet(at: walletIndex) else {
             return .walletNotFound
         }
@@ -73,10 +68,6 @@ public final class SignCommand: Command {
             break
         case .purged:
             return .cardIsPurged
-        }
-        
-        if card.isActivated {
-            return .notActivated
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
@@ -91,7 +82,7 @@ public final class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {        
+    public func run(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return
@@ -126,16 +117,16 @@ public final class SignCommand: Command {
         return error
     }
     
-    func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    func sign(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
         if currentChunk == numberOfChunks {
-            let lastResponse = responces.last!
-            let finalResponse = SignResponse(cardId: lastResponse.cardId,
-                                             signature: Data(responces.map{ $0.signature }.joined()),
-                                             walletRemainingSignatures: lastResponse.walletRemainingSignatures,
-                                             walletSignedHashes: lastResponse.walletSignedHashes)
-            
-            completion(.success(finalResponse))
-            return
+            do {
+                let parsed = try SignatureParser.parseSignedSignature(respondedSignature)
+                completion(.success(parsed))
+                return
+            } catch {
+                completion(.failure(error as! TangemSdkError))
+                return
+            }
         }
         
         if numberOfChunks > 1 {
@@ -145,7 +136,7 @@ public final class SignCommand: Command {
         transieve(in: session) { result in
             switch result {
             case .success(let response):
-                self.responces.append(response)
+                self.respondedSignature += response[0]
                 self.currentChunk += 1
                 if self.currentChunk != self.numberOfChunks {
                     session.restartPolling()
@@ -188,17 +179,13 @@ public final class SignCommand: Command {
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SignResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> [Data] {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return SignResponse(
-            cardId: try decoder.decode(.cardId),
-            signature: try decoder.decode(.walletSignature),
-            walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
-            walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+        return [try decoder.decode(.walletSignature)]
     }
     
     private func getChunk() -> Range<Int> {

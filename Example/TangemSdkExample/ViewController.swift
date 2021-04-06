@@ -9,6 +9,21 @@
 import UIKit
 import TangemSdk
 
+class ScanCard: CardSessionRunnable, PreflightReadCapable {
+    typealias CommandResponse = ReadResponse
+    
+    var needPreflightRead: Bool { true }
+    var preflightReadSettings: PreflightReadSettings { .fullCardRead }
+    
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.cardError))
+            return
+        }
+        completion(.success(card))
+    }
+}
+
 @available(iOS 13.0, *)
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
@@ -79,7 +94,7 @@ class ViewController: UIViewController {
     @IBAction func scanCardTapped(_ sender: UIButton) {
         sender.showActivityIndicator()
         timer.start()
-        tangemSdk.scanCard(onlineVerification: false) {[unowned self] result in
+        tangemSdk.startSession(with: ScanCard()) { [unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card
@@ -98,60 +113,8 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func scanWalletByIndexTapped(_ sender: UIButton) {
-        guard card != nil else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        sender.showActivityIndicator()
-        timer.start()
-        tangemSdk.scanCard(onlineVerification: false, walletIndex: walIn) { [unowned self] (result) in
-            switch result {
-            case .success(let card):
-                let maxWalletIndex = (card.walletsCount ?? 1) - 1
-                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
-                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
-                self.logView.text = ""
-                self.timer.stop()
-                self.log("read result: \(card)")
-            case .failure(let error):
-                self.handle(error)
-            }
-            sender.hideActivityIndicator()
-        }
-    }
-    
-    @IBAction func scanWalletByPubKeyTapped(_ sender: UIButton) {
-        guard card != nil else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        guard let pubkey = walletPublicKey else {
-            return
-        }
-        
-        sender.showActivityIndicator()
-        timer.start()
-        tangemSdk.scanCard(onlineVerification: false, walletIndex: .publicKey(pubkey)) { [unowned self] (result) in
-            switch result {
-            case .success(let card):
-                let maxWalletIndex = (card.walletsCount ?? 1) - 1
-                self.walletIndexSlider.maximumValue = Float(maxWalletIndex)
-                self.walletMaxIndexLabel.text = "\(maxWalletIndex)"
-                self.logView.text = ""
-                self.timer.stop()
-                self.log("read result: \(card)")
-            case .failure(let error):
-                self.handle(error)
-            }
-            sender.hideActivityIndicator()
-        }
-    }
-    
-    @IBAction func signHashesTapped(_ sender: Any) {
-        let hashes = (0..<1).map {_ -> Data in getRandomHash()}
+    @IBAction func signHashTapped(_ sender: UIButton) {
+        let hash = getRandomHash()
         guard let cardId = card?.cardId else {
             self.log("Please, scan card before")
             return
@@ -159,7 +122,26 @@ class ViewController: UIViewController {
         
         guard let publicKey = walletPublicKey else { return }
         
-        tangemSdk.sign(hashes: hashes, cardId: cardId, walletPublicKey: publicKey, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.asHexString())")) { [unowned self] result in
+        tangemSdk.sign(cardId: cardId, hash: hash, walletPublicKey: publicKey, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.asHexString())")) { [unowned self] result in
+            switch result {
+            case .success(let signResponse):
+                self.log(signResponse)
+            case .failure(let error):
+                self.handle(error)
+            }
+        }
+    }
+    
+    @IBAction func signHashesTapped(_ sender: Any) {
+        let hashes = (0..<5).map {_ -> Data in getRandomHash()}
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        guard let publicKey = walletPublicKey else { return }
+        
+        tangemSdk.sign(cardId: cardId, hashes: hashes, walletPublicKey: publicKey, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.asHexString())")) { [unowned self] result in
             switch result {
             case .success(let signResponse):
                 self.log(signResponse)
@@ -299,23 +281,6 @@ class ViewController: UIViewController {
         
     }
     
-    @IBAction func purgeWalletTapped(_ sender: Any) {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        tangemSdk.purgeWallet(cardId: cardId, walletIndex: walIn) { [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
     @IBAction func purgeWalletByPubkeyTapped(_ sender: Any) {
         guard let cardId = card?.cardId else {
             self.log("Please, scan card before")
@@ -326,7 +291,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.purgeWallet(cardId: cardId, walletIndex: .publicKey(publicKey)) { [unowned self] result in
+        tangemSdk.purgeWallet(cardId: cardId, walletPublicKey: publicKey) { [unowned self] result in
             switch result {
             case .success(let response):
                 self.log(response)
@@ -503,7 +468,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.readFiles(cardId: cardId, readSettings: ReadFilesTaskSettings(readPrivateFiles: false)) { (result) in
+        tangemSdk.readFiles(cardId: cardId, readPrivateFiles: false) { (result) in
             switch result {
             case .success(let response):
                 self.savedFiles = response.files
@@ -655,8 +620,8 @@ class ViewController: UIViewController {
         }
         
         let file = savedFiles[0]
-        file.fileSettings = file.fileSettings == .public ? .private : .public
-        tangemSdk.changeFilesSettings(cardId: cardId, files: [file]) { (result) in
+        let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
+        tangemSdk.changeFilesSettings(cardId: cardId, changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)]) { (result) in
             switch result {
             case .success:
                 self.savedFiles = nil

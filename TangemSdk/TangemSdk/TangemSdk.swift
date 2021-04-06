@@ -60,7 +60,8 @@ public final class TangemSdk {
         startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage) { result in
             switch result {
             case .success(let response):
-                if let cid = response.cardId,
+                if response.firmwareVersion?.type == .release,
+                   let cid = response.cardId,
                    let cardPublicKey = response.cardPublicKey {
                     self.loadCardInfo(cardId: cid, cardPublicKey: cardPublicKey) { onlineVerifyResult in
                         switch onlineVerifyResult {

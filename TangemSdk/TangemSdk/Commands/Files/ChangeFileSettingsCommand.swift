@@ -14,12 +14,10 @@ public final class ChangeFileSettingsCommand: Command {
 	
 	public var requiresPin2: Bool { true }
 	
-	private let fileIndex: Int
-	private let newSettings: FileSettings
+    private let data: FileSettingsChange
 	
-	public init(fileIndex: Int, newSettings: FileSettings) {
-		self.fileIndex = fileIndex
-		self.newSettings = newSettings
+    public init(data: FileSettingsChange) {
+		self.data = data
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -51,8 +49,8 @@ public final class ChangeFileSettingsCommand: Command {
 			.append(.pin, value: environment.pin1.value)
 			.append(.pin2, value: environment.pin2.value)
 			.append(.interactionMode, value: FileDataMode.changeFileSettings)
-			.append(.fileIndex, value: fileIndex)
-			.append(.fileSettings, value: newSettings)
+            .append(.fileIndex, value: data.fileIndex)
+            .append(.fileSettings, value: data.settings)
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
 	}
 	

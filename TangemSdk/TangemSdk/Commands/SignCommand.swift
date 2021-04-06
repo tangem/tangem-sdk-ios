@@ -8,11 +8,21 @@
 
 import Foundation
 
-extension Array: JSONStringConvertible where Element == Data  {}
+/// Response for `SignCommand`.
+public struct SignResponse: JSONStringConvertible {
+    /// CID, Unique Tangem card ID number
+    public let cardId: String
+    /// Signed hashes (array of resulting signatures)
+    public let signatures: [Data]
+    /// Remaining number of sign operations before the wallet will stop signing transactions.
+    public let walletRemainingSignatures: Int
+    /// Total number of signed single hashes returned by the card in sign command responses.
+    public let walletSignedHashes: Int?
+}
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 public final class SignCommand: Command {
-    public typealias CommandResponse = [Data]
+    public typealias CommandResponse = SignResponse
     
     public var requiresPin2: Bool {
         return true
@@ -24,6 +34,8 @@ public final class SignCommand: Command {
     
     private let walletIndex: WalletIndex
     private let hashes: [Data]
+    
+    private var lastSignResponse: SignResponse!
     private var responces: [Data] = []
     private var respondedSignature: Data = Data()
     private var currentChunk = 0
@@ -82,7 +94,7 @@ public final class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return
@@ -117,11 +129,14 @@ public final class SignCommand: Command {
         return error
     }
     
-    func sign(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
+    func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if currentChunk == numberOfChunks {
             do {
                 let parsed = try SignatureParser.parseSignedSignature(respondedSignature)
-                completion(.success(parsed))
+                completion(.success(SignResponse(cardId: lastSignResponse.cardId,
+                                                 signatures: parsed,
+                                                 walletRemainingSignatures: lastSignResponse.walletRemainingSignatures,
+                                                 walletSignedHashes: lastSignResponse.walletSignedHashes)))
                 return
             } catch {
                 completion(.failure(error as! TangemSdkError))
@@ -136,7 +151,7 @@ public final class SignCommand: Command {
         transieve(in: session) { result in
             switch result {
             case .success(let response):
-                self.respondedSignature += response[0]
+                self.respondedSignature += response.signatures.joined()
                 self.currentChunk += 1
                 if self.currentChunk != self.numberOfChunks {
                     session.restartPolling()
@@ -179,13 +194,18 @@ public final class SignCommand: Command {
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> [Data] {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SignResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return [try decoder.decode(.walletSignature)]
+        let resp = SignResponse(cardId: try decoder.decode(.cardId),
+                                signatures: [try decoder.decode(.walletSignature)],
+                                walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
+                                walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+        lastSignResponse = resp
+        return resp
     }
     
     private func getChunk() -> Range<Int> {

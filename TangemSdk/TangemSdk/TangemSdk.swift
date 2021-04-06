@@ -131,10 +131,14 @@ public final class TangemSdk {
                      walletPublicKey: Data,
                      initialMessage: Message? = nil,
                      completion: @escaping CompletionResult<[Data]>) {
-        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey)),
-                     cardId: cardId,
-                     initialMessage: initialMessage,
-                     completion: completion)
+        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey))) { (result) in
+            switch result {
+            case .success(let response):
+                completion(.success(response.signatures))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     /// This command will create a new wallet on the card having ‘Empty’ state.

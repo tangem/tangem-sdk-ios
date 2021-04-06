@@ -9,21 +9,6 @@
 import UIKit
 import TangemSdk
 
-class ScanCard: CardSessionRunnable, PreflightReadCapable {
-    typealias CommandResponse = ReadResponse
-    
-    var needPreflightRead: Bool { true }
-    var preflightReadSettings: PreflightReadSettings { .fullCardRead }
-    
-    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.cardError))
-            return
-        }
-        completion(.success(card))
-    }
-}
-
 @available(iOS 13.0, *)
 class ViewController: UIViewController {
     @IBOutlet weak var logView: UITextView!
@@ -94,7 +79,7 @@ class ViewController: UIViewController {
     @IBAction func scanCardTapped(_ sender: UIButton) {
         sender.showActivityIndicator()
         timer.start()
-        tangemSdk.startSession(with: ScanCard()) { [unowned self] result in
+        tangemSdk.scanCard { [unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card

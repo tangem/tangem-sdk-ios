@@ -87,8 +87,8 @@ public final class TangemSdk {
     /// - Note: `WalletIndex` available for cards with COS v.4.0 and higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number
-    ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
-    ///   - walletIndex: Index to wallet that should sign hashes.  if not specified - wallet at default index will sign hashes. See `WalletIndex` for more info
+    ///   - hash: Transaction hash for sign by card.
+    ///   - walletPublicKey: Public key of wallet that should sign hash.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
     public func sign(cardId: String? = nil,
@@ -121,9 +121,9 @@ public final class TangemSdk {
     ///
     /// - Note: `WalletIndex` available for cards with COS v.4.0 and higher
     /// - Parameters:
-    ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
     ///   - cardId: CID, Unique Tangem card ID number
-    ///   - walletIndex: Index to wallet that should sign hashes.  if not specified - wallet at default index will sign hashes. See `WalletIndex` for more info
+    ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
+    ///   - walletPublicKey: Public key of wallet that should sign hashes.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
     public func sign(cardId: String? = nil,
@@ -149,12 +149,10 @@ public final class TangemSdk {
     /// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
     /// RemainingSignature is set to MaxSignatures.
     ///
-    /// - Note: `WalletConfig` and `walletIndex` available for cards with COS v.4.0 or higher
+    /// - Note: `WalletConfig` available for cards with COS v.4.0 or higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - config: Configuration for wallet that should be created (blockchain name, token...). This parameter available for cards with COS v.4.0 and higher. For earlier versions it will be ignored
-    ///   - walletIndex: Index at which wallet should be created, if not specified - wallet will be created at default index.
-    ///   This parameter available for cards with COS v.4.0 and higher. For earlier versions it will be ignored
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     public func createWallet(cardId: String? = nil,
@@ -173,7 +171,7 @@ public final class TangemSdk {
     /// - Note: Wallet index available for cards with COS v.4.0 or higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - walletIndex: Index to wallet that should be purged.  if not specified - wallet at default index will be purged. See `WalletIndex` for more info
+    ///   - walletPublicKey: Public key of wallet that should be purged.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
     public func purgeWallet(cardId: String? = nil,
@@ -484,8 +482,9 @@ public final class TangemSdk {
     /// - Warning: Command available only for cards with COS 3.29 and higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - readPrivateFiles: If true - all files saved on card will be read otherwise
+    ///   - indicies: Indicies of files that should be read from card. If not specifies all files will be read.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - readSettings: `ReadFileDataTaskSettings` - that define should sdk read private files or not and some additional read file settings
     ///   - completion: Returns `Swift.Result<ReadFilesResponse,TangemSdkError>`
     public func readFiles(cardId: String? = nil,
                           readPrivateFiles: Bool = false,
@@ -503,8 +502,8 @@ public final class TangemSdk {
     /// - Warning: This method works with COS 3.29 and higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - changes: Array of file indecies with new settings
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - files: Files that should update their settings
     ///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
     public func changeFilesSettings(cardId: String? = nil,
                                     changes: [FileSettingsChange],
@@ -523,9 +522,8 @@ public final class TangemSdk {
     /// - Note: Writing files protected by Pin2 only available for COS 3.34 and higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - files: List of files that should be written to card
-    ///   - writeFilesSettings: Settings for writing files (ie. you can specify `WriteFilesSettings.overwriteAllFiles` if you want to delete all previous files from card. Default value - no additional settings
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<WriteFilesResponse, TangemSdkError>`
     public func writeFiles(cardId: String? = nil,
                            files: [DataToWrite],
@@ -542,8 +540,8 @@ public final class TangemSdk {
     /// - Warning: This command available for COS 3.29 and higher
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
     public func deleteFiles(cardId: String? = nil,
                             indicesToDelete indices: [Int]?,
@@ -561,7 +559,6 @@ public final class TangemSdk {
     ///     - privateKey: Optional private key that will be used for signing files hashes. If it is provided, then  `FileHashData` will contain signed file signatures.
     /// - Returns:
     /// `FileHashData` with hashes to sign and signatures if `privateKey` was provided.
-    
     public func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) -> FileHashData {
         return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }

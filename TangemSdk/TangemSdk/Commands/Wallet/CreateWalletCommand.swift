@@ -73,7 +73,7 @@ public final class CreateWalletCommand: Command {
 			case .loaded:
 				return .alreadyCreated
 			case .purged:
-				return .cardIsPurged
+				return .walletIsPurged
 			}
 		}
 		

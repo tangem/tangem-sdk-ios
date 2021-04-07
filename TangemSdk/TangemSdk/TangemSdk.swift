@@ -100,11 +100,6 @@ public final class TangemSdk {
         sign(cardId: cardId, hashes: [hash], walletPublicKey: walletPublicKey, initialMessage: initialMessage) { (result) in
             switch result {
             case .success(let signatures):
-                guard signatures.count == 1 else {
-                    completion(.failure(.notValidSignedSignatureSize))
-                    return
-                }
-                
                 completion(.success(signatures[0]))
             case .failure(let error):
                 completion(.failure(error))

@@ -15,7 +15,7 @@ public struct SignResponse: JSONStringConvertible {
     /// Signed hashes (array of resulting signatures)
     public let signatures: [Data]
     /// Remaining number of sign operations before the wallet will stop signing transactions.
-    public let walletRemainingSignatures: Int
+    public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in sign command responses.
     public let walletSignedHashes: Int?
 }
@@ -35,10 +35,11 @@ public final class SignCommand: Command {
     private let walletIndex: WalletIndex
     private let hashes: [Data]
     
-    private var lastSignResponse: SignResponse!
-    private var responces: [Data] = []
-    private var respondedSignature: Data = Data()
-    private var currentChunk = 0
+    private var signatures: [Data] = []
+    
+    private var lastChunkNumber: Int {
+        signatures.count / chunkSize
+    }
     private lazy var chunkSize: Int = {
         return NfcUtils.isPoorNfcQualityDevice ? 2 : 10
     }()
@@ -130,32 +131,23 @@ public final class SignCommand: Command {
     }
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
-        if currentChunk == numberOfChunks {
-            do {
-                let parsed = try SignatureParser.parseSignedSignature(respondedSignature)
-                completion(.success(SignResponse(cardId: lastSignResponse.cardId,
-                                                 signatures: parsed,
-                                                 walletRemainingSignatures: lastSignResponse.walletRemainingSignatures,
-                                                 walletSignedHashes: lastSignResponse.walletSignedHashes)))
-                return
-            } catch {
-                completion(.failure(error as! TangemSdkError))
-                return
-            }
-        }
-        
         if numberOfChunks > 1 {
-            session.viewDelegate.showAlertMessage("Signing part \(currentChunk + 1) of \(numberOfChunks)")
+            session.viewDelegate.showAlertMessage("Signing part \(lastChunkNumber + 1) of \(numberOfChunks)")
         }
         
         transieve(in: session) { result in
             switch result {
             case .success(let response):
-                self.respondedSignature += response.signatures.joined()
-                self.currentChunk += 1
-                if self.currentChunk != self.numberOfChunks {
-                    session.restartPolling()
+                self.signatures.append(contentsOf: response.signatures)
+                if self.signatures.count == self.hashes.count {
+                    completion(.success(SignResponse(cardId: response.cardId,
+                                                     signatures: self.signatures,
+                                                     walletRemainingSignatures: response.walletRemainingSignatures,
+                                                     walletSignedHashes: response.walletSignedHashes)))
+                    return
                 }
+                
+                session.restartPolling()
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -200,17 +192,31 @@ public final class SignCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
+        let splittedSignatures = splitSignedSignature(try decoder.decode(.walletSignature), numberOfSignatures: getChunk().underestimatedCount)
         let resp = SignResponse(cardId: try decoder.decode(.cardId),
-                                signatures: [try decoder.decode(.walletSignature)],
-                                walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
+                                signatures: splittedSignatures,
+                                walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
                                 walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
-        lastSignResponse = resp
         return resp
     }
     
     private func getChunk() -> Range<Int> {
-        let from = currentChunk * chunkSize
+        let from = lastChunkNumber * chunkSize
         let to = min(from + chunkSize, hashes.count)
         return from..<to
+    }
+    
+    private func splitSignedSignature(_ signature: Data, numberOfSignatures: Int) -> [Data] {
+        var signatures = [Data]()
+        let signatureSize = signature.count / numberOfSignatures
+        for index in 0..<numberOfSignatures {
+            let offsetMin = index * signatureSize
+            let offsetMax = offsetMin + signatureSize
+            
+            let sig = signature[offsetMin..<offsetMax]
+            signatures.append(sig)
+        }
+        
+        return signatures
     }
 }

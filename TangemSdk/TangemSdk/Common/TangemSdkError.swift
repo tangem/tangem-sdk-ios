@@ -252,10 +252,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	case walletNotFound
 	case cardReadWrongWallet
     case cardWithMaxZeroWallets
-    
-    // MARK: Utils errors
-    
-    case notValidSignedSignatureSize
 
     public var code: Int {
         switch self {
@@ -356,7 +352,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
-        case .notValidSignedSignatureSize: return 50013
             
         case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
         

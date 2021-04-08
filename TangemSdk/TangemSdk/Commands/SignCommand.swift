@@ -37,7 +37,7 @@ public final class SignCommand: Command {
     
     private var signatures: [Data] = []
     
-    private var lastChunkNumber: Int {
+    private var currentChunkNumber: Int {
         signatures.count / chunkSize
     }
     private lazy var chunkSize: Int = {
@@ -132,7 +132,7 @@ public final class SignCommand: Command {
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if numberOfChunks > 1 {
-            session.viewDelegate.showAlertMessage("Signing part \(lastChunkNumber + 1) of \(numberOfChunks)")
+            session.viewDelegate.showAlertMessage("Signing part \(currentChunkNumber + 1) of \(numberOfChunks)")
         }
         
         transieve(in: session) { result in
@@ -201,7 +201,7 @@ public final class SignCommand: Command {
     }
     
     private func getChunk() -> Range<Int> {
-        let from = lastChunkNumber * chunkSize
+        let from = currentChunkNumber * chunkSize
         let to = min(from + chunkSize, hashes.count)
         return from..<to
     }

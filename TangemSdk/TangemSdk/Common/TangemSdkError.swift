@@ -124,7 +124,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a `SignCommand` receives hashes of different lengths for signature.
     case hashSizeMustBeEqual
     
-    case cardIsEmpty
+    case walletIsNotCreated
     
     case signHashesNotAvailable
     
@@ -141,7 +141,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case notActivated
     
-    case cardIsPurged
+    case walletIsPurged
     
     case pin2OrCvcRequired
     
@@ -297,7 +297,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         
         case .notPersonalized: return 40001
         case .notActivated: return 40002
-        case .cardIsPurged: return 40003
+        case .walletIsPurged: return 40003
         case .pin2OrCvcRequired: return 40004
         case .verificationFailed: return 40005
         case .dataSizeTooLarge: return 40006
@@ -332,14 +332,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .noRemainingSignatures: return 40901
         case .emptyHashes: return 40902
         case .hashSizeMustBeEqual: return 40903
-        case .cardIsEmpty: return 40904
+        case .walletIsNotCreated: return 40904
         case .signHashesNotAvailable: return 40905
         case .tooManyHashesInOneTransaction: return 40906
             
         case .extendedDataSizeTooLarge: return 41101
             
         // MARK: 5xxxx Errors
-        // SDK error. Errors, that occurred in the apper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
+        // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001
         case .userCancelled: return 50002
         case .busy: return 50003
@@ -394,7 +394,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cannotBeDepersonalized: return "error_cannot_be_depersonalized".localized
         case .cardError: return "error_card_error".localized
         case .walletError: return "error_wallet_error".localized
-        case .cardIsEmpty, .cardIsPurged: return "error_card_is_empty".localized
+        case .walletIsNotCreated: return "error_wallet_is_not_created".localized
+        case .walletIsPurged: return "error_wallet_is_purged".localized
         case .dataCannotBeWritten: return "error_data_cannot_be_written".localized
         case .dataSizeTooLarge: return "error_data_size_too_large".localized
         case .emptyHashes: return "error_empty_hashes".localized

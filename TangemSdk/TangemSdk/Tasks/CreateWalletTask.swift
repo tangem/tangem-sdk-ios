@@ -52,8 +52,8 @@ public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable {
 		
 		// This check need to exclude cases when WalletConfig parameters is added but card has COS lower than 4.0
 		if session.environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData {
-			if let config = config {
-				curve = config.curveId
+            if let configCurve = config?.curveId {
+				curve = configCurve
 			}
 		}
 

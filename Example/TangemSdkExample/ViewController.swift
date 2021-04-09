@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var walletIndexLabel: UILabel!
     @IBOutlet weak var walletMaxIndexLabel: UILabel!
     @IBOutlet weak var walletIndexSlider: UISlider!
+    @IBOutlet weak var isReusableSwitch: UISwitch!
     @IBOutlet weak var prohibitPurgeWalletSwitch: UISwitch!
     
     lazy var tangemSdk: TangemSdk = {
@@ -34,6 +35,7 @@ class ViewController: UIViewController {
     var savedFiles: [File]?
     var filesDataCounter: Int?
     var prohibitPurgeWallet: Bool = false
+    var isReusableWallet: Bool = true
     
     var walletIndex: Int = 0
     var walIn: WalletIndex {
@@ -58,6 +60,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         prohibitPurgeWalletSwitch.isOn = prohibitPurgeWallet
+        isReusableSwitch.isOn = isReusableWallet
     }
     
     private func updateWalletIndex(to index: Int) {
@@ -67,6 +70,10 @@ class ViewController: UIViewController {
     
     @IBAction func prohibitPurgeWalletChanged(_ sender: UISwitch) {
         prohibitPurgeWallet = sender.isOn
+    }
+    
+    @IBAction func isReusableSwitchChanged(_ sender: UISwitch) {
+        isReusableWallet = sender.isOn
     }
     
     @IBAction func walletIndexUpdate(_ sender: UISlider) {
@@ -251,7 +258,7 @@ class ViewController: UIViewController {
             default:
                 curve = .secp256k1
             }
-            walletConfig = WalletConfig(isReusable: false, prohibitPurgeWallet: prohibitPurgeWallet, curveId: curve, signingMethods: .signHash)
+            walletConfig = WalletConfig(isReusable: isReusableWallet, prohibitPurgeWallet: prohibitPurgeWallet, curveId: curve, signingMethods: .signHash)
         }
         
         tangemSdk.createWallet(config: walletConfig, cardId: cardId) { [unowned self] result in

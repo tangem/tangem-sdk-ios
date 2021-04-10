@@ -14,39 +14,32 @@ public struct ReadFilesResponse: JSONStringConvertible {
 }
 
 @available (iOS 13.0, *)
-public struct ReadFilesTaskSettings {
-	let readPrivateFiles: Bool
-	let readSettings: Set<ReadFileCommandSettings>
-	
-	public init(readPrivateFiles: Bool, readSettings: Set<ReadFileCommandSettings> = []) {
-		self.readPrivateFiles = readPrivateFiles
-		self.readSettings = readSettings
-	}
-}
-
-@available (iOS 13.0, *)
 public class ReadFilesTask: CardSessionRunnable {
 	
 	public typealias CommandResponse = ReadFilesResponse
 	
-	public var requiresPin2: Bool { settings.readPrivateFiles }
+	public var requiresPin2: Bool { readPrivateFiles }
 	
-	private let settings: ReadFilesTaskSettings
-	
-	private var fileIndex: Int
+    private let readPrivateFiles: Bool
+    private let indicies: [Int]
+	private var index: Int = 0
 	private var files: [File] = []
 	
-	public init(settings: ReadFilesTaskSettings, fileIndex: Int = 0) {
-		self.settings = settings
-		self.fileIndex = fileIndex
+    public init(readPrivateFiles: Bool, indicies: [Int]? = nil) {
+        self.readPrivateFiles = readPrivateFiles
+		self.indicies = indicies ?? []
 	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
-		performReadFileDataCommand(session: session, completion: completion)
+        if indicies.isEmpty {
+            readAllFiles(session: session, completion: completion)
+        } else {
+            readSpecifiedFiles(indicies: indicies, session: session, completion: completion)
+        }
 	}
 	
-	private func performReadFileDataCommand(session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
-		let command = ReadFileCommand(fileIndex: fileIndex, readPrivateFiles: settings.readPrivateFiles)
+	private func readAllFiles(session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
+		let command = ReadFileCommand(fileIndex: index, readPrivateFiles: readPrivateFiles)
 		command.run(in: session) { (result) in
 			switch result {
 			case .success(let response):
@@ -54,8 +47,8 @@ public class ReadFilesTask: CardSessionRunnable {
 					let file = File(response: response)
 					self.files.append(file)
 				}
-				self.fileIndex = response.fileIndex + 1
-				self.performReadFileDataCommand(session: session, completion: completion)
+				self.index = response.fileIndex + 1
+				self.readAllFiles(session: session, completion: completion)
 			case .failure(let error):
 				if case TangemSdkError.fileNotFound = error {
                     Log.debug("Receive files not found error. Files: \(self.files)")
@@ -66,5 +59,27 @@ public class ReadFilesTask: CardSessionRunnable {
 			}
 		}
 	}
+    
+    private func readSpecifiedFiles(indicies: [Int], session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
+        let command = ReadFileCommand(fileIndex: indicies[index], readPrivateFiles: readPrivateFiles)
+        command.run(in: session) { (result) in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let response):
+                let file = File(response: response)
+                self.files.append(file)
+                
+                if self.index == indicies.last {
+                    completion(.success(ReadFilesResponse(files: self.files)))
+                    return
+                }
+                
+                self.index += 1
+                self.readSpecifiedFiles(indicies: indicies, session: session, completion: completion)
+            }
+        }
+    }
 	
 }
+

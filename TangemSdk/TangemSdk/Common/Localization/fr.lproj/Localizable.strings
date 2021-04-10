@@ -69,7 +69,8 @@
 "error_no_remaining_signatures" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a atteint sa limite de signatures";
 "error_empty_hashes" = "Il n'y a rien à signer ici";
 "error_cannot_be_signed" = "Ces données ne peuvent pas être signées";
-"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
+"error_wallet_is_not_created" = "The operation can't be completed. Wallet is not created.";
+"error_wallet_is_purged" = "The operation can't be completed. Wallet is purged and can't be created again.";
 "error_not_personalized" = "Cette carte n'a pas été personnalisée";
 "error_not_activated" = "Cette carte n'a pas été activée";
 "error_verification_failed" = "Erreur de validation des données";

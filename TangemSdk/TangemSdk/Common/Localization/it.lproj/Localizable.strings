@@ -118,7 +118,8 @@
 "error_no_remaining_signatures" = "Non puoi firmare dati con questo portafoglio perché la carta ha raggiunto il limite di firma";
 "error_empty_hashes" = "Non c' è nulla da firmare qui";
 "error_cannot_be_signed" = "Questi dati non possono essere firmati";
-"error_card_is_empty" = "The operation can’t be completed. There is no wallet on the card.";
+"error_wallet_is_not_created" = "The operation can't be completed. Wallet is not created.";
+"error_wallet_is_purged" = "The operation can't be completed. Wallet is purged and can't be created again.";
 "error_not_personalized" = "Questa carta non può essere personalizzata ";
 "error_not_activated" = "Questa carta non è stata attivata";
 "error_verification_failed" = "Non è stata eseguita la verifica dei dati";

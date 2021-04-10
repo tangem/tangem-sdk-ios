@@ -1,3 +1,4 @@
+
 [![Version](https://img.shields.io/cocoapods/v/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![License](https://img.shields.io/cocoapods/l/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![Platform](https://img.shields.io/cocoapods/p/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
@@ -8,19 +9,20 @@
 The Tangem card is a self-custodial hardware wallet for blockchain assets. The main functions of Tangem cards are to securely create and store a private key from a blockchain wallet and sign blockchain transactions. The Tangem card does not allow users to import/export, backup/restore private keys, thereby guaranteeing that the wallet is unique and unclonable. 
 
 - [Getting Started](#getting-started)
-	- [Requirements](#requirements)
-	- [Installation](#installation)
-		- [CocoaPods](#cocoapods)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+    - [CocoaPods](#cocoapods)
 - [Usage](#usage)
-	- [Initialization](#initialization)
-	- [Basic usage](#basic-usage)
-		- [Scan card](#scan-card)
-		- [Sign](#sign-hashes)
-    - [Advanced usage](#advanced-usage)
-        - [Starting custom session](#starting-custom-session)
+  - [Initialization](#initialization)
+  - [Basic usage](#basic-usage)
+    - [Scan card](#scan-card)
+    - [Sign hash](#sign-hash)
+    - [Sign hashes](#sign-hashes)
+  - [Advanced usage](#advanced-usage)
+    - [Starting custom session](#starting-custom-session)
 - [Customization](#customization)
-	- [UI](#ui)
-	- [Localization](#localization)
+  - [UI](#ui)
+  - [Localization](#localization)
 
 
 ## Getting Started
@@ -34,7 +36,8 @@ SDK can be imported to iOS 11, but it will work only since iOS 13.
 
 1) Configure your app to detect NFC tags. Turn on Near Field Communication Tag Reading under the Capabilities tab for the project’s target (see [Add a capability to a target](https://help.apple.com/xcode/mac/current/#/dev88ff319e7)).
 
-2) Add the [NFCReaderUsageDescription](https://developer.apple.com/documentation/bundleresources/information_property_list/nfcreaderusagedescription) key as a string item to the Info.plist file. For the value, enter a string that describes the reason the app needs access to the device’s NFC reader: 
+2) Add the [NFCReaderUsageDescription](https://developer.apple.com/documentation/bundleresources/information_property_list/nfcreaderusagedescription) key as a string item to the Info.plist file. For the value, enter a string that describes the reason the app needs access to the device’s NFC reader:
+
 ```xml
 <key>NFCReaderUsageDescription</key>
 <string>Some reason</string>
@@ -114,17 +117,45 @@ tangemSdk.scanCard { result in
 }
 ```
 
-#### Sign
-Method `sign(hashes: hashes, cardId: cardId)` allows you to sign one or multiple hashes. The SIGN command will return a corresponding array of signatures.
+#### Sign hash
+Method `sign(hash: hash, cardId: cardId)` allows you to sign single hash. The SIGN command will return a corresponding signature.
 
 **Arguments:**
 
 | Parameter | Description |
 | ------------ | ------------ |
+| hash | Hash to be signed by card |
 | cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+
+
+Example:
+```swift
+// Creates random hash with length = 32
+let hash = Data((0..<32).map { _ in UInt8(arc4random_uniform(255)) })
+let cardId = ...
+
+tangemSdk.sign(hash: hash, cardId: cardId) { result in
+    switch result {
+    case .success(let signResponse):
+        print("Result: \(signResponse)")
+    case .failure(let error):
+        print("Completed with error: \(error.localizedDescription), details: \(error)")
+    }
+}
+```
+
+#### Sign hashes
+Method `sign(hashes: hashes, cardId: cardId)` allows you to sign multiple hashes. The SIGN command will return a corresponding array of signatures.
+
+**Arguments:**
+
+| Parameter | Description |
+| ------------ | ------------ |
 | hashes | Array of hashes to be signed by card |
+| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
 
 
+Example:
 ```swift
 let hashes = [hash1, hash2]
 let cardId = ...
@@ -144,7 +175,7 @@ tangemSdk.sign(hashes: hashes, cardId: cardId) { result in
 Method `tangemSdk.createWallet(cardId: cardId)` will create a new wallet on the card. A key pair `WalletPublicKey` / `WalletPrivateKey` is generated and securely stored in the card.
 
 ##### Purge Wallet
-Method `tangemSdk.purgeWallet(cardId: cardId)` deletes all wallet data.
+Method `tangemSdk.purgeWallet(walletPublicKey: Data, cardId: cardId)` searching wallet with specified `WalletPublicKey` and deletes all information related to this wallet.
 
 #### Issuer data
 Card has a special 512-byte memory block to securely store and update information in COS. For example, this mechanism could be employed for enabling off-line validation of the wallet balance and attesting of cards by the issuer (in addition to Tangem’s attestation). The issuer should define the purpose of use, payload, and format of Issuer Data field. Note that Issuer_Data is never changed or parsed by the executable code the Tangem COS. 

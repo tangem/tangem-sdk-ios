@@ -10,26 +10,28 @@ import Foundation
 
 /// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
 public struct WalletConfig {
-	let isReusable: Bool
-	let prohibitPurgeWallet: Bool
-	let curveId: EllipticCurve
-	let signingMethods: SigningMethod
+	let isReusable: Bool?
+	let prohibitPurgeWallet: Bool?
+	let curveId: EllipticCurve?
+	let signingMethods: SigningMethod?
 	
-	public init(isReusable: Bool, prohibitPurgeWallet: Bool, curveId: EllipticCurve, signingMethods: SigningMethod) {
+	public init(isReusable: Bool? = nil, prohibitPurgeWallet: Bool? = nil, curveId: EllipticCurve? = nil, signingMethods: SigningMethod? = nil) {
 		self.isReusable = isReusable
 		self.prohibitPurgeWallet = prohibitPurgeWallet
 		self.curveId = curveId
 		self.signingMethods = signingMethods
 	}
 	
-	var settingsMask: WalletSettingsMask {
+	var settingsMask: WalletSettingsMask? {
+        guard isReusable != nil || prohibitPurgeWallet != nil else { return nil }
+        
 		let builder = WalletSettingsMaskBuilder()
 		
-		if isReusable {
+        if isReusable ?? false {
 			builder.add(.isReusable)
 		}
 		
-		if prohibitPurgeWallet {
+		if prohibitPurgeWallet ?? false {
 			builder.add(.prohibitPurgeWallet)
 		}
 		

@@ -15,6 +15,8 @@ jobs:
         
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
       
     - name: Create release branch
       run: git checkout -b release/v${{ github.event.inputs.versionName }}
@@ -23,10 +25,20 @@ jobs:
       run: |
        git config user.name "Tangem Bot"
        git config user.email mobile@tangem.com
-       
+   
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+      
+    - name: Bump version in podspec
+      run: fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ github.event.inputs.versionName }}
+   
     - name: Change version
       run: |
        echo ${{ github.event.inputs.versionName }} > VERSION
+       git fetch origin master:master
+       git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative origin/master..${{ steps.extract_branch.outputs.branch }} > CHANGELOG
        git add VERSION
        git commit -m "Prepare release v${{ github.event.inputs.versionName }}"
        

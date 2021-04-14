@@ -1,8 +1,8 @@
 name: Publish Release
 
 on:
-  #push:
-  #  branches: [ master ]
+  push:
+    branches: [ master ]
   workflow_dispatch:
      
 jobs:
@@ -35,6 +35,14 @@ jobs:
       - name: Bump version in podspec
         run: fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
         
+      - name: Deploy to Cocoapods
+        run: |
+          set -eo pipefail
+          pod lib lint --allow-warnings
+          pod trunk push --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        
       - name: Create pull request to develop
         uses: actions/github-script@v3
         with:
@@ -43,7 +51,7 @@ jobs:
             github.git.createPullRequest({
               owner: 'context.repo.owner',
               repo: 'context.repo.repo',
-              title: 'Release v${{ github.event.inputs.versionName }}',
-              head: 'release/v${{ github.event.inputs.versionName }}',
+              title: 'Sync develop with master',
+              head: 'master',
               base: 'develop' 
             })

@@ -29,6 +29,7 @@ jobs:
           tag_name: v${{ env.VERSION }}
           release_name: Release v${{ env.VERSION }}
           commitish: release/v${{ env.VERSION }}
+          body_path: CHANGELOG
           draft: false
           prerelease: false    
           
@@ -51,7 +52,7 @@ jobs:
             github.git.createPullRequest({
               owner: 'context.repo.owner',
               repo: 'context.repo.repo',
-              title: 'Sync develop with master',
-              head: 'master',
+              title: '',
+              head: 'release/v${{ github.event.inputs.versionName }}',
               base: 'develop' 
             })

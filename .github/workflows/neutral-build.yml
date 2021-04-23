@@ -29,6 +29,7 @@ jobs:
             ref: "refs/tags/${{ steps.extract_branch.outputs.branch }}-${{ github.run_number }}",
             sha: context.sha
           })
+          
     - name: Build notification
       if: always()
       uses: adamkdean/simple-slack-notify@master

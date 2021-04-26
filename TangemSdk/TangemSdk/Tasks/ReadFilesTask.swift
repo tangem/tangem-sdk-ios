@@ -21,20 +21,20 @@ public class ReadFilesTask: CardSessionRunnable {
 	public var requiresPin2: Bool { readPrivateFiles }
 	
     private let readPrivateFiles: Bool
-    private let indicies: [Int]
+    private let indices: [Int]
 	private var index: Int = 0
 	private var files: [File] = []
 	
-    public init(readPrivateFiles: Bool, indicies: [Int]? = nil) {
+    public init(readPrivateFiles: Bool, indices: [Int]? = nil) {
         self.readPrivateFiles = readPrivateFiles
-		self.indicies = indicies ?? []
+		self.indices = indices ?? []
 	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
-        if indicies.isEmpty {
+        if indices.isEmpty {
             readAllFiles(session: session, completion: completion)
         } else {
-            readSpecifiedFiles(indicies: indicies, session: session, completion: completion)
+            readSpecifiedFiles(indices: indices, session: session, completion: completion)
         }
 	}
 	
@@ -60,8 +60,8 @@ public class ReadFilesTask: CardSessionRunnable {
 		}
 	}
     
-    private func readSpecifiedFiles(indicies: [Int], session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
-        let command = ReadFileCommand(fileIndex: indicies[index], readPrivateFiles: readPrivateFiles)
+    private func readSpecifiedFiles(indices: [Int], session: CardSession, completion: @escaping CompletionResult<ReadFilesResponse>) {
+        let command = ReadFileCommand(fileIndex: indices[index], readPrivateFiles: readPrivateFiles)
         command.run(in: session) { (result) in
             switch result {
             case .failure(let error):
@@ -70,13 +70,13 @@ public class ReadFilesTask: CardSessionRunnable {
                 let file = File(response: response)
                 self.files.append(file)
                 
-                if self.index == indicies.last {
+                if self.index == indices.last {
                     completion(.success(ReadFilesResponse(files: self.files)))
                     return
                 }
                 
                 self.index += 1
-                self.readSpecifiedFiles(indicies: indicies, session: session, completion: completion)
+                self.readSpecifiedFiles(indices: indices, session: session, completion: completion)
             }
         }
     }

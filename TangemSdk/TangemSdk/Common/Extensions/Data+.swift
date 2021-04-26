@@ -10,6 +10,9 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
+extension Array: JSONStringConvertible where Element == Data { }
+extension Data: JSONStringConvertible {}
+
 extension Data {
     public var description: String {
         return asHexString()

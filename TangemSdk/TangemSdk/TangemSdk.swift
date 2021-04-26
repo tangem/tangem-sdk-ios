@@ -478,16 +478,16 @@ public final class TangemSdk {
     /// - Warning: Command available only for cards with COS 3.29 and higher
     /// - Parameters:
     ///   - readPrivateFiles: If true - all files saved on card will be read otherwise
-    ///   - indicies: Indicies of files that should be read from card. If not specifies all files will be read.
+    ///   - indices: indices of files that should be read from card. If not specifies all files will be read.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ReadFilesResponse,TangemSdkError>`
     public func readFiles(readPrivateFiles: Bool = false,
-                          indicies: [Int]? = nil,
+                          indices: [Int]? = nil,
                           cardId: String? = nil,
                           initialMessage: Message? = nil,
                           completion: @escaping CompletionResult<ReadFilesResponse>) {
-        let task = ReadFilesTask(readPrivateFiles: readPrivateFiles, indicies: indicies)
+        let task = ReadFilesTask(readPrivateFiles: readPrivateFiles, indices: indices)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

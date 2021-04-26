@@ -63,6 +63,7 @@ public struct Card: JSONStringConvertible {
 	public var pin2IsDefault: Bool? = nil
 	
 	/// Index of corresponding wallet
+    /// TODO remove
 	public var walletIndex: Int? = nil
 	/// Maximum number of wallets that can be created for this card
 	public var walletsCount: Int? = nil

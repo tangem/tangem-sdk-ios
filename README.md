@@ -239,47 +239,77 @@ For instance, you need to sign some hashes, send transaction, and then put some 
 | ------------ | ------------ |
 | cardId | *(Optional)* If cardId is passed, user will be asked to tap the particular card |
 | initialMessage | *(Optional)* Custom text to show to user before he tapped the card |
-| onSessionStarted | `@escaping (CardSession, SessionError?) -> Void` Closure that will be called after card is connected |
+| callback | `@escaping (CardSession, TangemSdkError?) -> Void` Closure that will be called after card is connected |
 
-Closure `onSessionStarted` runs with two parameters: `CardSession` and `SessionError`. If starting session is failed, there will be `SessionError`. You need to check it first to proceed with the other commands.
+Closure `callback` contain two parameters: `CardSession` and `TangemSdkError`. If session is failed to start, there will be `TangemSdkError`. You need to check it first to proceed with the other commands.
 After you finish with everything, close the session by calling `session.stop()` for success result or `session.stop(error: error)` for failure.
 
 ```swift
+let tangemSdk = TangemSdk()
+
 tangemSdk.startSession(cardId: nil) { session, error in
-    //If session started wiithour errors
-    if let error = error {
+    // Logs messages on main thread
+    func log(_ message: Any) {
         DispatchQueue.main.async {
-            //Handle error here
+            // You can put here all your logging logic
+            print(message)
         }
+    }
+    
+    // Check if error occured while starting session
+    if let error = error {
+        log(error)
         return
     }
     
-    let readCommand = ReadCommand()
-    readCommand!.run(in: session, completion: { result in
-        switch result {
-        case .success(let card):
-            // Switch to UI thread manually
-            DispatchQueue.main.async { 
-                self.log(response1)
+    // Log error and stop session
+    func logErrorAndStop(_ error: Error) {
+        log(error)
+        session.stop(error: error)
+    }
+    
+    func signHash(walletPublicKey: Data) {
+        // Creates random data for signing
+        let hash = Data((0..<32).map { _ in UInt8(arc4random_uniform(255)) })
+        let sign = SignCommand(hashes: [hash], walletIndex: .publicKey(walletPublicKey))
+        sign.run(in: session) { signResult in
+            switch signResult {
+            case .success(let response):
+                // Log successful SignCommand and stop session
+                log("Step 3 result. Sign hash response: \(response)")
+                session.stop()
+            case .failure(let error):
+                logErrorAndStop(error)
             }
-            let checkWalletCommand = CheckWalletCommand(...)
-            //WHY-! ?
-            checkWalletCommand!.run(in: session, completion: { result in
-                switch result {
-                case .success(let checkWalletResult):
-                    DispatchQueue.main.async {
-                        self.log(checkWalletResult)
-                    }
-                    // Close session manually
-                    session.stop() 
-                case .failure(let error):
-                    print(error)
-                }
-            })
-        case .failure(let error):
-            print(error)
         }
-    })
+    }
+    
+    log("Step 1 result. Read card: \(session.environment.card)")
+    // If wallet created perform CheckWalletCommand and if wallet passed check - sign hash
+    if let wallet = session.environment.card?.wallets.first, wallet.status == .loaded, let curve = wallet.curve, let pubkey = wallet.publicKey {
+        let checkWallet = CheckWalletCommand(curve: curve, publicKey: pubkey)
+        checkWallet.run(in: session) { result in
+            switch result {
+            case .success(let checkWalletResponse):
+                log("Step 2 result. Check wallet response: \(checkWalletResponse)")
+                signHash(walletPublicKey: pubkey)
+            case .failure(let error):
+                logErrorAndStop(error)
+            }
+        }
+    // If wallet at first index is empty - create wallet new wallet with Secp256k1 curve and then sign hash
+    } else {
+        let createWallet = CreateWalletTask(config: WalletConfig(curveId: .secp256k1))
+        createWallet.run(in: session) { createWalletResult in
+            switch createWalletResult {
+            case .success(let createWalletResponse):
+                log("Step 2 result. Create wallet response: \(createWalletResponse)")
+                signHash(walletPublicKey: createWalletResponse.walletPublicKey)
+            case .failure(let error):
+                logErrorAndStop(error)
+            }
+        }
+    }
 }
 ```
 

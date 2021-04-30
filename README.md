@@ -72,15 +72,14 @@ pod 'TangemSdk'
 
 Then run `pod install`.
 
-For any file in which you'd like to use the Tangem SDK in, don't forget to
-import the framework with `import TangemSdk`.
+For any file in which you'd like to use the Tangem SDK use `import TangemSdk`.
 
 ## Usage
 
 Tangem SDK is a self-sufficient solution that implements a card abstraction model, methods of interaction with the card and interactions with the user via UI.
 
 ### Initialization
-To get started, you need to create an instance of the `TangemSdk` class. It provides the simple way of interacting with the card.
+To get started, you need to create an instance of the `TangemSdk` class. 
 
 ```swift
 let sdk = TangemSdk()
@@ -92,17 +91,20 @@ You can also use a custom initializer, which allows you to pass your implementat
 You can read more about this in [Customization](#сustomization).
 
 ### Basic usage
-The easiest way to use the SDK is to call basic methods. All the basic methods you can find in `BasicUsage` extension of `TangemSdk` class. The basic method performs one or more operations and, after that, calls completion block with success or error.
+The easiest way to use the SDK is to call basic functions that implemented in `TangemSdk` class. Functions performs one or more commands and, after that, calls completion block with success or error result.
 
-Most of functions have the optional `cardId` argument, if it's passed the operation, it can be performed only with the card with the same card ID. If card is wrong, user will be asked to take the right card.
-We recommend to set this argument if there is no special need to use any card.
+Most functions have an optional `cardId` argument. If it has been passed, the command can only be executed with a card that has a matching `cardId`. If the user uses a card with a different `cardId`, the SDK will ask the user to attach the correct card with the same `cardId`.
 
 When calling basic methods, there is no need to show the error to the user, since it will be displayed on the NFC popup before it's hidden.
 
-**IMPORTANT**: You can't perform more then one basic function during the NFC session. In case you need to perform your own sequence of commands, take a look at [Advanced usage](#advanced-usage)
+**IMPORTANT**: You can't perform more than one basic function during the NFC session. In case you need to perform your own sequence of commands, take a look at [Advanced usage](#advanced-usage)
+
+#### Common 
+
+`CompletionResult<T>` - `typealias` of `(Result<T, TangemSdkError>) -> Void`
 
 #### Scan card 
-Method `scanCard()` is needed to obtain information from the Tangem card. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.
+Method `scanCard()` is used to obtain information from the Tangem card. Optionally, if the card contains a wallet (private and public key pair), it proves that the wallet owns a private key that corresponds to a public one.
 
 Example:
 
@@ -118,113 +120,133 @@ tangemSdk.scanCard { result in
 ```
 
 #### Sign hash
-Method `sign(hash: hash, cardId: cardId)` allows you to sign single hash. The SIGN command will return a corresponding signature.
+Method `sign(hash: Data, walletPublicKey: Data, cardId: String?)` allows you to sign a single hash with a wallet that has specified `walletPublicKey`. The SIGN command will return a corresponding signature. If card failed to find wallet with target `walletPublicKey` SDK will return `WalletNotFound` error
 
 **Arguments:**
 
-| Parameter | Description |
-| ------------ | ------------ |
-| hash | Hash to be signed by card |
-| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| hash | `Data` | Hash to be signed by card |
+| walletPublicKey | `Data` | Public key of wallet that should sign hash |
+| cardId | `String?` | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| completion | `CompletionResult<Data>` | *(@escaping)* Returns signature of `hash`
 
 
 Example:
 ```swift
 // Creates random hash with length = 32
 let hash = Data((0..<32).map { _ in UInt8(arc4random_uniform(255)) })
-let cardId = ...
+let cardId = "AA00000000000000"
+let walletPublicKey = Data()
 
-tangemSdk.sign(hash: hash, cardId: cardId) { result in
+tangemSdk.sign(hash: hash, walletPublicKey: walletPublicKey, cardId: cardId) { result in
     switch result {
     case .success(let signResponse):
         print("Result: \(signResponse)")
     case .failure(let error):
-        print("Completed with error: \(error.localizedDescription), details: \(error)")
+        print("Completed with error: \(error.localizedDescription)")
     }
 }
 ```
 
 #### Sign hashes
-Method `sign(hashes: hashes, cardId: cardId)` allows you to sign multiple hashes. The SIGN command will return a corresponding array of signatures.
+Method `sign(hashes: [Data], walletPublicKey: Data, cardId: String)` allows you to sign multiple hashes. The SIGN command will return a corresponding array of signatures. If card failed to find wallet with target `walletPublicKey` SDK will return `WalletNotFound` error
 
 **Arguments:**
 
-| Parameter | Description |
-| ------------ | ------------ |
-| hashes | Array of hashes to be signed by card |
-| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
-
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| hashes | `[Data] `| Array of hashes to be signed by card |
+| walletPublicKey | `Data` | Public key of wallet that should sign hashes |
+| cardId | `String?` |*(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| completion | `CompletionResult<[Data]>` | *(@escaping)* Returns array of signatures` |
 
 Example:
 ```swift
 let hashes = [hash1, hash2]
-let cardId = ...
+let cardId = "AA00000000000000"
+let walletPublicKey = Data()
 
-tangemSdk.sign(hashes: hashes, cardId: cardId) { result in
+tangemSdk.sign(hashes: hashes, walletPublicKey: walletPublickey, cardId: cardId) { result in
     switch result {
     case .success(let signResponse):
         print("Result: \(signResponse)")
     case .failure(let error):
-        print("Completed with error: \(error.localizedDescription), details: \(error)")
+        print("Completed with error: \(error.localizedDescription)")
     }
 }
 ```
 
 #### Wallet
 ##### Create Wallet
-Method `tangemSdk.createWallet(cardId: cardId)` will create a new wallet on the card. A key pair `WalletPublicKey` / `WalletPrivateKey` is generated and securely stored in the card.
-
-##### Purge Wallet
-Method `tangemSdk.purgeWallet(walletPublicKey: Data, cardId: cardId)` searching wallet with specified `WalletPublicKey` and deletes all information related to this wallet.
-
-#### Issuer data
-Card has a special 512-byte memory block to securely store and update information in COS. For example, this mechanism could be employed for enabling off-line validation of the wallet balance and attesting of cards by the issuer (in addition to Tangem’s attestation). The issuer should define the purpose of use, payload, and format of Issuer Data field. Note that Issuer_Data is never changed or parsed by the executable code the Tangem COS. 
-
-The issuer has to generate single Issuer Data Key pair `Issuer_Data_PublicKey` / `Issuer_Data_PrivateKey`, same for all issuer’s cards. The private key Issuer_Data_PrivateKey is permanently stored in a secure back-end of the issuer (e.g. HSM). The non-secret public key Issuer_Data_PublicKey is stored both in COS (during personalization) and issuer’s host application that will use it to validate Issuer_Data field.
-
-##### Write issuer data
-Method `tangemSdk.writeIssuerData(cardId: cardId,issuerData: sampleData, issuerDataSignature: dataSignature, issuerDataCounter: counter)` writes 512-byte Issuer_Data field to the card.
+Method `tangemSdk.createWallet(cardId: String?)` will create a new wallet on the card. A key pair `WalletPublicKey` / `WalletPrivateKey` is generated and securely stored in the card.
 
 **Arguments:**
 
-| Parameter | Description |
-| ------------ | ------------ |
-| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
-| issuerData | Data to be written to the card |
-| issuerDataSignature | Issuer’s signature of issuerData with `Issuer_Data_PrivateKey` |
-| issuerDataCounter | An optional counter that protect issuer data against replay attack. When flag Protect_Issuer_Data_Against_Replay set in the card configuration then this value is mandatory and must increase on each execution of `writeIssuerData` command.  |
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| config | `WalletConfig?`| *(Optional)* Configuration of new wallet. **Note** Available only for cards with firmware version 4 and higher |
+| cardId | `String?` |*(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| completion | `CompletionResult<CreateWalletResponse>` | *(@escaping)* Returns information about new wallet |
+
+##### Purge Wallet
+Method `tangemSdk.purgeWallet(walletPublicKey: Data, cardId: String?)` searching wallet with specified `WalletPublicKey` and deletes all information related to this wallet.
+
+**Arguments:**
+
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| walletPublicKey | `Data`| Public key of wallet that should be purged |
+| cardId | `String?` |*(Optional)* If cardId is passed, the sign command will be performed only if the card  |
+| completion | `CompletionResult<PurgeWalletResponse>` | *(@escaping)* Returns information about purged wallet |
+
+#### Issuer data
+Card has a special 512-byte memory block to securely store and update information in card OS (COS). For example, this mechanism could be employed for enabling off-line validation of the wallet balance and attesting of cards by the issuer (in addition to Tangem’s attestation). The issuer should define the purpose of use, payload, and format of `IssuerData` field. Note that `IssuerData` is never changed or parsed by the executable code the Tangem COS. 
+
+The issuer has to generate single Issuer Data Key pair `IssuerDataPublicKey` / `IssuerDataPrivateKey`, same for all issuer’s cards. The private key `IssuerDataPrivateKey` is permanently stored in a secure back-end of the issuer (e.g. HSM). The non-secret public key `IssuerDataPublicKey` is stored both in COS (during personalization) and issuer’s host application that will use it to validate `IssuerData` field.
+
+##### Write issuer data
+Method `tangemSdk.writeIssuerData(issuerData: Data, issuerDataSignature: Data, issuerDataCounter: Int?, cardId: String?)` writes 512-byte `IssuerData` field to the card.
+
+**Arguments:**
+
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| issuerData | `Data` | Data to be written to the card |
+| issuerDataSignature | `Data` | Issuer’s signature of issuerData with `Issuer_Data_PrivateKey` |
+| issuerDataCounter | `Int?` | *(Optional)* Counter that protect issuer data against replay attack. When flag `ProtectIssuerDataAgainstReplay` set in the card configuration then this value is mandatory and must increase on each execution of `writeIssuerData` command.  |
+| cardId | `String?` | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
 
 ##### Write issuer extra data
-If 512 bytes are not enough, you can use method `tangemSdk.writeIssuerExtraData(cardId: cardId, issuerData: sampleData,startingSignature: startSignature,finalizingSignature: finalSig,issuerDataCounter: newCounter)` to save up to 40 kylobytes.
+If 512 bytes are not enough, you can use method `tangemSdk.writeIssuerExtraData(issuerData: Data, startingSignature: Data, finalizingSignature: Data,issuerDataCounter: Int?, cardId: String?)` to save up to 40 kylobytes.
 
-| Parameter | Description |
-| ------------ | ------------ |
-| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
-| issuerData | Data to be written to the card |
-| startingSignature | Issuer’s signature of `SHA256(cardId | Size)` or `SHA256(cardId | Size | issuerDataCounter)` with `Issuer_Data_PrivateKey` |
-| finalizingSignature | Issuer’s signature of `SHA256(cardId | issuerData)` or or `SHA256(cardId | issuerData | issuerDataCounter)` with `Issuer_Data_PrivateKey` |
-| issuerDataCounter | An optional counter that protect issuer data against replay attack. When flag Protect_Issuer_Data_Against_Replay set in the card configuration then this value is mandatory and must increase on each execution of `writeIssuerData` command.  |
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| issuerData | `Data` | Data to be written to the card |
+| startingSignature | `Data` | Issuer’s signature of `SHA256(cardId | Size)` or `SHA256(cardId | Size | issuerDataCounter)` with `IssuerDataPrivateKey` |
+| finalizingSignature | `Data` | Issuer’s signature of `SHA256(cardId | issuerData)` or or `SHA256(cardId | issuerData | issuerDataCounter)` with `IssuerDataPrivateKey` |
+| issuerDataCounter | `Int?` | *(Optional)* Counter that protect issuer data against replay attack. When flag `ProtectIssuerDataAgainstReplay` set in the card configuration then this value is mandatory and must increase on each execution of `writeIssuerData` command.  |
+| cardId | `String?` | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
 
 ##### Read issuer data
-Method `tangemSdk.readIssuerData(cardId: cardId)` returns 512-byte Issuer_Data field and its issuer’s signature.
+Method `tangemSdk.readIssuerData(cardId: cardId)` returns 512-byte `IssuerData` field and its issuer’s signature.
 
 ##### Read issuer extra data
-Method `tangemSdk.readIssuerExtraData(cardId: cardId)` ruturns Issuer_Extra_Data field.
+Method `tangemSdk.readIssuerExtraData(cardId: cardId)` ruturns `IssuerExtraData` field.
 
 #### User data
 ##### Write user data
-Method `tangemSdk.writeUserData(cardId: cardId, userData: userData, userCounter: userCounter)` write some of User_Data and User_Counter fields.
-User_Data is never changed or parsed by the executable code the Tangem COS. The App defines purpose of use, format and it's payload. For example, this field may contain cashed information from blockchain to accelerate preparing new transaction.
+Method `tangemSdk.writeUserData(userData: Data, userCounter: Int?, cardId: String?)` write some of `UserData` and `UserCounter` fields.
+`UserData` is never changed or parsed by the executable code the Tangem COS. The App defines purpose of use, format and it's payload. For example, this field may contain cashed information from blockchain to accelerate preparing new transaction.
 
-| Parameter | Description |
-| ------------ | ------------ |
-| cardId | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
-| User_Data | User data |
-| User_Counter | Counters, that initial values can be set by App and increased on every signing of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use. For example, this fields may contain blockchain nonce value. |
+| Parameter | Type | Description |
+| ------------ | ------ | ------------ |
+| userData | `Data` | Data defined by user’s App |
+| userCounter | `Int?` | *(Optional)* Counters, that initial values can be set by App and increased on every signing of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use. For example, this fields may contain blockchain nonce value. |
+| cardId | `String?` | *(Optional)* If cardId is passed, the sign command will be performed only if the card  |
 
 ##### Read user data
-Method tangemSdk.readUserData(cardId: cardId) returns User Data
-
+Method `tangemSdk.readUserData(cardId: String?)` returns User Data
 
 ### Advanced usage
 Sometimes it's needed to perform some sequence of commands during one session. 
@@ -235,11 +257,10 @@ For instance, you need to sign some hashes, send transaction, and then put some 
 
 **Arguments:**
 
-| Parameter | Description |
-| ------------ | ------------ |
-| cardId | *(Optional)* If cardId is passed, user will be asked to tap the particular card |
-| initialMessage | *(Optional)* Custom text to show to user before he tapped the card |
-| callback | `@escaping (CardSession, TangemSdkError?) -> Void` Closure that will be called after card is connected |
+| Parameter |Type | Description |
+| ------------ | ------------ | ------------ |
+| cardId | `String?` | *(Optional)* If cardId is passed, user will be asked to tap the particular card |
+| callback | `(CardSession, TangemSdkError?) -> Void` | *(@escaping)*  Closure that will be called after card is connected 
 
 Closure `callback` contain two parameters: `CardSession` and `TangemSdkError`. If session is failed to start, there will be `TangemSdkError`. You need to check it first to proceed with the other commands.
 After you finish with everything, close the session by calling `session.stop()` for success result or `session.stop(error: error)` for failure.
@@ -285,7 +306,7 @@ tangemSdk.startSession(cardId: nil) { session, error in
     }
     
     log("Step 1 result. Read card: \(session.environment.card)")
-    // If wallet created perform CheckWalletCommand and if wallet passed check - sign hash
+    // If wallet created perform CheckWalletCommand
     if let wallet = session.environment.card?.wallets.first, wallet.status == .loaded, let curve = wallet.curve, let pubkey = wallet.publicKey {
         let checkWallet = CheckWalletCommand(curve: curve, publicKey: pubkey)
         checkWallet.run(in: session) { result in
@@ -297,7 +318,7 @@ tangemSdk.startSession(cardId: nil) { session, error in
                 logErrorAndStop(error)
             }
         }
-    // If wallet at first index is empty - create wallet new wallet with Secp256k1 curve and then sign hash
+    // If there wallet at first index is empty - create wallet
     } else {
         let createWallet = CreateWalletTask(config: WalletConfig(curveId: .secp256k1))
         createWallet.run(in: session) { createWalletResult in
@@ -316,11 +337,11 @@ tangemSdk.startSession(cardId: nil) { session, error in
 
 ## Customization
 ### UI
-Tangem SDK performs the entire cycle of UI user interaction. In order to change the appearance or behavior of the UI, you are welcome provide you own implementation of the `SessionViewDelegate` protocol. After this, initialize the `TangemSdk` class with your delegate class.
+Tangem SDK performs the entire cycle of UI user interaction. In order to change the appearance or behavior of the UI, you are welcome to provide you own implementation of the `SessionViewDelegate` protocol. After this, initialize the `TangemSdk` class with your delegate class.
 
 ```swift
 let mySessionViewDelegate = MySessionViewDelegate()
-let tangemSdk = TangemSdk(viewDelegate: myCardManagerDelegate)
+let tangemSdk = TangemSdk(viewDelegate: mySessionViewDelegate)
 ```
 
 ### Localization

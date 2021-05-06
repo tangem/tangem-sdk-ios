@@ -10,8 +10,9 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
-extension Array: JSONStringConvertible where Element == Data { }
+extension Array: JSONStringConvertible where Element: JSONStringConvertible { }
 extension Data: JSONStringConvertible {}
+extension String: JSONStringConvertible { }
 
 extension Data {
     public var description: String {

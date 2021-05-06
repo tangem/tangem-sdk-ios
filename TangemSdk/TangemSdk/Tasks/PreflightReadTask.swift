@@ -17,7 +17,7 @@ public protocol PreflightReadCapable { //[REDACTED_TODO_COMMENT]
 
 extension PreflightReadCapable {
     public var needPreflightRead: Bool { true }
-    public var preflightReadSettings: PreflightReadSettings { .readCardOnly } //[REDACTED_TODO_COMMENT]
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 }
 
 /// Settings for preflight read task

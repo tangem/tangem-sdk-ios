@@ -8,15 +8,14 @@
 
 import Foundation
 
+/// Response for `WriteFilesTask`.
+/// - Parameters:
+///   - cardId: CID, Unique Tangem card ID number
+///   - fileIndices: Indicies of created files
 @available (iOS 13.0, *)
 public struct WriteFilesResponse: JSONStringConvertible {
 	public let cardId: String
 	public let filesIndices: [Int]
-}
-
-@available (iOS 13.0, *)
-public enum WriteFilesSettings {
-	case overwriteAllFiles
 }
 
 /// This task allows to write multiple files to a card.

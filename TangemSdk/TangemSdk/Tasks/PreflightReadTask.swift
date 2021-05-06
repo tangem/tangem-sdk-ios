@@ -17,7 +17,7 @@ public protocol PreflightReadCapable { //TODO: Join with CardSessionRunnable
 
 extension PreflightReadCapable {
     public var needPreflightRead: Bool { true }
-    public var preflightReadSettings: PreflightReadSettings { .readCardOnly } //TODO: make .fullCardRead by default
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 }
 
 /// Settings for preflight read task

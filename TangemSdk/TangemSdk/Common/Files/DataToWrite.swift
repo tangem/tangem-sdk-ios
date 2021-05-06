@@ -16,6 +16,8 @@ public protocol DataToWrite: FirmwareRestictible {
 	func addFinalizingTlvData(_ tlvBuilder: TlvBuilder, withEnvironment environment: SessionEnvironment) throws -> TlvBuilder
 }
 
+/// Use this type when protecting data with issuer data signature.
+/// - Note: To generate starting and finalizing signatures use `FileHashHelper`
 @available (iOS 13.0, *)
 public struct FileDataProtectedBySignature: DataToWrite {
 	public let data: Data
@@ -30,7 +32,6 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	let issuerPublicKey: Data?
 	var settings: Set<FileWriteSettings> = [.none]
 	
-	/// Use this initializer when protecting data with issuer data signature. To generate starting and finalizing signatures use `FileHashHelper`
 	public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int, issuerPublicKey: Data?) {
 		self.data = data
 		self.startingSignature = startingSignature
@@ -51,6 +52,7 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	
 }
 
+/// Use this type when protecting data with passcode
 @available (iOS 13.0, *)
 public struct FileDataProtectedByPasscode: DataToWrite {
 	public let data: Data

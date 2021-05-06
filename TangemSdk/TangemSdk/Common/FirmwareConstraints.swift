@@ -8,15 +8,18 @@
 
 import Foundation
 
-public struct FirmwareConstraints {
+/// List of card  firmware constraints. Use this information for checking if certain functionality available on scanned card or not
+public enum FirmwareConstraints {
 	
-    public struct AvailabilityVersions {
+    public enum AvailabilityVersions {
+        /// Multi-wallet
         public static let walletData = FirmwareVersion(major: 4, minor: 0)
-        public static let pin2IsDefault = FirmwareVersion(major: 4, minor: 0)
+        /// Field on card that describes is pin2 is default value or not
+        public static let pin2IsDefault = FirmwareVersion(major: 4, minor: 1)
         public static let files = FirmwareVersion(major: 3, minor: 29)
 	}
 	
-    public struct DeprecationVersions {
+    public enum DeprecationVersions {
         public static let walletRemainingSignatures = FirmwareVersion(major: 4, minor: 0)
 	}
 	

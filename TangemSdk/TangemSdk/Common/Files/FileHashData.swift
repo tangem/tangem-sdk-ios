@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Helping structure that holds hashes and signatures required for writing files protected by issuer signature
 public struct FileHashData: JSONStringConvertible {
 	public let startingHash: Data
 	public let finalizingHash: Data

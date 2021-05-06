@@ -10,9 +10,13 @@ import Foundation
 
 /// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
 public struct WalletConfig {
+    /// If set to `true` wallet will be recreatable, otherwise wallet at purge command will update status to `purge`
 	let isReusable: Bool?
+    /// If `true` card will denied purge wallet request on this wallet
 	let prohibitPurgeWallet: Bool?
+    /// Elliptic curve for wallet.
 	let curveId: EllipticCurve?
+    /// Determines which type of data is required for signing by wallet.
 	let signingMethods: SigningMethod?
 	
 	public init(isReusable: Bool? = nil, prohibitPurgeWallet: Bool? = nil, curveId: EllipticCurve? = nil, signingMethods: SigningMethod? = nil) {

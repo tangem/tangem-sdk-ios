@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Protocol that determines what firmware versions will be capable for performing command
 @available (iOS 13.0, *)
 public protocol FirmwareRestictible {
 	var minFirmwareVersion: FirmwareVersion { get }

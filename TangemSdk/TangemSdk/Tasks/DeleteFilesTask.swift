@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Task for deleting files from card.
 @available (iOS 13.0, *)
 public final class DeleteFilesTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
@@ -16,6 +17,9 @@ public final class DeleteFilesTask: CardSessionRunnable {
 	
 	private var filesToDelete: [Int]?
 	
+    /// Task for deleting files from card.
+    /// - Parameters:
+    ///   - filesToDelete: Optional array of indices that should be deleted. If not specified all files will be deleted from card
 	public init(filesToDelete: [Int]?) {
 		self.filesToDelete = filesToDelete?.sorted(by: <)
 	}

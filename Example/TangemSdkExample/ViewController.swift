@@ -86,7 +86,7 @@ class ViewController: UIViewController {
     @IBAction func scanCardTapped(_ sender: UIButton) {
         sender.showActivityIndicator()
         timer.start()
-        tangemSdk.scanCard { [unowned self] result in
+        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { [unowned self] result in
             switch result {
             case .success(let card):
                 self.card = card

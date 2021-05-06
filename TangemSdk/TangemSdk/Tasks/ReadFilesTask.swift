@@ -8,11 +8,15 @@
 
 import Foundation
 
+/// Response for `ReadFilesTask`
+/// - Parameters:
+///   - files: array of saved files on card
 @available (iOS 13.0, *)
 public struct ReadFilesResponse: JSONStringConvertible {
 	public let files: [File]
 }
 
+/// This task requesting information about files saved on card. Task can read private files
 @available (iOS 13.0, *)
 public class ReadFilesTask: CardSessionRunnable {
 	
@@ -25,6 +29,9 @@ public class ReadFilesTask: CardSessionRunnable {
 	private var index: Int = 0
 	private var files: [File] = []
 	
+    /// - Parameters:
+    ///   - readPrivateFiles: if you want to read private files - set to `true`
+    ///   - indices: Optional array of file indices that should be read from card
     public init(readPrivateFiles: Bool, indices: [Int]? = nil) {
         self.readPrivateFiles = readPrivateFiles
 		self.indices = indices ?? []

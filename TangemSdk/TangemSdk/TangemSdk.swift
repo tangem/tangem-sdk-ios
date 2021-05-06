@@ -128,7 +128,7 @@ public final class TangemSdk {
                      cardId: String? = nil,
                      initialMessage: Message? = nil,
                      completion: @escaping CompletionResult<[Data]>) {
-        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey)), cardId: cardId) { (result) in
+        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey)), cardId: cardId, initialMessage: initialMessage) { (result) in
             switch result {
             case .success(let response):
                 completion(.success(response.signatures))

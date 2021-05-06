@@ -148,7 +148,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.readIssuerData(cardId: cardId){ [unowned self] result in
+        tangemSdk.readIssuerData(cardId: cardId, initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerDataResponse = issuerDataResponse

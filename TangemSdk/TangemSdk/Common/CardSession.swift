@@ -58,7 +58,7 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var needPreflightRead = true
-    private var preflightReadingSettings: PreflightReadSettings = .readCardOnly
+    private var preflightReadingSettings: PreflightReadSettings = .fullCardRead
     
     private var currentTag: NFCTagType? = nil
     /// Main initializer

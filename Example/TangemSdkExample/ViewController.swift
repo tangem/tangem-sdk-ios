@@ -348,32 +348,64 @@ class ViewController: UIViewController {
         }
     }
     
-    @available(iOS 13.0, *)
-    func chainingExample() {
+    @IBAction func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
-            let cmd1 = CheckWalletCommand(curve: session.environment.card!.wallets.first!.curve!, publicKey: session.environment.card!.wallets.first!.publicKey!)
-            cmd1.run(in: session, completion: { result in
-                switch result {
-                case .success(let response1):
-                    DispatchQueue.main.async {
-                        self.log(response1)
-                    }
-                    let cmd2 = CheckWalletCommand(curve: session.environment.card!.wallets.first!.curve!, publicKey: session.environment.card!.wallets.first!.publicKey!)
-                    cmd2.run(in: session, completion: { result in
-                        switch result {
-                        case .success(let response2):
-                            DispatchQueue.main.async {
-                                self.log(response2)
-                            }
-                            session.stop() // close session manually
-                        case .failure(let error):
-                            print(error)
-                        }
-                    })
-                case .failure(let error):
-                    print(error)
+            func log(_ message: Any) {
+                DispatchQueue.main.async {
+                    print(message)
                 }
-            })
+            }
+            
+            if let error = error {
+                log(error)
+                return
+            }
+            
+            func logErrorAndStop(_ error: Error) {
+                log(error)
+                session.stop(error: error)
+            }
+            
+            
+            func signHash(walletPublicKey: Data) {
+                let hash = Data((0..<32).map { _ in UInt8(arc4random_uniform(255)) })
+                let sign = SignCommand(hashes: [hash], walletIndex: .publicKey(walletPublicKey))
+                sign.run(in: session) { signResult in
+                    switch signResult {
+                    case .success(let response):
+                        log("Step 3 result. Sign hash response: \(response)")
+                        session.stop()
+                    case .failure(let error):
+                        logErrorAndStop(error)
+                    }
+                }
+            }
+            
+            log("Step 1 result. Read card: \(session.environment.card)")
+            
+            if let wallet = session.environment.card?.wallets.first, wallet.status == .loaded, let curve = wallet.curve, let pubkey = wallet.publicKey {
+                let checkWallet = CheckWalletCommand(curve: curve, publicKey: pubkey)
+                checkWallet.run(in: session) { result in
+                    switch result {
+                    case .success(let checkWalletResponse):
+                        log("Step 2 result. Check wallet response: \(checkWalletResponse)")
+                        signHash(walletPublicKey: pubkey)
+                    case .failure(let error):
+                        logErrorAndStop(error)
+                    }
+                }
+            } else {
+                let createWallet = CreateWalletTask(config: WalletConfig(curveId: .secp256k1))
+                createWallet.run(in: session) { createWalletResult in
+                    switch createWalletResult {
+                    case .success(let createWalletResponse):
+                        log("Step 2 result. Create wallet response: \(createWalletResponse)")
+                        signHash(walletPublicKey: createWalletResponse.walletPublicKey)
+                    case .failure(let error):
+                        logErrorAndStop(error)
+                    }
+                }
+            }
         }
     }
     

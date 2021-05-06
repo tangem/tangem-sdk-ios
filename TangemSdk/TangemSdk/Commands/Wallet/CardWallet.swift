@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Describing wallets created on card
 public struct CardWallet: Codable {
     /// Index of wallet in card storage
     /// Use this index to create `WalletIndex` for interaction with wallet on card

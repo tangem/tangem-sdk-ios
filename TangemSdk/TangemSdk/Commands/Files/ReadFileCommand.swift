@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Deserialized response for `ReadFileCommand`
 @available (iOS 13.0, *)
 public struct ReadFileResponse: JSONStringConvertible {
 	public let cardId: String
@@ -19,6 +20,7 @@ public struct ReadFileResponse: JSONStringConvertible {
 	public let fileDataCounter: Int?
 }
 
+/// Command that read single file at specified index. Reading private file will prompt user to input a passcode.
 @available (iOS 13.0, *)
 public final class ReadFileCommand: Command {
 	public typealias CommandResponse = ReadFileResponse

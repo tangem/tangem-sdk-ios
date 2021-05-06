@@ -8,18 +8,20 @@
 
 import Foundation
 
-//All encryption modes
+/// All available encryption modes
 public enum EncryptionMode: Byte {
     case none = 0x00
     case fast = 0x01
     case strong = 0x02
 }
 
+/// Pair of private and public key
 public struct KeyPair: Equatable, Codable {
     public let privateKey: Data
     public let publicKey: Data
 }
 
+/// Contains information about pin code
 public struct PinCode {
     static let defaultPin1 = "000000"
     static let defaultPin2 = "000"

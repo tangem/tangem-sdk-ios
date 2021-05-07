@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse

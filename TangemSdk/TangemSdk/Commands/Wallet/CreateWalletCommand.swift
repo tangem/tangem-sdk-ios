@@ -83,7 +83,7 @@ public final class CreateWalletCommand: Command {
 			
 			if isWalletDataAvailable {
 				
-				if walletIndexValue == card.walletIndex {
+				if walletIndexValue == wallet.index {
 					return error
 				}
 				

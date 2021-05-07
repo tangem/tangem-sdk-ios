@@ -13,6 +13,7 @@ struct WalletListResponse: JSONStringConvertible {
     let wallets: [CardWallet]
 }
 
+/// Read all wallets on card.
 class ReadWalletListCommand: Command {
     
     var needPreflightRead: Bool { false }

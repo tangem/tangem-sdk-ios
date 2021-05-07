@@ -8,19 +8,14 @@
 
 import Foundation
 
+/// Deserialized response for `WriteFileCommand`
 @available (iOS 13.0, *)
 public struct WriteFileResponse: JSONStringConvertible {
 	public let cardId: String
 	public let fileIndex: Int?
 }
 
-@available (iOS 13.0, *)
-public struct FileDataToWrite {
-	let data: DataToWrite
-	let startingSignature: Data
-	let finalizingSignature: Data
-}
-
+/// Command for writing file on card
 @available (iOS 13.0, *)
 public final class WriteFileCommand: Command {
 	public typealias CommandResponse = WriteFileResponse

@@ -26,29 +26,12 @@ public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        guard var card = session.environment.card else {
+        guard let card = session.environment.card else {
             completion(.failure(.cardError))
             return
         }
         
-        card.isPin1Default = session.environment.pin1.isDefault
-        
-        if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
-           !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {
-            CheckPinCommand().run(in: session) { checkPinResult in
-                switch checkPinResult {
-                case .success(let checkPinResponse):
-                    card.isPin2Default = checkPinResponse.isPin2Default
-                    session.environment.card = card
-                    self.runVerificationIfNeeded(card, session, completion)
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        } else {
-            session.environment.card = card
-            runVerificationIfNeeded(card, session, completion)
-        }
+        runVerificationIfNeeded(card, session, completion)
     }
     
     private func runVerificationIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {

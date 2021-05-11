@@ -31,7 +31,6 @@ public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
             return
         }
         
-        session.environment.card = card
         runVerificationIfNeeded(card, session, completion)
     }
     

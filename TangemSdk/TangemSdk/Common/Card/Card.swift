@@ -54,17 +54,9 @@ public struct Card: JSONStringConvertible {
 	/// Cards complaint with Tangem Wallet application should have TLV format.
 	public let cardData: CardData?
 	
-	/// Set by ScanTask
-	public var isPin1Default: Bool? = nil
-	/// Set by ScanTask
-	public var isPin2Default: Bool? = nil
-	
 	/// Available only for cards with COS v.4.0 and higher.
 	public var pin2IsDefault: Bool? = nil
 	
-	/// Index of corresponding wallet
-    /// TODO remove
-	public var walletIndex: Int? = nil
 	/// Maximum number of wallets that can be created for this card
 	public var walletsCount: Int? = nil
     
@@ -72,7 +64,7 @@ public struct Card: JSONStringConvertible {
     
     internal let defaultCurve: EllipticCurve?
 	
-	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, defaultCurve: EllipticCurve?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, challenge: Data? = nil, salt: Data? = nil, walletIndex: Int? = nil, walletsCount: Int? = nil) {
+	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, defaultCurve: EllipticCurve?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, challenge: Data? = nil, salt: Data? = nil, walletsCount: Int? = nil) {
 		self.cardId = cardId
 		self.manufacturerName = manufacturerName
 		self.status = status
@@ -88,7 +80,6 @@ public struct Card: JSONStringConvertible {
 		self.userCounter = userCounter
 		self.terminalIsLinked = terminalIsLinked
 		self.cardData = cardData
-		self.walletIndex = walletIndex
 		self.walletsCount = walletsCount
 		
 		if let version = firmwareVersion {

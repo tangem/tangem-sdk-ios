@@ -36,7 +36,6 @@ struct CardDeserializer {
 			cardData: try deserializeCardData(tlv: tlv),
 			challenge: try decoder.decodeOptional(.challenge),
 			salt: try decoder.decodeOptional(.salt),
-			walletIndex: try decoder.decodeOptional(.walletIndex),
 			walletsCount: try decoder.decodeOptional(.walletsCount)
         )
 		

@@ -65,7 +65,7 @@ public final class PurgeWalletCommand: Command {
             return .walletIsPurged
         }
         
-        if let settingsMask = card.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
+        if let settingsMask = wallet.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
             return .purgeWalletProhibited
         }
         

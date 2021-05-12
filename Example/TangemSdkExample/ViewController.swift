@@ -475,7 +475,7 @@ class ViewController: UIViewController {
             return
         }
         
-        tangemSdk.readFiles(cardId: cardId) { result in
+        tangemSdk.readFiles(readPrivateFiles: true, cardId: cardId) { result in
             switch result {
             case .success(let response):
                 self.log(response)
@@ -649,7 +649,7 @@ class ViewController: UIViewController {
             switch result {
             case .success:
                 self.savedFiles = nil
-                self.log("File settings updated to \(file.fileSettings!). Please, perform read files command")
+                self.log("File settings updated to \(newSettings). Please, perform read files command")
             case .failure(let error):
                 self.handle(error)
             }

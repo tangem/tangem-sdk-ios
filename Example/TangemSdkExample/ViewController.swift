@@ -167,14 +167,13 @@ class ViewController: UIViewController {
         }
         
         guard let issuerDataResponse = issuerDataResponse else {
-            self.log("Please, run GetIssuerData before")
+            self.log("Please, run ReadIssuerData before")
             return
         }
         
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
         let sampleData = Data(repeating: UInt8(1), count: 100)
-        let issuerKey = Data(hexString: "")
-        let sig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)!
+        let sig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)!
         
         tangemSdk.writeIssuerData(issuerData: sampleData,
                                   issuerDataSignature: sig,
@@ -215,12 +214,12 @@ class ViewController: UIViewController {
         }
         
         guard let issuerDataResponse = issuerExtraDataResponse else {
-            self.log("Please, run GetIssuerExtraData before")
+            self.log("Please, run ReadIssuerExtraData before")
             return
         }
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
         let sampleData = Data(repeating: UInt8(1), count: 2000)
-        let issuerKey = Data(hexString: "")
+        let issuerKey = Utils.issuer.privateKey
         
         let startSig = Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)!
         let finalSig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)!

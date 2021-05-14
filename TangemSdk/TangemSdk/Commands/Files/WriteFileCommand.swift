@@ -22,7 +22,7 @@ public final class WriteFileCommand: Command {
 	
 	public var requiresPin2: Bool { dataToWrite.requiredPin2 }
 	
-	private static let singleWriteSize = 1524
+	private static let singleWriteSize = 900
 	private static let maxSize = 48 * 1024
 	
 	private let dataToWrite: DataToWrite

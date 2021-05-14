@@ -508,7 +508,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let demoData = Data(repeating: UInt8(1), count: 100)
+        let demoData = Data(repeating: UInt8(1), count: 2000)
         let data = FileDataProtectedByPasscode(data: demoData)
         tangemSdk.writeFiles(files: [data]) { (result) in
             switch result {
@@ -526,7 +526,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let demoData = Data(repeating: UInt8(1), count: 500)
+        let demoData = Data(repeating: UInt8(1), count: 2500)
         let counter = 1
         let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
         guard
@@ -558,7 +558,7 @@ class ViewController: UIViewController {
             return
         }
         
-        let demoData = Data(repeating: UInt8(1), count: 100)
+        let demoData = Data(repeating: UInt8(1), count: 1000)
         let data = FileDataProtectedByPasscode(data: demoData)
         let secondDemoData = Data(repeating: UInt8(1), count: 5)
         let secondData = FileDataProtectedByPasscode(data: secondDemoData)

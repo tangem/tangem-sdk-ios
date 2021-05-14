@@ -19,7 +19,7 @@ public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
 public final class WriteIssuerExtraDataCommand: Command {
     public typealias CommandResponse = WriteIssuerExtraDataResponse
     
-    private static let singleWriteSize = 1524
+    private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024
     
     private var mode: IssuerExtraDataMode = .readOrStartWrite

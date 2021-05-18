@@ -73,7 +73,7 @@ public final class CreateWalletCommand: Command {
 			case .loaded:
 				return .alreadyCreated
 			case .purged:
-				return .cardIsPurged
+				return .walletIsPurged
 			}
 		}
 		
@@ -83,7 +83,7 @@ public final class CreateWalletCommand: Command {
 			
 			if isWalletDataAvailable {
 				
-				if walletIndexValue == card.walletIndex {
+				if walletIndexValue == wallet.index {
 					return error
 				}
 				
@@ -139,8 +139,17 @@ public final class CreateWalletCommand: Command {
 		if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
 		   let config = config {
 			
-			try tlvBuilder.append(.settingsMask, value: config.settingsMask)
-				.append(.curveId, value: config.curveId)
+            if let settingsMask = config.settingsMask {
+                try tlvBuilder.append(.settingsMask, value: settingsMask)
+            }
+            
+            if let curve = config.curveId {
+                try tlvBuilder.append(.curveId, value: curve)
+            }
+            
+            if let signingMethods = config.signingMethods {
+                try tlvBuilder.append(.signingMethod, value: signingMethods)
+            }
 		}
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

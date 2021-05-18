@@ -1,0 +1,58 @@
+name: Publish Release
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+     
+jobs:
+  merges:
+    name: Publish release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+      
+      - name: Bundle Install
+        run: bundle install
+      
+      - name: Prepare variables
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+    
+      - name: Create a release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release v${{ env.VERSION }}
+          commitish: release/v${{ env.VERSION }}
+          body_path: CHANGELOG
+          draft: false
+          prerelease: false    
+          
+      - name: Bump version in podspec
+        run: fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
+        
+      - name: Deploy to Cocoapods
+        run: |
+          set -eo pipefail
+          pod lib lint --allow-warnings
+          pod trunk push --allow-warnings
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        
+      - name: Create pull request to develop
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.git.createPullRequest({
+              owner: 'context.repo.owner',
+              repo: 'context.repo.repo',
+              title: '',
+              head: 'release/v${{ github.event.inputs.versionName }}',
+              base: 'develop' 
+            })

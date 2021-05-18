@@ -8,9 +8,13 @@
 
 import Foundation
 
+/// Status of the wallet
 public enum WalletStatus: Int, Codable, StatusType {
+    /// Wallet not created
     case empty = 1
+    /// Wallet created and can be used for signing
     case loaded = 2
+    /// Wallet was purged and can't be recreated or used for signing
     case purged = 3
 
     public func encode(to encoder: Encoder) throws {

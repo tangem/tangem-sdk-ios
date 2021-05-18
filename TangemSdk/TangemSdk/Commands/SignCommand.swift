@@ -13,9 +13,9 @@ public struct SignResponse: JSONStringConvertible {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hashes (array of resulting signatures)
-    public let signature: Data
+    public let signatures: [Data]
     /// Remaining number of sign operations before the wallet will stop signing transactions.
-    public let walletRemainingSignatures: Int
+    public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in sign command responses.
     public let walletSignedHashes: Int?
 }
@@ -34,8 +34,12 @@ public final class SignCommand: Command {
     
     private let walletIndex: WalletIndex
     private let hashes: [Data]
-    private var responces: [SignResponse] = []
-    private var currentChunk = 0
+    
+    private var signatures: [Data] = []
+    
+    private var currentChunkNumber: Int {
+        signatures.count / chunkSize
+    }
     private lazy var chunkSize: Int = {
         return NfcUtils.isPoorNfcQualityDevice ? 2 : 10
     }()
@@ -62,21 +66,21 @@ public final class SignCommand: Command {
             return .notPersonalized
         }
         
+        if card.isActivated {
+            return .notActivated
+        }
+        
         guard let wallet = card.wallet(at: walletIndex) else {
             return .walletNotFound
         }
         
         switch wallet.status {
         case .empty:
-            return .cardIsEmpty
+            return .walletIsNotCreated
         case .loaded:
             break
         case .purged:
-            return .cardIsPurged
-        }
-        
-        if card.isActivated {
-            return .notActivated
+            return .walletIsPurged
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
@@ -91,7 +95,7 @@ public final class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {        
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return
@@ -127,29 +131,23 @@ public final class SignCommand: Command {
     }
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
-        if currentChunk == numberOfChunks {
-            let lastResponse = responces.last!
-            let finalResponse = SignResponse(cardId: lastResponse.cardId,
-                                             signature: Data(responces.map{ $0.signature }.joined()),
-                                             walletRemainingSignatures: lastResponse.walletRemainingSignatures,
-                                             walletSignedHashes: lastResponse.walletSignedHashes)
-            
-            completion(.success(finalResponse))
-            return
-        }
-        
         if numberOfChunks > 1 {
-            session.viewDelegate.showAlertMessage("Signing part \(currentChunk + 1) of \(numberOfChunks)")
+            session.viewDelegate.showAlertMessage("Signing part \(currentChunkNumber + 1) of \(numberOfChunks)")
         }
         
         transieve(in: session) { result in
             switch result {
             case .success(let response):
-                self.responces.append(response)
-                self.currentChunk += 1
-                if self.currentChunk != self.numberOfChunks {
-                    session.restartPolling()
+                self.signatures.append(contentsOf: response.signatures)
+                if self.signatures.count == self.hashes.count {
+                    completion(.success(SignResponse(cardId: response.cardId,
+                                                     signatures: self.signatures,
+                                                     walletRemainingSignatures: response.walletRemainingSignatures,
+                                                     walletSignedHashes: response.walletSignedHashes)))
+                    return
                 }
+                
+                session.restartPolling()
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -194,16 +192,31 @@ public final class SignCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return SignResponse(
-            cardId: try decoder.decode(.cardId),
-            signature: try decoder.decode(.walletSignature),
-            walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures) ?? 99999, // In COS v.4.0 remaining signatures was removed
-            walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+        let splittedSignatures = splitSignedSignature(try decoder.decode(.walletSignature), numberOfSignatures: getChunk().underestimatedCount)
+        let resp = SignResponse(cardId: try decoder.decode(.cardId),
+                                signatures: splittedSignatures,
+                                walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
+                                walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+        return resp
     }
     
     private func getChunk() -> Range<Int> {
-        let from = currentChunk * chunkSize
+        let from = currentChunkNumber * chunkSize
         let to = min(from + chunkSize, hashes.count)
         return from..<to
+    }
+    
+    private func splitSignedSignature(_ signature: Data, numberOfSignatures: Int) -> [Data] {
+        var signatures = [Data]()
+        let signatureSize = signature.count / numberOfSignatures
+        for index in 0..<numberOfSignatures {
+            let offsetMin = index * signatureSize
+            let offsetMax = offsetMin + signatureSize
+            
+            let sig = signature[offsetMin..<offsetMax]
+            signatures.append(sig)
+        }
+        
+        return signatures
     }
 }

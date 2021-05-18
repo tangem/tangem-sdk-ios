@@ -10,26 +10,32 @@ import Foundation
 
 /// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
 public struct WalletConfig {
-	let isReusable: Bool
-	let prohibitPurgeWallet: Bool
-	let curveId: EllipticCurve
-	let signingMethods: SigningMethod
+    /// If set to `true` wallet will be recreatable, otherwise wallet at purge command will update status to `purge`
+	let isReusable: Bool?
+    /// If `true` card will denied purge wallet request on this wallet
+	let prohibitPurgeWallet: Bool?
+    /// Elliptic curve for wallet.
+	let curveId: EllipticCurve?
+    /// Determines which type of data is required for signing by wallet.
+	let signingMethods: SigningMethod?
 	
-	public init(isReusable: Bool, prohibitPurgeWallet: Bool, curveId: EllipticCurve, signingMethods: SigningMethod) {
+	public init(isReusable: Bool? = nil, prohibitPurgeWallet: Bool? = nil, curveId: EllipticCurve? = nil, signingMethods: SigningMethod? = nil) {
 		self.isReusable = isReusable
 		self.prohibitPurgeWallet = prohibitPurgeWallet
 		self.curveId = curveId
 		self.signingMethods = signingMethods
 	}
 	
-	var settingsMask: WalletSettingsMask {
+	var settingsMask: WalletSettingsMask? {
+        guard isReusable != nil || prohibitPurgeWallet != nil else { return nil }
+        
 		let builder = WalletSettingsMaskBuilder()
 		
-		if isReusable {
+        if isReusable ?? false {
 			builder.add(.isReusable)
 		}
 		
-		if prohibitPurgeWallet {
+		if prohibitPurgeWallet ?? false {
 			builder.add(.prohibitPurgeWallet)
 		}
 		

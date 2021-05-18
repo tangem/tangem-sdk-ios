@@ -8,16 +8,17 @@
 
 import Foundation
 
+/// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
 	public var requiresPin2: Bool { true }
 	
-	private var files: [File]
+	private var changes: [FileSettingsChange]
 	
-	public init(files: [File]) {
-		self.files = files
+	public init(changes: [FileSettingsChange]) {
+		self.changes = changes
 	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
@@ -25,11 +26,11 @@ public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	}
 	
 	private func changeFileSettings(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
-		guard let file = files.popLast() else {
+		guard let changes = changes.popLast() else {
 			completion(.success(SimpleResponse(cardId: session.environment.card?.cardId ?? "")))
 			return
 		}
-		let command = ChangeFileSettingsCommand(fileIndex: file.fileIndex, newSettings: file.fileSettings ?? .public)
+        let command = ChangeFileSettingsCommand(data: changes)
 		command.run(in: session) { (result) in
 			switch result {
 			case .success:

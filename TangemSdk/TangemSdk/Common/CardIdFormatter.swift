@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Formatting CID in more readable manner
 public struct CardIdFormatter {
     public init() {}
     

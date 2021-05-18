@@ -10,14 +10,14 @@ import Foundation
 
 /// Use this protocol when you need to define if your Task or Command need to Read card at the session start.
 /// By default `needPreflightRead` set to `true` and `preflightReadSettings`  - to  `ReadCardOnly`
-public protocol PreflightReadCapable {
+public protocol PreflightReadCapable { //TODO: Join with CardSessionRunnable
     var needPreflightRead: Bool { get }
     var preflightReadSettings: PreflightReadSettings { get }
 }
 
 extension PreflightReadCapable {
     public var needPreflightRead: Bool { true }
-    public var preflightReadSettings: PreflightReadSettings { .readCardOnly }
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 }
 
 /// Settings for preflight read task
@@ -31,12 +31,12 @@ public enum PreflightReadSettings: Equatable {
     case fullCardRead
 }
 
-final class PreflightReadTask {
+public final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
     private var readSettings: PreflightReadSettings
     
-    init(readSettings: PreflightReadSettings) {
+    public init(readSettings: PreflightReadSettings) {
         self.readSettings = readSettings
     }
     
@@ -44,7 +44,7 @@ final class PreflightReadTask {
         Log.debug("PreflightReadTask deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
         Log.debug("=========================== Perform preflight check with settings: \(readSettings) ======================")
         ReadCommand().run(in: session) { (result) in
             switch result {

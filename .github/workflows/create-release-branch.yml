@@ -65,7 +65,6 @@ jobs:
         base: master
         labels: automated
         draft: true
-        delete-branch: true
   
     - name: Build notification
       if: always()

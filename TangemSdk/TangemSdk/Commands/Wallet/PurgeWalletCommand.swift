@@ -58,14 +58,14 @@ public final class PurgeWalletCommand: Command {
         
         switch wallet.status {
         case .empty:
-            return .cardIsEmpty
+            return .walletIsNotCreated
         case .loaded:
             break
         case .purged:
-            return .cardIsPurged
+            return .walletIsPurged
         }
         
-        if let settingsMask = card.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
+        if let settingsMask = wallet.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
             return .purgeWalletProhibited
         }
         
@@ -115,9 +115,13 @@ public final class PurgeWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
+        var index: WalletIndex = walletIndex
+        if let respIndex: Int = try decoder.decodeOptional(.walletIndex) {
+            index = .index(respIndex)
+        }
         return PurgeWalletResponse(
             cardId: try decoder.decode(.cardId),
             status: try decoder.decode(.status),
-            walletIndex: walletIndex)
+            walletIndex: index)
     }
 }

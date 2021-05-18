@@ -25,7 +25,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
 
 /// Allows interaction between the phone or any other terminal and Tangem card.
 /// Its default implementation, `NfcReader`, is in our module.
-public protocol CardReader: class {
+public protocol CardReader: AnyObject {
 	/// For setting alertMessage into NFC popup
     var alertMessage: String { get set }
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> { get }

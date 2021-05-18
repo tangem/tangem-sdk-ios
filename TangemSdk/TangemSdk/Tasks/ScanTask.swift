@@ -12,16 +12,12 @@ import Foundation
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
 public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
     public typealias CommandResponse = Card
+	
+    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
     
-    public var preflightReadSettings: PreflightReadSettings {
-        walletIndex != nil ? .readWallet(index: walletIndex!) : .fullCardRead
-    }
-    
-	private var walletIndex: WalletIndex?
     private let cardVerification: Bool
     
-    public init(cardVerification: Bool = false, walletIndex: WalletIndex? = nil) {
-		self.walletIndex = walletIndex
+    public init(cardVerification: Bool = true) {
         self.cardVerification = cardVerification
 	}
     
@@ -30,40 +26,37 @@ public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        guard var card = session.environment.card else {
+        guard let card = session.environment.card else {
             completion(.failure(.cardError))
             return
         }
         
-        card.isPin1Default = session.environment.pin1.isDefault
-        
-        if let fw = card.firmwareVersionValue, fw > 1.19, //skip old card with persistent SD
-           !(card.settingsMask?.contains(.prohibitDefaultPIN1) ?? false) {
-            CheckPinCommand().run(in: session) { checkPinResult in
-                switch checkPinResult {
-                case .success(let checkPinResponse):
-                    card.isPin2Default = checkPinResponse.isPin2Default
-                    session.environment.card = card
-                    self.runCheckWalletIfNeeded(card, session, completion)
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        } else {
-            session.environment.card = card
+        runVerificationIfNeeded(card, session, completion)
+    }
+    
+    private func runVerificationIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+        guard cardVerification else {
             runCheckWalletIfNeeded(card, session, completion)
+            return
+        }
+        
+        VerifyCardCommand().run(in: session) { checkWalletResult in
+            switch checkWalletResult {
+            case .success(_):
+                self.runCheckWalletIfNeeded(card, session, completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        let index = card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData ? .index(TangemSdkConstants.oldCardDefaultWalletIndex) : walletIndex
-        
-        guard let unwrappedIndex = index else {
+        guard card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData else {
             completion(.success(card))
             return
         }
         
-        guard let wallet = card.wallet(at: unwrappedIndex) else {
+        guard let wallet = card.wallets.first else {
             completion(.failure(.walletNotFound))
             return
         }
@@ -84,26 +77,12 @@ public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
 		CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
-                self.runVerificationIfNeeded(card, session, completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    private func runVerificationIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        guard cardVerification else {
-            completion(.success(card))
-            return
-        }
-        
-        VerifyCardCommand().run(in: session) { checkWalletResult in
-            switch checkWalletResult {
-            case .success(_):
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
+    
+   
 }

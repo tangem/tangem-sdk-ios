@@ -36,7 +36,6 @@ struct CardDeserializer {
 			cardData: try deserializeCardData(tlv: tlv),
 			challenge: try decoder.decodeOptional(.challenge),
 			salt: try decoder.decodeOptional(.salt),
-			walletIndex: try decoder.decodeOptional(.walletIndex),
 			walletsCount: try decoder.decodeOptional(.walletsCount)
         )
 		
@@ -54,7 +53,8 @@ struct CardDeserializer {
                            curve: card.defaultCurve,
                            settingsMask: card.settingsMask,
                            publicKey: try decoder.decodeOptional(.walletPublicKey),
-                           signedHashes: try decoder.decodeOptional(.walletSignedHashes))
+                           signedHashes: try decoder.decodeOptional(.walletSignedHashes),
+                           remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
             ])
         }
         

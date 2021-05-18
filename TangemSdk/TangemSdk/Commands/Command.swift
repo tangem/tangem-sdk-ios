@@ -40,7 +40,7 @@ extension ApduSerializable {
 }
 
 /// The basic protocol for card commands
-protocol Command: class, ApduSerializable, CardSessionRunnable, PreflightReadCapable {
+protocol Command: AnyObject, ApduSerializable, CardSessionRunnable, PreflightReadCapable {
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }

@@ -25,6 +25,7 @@ public enum IssuerExtraDataMode: Byte, InteractionMode {
     case finalizeWrite = 3
 }
 
+/// Deserialized response from the Tangem card after `ReadIssuerExtraDataCommand`.
 public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String

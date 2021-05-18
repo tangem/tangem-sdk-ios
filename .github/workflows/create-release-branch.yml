@@ -80,7 +80,6 @@ jobs:
           [{"title": "Source Branch", "value": "${{ steps.extract_branch.outputs.branch }}"},
           {"title": "Release Branch", "value": "release/v${{ github.event.inputs.versionName }}"},
           {"title": "Initiator", "value": "${{ github.actor }}"},
-          {"title": "Pull request", "value": "${{ steps.create-pull-request.outputs.pull-request-url }}"},
           {"title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}

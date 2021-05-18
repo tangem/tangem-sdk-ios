@@ -1,0 +1,50 @@
+name: Create release branch
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Name of version  (ie 1.3.0)'
+        required: true
+
+jobs:
+  createrelease:
+    name: Create release branch
+    runs-on: ubuntu-latest
+    #if: contains(github.ref, 'develop') # Only for develop branch
+    steps:
+        
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: Bundle Install
+      run: bundle install
+      
+    - name: Create release branch
+      run: git checkout -b release/v${{ github.event.inputs.versionName }}
+      
+    - name: Initialize mandatory git config
+      run: |
+       git config user.name "Tangem Bot"
+       git config user.email mobile@tangem.com
+   
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+      
+    - name: Bump version in podspec
+      run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ github.event.inputs.versionName }}
+   
+    - name: Change version
+      run: |
+       echo ${{ github.event.inputs.versionName }} > VERSION
+       git fetch origin master:master
+       git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative origin/master..${{ steps.extract_branch.outputs.branch }} > CHANGELOG
+       git add VERSION
+       git add CHANGELOG
+       git commit -m "Prepare release v${{ github.event.inputs.versionName }}"
+       
+    - name: Push new branch
+      run: git push origin release/v${{ github.event.inputs.versionName }}

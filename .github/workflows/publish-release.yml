@@ -28,7 +28,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           release_name: Release v${{ env.VERSION }}
-          commitish: release/v${{ env.VERSION }}
+          commitish: master
           body_path: CHANGELOG
           draft: false
           prerelease: false    
@@ -45,14 +45,9 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         
       - name: Create pull request to develop
-        uses: actions/github-script@v3
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
         with:
-          github-token: ${{ github.token }}
-          script: |
-            github.git.createPullRequest({
-              owner: 'context.repo.owner',
-              repo: 'context.repo.repo',
-              title: '',
-              head: 'release/v${{ github.event.inputs.versionName }}',
-              base: 'develop' 
-            })
+          base: develop
+          branch: master
+          labels: automatic

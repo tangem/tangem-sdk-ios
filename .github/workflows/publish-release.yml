@@ -1,4 +1,4 @@
-name: Publish Release
+name: (A) Publish Release
 
 on:
   push:
@@ -12,7 +12,12 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v2
-      
+  
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6  
+
       - name: Bundle Install
         run: bundle install
       
@@ -26,16 +31,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
-          commitish: release/v${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          commitish: master
           body_path: CHANGELOG
           draft: false
           prerelease: false    
-          
-      - name: Bump version in podspec
-        run: fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
-        
+            
       - name: Deploy to Cocoapods
         run: |
           set -eo pipefail
@@ -44,15 +46,15 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         
-      - name: Create pull request to develop
-        uses: actions/github-script@v3
+      - name: Create Pull request to master
+        uses: actions/github-script@v4
         with:
-          github-token: ${{ github.token }}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.git.createPullRequest({
-              owner: 'context.repo.owner',
-              repo: 'context.repo.repo',
-              title: '',
-              head: 'release/v${{ github.event.inputs.versionName }}',
-              base: 'develop' 
-            })
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: "master",
+              base: "develop",
+              title: "Update develop branch with master after release",
+            });

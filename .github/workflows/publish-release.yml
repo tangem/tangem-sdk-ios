@@ -46,10 +46,15 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
         
-      - name: Create pull request to develop
-        id: cpr
-        uses: peter-evans/create-pull-request@v3
+      - name: Create Pull request to master
+        uses: actions/github-script@v4
         with:
-          base: develop
-          branch: master
-          labels: automatic
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: "release/${{ github.event.inputs.versionName }}",
+              base: "master",
+              title: "Release version ${{ github.event.inputs.versionName }}",
+            });

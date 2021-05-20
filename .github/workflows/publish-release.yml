@@ -31,15 +31,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v${{ env.VERSION }}
-          release_name: Release v${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
           commitish: master
           body_path: CHANGELOG
           draft: false
           prerelease: false    
           
       - name: Bump version in podspec
-        run: fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
+        run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
         
       - name: Deploy to Cocoapods
         run: |

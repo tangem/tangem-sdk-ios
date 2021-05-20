@@ -27,7 +27,7 @@ jobs:
       run: bundle install
       
     - name: Create release branch
-      run: git checkout -b release/v${{ github.event.inputs.versionName }}
+      run: git checkout -b release/${{ github.event.inputs.versionName }}
       
     - name: Initialize mandatory git config
       run: |
@@ -39,22 +39,23 @@ jobs:
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
       
-    - name: Bump version in podspec
+    - name: Bump version in Podspec file
       run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ github.event.inputs.versionName }}
    
-    - name: Change version and add changelog
+    - name: Change version
+      run: echo ${{ github.event.inputs.versionName }} > VERSION
+      
+    - name: Create Changelog
       run: |
-       echo ${{ github.event.inputs.versionName }} > VERSION
        git fetch origin master:master
-       git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative origin/master..${{ steps.extract_branch.outputs.branch }} > CHANGELOG
-       git add VERSION
-       git add CHANGELOG
-       git commit -m "Prepare release v${{ github.event.inputs.versionName }}"
-       
-    - name: Push new branch
-      run: git push origin release/v${{ github.event.inputs.versionName }}
+       git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s' --abbrev-commit --date=relative origin/master..${{ steps.extract_branch.outputs.branch }} > CHANGELOG
+     
+    - name: Commit and push changes
+      run: |
+       git commit -am "Prepare release version ${{ github.event.inputs.versionName }}"
+       git push origin release/${{ github.event.inputs.versionName }}
   
-    - name: Build notification
+    - name: Slack notification
       if: always()
       uses: adamkdean/simple-slack-notify@master
       with:
@@ -65,7 +66,7 @@ jobs:
         cancelled_text: 'Card SDK: Release creation cancelled'
         fields: |
           [{"title": "Source Branch", "value": "${{ steps.extract_branch.outputs.branch }}"},
-          {"title": "Release Branch", "value": "release/v${{ github.event.inputs.versionName }}"},
+          {"title": "Release Branch", "value": "release/${{ github.event.inputs.versionName }}"},
           {"title": "Initiator", "value": "${{ github.actor }}"},
           {"title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]
       env:

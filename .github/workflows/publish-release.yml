@@ -37,10 +37,7 @@ jobs:
           body_path: CHANGELOG
           draft: false
           prerelease: false    
-          
-      - name: Bump version in podspec
-        run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ env.VERSION }}
-        
+            
       - name: Deploy to Cocoapods
         run: |
           set -eo pipefail

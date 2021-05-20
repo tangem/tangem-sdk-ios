@@ -3,7 +3,6 @@ name: Neutral Build
 on:
   push:
     branches: 
-    - 'release/**'
     - 'develop'
   workflow_dispatch:
 

@@ -64,7 +64,7 @@ jobs:
             repo: context.repo.repo,
             head: "release/${{ github.event.inputs.versionName }}",
             base: "master",
-            title: "Release version {{ github.event.inputs.versionName }}",
+            title: "Release version ${{ github.event.inputs.versionName }}",
           });
   
     - name: Slack notification

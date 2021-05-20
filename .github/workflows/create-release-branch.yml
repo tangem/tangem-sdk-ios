@@ -55,6 +55,18 @@ jobs:
        git commit -am "Prepare release version ${{ github.event.inputs.versionName }}"
        git push origin release/${{ github.event.inputs.versionName }}
   
+    - uses: actions/github-script@v4
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: release/${{ github.event.inputs.versionName }}
+            base: master
+            title: Release version {{ github.event.inputs.versionName }}
+          })
+  
     - name: Slack notification
       if: always()
       uses: adamkdean/simple-slack-notify@master

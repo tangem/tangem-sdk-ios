@@ -54,7 +54,7 @@ jobs:
             github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: "release/${{ github.event.inputs.versionName }}",
-              base: "master",
-              title: "Release version ${{ github.event.inputs.versionName }}",
+              head: "master",
+              base: "develop",
+              title: "Update develop branch with master after release",
             });

@@ -54,19 +54,6 @@ jobs:
     - name: Push new branch
       run: git push origin release/v${{ github.event.inputs.versionName }}
   
-    - name: Create Pull Request
-      id: create-pull-request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        commit-message: Merge release branch
-        title: Publish release
-        body: To publish release just merge this pull request into master branch
-        branch: release/v${{ github.event.inputs.versionName }}
-        base: master
-        labels: automated
-        draft: true
-        delete-branch: true
-  
     - name: Build notification
       if: always()
       uses: adamkdean/simple-slack-notify@master

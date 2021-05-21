@@ -20,12 +20,21 @@ public final class TangemSdk {
     
     /// Configuration of the SDK. Do not change the default values unless you know what you are doing
     public var config = Config()
+    
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
     private let secureStorageService = SecureStorageService()
     private let onlineCardVerifier = OnlineCardVerifier()
     private var cardSession: CardSession? = nil
     private var onlineVerificationCancellable: AnyCancellable? = nil
+    
+    private lazy var jsonCore: JSONRPCCore = {
+        let core = JSONRPCCore()
+        core.register(SignCommand.self)
+        core.register(ScanTask.self)
+        return core
+    }()
+    
     private lazy var terminalKeysService: TerminalKeysService = {
         let service = TerminalKeysService(secureStorageService: secureStorageService)
         return service
@@ -559,6 +568,16 @@ public final class TangemSdk {
         return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }
     
+    /// Register custom task, that supported JSONRPC
+    /// - Parameter object: object, that conforms `JSONRPCConvertible.Type`
+    public func registerJSONRPCTask(_ object: JSONRPCConvertible.Type) {
+        jsonCore.register(object)
+    }
+}
+
+//MARK: - Session start
+
+extension TangemSdk {
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`
@@ -572,18 +591,15 @@ public final class TangemSdk {
                                 initialMessage: Message? = nil,
                                 completion: @escaping CompletionResult<T.CommandResponse>)
     where T : CardSessionRunnable {
-        
-        if let existingSession = cardSession, existingSession.state == .active  {
-            completion(.failure(.busy))
+        do {
+            try checkSession()
+        } catch {
+            completion(.failure(error.toTangemSdkError()))
             return
         }
-        configure()
-        cardSession = CardSession(environment: buildEnvironment(),
-                                  cardId: cardId,
-                                  initialMessage: initialMessage,
-                                  cardReader: reader,
-                                  viewDelegate: viewDelegate)
         
+        configure()
+        cardSession = makeSession(with: cardId, initialMessage: initialMessage)
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -597,18 +613,48 @@ public final class TangemSdk {
     public func startSession(cardId: String? = nil,
                              initialMessage: Message? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
-        
-        if let existingSession = cardSession, existingSession.state == .active  {
-            callback(existingSession, .busy)
+        do {
+            try checkSession()
+        } catch {
+            callback(cardSession!, error.toTangemSdkError())
             return
         }
+        
         configure()
-        cardSession = CardSession(environment: buildEnvironment(),
-                                  cardId: cardId,
-                                  initialMessage: initialMessage,
-                                  cardReader: reader,
-                                  viewDelegate: viewDelegate)
+        cardSession = makeSession(with: cardId, initialMessage: initialMessage)
         cardSession?.start(callback)
+    }
+    
+    /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
+    /// invoke the `run ` method of `CardSessionRunnable` and close the session.
+    /// You can find the current card in the `environment` property of the `CardSession`
+    /// - Parameters:
+    ///   - jsonRequest: A JSONRPCRequest, describing specific`CardSessionRunnable`
+    ///   - completion: A JSONRPCResponse with with result of the operation
+    public func startSession(with jsonRequest: String,
+                             completion: @escaping (String) -> Void) {
+        do {
+            let request = try JSONRPCRequest(string: jsonRequest)
+            try checkSession()
+            let runnable = try jsonCore.createRunnable(from: request)
+            configure()
+            cardSession = makeSession(with: try request.params.value(for: "cid"),
+                                      initialMessage: try request.params.value(for: "initialMessage"))
+            cardSession!.start(with: runnable) { completion($0.toJsonResponse().json) }
+        } catch {
+            completion(error.toJsonResponse().json)
+            return
+        }
+    }
+}
+
+//MARK: - Private
+
+extension TangemSdk {
+    private func checkSession() throws {
+        if let existingSession = cardSession, existingSession.state == .active  {
+            throw TangemSdkError.busy
+        }
     }
     
     private func configure() {
@@ -626,5 +672,15 @@ public final class TangemSdk {
         environment.handleErrors = config.handleErrors
         
         return environment
+    }
+    
+    private func makeSession(with cardId: String?,
+                             initialMessage: Message?) -> CardSession {
+        CardSession(environment: buildEnvironment(),
+                    cardId: cardId,
+                    initialMessage: initialMessage,
+                    cardReader: reader,
+                    viewDelegate: viewDelegate,
+                    jsonCore: jsonCore)
     }
 }

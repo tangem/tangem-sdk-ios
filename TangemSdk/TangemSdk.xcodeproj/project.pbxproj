@@ -36,6 +36,7 @@
 		5D6A92E72345F2D600158457 /* CheckWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */; };
 		5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92EB2346069700158457 /* TangemSdk.swift */; };
 		5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92ED23463D1200158457 /* ScanTask.swift */; };
+		5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */; };
 		5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D705B5A23DAF2BB002CCD7A /* Config.swift */; };
 		5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */; };
 		5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */; };
@@ -107,6 +108,8 @@
 		5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE024A113C900FB5BA7 /* CardConfig.swift */; };
 		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
 		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
+		5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D944757264EC52400EA9CD2 /* JSONRPC.swift */; };
+		5D94475E2652F0D400EA9CD2 /* AnyRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */; };
 		5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D974B7D237D672F00DCDF21 /* Date+.swift */; };
 		5DA3A2EF251CA507009A8E08 /* CheckPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */; };
 		5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B610233E11950058C720 /* CommandApdu.swift */; };
@@ -256,6 +259,7 @@
 		5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckWalletCommand.swift; sourceTree = "<group>"; };
 		5D6A92EB2346069700158457 /* TangemSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdk.swift; sourceTree = "<group>"; };
 		5D6A92ED23463D1200158457 /* ScanTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTask.swift; sourceTree = "<group>"; };
+		5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRPCTests.swift; sourceTree = "<group>"; };
 		5D705B5A23DAF2BB002CCD7A /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtilsTest.swift; sourceTree = "<group>"; };
 		5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteUtilsTest.swift; sourceTree = "<group>"; };
@@ -327,6 +331,8 @@
 		5D86CBE024A113C900FB5BA7 /* CardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConfig.swift; sourceTree = "<group>"; };
 		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
 		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
+		5D944757264EC52400EA9CD2 /* JSONRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRPC.swift; sourceTree = "<group>"; };
+		5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRunnable.swift; sourceTree = "<group>"; };
 		5D974B7D237D672F00DCDF21 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPinCommand.swift; sourceTree = "<group>"; };
 		5DA5B610233E11950058C720 /* CommandApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandApdu.swift; sourceTree = "<group>"; };
@@ -756,6 +762,7 @@
 				5D6795B1237AEFB60075A330 /* ApduTests.swift */,
 				5D437EEA237BE980009C82A8 /* TlvTests.swift */,
 				5DD127A124F3D1A0009ACA29 /* JsonTests.swift */,
+				5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -808,6 +815,8 @@
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 				5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */,
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
+				5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */,
+				5D944757264EC52400EA9CD2 /* JSONRPC.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */,
@@ -1195,6 +1204,7 @@
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* MillisecTimer.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
+				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
@@ -1211,6 +1221,7 @@
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
+				5D94475E2652F0D400EA9CD2 /* AnyRunnable.swift in Sources */,
 				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */,
@@ -1314,6 +1325,7 @@
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
+				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,
 				5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */,
 			);

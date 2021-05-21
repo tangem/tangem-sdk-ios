@@ -2,7 +2,8 @@ name: Neutral Build
 
 on:
   push:
-    branches: [ develop ]
+    branches: 
+    - 'develop'
   workflow_dispatch:
 
 env:

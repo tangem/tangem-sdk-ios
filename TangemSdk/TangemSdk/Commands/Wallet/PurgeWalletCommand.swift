@@ -31,7 +31,7 @@ public final class PurgeWalletCommand: Command {
         return true
     }
 	
-    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
+    public var preflightReadMode: PreflightReadMode { .readWallet(index: walletIndex) }
     
     public var walletIndex: WalletIndex
     
@@ -89,14 +89,6 @@ public final class PurgeWalletCommand: Command {
 			}
 		}
 	}
-    
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidParams = error {
-            return .pin2OrCvcRequired
-        }
-        
-        return error
-    }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)

@@ -81,11 +81,7 @@ public final class WriteFileCommand: Command {
 		if case .invalidState = error, card?.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true {
 			return .overwritingDataIsProhibited
 		}
-		
-		if case .invalidParams = error {
-			return .pin2OrCvcRequired
-		}
-		
+        
 		return error
 	}
 	

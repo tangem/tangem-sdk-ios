@@ -63,7 +63,7 @@ public class CardSession {
     public internal(set) var environment: SessionEnvironment
     
     private let reader: CardReader
-    private let jsonEngine: JSONRPCEngine
+    private let jsonCore: JSONRPCCore
     private let initialMessage: Message?
     private var sendSubscription: [AnyCancellable] = []
     private var nfcReaderSubscriptions: [AnyCancellable] = []
@@ -78,19 +78,19 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    ///   - jsonEngine: JSONRPC Engine
+    ///   - jsonCore: JSONRPCCore
     public init(environment: SessionEnvironment,
                 cardId: String? = nil,
                 initialMessage: Message? = nil,
                 cardReader: CardReader,
                 viewDelegate: SessionViewDelegate,
-                jsonEngine: JSONRPCEngine) {
+                jsonCore: JSONRPCCore) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environment = environment
         self.initialMessage = initialMessage
         self.cardId = cardId
-        self.jsonEngine = jsonEngine
+        self.jsonCore = jsonCore
     }
     
     deinit {
@@ -452,7 +452,7 @@ extension CardSession {
     func run(jsonRequest: String, completion: @escaping (String) -> Void) {
         do {
             let request = try JSONRPCRequest(string: jsonRequest)
-            let runnable = try jsonEngine.createRunnable(from: request)
+            let runnable = try jsonCore.createRunnable(from: request)
             runnable.run(in: self) { completion($0.toJsonResponse().json) }
         } catch {
             completion(error.toJsonResponse().json)

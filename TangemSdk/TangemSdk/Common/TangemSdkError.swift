@@ -143,7 +143,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case walletIsPurged
     
-    case pin2OrCvcRequired
+    case pin2Required
     
     /// This error is returned when SDK checks unsuccessfully either
     /// a card's ability to sign with its private key, or the validity of issuer data.
@@ -298,7 +298,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .notPersonalized: return 40001
         case .notActivated: return 40002
         case .walletIsPurged: return 40003
-        case .pin2OrCvcRequired: return 40004
+        case .pin2Required: return 40004
         case .verificationFailed: return 40005
         case .dataSizeTooLarge: return 40006
         case .missingCounter: return 40007
@@ -420,7 +420,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardNumber: return "error_wrong_card_number".localized
         case .wrongCardType: return "error_wrong_card_type".localized
         case .pin1Required: return "error_pin1_required".localized
-        case .pin2OrCvcRequired: return "error_pin2_required".localized
+        case .pin2Required: return "error_pin2_required".localized
         case .underlying(let error): return error.localizedDescription
 		case .fileNotFound: return "error_file_not_found".localized
 		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
@@ -533,7 +533,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .pin1:
             return (environment?.pin1.isDefault ?? true) ? .pin1Required : .wrongPin1
         case .pin2:
-            return (environment?.pin2.isDefault ?? true) ? .pin2OrCvcRequired : .wrongPin2
+            return (environment?.pin2.isDefault ?? true) ? .pin2Required : .wrongPin2
         }
     }
 }

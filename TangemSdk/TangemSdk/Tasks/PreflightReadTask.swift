@@ -8,36 +8,26 @@
 
 import Foundation
 
-/// Use this protocol when you need to define if your Task or Command need to Read card at the session start.
-/// By default `needPreflightRead` set to `true` and `preflightReadSettings`  - to  `ReadCardOnly`
-public protocol PreflightReadCapable { //TODO: Join with CardSessionRunnable
-    var needPreflightRead: Bool { get }
-    var preflightReadSettings: PreflightReadSettings { get }
-}
-
-extension PreflightReadCapable {
-    public var needPreflightRead: Bool { true }
-    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
-}
-
-/// Settings for preflight read task
-/// - Note: Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
-public enum PreflightReadSettings: Equatable {
-    /// Read only card info without wallet info
+/// Mode for preflight read task
+/// - Note: Valid for cards with COS v.4 and higher. Older card will always read the card and the wallet info. `fullCardRead` will be used by default
+public enum PreflightReadMode: Equatable {
+    /// No card wiil be read at session start. `SessionEnvironment.card` will be empty
+    case none
+    /// Read only card info without wallet info. Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
     case readCardOnly
-    /// Read card info and single wallet specified in associated index `WalletIndex`
+    /// Read card info and single wallet specified in associated index `WalletIndex`. Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
     case readWallet(index: WalletIndex)
-    /// Read card info and all wallets
+    /// Read card info and all wallets. Used by default
     case fullCardRead
 }
 
 public final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
-    private var readSettings: PreflightReadSettings
+    private var readMode: PreflightReadMode
     
-    public init(readSettings: PreflightReadSettings) {
-        self.readSettings = readSettings
+    public init(readMode: PreflightReadMode) {
+        self.readMode = readMode
     }
     
     deinit {
@@ -45,7 +35,7 @@ public final class PreflightReadTask {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
-        Log.debug("=========================== Perform preflight check with settings: \(readSettings) ======================")
+        Log.debug("=========================== Perform preflight check with settings: \(readMode) ======================")
         ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
@@ -57,7 +47,7 @@ public final class PreflightReadTask {
     }
     
     private func finalizeRead(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
-        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData || self.readSettings == .readCardOnly {
+        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData || self.readMode == .readCardOnly {
             completion(.success(readResponse))
             return
         }
@@ -74,7 +64,7 @@ public final class PreflightReadTask {
             }
             
         }
-        switch readSettings {
+        switch readMode {
         case .readWallet(let index):
             readWallet(at: index, in: session, with: readResponse, completion: resp)
         case .fullCardRead:

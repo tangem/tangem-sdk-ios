@@ -40,12 +40,16 @@ extension ApduSerializable {
 }
 
 /// The basic protocol for card commands
-protocol Command: AnyObject, ApduSerializable, CardSessionRunnable, PreflightReadCapable {
+protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
+    /// If set to `true` and ` SessionEnvironment.pin2` is nil, pin2 will be requested automatically before transieve the apdu. Default is `false`
+    var requiresPin2: Bool { get }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
 
 extension Command {
+    public var requiresPin2: Bool { return false }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transieve(in: session, completion: completion)
@@ -61,10 +65,10 @@ extension Command {
     
     func transieve(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         let commandName = "\(self)".remove("TangemSdk.").remove("Command")
-        Log.command("=======================")
+        Log.command("=======================") //TODO: refactor
         Log.command("Send command: \(commandName)")
         Log.command("=======================")
-        if needPreflightRead && session.environment.card == nil {
+        if preflightReadMode != .none && session.environment.card == nil {
             completion(.failure(.missingPreflightRead))
             return
         }
@@ -104,11 +108,20 @@ extension Command {
                 case .failure(let error):
                     if session.environment.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
-                        if case .pin1Required = mappedError {
-                            self.requestPin(.pin1, session, completion: completion)
-                        } else if case .pin2OrCvcRequired = mappedError {
-                            self.requestPin(.pin2, session, completion: completion)
-                        } else {
+                        switch mappedError {
+                        case .pin1Required:
+                            self.requestPin(.pin1, session, completion: completion) //only read command
+                        case .invalidParams:
+                            if self.requiresPin2 {
+                                //Addition check for COS v4 and newer to prevent false-positive pin2 request
+                                if session.environment.card?.pin2IsDefault == true,
+                                  session.environment.pin2.isDefault {
+                                    fallthrough
+                                }
+                                
+                                self.requestPin(.pin2, session, completion: completion)
+                            } else { fallthrough }
+                        default:
                             completion(.failure(mappedError))
                         }
                     } else {

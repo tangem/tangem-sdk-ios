@@ -17,16 +17,12 @@ import Foundation
 ///
 /// * `Config`: if not set task will create wallet with settings that was specified in card data while personalization
 /// * `Wallet Index`: If not provided task will attempt to create wallet on default index. If failed - task will keep trying to create
-public final class CreateWalletTask: CardSessionRunnable, PreflightReadCapable {
+public final class CreateWalletTask: CardSessionRunnable {
     public typealias CommandResponse = CreateWalletResponse
     
     public var requiresPin2: Bool { true }
-    
-    public var needPreflightRead: Bool { true }
 	
 	public var walletIndex: WalletIndex? { nil }
-    
-    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
 	
 	private let config: WalletConfig?
 

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Detailed information about card contents.
-public struct CardData: JSONStringConvertible {
+public struct CardData: JSONStringConvertible, Decodable {
 	/// Tangem internal manufacturing batch ID.
 	public let batchId: String?
 	/// Timestamp of manufacturing.

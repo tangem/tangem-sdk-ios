@@ -13,6 +13,8 @@ import Foundation
 public final class DeleteFileCommand: Command {
 	public typealias CommandResponse = SimpleResponse
 	
+    public var requiresPin2: Bool { return true }
+    
 	private let fileIndex: Int
 	
 	public init(fileAt index: Int) {
@@ -32,13 +34,6 @@ public final class DeleteFileCommand: Command {
 		}
 		
 		return nil
-	}
-	
-	func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-		if case .invalidParams = error {
-			return .pin2OrCvcRequired
-		}
-		return error
 	}
 	
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

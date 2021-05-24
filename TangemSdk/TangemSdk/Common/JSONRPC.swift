@@ -8,22 +8,24 @@
 
 import Foundation
 
-public class JSONRPCCore {
-    public static let shared: JSONRPCCore = {
-        let core = JSONRPCCore()
-        core.register(SignCommand.self)
-        core.register(ScanTask.self)
-        return core
+public class JSONRPCConverter {
+    public static let shared: JSONRPCConverter = {
+        let converter = JSONRPCConverter()
+        converter.register(SignCommand.self)
+        converter.register(ScanTask.self)
+        return converter
     }()
     
     public private(set) var runnables: [String: JSONRPCConvertible.Type] = [:]
     
+    private init() {}
+
     public func register(_ object: JSONRPCConvertible.Type) {
         let methodName = String(describing: object).camelCaseToSnakeCase().uppercased()
         runnables[methodName] = object
     }
     
-    public func makeRunnable(from request: JSONRPCRequest) throws -> AnyRunnable {
+    public func convert(request: JSONRPCRequest) throws -> AnyRunnable {
         guard let method = runnables[request.method.uppercased()] else {
             throw JSONRPCError(.methodNotFound, data: request.method)
         }

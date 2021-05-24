@@ -29,10 +29,7 @@ public final class TangemSdk {
     private var onlineVerificationCancellable: AnyCancellable? = nil
     
     private lazy var jsonCore: JSONRPCCore = {
-        let core = JSONRPCCore()
-        core.register(SignCommand.self)
-        core.register(ScanTask.self)
-        return core
+        return .shared
     }()
     
     private lazy var terminalKeysService: TerminalKeysService = {
@@ -634,9 +631,9 @@ extension TangemSdk {
     public func startSession(with jsonRequest: String,
                              completion: @escaping (String) -> Void) {
         do {
-            let request = try JSONRPCRequest(string: jsonRequest)
+            let request = try JSONRPCRequest(jsonString: jsonRequest)
             try checkSession()
-            let runnable = try jsonCore.createRunnable(from: request)
+            let runnable = try jsonCore.makeRunnable(from: request)
             configure()
             cardSession = makeSession(with: try request.params.value(for: "cid"),
                                       initialMessage: try request.params.value(for: "initialMessage"))

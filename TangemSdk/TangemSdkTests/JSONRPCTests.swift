@@ -38,7 +38,7 @@ class JSONRPCTests: XCTestCase {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"scan_task\", \"params\": {\"cardVerification\": false}, \"id\": 1}"
         let request = try? JSONRPCRequest(jsonString: json)
         XCTAssertNotNil(request)
-        let task = try? JSONRPCCore.shared.makeRunnable(from: request!)
+        let task = try? JSONRPCConverter.shared.convert(request: request!)
         XCTAssertNotNil(task)
     }
     
@@ -46,7 +46,7 @@ class JSONRPCTests: XCTestCase {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_command\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"
         let request = try? JSONRPCRequest(jsonString: json)
         XCTAssertNotNil(request)
-        let task = try? JSONRPCCore.shared.makeRunnable(from: request!)
+        let task = try? JSONRPCConverter.shared.convert(request: request!)
         XCTAssertNotNil(task)
     }
     
@@ -55,7 +55,7 @@ class JSONRPCTests: XCTestCase {
         let request = try? JSONRPCRequest(jsonString: json)
         XCTAssertNotNil(request)
         do {
-            _ = try JSONRPCCore.shared.makeRunnable(from: request!)
+            _ = try JSONRPCConverter.shared.convert(request: request!)
             XCTAssertTrue(false)
         } catch {
             let jsError = error as? JSONRPCError

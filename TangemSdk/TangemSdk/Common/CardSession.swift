@@ -451,8 +451,8 @@ extension CardSession {
     ///   - completion: CardSessionRunnable response converted to json string
     func run(jsonRequest: String, completion: @escaping (String) -> Void) {
         do {
-            let request = try JSONRPCRequest(string: jsonRequest)
-            let runnable = try jsonCore.createRunnable(from: request)
+            let request = try JSONRPCRequest(jsonString: jsonRequest)
+            let runnable = try jsonCore.makeRunnable(from: request)
             runnable.run(in: self) { completion($0.toJsonResponse().json) }
         } catch {
             completion(error.toJsonResponse().json)

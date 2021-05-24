@@ -28,7 +28,7 @@ public final class TangemSdk {
     private var cardSession: CardSession? = nil
     private var onlineVerificationCancellable: AnyCancellable? = nil
     
-    private lazy var jsonCore: JSONRPCCore = {
+    private lazy var jsonConverter: JSONRPCConverter = {
         return .shared
     }()
     
@@ -568,7 +568,7 @@ public final class TangemSdk {
     /// Register custom task, that supported JSONRPC
     /// - Parameter object: object, that conforms `JSONRPCConvertible.Type`
     public func registerJSONRPCTask(_ object: JSONRPCConvertible.Type) {
-        jsonCore.register(object)
+        jsonConverter.register(object)
     }
 }
 
@@ -633,7 +633,7 @@ extension TangemSdk {
         do {
             let request = try JSONRPCRequest(jsonString: jsonRequest)
             try checkSession()
-            let runnable = try jsonCore.makeRunnable(from: request)
+            let runnable = try jsonConverter.convert(request: request)
             configure()
             cardSession = makeSession(with: try request.params.value(for: "cid"),
                                       initialMessage: try request.params.value(for: "initialMessage"))
@@ -678,6 +678,6 @@ extension TangemSdk {
                     initialMessage: initialMessage,
                     cardReader: reader,
                     viewDelegate: viewDelegate,
-                    jsonCore: jsonCore)
+                    jsonConverter: jsonConverter)
     }
 }

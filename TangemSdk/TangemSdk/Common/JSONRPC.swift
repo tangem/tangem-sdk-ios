@@ -9,6 +9,13 @@
 import Foundation
 
 public class JSONRPCCore {
+    public static let shared: JSONRPCCore = {
+        let core = JSONRPCCore()
+        core.register(SignCommand.self)
+        core.register(ScanTask.self)
+        return core
+    }()
+    
     public private(set) var runnables: [String: JSONRPCConvertible.Type] = [:]
     
     public func register(_ object: JSONRPCConvertible.Type) {
@@ -16,8 +23,8 @@ public class JSONRPCCore {
         runnables[methodName] = object
     }
     
-    public func createRunnable(from request: JSONRPCRequest) throws -> AnyRunnable {
-        guard let method = runnables[request.method] else {
+    public func makeRunnable(from request: JSONRPCRequest) throws -> AnyRunnable {
+        guard let method = runnables[request.method.uppercased()] else {
             throw JSONRPCError(.methodNotFound, data: request.method)
         }
         
@@ -26,51 +33,74 @@ public class JSONRPCCore {
 }
 
 public protocol JSONRPCConvertible {
-    init(from parameters: [String: String]) throws
-    static func makeRunnable(from parameters: [String: String]) throws -> AnyRunnable
+    init(from parameters: [String: Any]) throws
+    static func makeRunnable(from parameters: [String: Any]) throws -> AnyRunnable
 }
 
 public extension JSONRPCConvertible where Self: CardSessionRunnable {
-    static func makeRunnable(from parameters: [String: String]) throws -> AnyRunnable {
+    static func makeRunnable(from parameters: [String: Any]) throws -> AnyRunnable {
         return try Self.init(from: parameters).eraseToAnyRunnable()
     }
 }
 
 // MARK: - JSONRPC Specification
 
-public struct JSONRPCRequest: Decodable {
+public struct JSONRPCRequest {
     public let jsonrpc: String
-    public let id: String?
+    public let id: Int?
     public let method: String
-    public let params: [String: String]
+    public let params: [String: Any]
     
-    public init(id: String?, method: String, params: [String : String]) {
+    public init(id: Int?, method: String, params: [String : Any]) {
         self.jsonrpc = "2.0"
         self.id = id
         self.method = method
         self.params = params
     }
     
-    public init(string: String) throws {
-        guard let data = string.data(using: .utf8) else {
+    public init(jsonString: String) throws {
+        guard let data = jsonString.data(using: .utf8) else {
             throw JSONRPCError(.parseError)
         }
         
         do {
-            self = try JSONDecoder().decode(JSONRPCRequest.self, from: data)
+            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                if let jsonrpcValue = json["jsonrpc"] as? String {
+                    jsonrpc = jsonrpcValue
+                } else {
+                    throw JSONRPCError(.invalidRequest, data: "jsonrpc")
+                }
+                if let idValue = json["id"] as? Int {
+                    id = idValue
+                } else {
+                    throw JSONRPCError(.invalidRequest, data: "id")
+                }
+                if let methodValue = json["method"] as? String {
+                    method = methodValue
+                } else {
+                    throw JSONRPCError(.invalidRequest, data: "method")
+                }
+                if let paramsValue = json["params"] as? [String:Any] {
+                    params = paramsValue
+                } else {
+                    throw JSONRPCError(.invalidRequest, data: "params")
+                }
+            } else {
+                throw JSONRPCError(.parseError)
+            }
         } catch {
-            throw JSONRPCError(.invalidRequest, data: error.localizedDescription)
+            throw JSONRPCError(.parseError, data: error.localizedDescription)
         }
     }
 }
 
 public struct JSONRPCResponse: JSONStringConvertible {
     public let jsonrpc: String
-    public let id: String?
+    public let id: Int?
     public let result: String
     public let error: JSONRPCError?
     
-    public init(id: String?, result: String, error: JSONRPCError?) {
+    public init(id: Int?, result: String, error: JSONRPCError?) {
         self.jsonrpc = "2.0"
         self.id = id
         self.result = result
@@ -152,7 +182,7 @@ extension Error {
     }
 }
 
-extension Dictionary where Key == String, Value == String {
+extension Dictionary where Key == String, Value == Any {
     func value<T: Decodable>(for key: String) throws -> Optional<T> {
         do {
             return try value(for: key)
@@ -168,16 +198,29 @@ extension Dictionary where Key == String, Value == String {
     
     func value<T>(for key: String) throws -> T where T: Equatable, T: Decodable{
         let value = self[key]
-        if value == nil || value == "<null>" {
+        if value == nil || String(describing: value) == "<null>" {
             throw JSONRPCError(.invalidParams, data: key)
         }
         
         return try decode(value!, for: key)
     }
     
-    private func decode<T: Decodable>(_ value: String, for key: String) throws -> T { //todo decode
+    private func decode<T: Decodable>(_ value: Any, for key: String) throws -> T {
+        if T.self == Data.self || T.self == Data?.self {
+            if let hex = value as? String {
+                return (Data(hexString: hex) as! T)
+            } else {
+                throw JSONRPCError(.parseError, data: key)
+            }
+        } else if T.self == [Data].self || T.self == [Data]?.self {
+            if let hex = value as? [String] {
+                return hex.compactMap { Data(hexString: $0) } as! T
+            } else {
+                throw JSONRPCError(.parseError, data: key)
+            }
+        } else {
             do {
-                if let jsonData = value.data(using: .utf8) {
+                if let jsonData = String(describing: value).data(using: .utf8) {
                     return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
                 } else {
                     throw JSONRPCError(.parseError, data: key)
@@ -189,20 +232,21 @@ extension Dictionary where Key == String, Value == String {
                     throw error
                 }
             }
+        }
     }
 }
 
 // MARK: - Commands implemetation
 
 extension SignCommand: JSONRPCConvertible {
-    public convenience init(from parameters: [String : String]) throws {
+    public convenience init(from parameters: [String : Any]) throws {
         let pubKey: Data = try parameters.value(for: "walletIndex") //TODO: rename
         self.init(hashes: try parameters.value(for: "hashes"), walletIndex: .publicKey(pubKey))
     }
 }
 
 extension ScanTask: JSONRPCConvertible {
-    public convenience init(from parameters: [String : String]) throws {
+    public convenience init(from parameters: [String : Any]) throws {
         self.init(cardVerification: try parameters.value(for: "cardVerification"))
     }
 }

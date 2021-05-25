@@ -9,8 +9,8 @@
 import Foundation
 
 /// Available settings for files
-public enum FileSettings: Int, Codable {
-	case `public` = 0x0001, `private` = 0x0000
+public enum FileSettings: Byte, Codable {
+	case `public` = 0x01, `private` = 0x00
 }
 
 /// Describes the new settings for the file by the specified index

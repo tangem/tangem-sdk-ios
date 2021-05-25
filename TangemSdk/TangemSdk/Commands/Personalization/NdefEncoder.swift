@@ -12,11 +12,11 @@ import Foundation
 /**
  * Encodes information that is to be written on the card as an Ndef Tag.
  */
-class NdefEncoder {
+public class NdefEncoder {
     private let ndefRecords: [NdefRecord]
     private let useDynamicNdef: Bool
     
-    init(ndefRecords: [NdefRecord], useDynamicNdef: Bool) {
+    public init(ndefRecords: [NdefRecord], useDynamicNdef: Bool) {
         self.ndefRecords = ndefRecords
         self.useDynamicNdef = useDynamicNdef
     }
@@ -34,6 +34,15 @@ class NdefEncoder {
         return result
     }
     
+    public func encodeWithoutSize() throws -> Data {
+        let encodedData = try ndefRecords.enumerated().map { index, element -> Data in
+            let headerValue = (index == 0 ? UInt8(0x80) : UInt8(0x00))
+                | (!useDynamicNdef && index == ndefRecords.count - 1 ? 0x40 : 0x00)
+            return try encodeValue(ndefRecord: element, headerValue: headerValue)
+        }.joined()
+        
+        return Data(encodedData)
+    }
     
     private func encodeValue(ndefRecord: NdefRecord, headerValue: UInt8) throws -> Data {
         guard let ndefRecordBytes = ndefRecord.toBytes() else {

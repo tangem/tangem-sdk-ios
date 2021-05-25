@@ -82,9 +82,9 @@ public final class WriteFileCommand: Command {
 			return .overwritingDataIsProhibited
 		}
 		
-		if case .invalidParams = error {
-			return .pin2OrCvcRequired
-		}
+//		if case .invalidParams = error {
+//			return .pin2OrCvcRequired
+//		}
 		
 		return error
 	}

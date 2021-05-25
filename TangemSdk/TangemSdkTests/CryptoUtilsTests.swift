@@ -26,6 +26,13 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertEqual(privateKey.count, 32)
     }
     
+    func testGenerateKeyPair() {
+        let keyPair = Secp256k1Utils.generateKeyPair()
+        XCTAssertNotNil(keyPair)
+        XCTAssertEqual(keyPair!.privateKey.count, 32)
+        XCTAssertEqual(keyPair!.publicKey.count, 65)
+    }
+    
     func testSecp256k1Sign() {
         let privateKey = Data(hexString: "fd230007d4a39352f50d8c481456c1f86ddc5ff155df170af0100a62269852f0")
         let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")

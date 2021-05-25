@@ -469,12 +469,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func readFilesTapped(_ sender: Any) {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
+//        guard let cardId = card?.cardId else {
+//            self.log("Please, scan card before")
+//            return
+//        }
         
-        tangemSdk.readFiles(readPrivateFiles: true, cardId: cardId) { result in
+        tangemSdk.readFiles(readPrivateFiles: true, cardId: nil) { result in
             switch result {
             case .success(let response):
                 self.log(response)
@@ -510,6 +510,7 @@ class ViewController: UIViewController {
         
         let demoData = Data(repeating: UInt8(1), count: 2000)
         let data = FileDataProtectedByPasscode(data: demoData)
+        
         tangemSdk.writeFiles(files: [data]) { (result) in
             switch result {
             case .success(let response):
@@ -529,6 +530,8 @@ class ViewController: UIViewController {
         let demoData = Data(repeating: UInt8(1), count: 2500)
         let counter = 1
         let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
+
+        
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature
@@ -573,22 +576,22 @@ class ViewController: UIViewController {
     }
     
     @IBAction func deleteFirstFileTapped(_ sender: Any) {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
+//        guard let cardId = card?.cardId else {
+//            self.log("Please, scan card before")
+//            return
+//        }
         
-        guard let savedFiles = self.savedFiles else {
-            log("Please, read files before")
-            return
-        }
+//        guard let savedFiles = self.savedFiles else {
+//            log("Please, read files before")
+//            return
+//        }
+//
+//        guard savedFiles.count > 0 else {
+//            log("No saved files on card")
+//            return
+//        }
         
-        guard savedFiles.count > 0 else {
-            log("No saved files on card")
-            return
-        }
-        
-        tangemSdk.deleteFiles(indicesToDelete: [savedFiles[0].fileIndex], cardId: cardId) { (result) in
+        tangemSdk.deleteFiles(indicesToDelete: [10], cardId: nil) { (result) in
             switch result {
             case .success:
                 self.savedFiles = nil
@@ -676,3 +679,4 @@ class ViewController: UIViewController {
         return Data(array)
     }
 }
+

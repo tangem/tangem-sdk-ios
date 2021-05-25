@@ -44,6 +44,7 @@ public struct FileDataProtectedBySignature: DataToWrite {
 	public func addStartingTlvData(_ tlvBuilder: TlvBuilder, withEnvironment environment: SessionEnvironment) throws -> TlvBuilder {
 		try tlvBuilder.append(.issuerDataSignature, value: startingSignature)
 			.append(.issuerDataCounter, value: counter)
+            .append(.fileSettings, value: FileSettings.public)
 	}
 	
 	public func addFinalizingTlvData(_ tlvBuilder: TlvBuilder, withEnvironment environment: SessionEnvironment) throws -> TlvBuilder {

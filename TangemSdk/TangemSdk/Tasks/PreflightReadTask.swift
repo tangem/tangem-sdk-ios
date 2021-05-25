@@ -11,7 +11,7 @@ import Foundation
 /// Mode for preflight read task
 /// - Note: Valid for cards with COS v.4 and higher. Older card will always read the card and the wallet info. `fullCardRead` will be used by default
 public enum PreflightReadMode: Equatable {
-    /// No card wiil be read at session start. `SessionEnvironment.card` will be empty
+    /// No card will be read at session start. `SessionEnvironment.card` will be empty
     case none
     /// Read only card info without wallet info. Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
     case readCardOnly

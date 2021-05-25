@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class JSONRPCConverter {
+public final class JSONRPCConverter {
     public static let shared: JSONRPCConverter = {
         let converter = JSONRPCConverter()
         converter.register(SignCommand.self)

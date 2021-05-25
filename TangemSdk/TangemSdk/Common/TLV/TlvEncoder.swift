@@ -112,7 +112,7 @@ public final class TlvEncoder {
 		case .fileSettings:
 			try typeCheck(value, FileSettings.self, for: tag)
 			let settings = value as! FileSettings
-			return settings.rawValue.bytes2
+            return Data([settings.rawValue])
         }
     }
     

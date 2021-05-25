@@ -8,8 +8,8 @@
 
 import Foundation
 
-struct NdefRecord: Codable {
-    enum NdefRecordType: String, Codable {
+public struct NdefRecord: Codable {
+    public enum NdefRecordType: String, Codable {
         case uri
         case aar
         case text
@@ -17,6 +17,11 @@ struct NdefRecord: Codable {
     
     let type: NdefRecordType
     let value: String
+    
+    public init(type: NdefRecord.NdefRecordType, value: String) {
+        self.type = type
+        self.value = value
+    }
     
     func toBytes() -> Data? {
         return value.data(using: .utf8)

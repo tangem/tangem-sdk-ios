@@ -13,10 +13,18 @@ import CommonCrypto
 public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 
 /// Base protocol for run tasks in a card session
-public protocol CardSessionRunnable {    
-    var requiresPin2: Bool { get }
+public protocol CardSessionRunnable {
+    /// Use this property when you need to define if your Task or Command need to Read card at the session start.
+    var preflightReadMode: PreflightReadMode { get } //todo: PreflightReadMode
+    
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse: JSONStringConvertible
+    
+    /// This method will be called before nfc session starts.
+    /// - Parameters:
+    ///   - session:You can use view delegate methods at this moment, but not commands execution
+    ///   - completion: Call the completion handler to complete the task.
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
     
     /// The starting point for custom business logic. Adopt this protocol and use `TangemSdk.startSession` to run
     /// - Parameters:
@@ -26,13 +34,15 @@ public protocol CardSessionRunnable {
 }
 
 extension CardSessionRunnable {    
-    public var requiresPin2: Bool {
-        return false
+    public var preflightReadMode: PreflightReadMode { .fullCardRead }
+    
+    public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+        completion(.success(()))
     }
-}
-
-protocol CardSessionPreparable {
-    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
+    
+    public func eraseToAnyRunnable() -> AnyRunnable {
+        AnyRunnable(self)
+    }
 }
 
 /// Allows interaction with Tangem cards. Should be open before sending commands
@@ -53,12 +63,12 @@ public class CardSession {
     public internal(set) var environment: SessionEnvironment
     
     private let reader: CardReader
+    private let jsonConverter: JSONRPCConverter
     private let initialMessage: Message?
     private var sendSubscription: [AnyCancellable] = []
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
-    private var needPreflightRead = true
-    private var preflightReadingSettings: PreflightReadSettings = .fullCardRead
+    private var preflightReadMode: PreflightReadMode = .fullCardRead
     
     private var currentTag: NFCTagType? = nil
     /// Main initializer
@@ -68,12 +78,19 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    public init(environment: SessionEnvironment, cardId: String? = nil, initialMessage: Message? = nil, cardReader: CardReader, viewDelegate: SessionViewDelegate) {
+    ///   - jsonConverter: JSONRPCConverter
+    public init(environment: SessionEnvironment,
+                cardId: String? = nil,
+                initialMessage: Message? = nil,
+                cardReader: CardReader,
+                viewDelegate: SessionViewDelegate,
+                jsonConverter: JSONRPCConverter) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environment = environment
         self.initialMessage = initialMessage
         self.cardId = cardId
+        self.jsonConverter = jsonConverter
     }
     
     deinit {
@@ -83,16 +100,8 @@ public class CardSession {
     // MARK: - Prepearing session
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
-        if let preflightReadCapable = runnable as? PreflightReadCapable {
-            needPreflightRead = preflightReadCapable.needPreflightRead
-            preflightReadingSettings = preflightReadCapable.preflightReadSettings
-        }
-
-        if let preparable = runnable as? CardSessionPreparable {
-            preparable.prepare(self, completion: completion)
-        } else {
-            completion(.success(()))
-        }
+        preflightReadMode = runnable.preflightReadMode
+        runnable.prepare(self, completion: completion)
     }
     
     // MARK: - Session start
@@ -203,7 +212,7 @@ public class CardSession {
                         self.stop(error: error)
                         onSessionStarted(self, error)
                     }}, receiveValue: { [unowned self] tag in
-                        if case .tag = tag, self.needPreflightRead {
+                        if case .tag = tag, self.preflightReadMode != .none {
                             self.preflightCheck(onSessionStarted)
                         } else {
                             self.viewDelegate.sessionInitialized()
@@ -310,7 +319,7 @@ public class CardSession {
     
     private func sessionDidStop() {
         nfcReaderSubscriptions = []
-        preflightReadingSettings = .readCardOnly
+        preflightReadMode = .fullCardRead
         sendSubscription = []
         viewDelegate.sessionStopped()
         state = .inactive
@@ -319,7 +328,7 @@ public class CardSession {
     // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        PreflightReadTask(readSettings: preflightReadingSettings).run(in: self) { [weak self] readResult in
+        PreflightReadTask(readMode: preflightReadMode).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
 
             switch readResult {
@@ -433,5 +442,21 @@ public class CardSession {
         }
     }
 }
+//MARK: - JSON RPC
 
-//ed25519 from cryptokit?
+extension CardSession {
+    /// Convinience method for jsonrpc requests running
+    /// - Parameters:
+    ///   - jsonRequest: request to run
+    ///   - completion: CardSessionRunnable response converted to json string
+    func run(jsonRequest: String, completion: @escaping (String) -> Void) {
+        var request: JSONRPCRequest!
+        do {
+            request = try JSONRPCRequest(jsonString: jsonRequest)
+            let runnable = try jsonConverter.convert(request: request)
+            runnable.run(in: self) { completion($0.toJsonResponse(id: request.id).json) }
+        } catch {
+            completion(error.toJsonResponse(id: request?.id).json)
+        }
+    }
+}

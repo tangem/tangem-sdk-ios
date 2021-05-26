@@ -45,13 +45,6 @@ public final class ReadFileChecksumCommand: Command {
 		return .notPersonalized
 	}
 	
-	func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-		if requiresPin2, case TangemSdkError.invalidParams = error {
-			return .pin2OrCvcRequired
-		}
-		return error
-	}
-	
 	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
 		transieve(in: session) { (result) in
 			switch result {

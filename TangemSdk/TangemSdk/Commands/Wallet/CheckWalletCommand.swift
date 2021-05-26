@@ -26,7 +26,7 @@ public final class CheckWalletCommand: Command {
     
     public typealias CommandResponse = CheckWalletResponse
 	
-    public var preflightReadSettings: PreflightReadSettings {
+    public var preflightReadMode: PreflightReadMode {
         .readWallet(index: walletIndex)
     }
     

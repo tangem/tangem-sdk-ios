@@ -16,7 +16,7 @@ public struct SetPinResponse: JSONStringConvertible {
     public let status: SetPinStatus
 }
 
-public class SetPinCommand: Command, CardSessionPreparable {
+public class SetPinCommand: Command {
     public typealias CommandResponse = SetPinResponse
     
     public var requiresPin2: Bool {
@@ -60,7 +60,7 @@ public class SetPinCommand: Command, CardSessionPreparable {
         Log.debug("SetPinCommand deinit")
     }
     
-    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+    public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
         if newPin1 == nil && newPin2 == nil {
             self.requestNewPin(in: session, completion: completion)
         } else {
@@ -133,14 +133,6 @@ public class SetPinCommand: Command, CardSessionPreparable {
         return SetPinResponse(
             cardId: try decoder.decode(.cardId),
             status: status)
-    }
-    
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidParams = error {
-            return .pin2OrCvcRequired
-        }
-        
-        return error
     }
 }
 

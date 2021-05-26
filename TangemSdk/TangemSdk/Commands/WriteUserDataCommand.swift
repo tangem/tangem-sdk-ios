@@ -93,14 +93,6 @@ public final class WriteUserDataCommand: Command {
         return nil
     }
     
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidParams = error {
-            return .pin2OrCvcRequired
-        }
-        
-        return error
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

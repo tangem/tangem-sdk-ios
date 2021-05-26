@@ -24,9 +24,6 @@ public struct WriteFilesResponse: JSONStringConvertible {
 /// 2. Data can be protected by Passcode (PIN2). `FileDataProtectedByPasscode` In this case,  Passcode (PIN2) is required for the command.
 @available (iOS 13.0, *)
 public final class WriteFilesTask: CardSessionRunnable {
-	
-	private(set) public var requiresPin2: Bool = false
-	
 	private let files: [DataToWrite]
     private let overwriteAllFiles: Bool
 		
@@ -36,12 +33,6 @@ public final class WriteFilesTask: CardSessionRunnable {
     public init(files: [DataToWrite], overwriteAllFiles: Bool = false) {
 		self.files = files
         self.overwriteAllFiles = overwriteAllFiles
-		files.forEach {
-			let requiredPin2 = $0.requiredPin2
-			if requiredPin2 {
-                self.requiresPin2 = requiredPin2
-			}
-		}
 	}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {

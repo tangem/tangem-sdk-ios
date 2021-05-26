@@ -9,10 +9,12 @@
 import Foundation
 
 /// The basic protocol for command response
-public protocol JSONStringConvertible: Codable, CustomStringConvertible {}
+public protocol JSONStringConvertible: Encodable {
+    var json: String {get}
+}
 
 extension JSONStringConvertible {
-    public var description: String {
+    public var json: String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
         encoder.dataEncodingStrategy = .custom{ data, encoder in

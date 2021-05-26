@@ -37,7 +37,7 @@ public final class CreateWalletCommand: Command {
         return true
     }
     
-    public var preflightReadSettings: PreflightReadSettings { .readWallet(index: walletIndex) }
+    public var preflightReadMode: PreflightReadMode { .readWallet(index: walletIndex) }
     
     private let walletIndexValue: Int
 	private let config: WalletConfig?
@@ -105,7 +105,7 @@ public final class CreateWalletCommand: Command {
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
 			
-			guard let card = card else { return .pin2OrCvcRequired }
+			guard let card = card else { return error }
 			
 			if let walletsCount = card.walletsCount,
 			   walletIndexValue >= walletsCount {
@@ -117,8 +117,6 @@ public final class CreateWalletCommand: Command {
 			   card.pin2IsDefault ?? false {
 				return .alreadyCreated
 			}
-			
-            return .pin2OrCvcRequired
         }
         
         return error

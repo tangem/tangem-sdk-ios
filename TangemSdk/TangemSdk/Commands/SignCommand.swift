@@ -28,7 +28,7 @@ public final class SignCommand: Command {
         return true
     }
     
-    public var preflightReadSettings: PreflightReadSettings {
+    public var preflightReadMode: PreflightReadMode {
         .readWallet(index: walletIndex)
     }
     
@@ -118,11 +118,7 @@ public final class SignCommand: Command {
         sign(in: session, completion: completion)
     }
     
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidParams = error {
-            return .pin2OrCvcRequired
-        }
-        
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {        
         if case .unknownStatus = error {
             return .nfcStuck
         }

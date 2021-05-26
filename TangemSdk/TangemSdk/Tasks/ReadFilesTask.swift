@@ -19,10 +19,7 @@ public struct ReadFilesResponse: JSONStringConvertible {
 /// This task requesting information about files saved on card. Task can read private files
 @available (iOS 13.0, *)
 public class ReadFilesTask: CardSessionRunnable {
-	
 	public typealias CommandResponse = ReadFilesResponse
-	
-	public var requiresPin2: Bool { readPrivateFiles }
 	
     private let readPrivateFiles: Bool
     private let indices: [Int]

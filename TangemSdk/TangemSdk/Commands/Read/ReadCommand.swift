@@ -15,10 +15,8 @@ public typealias ReadResponse = Card
 final class ReadCommand: Command {
     typealias CommandResponse = ReadResponse
     
-    var needPreflightRead: Bool {
-        return false
-    }
-	
+    var preflightReadMode: PreflightReadMode { .none }
+
     deinit {
         Log.debug("ReadCommand deinit")
     }

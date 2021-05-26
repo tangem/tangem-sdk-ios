@@ -15,8 +15,7 @@ struct WalletListResponse: JSONStringConvertible {
 
 /// Read all wallets on card.
 class ReadWalletListCommand: Command {
-    
-    var needPreflightRead: Bool { false }
+    var preflightReadMode: PreflightReadMode { .none }
     
     private var walletIndex: WalletIndex?
     private var tempWalletList: [CardWallet] = []

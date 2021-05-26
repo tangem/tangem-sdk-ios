@@ -28,13 +28,11 @@ public struct ResponseApdu {
     
     /// Converts raw response data  to the array of TLVs.
     /// - Parameter encryptionKey: key to decrypt response.
-    /// (Encryption / decryption functionality is not implemented yet.)
     public func getTlvData(encryptionKey: Data? = nil) -> [Tlv]? {
         guard let tlv = Tlv.deserialize(data) else { // Initialize TLV array with raw data from card response
             return nil
         }
         
-        //TODO: implement encryption
         return tlv
     }
     

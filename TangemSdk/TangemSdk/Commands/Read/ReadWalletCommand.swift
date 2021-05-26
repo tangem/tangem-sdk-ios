@@ -16,7 +16,7 @@ struct WalletResponse: JSONStringConvertible {
 /// Read signle wallet on card. This command executes before interacting with specific wallet to retrieve information about it and perform prechecks
 class ReadWalletCommand: Command {
     
-    var needPreflightRead: Bool { false }
+    var preflightReadMode: PreflightReadMode { .none }
     
     private let walletIndex: WalletIndex
     

@@ -159,19 +159,19 @@ extension JSONRPCError {
 // MARK: - JSONRPC Helper extensions
 
 extension Result where Success: JSONStringConvertible, Failure == TangemSdkError {
-    func toJsonResponse() -> JSONRPCResponse {
+    func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         switch self {
         case .success(let response):
-            return JSONRPCResponse(id: nil, result: response.json, error: nil)
+            return JSONRPCResponse(id: id, result: response.json, error: nil)
         case .failure(let error):
-            return error.toJsonResponse()
+            return error.toJsonResponse(id: id)
         }
     }
 }
 
 extension Error {
-    func toJsonResponse() -> JSONRPCResponse {
-        return JSONRPCResponse(id: nil, result: "", error: toJsonError())
+    func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
+        return JSONRPCResponse(id: id, result: "", error: toJsonError())
     }
     
     func toJsonError() -> JSONRPCError {

@@ -20,9 +20,7 @@ public struct DepersonalizeResponse: JSONStringConvertible {
 public class DepersonalizeCommand: Command {
     public typealias CommandResponse = DepersonalizeResponse
     
-    public var needPreflightRead: Bool {
-        return false
-    }
+    public var preflightReadMode: PreflightReadMode { .none }
     
     public init() {}
     

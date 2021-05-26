@@ -10,10 +10,8 @@ import Foundation
 
 /// Task that allows to read Tangem card and verify its private key.
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
-public final class ScanTask: CardSessionRunnable, PreflightReadCapable {
+public final class ScanTask: CardSessionRunnable {
     public typealias CommandResponse = Card
-	
-    public var preflightReadSettings: PreflightReadSettings { .fullCardRead }
     
     private let cardVerification: Bool
     

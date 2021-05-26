@@ -12,9 +12,7 @@ import Foundation
 @available (iOS 13.0, *)
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
-	
-	public var requiresPin2: Bool { true }
-	
+    
 	private var changes: [FileSettingsChange]
 	
 	public init(changes: [FileSettingsChange]) {

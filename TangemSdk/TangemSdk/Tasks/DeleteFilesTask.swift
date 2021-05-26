@@ -13,8 +13,6 @@ import Foundation
 public final class DeleteFilesTask: CardSessionRunnable {
 	public typealias CommandResponse = SimpleResponse
 	
-	public var requiresPin2: Bool { true }
-	
 	private var filesToDelete: [Int]?
 	
     /// Task for deleting files from card.

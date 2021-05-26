@@ -632,12 +632,17 @@ extension TangemSdk {
                              completion: @escaping (String) -> Void) {
         do {
             let request = try JSONRPCRequest(jsonString: jsonRequest)
-            try checkSession()
-            let runnable = try jsonConverter.convert(request: request)
-            configure()
-            cardSession = makeSession(with: try request.params.value(for: "cid"),
-                                      initialMessage: try request.params.value(for: "initialMessage"))
-            cardSession!.start(with: runnable) { completion($0.toJsonResponse().json) }
+            do {
+                try checkSession()
+                let runnable = try jsonConverter.convert(request: request)
+                configure()
+                cardSession = makeSession(with: try request.params.value(for: "cid"),
+                                          initialMessage: try request.params.value(for: "initialMessage"))
+                cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
+            } catch {
+                completion(error.toJsonResponse(id: request.id).json)
+                return
+            }
         } catch {
             completion(error.toJsonResponse().json)
             return

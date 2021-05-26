@@ -450,16 +450,13 @@ extension CardSession {
     ///   - jsonRequest: request to run
     ///   - completion: CardSessionRunnable response converted to json string
     func run(jsonRequest: String, completion: @escaping (String) -> Void) {
+        var request: JSONRPCRequest!
         do {
-            let request = try JSONRPCRequest(jsonString: jsonRequest)
-            do {
+            request = try JSONRPCRequest(jsonString: jsonRequest)
             let runnable = try jsonConverter.convert(request: request)
-                runnable.run(in: self) { completion($0.toJsonResponse(id: request.id).json) }
-            } catch {
-                completion(error.toJsonResponse(id: request.id).json)
-            }
+            runnable.run(in: self) { completion($0.toJsonResponse(id: request.id).json) }
         } catch {
-            completion(error.toJsonResponse().json)
+            completion(error.toJsonResponse(id: request?.id).json)
         }
     }
 }

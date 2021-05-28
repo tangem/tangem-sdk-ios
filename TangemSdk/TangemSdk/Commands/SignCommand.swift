@@ -92,6 +92,11 @@ public final class SignCommand: Command {
             return .signHashesNotAvailable
         }
         
+        if let fw = card.firmwareVersionValue, fw < 2.28,
+           let sd = card.pauseBeforePin2, sd > 1500 {
+            return .oldCard
+        }
+        
         return nil
     }
     

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
-public struct SigningMethod: OptionSet, Codable, StringArrayConvertible {
+public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {

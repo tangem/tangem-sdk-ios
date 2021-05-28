@@ -9,7 +9,7 @@
 import Foundation
 
 /// Status of the wallet
-public enum WalletStatus: Int, Codable, StatusType {
+public enum WalletStatus: Int, Codable, StatusType, JSONStringConvertible {
     /// Wallet not created
     case empty = 1
     /// Wallet created and can be used for signing

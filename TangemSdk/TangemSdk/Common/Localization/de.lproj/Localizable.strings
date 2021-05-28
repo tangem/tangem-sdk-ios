@@ -99,6 +99,8 @@
 "error_card_read_wrong_wallet" = "Card read wrong wallet";
 "error_wrong_pin1" = "Wrong Access Сode";
 "error_wrong_pin2" = "Wrong Passcode";
+
+"error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 //Android only
 
 // Label. Need NFC to be switched on.

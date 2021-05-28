@@ -9,7 +9,7 @@
 import Foundation
 
 /// Stores and maps Tangem card settings.
-public struct SettingsMask: OptionSet, Codable, StringArrayConvertible {
+public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible {
 	public let rawValue: Int
 	
 	public init(rawValue: Int) {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ProductMask: OptionSet, Codable, StringArrayConvertible {
+public struct ProductMask: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {

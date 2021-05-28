@@ -9,7 +9,7 @@
 import Foundation
 
 /// Available settings for files
-public enum FileSettings: Int, Codable {
+public enum FileSettings: Int, Codable, JSONStringConvertible {
 	case `public` = 0x0001, `private` = 0x0000
 }
 

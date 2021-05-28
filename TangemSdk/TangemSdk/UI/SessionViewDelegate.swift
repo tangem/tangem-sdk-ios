@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// Wrapper for a message that can be shown to user after a start of NFC session.
-public struct Message: Codable {
+public struct Message: Codable, JSONStringConvertible {
     let header: String?
     let body: String?
     

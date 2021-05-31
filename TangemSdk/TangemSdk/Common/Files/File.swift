@@ -9,7 +9,7 @@
 import Foundation
 
 @available (iOS 13, *)
-public class File: Codable, CustomStringConvertible {
+public class File: Codable, CustomStringConvertible, JSONStringConvertible {
 	
 	internal static let emptyFile = File(fileIndex: 0, fileSettings: nil, fileData: Data())
 	

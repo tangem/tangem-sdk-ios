@@ -117,6 +117,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     //Sign Errors
     case noRemainingSignatures
+    case oldCard
     
     /// This error is returned when a `SignCommand` receives only empty hashes for signature.
     case emptyHashes
@@ -335,6 +336,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .walletIsNotCreated: return 40904
         case .signHashesNotAvailable: return 40905
         case .tooManyHashesInOneTransaction: return 40906
+        case .oldCard: return 40907
             
         case .extendedDataSizeTooLarge: return 41101
             
@@ -439,6 +441,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return Localization.genericErrorCode("\(self.code). \(message)")
         case .decodingFailedMissingTag(let message):
             return Localization.genericErrorCode("\(self.code). \(message)")
+        case .oldCard: return "error_old_card".localized
         default:
             let description = "\(self)".capitalizingFirst()
             return Localization.genericErrorCode("\(self.code). \(description)")

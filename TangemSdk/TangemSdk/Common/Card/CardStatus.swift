@@ -13,7 +13,7 @@ protocol StatusType {
 }
 
 /// Status of the card and its wallet.
-public enum CardStatus: Int, Codable, StatusType {
+public enum CardStatus: Int, Codable, StatusType, JSONStringConvertible {
 	case notPersonalized = 0
 	case empty = 1
 	case loaded = 2

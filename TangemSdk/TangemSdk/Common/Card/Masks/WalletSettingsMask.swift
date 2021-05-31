@@ -10,7 +10,7 @@ import Foundation
 
 /// Stores and maps Wallet settings
 /// - Note: Available only for cards with COS v.4.0
-public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible {
+public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible {
 	public var rawValue: Int
 	
 	public init(rawValue: Int) {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Issuer: Codable {
+public struct Issuer: Codable, JSONStringConvertible {
     let name: String
     let id: String
     let dataKeyPair: KeyPair

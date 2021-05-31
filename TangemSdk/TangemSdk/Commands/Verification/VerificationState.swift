@@ -9,7 +9,7 @@
 import Foundation
 
 
-public enum VerificationState: String, Codable {
+public enum VerificationState: String, Codable, JSONStringConvertible {
     case passed
     case offline
     case failed

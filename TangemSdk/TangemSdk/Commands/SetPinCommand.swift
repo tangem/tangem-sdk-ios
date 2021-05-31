@@ -136,7 +136,7 @@ public class SetPinCommand: Command {
     }
 }
 
-public enum SetPinStatus: String, Codable {
+public enum SetPinStatus: String, Codable, JSONStringConvertible {
     case pinsNotChanged
     case pin1Changed
     case pin2Changed

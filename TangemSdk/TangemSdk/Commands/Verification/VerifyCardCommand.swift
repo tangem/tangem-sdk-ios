@@ -9,7 +9,7 @@
 import Foundation
 
 
-public enum VerifyCardState: String, Codable {
+public enum VerifyCardState: String, Codable, JSONStringConvertible {
     case offline
     case online
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum FirmwareType: String, Codable, CaseIterable {
+public enum FirmwareType: String, Codable, CaseIterable, JSONStringConvertible {
 	case sdk = "d SDK"
 	case release = "r"
 	case special
@@ -23,7 +23,7 @@ typealias CardType = FirmwareType
 
 /// Holds information about card firmware version included version saved on card `version`,
 /// splitted to `major`, `minor` and `hotFix` and `FirmwareType`
-public struct FirmwareVersion: Codable {
+public struct FirmwareVersion: Codable, JSONStringConvertible {
 	
 	public static let zero = FirmwareVersion(major: 0, minor: 0)
 	public static let max = FirmwareVersion(major: Int.max, minor: 0)

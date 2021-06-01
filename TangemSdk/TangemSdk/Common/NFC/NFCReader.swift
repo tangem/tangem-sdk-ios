@@ -69,6 +69,7 @@ final class NFCReader: NSObject {
     private var sendRetryCount = Constants.retryCount
     private var startRetryCount = Constants.startRetryCount
     private let pollingOption: NFCTagReaderSession.PollingOption
+    private var sessionDidBecomeActiveTimestamp: Date = .init()
     
     init(pollingOption: NFCTagReaderSession.PollingOption = [.iso14443]) {
         self.pollingOption = pollingOption
@@ -114,6 +115,14 @@ extension NFCReader: CardReader {
             .default
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .map { _ in return true }
+            .filter{[unowned self] _ in
+                let distanceToSessionActive = self.sessionDidBecomeActiveTimestamp.distance(to: Date())
+                if !self.isSessionReady.value || distanceToSessionActive < 1 {
+                    Log.nfc("Filter out сancelled event")
+                    return false
+                }
+                return true
+            }
             .assign (to: \.cancelled, on: self)
             .store(in: &bag)
         
@@ -344,6 +353,7 @@ extension NFCReader: CardReader {
 //MARK: NFCTagReaderSessionDelegate
 extension NFCReader: NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {
+        sessionDidBecomeActiveTimestamp = Date()
         isSessionReady.send(true)
     }
     

@@ -13,9 +13,9 @@ public struct PurgeWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
-    public let status: CardStatus
+    public let status: CardStatus //todo: remove or not? waiting for DV answer
     /// Index of purged wallet
-    public let walletIndex: WalletIndex
+    public let walletIndex: WalletIndex //todo: remove
 }
 
 /**

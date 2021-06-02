@@ -13,6 +13,9 @@ public struct CheckPinResponse: JSONStringConvertible {
     public let isPin2Default: Bool
 }
 
+//todo: use set pin command? or another response from setpin
+public struct CheckPinResponseInt: JSONStringConvertible {}
+
 public final class CheckPinCommand: Command {
     public typealias Response = CheckPinResponse
     public var requiresPin2: Bool { true }

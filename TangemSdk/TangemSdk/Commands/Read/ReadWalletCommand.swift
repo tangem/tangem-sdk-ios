@@ -9,7 +9,7 @@
 import Foundation
 
 struct WalletResponse: JSONStringConvertible {
-    let cid: String
+    let cid: String //todo: cardId
     let wallet: CardWallet
 }
 

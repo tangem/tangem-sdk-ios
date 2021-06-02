@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+//todo: rename
 public struct SimpleResponse: JSONStringConvertible {
     public let cardId: String
 }

@@ -43,7 +43,7 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
  * wallet balance signed by the issuer or additional issuer’s attestation data.
  */
 public final class ReadIssuerDataCommand: Command {
-    public typealias CommandResponse = ReadIssuerDataResponse
+    public typealias Response = ReadIssuerDataResponse
     
     private var issuerPublicKey: Data?
     

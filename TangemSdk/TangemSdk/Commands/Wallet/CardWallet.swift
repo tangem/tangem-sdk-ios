@@ -12,20 +12,20 @@ import Foundation
 public struct CardWallet: Codable, JSONStringConvertible {
     /// Index of wallet in card storage
     /// Use this index to create `WalletIndex` for interaction with wallet on card
-    public let index: Int
+    public let index: Int //todo: remove
     /// Current status of wallet
     /// Statuses: empty = 1, loaded = 2, purged = 3
-    public var status: WalletStatus
+    public var status: WalletStatus //todo: DV
     /// Explicit text name of the elliptic curve used for all wallet key operations.
     /// Supported curves: ‘secp256k1’ and ‘ed25519’.
     public var curve: EllipticCurve?
-    public var settingsMask: SettingsMask?
+    public var settingsMask: SettingsMask? //todo: separate to another one
     /// Public key of the blockchain wallet.
-    public var publicKey: Data?
+    public var publicKey: Data? //todo: optional or not
     /// Total number of signed single hashes returned by the card in
     /// `SignCommand` responses since card personalization.
     /// Sums up array elements within all `SignCommand`.
-    public var signedHashes: Int?
+    public var signedHashes: Int? //todo:rename totalSignedHashes
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     /// - Note: This counter were deprecated for cards with COS 4.0 and higher
     public var remainingSignatures: Int?

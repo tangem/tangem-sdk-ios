@@ -135,7 +135,7 @@ public class SetPinCommand: Command {
             status: status)
     }
 }
-
+//todo: remove pin3
 public enum SetPinStatus: String, Codable, JSONStringConvertible {
     case pinsNotChanged
     case pin1Changed

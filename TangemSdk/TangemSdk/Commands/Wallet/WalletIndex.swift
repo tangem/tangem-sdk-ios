@@ -10,6 +10,7 @@ import Foundation
 
 /// Index to specific wallet for interaction
 /// - Note: Available for cards with COS v.4.0 and higher
+//todo: delete
 public enum WalletIndex: Codable, Equatable, JSONStringConvertible {
     case index(Int), publicKey(Data)
     

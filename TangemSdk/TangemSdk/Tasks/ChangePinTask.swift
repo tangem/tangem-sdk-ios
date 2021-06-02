@@ -8,7 +8,7 @@
 //
 //import Foundation
 //
-//
+//todo: remove
 //public final class ChangePinTask: CardSessionRunnable {
 //    public typealias Response = SetPinResponse
 //    

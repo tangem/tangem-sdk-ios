@@ -21,12 +21,12 @@ public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStr
 	}
 	
 	public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
-	public static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1))
+	public static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
 	public static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
-	public static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3))
-	public static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4))
-	public static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5))
-	public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6))
+	public static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
+	public static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4)) //todo: remove
+	public static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5)) //todo: remove
+	public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()

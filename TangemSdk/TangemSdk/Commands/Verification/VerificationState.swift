@@ -8,7 +8,7 @@
 
 import Foundation
 
-
+//todo: do we actually need it?
 public enum VerificationState: String, Codable, JSONStringConvertible {
     case passed
     case offline

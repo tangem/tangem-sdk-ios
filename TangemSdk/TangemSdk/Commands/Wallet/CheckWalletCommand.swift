@@ -16,6 +16,8 @@ public struct CheckWalletResponse: JSONStringConvertible {
     public let salt: Data
     /// Challenge and salt signed with the wallet private key.
     public let walletSignature: Data
+    
+    //todo: return challenge
 }
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
@@ -33,7 +35,8 @@ public final class CheckWalletCommand: Command {
     private let curve: EllipticCurve
     private let publicKey: Data
 	
-	public init(curve: EllipticCurve, publicKey: Data) {
+    
+	public init(curve: EllipticCurve, publicKey: Data) { //todo: get curve from env, optional challenge
         self.curve = curve
         self.publicKey = publicKey
         self.walletIndex = .publicKey(publicKey)

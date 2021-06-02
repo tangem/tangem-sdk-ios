@@ -13,12 +13,15 @@ public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
-    public let status: CardStatus
+    public let status: CardStatus //todo: wait
 	/// Wallet index on card.
 	/// - Note: Available only for cards with COS v.4.0 and higher
-	public let walletIndex: Int
+	public let walletIndex: Int //todo: remove
     /// Public key of a newly created blockchain wallet.
     public let walletPublicKey: Data
+    
+    //todo: return cardwallet
+
 }
 
 /**

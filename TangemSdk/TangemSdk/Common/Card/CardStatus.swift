@@ -11,7 +11,7 @@ import Foundation
 protocol StatusType {
     var rawValue: Int { get }
 }
-
+//todo: refactor notpesonalized -> error, remove struct
 /// Status of the card and its wallet.
 public enum CardStatus: Int, Codable, StatusType, JSONStringConvertible {
 	case notPersonalized = 0

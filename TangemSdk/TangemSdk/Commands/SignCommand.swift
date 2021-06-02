@@ -9,16 +9,13 @@
 import Foundation
 
 /// Response for `SignCommand`.
-public struct SignResponse: JSONStringConvertible {
+public struct SignResponse: Codable, JSONStringConvertible {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hashes (array of resulting signatures)
     public let signatures: [Data]
-    /// Remaining number of sign operations before the wallet will stop signing transactions.
-    //public let walletRemainingSignatures: Int?
-    /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int? // -> totalSignedHashes
-    
+    /// Total number of signed  hashes returned by the wallet since its creation. COS: 1.16+
+    public let totalSignedHashes: Int?
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
@@ -101,7 +98,7 @@ public final class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponseExt>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return
@@ -124,7 +121,7 @@ public final class SignCommand: Command {
         sign(in: session) { r in
             switch r {
             case .success(let response):
-                completion(.success(SignResponseExt(response)))
+                completion(.success(response))
             case .failure(let err):
                 completion(.failure(err))
             }
@@ -151,8 +148,7 @@ public final class SignCommand: Command {
                 if self.signatures.count == self.hashes.count {
                     completion(.success(SignResponse(cardId: response.cardId,
                                                      signatures: self.signatures,
-                                                     walletRemainingSignatures: response.walletRemainingSignatures,
-                                                     walletSignedHashes: response.walletSignedHashes)))
+                                                     totalSignedHashes: response.totalSignedHashes)))
                     return
                 }
                 
@@ -204,8 +200,7 @@ public final class SignCommand: Command {
         let splittedSignatures = splitSignedSignature(try decoder.decode(.walletSignature), numberOfSignatures: getChunk().underestimatedCount)
         let resp = SignResponse(cardId: try decoder.decode(.cardId),
                                 signatures: splittedSignatures,
-                                walletRemainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
-                                walletSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+                                totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
         return resp
     }
     

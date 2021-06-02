@@ -35,9 +35,11 @@ public final class PreflightReadTask {
     typealias CommandResponse = ReadResponse
     
     private var readSettings: PreflightReadSettings
+    private var targetCardId: String?
     
-    public init(readSettings: PreflightReadSettings) {
+    public init(readSettings: PreflightReadSettings, targetCardId: String? = nil) {
         self.readSettings = readSettings
+        self.targetCardId = targetCardId
     }
     
     deinit {
@@ -49,6 +51,10 @@ public final class PreflightReadTask {
         ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
+                if let targetCid = self.targetCardId, targetCid != readResponse.cardId {
+                    completion(.failure(.wrongCardNumber))
+                    return
+                }
                 self.finalizeRead(in: session, with: readResponse, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

@@ -79,7 +79,7 @@ public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
  * biometric information for ID card product.
  */
 public final class ReadIssuerExtraDataCommand: Command {
-    public typealias CommandResponse = ReadIssuerExtraDataResponse
+    public typealias Response = ReadIssuerExtraDataResponse
     
     private var issuerPublicKey: Data?
     private var completion: CompletionResult<ReadIssuerExtraDataResponse>?

@@ -14,7 +14,7 @@ public final class ScanTask: CardSessionRunnable {
     public typealias Response = Card
     
     private let cardVerification: Bool
-    
+    //todo: attestation
     public init(cardVerification: Bool = true) {
         self.cardVerification = cardVerification
 	}

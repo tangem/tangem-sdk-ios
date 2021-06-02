@@ -15,6 +15,6 @@ class CardWalletDeserializer {
                    curve: try decoder.decodeOptional(.curveId),
                    settingsMask: try decoder.decodeOptional(.settingsMask),
                    publicKey: try decoder.decodeOptional(.walletPublicKey),
-                   signedHashes: try decoder.decodeOptional(.walletSignedHashes))
+                   totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
     }
 }

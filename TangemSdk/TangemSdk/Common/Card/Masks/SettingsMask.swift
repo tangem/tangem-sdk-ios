@@ -16,13 +16,13 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 		self.rawValue = rawValue
 	}
 	
-	public static let isReusable = SettingsMask(rawValue: 0x0001)
+	public static let isReusable = SettingsMask(rawValue: 0x0001) //todo remove
 	public static let useActivation = SettingsMask(rawValue: 0x0002)
-	public static let prohibitPurgeWallet = SettingsMask(rawValue: 0x0004)
+	public static let prohibitPurgeWallet = SettingsMask(rawValue: 0x0004) //todo remove
 	public static let useBlock = SettingsMask(rawValue: 0x0008)
 	public static let allowSetPIN1 = SettingsMask(rawValue: 0x0010)
 	public static let allowSetPIN2 = SettingsMask(rawValue: 0x0020)
-	public static let useCvc = SettingsMask(rawValue: 0x0040)
+	public static let useCvc = SettingsMask(rawValue: 0x0040) //todo remove
 	public static let prohibitDefaultPIN1 = SettingsMask(rawValue: 0x0080)
 	public static let useOneCommandAtTime = SettingsMask(rawValue: 0x0100)
 	public static let useNDEF = SettingsMask(rawValue: 0x0200)
@@ -39,7 +39,7 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	public static let restrictOverwriteIssuerExtraData = SettingsMask(rawValue: 0x00100000)
 	public static let requireTermTxSignature = SettingsMask(rawValue: 0x01000000)
 	public static let requireTermCertSignature = SettingsMask(rawValue: 0x02000000)
-	public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000)
+	public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000) //todo remove
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()

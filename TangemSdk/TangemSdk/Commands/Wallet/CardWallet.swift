@@ -22,10 +22,9 @@ public struct CardWallet: Codable, JSONStringConvertible {
     public var settingsMask: SettingsMask? //todo: separate to another one
     /// Public key of the blockchain wallet.
     public var publicKey: Data? //todo: optional or not
-    /// Total number of signed single hashes returned by the card in
-    /// `SignCommand` responses since card personalization.
-    /// Sums up array elements within all `SignCommand`.
-    public var signedHashes: Int? //todo:rename totalSignedHashes
+    /// Total number of signed  hashes returned by the wallet since its creation
+    /// COS 1.16+
+    public var totalSignedHashes: Int?
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     /// - Note: This counter were deprecated for cards with COS 4.0 and higher
     public var remainingSignatures: Int?
@@ -37,24 +36,17 @@ public struct CardWallet: Codable, JSONStringConvertible {
     public var pubkeyIndex: WalletIndex? {
         publicKey == nil ? nil : .publicKey(publicKey!)
     }
-    
-    init(index: Int, status: WalletStatus, curve: EllipticCurve? = nil, settingsMask: SettingsMask? = nil, publicKey: Data? = nil, signedHashes: Int? = nil, remainingSignatures: Int? = nil) {
-        self.index = index
-        self.status = status
-        self.curve = curve
-        self.settingsMask = settingsMask
-        self.publicKey = publicKey
-        self.signedHashes = signedHashes
-        self.remainingSignatures = remainingSignatures
-    }
-    
+}
+
+
+extension CardWallet {
     init(from response: CreateWalletResponse, with curve: EllipticCurve, settings: SettingsMask?) {
         self.index = response.walletIndex
         self.status = WalletStatus(from: response.status)
         self.curve = curve
         self.settingsMask = settings
         self.publicKey = response.walletPublicKey
-        self.signedHashes = 0
+        self.totalSignedHashes = 0
         remainingSignatures = nil
     }
 }

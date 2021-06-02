@@ -7,12 +7,13 @@
 //
 
 import Foundation
-
+//todo: walletsList
 struct WalletListResponse: JSONStringConvertible {
-    let cid: String
+    let cid: String //todo: cardId
     let wallets: [CardWallet]
 }
-
+//todo: public
+//walletsList
 /// Read all wallets on card.
 class ReadWalletListCommand: Command {
     var preflightReadMode: PreflightReadMode { .none }

@@ -17,8 +17,8 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
 		self.rawValue = rawValue
 	}
 	
-	public static let isReusable = WalletSettingsMask(rawValue: 0x0001)
-	public static let prohibitPurgeWallet = WalletSettingsMask(rawValue: 0x0004)
+	public static let isReusable = WalletSettingsMask(rawValue: 0x0001) //todo: DV
+	public static let prohibitPurgeWallet = WalletSettingsMask(rawValue: 0x0004) //todo: rename
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()

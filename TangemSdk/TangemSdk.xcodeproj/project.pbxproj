@@ -109,7 +109,7 @@
 		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
 		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
 		5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D944757264EC52400EA9CD2 /* JSONRPC.swift */; };
-		5D94475E2652F0D400EA9CD2 /* AnyRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */; };
+		5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D94475D2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift */; };
 		5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D974B7D237D672F00DCDF21 /* Date+.swift */; };
 		5DA3A2EF251CA507009A8E08 /* CheckPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */; };
 		5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA5B610233E11950058C720 /* CommandApdu.swift */; };
@@ -332,7 +332,7 @@
 		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
 		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
 		5D944757264EC52400EA9CD2 /* JSONRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRPC.swift; sourceTree = "<group>"; };
-		5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyRunnable.swift; sourceTree = "<group>"; };
+		5D94475D2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSONRPCRunnable.swift; sourceTree = "<group>"; };
 		5D974B7D237D672F00DCDF21 /* Date+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+.swift"; sourceTree = "<group>"; };
 		5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckPinCommand.swift; sourceTree = "<group>"; };
 		5DA5B610233E11950058C720 /* CommandApdu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandApdu.swift; sourceTree = "<group>"; };
@@ -815,7 +815,7 @@
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 				5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */,
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
-				5D94475D2652F0D400EA9CD2 /* AnyRunnable.swift */,
+				5D94475D2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift */,
 				5D944757264EC52400EA9CD2 /* JSONRPC.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
@@ -1221,7 +1221,7 @@
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
-				5D94475E2652F0D400EA9CD2 /* AnyRunnable.swift in Sources */,
+				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */,

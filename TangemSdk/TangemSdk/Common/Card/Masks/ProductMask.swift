@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+//todo: remove
 public struct ProductMask: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible {
 	public let rawValue: Byte
 	

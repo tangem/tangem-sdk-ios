@@ -8,20 +8,24 @@
 
 import Foundation
 
-
+//todo: verify -> attestation
 public enum VerifyCardState: String, Codable, JSONStringConvertible {
     case offline
     case online
+}
+
+public struct VerifyCardResponseExt {
+    public let cardId: String
 }
 
 
 /// Deserialized response from the Tangem card after `VerifyCardResponseCommand`.
 public struct VerifyCardResponse: JSONStringConvertible {
     public let cardId: String
-    public let verificationState: VerifyCardState?
-    public let artworkInfo: ArtworkInfo?
-    public let cardPublicKey: Data
-    
+    public let verificationState: VerifyCardState? //todo: remove
+    public let artworkInfo: ArtworkInfo? //todo: remove
+    public let cardPublicKey: Data //todo: remove
+    //todo: return challenge
     let salt: Data
     let cardSignature: Data
     
@@ -48,6 +52,7 @@ public class VerifyCardCommand: Command {
     
     private var challenge: Data? = nil
 
+    //todo: optional challenge challenge
     public init() {
         self.challenge = try? CryptoUtils.generateRandomBytes(count: 16)
     }

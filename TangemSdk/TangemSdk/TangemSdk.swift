@@ -635,7 +635,7 @@ extension TangemSdk {
             try checkSession()
             let runnable = try jsonConverter.convert(request: request)
             configure()
-            cardSession = makeSession(with: try request.params.value(for: "cid"),
+            cardSession = makeSession(with: try request.params.value(for: "cardId"),
                                       initialMessage: try request.params.value(for: "initialMessage"))
             cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             

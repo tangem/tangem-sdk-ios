@@ -15,7 +15,7 @@ public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
 /// Base protocol for run tasks in a card session
 public protocol CardSessionRunnable {
     /// Use this property when you need to define if your Task or Command need to Read card at the session start.
-    var preflightReadMode: PreflightReadMode { get } //todo: PreflightReadMode
+    var preflightReadMode: PreflightReadMode { get }
     
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype Response

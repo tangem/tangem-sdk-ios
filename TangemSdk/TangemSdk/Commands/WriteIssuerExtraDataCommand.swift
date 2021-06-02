@@ -17,7 +17,7 @@ public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
  * For example, this field may contain a photo or biometric information for ID card products.
  */
 public final class WriteIssuerExtraDataCommand: Command {
-    public typealias CommandResponse = WriteIssuerExtraDataResponse
+    public typealias Response = WriteIssuerExtraDataResponse
     
     private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024

@@ -14,7 +14,7 @@ public struct CheckPinResponse: JSONStringConvertible {
 }
 
 public final class CheckPinCommand: Command {
-    public typealias CommandResponse = CheckPinResponse
+    public typealias Response = CheckPinResponse
     public var requiresPin2: Bool { true }
     
     public init() {}

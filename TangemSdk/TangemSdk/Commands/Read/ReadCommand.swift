@@ -13,7 +13,7 @@ public typealias ReadResponse = Card
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 final class ReadCommand: Command {
-    typealias CommandResponse = ReadResponse
+    typealias Response = ReadResponse
     
     var preflightReadMode: PreflightReadMode { .none }
 

@@ -8,35 +8,35 @@
 
 import Foundation
 
-/// Type erased CardSessionRunnable
-public class AnyRunnable: CardSessionRunnable {
-    public typealias CommandResponse = AnyResponse
+/// Type erased CardSessionRunnable which Response conforms  to JSONStringConvertible
+public class AnyJSONRPCRunnable: CardSessionRunnable {
+    public typealias Response = AnyJSONRPCResponse
     
     public var preflightReadMode: PreflightReadMode = .fullCardRead
     
-    private let runClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<AnyResponse>) -> Void
+    private let runClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<AnyJSONRPCResponse>) -> Void
 
-    init<T: CardSessionRunnable>(_ runnable: T) {
+    init<T: CardSessionRunnable>(_ runnable: T) where T.Response : JSONStringConvertible {
         preflightReadMode = runnable.preflightReadMode
         
-        runClosure = { session, compl in
+        runClosure = { session, completion in
             runnable.run(in: session) { res in
                 switch res {
                 case .success(let response):
-                    compl(.success(AnyResponse(response)))
+                    completion(.success(AnyJSONRPCResponse(response)))
                 case .failure(let err):
-                    compl(.failure(err))
+                    completion(.failure(err))
                 }
             }
         }
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<AnyResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<AnyJSONRPCResponse>) {
         runClosure(session, completion)
     }
 }
 
-public struct AnyResponse: JSONStringConvertible {
+public struct AnyJSONRPCResponse: JSONStringConvertible {
     let response: JSONStringConvertible
     
     public init<T: JSONStringConvertible>(_ response: T) {

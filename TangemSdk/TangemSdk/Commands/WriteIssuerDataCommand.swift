@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+//todo: deprecated
 /// Deserialized response from the Tangem card after `WriteIssuerDataCommand`.
 public struct WriteIssuerDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number

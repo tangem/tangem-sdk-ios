@@ -15,9 +15,10 @@ public struct SignResponse: JSONStringConvertible {
     /// Signed hashes (array of resulting signatures)
     public let signatures: [Data]
     /// Remaining number of sign operations before the wallet will stop signing transactions.
-    public let walletRemainingSignatures: Int?
+    //public let walletRemainingSignatures: Int?
     /// Total number of signed single hashes returned by the card in sign command responses.
-    public let walletSignedHashes: Int?
+    public let walletSignedHashes: Int? // -> totalSignedHashes
+    
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
@@ -100,7 +101,7 @@ public final class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponseExt>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return
@@ -120,7 +121,14 @@ public final class SignCommand: Command {
             return
         }
         
-        sign(in: session, completion: completion)
+        sign(in: session) { r in
+            switch r {
+            case .success(let response):
+                completion(.success(SignResponseExt(response)))
+            case .failure(let err):
+                completion(.failure(err))
+            }
+        }
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {        

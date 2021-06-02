@@ -63,6 +63,7 @@ public final class CreateWalletTask: CardSessionRunnable {
             case .success(let response):
                 card.status = response.status
                 let settings = card.settingsMask
+                //todo: move to command
                 card.updateWallet(at: emptyWallet.intIndex, with: CardWallet(from: response, with: curve, settings: settings))
                 session.environment.card = card
                 completion(.success(response))

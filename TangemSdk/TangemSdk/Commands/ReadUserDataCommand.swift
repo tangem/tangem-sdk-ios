@@ -33,7 +33,7 @@ public struct ReadUserDataResponse: JSONStringConvertible {
  * For example, this fields may contain blockchain nonce value.
  */
 public final class ReadUserDataCommand: Command {
-    public typealias CommandResponse = ReadUserDataResponse
+    public typealias Response = ReadUserDataResponse
     
     public init() {}
     

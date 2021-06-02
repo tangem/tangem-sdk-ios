@@ -11,7 +11,7 @@ import Foundation
 /// Command that deletes file at specified index
 @available (iOS 13.0, *)
 public final class DeleteFileCommand: Command {
-	public typealias CommandResponse = SimpleResponse
+	public typealias Response = SimpleResponse
 	
     public var requiresPin2: Bool { return true }
     

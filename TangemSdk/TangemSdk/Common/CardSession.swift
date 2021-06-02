@@ -319,37 +319,27 @@ public class CardSession {
     // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        PreflightReadTask(readSettings: preflightReadingSettings).run(in: self) { [weak self] readResult in
+        PreflightReadTask(readSettings: preflightReadingSettings, targetCardId: cardId).run(in: self) { [weak self] readResult in
             guard let self = self else { return }
 
+            func handleWrongCardError(message: String) {
+                self.viewDelegate.wrongCard(message: message)
+                DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                    guard self.reader.isSessionReady.value else {
+                        onSessionStarted(self, .userCancelled)
+                        self.stop()
+                        return
+                    }
+                    
+                    self.restartPolling()
+                    self.preflightCheck(onSessionStarted)
+                }
+            }
+            
             switch readResult {
             case .success(let readResponse):
-                var wrongCardError: TangemSdkError? = nil
-                
-                if let expectedCardId = self.cardId?.uppercased(),
-                   let actualCardId = readResponse.cardId?.uppercased() {
-                    
-                    if expectedCardId != actualCardId {
-                        wrongCardError = .wrongCardNumber
-                    }
-                }
-                
                 if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
-                    wrongCardError = .wrongCardType
-                }
-                
-                if let wrongCardError = wrongCardError {
-                    self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
-                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isSessionReady.value else {
-                            onSessionStarted(self, .userCancelled)
-                            self.stop()
-                            return
-                        }
-                        
-                        self.restartPolling()
-                        self.preflightCheck(onSessionStarted)
-                    }
+                    handleWrongCardError(message: TangemSdkError.wrongCardType.localizedDescription)
                     return
                 }
                 
@@ -357,6 +347,10 @@ public class CardSession {
                 self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
+                if case .wrongCardNumber = error {
+                    handleWrongCardError(message: error.localizedDescription)
+                    return
+                }
                 onSessionStarted(self, error)
                 self.stop(error: error)
             }

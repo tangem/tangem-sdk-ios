@@ -75,7 +75,7 @@ public class VerifyCardCommand: Command {
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<VerifyCardResponse>) {
         guard let cardPublicKey = session.environment.card?.cardPublicKey else {
-            completion(.failure(.cardError))
+            completion(.failure(.missingPreflightRead))
             return
         }
         

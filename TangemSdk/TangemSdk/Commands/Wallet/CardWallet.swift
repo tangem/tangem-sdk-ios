@@ -12,9 +12,6 @@ import Foundation
 public struct CardWallet: Codable, JSONStringConvertible {
     /// Index of the wallet in the card storage
     public let index: Int
-    /// Current status of wallet
-    /// Statuses: empty = 1, loaded = 2, purged = 3
-    // public var status: WalletStatus //todo: DV
     /// Explicit text name of the elliptic curve used for all wallet key operations.
     /// Supported curves: ‘secp256k1’ and ‘ed25519’.
     public var curve: EllipticCurve

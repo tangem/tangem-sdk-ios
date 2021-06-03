@@ -9,20 +9,20 @@
 import Foundation
 
 /// Status of the wallet
-public enum WalletStatus: Int, Codable, StatusType, JSONStringConvertible {
+enum WalletStatus: Int, Codable, StatusType, JSONStringConvertible { //todo: delete
     /// Wallet not created
     case empty = 1
     /// Wallet created and can be used for signing
     case loaded = 2
     /// Wallet was purged and can't be recreated or used for signing
     case purged = 3
-
-    public func encode(to encoder: Encoder) throws {
+    
+    func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode("\(self)".capitalized)
     }
-
-    public init(from decoder: Decoder) throws {
+    
+    init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercasingFirst()
         switch stringValue {
@@ -37,7 +37,7 @@ public enum WalletStatus: Int, Codable, StatusType, JSONStringConvertible {
         }
     }
     
-    public init(from cardStatus: CardStatus) {
+    init(from cardStatus: CardStatus) {
         switch cardStatus {
         case .empty, .notPersonalized:
             self = .empty

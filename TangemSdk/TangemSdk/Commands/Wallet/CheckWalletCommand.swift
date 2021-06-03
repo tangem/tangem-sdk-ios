@@ -20,12 +20,8 @@ public struct CheckWalletResponse: JSONStringConvertible {
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
 public final class CheckWalletCommand: Command {
-    deinit {
-        Log.debug("CheckWalletCommand deinit")
-    }
-    
-    public typealias CommandResponse = CheckWalletResponse
-	
+    public typealias Response = CheckWalletResponse
+
     public var preflightReadMode: PreflightReadMode {
         .readWallet(index: walletIndex)
     }
@@ -37,11 +33,14 @@ public final class CheckWalletCommand: Command {
     private let curve: EllipticCurve
     private let publicKey: Data
 	
-    
 	public init(curve: EllipticCurve, publicKey: Data) {
         self.curve = curve
         self.publicKey = publicKey
         self.walletIndex = .publicKey(publicKey)
+    }
+    
+    deinit {
+        Log.debug("CheckWalletCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {

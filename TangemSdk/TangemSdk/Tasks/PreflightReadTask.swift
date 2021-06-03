@@ -24,7 +24,7 @@ public enum PreflightReadMode: Equatable {
 public final class PreflightReadTask {
     typealias Response = ReadResponse
     
-    private var readMode: PreflightReadMode
+    private let readMode: PreflightReadMode
     
     public init(readMode: PreflightReadMode) {
         self.readMode = readMode
@@ -47,47 +47,39 @@ public final class PreflightReadTask {
     }
     
     private func finalizeRead(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
-        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData || self.readMode == .readCardOnly {
+        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData {
             completion(.success(readResponse))
             return
         }
         
-        let resp: (Result<[CardWallet], TangemSdkError>) -> Void = {
-            switch $0 {
-            case .success(let wallets):
-                session.environment.card?.wallets = wallets.sorted(by: { $0.index < $1.index })
-                completion(.success(card))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-            
-        }
         switch readMode {
-        case .readWallet(let index):
-            readWallet(at: index, in: session, with: readResponse, completion: resp)
+        case .readWallet(let publicKey):
+            readWallet(with: publicKey, in: session, with: readResponse, completion: completion)
         case .fullCardRead:
-            readWalletsList(in: session, with: readResponse, completion: resp)
-        default:
-            break
+            readWalletsList(in: session, with: readResponse, completion: completion)
+        case .readCardOnly, .none:
+            completion(.success(readResponse))
         }
     }
     
-    private func readWallet(at index: WalletIndex, in session: CardSession, with readResponse: ReadResponse, completion: @escaping (Result<[CardWallet], TangemSdkError>) -> Void) {
-        ReadWalletCommand(walletIndex: index).run(in: session) { (result) in
+    private func readWallet(with publicKey: Data, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
+        ReadWalletCommand(publicKey: publicKey).run(in: session) { (result) in
             switch result {
             case .success(let response):
-                completion(.success([response.wallet]))
+                session.environment.card?.wallets = [response.wallet]
+                completion(.success(readResponse))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping (Result<[CardWallet], TangemSdkError>) -> Void) {
+    private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
         ReadWalletsListCommand().run(in: session) { (result) in
             switch result {
-            case .success(let listRepsonse):
-                completion(.success(listRepsonse.wallets))
+            case .success(let listResponse):
+                session.environment.card?.wallets = listResponse.wallets.sorted(by: { $0.index < $1.index })
+                completion(.success(readResponse))
             case .failure(let error):
                 completion(.failure(error))
             }

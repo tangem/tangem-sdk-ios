@@ -27,7 +27,7 @@ public struct WriteUserDataResponse: JSONStringConvertible {
 * User_ProtectedCounter and User_ProtectedData additionaly need PIN2 to confirmation.
 */
 public final class WriteUserDataCommand: Command {
-    public typealias CommandResponse = WriteUserDataResponse
+    public typealias Response = WriteUserDataResponse
     
     public var requiresPin2: Bool {
         return true

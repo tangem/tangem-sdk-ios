@@ -22,7 +22,7 @@ public enum PreflightReadMode: Equatable {
 }
 
 public final class PreflightReadTask {
-    typealias CommandResponse = ReadResponse
+    typealias Response = ReadResponse
     
     private var readMode: PreflightReadMode
     

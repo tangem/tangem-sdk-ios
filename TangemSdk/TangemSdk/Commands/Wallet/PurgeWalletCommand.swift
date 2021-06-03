@@ -25,7 +25,7 @@ public struct PurgeWalletResponse: JSONStringConvertible {
  * ‘Purged’ state is final, it makes the card useless.
  */
 public final class PurgeWalletCommand: Command {
-    public typealias CommandResponse = PurgeWalletResponse
+    public typealias Response = PurgeWalletResponse
     
     public var requiresPin2: Bool {
         return true

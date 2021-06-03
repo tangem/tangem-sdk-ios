@@ -18,7 +18,7 @@ public protocol CardSessionRunnable {
     var preflightReadMode: PreflightReadMode { get } //todo: PreflightReadMode
     
     /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype CommandResponse: JSONStringConvertible
+    associatedtype Response
     
     /// This method will be called before nfc session starts.
     /// - Parameters:
@@ -30,7 +30,7 @@ public protocol CardSessionRunnable {
     /// - Parameters:
     ///   - session: You can run commands in this session
     ///   - completion: Call the completion handler to complete the task.
-    func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>)
+    func run(in session: CardSession, completion: @escaping CompletionResult<Response>)
 }
 
 extension CardSessionRunnable {    
@@ -39,9 +39,11 @@ extension CardSessionRunnable {
     public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
         completion(.success(()))
     }
-    
-    public func eraseToAnyRunnable() -> AnyRunnable {
-        AnyRunnable(self)
+}
+
+extension CardSessionRunnable where Response: JSONStringConvertible {
+    public func eraseToAnyRunnable() -> AnyJSONRPCRunnable {
+        AnyJSONRPCRunnable(self)
     }
 }
 
@@ -108,8 +110,8 @@ public class CardSession {
     /// This metod starts a card session, performs preflight `Read` command,  invokes the `run ` method of `CardSessionRunnable` and closes the session.
     /// - Parameters:
     ///   - runnable: The CardSessionRunnable implemetation
-    ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`
-    public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.CommandResponse>) where T : CardSessionRunnable {
+    ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`
+    public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.Response>) where T : CardSessionRunnable {
         guard TangemSdk.isNFCAvailable else {
             completion(.failure(.unsupportedDevice))
             return

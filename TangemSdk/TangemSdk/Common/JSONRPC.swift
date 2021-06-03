@@ -25,7 +25,7 @@ public final class JSONRPCConverter {
         runnables[methodName] = object
     }
     
-    public func convert(request: JSONRPCRequest) throws -> AnyRunnable {
+    public func convert(request: JSONRPCRequest) throws -> AnyJSONRPCRunnable {
         guard let method = runnables[request.method.uppercased()] else {
             throw JSONRPCError(.methodNotFound, data: request.method)
         }
@@ -36,11 +36,11 @@ public final class JSONRPCConverter {
 
 public protocol JSONRPCConvertible {
     init(from parameters: [String: Any]) throws
-    static func makeRunnable(from parameters: [String: Any]) throws -> AnyRunnable
+    static func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable
 }
 
-public extension JSONRPCConvertible where Self: CardSessionRunnable {
-    static func makeRunnable(from parameters: [String: Any]) throws -> AnyRunnable {
+public extension JSONRPCConvertible where Self: CardSessionRunnable, Self.Response: JSONStringConvertible {
+    static func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable {
         return try Self.init(from: parameters).eraseToAnyRunnable()
     }
 }

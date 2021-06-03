@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//todo: deprecated
+
 /// Deserialized response from the Tangem card after `ReadUserDataCommand`.
 public struct ReadUserDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
@@ -32,6 +32,7 @@ public struct ReadUserDataResponse: JSONStringConvertible {
  * of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use.
  * For example, this fields may contain blockchain nonce value.
  */
+@available(*, deprecated, message: "Use files instead")
 public final class ReadUserDataCommand: Command {
     public typealias Response = ReadUserDataResponse
     

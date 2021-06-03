@@ -49,8 +49,8 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
 }
 
 extension Command {
-    public var requiresPin2: Bool { return false }
-    
+    var requiresPin2: Bool { return false }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transieve(in: session, completion: completion)
     }

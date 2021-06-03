@@ -22,7 +22,7 @@ public struct SignResponse: JSONStringConvertible {
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
 public final class SignCommand: Command {
-    public typealias CommandResponse = SignResponse
+    public typealias Response = SignResponse
     
     public var requiresPin2: Bool {
         return true

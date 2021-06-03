@@ -54,25 +54,12 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        guard let wallet = card.wallets.first else {
-            completion(.failure(.walletNotFound))
-            return
-        }
-        
-        guard wallet.status == .loaded else {
+        guard !card.isPurged, let wallet = card.wallets.first else {
             completion(.success(card))
             return
         }
         
-        guard
-            let curve = wallet.curve,
-            let publicKey = wallet.publicKey
-        else {
-            completion(.failure(.walletError))
-            return
-        }
-        
-		CheckWalletCommand(curve: curve, publicKey: publicKey).run(in: session) { checkWalletResult in
+        CheckWalletCommand(publicKey: wallet.publicKey).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 completion(.success(card))
@@ -81,6 +68,4 @@ public final class ScanTask: CardSessionRunnable {
             }
         }
     }
-    
-   
 }

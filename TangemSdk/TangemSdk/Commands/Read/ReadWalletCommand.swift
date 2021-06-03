@@ -53,7 +53,7 @@ class ReadWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let wallet = try CardWalletDeserializer.deserialize(from: decoder)
+        let wallet = try CardWalletDeserializer.deserializeWallet(from: decoder)
         
         Log.debug("Read wallet: \(wallet)")
         return ReadWalletResponse(cardId: try decoder.decode(.cardId),

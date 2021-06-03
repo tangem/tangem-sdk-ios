@@ -44,7 +44,7 @@ struct CardDeserializer {
 		}
         
         if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData,
-           let curve = card.defaultCurve {
+           status != .purged, let curve = card.defaultCurve {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let wallet = CardWallet(index: 0,
                                     curve: curve,

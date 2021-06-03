@@ -26,11 +26,9 @@ public final class SignCommand: Command {
         return true
     }
     
-    public var preflightReadMode: PreflightReadMode {
-        .readWallet(index: walletIndex)
-    }
+    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
-    private let walletIndex: WalletIndex
+    private let walletPublicKey: Data
     private let hashes: [Data]
     
     private var signatures: [Data] = []
@@ -46,13 +44,12 @@ public final class SignCommand: Command {
     }()
     
 	/// Command initializer
-	/// - Note: Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
 	/// - Parameters:
 	///   - hashes: Array of transaction hashes.
-	///   - walletIndex: Index to wallet for interaction.
-	public init(hashes: [Data], walletIndex: WalletIndex) {
+	///   - walletPublicKey: Public key of the wallet, using for sign.
+	public init(hashes: [Data], walletPublicKey: Data) {
         self.hashes = hashes
-		self.walletIndex = walletIndex
+		self.walletPublicKey = walletPublicKey
     }
     
     deinit {
@@ -68,17 +65,12 @@ public final class SignCommand: Command {
             return .notActivated
         }
         
-        guard let wallet = card.wallet(at: walletIndex) else {
-            return .walletNotFound
-        }
-        
-        switch wallet.status {
-        case .empty:
-            return .walletIsNotCreated
-        case .loaded:
-            break
-        case .purged:
+        if card.isPurged {
             return .walletIsPurged
+        }
+
+        guard let wallet = card.wallets[walletPublicKey] else {
+            return .walletNotFound
         }
         
 		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
@@ -169,7 +161,8 @@ public final class SignCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.transactionOutHashSize, value: hashes.first!.count)
             .append(.transactionOutHash, value: flattenHashes)
-        
+            //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
+            .append(.walletPublicKey, value: walletPublicKey)
         /**
          * Application can optionally submit a public key Terminal_PublicKey in [SignCommand].
          * Submitted key is stored by the Tangem card if it differs from a previous submitted Terminal_PublicKey.
@@ -185,8 +178,6 @@ public final class SignCommand: Command {
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
-		
-		try walletIndex.addTlvData(to: tlvBuilder)
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }

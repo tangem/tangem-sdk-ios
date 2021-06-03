@@ -16,8 +16,6 @@ public struct Card: JSONStringConvertible {
 	public let manufacturerName: String?
 	/// Current status of the card.
 	public var status: CardStatus? //todo: remove? notpersonalized -> error, let
-	/// Version of Tangem COS.
-    public let firmwareVersion: FirmwareVersion? //todo: rename version
 	/// Public key that is used to authenticate the card against manufacturer’s database.
 	/// It is generated one time during card manufacturing.
 	public let cardPublicKey: Data?
@@ -54,63 +52,31 @@ public struct Card: JSONStringConvertible {
 	/// Cards complaint with Tangem Wallet application should have TLV format.
 	public let cardData: CardData?
 	
-	/// Available only for cards with COS v.4.0 and higher.
-	public var pin2IsDefault: Bool? = nil
-	
-	/// Maximum number of wallets that can be created for this card
-	public var walletsCount: Int? = nil //todo: rename
+    /// Version of Tangem COS.
+    public var firmwareVersion: FirmwareVersion? { //todo refactor
+        if let version = fwVersion {
+            return FirmwareVersion(version: version)
+        } else {
+            return nil
+        }
+    }
     
-    private(set) public var wallets: [CardWallet] = []
+	/// Available only for cards with COS v.4.0 and higher.
+    internal(set) public var pin2IsDefault: Bool? = nil
+    
+	/// Maximum number of wallets that can be created for this card
+    internal(set) public var walletsCount: Int?//todo: rename
+    
+    internal(set) public var wallets: [CardWallet] = []
+    
+    internal let fwVersion: String?
+    
+    internal let isPurged: Bool //todo: or use status?
     
     internal let defaultCurve: EllipticCurve?
-	
-	public init(cardId: String?, manufacturerName: String?, status: CardStatus?, firmwareVersion: String?, cardPublicKey: Data?, settingsMask: SettingsMask?, issuerPublicKey: Data?, defaultCurve: EllipticCurve?, signingMethods: SigningMethod?, pauseBeforePin2: Int?, health: Int?, isActivated: Bool, activationSeed: Data?, paymentFlowVersion: Data?, userCounter: Int?, terminalIsLinked: Bool, cardData: CardData?, challenge: Data? = nil, salt: Data? = nil, walletsCount: Int? = nil) {
-		self.cardId = cardId
-		self.manufacturerName = manufacturerName
-		self.status = status
-		self.cardPublicKey = cardPublicKey
-		self.settingsMask = settingsMask
-		self.issuerPublicKey = issuerPublicKey
-		self.signingMethods = signingMethods
-		self.pauseBeforePin2 = pauseBeforePin2
-		self.health = health
-		self.isActivated = isActivated
-		self.activationSeed = activationSeed
-		self.paymentFlowVersion = paymentFlowVersion
-		self.userCounter = userCounter
-		self.terminalIsLinked = terminalIsLinked
-		self.cardData = cardData
-		self.walletsCount = walletsCount
-		
-		if let version = firmwareVersion {
-			self.firmwareVersion = FirmwareVersion(version: version)
-		} else {
-			self.firmwareVersion = nil
-		}
-        
-        self.defaultCurve = defaultCurve
-	}
-    //todo: internal
-    public mutating func setWallets(_ wallets: [CardWallet]) {
-        self.wallets = wallets.sorted(by: { $0.index < $1.index })
-    }
-    //todo: internal
-    public func wallet(at index: WalletIndex) -> CardWallet? {
-        switch index {
-        case .index(let int):
-            return wallets.first(where: { $0.index == int })
-        case .publicKey(let pubkey):
-            return wallets.first(where: { $0.publicKey == pubkey })
-        }
-    }
-    //todo: internal
-    public mutating func updateWallet(at index: WalletIndex, with wallet: CardWallet) {
-        guard let index = wallets.firstIndex(where: { $0.index == wallet.index }) else {
-            return
-        }
-        
-        wallets[index] = wallet
-    }
+    /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
+    /// - Note: This counter were deprecated for cards with COS 4.0 and higher
+    internal let remainingSignatures: Int?
 }
 
 public extension Card {

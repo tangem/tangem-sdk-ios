@@ -13,10 +13,10 @@ import Foundation
 public enum PreflightReadMode: Equatable {
     /// No card will be read at session start. `SessionEnvironment.card` will be empty
     case none
-    /// Read only card info without wallet info. Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
+    /// Read only card info without wallet info. COS 4+. Older card will always read card and wallet info
     case readCardOnly
-    /// Read card info and single wallet specified in associated index `WalletIndex`. Valid for cards with COS v.4 and higher. Older card will always read card and wallet info
-    case readWallet(index: WalletIndex)
+    /// Read card info and single wallet associated with the specified publicKey. COS 4+. Older card will always read card and wallet info
+    case readWallet(publicKey: Data)
     /// Read card info and all wallets. Used by default
     case fullCardRead
 }
@@ -55,9 +55,7 @@ public final class PreflightReadTask {
         let resp: (Result<[CardWallet], TangemSdkError>) -> Void = {
             switch $0 {
             case .success(let wallets):
-                var card = readResponse
-                card.setWallets(wallets)
-                session.environment.card = card
+                session.environment.card?.wallets = wallets.sorted(by: { $0.index < $1.index })
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
@@ -86,7 +84,7 @@ public final class PreflightReadTask {
     }
     
     private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping (Result<[CardWallet], TangemSdkError>) -> Void) {
-        ReadWalletListCommand().run(in: session) { (result) in
+        ReadWalletsListCommand().run(in: session) { (result) in
             switch result {
             case .success(let listRepsonse):
                 completion(.success(listRepsonse.wallets))

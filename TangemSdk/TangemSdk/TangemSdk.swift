@@ -134,7 +134,9 @@ public final class TangemSdk {
                      cardId: String? = nil,
                      initialMessage: Message? = nil,
                      completion: @escaping CompletionResult<[Data]>) {
-        startSession(with: SignCommand(hashes: hashes, walletIndex: .publicKey(walletPublicKey)), cardId: cardId, initialMessage: initialMessage) { (result) in
+        startSession(with: SignCommand(hashes: hashes, walletPublicKey: walletPublicKey),
+                     cardId: cardId,
+                     initialMessage: initialMessage) { result in
             switch result {
             case .success(let response):
                 completion(.success(response.signatures))
@@ -162,7 +164,7 @@ public final class TangemSdk {
                              cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let task = CreateWalletTask(config: config)
+        let task = CreateWalletCommand(config: config)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -176,12 +178,12 @@ public final class TangemSdk {
     ///   - walletPublicKey: Public key of wallet that should be purged.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<PurgeWalletResponse,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SimpleResponse,TangemSdkError>`
     public func purgeWallet(walletPublicKey: Data,
                             cardId: String? = nil,
                             initialMessage: Message? = nil,
-                            completion: @escaping CompletionResult<PurgeWalletResponse>) {
-        startSession(with: PurgeWalletCommand(walletIndex: .publicKey(walletPublicKey)), cardId: cardId, initialMessage: initialMessage, completion: completion)
+                            completion: @escaping CompletionResult<SimpleResponse>) {
+        startSession(with: PurgeWalletCommand(publicKey: walletPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     /**

@@ -51,16 +51,16 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
 extension Command {
     var requiresPin2: Bool { return false }
 
+    public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        transieve(in: session, completion: completion)
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         return nil
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         return error
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        transieve(in: session, completion: completion)
     }
     
     func transieve(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {

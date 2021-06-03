@@ -1,5 +1,5 @@
 //
-//  ReadWalletListCommand.swift
+//  ReadWalletsListCommand.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 16/03/21.
@@ -7,48 +7,45 @@
 //
 
 import Foundation
-//todo: walletsList
-struct WalletListResponse: JSONStringConvertible {
-    let cid: String //todo: cardId
-    let wallets: [CardWallet]
+
+public struct ReadWalletsListResponse: JSONStringConvertible {
+    public let cardId: String
+    public let wallets: [CardWallet]
 }
-//todo: public
-//walletsList
+
 /// Read all wallets on card.
-class ReadWalletListCommand: Command {
-    var preflightReadMode: PreflightReadMode { .none }
+public class ReadWalletsListCommand: Command {
+    public var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private var walletIndex: WalletIndex?
-    private var tempWalletList: [CardWallet] = []
+    private var walletIndex: Int?
+    private var loadedWallets: [CardWallet] = []
+    
+    public init() {}
     
     deinit {
-        Log.debug("ReadWalletCommand deinit")
+        Log.debug("ReadWalletsListCommand deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<WalletListResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.cardError))
-            return
-        }
-        
-        transieve(in: session) { (result) in
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
+        transieve(in: session) { result in
             switch result {
-            case .success(let listResponse):
-                self.tempWalletList.append(contentsOf: listResponse.wallets)
-                let loadedWalletsCount = self.tempWalletList.count
+            case .success(let response):
+                self.loadedWallets.append(contentsOf: response.wallets)
+                let loadedWalletsCount = self.loadedWallets.count
                 
-                if loadedWalletsCount == 0 && listResponse.wallets.count == 0 {
+                if loadedWalletsCount == 0 && response.wallets.count == 0 {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }
                 
-                guard loadedWalletsCount == card.walletsCount else {
-                    self.walletIndex = .index(loadedWalletsCount)
+                guard loadedWalletsCount == session.environment.card?.walletsCount else {
+                    self.walletIndex = loadedWalletsCount
                     self.run(in: session, completion: completion)
                     return
                 }
                 
-                completion(.success(WalletListResponse(cid: listResponse.cid, wallets: self.tempWalletList)))
+                completion(.success(ReadWalletsListResponse(cardId: response.cardId,
+                                                       wallets: self.loadedWallets)))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -65,19 +62,20 @@ class ReadWalletListCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        try walletIndex?.addTlvData(to: tlvBuilder)
+        if let walletIndex = walletIndex {
+            try tlvBuilder.append(.walletIndex, value: walletIndex)
+        }
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WalletListResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadWalletsListResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        
-        let cid: String = try decoder.decode(.cardId)
+
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
         guard cardWalletsData.count > 0 else {
@@ -93,7 +91,8 @@ class ReadWalletListCommand: Command {
         let wallets: [CardWallet] = try walletDecoders.map {
             try CardWalletDeserializer.deserialize(from: $0)
         }
-        return WalletListResponse(cid: cid, wallets: wallets)
+        
+        return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
+                                       wallets: wallets)
     }
-    
 }

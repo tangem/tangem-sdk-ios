@@ -31,7 +31,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * RemainingSignature is set to MaxSignatures.
  */
 public final class CreateWalletCommand: Command {
-    public typealias CommandResponse = CreateWalletResponse
+    public typealias Response = CreateWalletResponse
     
     public var requiresPin2: Bool {
         return true

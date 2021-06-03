@@ -20,6 +20,7 @@ public struct WriteIssuerDataResponse: JSONStringConvertible {
  * format and payload of Issuer Data. For example, this field may contain information about
  * wallet balance signed by the issuer or additional issuer’s attestation data.
  */
+@available(*, deprecated, message: "Use files instead")
 public final class WriteIssuerDataCommand: Command {
     public typealias Response = WriteIssuerDataResponse
 

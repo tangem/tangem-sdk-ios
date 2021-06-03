@@ -21,7 +21,7 @@ public struct WriteIssuerDataResponse: JSONStringConvertible {
  * wallet balance signed by the issuer or additional issuer’s attestation data.
  */
 public final class WriteIssuerDataCommand: Command {
-    public typealias CommandResponse = WriteIssuerDataResponse
+    public typealias Response = WriteIssuerDataResponse
 
     /// Data provided by issuer
     public let issuerData: Data

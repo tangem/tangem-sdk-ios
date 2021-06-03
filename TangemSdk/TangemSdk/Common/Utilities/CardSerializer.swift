@@ -16,49 +16,44 @@ struct CardDeserializer {
 		
 		let decoder = TlvDecoder(tlv: tlv)
 		
-		var card = ReadResponse(
-			cardId: try decoder.decodeOptional(.cardId),
-			manufacturerName: try decoder.decodeOptional(.manufacturerName),
-			status: try decoder.decodeOptional(.status),
-			firmwareVersion: try decoder.decodeOptional(.firmwareVersion),
-			cardPublicKey: try decoder.decodeOptional(.cardPublicKey),
-			settingsMask: try decoder.decodeOptional(.settingsMask),
-			issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
-			defaultCurve: try decoder.decodeOptional(.curveId),
-			signingMethods: try decoder.decodeOptional(.signingMethod),
-			pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
-			health: try decoder.decodeOptional(.health),
-			isActivated: try decoder.decode(.isActivated),
-			activationSeed: try decoder.decodeOptional(.activationSeed),
-			paymentFlowVersion: try decoder.decodeOptional(.paymentFlowVersion),
-			userCounter: try decoder.decodeOptional(.userCounter),
-			terminalIsLinked: try decoder.decode(.isLinked),
-			cardData: try deserializeCardData(tlv: tlv),
-			challenge: try decoder.decodeOptional(.challenge),
-			salt: try decoder.decodeOptional(.salt),
-			walletsCount: try decoder.decodeOptional(.walletsCount)
-        )
-		
+        let status: CardStatus = try decoder.decode(.status) //todo: optional ?
+        
+        var card = Card(cardId: try decoder.decodeOptional(.cardId),
+                        manufacturerName: try decoder.decodeOptional(.manufacturerName),
+                        cardPublicKey: try decoder.decodeOptional(.cardPublicKey),
+                        settingsMask: try decoder.decodeOptional(.settingsMask),
+                        issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
+                        signingMethods: try decoder.decodeOptional(.signingMethod),
+                        pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
+                        health: try decoder.decodeOptional(.health),
+                        isActivated: try decoder.decode(.isActivated),
+                        activationSeed: try decoder.decodeOptional(.activationSeed),
+                        paymentFlowVersion: try decoder.decodeOptional(.paymentFlowVersion),
+                        userCounter: try decoder.decodeOptional(.userCounter),
+                        terminalIsLinked: try decoder.decode(.isLinked),
+                        cardData: try deserializeCardData(tlv: tlv),
+                        walletsCount: try decoder.decodeOptional(.walletsCount) ?? 1,
+                        fwVersion: try decoder.decodeOptional(.firmwareVersion),
+                        isPurged: status == .purged,
+                        defaultCurve: try decoder.decodeOptional(.curveId),
+                        remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
+        
 		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault {
 			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
 			card.pin2IsDefault = pin2IsDefault != nil
 		}
         
-        if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData, let cardStatus = card.status {
+        if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData,
+           let curve = card.defaultCurve {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
-            let index = TangemSdkConstants.oldCardDefaultWalletIndex
-            card.setWallets([
-                CardWallet(index: index,
-                           status: WalletStatus(from: cardStatus),
-                           curve: card.defaultCurve,
-                           settingsMask: card.settingsMask,
-                           publicKey: try decoder.decodeOptional(.walletPublicKey),
-                           signedHashes: try decoder.decodeOptional(.walletSignedHashes),
-                           remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
-            ])
+            let wallet = CardWallet(index: 0,
+                                    curve: curve,
+                                    settingsMask: card.settingsMask,
+                                    publicKey: try decoder.decode(.walletPublicKey),
+                                    totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
+                                    remainingSignatures: card.remainingSignatures)
+            card.wallets = [wallet]
         }
-        
-        // Add condition for creating new wallet info structure for old cards
 		return card
 	}
 	

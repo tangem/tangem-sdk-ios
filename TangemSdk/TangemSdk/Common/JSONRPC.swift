@@ -242,8 +242,8 @@ extension Dictionary where Key == String, Value == Any {
 
 extension SignCommand: JSONRPCConvertible {
     public convenience init(from parameters: [String : Any]) throws {
-        let pubKey: Data = try parameters.value(for: "walletIndex") //TODO: rename
-        self.init(hashes: try parameters.value(for: "hashes"), walletIndex: .publicKey(pubKey))
+        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
+        self.init(hashes: try parameters.value(for: "hashes"), walletPublicKey: walletPublicKey)
     }
 }
 

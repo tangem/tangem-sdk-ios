@@ -7,8 +7,8 @@
 //
 
 import Foundation
-//todo: deprecated
 /// Deserialized response from the Tangem card after `ReadIssuerDataCommand`.
+@available(*, deprecated, message: "Use files instead")
 public struct ReadIssuerDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String

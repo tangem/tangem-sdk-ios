@@ -7,7 +7,6 @@
 //
 
 import Foundation
-//todo: deprecated
 /// Deserialized response from the Tangem card after `WriteUserDataCommand`.
 public struct WriteUserDataResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
@@ -26,6 +25,7 @@ public struct WriteUserDataResponse: JSONStringConvertible {
 * Writing of User_Counter and User_Data protected only by PIN1.
 * User_ProtectedCounter and User_ProtectedData additionaly need PIN2 to confirmation.
 */
+@available(*, deprecated, message: "Use files instead")
 public final class WriteUserDataCommand: Command {
     public typealias Response = WriteUserDataResponse
     

@@ -8,35 +8,19 @@
 
 import Foundation
 
-/// Deserialized response from the Tangem card after `PurgeWalletCommand`.
-public struct PurgeWalletResponse: JSONStringConvertible {
-    /// Unique Tangem card ID number
-    public let cardId: String
-    /// Current status of the card [1 - Empty, 2 - Loaded, 3- Purged]
-    public let status: CardStatus //todo: remove or not? waiting for DV answer
-    /// Index of purged wallet
-    public let walletIndex: WalletIndex //todo: remove
-}
-
-/**
- * This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
- * the card changes state to ‘Empty’ and a new wallet can be created by CREATE_WALLET command.
- * If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
- * ‘Purged’ state is final, it makes the card useless.
- */
+/// This command deletes all wallet data and its private and public keys
 public final class PurgeWalletCommand: Command {
-    public typealias Response = PurgeWalletResponse
+    public typealias Response = SimpleResponse
     
-    public var requiresPin2: Bool {
-        return true
-    }
-	
-    public var preflightReadMode: PreflightReadMode { .readWallet(index: walletIndex) }
+    public var requiresPin2: Bool { return true }
+    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
-    public var walletIndex: WalletIndex
+    private let walletPublicKey: Data
     
-    public init(walletIndex: WalletIndex) {
-		self.walletIndex = walletIndex
+    /// Default initializer
+    /// - Parameter publicKey: Public key of the wallet to delete
+    public init(publicKey: Data) {
+		self.walletPublicKey = publicKey
 	}
     
     deinit {
@@ -52,17 +36,8 @@ public final class PurgeWalletCommand: Command {
             return .notActivated
         }
         
-        guard let wallet = card.wallet(at: walletIndex) else {
+        guard let wallet = card.wallets[walletPublicKey] else {
             return .walletNotFound
-        }
-        
-        switch wallet.status {
-        case .empty:
-            return .walletIsNotCreated
-        case .loaded:
-            break
-        case .purged:
-            return .walletIsPurged
         }
         
         if let settingsMask = wallet.settingsMask, settingsMask.contains(.prohibitPurgeWallet) {
@@ -72,17 +47,11 @@ public final class PurgeWalletCommand: Command {
         return nil
     }
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<PurgeWalletResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
-				session.environment.card?.status = .empty
-                if var card = session.environment.card,
-                   let wallet = card.wallet(at: self.walletIndex) {
-                    card.updateWallet(at: self.walletIndex, with: .init(index: wallet.index, status: .empty))
-                    session.environment.card = card
-                }
-                Log.debug(session.environment.card)
+                session.environment.card?.wallets[self.walletPublicKey] = nil
 				completion(.success(response))
 			case .failure(let error):
 				completion(.failure(error))
@@ -95,25 +64,17 @@ public final class PurgeWalletCommand: Command {
             .append(.pin, value: environment.pin1.value)
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
-        
-		try walletIndex.addTlvData(to: tlvBuilder)
+            .append(.walletPublicKey, value: walletPublicKey)
 		
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PurgeWalletResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SimpleResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        var index: WalletIndex = walletIndex
-        if let respIndex: Int = try decoder.decodeOptional(.walletIndex) {
-            index = .index(respIndex)
-        }
-        return PurgeWalletResponse(
-            cardId: try decoder.decode(.cardId),
-            status: try decoder.decode(.status),
-            walletIndex: index)
+        return SimpleResponse(cardId: try decoder.decode(.cardId))
     }
 }

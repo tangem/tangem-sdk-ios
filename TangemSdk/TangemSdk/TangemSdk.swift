@@ -194,6 +194,7 @@ public final class TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<ReadIssuerDataResponse,TangemSdkError>`
      */
+    @available(*, deprecated, message: "Use files instead")
     public func readIssuerData(cardId: String? = nil,
                                initialMessage: Message? = nil,
                                completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
@@ -216,6 +217,7 @@ public final class TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
      */
+    @available(*, deprecated, message: "Use files instead")
     public func writeIssuerData(issuerData: Data,
                                 issuerDataSignature: Data,
                                 issuerDataCounter: Int? = nil,
@@ -241,6 +243,7 @@ public final class TangemSdk {
     ///   - cardId:  CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
+    @available(*, deprecated, message: "Use files instead")
     public func readIssuerExtraData(cardId: String? = nil,
                                     initialMessage: Message? = nil,
                                     completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
@@ -268,6 +271,7 @@ public final class TangemSdk {
     ///   - cardId:  CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
+    @available(*, deprecated, message: "Use files instead")
     public func writeIssuerExtraData(issuerData: Data,
                                      startingSignature: Data,
                                      finalizingSignature: Data,
@@ -302,6 +306,7 @@ public final class TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<ReadUserDataResponse,TangemSdkError>`
      */
+    @available(*, deprecated, message: "Use files instead")
     public func readUserData(cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<ReadUserDataResponse>) {
@@ -327,6 +332,7 @@ public final class TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
      */
+    @available(*, deprecated, message: "Use files instead")
     public func writeUserData(userData: Data,
                               userCounter: Int? = nil,
                               cardId: String? = nil,
@@ -355,6 +361,7 @@ public final class TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
      */
+    @available(*, deprecated, message: "Use files instead")
     public func writeUserProtectedData(userProtectedData: Data,
                                        userProtectedCounter: Int? = nil,
                                        cardId: String? = nil,

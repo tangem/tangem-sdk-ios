@@ -6,8 +6,6 @@
 ////  Copyright © 2020 Tangem AG. All rights reserved.
 ////
 //
-//import Foundation
-//todo: deprecated
 /// This enum specifies modes for `ReadIssuerExtraDataCommand` and  `WriteIssuerExtraDataCommand`.
 public enum IssuerExtraDataMode: Byte, InteractionMode {
     ///This mode is required to read issuer extra data from the card. This mode is required to initiate writing issuer extra data to the card.
@@ -78,6 +76,7 @@ public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
  * format and payload of Issuer Data. . For example, this field may contain photo or
  * biometric information for ID card product.
  */
+@available(*, deprecated, message: "Use files instead")
 public final class ReadIssuerExtraDataCommand: Command {
     public typealias Response = ReadIssuerExtraDataResponse
     

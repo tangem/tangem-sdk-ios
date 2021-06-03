@@ -8,28 +8,28 @@
 
 import Foundation
 
-struct WalletResponse: JSONStringConvertible {
-    let cid: String //todo: cardId
+struct ReadWalletResponse: JSONStringConvertible {
+    let cardId: String
     let wallet: CardWallet
 }
 
 /// Read signle wallet on card. This command executes before interacting with specific wallet to retrieve information about it and perform prechecks
 class ReadWalletCommand: Command {
     
-    var preflightReadMode: PreflightReadMode { .none }
+    var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private let walletIndex: WalletIndex
+    private let walletPublicKey: Data
     
-    init(walletIndex: WalletIndex) {
-        self.walletIndex = walletIndex
+    init(publicKey: Data) {
+        self.walletPublicKey = publicKey
     }
     
     deinit {
         Log.debug("ReadWalletCommand deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<WalletResponse>) {
-        Log.debug("Attempt to read wallet at index: \(walletIndex)")
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletResponse>) {
+        Log.debug("Attempt to read wallet with key: \(walletPublicKey)")
         transieve(in: session, completion: completion)
     }
     
@@ -38,28 +38,25 @@ class ReadWalletCommand: Command {
             .append(.pin, value: environment.pin1.value)
             .append(.interactionMode, value: ReadMode.readWallet)
             .append(.cardId, value: environment.card?.cardId)
+            .append(.walletPublicKey, value: walletPublicKey)
         
         if let keys = environment.terminalKeys {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        try walletIndex.addTlvData(to: tlvBuilder)
-        
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WalletResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadWalletResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        
         let wallet = try CardWalletDeserializer.deserialize(from: decoder)
-        let cid: String = try decoder.decode(.cardId)
         
-        Log.debug("Read wallet at index: \(walletIndex): \(wallet)")
-        return WalletResponse(cid: cid, wallet: wallet)
+        Log.debug("Read wallet: \(wallet)")
+        return ReadWalletResponse(cardId: try decoder.decode(.cardId),
+                                  wallet: wallet)
     }
-    
 }

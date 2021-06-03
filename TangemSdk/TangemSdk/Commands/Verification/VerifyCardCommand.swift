@@ -44,7 +44,7 @@ public struct VerifyCardResponse: JSONStringConvertible {
 }
 
 public class VerifyCardCommand: Command {
-    public typealias CommandResponse = VerifyCardResponse
+    public typealias Response = VerifyCardResponse
     
     private var challenge: Data? = nil
 

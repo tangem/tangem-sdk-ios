@@ -13,7 +13,7 @@ import Foundation
 /// During this procedure a card setting is set up.
 /// During this procedure all data exchange is encrypted.
 public class PersonalizeCommand: Command {
-    public typealias CommandResponse = Card
+    public typealias Response = Card
     
     private let config: CardConfig
     private let issuer: Issuer

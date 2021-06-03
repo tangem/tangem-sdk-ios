@@ -18,7 +18,7 @@ public struct WriteFileResponse: JSONStringConvertible {
 /// Command for writing file on card
 @available (iOS 13.0, *)
 public final class WriteFileCommand: Command {
-	public typealias CommandResponse = WriteFileResponse
+	public typealias Response = WriteFileResponse
 	
 	public var requiresPin2: Bool { dataToWrite.requiredPin2 }
 	

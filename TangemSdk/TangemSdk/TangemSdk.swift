@@ -582,11 +582,11 @@ extension TangemSdk {
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.CommandResponse, TangemSdkError>) -> Void`.
+    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
                                 cardId: String? = nil,
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<T.CommandResponse>)
+                                completion: @escaping CompletionResult<T.Response>)
     where T : CardSessionRunnable {
         do {
             try checkSession()
@@ -635,7 +635,7 @@ extension TangemSdk {
             try checkSession()
             let runnable = try jsonConverter.convert(request: request)
             configure()
-            cardSession = makeSession(with: try request.params.value(for: "cid"),
+            cardSession = makeSession(with: try request.params.value(for: "cardId"),
                                       initialMessage: try request.params.value(for: "initialMessage"))
             cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             

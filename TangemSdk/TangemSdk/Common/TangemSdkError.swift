@@ -142,7 +142,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case notActivated
     
-    case walletIsPurged
+    case walletIsPurged //todo: remove
     
     case pin2Required
     
@@ -245,15 +245,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 	case notSupportedFirmwareVersion
 	
 	// MARK: Wallet errors
-	
-	case walletIndexExceedsMaxValue
-    case walletIndexNotSpecified
-    case walletIndexNotCorrect
 	case maxNumberOfWalletsCreated
 	case walletNotFound
 	case cardReadWrongWallet
     case cardWithMaxZeroWallets
-
+    case walletCannotBeCreated
+        
     public var code: Int {
         switch self {
         // MARK: 1xxxx Errors
@@ -316,13 +313,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .pin1Required: return 40401
         case .cardReadWrongWallet: return 40402
-        case .walletIndexNotSpecified: return 40403
+        case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
-                
+
         case .alreadyCreated: return 40501
-        case .walletIndexExceedsMaxValue: return 40502
         case .maxNumberOfWalletsCreated: return 40503
-        case .walletIndexNotCorrect: return 40504
             
         case .purgeWalletProhibited: return 40601
             
@@ -429,6 +424,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
 		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
 		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
+        case .walletCannotBeCreated: return "error_card_create_wallet".localized
         case .wrongPin1: return "error_wrong_pin1".localized
         case .wrongPin2: return "error_wrong_pin2".localized
         case .encodingFailed(let message):

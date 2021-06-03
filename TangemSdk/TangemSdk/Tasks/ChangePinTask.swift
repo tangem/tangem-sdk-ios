@@ -10,7 +10,7 @@
 //
 //
 //public final class ChangePinTask: CardSessionRunnable {
-//    public typealias CommandResponse = SetPinResponse
+//    public typealias Response = SetPinResponse
 //    
 //    private let pinType: PinCode.PinType
 //    private var pin: Data? = nil

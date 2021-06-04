@@ -47,7 +47,7 @@ struct CardDeserializer {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let wallet = CardWallet(index: 0,
                                     curve: curve,
-                                    settingsMask: card.settingsMask,
+                                    settingsMask: card.settingsMask?.toWalletSettingsMask(),
                                     publicKey: try decoder.decode(.walletPublicKey),
                                     totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
                                     remainingSignatures: card.remainingSignatures)

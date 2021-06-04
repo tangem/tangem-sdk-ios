@@ -9,7 +9,7 @@
 import Foundation
 
 /// Elliptic curve used for wallet key operations.
-public enum EllipticCurve: String, Codable, JSONStringConvertible {
+public enum EllipticCurve: String, Codable, JSONStringConvertible, CaseIterable {
 	case secp256k1
 	case ed25519
     case secp256r1

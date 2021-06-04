@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class MillisecTimer {
+class MillisecTimer {
     private let logger: ((String) -> Void)?
     
     private var startTime: DispatchTime?

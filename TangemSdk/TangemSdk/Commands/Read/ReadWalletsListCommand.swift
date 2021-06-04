@@ -55,7 +55,7 @@ public class ReadWalletsListCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
-            .append(.interactionMode, value: ReadMode.readWalletList)
+            .append(.interactionMode, value: ReadMode.walletsList)
             .append(.cardId, value: environment.card?.cardId)
         
         if let keys = environment.terminalKeys {

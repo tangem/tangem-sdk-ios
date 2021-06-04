@@ -50,4 +50,3 @@ class CardWalletDeserializer {
         return wallets
     }
 }
-

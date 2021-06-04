@@ -49,7 +49,7 @@ public final class ScanTask: CardSessionRunnable {
     }
     
     private func runCheckWalletIfNeeded(_ card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        guard card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData else {
+        guard card.firmwareVersion < .multiwalletAvailable else {
             completion(.success(card))
             return
         }

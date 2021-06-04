@@ -119,3 +119,12 @@ extension FirmwareVersion: Comparable {
 	}
 	
 }
+//MARK: - Constants
+extension FirmwareVersion {
+    /// Multi-wallet
+    public static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
+    /// Field on card that describes is pin2 is default value or not
+    public static let pin2IsDefaultAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Read-write files
+    public static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
+}

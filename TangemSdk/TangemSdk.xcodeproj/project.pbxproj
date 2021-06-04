@@ -127,7 +127,6 @@
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
 		5DBD7325249122C9000DF4BD /* SetPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBD7324249122C9000DF4BD /* SetPinCommand.swift */; };
-		5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC060D823E18A17001BF611 /* CreateWalletTask.swift */; };
 		5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvDecoder.swift */; };
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
 		5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */; };
@@ -139,7 +138,7 @@
 		5DDD6C5E25D2E01800E48D7B /* JSONDecoder+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5D25D2E01800E48D7B /* JSONDecoder+.swift */; };
 		5DDD6C6425D2E48A00E48D7B /* LogStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C6325D2E48A00E48D7B /* LogStringConvertible.swift */; };
 		5DDD6C6825D2E64E00E48D7B /* StringArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C6725D2E64E00E48D7B /* StringArrayConvertible.swift */; };
-		5DDD6C6C25D30B0D00E48D7B /* SimpleResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C6B25D30B0D00E48D7B /* SimpleResponse.swift */; };
+		5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */; };
 		5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C7225D30C1400E48D7B /* TangemSdkLogger.swift */; };
 		5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C7825D30C2D00E48D7B /* ConsoleLogger.swift */; };
 		5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4725D57F0900E48D7B /* SLIX+.swift */; };
@@ -165,7 +164,6 @@
 		B00B3331252E0B5A00A9FE96 /* FileWriteSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */; };
 		B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */; };
 		B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B333A252EED5000A9FE96 /* FileDataMode.swift */; };
-		B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */; };
 		B00BC5BE260B5CA600F0647D /* WalletStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5BD260B5CA600F0647D /* WalletStatus.swift */; };
 		B00BC5C4260B80E600F0647D /* MillisecTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C3260B80E600F0647D /* MillisecTimer.swift */; };
 		B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C7260B82A700F0647D /* ReadMode.swift */; };
@@ -350,7 +348,6 @@
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
 		5DBD7324249122C9000DF4BD /* SetPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPinCommand.swift; sourceTree = "<group>"; };
-		5DC060D823E18A17001BF611 /* CreateWalletTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletTask.swift; sourceTree = "<group>"; };
 		5DC62D3D23506CF300195A51 /* TlvDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvDecoder.swift; sourceTree = "<group>"; };
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerDataCommand.swift; sourceTree = "<group>"; };
@@ -363,7 +360,7 @@
 		5DDD6C5D25D2E01800E48D7B /* JSONDecoder+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+.swift"; sourceTree = "<group>"; };
 		5DDD6C6325D2E48A00E48D7B /* LogStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogStringConvertible.swift; sourceTree = "<group>"; };
 		5DDD6C6725D2E64E00E48D7B /* StringArrayConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringArrayConvertible.swift; sourceTree = "<group>"; };
-		5DDD6C6B25D30B0D00E48D7B /* SimpleResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleResponse.swift; sourceTree = "<group>"; };
+		5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResponse.swift; sourceTree = "<group>"; };
 		5DDD6C7225D30C1400E48D7B /* TangemSdkLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkLogger.swift; sourceTree = "<group>"; };
 		5DDD6C7825D30C2D00E48D7B /* ConsoleLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleLogger.swift; sourceTree = "<group>"; };
 		5DDD6D4725D57F0900E48D7B /* SLIX+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SLIX+.swift"; sourceTree = "<group>"; };
@@ -390,7 +387,6 @@
 		B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWriteSettings.swift; sourceTree = "<group>"; };
 		B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataToWrite.swift; sourceTree = "<group>"; };
 		B00B333A252EED5000A9FE96 /* FileDataMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDataMode.swift; sourceTree = "<group>"; };
-		B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareConstraints.swift; sourceTree = "<group>"; };
 		B00BC5BD260B5CA600F0647D /* WalletStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStatus.swift; sourceTree = "<group>"; };
 		B00BC5C3260B80E600F0647D /* MillisecTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillisecTimer.swift; sourceTree = "<group>"; };
 		B00BC5C7260B82A700F0647D /* ReadMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMode.swift; sourceTree = "<group>"; };
@@ -533,7 +529,6 @@
 			children = (
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				B006971325FFA4420040D203 /* PreflightReadTask.swift */,
-				5DC060D823E18A17001BF611 /* CreateWalletTask.swift */,
 				B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */,
 				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
 				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
@@ -701,6 +696,7 @@
 			children = (
 				5DA5B619233E12780058C720 /* TlvTag.swift */,
 				5DA5B61B233E12B30058C720 /* Tlv.swift */,
+				B006971725FFABA10040D203 /* InteractionMode.swift */,
 				5D6931D123D9AAD90088C6C0 /* TlvEncoder.swift */,
 				5DC62D3D23506CF300195A51 /* TlvDecoder.swift */,
 				5D6931D323D9AC440088C6C0 /* TlvBuilder.swift */,
@@ -806,7 +802,6 @@
 				5D6A92D52344E2B400158457 /* Localization */,
 				B0800F94252C6859007E04EE /* Files */,
 				B0EC64FE260110440088F03D /* Utilities */,
-				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 				5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */,
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
@@ -814,10 +809,8 @@
 				5D944757264EC52400EA9CD2 /* JSONRPC.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
-				B00B3340252EF91900A9FE96 /* FirmwareConstraints.swift */,
 				5DDD6C6725D2E64E00E48D7B /* StringArrayConvertible.swift */,
-				5DDD6C6B25D30B0D00E48D7B /* SimpleResponse.swift */,
-				B006971725FFABA10040D203 /* InteractionMode.swift */,
+				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -845,6 +838,7 @@
 			isa = PBXGroup;
 			children = (
 				5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */,
+				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5DFFC49E233B9D69004964E8 /* NFCReader.swift */,
 			);
 			path = NFC;
@@ -1164,7 +1158,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */,
-				5DC060D923E18A17001BF611 /* CreateWalletTask.swift in Sources */,
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
@@ -1216,7 +1209,6 @@
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
-				B00B3341252EF91900A9FE96 /* FirmwareConstraints.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
@@ -1230,7 +1222,7 @@
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */,
-				5DDD6C6C25D30B0D00E48D7B /* SimpleResponse.swift in Sources */,
+				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */,

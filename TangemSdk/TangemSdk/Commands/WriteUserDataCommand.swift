@@ -7,12 +7,6 @@
 //
 
 import Foundation
-/// Deserialized response from the Tangem card after `WriteUserDataCommand`.
-public struct WriteUserDataResponse: JSONStringConvertible {
-    /// Unique Tangem card ID number
-    public let cardId: String
-}
-
 /**
 * This command write some of User_Data, User_ProtectedData, User_Counter and User_ProtectedCounter fields.
 * User_Data and User_ProtectedData are never changed or parsed by the executable code the Tangem COS.
@@ -27,7 +21,7 @@ public struct WriteUserDataResponse: JSONStringConvertible {
 */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteUserDataCommand: Command {
-    public typealias Response = WriteUserDataResponse
+    public typealias Response = SuccessResponse
     
     public var requiresPin2: Bool {
         return true
@@ -122,12 +116,12 @@ public final class WriteUserDataCommand: Command {
         return CommandApdu(.writeUserData, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteUserDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return WriteUserDataResponse(cardId: try decoder.decode(.cardId))
+        return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }

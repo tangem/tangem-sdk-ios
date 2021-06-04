@@ -48,7 +48,7 @@ final class ReadCommand: Command {
         /// The card will not respond if wrong pin 1 has been submitted.
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.pin1.value)
-            .append(.interactionMode, value: ReadMode.readCard)
+            .append(.interactionMode, value: ReadMode.card)
         if let keys = environment.terminalKeys {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }

@@ -11,7 +11,7 @@ import Foundation
 /// Task for deleting files from card.
 @available (iOS 13.0, *)
 public final class DeleteFilesTask: CardSessionRunnable {
-	public typealias Response = SimpleResponse
+	public typealias Response = SuccessResponse
 	
 	private var filesToDelete: [Int]?
 	
@@ -22,7 +22,7 @@ public final class DeleteFilesTask: CardSessionRunnable {
 		self.filesToDelete = filesToDelete?.sorted(by: <)
 	}
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		guard let filesToDelete = filesToDelete else {
 			deleteAllFiles(session: session, completion: completion)
 			return
@@ -30,15 +30,15 @@ public final class DeleteFilesTask: CardSessionRunnable {
 		deleteFiles(indexes: filesToDelete, session: session, completion: completion)
 	}
 	
-	private func deleteAllFiles(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	private func deleteAllFiles(session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		let deleteAllFilesTask = DeleteAllFilesTask()
 		deleteAllFilesTask.run(in: session, completion: completion)
 	}
 	
-	private func deleteFiles(indexes: [Int], session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	private func deleteFiles(indexes: [Int], session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		var indexesToDelete = indexes
 		guard let index = indexesToDelete.popLast() else {
-			completion(.success(SimpleResponse(cardId: session.environment.card?.cardId ?? "")))
+			completion(.success(SuccessResponse(cardId: session.environment.card?.cardId ?? "")))
 			return
 		}
 		let command = DeleteFileCommand(fileAt: index)

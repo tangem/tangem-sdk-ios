@@ -7,13 +7,6 @@
 //
 
 import Foundation
-//todo: deprecated
-/// Deserialized response from the Tangem card after `WriteIssuerDataCommand`.
-public struct WriteIssuerDataResponse: JSONStringConvertible {
-    /// Unique Tangem card ID number
-    public let cardId: String
-}
-
 /**
  * This command writes 512-byte Issuer Data field and its issuer’s signature.
  * Issuer Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,
@@ -22,7 +15,7 @@ public struct WriteIssuerDataResponse: JSONStringConvertible {
  */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteIssuerDataCommand: Command {
-    public typealias Response = WriteIssuerDataResponse
+    public typealias Response = SuccessResponse
 
     /// Data provided by issuer
     public let issuerData: Data
@@ -117,13 +110,13 @@ public final class WriteIssuerDataCommand: Command {
         return CommandApdu(.writeIssuerData, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteIssuerDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return WriteIssuerDataResponse(cardId: try decoder.decode(.cardId))
+        return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
     
     private func verify(with cardId: String) -> Bool {

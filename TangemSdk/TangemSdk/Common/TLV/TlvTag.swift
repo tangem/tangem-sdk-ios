@@ -139,7 +139,7 @@ public enum TlvTag: Byte {
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId, .crExKey, .pin2IsDefault:
+        case .cardId, .batchId, .crExKey:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress,
 			 .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:
@@ -148,7 +148,7 @@ public enum TlvTag: Byte {
             return .ellipticCurve
         case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter, .userCounter, .tokenDecimal, .issuerDataCounter:
             return .intValue
-        case .isActivated, .isLinked, .createWalletAtPersonalize:
+        case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault:
             return .boolValue
         case .manufactureDateTime:
             return .dateTime

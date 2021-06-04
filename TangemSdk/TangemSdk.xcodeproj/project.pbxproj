@@ -165,7 +165,7 @@
 		B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */; };
 		B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B333A252EED5000A9FE96 /* FileDataMode.swift */; };
 		B00BC5BE260B5CA600F0647D /* WalletStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5BD260B5CA600F0647D /* WalletStatus.swift */; };
-		B00BC5C4260B80E600F0647D /* MillisecTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C3260B80E600F0647D /* MillisecTimer.swift */; };
+		B00BC5C4260B80E600F0647D /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C3260B80E600F0647D /* Track.swift */; };
 		B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C7260B82A700F0647D /* ReadMode.swift */; };
 		B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */; };
 		B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileHashHelper.swift */; };
@@ -388,7 +388,7 @@
 		B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataToWrite.swift; sourceTree = "<group>"; };
 		B00B333A252EED5000A9FE96 /* FileDataMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDataMode.swift; sourceTree = "<group>"; };
 		B00BC5BD260B5CA600F0647D /* WalletStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletStatus.swift; sourceTree = "<group>"; };
-		B00BC5C3260B80E600F0647D /* MillisecTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MillisecTimer.swift; sourceTree = "<group>"; };
+		B00BC5C3260B80E600F0647D /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		B00BC5C7260B82A700F0647D /* ReadMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMode.swift; sourceTree = "<group>"; };
 		B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommandSettings.swift; sourceTree = "<group>"; };
 		B01B9A562530871800ECB6BF /* FileHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashHelper.swift; sourceTree = "<group>"; };
@@ -459,6 +459,7 @@
 			children = (
 				5DDD6C7125D30BF600E48D7B /* Logger */,
 				5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */,
+				B00BC5C3260B80E600F0647D /* Track.swift */,
 				5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */,
 				5DDD6C6325D2E48A00E48D7B /* LogStringConvertible.swift */,
 			);
@@ -982,7 +983,6 @@
 			children = (
 				B0E162C225656D8400E97D07 /* CardSerializer.swift */,
 				B0EC64FF260110530088F03D /* CardWalletDeserializer.swift */,
-				B00BC5C3260B80E600F0647D /* MillisecTimer.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1188,7 +1188,7 @@
 				B0F9F612255032C5001CA52D /* CGPoint+.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
-				B00BC5C4260B80E600F0647D /* MillisecTimer.swift in Sources */,
+				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,

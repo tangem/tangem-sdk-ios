@@ -57,7 +57,7 @@ public final class CreateWalletCommand: Command {
             return .walletIsPurged
         }
         
-        if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
+        if card.firmwareVersion >= .multiwalletAvailable,
            let settings = card.settingsMask, !settings.contains(.allowSelectBlockchain) {
             return .walletCannotBeCreated
         }
@@ -72,7 +72,7 @@ public final class CreateWalletCommand: Command {
         }
         
         //Ignore config for older COS because we need to make proper response ourselves. e.g. Curve
-        if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData {
+        if card.firmwareVersion >= .multiwalletAvailable {
             self.config = nil
         }
         
@@ -94,8 +94,8 @@ public final class CreateWalletCommand: Command {
         if case .invalidParams = error {
             guard let card = card else { return error }
             
-            if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault,
-               card.pin2IsDefault ?? false {
+            if card.firmwareVersion >= .pin2IsDefaultAvailable,
+               let pin2IsDefault = card.pin2IsDefault, pin2IsDefault {
                 return .alreadyCreated
             }
         }
@@ -114,7 +114,7 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         
-        if environment.card?.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.walletData,
+        if environment.card?.firmwareVersion >= .multiwalletAvailable,
            let config = config {
             
             if let settingsMask = config.settingsMask {

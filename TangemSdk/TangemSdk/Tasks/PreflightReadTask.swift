@@ -47,7 +47,7 @@ public final class PreflightReadTask {
     }
     
     private func finalizeRead(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
-        if readResponse.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData {
+        if readResponse.firmwareVersion < .multiwalletAvailable {
             completion(.success(readResponse))
             return
         }
@@ -85,7 +85,5 @@ public final class PreflightReadTask {
             }
         }
     }
-    
-    
 }
 

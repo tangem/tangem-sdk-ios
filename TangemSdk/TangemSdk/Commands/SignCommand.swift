@@ -73,8 +73,9 @@ public final class SignCommand: Command {
             return .walletNotFound
         }
         
-		if card.firmwareVersion < FirmwareConstraints.DeprecationVersions.walletRemainingSignatures,
-           wallet.remainingSignatures == 0 {
+        //Before v4
+        if let remainingSignatures = wallet.remainingSignatures,
+           remainingSignatures == 0 {
             return .noRemainingSignatures
         }
         

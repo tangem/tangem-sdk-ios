@@ -11,7 +11,7 @@ import Foundation
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
-	public typealias Response = SimpleResponse
+	public typealias Response = SuccessResponse
     
 	private var changes: [FileSettingsChange]
 	
@@ -19,13 +19,13 @@ public final class ChangeFilesSettingsTask: CardSessionRunnable {
 		self.changes = changes
 	}
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		changeFileSettings(session: session, completion: completion)
 	}
 	
-	private func changeFileSettings(session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	private func changeFileSettings(session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		guard let changes = changes.popLast() else {
-			completion(.success(SimpleResponse(cardId: session.environment.card?.cardId ?? "")))
+			completion(.success(SuccessResponse(cardId: session.environment.card?.cardId ?? "")))
 			return
 		}
         let command = ChangeFileSettingsCommand(data: changes)

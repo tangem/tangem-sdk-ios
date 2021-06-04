@@ -35,7 +35,12 @@ struct ContentView: View {
                         VStack {
                             Text("Common")
                                 .font(.title)
+                            
                             Button("Scan", action: model.scan)
+                                .buttonStyle(ExampleButton(isLoading: model.isScanning))
+                                .frame(width: 100)
+                                .padding()
+                            
                             Button("verifyCard", action: model.verifyCard)
                             Button("chainingExample", action: model.chainingExample)
                             Button("depersonalize", action: model.depersonalize)

@@ -39,7 +39,6 @@ struct ContentView: View {
                             Button("verifyCard", action: model.verifyCard)
                             Button("chainingExample", action: model.chainingExample)
                             Button("depersonalize", action: model.depersonalize)
-                            
                             Button("changePin1", action: model.changePin1)
                             Button("changePin2", action: model.changePin2)
                         }

@@ -11,7 +11,7 @@ import Foundation
 /// Command that deletes file at specified index
 @available (iOS 13.0, *)
 public final class DeleteFileCommand: Command {
-	public typealias Response = SimpleResponse
+	public typealias Response = SuccessResponse
 	
     public var requiresPin2: Bool { return true }
     
@@ -26,7 +26,7 @@ public final class DeleteFileCommand: Command {
 			return .notPersonalized
 		}
 		
-		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files {
+		if card.firmwareVersion < .filesAvailable {
 			return .notSupportedFirmwareVersion
 		}
 		if card.isActivated {
@@ -46,11 +46,11 @@ public final class DeleteFileCommand: Command {
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
 	}
 	
-	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SimpleResponse {
+	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		let decoder = TlvDecoder(tlv: tlv)
-		return SimpleResponse(cardId: try decoder.decode(.cardId))
+		return SuccessResponse(cardId: try decoder.decode(.cardId))
 	}
 }

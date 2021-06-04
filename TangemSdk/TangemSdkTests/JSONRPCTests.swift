@@ -43,7 +43,7 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testMakeSign() {
-        let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_command\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"
+        let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_command\", \"params\": {\"walletPublicKey\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"
         let request = try? JSONRPCRequest(jsonString: json)
         XCTAssertNotNil(request)
         let task = try? JSONRPCConverter.shared.convert(request: request!)

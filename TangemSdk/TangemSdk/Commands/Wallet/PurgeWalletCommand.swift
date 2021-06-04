@@ -10,7 +10,7 @@ import Foundation
 
 /// This command deletes all wallet data and its private and public keys
 public final class PurgeWalletCommand: Command {
-    public typealias Response = SimpleResponse
+    public typealias Response = SuccessResponse
     
     public var requiresPin2: Bool { return true }
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
@@ -47,7 +47,7 @@ public final class PurgeWalletCommand: Command {
         return nil
     }
 	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<SimpleResponse>) {
+	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
 		transieve(in: session) { (result) in
 			switch result {
 			case .success(let response):
@@ -69,12 +69,12 @@ public final class PurgeWalletCommand: Command {
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SimpleResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return SimpleResponse(cardId: try decoder.decode(.cardId))
+        return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }

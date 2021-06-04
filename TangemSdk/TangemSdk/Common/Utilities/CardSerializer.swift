@@ -38,12 +38,11 @@ struct CardDeserializer {
                         defaultCurve: try decoder.decodeOptional(.curveId),
                         remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
         
-		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.pin2IsDefault {
-			let pin2IsDefault: String? = try? decoder.decodeOptional(.pin2IsDefault)
-			card.pin2IsDefault = pin2IsDefault != nil
+        if card.firmwareVersion >= .pin2IsDefaultAvailable {
+			card.pin2IsDefault = try decoder.decode(.pin2IsDefault)
 		}
         
-        if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.walletData,
+        if card.firmwareVersion < .multiwalletAvailable,
            status != .purged, let curve = card.defaultCurve {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let wallet = CardWallet(index: 0,

@@ -178,11 +178,11 @@ public final class TangemSdk {
     ///   - walletPublicKey: Public key of wallet that should be purged.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<SimpleResponse,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
     public func purgeWallet(walletPublicKey: Data,
                             cardId: String? = nil,
                             initialMessage: Message? = nil,
-                            completion: @escaping CompletionResult<SimpleResponse>) {
+                            completion: @escaping CompletionResult<SuccessResponse>) {
         startSession(with: PurgeWalletCommand(publicKey: walletPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -217,7 +217,7 @@ public final class TangemSdk {
      *   - issuerDataCounter: An optional counter that protect issuer data against replay attack.
      *   - cardId:  CID, Unique Tangem card ID number.
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
+     *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
     @available(*, deprecated, message: "Use files instead")
     public func writeIssuerData(issuerData: Data,
@@ -225,7 +225,7 @@ public final class TangemSdk {
                                 issuerDataCounter: Int? = nil,
                                 cardId: String? = nil,
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<WriteIssuerDataResponse>) {
+                                completion: @escaping CompletionResult<SuccessResponse>) {
         let command = WriteIssuerDataCommand(issuerData: issuerData,
                                              issuerDataSignature: issuerDataSignature,
                                              issuerDataCounter: issuerDataCounter,
@@ -272,7 +272,7 @@ public final class TangemSdk {
     ///   - issuerDataCounter:  An optional counter that protect issuer data against replay attack.
     ///   - cardId:  CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<WriteIssuerDataResponse,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
     @available(*, deprecated, message: "Use files instead")
     public func writeIssuerExtraData(issuerData: Data,
                                      startingSignature: Data,
@@ -280,7 +280,7 @@ public final class TangemSdk {
                                      issuerDataCounter: Int? = nil,
                                      cardId: String? = nil,
                                      initialMessage: Message? = nil,
-                                     completion: @escaping CompletionResult<WriteIssuerDataResponse>) {
+                                     completion: @escaping CompletionResult<SuccessResponse>) {
         
         let command = WriteIssuerExtraDataCommand(issuerData: issuerData,
                                                   issuerPublicKey: config.issuerPublicKey,
@@ -332,14 +332,14 @@ public final class TangemSdk {
      *   - userCounter: Counter initialized by user’s App and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
      *   - cardId:  CID, Unique Tangem card ID number.
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
+     *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
     @available(*, deprecated, message: "Use files instead")
     public func writeUserData(userData: Data,
                               userCounter: Int? = nil,
                               cardId: String? = nil,
                               initialMessage: Message? = nil,
-                              completion: @escaping CompletionResult<WriteUserDataResponse>) {
+                              completion: @escaping CompletionResult<SuccessResponse>) {
         let writeUserDataCommand = WriteUserDataCommand(userData: userData, userCounter: userCounter)
         startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
@@ -361,14 +361,14 @@ public final class TangemSdk {
      *   - userProtectedCounter: Counter initialized by user’s App (confirmed by PIN2) and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
      *   - cardId:  CID, Unique Tangem card ID number.   
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-     *   - completion: Returns `Swift.Result<WriteUserDataResponse,TangemSdkError>`
+     *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
     @available(*, deprecated, message: "Use files instead")
     public func writeUserProtectedData(userProtectedData: Data,
                                        userProtectedCounter: Int? = nil,
                                        cardId: String? = nil,
                                        initialMessage: Message? = nil,
-                                       completion: @escaping CompletionResult<WriteUserDataResponse>) {
+                                       completion: @escaping CompletionResult<SuccessResponse>) {
         let writeUserDataCommand = WriteUserDataCommand(userProtectedData: userProtectedData, userProtectedCounter: userProtectedCounter)
         startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
@@ -515,11 +515,11 @@ public final class TangemSdk {
     ///   - changes: Array of file indecies with new settings
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`
     public func changeFilesSettings(changes: [FileSettingsChange],
                                     cardId: String? = nil,
                                     initialMessage: Message? = nil,
-                                    completion: @escaping CompletionResult<SimpleResponse>) {
+                                    completion: @escaping CompletionResult<SuccessResponse>) {
         let task = ChangeFilesSettingsTask(changes: changes)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
@@ -553,11 +553,11 @@ public final class TangemSdk {
     ///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<SimpleResponse, TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`
     public func deleteFiles(indicesToDelete indices: [Int]?,
                             cardId: String? = nil,
                             initialMessage: Message? = nil,
-                            completion: @escaping CompletionResult<SimpleResponse>) {
+                            completion: @escaping CompletionResult<SuccessResponse>) {
         let task = DeleteFilesTask(filesToDelete: indices)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }

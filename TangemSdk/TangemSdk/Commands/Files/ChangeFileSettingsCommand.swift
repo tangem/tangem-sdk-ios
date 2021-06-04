@@ -11,7 +11,7 @@ import Foundation
 /// Command for updating file settings
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsCommand: Command {
-	public typealias Response = SimpleResponse
+	public typealias Response = SuccessResponse
 	
 	public var requiresPin2: Bool { true }
 	
@@ -26,7 +26,7 @@ public final class ChangeFileSettingsCommand: Command {
 			return .notPersonalized
 		}
 		
-		if card.firmwareVersion < FirmwareConstraints.AvailabilityVersions.files {
+		if card.firmwareVersion < .filesAvailable {
 			return .notSupportedFirmwareVersion
 		}
 		
@@ -48,12 +48,12 @@ public final class ChangeFileSettingsCommand: Command {
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
 	}
 	
-	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SimpleResponse {
+	func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
 		guard let tlv = apdu.getTlvData() else {
 			throw TangemSdkError.deserializeApduFailed
 		}
 		let decoder = TlvDecoder(tlv: tlv)
-		return SimpleResponse(cardId: try decoder.decode(.cardId))
+		return SuccessResponse(cardId: try decoder.decode(.cardId))
 	}
 	
 }

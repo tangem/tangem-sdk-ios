@@ -7,9 +7,6 @@
 //
 
 import Foundation
-
-public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
-
 /**
  * This command writes Issuer Extra Data field and its issuer’s signature.
  * Issuer Extra Data is never changed or parsed from within the Tangem COS.
@@ -18,7 +15,7 @@ public typealias WriteIssuerExtraDataResponse = WriteIssuerDataResponse
  */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteIssuerExtraDataCommand: Command {
-    public typealias Response = WriteIssuerExtraDataResponse
+    public typealias Response = SuccessResponse
     
     private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024
@@ -31,7 +28,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     private let finalizingSignature: Data
     private let issuerDataCounter: Int?
     
-    private var completion: CompletionResult<WriteIssuerExtraDataResponse>?
+    private var completion: CompletionResult<SuccessResponse>?
     private var viewDelegate: SessionViewDelegate?
     
     /// Initializer
@@ -81,7 +78,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .missingCounter
         }
 		
-		if card.firmwareVersion >= FirmwareConstraints.AvailabilityVersions.files {
+		if card.firmwareVersion >= .filesAvailable {
 			return .notSupportedFirmwareVersion
 		}
         
@@ -92,7 +89,7 @@ public final class WriteIssuerExtraDataCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<WriteIssuerExtraDataResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         self.completion = completion
         self.viewDelegate = session.viewDelegate
         writeData(session)
@@ -195,12 +192,12 @@ public final class WriteIssuerExtraDataCommand: Command {
         return CommandApdu(.writeIssuerData, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteIssuerExtraDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return WriteIssuerDataResponse(cardId: try decoder.decode(.cardId))
+        return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }

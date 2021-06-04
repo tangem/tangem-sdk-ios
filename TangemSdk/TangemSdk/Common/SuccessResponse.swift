@@ -1,5 +1,5 @@
 //
-//  SimpleResponse.swift
+//  SuccessResponse.swift
 //  TangemSdk
 //
 //  Created by [REDACTED_AUTHOR]
@@ -7,7 +7,7 @@
 //
 
 import Foundation
-//todo: rename
-public struct SimpleResponse: JSONStringConvertible {
+
+public struct SuccessResponse: JSONStringConvertible {
     public let cardId: String
 }

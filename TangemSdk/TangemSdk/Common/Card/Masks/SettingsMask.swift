@@ -218,3 +218,8 @@ class SettingsMaskBuilder {
 	}
 }
 
+extension SettingsMask {
+    func toWalletSettingsMask() -> WalletSettingsMask {
+        return WalletSettingsMask(rawValue: rawValue)
+    }
+}

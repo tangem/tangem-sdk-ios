@@ -41,7 +41,7 @@ class CardWalletDeserializer {
         
         let wallets: [CardWallet] = try walletDecoders.compactMap {
             do {
-                return try CardWalletDeserializer.deserialize(from: $0)
+                return try CardWalletDeserializer.deserializeWallet(from: $0)
             } catch TangemSdkError.walletIsNotCreated {
                 return nil
             }

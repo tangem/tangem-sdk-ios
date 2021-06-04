@@ -17,6 +17,7 @@ class AppModel: ObservableObject {
     
     // Outputs
     @Published var logText: String = ""
+    @Published var isScanning: Bool = false
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -58,7 +59,7 @@ class AppModel: ObservableObject {
 
 extension AppModel {
     func scan() {
-        // sender.showActivityIndicator()
+        isScanning = true
         tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { [unowned self] result in
             switch result {
             case .success(let card):
@@ -67,7 +68,7 @@ extension AppModel {
             case .failure(let error):
                 self.handle(error)
             }
-            //  sender.hideActivityIndicator()
+            isScanning = false
         }
     }
     

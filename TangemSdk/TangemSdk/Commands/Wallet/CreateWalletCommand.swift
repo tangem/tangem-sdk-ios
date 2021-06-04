@@ -148,7 +148,7 @@ public final class CreateWalletCommand: Command {
         
         let wallet = CardWallet(index: index,
                                 curve: curve,
-                                settingsMask: environment.card?.settingsMask,
+                                settingsMask: environment.card?.settingsMask?.toWalletSettingsMask(),
                                 publicKey: try decoder.decode(.walletPublicKey),
                                 totalSignedHashes: 0,
                                 remainingSignatures: environment.card?.remainingSignatures)

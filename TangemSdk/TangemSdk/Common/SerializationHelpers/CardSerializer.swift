@@ -38,8 +38,6 @@ struct CardDeserializer {
                         signingMethods: try decoder.decodeOptional(.signingMethod),
                         pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
                         health: try decoder.decodeOptional(.health),
-                        paymentFlowVersion: try decoder.decodeOptional(.paymentFlowVersion),
-                        userCounter: try decoder.decodeOptional(.userCounter),
                         terminalIsLinked: try decoder.decode(.isLinked),
                         cardData: try deserializeCardData(tlv: tlv),
                         walletsCount: try decoder.decodeOptional(.walletsCount) ?? 1,

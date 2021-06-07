@@ -46,7 +46,7 @@ public final class CreateWalletCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion >= .multiwalletAvailable,
-           let settings = card.settingsMask, !settings.contains(.allowSelectBlockchain) {
+           !card.settingsMask.contains(.allowSelectBlockchain) {
             return .walletCannotBeCreated
         }
         
@@ -64,7 +64,7 @@ public final class CreateWalletCommand: Command {
             self.config = nil
         }
         
-        let maxIndex = card.walletsCount ?? 1
+        let maxIndex = card.maxWalletsCount
         let busyIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex
         if let firstAvailableIndex = allIndexes.filter({ !busyIndexes.contains($0) }).sorted().first {
@@ -134,9 +134,13 @@ public final class CreateWalletCommand: Command {
             throw TangemSdkError.unknownError
         }
         
+        guard let settings = environment.card?.settingsMask.toWalletSettingsMask() else {
+            throw TangemSdkError.unknownError
+        }
+        
         let wallet = CardWallet(index: index,
                                 curve: curve,
-                                settingsMask: environment.card?.settingsMask?.toWalletSettingsMask(),
+                                settingsMask: settings,
                                 publicKey: try decoder.decode(.walletPublicKey),
                                 totalSignedHashes: 0,
                                 remainingSignatures: environment.card?.remainingSignatures)

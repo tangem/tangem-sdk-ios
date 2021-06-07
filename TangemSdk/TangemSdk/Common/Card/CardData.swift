@@ -11,17 +11,17 @@ import Foundation
 /// Detailed information about card contents.
 public struct CardData: JSONStringConvertible, Decodable {
 	/// Tangem internal manufacturing batch ID.
-	public let batchId: String?
+	public let batchId: String
 	/// Timestamp of manufacturing.
-	public let manufactureDateTime: Date?
+	public let manufactureDateTime: Date
 	/// Name of the issuer.
 	public let issuerName: String?
 	/// Name of the blockchain.
-	public let blockchainName: String?
-	/// Signature of CardId with manufacturer’s private key.
+	public let blockchainName: String
+	/// Signature of CardId with manufacturer’s private key. COS 1.21+
 	public let manufacturerSignature: Data?
-	/// Mask of products enabled on card.
-	public let productMask: ProductMask?
+	/// Mask of products enabled on card. COS 2.30+
+	internal let productMask: ProductMask? //todo: remove?
 	/// Name of the token.
 	public let tokenSymbol: String?
 	/// Smart contract address.
@@ -33,10 +33,10 @@ public struct CardData: JSONStringConvertible, Decodable {
 extension CardData {
 	public init(from decoder: Decoder) throws {
 		let values = try decoder.container(keyedBy: CodingKeys.self)
-		batchId = try? values.decode(String.self, forKey: .batchId)
-		manufactureDateTime = try? values.decode(Date.self, forKey: .manufactureDateTime)
-		issuerName = try? values.decode(String.self, forKey: .issuerName)
-		blockchainName = try? values.decode(String.self, forKey: .blockchainName)
+		batchId = try values.decode(String.self, forKey: .batchId)
+		manufactureDateTime = try values.decode(Date.self, forKey: .manufactureDateTime)
+		issuerName = try values.decode(String.self, forKey: .issuerName)
+		blockchainName = try values.decode(String.self, forKey: .blockchainName)
 		manufacturerSignature = try? values.decode(Data.self, forKey: .manufacturerSignature)
 		if let productMaskDictionary = try? values.decode([String:UInt8].self, forKey: .productMask),
 			let rawValue = productMaskDictionary["rawValue"]  {

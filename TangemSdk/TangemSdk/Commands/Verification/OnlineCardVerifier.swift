@@ -21,7 +21,7 @@ public class OnlineCardVerifier {
     ///   - cardPublicKey: cardPublicKey of the card
     /// - Returns: `CardVerifyAndGetInfoResponse.Item`
     public func getCardInfo(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
-        let requestItem = CardVerifyAndGetInfoRequest.Item(cardId: cardId, publicKey: cardPublicKey.asHexString())
+        let requestItem = CardVerifyAndGetInfoRequest.Item(cardId: cardId, publicKey: cardPublicKey.hexString)
         let request = CardVerifyAndGetInfoRequest(requests: [requestItem])
         let endpoint = TangemEndpoint.verifyAndGetInfo(request: request)
 

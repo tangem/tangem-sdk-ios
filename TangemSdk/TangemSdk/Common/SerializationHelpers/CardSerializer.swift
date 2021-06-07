@@ -26,7 +26,8 @@ struct CardDeserializer {
             throw TangemSdkError.walletIsPurged
         }
         
-        if let isActivated: Bool = try decoder.decodeOptional(.isActivated), !isActivated   {
+        let isNeedActivation: Bool = try decoder.decode(.isActivated)
+        if isNeedActivation {
             throw TangemSdkError.notActivated
         }
         

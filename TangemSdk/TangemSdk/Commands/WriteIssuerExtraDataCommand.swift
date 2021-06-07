@@ -65,7 +65,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .extendedDataSizeTooLarge
         }
         
-        if let settingsMask = card.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay)
+        if card.settingsMask.contains(.protectIssuerDataAgainstReplay)
             && issuerDataCounter == nil {
             return .missingCounter
         }
@@ -74,7 +74,7 @@ public final class WriteIssuerExtraDataCommand: Command {
 			return .notSupportedFirmwareVersion
 		}
         
-        if let cardId = card.cardId, !verify(with: cardId) {
+        if !verify(with: card.cardId) {
             return .verificationFailed
         }
         

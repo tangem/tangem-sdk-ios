@@ -67,12 +67,11 @@ public final class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if let signingMethod = card.signingMethods, !signingMethod.contains(.signHash) {
+        if !card.signingMethods.contains(.signHash) {
             return .signHashesNotAvailable
         }
         
-        if let fw = card.firmwareVersionValue, fw < 2.28,
-           let sd = card.pauseBeforePin2, sd > 1500 {
+        if card.firmwareVersionValue < 2.28, card.securityDelay > 1500 {
             return .oldCard
         }
         
@@ -92,7 +91,7 @@ public final class SignCommand: Command {
         
         let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
         let hasTerminalKeys = session.environment.terminalKeys != nil
-        let delay = session.environment.card?.pauseBeforePin2 ?? 3000
+        let delay = session.environment.card?.securityDelay ?? 3000
         let hasEnoughDelay = (delay * numberOfChunks) <= 5000
         guard hashes.count <= chunkSize || (isLinkedTerminalSupported && hasTerminalKeys) || hasEnoughDelay else {
             completion(.failure(.tooManyHashesInOneTransaction))

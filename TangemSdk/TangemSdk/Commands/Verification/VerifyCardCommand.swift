@@ -14,33 +14,39 @@ public enum VerifyCardState: String, Codable, JSONStringConvertible {
     case online
 }
 
-public struct VerifyCardResponseExt {
+public struct VerifyResponse {
     public let cardId: String
+    public let salt: Data
+    public let cardSignature: Data
+    public let challenge: Data
+    public let cardPublicKey: Data
+    public let verificationState: VerifyCardState
+    public let artworkInfo: ArtworkInfo?
 }
 
+extension VerifyResponse {
+    internal init(verifyCardResponse: VerifyCardResponse, verificationState: VerifyCardState, artworkInfo: ArtworkInfo?) {
+        self.cardId = verifyCardResponse.cardId
+        self.salt = verifyCardResponse.salt
+        self.cardSignature = verifyCardResponse.cardSignature
+        self.challenge = verifyCardResponse.challenge
+        self.cardPublicKey = verifyCardResponse.cardPublicKey
+        self.verificationState = verificationState
+        self.artworkInfo = artworkInfo
+    }
+}
 
 /// Deserialized response from the Tangem card after `VerifyCardResponseCommand`.
 public struct VerifyCardResponse: JSONStringConvertible {
     public let cardId: String
-    public let verificationState: VerifyCardState? //todo: remove
-    public let artworkInfo: ArtworkInfo? //todo: remove
-    public let cardPublicKey: Data //todo: remove
-    //todo: return challenge
-    let salt: Data
-    let cardSignature: Data
+    public let salt: Data
+    public let cardSignature: Data
+    public let challenge: Data
+    public let cardPublicKey: Data //We need it for later online verification
     
-    internal init(cardId: String, salt: Data, cardSignature: Data, cardPublicKey: Data, verificationState: VerifyCardState? = nil, artworkInfo: ArtworkInfo? = nil) {
-        self.cardId = cardId
-        self.verificationState = verificationState
-        self.artworkInfo = artworkInfo
-        self.salt = salt
-        self.cardSignature = cardSignature
-        self.cardPublicKey = cardPublicKey
-    }
-    
-    func verify(publicKey: Data, challenge: Data) -> Bool? {
+    public func verify() -> Bool? {
         return CryptoUtils.verify(curve: .secp256k1,
-                                  publicKey: publicKey,
+                                  publicKey: cardPublicKey,
                                   message: challenge + salt,
                                   signature: cardSignature)
         
@@ -50,11 +56,13 @@ public struct VerifyCardResponse: JSONStringConvertible {
 public class VerifyCardCommand: Command {
     public typealias Response = VerifyCardResponse
     
-    private var challenge: Data? = nil
+    private var challenge: Data?
 
-    //todo: optional challenge challenge
-    public init() {
-        self.challenge = try? CryptoUtils.generateRandomBytes(count: 16)
+    /// Default initializer
+    /// - Parameters:
+    ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
+    public init(challenge: Data? = nil) {
+        self.challenge = challenge
     }
     
     deinit {
@@ -74,20 +82,18 @@ public class VerifyCardCommand: Command {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<VerifyCardResponse>) {
-        guard let cardPublicKey = session.environment.card?.cardPublicKey else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        guard let challenge = self.challenge else {
-            completion(.failure(.failedToGenerateRandomSequence))
-            return
+        if challenge == nil {
+            do {
+                challenge = try CryptoUtils.generateRandomBytes(count: 16)
+            } catch {
+                completion(.failure(error.toTangemSdkError()))
+            }
         }
         
         transieve(in: session) { result in
             switch result {
             case .success(let response):
-                guard let verified = response.verify(publicKey: cardPublicKey, challenge: challenge) else {
+                guard let verified = response.verify() else {
                     completion(.failure(.cryptoUtilsError))
                     return
                 }
@@ -97,11 +103,6 @@ public class VerifyCardCommand: Command {
                     return
                 }
                 
-                let response = VerifyCardResponse(cardId: response.cardId,
-                                                  salt: response.salt,
-                                                  cardSignature: response.cardSignature,
-                                                  cardPublicKey: cardPublicKey,
-                                                  verificationState: .offline)
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
@@ -123,11 +124,16 @@ public class VerifyCardCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
+        guard let cardPublicKey = environment.card?.cardPublicKey else {
+            throw TangemSdkError.cardError
+        }
+        
         let decoder = TlvDecoder(tlv: tlv)
         return VerifyCardResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),
             cardSignature: try decoder.decode(.cardSignature),
-            cardPublicKey: Data())
+            challenge: self.challenge!,
+            cardPublicKey: cardPublicKey)
     }
 }

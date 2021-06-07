@@ -38,7 +38,7 @@ public class ReadWalletsListCommand: Command {
                     return
                 }
                 
-                guard loadedWalletsCount == session.environment.card?.walletsCount else {
+                guard loadedWalletsCount == session.environment.card?.maxWalletsCount else {
                     self.walletIndex = loadedWalletsCount
                     self.run(in: session, completion: completion)
                     return

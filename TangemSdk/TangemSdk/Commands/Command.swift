@@ -166,7 +166,7 @@ extension Command {
                     }
                     self.transieve(apdu: apdu, in: session, completion: completion)
                 case .unknown:
-                    completion(.failure(.unknownStatus(responseApdu.sw.asHexString())))
+                    completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
                 default:
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }

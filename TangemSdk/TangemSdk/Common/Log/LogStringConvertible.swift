@@ -12,6 +12,6 @@ protocol LogStringConvertible: StringArrayConvertible, CustomStringConvertible {
 
 extension LogStringConvertible {
     public var description: String {
-        return toArray().joined(separator: ", ")
+        return toStringArray().joined(separator: ", ")
     }
 }

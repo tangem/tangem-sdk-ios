@@ -135,16 +135,12 @@ public class SetPinCommand: Command {
             status: status)
     }
 }
-//todo: remove pin3
+
 public enum SetPinStatus: String, Codable, JSONStringConvertible {
     case pinsNotChanged
     case pin1Changed
     case pin2Changed
-    case pin3Changed
     case pins12Changed
-    case pins13Changed
-    case pins23Changed
-    case pins123Changed
     
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
@@ -155,11 +151,7 @@ public enum SetPinStatus: String, Codable, JSONStringConvertible {
         switch sw {
         case .pin1Changed: return .pin1Changed
         case .pin2Changed: return .pin2Changed
-        case .pin3Changed: return .pin3Changed
-        case .pins123Changed: return .pins123Changed
         case .pins12Changed: return .pins12Changed
-        case .pins13Changed: return .pins13Changed
-        case .pins23Changed: return .pins23Changed
         case .processCompleted: return .pinsNotChanged
         default: return nil
         }

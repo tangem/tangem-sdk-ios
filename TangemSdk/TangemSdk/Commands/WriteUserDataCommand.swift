@@ -68,14 +68,6 @@ public final class WriteUserDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status == .notPersonalized {
-            return .notPersonalized
-        }
-        
-        if card.isActivated {
-            return .notActivated
-        }
-        
         if let userData = userData, userData.count > WriteUserDataCommand.maxSize {
             return .dataSizeTooLarge
         }

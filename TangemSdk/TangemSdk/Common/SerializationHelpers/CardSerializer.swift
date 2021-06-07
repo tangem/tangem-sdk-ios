@@ -16,7 +16,19 @@ struct CardDeserializer {
 		
 		let decoder = TlvDecoder(tlv: tlv)
 		
-        let status: CardStatus = try decoder.decode(.status) //todo: optional ?
+        let status: CardStatus = try decoder.decode(.status)
+        
+        if status == .notPersonalized {
+            throw TangemSdkError.notPersonalized
+        }
+        
+        if status == .purged {
+            throw TangemSdkError.walletIsPurged
+        }
+        
+        if let isActivated: Bool = try decoder.decodeOptional(.isActivated), !isActivated   {
+            throw TangemSdkError.notActivated
+        }
         
         var card = Card(cardId: try decoder.decodeOptional(.cardId),
                         manufacturerName: try decoder.decodeOptional(.manufacturerName),
@@ -26,15 +38,12 @@ struct CardDeserializer {
                         signingMethods: try decoder.decodeOptional(.signingMethod),
                         pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
                         health: try decoder.decodeOptional(.health),
-                        isActivated: try decoder.decode(.isActivated),
-                        activationSeed: try decoder.decodeOptional(.activationSeed),
                         paymentFlowVersion: try decoder.decodeOptional(.paymentFlowVersion),
                         userCounter: try decoder.decodeOptional(.userCounter),
                         terminalIsLinked: try decoder.decode(.isLinked),
                         cardData: try deserializeCardData(tlv: tlv),
                         walletsCount: try decoder.decodeOptional(.walletsCount) ?? 1,
                         fwVersion: try decoder.decodeOptional(.firmwareVersion),
-                        isPurged: status == .purged,
                         defaultCurve: try decoder.decodeOptional(.curveId),
                         remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
         

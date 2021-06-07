@@ -22,16 +22,8 @@ public final class ChangeFileSettingsCommand: Command {
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		if card.status == .notPersonalized {
-			return .notPersonalized
-		}
-		
 		if card.firmwareVersion < .filesAvailable {
 			return .notSupportedFirmwareVersion
-		}
-		
-		if card.isActivated {
-			return .notActivated
 		}
 		
 		return nil

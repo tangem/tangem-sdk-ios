@@ -41,18 +41,6 @@ public final class CheckWalletCommand: Command {
     deinit {
         Log.debug("CheckWalletCommand deinit")
     }
-    
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.status == .notPersonalized {
-            return .notPersonalized
-        }
-        
-        if card.isActivated {
-            return .notActivated
-        }
-        
-        return nil
-    }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CheckWalletResponse>) {
         if challenge == nil {

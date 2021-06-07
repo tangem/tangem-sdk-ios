@@ -14,6 +14,8 @@ import Foundation
 /// During this procedure all data exchange is encrypted.
 public class PersonalizeCommand: Command {
     public typealias Response = Card
+
+    public var preflightReadMode: PreflightReadMode { .none }
     
     private let config: CardConfig
     private let issuer: Issuer
@@ -38,23 +40,19 @@ public class PersonalizeCommand: Command {
         self.acquirer = acquirer
     }
     
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status != .notPersonalized {
-            return .alreadyPersonalized
-        }
-        
-        return nil
-    }
-    
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let encryptionMode = session.environment.encryptionMode
-        let encryptionKey = session.environment.encryptionKey
-        session.environment.encryptionMode = .none
-        session.environment.encryptionKey = devPersonalizationKey
-        transieve(in: session) { result in
-            session.environment.encryptionMode = encryptionMode
-            session.environment.encryptionKey = encryptionKey
-            completion(result)
+        let read = PreflightReadTask(readMode: .readCardOnly) //We have to run preflight read ourseleves to catch the notPersonalized error
+        read.run(in: session) { readResult in
+            switch readResult {
+            case .success:
+                completion(.failure(.alreadyPersonalized))
+            case .failure(let error):
+                if case .notPersonalized = error {
+                    self.runPersonalize(in: session, completion: completion)
+                } else {
+                    completion(.failure(error))
+                }
+            }
         }
     }
     
@@ -64,6 +62,18 @@ public class PersonalizeCommand: Command {
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
         return try CardDeserializer.deserialize(with: environment, from: apdu)
+    }
+    
+    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        let encryptionMode = session.environment.encryptionMode
+        let encryptionKey = session.environment.encryptionKey
+        session.environment.encryptionMode = .none
+        session.environment.encryptionKey = devPersonalizationKey
+        transieve(in: session) { result in
+            session.environment.encryptionMode = encryptionMode
+            session.environment.encryptionKey = encryptionKey
+            completion(result)
+        }
     }
     
     private func serializePersonalizationData(environment: SessionEnvironment, config: CardConfig) throws -> Data {

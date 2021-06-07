@@ -54,7 +54,7 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        guard !card.isPurged, let wallet = card.wallets.first else {
+        guard let wallet = card.wallets.first else {
             completion(.success(card))
             return
         }

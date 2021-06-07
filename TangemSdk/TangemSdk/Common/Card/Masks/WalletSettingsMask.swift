@@ -22,7 +22,7 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
-		try container.encode(toArray())
+		try container.encode(toStringArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -38,7 +38,7 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
 		self = mask
 	}
     
-    func toArray() -> [String] {
+    func toStringArray() -> [String] {
         var values = [String]()
         if contains(.isReusable) {
             values.append("IsReusable")

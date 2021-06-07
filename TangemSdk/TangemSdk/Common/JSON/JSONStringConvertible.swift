@@ -19,7 +19,7 @@ extension JSONStringConvertible {
         encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
         encoder.dataEncodingStrategy = .custom{ data, encoder in
             var container = encoder.singleValueContainer()
-            return try container.encode(data.asHexString())
+            return try container.encode(data.hexString)
         }
         
         let dateFormatter = DateFormatter()

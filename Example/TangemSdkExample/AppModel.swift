@@ -26,11 +26,10 @@ class AppModel: ObservableObject {
         return TangemSdk(config: config)
     }()
     
-    var card: Card?
-    var issuerDataResponse: ReadIssuerDataResponse?
-    var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
-    var savedFiles: [File]?
-    var filesDataCounter: Int?
+    private var card: Card?
+    private var issuerDataResponse: ReadIssuerDataResponse?
+    private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
+    private var savedFiles: [File]?
     
     func clear() {
         logText = ""
@@ -55,7 +54,7 @@ class AppModel: ObservableObject {
     }
 }
 
-// Mark: - Commands
+// MARK:- Commands
 
 extension AppModel {
     func scan() {
@@ -100,128 +99,20 @@ extension AppModel {
         }
     }
     
-    @available(*, deprecated, message: "Use files instead")
-    func getIssuerData() {
-        tangemSdk.readIssuerData(cardId: card?.cardId, initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
-            switch result {
-            case .success(let issuerDataResponse):
-                self.issuerDataResponse = issuerDataResponse
-                self.log(issuerDataResponse)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Use files instead")
-    func writeIssuerData() {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        
-        guard let issuerDataResponse = issuerDataResponse else {
-            self.log("Please, run ReadIssuerData before")
-            return
-        }
-        
-        let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
-        let sampleData = Data(repeating: UInt8(1), count: 100)
-        let sig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)!
-        
-        tangemSdk.writeIssuerData(issuerData: sampleData,
-                                  issuerDataSignature: sig,
-                                  issuerDataCounter: newCounter,
-                                  cardId: cardId) { [unowned self] result in
-            switch result {
-            case .success(let issuerDataResponse):
-                self.log(issuerDataResponse)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Use files instead")
-    func readIssuerExtraData() {
-        tangemSdk.readIssuerExtraData(cardId: card?.cardId){ [unowned self] result in
-            switch result {
-            case .success(let issuerDataResponse):
-                self.issuerExtraDataResponse = issuerDataResponse
-                self.log(issuerDataResponse)
-                print(issuerDataResponse.issuerData.asHexString())
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Use files instead")
-    func writeIssuerExtraData() {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
-        
-        
-        guard let issuerDataResponse = issuerExtraDataResponse else {
-            self.log("Please, run ReadIssuerExtraData before")
-            return
-        }
-        let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
-        let sampleData = Data(repeating: UInt8(1), count: 2000)
-        let issuerKey = Utils.issuer.privateKey
-        
-        let startSig = Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)!
-        let finalSig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)!
-        
-        tangemSdk.writeIssuerExtraData(issuerData: sampleData,
-                                       startingSignature: startSig,
-                                       finalizingSignature: finalSig,
-                                       issuerDataCounter: newCounter,
-                                       cardId: cardId) { [unowned self] result in
-            switch result {
-            case .success(let writeResponse):
-                self.log(writeResponse)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
     func createWallet() {
-//        let tag = sender.tag
-//        var walletConfig: WalletConfig? = nil
-//        if tag > 0 {
-//            var curve: EllipticCurve
-//            switch tag {
-//            case 2:
-//                curve = .ed25519
-//            case 3:
-//                curve = .secp256r1
-//            default:
-//                curve = .secp256k1
-//            }
-//            walletConfig = WalletConfig(prohibitPurgeWallet: prohibitPurgeWallet,
-//                                        curve: curve,
-//                                        signingMethods: .signHash)
-//        }
-//
-//        tangemSdk.createWallet(config: walletConfig, cardId: card?.cardId) { [unowned self] result in
-//            switch result {
-//            case .success(let response):
-//                self.log(response)
-//            case .failure(let error):
-//                self.handle(error)
-//            //handle completion. Unlock UI, etc.
-//            }
-//        }
-        
+        let walletConfig = WalletConfig(prohibitPurgeWallet: prohibitPurgeWallet,
+                                                        curve: curve,
+                                                        signingMethods: .signHash)
+
+        tangemSdk.createWallet(config: walletConfig, cardId: card?.cardId) { [unowned self] result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
     }
     
     func purgeWallet() {
@@ -238,49 +129,7 @@ extension AppModel {
         }
     }
     
-    @available(*, deprecated, message: "Use files instead")
-    func readUserData() {
-        tangemSdk.readUserData(cardId: card?.cardId) { [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Use files instead")
-    func writeUserData() {
-        let userData = Data(hexString: "0102030405060708")
-        
-        tangemSdk.writeUserData(userData: userData, userCounter: 2, cardId: card?.cardId){ [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
-    @available(*, deprecated, message: "Use files instead")
-    func writeUserProtectedData() {
-        let userData = Data(hexString: "01010101010101")
-        
-        tangemSdk.writeUserProtectedData(userProtectedData: userData, userProtectedCounter: 1, cardId: card?.cardId){ [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
-    }
-    
+
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
             if let error = error {
@@ -349,7 +198,10 @@ extension AppModel {
             }
         }
     }
-    
+}
+
+//MARK:- Files
+extension AppModel {
     func readFiles() {
         tangemSdk.readFiles(readPrivateFiles: true, cardId: card?.cardId) { result in
             switch result {
@@ -501,4 +353,138 @@ extension AppModel {
             }
         }
     }
+}
+
+//MARK:- Deprecated commands
+extension AppModel {
+    func readUserData() {
+        tangemSdk.readUserData(cardId: card?.cardId) { [unowned self] result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
+    func writeUserData() {
+        let userData = Data(hexString: "0102030405060708")
+        
+        tangemSdk.writeUserData(userData: userData, userCounter: 2, cardId: card?.cardId){ [unowned self] result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
+    func writeUserProtectedData() {
+        let userData = Data(hexString: "01010101010101")
+        
+        tangemSdk.writeUserProtectedData(userProtectedData: userData, userProtectedCounter: 1, cardId: card?.cardId){ [unowned self] result in
+            switch result {
+            case .success(let response):
+                self.log(response)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
+    func getIssuerData() {
+        tangemSdk.readIssuerData(cardId: card?.cardId, initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
+            switch result {
+            case .success(let issuerDataResponse):
+                self.issuerDataResponse = issuerDataResponse
+                self.log(issuerDataResponse)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
+    func writeIssuerData() {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        
+        guard let issuerDataResponse = issuerDataResponse else {
+            self.log("Please, run ReadIssuerData before")
+            return
+        }
+        
+        let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
+        let sampleData = Data(repeating: UInt8(1), count: 100)
+        let sig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)!
+        
+        tangemSdk.writeIssuerData(issuerData: sampleData,
+                                  issuerDataSignature: sig,
+                                  issuerDataCounter: newCounter,
+                                  cardId: cardId) { [unowned self] result in
+            switch result {
+            case .success(let issuerDataResponse):
+                self.log(issuerDataResponse)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
+    func readIssuerExtraData() {
+        tangemSdk.readIssuerExtraData(cardId: card?.cardId){ [unowned self] result in
+            switch result {
+            case .success(let issuerDataResponse):
+                self.issuerExtraDataResponse = issuerDataResponse
+                self.log(issuerDataResponse)
+                print(issuerDataResponse.issuerData.asHexString())
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+
+    func writeIssuerExtraData() {
+        guard let cardId = card?.cardId else {
+            self.log("Please, scan card before")
+            return
+        }
+        
+        
+        guard let issuerDataResponse = issuerExtraDataResponse else {
+            self.log("Please, run ReadIssuerExtraData before")
+            return
+        }
+        let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
+        let sampleData = Data(repeating: UInt8(1), count: 2000)
+        let issuerKey = Utils.issuer.privateKey
+        
+        let startSig = Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)!
+        let finalSig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)!
+        
+        tangemSdk.writeIssuerExtraData(issuerData: sampleData,
+                                       startingSignature: startSig,
+                                       finalizingSignature: finalSig,
+                                       issuerDataCounter: newCounter,
+                                       cardId: cardId) { [unowned self] result in
+            switch result {
+            case .success(let writeResponse):
+                self.log(writeResponse)
+            case .failure(let error):
+                self.handle(error)
+            //handle completion. Unlock UI, etc.
+            }
+        }
+    }
+    
 }

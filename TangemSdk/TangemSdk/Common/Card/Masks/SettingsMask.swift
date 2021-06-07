@@ -43,7 +43,7 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
-		try container.encode(toArray())
+		try container.encode(toStringArray())
 	}
     
 	public init(from decoder: Decoder) throws {
@@ -126,7 +126,7 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 		self = mask
 	}
 	
-    func toArray() -> [String] {
+    func toStringArray() -> [String] {
         var values = [String]()
         if contains(SettingsMask.isReusable) {
             values.append("IsReusable")

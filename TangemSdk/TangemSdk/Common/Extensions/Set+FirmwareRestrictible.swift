@@ -13,7 +13,7 @@ extension Set where Element: FirmwareRestictible {
 	func minFirmwareVersion() -> FirmwareVersion {
 		map { $0.minFirmwareVersion }.max() ?? .zero
 	}
-	
+
 	func maxFirmwareVersion() -> FirmwareVersion {
 		map { $0.maxFirmwareVersion }.min() ?? .zero
 	}

@@ -23,7 +23,7 @@ public struct ProductMask: OptionSet, Codable, StringArrayConvertible, JSONStrin
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
-		try container.encode(toArray())
+		try container.encode(toStringArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -54,7 +54,7 @@ public struct ProductMask: OptionSet, Codable, StringArrayConvertible, JSONStrin
 		self = mask
 	}
     
-    func toArray() -> [String] {
+    func toStringArray() -> [String] {
         var values = [String]()
         if contains(ProductMask.note) {
             values.append("Note")

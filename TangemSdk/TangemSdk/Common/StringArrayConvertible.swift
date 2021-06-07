@@ -9,5 +9,5 @@
 import Foundation
 
 protocol StringArrayConvertible {
-    func toArray() -> [String]
+    func toStringArray() -> [String]
 }

@@ -45,18 +45,6 @@ public final class CreateWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.status == .notPersonalized {
-            return .notPersonalized
-        }
-        
-        if card.isActivated {
-            return .notActivated
-        }
-        
-        if card.isPurged {
-            return .walletIsPurged
-        }
-        
         if card.firmwareVersion >= .multiwalletAvailable,
            let settings = card.settingsMask, !settings.contains(.allowSelectBlockchain) {
             return .walletCannotBeCreated

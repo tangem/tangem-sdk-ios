@@ -142,7 +142,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case notActivated
     
-    case walletIsPurged //todo: remove
+    case walletIsPurged
     
     case pin2Required
     

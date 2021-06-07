@@ -391,7 +391,7 @@ public final class TangemSdk {
     public func verify(online: Bool = true,
                        cardId: String? = nil,
                        initialMessage: Message? = nil,
-                       completion: @escaping CompletionResult<VerifyCardResponse>) {
+                       completion: @escaping CompletionResult<VerifyResponse>) {
         startSession(with: VerifyCardCommand(), cardId: cardId, initialMessage: initialMessage) { result in
             switch result {
             case .success(let response):
@@ -399,19 +399,19 @@ public final class TangemSdk {
                     self.loadCardInfo(cardPublicKey: response.cardPublicKey, cardId: response.cardId) { onlineVerifyResult in
                         switch onlineVerifyResult {
                         case .success(let onlineVerifyResponse):
-                            let response = VerifyCardResponse(cardId: response.cardId,
-                                                              salt: response.salt,
-                                                              cardSignature: response.cardSignature,
-                                                              cardPublicKey: response.cardPublicKey,
-                                                              verificationState: .online,
-                                                              artworkInfo: onlineVerifyResponse.artwork)
-                            completion(.success(response))
+                            let verifyResponse = VerifyResponse(verifyCardResponse: response,
+                                                                verificationState: .online,
+                                                                artworkInfo: onlineVerifyResponse.artwork)
+                            completion(.success(verifyResponse))
                         case .failure(let error):
                             completion(.failure(error))
                         }
                     }
                 } else {
-                    completion(.success(response))
+                    let verifyResponse = VerifyResponse(verifyCardResponse: response,
+                                                        verificationState: .offline,
+                                                        artworkInfo: nil)
+                    completion(.success(verifyResponse))
                 }
             case .failure(let error):
                 completion(.failure(error))

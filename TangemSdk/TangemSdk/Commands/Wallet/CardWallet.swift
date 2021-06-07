@@ -15,7 +15,8 @@ public struct CardWallet: Codable, JSONStringConvertible {
     /// Explicit text name of the elliptic curve used for all wallet key operations.
     /// Supported curves: ‘secp256k1’ and ‘ed25519’.
     public var curve: EllipticCurve
-    public var settingsMask: WalletSettingsMask? //todo: remove optional
+    /// Settings of the wallet
+    public var settingsMask: WalletSettingsMask
     /// Public key of the blockchain wallet.
     public var publicKey: Data
     /// Total number of signed  hashes returned by the wallet since its creation

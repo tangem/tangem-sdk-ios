@@ -30,7 +30,7 @@ public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStr
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
-		try container.encode(toArray())
+		try container.encode(toStringArray())
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -69,7 +69,7 @@ public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStr
 		self = mask
 	}
     
-    func toArray() -> [String] {
+    func toStringArray() -> [String] {
         var values = [String]()
         if contains(SigningMethod.signHash) {
             values.append("SignHash")

@@ -45,12 +45,6 @@ public final class WriteFileCommand: Command {
 			return .notSupportedFirmwareVersion
 		}
 		
-		if card.status == .notPersonalized {
-			return .notPersonalized
-		}
-		if card.isActivated {
-			return .notActivated
-		}
 		if dataToWrite.data.count > WriteFileCommand.maxSize {
 			return .dataSizeTooLarge
 		}

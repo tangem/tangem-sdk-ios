@@ -140,7 +140,7 @@ class TlvTests: XCTestCase {
         XCTAssertEqual(settings, SettingsMask(rawValue: 32305))
         XCTAssertTrue(settings.contains(.isReusable))
         XCTAssertTrue(settings.contains(.allowSetPIN2))
-        XCTAssertTrue(!settings.contains(.checkPIN3OnCard))
+        XCTAssertTrue(!settings.contains(.disableFiles))
         XCTAssertTrue(!settings.contains(.useOneCommandAtTime))
         
         let settingsWrong: Bool? = try? decoder.decode(.settingsMask)

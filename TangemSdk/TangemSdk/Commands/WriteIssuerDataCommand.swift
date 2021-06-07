@@ -67,12 +67,12 @@ public final class WriteIssuerDataCommand: Command {
             return .dataSizeTooLarge
         }
         
-        if let settingsMask = card.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay)
+        if card.settingsMask.contains(.protectIssuerDataAgainstReplay)
             && issuerDataCounter == nil {
             return .missingCounter
         }
         
-        if let cardId = card.cardId, !verify(with: cardId) {
+        if !verify(with: card.cardId) {
             return .verificationFailed
         }
         

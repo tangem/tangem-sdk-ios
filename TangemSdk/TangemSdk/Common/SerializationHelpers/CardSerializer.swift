@@ -30,31 +30,30 @@ struct CardDeserializer {
             throw TangemSdkError.notActivated
         }
         
-        var card = Card(cardId: try decoder.decodeOptional(.cardId),
-                        manufacturerName: try decoder.decodeOptional(.manufacturerName),
-                        cardPublicKey: try decoder.decodeOptional(.cardPublicKey),
-                        settingsMask: try decoder.decodeOptional(.settingsMask),
-                        issuerPublicKey: try decoder.decodeOptional(.issuerPublicKey),
-                        signingMethods: try decoder.decodeOptional(.signingMethod),
-                        pauseBeforePin2: try decoder.decodeOptional(.pauseBeforePin2),
+        var card = Card(cardId: try decoder.decode(.cardId),
+                        manufacturerName: try decoder.decode(.manufacturerName),
+                        cardPublicKey: try decoder.decode(.cardPublicKey),
+                        settingsMask: try decoder.decode(.settingsMask),
+                        issuerPublicKey: try decoder.decode(.issuerPublicKey),
+                        signingMethods: try decoder.decode(.signingMethod),
+                        securityDelay: try decoder.decode(.pauseBeforePin2),
                         health: try decoder.decodeOptional(.health),
                         terminalIsLinked: try decoder.decode(.isLinked),
                         cardData: try deserializeCardData(tlv: tlv),
-                        walletsCount: try decoder.decodeOptional(.walletsCount) ?? 1,
-                        fwVersion: try decoder.decodeOptional(.firmwareVersion),
-                        defaultCurve: try decoder.decodeOptional(.curveId),
-                        remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures))
+                        maxWalletsCount: try decoder.decodeOptional(.walletsCount) ?? 1,
+                        defaultCurve: try decoder.decode(.curveId),
+                        remainingSignatures: try decoder.decodeOptional(.walletRemainingSignatures),
+                        firmware: try decoder.decode(.firmwareVersion))
         
         if card.firmwareVersion >= .pin2IsDefaultAvailable {
 			card.pin2IsDefault = try decoder.decode(.pin2IsDefault)
 		}
         
-        if card.firmwareVersion < .multiwalletAvailable,
-           status != .purged, let curve = card.defaultCurve {
+        if card.firmwareVersion < .multiwalletAvailable {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let wallet = CardWallet(index: 0,
-                                    curve: curve,
-                                    settingsMask: card.settingsMask?.toWalletSettingsMask(),
+                                    curve: card.defaultCurve,
+                                    settingsMask: card.settingsMask.toWalletSettingsMask(),
                                     publicKey: try decoder.decode(.walletPublicKey),
                                     totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
                                     remainingSignatures: card.remainingSignatures)
@@ -63,18 +62,18 @@ struct CardDeserializer {
 		return card
 	}
 	
-	static private func deserializeCardData(tlv: [Tlv]) throws -> CardData? {
+	static private func deserializeCardData(tlv: [Tlv]) throws -> CardData {
 		guard let cardDataValue = tlv.value(for: .cardData),
 			let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-				return nil
+                throw TangemSdkError.deserializeApduFailed
 		}
 		
 		let decoder = TlvDecoder(tlv: cardDataTlv)
 		let cardData = CardData(
-			batchId: try decoder.decodeOptional(.batchId),
-			manufactureDateTime: try decoder.decodeOptional(.manufactureDateTime),
-			issuerName: try decoder.decodeOptional(.issuerName),
-			blockchainName: try decoder.decodeOptional(.blockchainName),
+			batchId: try decoder.decode(.batchId),
+			manufactureDateTime: try decoder.decode(.manufactureDateTime),
+			issuerName: try decoder.decode(.issuerName),
+			blockchainName: try decoder.decode(.blockchainName),
 			manufacturerSignature: try decoder.decodeOptional(.cardIDManufacturerSignature),
 			productMask: try decoder.decodeOptional(.productMask),
 			tokenSymbol: try decoder.decodeOptional(.tokenSymbol),

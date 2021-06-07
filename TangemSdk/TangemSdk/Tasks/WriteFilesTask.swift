@@ -60,16 +60,13 @@ public final class WriteFilesTask: CardSessionRunnable {
 	}
 	
 	private func writeFile(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		guard
-			let card = session.environment.card,
-			let cardId = card.cardId
-			else {
+		guard let card = session.environment.card else {
 			completion(.failure(.cardError))
 			return
 		}
         
 		guard currentFileIndex < files.count else {
-			completion(.success(.init(cardId: cardId, filesIndices: savedFilesIndices)))
+			completion(.success(.init(cardId: card.cardId, filesIndices: savedFilesIndices)))
 			return
 		}
 		WriteFileCommand(dataToWrite: files[currentFileIndex])

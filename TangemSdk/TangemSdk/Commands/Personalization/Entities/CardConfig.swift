@@ -7,11 +7,6 @@
 //
 
 import Foundation
-
-
-//“{\“issuerName\“:\“TANGEM SDK\“,\“acquirerName\“:\“Smart Cash\“,\“series\“:\“BB\“,\“startNumber\“:300000000000,\“count\“:0,\“pin\“:[145,180,209,66,130,63,125,32,197,240,141,246,145,34,222,67,243,95,5,122,152,141,150,25,246,211,19,132,133,201,162,3],\“pin2\“:[42,201,166,116,106,202,84,58,248,223,243,152,148,207,232,23,58,251,162,30,176,28,111,174,51,213,41,71,34,40,85,239],\“pin3\“:[227,176,196,66,152,252,28,20,154,251,244,200,153,111,185,36,39,174,65,228,100,155,147,76,164,149,153,27,120,82,184,85],\“hexCrExKey\“:\“00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA998877665544332211000000111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFF\“,\“cvc\“:\“000\“,\“pauseBeforePin2\“:5000,\“smartSecurityDelay\“:true,\“curveID\“:\“secp256k1\“,\“signingMethods\“:{\“rawValue\“:0},\“maxSignatures\“:999999,\“isReusable\“:true,\“allowSetPIN1\“:null,\“allowSetPIN2\“:null,\“useActivation\“:false,\“useCvc\“:null,\“useNDEF\“:true,\“useDynamicNDEF\“:true,\“useOneCommandAtTime\“:false,\“useBlock\“:false,\“allowSelectBlockchain\“:false,\“prohibitPurgeWallet\“:null,\“allowUnencrypted\“:null,\“allowFastEncryption\“:null,\“protectIssuerDataAgainstReplay\“:false,\“prohibitDefaultPIN1\“:null,\“disablePrecomputedNDEF\“:false,\“skipSecurityDelayIfValidatedByIssuer\“:true,\“skipCheckPIN2CVCIfValidatedByIssuer\“:null,\“skipSecurityDelayIfValidatedByLinkedTerminal\“:true,\“restrictOverwriteIssuerExtraData\“:null,\“requireTerminalTxSignature\“:false,\“requireTerminalCertSignature\“:false,\“checkPIN3OnCard\“:null,\“createWallet\“:true,\“cardData\“:{\“issuerName\“:\“TANGEM SDK\“,\“batchId\“:\“FFFF\“,\“blockchainName\“:\“ETH\“,\“manufactureDateTime\“:\“2020-10-05\“,\“productMask\“:{\“rawValue\“:1}},\“ndefRecords\“:[{\“type\“:\“AAR\“,\“value\“:\“com.tangem.wallet\“},{\“type\“:\“URI\“,\“value\“:\“https://tangem.com\“}]}”
-
-
 /**
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
@@ -54,9 +49,9 @@ public struct CardConfig: JSONStringConvertible {
     
     let restrictOverwriteIssuerExtraData: Bool
     
-    let requireTerminalTxSignature: Bool
-    let requireTerminalCertSignature: Bool
-    let checkPIN3OnCard: Bool
+    let disableIssuerData: Bool
+    let disableUserData: Bool
+    let disableFiles: Bool
     
     let createWallet: Bool
     
@@ -118,9 +113,9 @@ public struct CardConfig: JSONStringConvertible {
         skipCheckPIN2CVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2CVCIfValidatedByIssuer)
         skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
         restrictOverwriteIssuerExtraData = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerExtraData)
-        requireTerminalTxSignature = try values.decode(Bool.self, forKey: .requireTerminalTxSignature)
-        requireTerminalCertSignature = try values.decode(Bool.self, forKey: .requireTerminalCertSignature)
-        checkPIN3OnCard = try values.decode(Bool.self, forKey: .checkPIN3OnCard)
+        disableIssuerData = try values.decode(Bool.self, forKey: .disableIssuerData)
+        disableUserData = try values.decode(Bool.self, forKey: .disableUserData)
+        disableFiles = try values.decode(Bool.self, forKey: .disableFiles)
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
@@ -194,14 +189,14 @@ public struct CardConfig: JSONStringConvertible {
         if restrictOverwriteIssuerExtraData {
             builder.add(.restrictOverwriteIssuerExtraData)
         }
-        if requireTerminalTxSignature {
-            builder.add(.requireTermTxSignature)
+        if disableIssuerData {
+            builder.add(.disableIssuerData)
         }
-        if requireTerminalCertSignature {
-            builder.add(.requireTermCertSignature)
+        if disableUserData {
+            builder.add(.disableUserData)
         }
-        if checkPIN3OnCard {
-            builder.add(.checkPIN3OnCard)
+        if disableFiles {
+            builder.add(.disableFiles)
         }
         return builder.build()
     }

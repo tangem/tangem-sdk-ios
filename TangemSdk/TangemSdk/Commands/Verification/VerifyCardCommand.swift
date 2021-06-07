@@ -69,18 +69,6 @@ public class VerifyCardCommand: Command {
         Log.debug("VerifyCardCommand deinit")
     }
     
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status == .notPersonalized {
-            return .notPersonalized
-        }
-        
-        if card.isActivated {
-            return .notActivated
-        }
-        
-        return nil
-    }
-    
     public func run(in session: CardSession, completion: @escaping CompletionResult<VerifyCardResponse>) {
         if challenge == nil {
             do {

@@ -36,13 +36,11 @@ public final class ReadFileChecksumCommand: Command {
 	}
 	
 	func performPreCheck(_ card: Card) -> TangemSdkError? {
-		guard card.status == CardStatus.notPersonalized else { return nil }
-		
 		if card.firmwareVersion < .filesAvailable {
 			return .notSupportedFirmwareVersion
 		}
 		
-		return .notPersonalized
+		return nil
 	}
 	
 	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {

@@ -49,10 +49,6 @@ public final class ReadFileCommand: Command {
 			return .notSupportedFirmwareVersion
 		}
 		
-		if card.status == CardStatus.notPersonalized {
-			return .notPersonalized
-		}
-		
 		return nil
 	}
     

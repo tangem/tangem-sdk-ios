@@ -57,18 +57,6 @@ public final class SignCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        guard card.status != .notPersonalized else {
-            return .notPersonalized
-        }
-        
-        if card.isActivated {
-            return .notActivated
-        }
-        
-        if card.isPurged {
-            return .walletIsPurged
-        }
-
         guard let wallet = card.wallets[walletPublicKey] else {
             return .walletNotFound
         }

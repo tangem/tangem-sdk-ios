@@ -37,6 +37,7 @@ public final class PreflightReadTask {
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
         Log.debug("=========================== Perform preflight check with settings: \(readMode) ======================")
         ReadCommand().run(in: session) { (result) in
+            Log.debug(session.environment.card!)
             switch result {
             case .success(let readResponse):
                 self.finalizeRead(in: session, with: readResponse, completion: completion)

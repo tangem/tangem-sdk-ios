@@ -56,10 +56,6 @@ public final class ReadIssuerDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if let status = card.status, status == .notPersonalized {
-            return .notPersonalized
-        }
-        
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuerPublicKey
         }

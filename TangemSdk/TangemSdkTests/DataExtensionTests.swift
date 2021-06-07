@@ -61,14 +61,14 @@ class DataExtensionTests: XCTestCase {
     
     func testToHexConversion() {
         let testData = Data([UInt8(0x07),UInt8(0xE2),UInt8(0x07),UInt8(0x1B)])
-        let hex = testData.hexString()
+        let hex = testData.hexString
         XCTAssertEqual(hex, "07E2071B")
     }
     
     func testToUtf8Conversion() {
         let testData = Data(hexString: "736563703235366B3100")
         let testString = "secp256k1"
-        let converted = testData.asUtf8String()
+        let converted = testData.utf8String
         XCTAssertNotNil(converted)
         XCTAssertEqual(converted!, testString)
     }

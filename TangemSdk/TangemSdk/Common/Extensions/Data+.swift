@@ -11,16 +11,16 @@ import CryptoKit
 import CommonCrypto
 
 extension Data {
-    public var description: String {
-        return asHexString()
-    }
-    
-    public func asHexString() -> String {
+    public var hexString: String {
         return self.map { return String(format: "%02X", $0) }.joined()
     }
     
-    public func toUtf8String() -> String? {
+    public var utf8String: String? {
         return String(bytes: self, encoding: .utf8)?.remove("\0")
+    }
+    
+    public var description: String {
+        return hexString
     }
     
     public func toInt() -> Int {

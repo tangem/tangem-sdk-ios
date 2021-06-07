@@ -75,7 +75,7 @@ extension AppModel {
         let hash = getRandomHash()
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
-        tangemSdk.sign(hash: hash, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.asHexString())")) { [unowned self] result in
+        tangemSdk.sign(hash: hash, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)")) { [unowned self] result in
             switch result {
             case .success(let signResponse):
                 self.log(signResponse)
@@ -89,7 +89,7 @@ extension AppModel {
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
-        tangemSdk.sign(hashes: hashes, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.asHexString())")) { [unowned self] result in
+        tangemSdk.sign(hashes: hashes, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)")) { [unowned self] result in
             switch result {
             case .success(let signResponse):
                 self.log(signResponse)
@@ -446,7 +446,7 @@ extension AppModel {
             case .success(let issuerDataResponse):
                 self.issuerExtraDataResponse = issuerDataResponse
                 self.log(issuerDataResponse)
-                print(issuerDataResponse.issuerData.asHexString())
+                print(issuerDataResponse.issuerData)
             case .failure(let error):
                 self.handle(error)
             //handle completion. Unlock UI, etc.

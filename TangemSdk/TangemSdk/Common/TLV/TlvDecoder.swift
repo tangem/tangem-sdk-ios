@@ -89,12 +89,12 @@ public final class TlvDecoder {
         switch tag.valueType {
         case .hexString:
             try typeCheck(String.self, T.self, for: tag)
-            let hexString = tagValue.asHexString()
+            let hexString = tagValue.hexString
             return hexString as! T
         case .utf8String:
             try typeCheck(String.self, T.self, for: tag)
             
-            guard let utfValue = tagValue.toUtf8String() else {
+            guard let utfValue = tagValue.utf8String else {
                 throw TangemSdkError.decodingFailed("Decoding error. Failed to convert \(tag) to utf8 string")
             }
             
@@ -108,7 +108,7 @@ public final class TlvDecoder {
             return tagValue as! T
         case .ellipticCurve:
             try typeCheck(EllipticCurve.self, T.self, for: tag)
-            guard let utfValue = tagValue.toUtf8String(),
+            guard let utfValue = tagValue.utf8String,
                   let curve = EllipticCurve(rawValue: utfValue) else {
                 throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to utfValue and curve")
             }

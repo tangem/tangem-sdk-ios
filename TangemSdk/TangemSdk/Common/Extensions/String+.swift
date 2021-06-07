@@ -56,10 +56,10 @@ public extension String {
 
 extension DefaultStringInterpolation {
     mutating func appendInterpolation(_ data: Data) {
-        appendLiteral(data.asHexString())
+        appendLiteral(data.hexString)
     }
     
     mutating func appendInterpolation(_ byte: Byte) {
-        appendLiteral(byte.asHexString())
+        appendLiteral(byte.hexString)
     }
 }

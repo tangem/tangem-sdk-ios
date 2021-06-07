@@ -37,9 +37,9 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	public static let skipCheckPIN2CVCIfValidatedByIssuer = SettingsMask(rawValue: 0x00040000)
 	public static let skipSecurityDelayIfValidatedByLinkedTerminal = SettingsMask(rawValue: 0x00080000)
 	public static let restrictOverwriteIssuerExtraData = SettingsMask(rawValue: 0x00100000)
-	public static let requireTermTxSignature = SettingsMask(rawValue: 0x01000000)
-	public static let requireTermCertSignature = SettingsMask(rawValue: 0x02000000)
-	public static let checkPIN3OnCard = SettingsMask(rawValue: 0x04000000) //todo remove
+	public static let disableIssuerData = SettingsMask(rawValue: 0x01000000)
+	public static let disableUserData = SettingsMask(rawValue: 0x02000000)
+	public static let disableFiles = SettingsMask(rawValue: 0x04000000)
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
@@ -113,14 +113,14 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 		if stringValues.contains("RestrictOverwriteIssuerExtraData") {
 			mask.update(with: SettingsMask.restrictOverwriteIssuerExtraData)
 		}
-		if stringValues.contains("RequireTermTxSignature") {
-			mask.update(with: SettingsMask.requireTermTxSignature)
+		if stringValues.contains("DisableIssuerData") {
+			mask.update(with: SettingsMask.disableIssuerData)
 		}
-		if stringValues.contains("RequireTermCertSignature") {
-			mask.update(with: SettingsMask.requireTermCertSignature)
+		if stringValues.contains("DisableUserData") {
+			mask.update(with: SettingsMask.disableUserData)
 		}
-		if stringValues.contains("CheckPIN3OnCard") {
-			mask.update(with: SettingsMask.checkPIN3OnCard)
+		if stringValues.contains("DisableFiles") {
+			mask.update(with: SettingsMask.disableFiles)
 		}
 		
 		self = mask
@@ -191,14 +191,14 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
         if contains(SettingsMask.restrictOverwriteIssuerExtraData) {
             values.append("RestrictOverwriteIssuerExtraData")
         }
-        if contains(SettingsMask.requireTermTxSignature) {
-            values.append("RequireTermTxSignature")
+        if contains(SettingsMask.disableIssuerData) {
+            values.append("DisableIssuerData")
         }
-        if contains(SettingsMask.requireTermCertSignature) {
-            values.append("RequireTermCertSignature")
+        if contains(SettingsMask.disableUserData) {
+            values.append("DisableUserData")
         }
-        if contains(SettingsMask.checkPIN3OnCard) {
-            values.append("CheckPIN3OnCard")
+        if contains(SettingsMask.disableFiles) {
+            values.append("DisableFiles")
         }
         return values
     }

@@ -32,7 +32,7 @@ public final class PurgeWalletCommand: Command {
             return .walletNotFound
         }
         
-        if let settingsMask = wallet.settingsMask, settingsMask.contains(.isReadOnly) {
+        if wallet.settingsMask.contains(.isReadOnly) {
             return .purgeWalletProhibited
         }
         

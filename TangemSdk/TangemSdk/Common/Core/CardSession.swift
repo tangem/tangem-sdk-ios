@@ -336,13 +336,11 @@ public class CardSession {
             switch readResult {
             case .success(let readResponse):
                 var wrongCardError: TangemSdkError? = nil
+                let actualCardId = readResponse.cardId.uppercased()
                 
                 if let expectedCardId = self.cardId?.uppercased(),
-                   let actualCardId = readResponse.cardId?.uppercased() {
-                    
-                    if expectedCardId != actualCardId {
-                        wrongCardError = .wrongCardNumber
-                    }
+                   expectedCardId != actualCardId {
+                    wrongCardError = .wrongCardNumber
                 }
                 
                 if !self.environment.allowedCardTypes.contains(readResponse.cardType) {

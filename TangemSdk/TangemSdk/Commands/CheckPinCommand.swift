@@ -13,9 +13,6 @@ public struct CheckPinResponse: JSONStringConvertible {
     public let isPin2Default: Bool
 }
 
-//todo: use set pin command? or another response from setpin
-public struct CheckPinResponseInt: JSONStringConvertible {}
-
 public final class CheckPinCommand: Command {
     public typealias Response = CheckPinResponse
     public var requiresPin2: Bool { true }
@@ -29,11 +26,13 @@ public final class CheckPinCommand: Command {
     public func run(in session: CardSession, completion: @escaping CompletionResult<CheckPinResponse>) {
         transieve(in: session) { result in
             switch result {
-            case .success(let response):
-                completion(.success(response))
+            case .success:
+                completion(.success(CheckPinResponse(isPin1Default: session.environment.pin1.isDefault,
+                                                     isPin2Default: session.environment.pin2.isDefault)))
             case .failure(let error):
                 if case .invalidParams = error {
-                    completion(.success(CheckPinResponse(isPin1Default: session.environment.pin1.isDefault, isPin2Default: false)))
+                    completion(.success(CheckPinResponse(isPin1Default: session.environment.pin1.isDefault,
+                                                         isPin2Default: false)))
                 } else {
                     completion(.failure(error))
                 }
@@ -56,11 +55,18 @@ public final class CheckPinCommand: Command {
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CheckPinResponse {
-        guard let _ = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SetPinResponse {
+        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
-
-        return CheckPinResponse(isPin1Default: environment.pin1.isDefault, isPin2Default: environment.pin2.isDefault)
+        
+        guard let status = SetPinStatus.fromStatusWord(apdu.statusWord) else {
+            throw TangemSdkError.decodingFailed("Failed to parse set pin status")
+        }
+        
+        let decoder = TlvDecoder(tlv: tlv)
+        return SetPinResponse(
+            cardId: try decoder.decode(.cardId),
+            status: status)
     }
 }

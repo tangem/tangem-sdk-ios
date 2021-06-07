@@ -55,9 +55,7 @@ public final class WriteFileCommand: Command {
 			guard let publicKey = dataToWrite.issuerPublicKey else {
 				return .missingIssuerPublicKey
 			}
-			guard
-				let cardId = card.cardId,
-				verifySignatures(publicKey: publicKey, cardId: cardId) else {
+            guard verifySignatures(publicKey: publicKey, cardId: card.cardId) else {
 				return .verificationFailed
 			}
 		}
@@ -66,13 +64,13 @@ public final class WriteFileCommand: Command {
 	}
 	
 	func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-		if case .invalidParams = error,
-		   let card = card,
-		   isCounterRequired(card: card) {
+        guard let card = card else { return error }
+        
+		if case .invalidParams = error, isCounterRequired(card: card) {
 			return .dataCannotBeWritten
 		}
 		
-		if case .invalidState = error, card?.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true {
+		if case .invalidState = error, card.settingsMask.contains(.protectIssuerDataAgainstReplay) {
 			return .overwritingDataIsProhibited
 		}
         
@@ -157,7 +155,7 @@ public final class WriteFileCommand: Command {
 	
 	private func isCounterRequired(card: Card) -> Bool {
 		if dataToWrite.requiredPin2 { return false }
-		return card.settingsMask?.contains(.protectIssuerDataAgainstReplay) ?? true
+		return card.settingsMask.contains(.protectIssuerDataAgainstReplay)
 	}
 	
 	private func verifySignatures(publicKey: Data, cardId: String) -> Bool {

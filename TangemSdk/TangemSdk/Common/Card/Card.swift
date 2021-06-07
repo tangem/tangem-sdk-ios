@@ -29,12 +29,6 @@ public struct Card: JSONStringConvertible {
 	/// User should withdraw the value to other blockchain wallet as soon as possible.
 	/// Non-zero Health tag will also appear in responses of all other commands.
 	public let health: Int?
-	/// Returned only if `SigningMethod.SignPos` enabling POS transactions is supported by card
-    public let paymentFlowVersion: Data? //todo: remove
-	/// This value can be initialized by terminal and will be increased by COS on execution of every `SignCommand`.
-	/// For example, this field can store blockchain “nonce" for quick one-touch transaction on POS terminals.
-	/// Returned only if `SigningMethod.SignPos`  enabling POS transactions is supported by card.
-	public let userCounter: Int? //todo: remove
 	/// When this value is true, it means that the application is linked to the card,
 	/// and COS will not enforce security delay if `SignCommand` will be called
 	/// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data

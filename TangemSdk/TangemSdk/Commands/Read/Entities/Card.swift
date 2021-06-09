@@ -71,8 +71,6 @@ public extension Card {
     }
     
     struct Settings: Codable {
-        /// Defines what data should be submitted to SIGN command.
-        public let signingMethods: SigningMethod
         /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
         public let securityDelay: Int //todo: convert to ms
         /// Card settings defined by personalization (bit mask: 0 – Enabled, 1 – Disabled).

@@ -17,7 +17,7 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
 		self.rawValue = rawValue
 	}
 	
-	public static let isReadOnly = WalletSettingsMask(rawValue: 0x0004)
+	public static let isProhibitPurge = WalletSettingsMask(rawValue: 0x0004)
 	
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
@@ -28,8 +28,8 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
 		let values = try decoder.singleValueContainer()
 		let stringValues = try values.decode([String].self)
 		var mask = WalletSettingsMask()
-		if stringValues.contains("isReadOnly") {
-			mask.update(with: .isReadOnly)
+		if stringValues.contains("isProhibitPurge") {
+			mask.update(with: .isProhibitPurge)
 		}
 		self = mask
 	}
@@ -37,8 +37,8 @@ public struct WalletSettingsMask: Codable, OptionSet, StringArrayConvertible, JS
     func toStringArray() -> [String] {
         var values = [String]()
         
-        if contains(.isReadOnly) {
-            values.append("isReadOnly")
+        if contains(.isProhibitPurge) {
+            values.append("isProhibitPurge")
         }
         return values
     }

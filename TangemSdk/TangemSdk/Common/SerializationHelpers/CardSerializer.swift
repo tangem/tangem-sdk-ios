@@ -48,8 +48,7 @@ struct CardDeserializer {
         let issuer = Card.Issuer(name: try cardDataDecoder.decode(.issuerName),
                                  publicKey: try decoder.decode(.issuerPublicKey))
         
-        let settings = Card.Settings(signingMethods: try decoder.decode(.signingMethod),
-                                     securityDelay: try decoder.decode(.pauseBeforePin2),
+        let settings = Card.Settings(securityDelay: try decoder.decode(.pauseBeforePin2),
                                      mask:  try decoder.decode(.settingsMask),
                                      maxWalletsCount: try decoder.decodeOptional(.walletsCount) ?? 1) //Cos before v4 always has 1 wallet
         
@@ -75,9 +74,10 @@ struct CardDeserializer {
         if card.firmwareVersion < .multiwalletAvailable {
             Log.debug("Read card with firmware lower than 4. Creating single wallet for wallets dict")
             let wallet = CardWallet(index: 0,
+                                    publicKey: try decoder.decode(.walletPublicKey),
                                     curve: defaultCurve,
                                     settingsMask: card.settings.mask.toWalletSettingsMask(),
-                                    publicKey: try decoder.decode(.walletPublicKey),
+                                    signingMethods: try decoder.decode(.signingMethod),
                                     totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
                                     remainingSignatures: card.remainingSignatures)
             card.wallets = [wallet]

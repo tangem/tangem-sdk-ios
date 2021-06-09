@@ -11,9 +11,10 @@ import Foundation
 class CardWalletDeserializer {
     private static func deserialize(from decoder: TlvDecoder) throws -> CardWallet {
         CardWallet(index: try decoder.decode(.walletIndex),
+                   publicKey: try decoder.decode(.walletPublicKey),
                    curve: try decoder.decode(.curveId),
                    settingsMask: try decoder.decode(.settingsMask),
-                   publicKey: try decoder.decode(.walletPublicKey),
+                   signingMethods: try decoder.decode(.signingMethod),
                    totalSignedHashes: try decoder.decode(.walletSignedHashes))
     }
     

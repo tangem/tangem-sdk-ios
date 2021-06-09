@@ -65,8 +65,7 @@ public final class PreflightReadTask {
     private func readWallet(with publicKey: Data, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
         ReadWalletCommand(publicKey: publicKey).run(in: session) { (result) in
             switch result {
-            case .success(let response):
-                session.environment.card?.wallets = [response.wallet]
+            case .success:
                 completion(.success(readResponse))
             case .failure(let error):
                 completion(.failure(error))
@@ -77,8 +76,7 @@ public final class PreflightReadTask {
     private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
         ReadWalletsListCommand().run(in: session) { (result) in
             switch result {
-            case .success(let listResponse):
-                session.environment.card?.wallets = listResponse.wallets.sorted(by: { $0.index < $1.index })
+            case .success:
                 completion(.success(readResponse))
             case .failure(let error):
                 completion(.failure(error))

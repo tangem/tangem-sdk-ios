@@ -9,18 +9,18 @@
 import Foundation
 
 /// Holds information about card firmware version included version saved on card `version`,
-/// splitted to `major`, `minor` and `hotFix` and `FirmwareType`
+/// splitted to `major`, `minor` and `patch` and `FirmwareType`
 public struct FirmwareVersion: Codable, JSONStringConvertible {
 	/// Version that saved on card
 	public let stringValue: String
 	
     public var doubleValue: Double {
-        Double("\(major).\(minor)")!
+        .init("\(major).\(minor)")!
     }
     
 	private(set) public var major: Int = 0
 	private(set) public var minor: Int = 0
-	private(set) public var hotFix: Int = 0
+	private(set) public var patch: Int = 0
 	private(set) public var type: FirmwareType
 	
 	public init(stringValue: String) {
@@ -42,22 +42,22 @@ public struct FirmwareVersion: Codable, JSONStringConvertible {
 			splitted.removeFirst()
 		}
 		
-		if let hotFixStr = splitted.first, let hotFix = Int(hotFixStr) {
-			self.hotFix = hotFix
+		if let patchStr = splitted.first, let patch = Int(patchStr) {
+			self.patch = patch
 		}
 		
 		type = .type(for: cardTypeStr)
 	}
 	
-	public init(major: Int, minor: Int, hotFix: Int = 0, type: FirmwareType = .sdk) {
+	public init(major: Int, minor: Int, patch: Int = 0, type: FirmwareType = .sdk) {
 		self.major = major
 		self.minor = minor
-		self.hotFix = hotFix
+		self.patch = patch
 		self.type = type
 		
-		let hotFixSuffix = ".\(hotFix)"
+		let patchSuffix = ".\(patch)"
 		var version = "\(major).\(minor)"
-		version += hotFix != 0 ? hotFixSuffix : ""
+		version += patch != 0 ? patchSuffix : ""
 		version += type.rawValue
 		
 		self.stringValue = version
@@ -71,12 +71,12 @@ extension FirmwareVersion: Comparable {
 		} else if lhs.minor != rhs.minor {
 			return lhs.minor < rhs.minor
 		} else {
-			return lhs.hotFix < rhs.hotFix
+			return lhs.patch < rhs.patch
 		}
 	}
 	
 	public static func == (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
-		lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.hotFix == rhs.hotFix
+		lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
 	}
 	
 	public static func >= (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
@@ -85,7 +85,7 @@ extension FirmwareVersion: Comparable {
 		} else if lhs.minor != rhs.minor {
 			return lhs.minor > rhs.minor
 		} else {
-			return lhs.hotFix >= rhs.hotFix
+			return lhs.patch >= rhs.patch
 		}
 	}
 	

@@ -133,17 +133,19 @@ public final class CreateWalletCommand: Command {
 //        guard let curve = config?.curve ?? environment.card?.defaultCurve else { //todo: refactor later
 //            throw TangemSdkError.unknownError
 //        }
+        fatalError("Implement mandatory default params")
         let curve = config!.curve!
-        fatalError("Implement mandatory curve")
+        let method = config!.signingMethods!
         
         guard let settings = environment.card?.settings.mask.toWalletSettingsMask() else {
             throw TangemSdkError.unknownError
         }
         
         let wallet = CardWallet(index: index,
+                                publicKey: try decoder.decode(.walletPublicKey),
                                 curve: curve,
                                 settingsMask: settings,
-                                publicKey: try decoder.decode(.walletPublicKey),
+                                signingMethods: method,
                                 totalSignedHashes: 0,
                                 remainingSignatures: environment.card?.remainingSignatures)
         

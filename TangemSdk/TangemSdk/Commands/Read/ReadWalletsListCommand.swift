@@ -8,14 +8,14 @@
 
 import Foundation
 
-public struct ReadWalletsListResponse: JSONStringConvertible {
-    public let cardId: String
-    public let wallets: [CardWallet]
+struct ReadWalletsListResponse: JSONStringConvertible {
+    let cardId: String
+    let wallets: [CardWallet]
 }
 
 /// Read all wallets on card.
-public class ReadWalletsListCommand: Command {
-    public var preflightReadMode: PreflightReadMode { .readCardOnly }
+class ReadWalletsListCommand: Command {
+    var preflightReadMode: PreflightReadMode { .readCardOnly }
     
     private var walletIndex: Int?
     private var loadedWallets: [CardWallet] = []
@@ -26,7 +26,7 @@ public class ReadWalletsListCommand: Command {
         Log.debug("ReadWalletsListCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
         transieve(in: session) { result in
             switch result {
             case .success(let response):
@@ -38,11 +38,13 @@ public class ReadWalletsListCommand: Command {
                     return
                 }
                 
-                guard loadedWalletsCount == session.environment.card?.maxWalletsCount else {
+                guard loadedWalletsCount == session.environment.card?.settings.maxWalletsCount else {
                     self.walletIndex = loadedWalletsCount
                     self.run(in: session, completion: completion)
                     return
                 }
+                
+                session.environment.card?.wallets = response.wallets.sorted(by: { $0.index < $1.index })
                 
                 completion(.success(ReadWalletsListResponse(cardId: response.cardId,
                                                        wallets: self.loadedWallets)))

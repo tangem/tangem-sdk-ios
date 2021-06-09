@@ -692,7 +692,9 @@
 				5D86CBDA24A1102D00FB5BA7 /* Issuer.swift */,
 				5D86CBDC24A1105A00FB5BA7 /* Manufacturer.swift */,
 				5D86CBDE24A1109800FB5BA7 /* NdefRecord.swift */,
+				B0A944802565470900A7958E /* CardData.swift */,
 				5D86CBE024A113C900FB5BA7 /* CardConfig.swift */,
+				B0390F8225658F3B0061E5ED /* ProductMask.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -894,16 +896,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		B0390F8A25658F990061E5ED /* Masks */ = {
-			isa = PBXGroup;
-			children = (
-				B0390F7A25658EEE0061E5ED /* SettingsMask.swift */,
-				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
-				B0390F8225658F3B0061E5ED /* ProductMask.swift */,
-			);
-			path = Masks;
-			sourceTree = "<group>";
-		};
 		B0800F87252C4508007E04EE /* Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -933,10 +925,9 @@
 		B0A9436525651E2600A7958E /* Card */ = {
 			isa = PBXGroup;
 			children = (
-				B0390F8A25658F990061E5ED /* Masks */,
 				B0A9447A256546DE00A7958E /* Card.swift */,
+				B0390F7A25658EEE0061E5ED /* SettingsMask.swift */,
 				B0390F8D25658FE80061E5ED /* CardStatus.swift */,
-				B0A944802565470900A7958E /* CardData.swift */,
 				B0A9448425654BBC00A7958E /* FirmwareVersion.swift */,
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
@@ -959,6 +950,7 @@
 			isa = PBXGroup;
 			children = (
 				B0EC64FA26010FFD0088F03D /* CardWallet.swift */,
+				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
 				B00BC5BD260B5CA600F0647D /* WalletStatus.swift */,
 				5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */,
 				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,

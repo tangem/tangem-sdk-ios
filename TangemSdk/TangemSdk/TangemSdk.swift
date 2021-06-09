@@ -97,7 +97,7 @@ public final class TangemSdk {
     ///   - walletPublicKey: Public key of wallet that should sign hash.
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns  `Swift.Result<SignResponse,TangemSdkError>`
+    ///   - completion: Returns  `Swift.Result<Data,TangemSdkError>`
     public func sign(hash: Data,
                      walletPublicKey: Data,
                      cardId: String? = nil,

@@ -15,14 +15,12 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	public init(rawValue: Int) {
 		self.rawValue = rawValue
 	}
-	
-	public static let isReusable = SettingsMask(rawValue: 0x0001) //todo remove
+    
 	public static let useActivation = SettingsMask(rawValue: 0x0002)
-	public static let prohibitPurgeWallet = SettingsMask(rawValue: 0x0004) //todo remove
 	public static let useBlock = SettingsMask(rawValue: 0x0008)
 	public static let allowSetPIN1 = SettingsMask(rawValue: 0x0010)
 	public static let allowSetPIN2 = SettingsMask(rawValue: 0x0020)
-	public static let useCvc = SettingsMask(rawValue: 0x0040) //todo remove
+	public static let useCvc = SettingsMask(rawValue: 0x0040)
 	public static let prohibitDefaultPIN1 = SettingsMask(rawValue: 0x0080)
 	public static let useOneCommandAtTime = SettingsMask(rawValue: 0x0100)
 	public static let useNDEF = SettingsMask(rawValue: 0x0200)
@@ -41,6 +39,9 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	public static let disableUserData = SettingsMask(rawValue: 0x02000000)
 	public static let disableFiles = SettingsMask(rawValue: 0x04000000)
 	
+    static let isReusable = SettingsMask(rawValue: 0x0001)
+    static let prohibitPurgeWallet = SettingsMask(rawValue: 0x0004)
+    
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.singleValueContainer()
 		try container.encode(toStringArray())
@@ -50,14 +51,9 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 		let values = try decoder.singleValueContainer()
 		let stringValues = try values.decode([String].self)
 		var mask = SettingsMask()
-		if stringValues.contains("IsReusable") {
-			mask.update(with: SettingsMask.isReusable)
-		}
+		
 		if stringValues.contains("UseActivation") {
 			mask.update(with: SettingsMask.useActivation)
-		}
-		if stringValues.contains("ProhibitPurgeWallet") {
-			mask.update(with: SettingsMask.prohibitPurgeWallet)
 		}
 		if stringValues.contains("UseBlock") {
 			mask.update(with: SettingsMask.useBlock)
@@ -128,14 +124,8 @@ public struct SettingsMask: OptionSet, Codable, StringArrayConvertible, JSONStri
 	
     func toStringArray() -> [String] {
         var values = [String]()
-        if contains(SettingsMask.isReusable) {
-            values.append("IsReusable")
-        }
         if contains(SettingsMask.useActivation) {
             values.append("UseActivation")
-        }
-        if contains(SettingsMask.prohibitPurgeWallet) {
-            values.append("ProhibitPurgeWallet")
         }
         if contains(SettingsMask.useBlock) {
             values.append("UseBlock")

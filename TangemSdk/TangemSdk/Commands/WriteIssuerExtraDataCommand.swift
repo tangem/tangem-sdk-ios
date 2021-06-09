@@ -13,7 +13,7 @@ import Foundation
  * The issuer defines purpose of use, format and payload of Issuer Data.
  * For example, this field may contain a photo or biometric information for ID card products.
  */
-@available(*, deprecated, message: "Use files instead")
+@available(*, deprecated, message: "Use files instead") //todo: text
 public final class WriteIssuerExtraDataCommand: Command {
     public typealias Response = SuccessResponse
     
@@ -54,7 +54,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if issuerPublicKey == nil {
-            issuerPublicKey = card.issuerPublicKey
+            issuerPublicKey = card.issuer.publicKey
         }
         
         if issuerPublicKey == nil  {
@@ -65,7 +65,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .extendedDataSizeTooLarge
         }
         
-        if card.settingsMask.contains(.protectIssuerDataAgainstReplay)
+        if card.settings.mask.contains(.protectIssuerDataAgainstReplay)
             && issuerDataCounter == nil {
             return .missingCounter
         }
@@ -88,7 +88,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay) {
+        if let settingsMask = card?.settings.mask, settingsMask.contains(.protectIssuerDataAgainstReplay) {
             
             if case .invalidParams = error {
                 return .dataCannotBeWritten

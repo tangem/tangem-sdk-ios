@@ -62,7 +62,7 @@ struct ContentView: View {
                             VStack {
                                 Button("Create wallet with config", action: model.createWallet)
                                 
-                                Toggle("ReadOnly wallet", isOn: $model.isWalletReadOnly)
+                                Toggle("Prohibit purge wallet", isOn: $model.isProhibitPurgeWallet)
                                 
                                 Picker("", selection: $model.curve) {
                                     ForEach(0..<EllipticCurve.allCases.count) { index in

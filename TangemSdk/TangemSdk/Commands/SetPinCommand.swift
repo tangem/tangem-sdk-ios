@@ -43,7 +43,7 @@ public class SetPinCommand: Command {
     ///   - pinType: Pin to change
     ///   - pin: If nil, pin will be requested automatically
     ///   - isExclusive: Reset other pin codes to the default values
-    public convenience init(pinType: PinCode.PinType, pin: Data? = nil, isExclusive: Bool = false) {
+    public convenience init(pinType: PinCode.PinType, pin: Data? = nil, isExclusive: Bool = false) { //todo: string
         switch pinType {
         case .pin1:
             self.init(newPin1: pin,

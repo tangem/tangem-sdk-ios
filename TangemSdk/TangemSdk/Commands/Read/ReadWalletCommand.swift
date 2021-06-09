@@ -30,7 +30,15 @@ class ReadWalletCommand: Command {
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletResponse>) {
         Log.debug("Attempt to read wallet with key: \(walletPublicKey)")
-        transieve(in: session, completion: completion)
+        transieve(in: session) { result in
+            switch result {
+            case .success(let response):
+                session.environment.card?.wallets = [response.wallet]
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

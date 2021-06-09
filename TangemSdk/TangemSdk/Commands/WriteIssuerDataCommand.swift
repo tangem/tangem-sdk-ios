@@ -56,7 +56,7 @@ public final class WriteIssuerDataCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if issuerPublicKey == nil {
-            issuerPublicKey = card.issuerPublicKey
+            issuerPublicKey = card.issuer.publicKey
         }
         
         if issuerPublicKey == nil  {
@@ -67,7 +67,7 @@ public final class WriteIssuerDataCommand: Command {
             return .dataSizeTooLarge
         }
         
-        if card.settingsMask.contains(.protectIssuerDataAgainstReplay)
+        if card.settings.mask.contains(.protectIssuerDataAgainstReplay)
             && issuerDataCounter == nil {
             return .missingCounter
         }
@@ -80,7 +80,7 @@ public final class WriteIssuerDataCommand: Command {
     }
         
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if let settingsMask = card?.settingsMask, settingsMask.contains(.protectIssuerDataAgainstReplay),
+        if let card = card, card.settings.mask.contains(.protectIssuerDataAgainstReplay),
             case .invalidParams = error {
             return .dataCannotBeWritten
         }

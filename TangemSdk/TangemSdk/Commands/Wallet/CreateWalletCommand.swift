@@ -46,7 +46,7 @@ public final class CreateWalletCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion >= .multiwalletAvailable,
-           !card.settingsMask.contains(.allowSelectBlockchain) {
+           !card.settings.mask.contains(.allowSelectBlockchain) {
             return .walletCannotBeCreated
         }
         
@@ -64,10 +64,10 @@ public final class CreateWalletCommand: Command {
             self.config = nil
         }
         
-        let maxIndex = card.maxWalletsCount
-        let busyIndexes = card.wallets.map { $0.index }
+        let maxIndex = card.settings.maxWalletsCount
+        let occupiedIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex
-        if let firstAvailableIndex = allIndexes.filter({ !busyIndexes.contains($0) }).sorted().first {
+        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
             self.walletIndex = firstAvailableIndex
         } else {
             //already created for old cards mostly
@@ -130,11 +130,13 @@ public final class CreateWalletCommand: Command {
         
         let index = try decoder.decodeOptional(.walletIndex) ?? walletIndex!
         
-        guard let curve = config?.curve ?? environment.card?.defaultCurve else {
-            throw TangemSdkError.unknownError
-        }
+//        guard let curve = config?.curve ?? environment.card?.defaultCurve else { //todo: refactor later
+//            throw TangemSdkError.unknownError
+//        }
+        let curve = config!.curve!
+        fatalError("Implement mandatory curve")
         
-        guard let settings = environment.card?.settingsMask.toWalletSettingsMask() else {
+        guard let settings = environment.card?.settings.mask.toWalletSettingsMask() else {
             throw TangemSdkError.unknownError
         }
         

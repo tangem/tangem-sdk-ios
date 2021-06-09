@@ -37,7 +37,7 @@ public struct Config {
     
 
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
-    public var allowedCardTypes: [FirmwareType] = [.sdk, .release, .special]
+    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = FirmwareVersion.FirmwareType.allCases
 
     public var handleErrors: Bool = true
 

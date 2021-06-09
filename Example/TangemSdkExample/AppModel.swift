@@ -12,7 +12,7 @@ import TangemSdk
 
 class AppModel: ObservableObject {
     // Inputs
-    @Published var isWalletReadOnly: Bool = false
+    @Published var isProhibitPurgeWallet: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
     
     // Outputs
@@ -100,7 +100,7 @@ extension AppModel {
     }
     
     func createWallet() {
-        let walletConfig = WalletConfig(isReadOnly: isWalletReadOnly,
+        let walletConfig = WalletConfig(isProhibitPurge: isProhibitPurgeWallet,
                                         curve: curve,
                                         signingMethods: .signHash)
 

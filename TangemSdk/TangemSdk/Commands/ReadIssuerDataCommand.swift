@@ -57,7 +57,7 @@ public final class ReadIssuerDataCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if issuerPublicKey == nil {
-            issuerPublicKey = card.issuerPublicKey
+            issuerPublicKey = card.issuer.publicKey
         }
         
         if issuerPublicKey == nil {

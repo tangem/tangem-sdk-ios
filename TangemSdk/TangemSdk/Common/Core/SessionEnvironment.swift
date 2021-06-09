@@ -77,11 +77,11 @@ public struct SessionEnvironment {
     
     public var encryptionKey: Data? = nil
     
-    public var cvc: Data? = nil
+    public var cvc: Data? = nil //todo: remove
     
     var legacyMode: Bool = true
     
-    public var allowedCardTypes: [FirmwareType] = [.sdk, .release, .special]
+    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = FirmwareVersion.FirmwareType.allCases
     
     public var handleErrors: Bool = true
     

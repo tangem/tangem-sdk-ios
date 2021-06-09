@@ -67,11 +67,11 @@ public final class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if !card.signingMethods.contains(.signHash) {
+        if !card.settings.signingMethods.contains(.signHash) {
             return .signHashesNotAvailable
         }
         
-        if card.firmwareVersionValue < 2.28, card.securityDelay > 1500 {
+        if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 1500 {
             return .oldCard
         }
         
@@ -89,10 +89,14 @@ public final class SignCommand: Command {
             return
         }
         
-        let isLinkedTerminalSupported = session.environment.card?.isLinkedTerminalSupported ?? false
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+       
+        let isLinkedTerminalSupported = card.settings.mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
         let hasTerminalKeys = session.environment.terminalKeys != nil
-        let delay = session.environment.card?.securityDelay ?? 3000
-        let hasEnoughDelay = (delay * numberOfChunks) <= 5000
+        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 5000
         guard hashes.count <= chunkSize || (isLinkedTerminalSupported && hasTerminalKeys) || hasEnoughDelay else {
             completion(.failure(.tooManyHashesInOneTransaction))
             return
@@ -159,7 +163,8 @@ public final class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        let isLinkedTerminalSupported = environment.card?.isLinkedTerminalSupported ?? false
+        let isLinkedTerminalSupported = environment.card?.settings.mask
+            .contains(.skipSecurityDelayIfValidatedByLinkedTerminal)  ?? false
         if let keys = environment.terminalKeys, isLinkedTerminalSupported,
             let signedData = Secp256k1Utils.sign(flattenHashes, with: keys.privateKey) {
             try tlvBuilder

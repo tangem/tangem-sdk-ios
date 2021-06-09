@@ -343,7 +343,7 @@ public class CardSession {
                     wrongCardError = .wrongCardNumber
                 }
                 
-                if !self.environment.allowedCardTypes.contains(readResponse.cardType) {
+                if !self.environment.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
                     wrongCardError = .wrongCardType
                 }
                 

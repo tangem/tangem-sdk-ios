@@ -510,6 +510,17 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		5D6508212670D58A00A8D45B /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				B0EC64FA26010FFD0088F03D /* CardWallet.swift */,
+				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
+				B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */,
+				B00BC5BD260B5CA600F0647D /* WalletStatus.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		5D6A92D52344E2B400158457 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
@@ -523,10 +534,10 @@
 			isa = PBXGroup;
 			children = (
 				B0BAEECF25FFA07900F318A6 /* Read */,
-				B0BD1C8E255E58BE00119D82 /* Wallet */,
 				B0800F87252C4508007E04EE /* Files */,
 				5D3F77B424B9B8E700E8695B /* Verification */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
+				B0BD1C8E255E58BE00119D82 /* Wallet */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E42345F2B200158457 /* SignCommand.swift */,
 				5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */,
@@ -812,7 +823,6 @@
 				5D650820266E387C00A8D45B /* Core */,
 				5D65081F266E37E100A8D45B /* JSON */,
 				5D0BAAEA25CD87DF00E6A2B6 /* Log */,
-				B0A9436525651E2600A7958E /* Card */,
 				5D2FE06824DDA84F0086B5E8 /* Endpoints */,
 				5DFCE40624B33062007B95AF /* Assets */,
 				5DE59F2723D96F5C00312DA4 /* Services */,
@@ -922,7 +932,7 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		B0A9436525651E2600A7958E /* Card */ = {
+		B0A9436525651E2600A7958E /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				B0A9447A256546DE00A7958E /* Card.swift */,
@@ -932,12 +942,13 @@
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
 			);
-			path = Card;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		B0BAEECF25FFA07900F318A6 /* Read */ = {
 			isa = PBXGroup;
 			children = (
+				B0A9436525651E2600A7958E /* Entities */,
 				B00BC5C7260B82A700F0647D /* ReadMode.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
 				B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */,
@@ -949,13 +960,10 @@
 		B0BD1C8E255E58BE00119D82 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
-				B0EC64FA26010FFD0088F03D /* CardWallet.swift */,
-				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
-				B00BC5BD260B5CA600F0647D /* WalletStatus.swift */,
+				5D6508212670D58A00A8D45B /* Entities */,
 				5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */,
 				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,
 				5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */,
-				B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";

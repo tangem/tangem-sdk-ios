@@ -8,42 +8,25 @@
 
 import Foundation
 
-public enum FirmwareType: String, Codable, CaseIterable, JSONStringConvertible {
-	case sdk = "d SDK"
-	case release = "r"
-	case special
-	
-	static func type(for str: String) -> FirmwareType {
-		FirmwareType(rawValue: str) ?? .special
-	}
-}
-
-@available(*, unavailable, renamed: "FirmwareType")
-typealias CardType = FirmwareType
-
 /// Holds information about card firmware version included version saved on card `version`,
 /// splitted to `major`, `minor` and `hotFix` and `FirmwareType`
 public struct FirmwareVersion: Codable, JSONStringConvertible {
-	
-	public static let zero = FirmwareVersion(major: 0, minor: 0)
-	public static let max = FirmwareVersion(major: Int.max, minor: 0)
-	
 	/// Version that saved on card
-	public let version: String
+	public let stringValue: String
 	
+    public var doubleValue: Double {
+        Double("\(major).\(minor)")!
+    }
+    
 	private(set) public var major: Int = 0
 	private(set) public var minor: Int = 0
 	private(set) public var hotFix: Int = 0
-	private(set) public var type: FirmwareType? = nil
+	private(set) public var type: FirmwareType
 	
-	public var versionDouble: Double {
-		Double("\(major).\(minor)")!
-	}
-	
-	public init(version: String) {
-		self.version = version
+	public init(stringValue: String) {
+		self.stringValue = stringValue
 		
-		let versionCleaned = version.remove("\0")
+		let versionCleaned = stringValue.remove("\0")
 		
 		let cardTypeStr = versionCleaned.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789."))
 		let result = versionCleaned.remove(cardTypeStr)
@@ -77,7 +60,7 @@ public struct FirmwareVersion: Codable, JSONStringConvertible {
 		version += hotFix != 0 ? hotFixSuffix : ""
 		version += type.rawValue
 		
-		self.version = version
+		self.stringValue = version
 	}
 }
 
@@ -127,4 +110,19 @@ extension FirmwareVersion {
     public static let pin2IsDefaultAvailable = FirmwareVersion(major: 4, minor: 1)
     /// Read-write files
     public static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
+    
+    public static let min = FirmwareVersion(major: 0, minor: 0)
+    public static let max = FirmwareVersion(major: Int.max, minor: 0)
+}
+
+extension FirmwareVersion {
+    public enum FirmwareType: String, Codable, CaseIterable, JSONStringConvertible {
+        case sdk = "d SDK"
+        case release = "r"
+        case special
+        
+        static func type(for str: String) -> FirmwareType {
+            FirmwareType(rawValue: str) ?? .special
+        }
+    }
 }

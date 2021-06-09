@@ -12,13 +12,15 @@ import Foundation
 public struct CardWallet: Codable, JSONStringConvertible {
     /// Index of the wallet in the card storage
     public let index: Int
+    /// Public key of the blockchain wallet.
+    public var publicKey: Data
     /// Explicit text name of the elliptic curve used for all wallet key operations.
     /// Supported curves: ‘secp256k1’ and ‘ed25519’.
     public var curve: EllipticCurve
     /// Settings of the wallet
     public var settingsMask: WalletSettingsMask
-    /// Public key of the blockchain wallet.
-    public var publicKey: Data
+    /// Defines what data should be submitted to SIGN command.
+    public let signingMethods: SigningMethod
     /// Total number of signed  hashes returned by the wallet since its creation
     /// COS 1.16+
     public var totalSignedHashes: Int?

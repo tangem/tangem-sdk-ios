@@ -23,7 +23,7 @@ public struct WalletConfig {
 		self.signingMethods = signingMethods
 	}
 	
-	var settingsMask: WalletSettingsMask? {
+    var settingsMask: Card.Wallet.SettingsMask? {
         guard let isProhibitPurge = isProhibitPurge else { return nil }
 
 		let builder = WalletSettingsMaskBuilder()

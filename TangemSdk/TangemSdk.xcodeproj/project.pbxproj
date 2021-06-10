@@ -201,9 +201,8 @@
 		B0C6B4C0254C45B800C0A1E1 /* InformationScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */; };
 		B0C6B4C4254C45CC00C0A1E1 /* InformationScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C6B4C3254C45CC00C0A1E1 /* InformationScreen.swift */; };
 		B0D3C48B26088ECD0038A5C9 /* Array+Tlv.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D3C48A26088ECD0038A5C9 /* Array+Tlv.swift */; };
-		B0E162C325656D8400E97D07 /* CardSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E162C225656D8400E97D07 /* CardSerializer.swift */; };
-		B0EC64FB26010FFD0088F03D /* CardWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FA26010FFD0088F03D /* CardWallet.swift */; };
-		B0EC6500260110530088F03D /* CardWalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* CardWalletDeserializer.swift */; };
+		B0E162C325656D8400E97D07 /* CardDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E162C225656D8400E97D07 /* CardDeserializer.swift */; };
+		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		B0F9F612255032C5001CA52D /* CGPoint+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F9F60F255032C5001CA52D /* CGPoint+.swift */; };
@@ -422,9 +421,8 @@
 		B0C6B4BF254C45B800C0A1E1 /* InformationScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InformationScreen.storyboard; sourceTree = "<group>"; };
 		B0C6B4C3254C45CC00C0A1E1 /* InformationScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationScreen.swift; sourceTree = "<group>"; };
 		B0D3C48A26088ECD0038A5C9 /* Array+Tlv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Tlv.swift"; sourceTree = "<group>"; };
-		B0E162C225656D8400E97D07 /* CardSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSerializer.swift; sourceTree = "<group>"; };
-		B0EC64FA26010FFD0088F03D /* CardWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardWallet.swift; sourceTree = "<group>"; };
-		B0EC64FF260110530088F03D /* CardWalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardWalletDeserializer.swift; sourceTree = "<group>"; };
+		B0E162C225656D8400E97D07 /* CardDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDeserializer.swift; sourceTree = "<group>"; };
+		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
 		B0F9F60F255032C5001CA52D /* CGPoint+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+.swift"; sourceTree = "<group>"; };
@@ -508,17 +506,6 @@
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 			);
 			path = Core;
-			sourceTree = "<group>";
-		};
-		5D6508212670D58A00A8D45B /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				B0EC64FA26010FFD0088F03D /* CardWallet.swift */,
-				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
-				B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */,
-				B00BC5BD260B5CA600F0647D /* WalletStatus.swift */,
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		5D6A92D52344E2B400158457 /* Localization */ = {
@@ -941,6 +928,9 @@
 				B0A9448425654BBC00A7958E /* FirmwareVersion.swift */,
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
+				B0390F7E25658F110061E5ED /* WalletSettingsMask.swift */,
+				B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */,
+				B00BC5BD260B5CA600F0647D /* WalletStatus.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -960,7 +950,6 @@
 		B0BD1C8E255E58BE00119D82 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
-				5D6508212670D58A00A8D45B /* Entities */,
 				5D6A92E62345F2D600158457 /* CheckWalletCommand.swift */,
 				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,
 				5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */,
@@ -991,8 +980,8 @@
 		B0EC64FE260110440088F03D /* SerializationHelpers */ = {
 			isa = PBXGroup;
 			children = (
-				B0E162C225656D8400E97D07 /* CardSerializer.swift */,
-				B0EC64FF260110530088F03D /* CardWalletDeserializer.swift */,
+				B0E162C225656D8400E97D07 /* CardDeserializer.swift */,
+				B0EC64FF260110530088F03D /* WalletDeserializer.swift */,
 			);
 			path = SerializationHelpers;
 			sourceTree = "<group>";
@@ -1188,7 +1177,7 @@
 				5DDD6C6425D2E48A00E48D7B /* LogStringConvertible.swift in Sources */,
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
-				B0E162C325656D8400E97D07 /* CardSerializer.swift in Sources */,
+				B0E162C325656D8400E97D07 /* CardDeserializer.swift in Sources */,
 				B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				B00BC5BE260B5CA600F0647D /* WalletStatus.swift in Sources */,
@@ -1235,7 +1224,6 @@
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */,
-				B0EC64FB26010FFD0088F03D /* CardWallet.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */,
@@ -1243,7 +1231,7 @@
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorageService.swift in Sources */,
-				B0EC6500260110530088F03D /* CardWalletDeserializer.swift in Sources */,
+				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				B0D3C48B26088ECD0038A5C9 /* Array+Tlv.swift in Sources */,
 				B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */,

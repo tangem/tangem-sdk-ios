@@ -67,7 +67,7 @@ public final class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if !wallet.signingMethods.contains(.signHash) {
+        if !wallet.settings.signingMethods.contains(.signHash) {
             return .signHashesNotAvailable
         }
         

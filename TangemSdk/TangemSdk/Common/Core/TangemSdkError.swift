@@ -67,7 +67,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case invalidResponseApdu
     
-    //MARK: Card errrors
+    //MARK: Card errors
     
     /// This error is returned when unknown `StatusWord` is received from a card.
     case unknownStatus(_ sw: String)
@@ -106,6 +106,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     // CreateWallet Errors
     case alreadyCreated
+    case unsupportedCurve //todo: localize
+    case unsupportedWalletConfig //todo: localize
     
     // PurgeWallet Errors
     case purgeWalletProhibited
@@ -317,7 +319,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cardWithMaxZeroWallets: return 40404
 
         case .alreadyCreated: return 40501
+        case .unsupportedCurve: return 40502
         case .maxNumberOfWalletsCreated: return 40503
+        case .unsupportedWalletConfig: return 40504
             
         case .purgeWalletProhibited: return 40601
             

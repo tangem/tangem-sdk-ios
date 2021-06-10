@@ -30,13 +30,15 @@ public final class CreateWalletCommand: Command {
     
     public var requiresPin2: Bool { return true }
     
-    private var config: WalletConfig?
+    private let curve: EllipticCurve
+    private var config: WalletConfig
     private var walletIndex: Int? = nil
     /// Default initializer
     /// - Parameter config: Wallet configuration to create
     /// - COS v4+: Wallet configuration or default wallet configuration according to card personalization if nil
-    /// - COS before v4: This parameter will be ignored.  Wallet will be created according to card personalization.
-    public init(config: WalletConfig? = nil) {
+    /// - COS before v4: This parameter can be ignored.  Wallet will be created according to card personalization.
+    public init(curve: EllipticCurve, config: WalletConfig = .init()) {
+        self.curve = curve
         self.config = config
     }
     
@@ -50,6 +52,25 @@ public final class CreateWalletCommand: Command {
             return .walletCannotBeCreated
         }
         
+        guard card.supportedCurves.contains(curve) else {
+            return TangemSdkError.unsupportedCurve
+        }
+        
+        if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
+            if let designatedIsProhibitPurge = config.isProhibitPurge {
+                let currentIsProhibitPurge = card.settings.mask.contains(.prohibitPurgeWallet)
+                if designatedIsProhibitPurge != currentIsProhibitPurge {
+                    return TangemSdkError.unsupportedWalletConfig
+                }
+            }
+            
+            if let designatedSigningMethods = config.signingMethods {
+                if designatedSigningMethods != card.settings.defaultSigningMethods {
+                    return TangemSdkError.unsupportedWalletConfig
+                }
+            }
+        }
+        
         return nil
     }
     
@@ -58,12 +79,7 @@ public final class CreateWalletCommand: Command {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
-        //Ignore config for older COS because we need to make proper response ourselves. e.g. Curve
-        if card.firmwareVersion >= .multiwalletAvailable {
-            self.config = nil
-        }
-        
+
         let maxIndex = card.settings.maxWalletsCount
         let occupiedIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex
@@ -102,16 +118,12 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         
-        if environment.card?.firmwareVersion >= .multiwalletAvailable,
-           let config = config {
-            
+        if environment.card?.firmwareVersion >= .multiwalletAvailable {
             if let settingsMask = config.settingsMask {
                 try tlvBuilder.append(.settingsMask, value: settingsMask)
             }
             
-            if let curve = config.curve {
-                try tlvBuilder.append(.curveId, value: curve)
-            }
+            try tlvBuilder.append(.curveId, value: curve)
             
             if let signingMethods = config.signingMethods {
                 try tlvBuilder.append(.signingMethod, value: signingMethods)
@@ -127,22 +139,15 @@ public final class CreateWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        
         let index = try decoder.decodeOptional(.walletIndex) ?? walletIndex!
         
-//        guard let curve = config?.curve ?? environment.card?.defaultCurve else { //todo: refactor later
-//            throw TangemSdkError.unknownError
-//        }
-        fatalError("Implement mandatory default params")
-        let curve = config!.curve!
-        let method = config!.signingMethods!
-        
-        guard let settings = environment.card?.settings.mask.toWalletSettingsMask() else {
+        guard let settingsMask = config.settingsMask ?? environment.card?.settings.mask.toWalletSettingsMask(),
+              let signingMethods = config.signingMethods ?? environment.card?.settings.defaultSigningMethods else {
             throw TangemSdkError.unknownError
         }
         
-        let walletSettings = Card.Wallet.Settings(mask: settings,
-                                                  signingMethods: method)
+        let walletSettings = Card.Wallet.Settings(mask: settingsMask,
+                                                  signingMethods: signingMethods)
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                  curve: curve,

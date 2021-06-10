@@ -170,7 +170,7 @@
 		B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileHashHelper.swift */; };
 		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
 		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */; };
-		B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7A25658EEE0061E5ED /* SettingsMask.swift */; };
+		B0390F7B25658EEE0061E5ED /* CardSettingsMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7A25658EEE0061E5ED /* CardSettingsMask.swift */; };
 		B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8225658F3B0061E5ED /* ProductMask.swift */; };
 		B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8625658F620061E5ED /* SigningMethod.swift */; };
 		B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8D25658FE80061E5ED /* StatusType.swift */; };
@@ -389,7 +389,7 @@
 		B01B9A562530871800ECB6BF /* FileHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashHelper.swift; sourceTree = "<group>"; };
 		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
 		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictible.swift; sourceTree = "<group>"; };
-		B0390F7A25658EEE0061E5ED /* SettingsMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMask.swift; sourceTree = "<group>"; };
+		B0390F7A25658EEE0061E5ED /* CardSettingsMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSettingsMask.swift; sourceTree = "<group>"; };
 		B0390F8225658F3B0061E5ED /* ProductMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMask.swift; sourceTree = "<group>"; };
 		B0390F8625658F620061E5ED /* SigningMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningMethod.swift; sourceTree = "<group>"; };
 		B0390F8D25658FE80061E5ED /* StatusType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusType.swift; sourceTree = "<group>"; };
@@ -921,7 +921,7 @@
 			isa = PBXGroup;
 			children = (
 				B0A9447A256546DE00A7958E /* Card.swift */,
-				B0390F7A25658EEE0061E5ED /* SettingsMask.swift */,
+				B0390F7A25658EEE0061E5ED /* CardSettingsMask.swift */,
 				B0390F8D25658FE80061E5ED /* StatusType.swift */,
 				B0A9448425654BBC00A7958E /* FirmwareVersion.swift */,
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
@@ -1219,7 +1219,7 @@
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
-				B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */,
+				B0390F7B25658EEE0061E5ED /* CardSettingsMask.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* VerifyCardCommand.swift in Sources */,

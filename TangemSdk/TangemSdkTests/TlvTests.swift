@@ -136,8 +136,8 @@ class TlvTests: XCTestCase {
         XCTAssertNil(curveWrong)
         
         //test settings mask
-        let settings: SettingsMask = try! decoder.decode(.settingsMask)
-        XCTAssertEqual(settings, SettingsMask(rawValue: 32305))
+        let settings: Card.SettingsMask = try! decoder.decode(.settingsMask)
+        XCTAssertEqual(settings, Card.SettingsMask(rawValue: 32305))
         XCTAssertTrue(settings.contains(.isReusable))
         XCTAssertTrue(settings.contains(.allowSetPIN2))
         XCTAssertTrue(!settings.contains(.disableFiles))
@@ -206,10 +206,10 @@ class TlvTests: XCTestCase {
             "604104B45FF0D628E1B59F7AEFA1D5B45AB9D7C47FC090D8B29ACCB515431BDBAD2802DDB3AC5E83A06BD8F13ABB84A465CA3C0FA0B44301F80295A9B4C5E35D5FDFE5"))
         
         XCTAssertEqual(try! TlvBuilder().append(.curveId, value: EllipticCurve.secp256k1).serialize(), Data(hexString: "050A736563703235366B3100"))
-        XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: SettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))
-        XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: SettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))
-        XCTAssertEqual(try! TlvBuilder().append(.status, value: CardStatus.notPersonalized).serialize(), Data(hexString: "020100"))
-        XCTAssertEqual(try! TlvBuilder().append(.status, value: CardStatus.loaded).serialize(), Data(hexString: "020102"))
+        XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: Card.SettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))
+        XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: Card.SettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))
+        XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Status.notPersonalized).serialize(), Data(hexString: "020100"))
+        XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Status.loaded).serialize(), Data(hexString: "020102"))
         XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.loaded).serialize(), Data(hexString: "020102"))
         XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.empty).serialize(), Data(hexString: "020101"))
         XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.purged).serialize(), Data(hexString: "020103"))

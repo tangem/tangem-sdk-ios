@@ -17,7 +17,7 @@ public struct Card: Codable, JSONStringConvertible {
 	/// Public key that is used to authenticate the card against manufacturer’s database.
 	/// It is generated one time during card manufacturing.
 	public let cardPublicKey: Data
-    /// Version of Tangem COS.
+    /// Version of Tangem Card Operation System.
     public let firmwareVersion: FirmwareVersion
     /// Manufacturer infos
     public let manufacturer: Manufacturer

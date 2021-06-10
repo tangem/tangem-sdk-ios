@@ -8,7 +8,7 @@
 
 import Foundation
 
-public extension Array where Element == CardWallet {
+public extension Array where Element == Card.Wallet {
     subscript(publicKey: Data) -> Element? {
         get {
             return first(where: { $0.publicKey == publicKey })

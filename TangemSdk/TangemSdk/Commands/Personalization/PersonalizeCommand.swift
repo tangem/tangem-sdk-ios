@@ -61,7 +61,7 @@ public class PersonalizeCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
-        return try CardDeserializer.deserialize(with: environment, from: apdu)
+        return try CardDeserializer().deserialize(with: environment, from: apdu)
     }
     
     private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {

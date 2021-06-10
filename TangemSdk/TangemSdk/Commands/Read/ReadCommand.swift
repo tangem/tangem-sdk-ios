@@ -58,7 +58,7 @@ final class ReadCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
-		let readResponse = try CardDeserializer.deserialize(with: environment, from: apdu)
+		let readResponse = try CardDeserializer().deserialize(with: environment, from: apdu)
         
 		return readResponse
     }

@@ -10,7 +10,7 @@ import Foundation
 
 struct ReadWalletResponse: JSONStringConvertible {
     let cardId: String
-    let wallet: CardWallet
+    let wallet: Card.Wallet
 }
 
 /// Read signle wallet on card. This command executes before interacting with specific wallet to retrieve information about it and perform prechecks
@@ -61,7 +61,7 @@ class ReadWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let wallet = try CardWalletDeserializer.deserializeWallet(from: decoder)
+        let wallet = try WalletDeserializer().deserializeWallet(from: decoder)
         
         Log.debug("Read wallet: \(wallet)")
         return ReadWalletResponse(cardId: try decoder.decode(.cardId),

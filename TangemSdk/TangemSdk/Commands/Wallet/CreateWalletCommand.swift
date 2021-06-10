@@ -13,7 +13,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
     /// Created wallet
-    public let wallet: CardWallet
+    public let wallet: Card.Wallet
 }
 
 /**
@@ -141,7 +141,7 @@ public final class CreateWalletCommand: Command {
             throw TangemSdkError.unknownError
         }
         
-        let wallet = CardWallet(index: index,
+        let wallet = Card.Wallet(index: index,
                                 publicKey: try decoder.decode(.walletPublicKey),
                                 curve: curve,
                                 settingsMask: settings,

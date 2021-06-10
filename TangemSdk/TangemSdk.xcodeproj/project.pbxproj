@@ -173,7 +173,7 @@
 		B0390F7B25658EEE0061E5ED /* SettingsMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7A25658EEE0061E5ED /* SettingsMask.swift */; };
 		B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8225658F3B0061E5ED /* ProductMask.swift */; };
 		B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8625658F620061E5ED /* SigningMethod.swift */; };
-		B0390F8E25658FE80061E5ED /* CardStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8D25658FE80061E5ED /* CardStatus.swift */; };
+		B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8D25658FE80061E5ED /* StatusType.swift */; };
 		B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F91256590250061E5ED /* EllipticCurve.swift */; };
 		B03BC4982551726300A8F1C4 /* CircularIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */; };
 		B04C5D1F255E6F21003AFF8B /* WalletConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */; };
@@ -392,7 +392,7 @@
 		B0390F7A25658EEE0061E5ED /* SettingsMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMask.swift; sourceTree = "<group>"; };
 		B0390F8225658F3B0061E5ED /* ProductMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMask.swift; sourceTree = "<group>"; };
 		B0390F8625658F620061E5ED /* SigningMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningMethod.swift; sourceTree = "<group>"; };
-		B0390F8D25658FE80061E5ED /* CardStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatus.swift; sourceTree = "<group>"; };
+		B0390F8D25658FE80061E5ED /* StatusType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusType.swift; sourceTree = "<group>"; };
 		B0390F91256590250061E5ED /* EllipticCurve.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EllipticCurve.swift; sourceTree = "<group>"; };
 		B03BC4972551726300A8F1C4 /* CircularIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularIndicatorView.swift; sourceTree = "<group>"; };
 		B04C5D1E255E6F21003AFF8B /* WalletConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConfig.swift; sourceTree = "<group>"; };
@@ -922,7 +922,7 @@
 			children = (
 				B0A9447A256546DE00A7958E /* Card.swift */,
 				B0390F7A25658EEE0061E5ED /* SettingsMask.swift */,
-				B0390F8D25658FE80061E5ED /* CardStatus.swift */,
+				B0390F8D25658FE80061E5ED /* StatusType.swift */,
 				B0A9448425654BBC00A7958E /* FirmwareVersion.swift */,
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
@@ -1264,7 +1264,7 @@
 				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */,
-				B0390F8E25658FE80061E5ED /* CardStatus.swift in Sources */,
+				B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */,
 				5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
 				B04C5D1F255E6F21003AFF8B /* WalletConfig.swift in Sources */,

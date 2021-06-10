@@ -80,8 +80,8 @@ public final class TlvEncoder {
             return Data([mask.rawValue])
         case .settingsMask:
 			do {
-				try typeCheck(value, SettingsMask.self, for: tag)
-				let mask = value as! SettingsMask
+                try typeCheck(value, Card.SettingsMask.self, for: tag)
+				let mask = value as! Card.SettingsMask
 				let rawValue = mask.rawValue
 				if 0xFFFF0000 & rawValue != 0 {
 					 return rawValue.bytes4

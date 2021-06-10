@@ -10,7 +10,7 @@ import Foundation
 
 struct ReadWalletsListResponse: JSONStringConvertible {
     let cardId: String
-    let wallets: [CardWallet]
+    let wallets: [Card.Wallet]
 }
 
 /// Read all wallets on card.
@@ -18,7 +18,7 @@ class ReadWalletsListCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
     private var walletIndex: Int?
-    private var loadedWallets: [CardWallet] = []
+    private var loadedWallets: [Card.Wallet] = []
     
     public init() {}
     
@@ -77,7 +77,7 @@ class ReadWalletsListCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let wallets = try CardWalletDeserializer.deserializeWallets(from: decoder)
+        let wallets = try WalletDeserializer().deserializeWallets(from: decoder)
         return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
                                        wallets: wallets)
     }

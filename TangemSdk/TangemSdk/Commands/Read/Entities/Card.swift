@@ -20,11 +20,11 @@ public struct Card: Codable, JSONStringConvertible {
     /// Version of Tangem COS.
     public let firmwareVersion: FirmwareVersion
     /// Manufacturer infos
-    public let manufacturer: Card.Manufacturer
+    public let manufacturer: Manufacturer
     /// Issuer info
-    public let issuer: Card.Issuer
+    public let issuer: Issuer
     /// Card settings
-    public let settings: Card.Settings
+    public let settings: Settings
     /// When this value is true, it means that the application is linked to the card,
     /// and COS will not enforce security delay if `SignCommand` will be called
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data
@@ -35,7 +35,7 @@ public struct Card: Codable, JSONStringConvertible {
     /// All ellipctic curves, supported by this card
     public let supportedCurves: [EllipticCurve]
     /// All wallets of the card
-    internal(set) public var wallets: [CardWallet] = []
+    internal(set) public var wallets: [Wallet] = []
     /// True value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
 //    var cardHealth: Bool {
@@ -77,5 +77,28 @@ public extension Card {
         public let mask: SettingsMask
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
+        /// Card's signing methods according personalization. We need it to make Wallet for pre-v4 COS
+        let _v3_signingMethods: SigningMethod?
+    }
+    
+    /// Describing wallets created on card
+    struct Wallet: Codable, JSONStringConvertible {
+        /// Index of the wallet in the card storage
+        public let index: Int
+        /// Public key of the blockchain wallet.
+        public var publicKey: Data
+        /// Explicit text name of the elliptic curve used for all wallet key operations.
+        /// Supported curves: ‘secp256k1’ and ‘ed25519’.
+        public var curve: EllipticCurve
+        /// Settings of the wallet
+        public var settingsMask: WalletSettingsMask
+        /// Defines what data should be submitted to SIGN command.
+        public let signingMethods: SigningMethod
+        /// Total number of signed  hashes returned by the wallet since its creation
+        /// COS 1.16+
+        public var totalSignedHashes: Int?
+        /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
+        /// - Note: This counter were deprecated for cards with COS 4.0 and higher
+        public var remainingSignatures: Int?
     }
 }

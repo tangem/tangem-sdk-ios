@@ -80,24 +80,4 @@ public extension Card {
         /// Card's signing methods according personalization. We need it to make Wallet for pre-v4 COS
         let _v3_signingMethods: SigningMethod?
     }
-    
-    /// Describing wallets created on card
-    struct Wallet: Codable, JSONStringConvertible {
-        /// Wallet's public key.
-        public var publicKey: Data
-        /// Elliptic curve used for all wallet key operations.
-        public var curve: EllipticCurve
-        /// Settings of the wallet
-        public var settingsMask: WalletSettingsMask
-        /// Defines what data should be submitted to SIGN command.
-        public let signingMethods: SigningMethod
-        /// Total number of signed hashes returned by the wallet since its creation
-        /// COS 1.16+
-        public var totalSignedHashes: Int?
-        /// Remaining number of `Sign` operations before the wallet will stop signing any data.
-        /// - Note: This counter were deprecated for cards with COS 4.0 and higher
-        public var remainingSignatures: Int?
-        /// Index of the wallet in the card storage
-        internal let index: Int
-    }
 }

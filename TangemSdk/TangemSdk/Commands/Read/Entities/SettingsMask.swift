@@ -209,7 +209,7 @@ class SettingsMaskBuilder {
 }
 
 extension SettingsMask {
-    func toWalletSettingsMask() -> WalletSettingsMask {
-        return WalletSettingsMask(rawValue: rawValue)
+    func toWalletSettingsMask() -> Card.Wallet.SettingsMask {
+        return Card.Wallet.SettingsMask(rawValue: rawValue)
     }
 }

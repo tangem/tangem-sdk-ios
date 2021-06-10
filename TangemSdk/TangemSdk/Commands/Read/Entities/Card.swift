@@ -19,7 +19,7 @@ public struct Card: Codable, JSONStringConvertible {
 	public let cardPublicKey: Data
     /// Version of Tangem Card Operation System.
     public let firmwareVersion: FirmwareVersion
-    /// Manufacturer infos
+    /// Information about manufacturer
     public let manufacturer: Manufacturer
     /// Issuer info
     public let issuer: Issuer

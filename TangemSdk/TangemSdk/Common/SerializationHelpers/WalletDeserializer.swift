@@ -8,26 +8,17 @@
 
 import Foundation
 
-class CardWalletDeserializer {
-    private static func deserialize(from decoder: TlvDecoder) throws -> CardWallet {
-        CardWallet(index: try decoder.decode(.walletIndex),
-                   publicKey: try decoder.decode(.walletPublicKey),
-                   curve: try decoder.decode(.curveId),
-                   settingsMask: try decoder.decode(.settingsMask),
-                   signingMethods: try decoder.decode(.signingMethod),
-                   totalSignedHashes: try decoder.decode(.walletSignedHashes))
-    }
-    
-    static func deserializeWallet(from decoder: TlvDecoder) throws -> CardWallet {
+class WalletDeserializer {
+    func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
         let status: WalletStatus = try decoder.decode(.status)
         guard status == .loaded else { //We need only loaded wallets
             throw TangemSdkError.walletIsNotCreated
         }
         
-        return try CardWalletDeserializer.deserialize(from: decoder)
+        return try deserialize(from: decoder)
     }
     
-    static func deserializeWallets(from decoder: TlvDecoder) throws -> [CardWallet] {
+    func deserializeWallets(from decoder: TlvDecoder) throws -> [Card.Wallet] {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
         guard cardWalletsData.count > 0 else {
@@ -40,14 +31,23 @@ class CardWalletDeserializer {
             return TlvDecoder(tlv: infoTlvs)
         }
         
-        let wallets: [CardWallet] = try walletDecoders.compactMap {
+        let wallets: [Card.Wallet] = try walletDecoders.compactMap {
             do {
-                return try CardWalletDeserializer.deserializeWallet(from: $0)
+                return try deserializeWallet(from: $0)
             } catch TangemSdkError.walletIsNotCreated {
                 return nil
             }
         }
         
         return wallets
+    }
+    
+    private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
+        Card.Wallet(index: try decoder.decode(.walletIndex),
+                   publicKey: try decoder.decode(.walletPublicKey),
+                   curve: try decoder.decode(.curveId),
+                   settingsMask: try decoder.decode(.settingsMask),
+                   signingMethods: try decoder.decode(.signingMethod),
+                   totalSignedHashes: try decoder.decode(.walletSignedHashes))
     }
 }

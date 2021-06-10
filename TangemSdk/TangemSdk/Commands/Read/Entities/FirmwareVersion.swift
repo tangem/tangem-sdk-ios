@@ -15,7 +15,7 @@ public struct FirmwareVersion: Codable, JSONStringConvertible {
 	public let stringValue: String
 	
     public var doubleValue: Double {
-        .init("\(major).\(minor)")!
+        Double("\(major).\(minor)")!
     }
     
 	private(set) public var major: Int = 0

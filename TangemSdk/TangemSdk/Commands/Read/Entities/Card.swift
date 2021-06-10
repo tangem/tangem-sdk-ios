@@ -83,22 +83,21 @@ public extension Card {
     
     /// Describing wallets created on card
     struct Wallet: Codable, JSONStringConvertible {
-        /// Index of the wallet in the card storage
-        public let index: Int
-        /// Public key of the blockchain wallet.
+        /// Wallet's public key.
         public var publicKey: Data
-        /// Explicit text name of the elliptic curve used for all wallet key operations.
-        /// Supported curves: ‘secp256k1’ and ‘ed25519’.
+        /// Elliptic curve used for all wallet key operations.
         public var curve: EllipticCurve
         /// Settings of the wallet
         public var settingsMask: WalletSettingsMask
         /// Defines what data should be submitted to SIGN command.
         public let signingMethods: SigningMethod
-        /// Total number of signed  hashes returned by the wallet since its creation
+        /// Total number of signed hashes returned by the wallet since its creation
         /// COS 1.16+
         public var totalSignedHashes: Int?
-        /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
+        /// Remaining number of `Sign` operations before the wallet will stop signing any data.
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
         public var remainingSignatures: Int?
+        /// Index of the wallet in the card storage
+        internal let index: Int
     }
 }

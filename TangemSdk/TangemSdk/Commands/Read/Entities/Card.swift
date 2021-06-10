@@ -23,7 +23,7 @@ public struct Card: Codable, JSONStringConvertible {
     public let manufacturer: Manufacturer
     /// Information about issuer
     public let issuer: Issuer
-    /// Card settings
+    /// Card setting, that were set during the personalization process
     public let settings: Settings
     /// When this value is true, it means that the application is linked to the card,
     /// and COS will not enforce security delay if `SignCommand` will be called

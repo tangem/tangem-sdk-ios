@@ -10,7 +10,7 @@ import Foundation
 
 class WalletDeserializer {
     func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
-        let status: WalletStatus = try decoder.decode(.status)
+        let status: Card.Wallet.Status = try decoder.decode(.status)
         guard status == .loaded else { //We need only loaded wallets
             throw TangemSdkError.walletIsNotCreated
         }
@@ -43,11 +43,13 @@ class WalletDeserializer {
     }
     
     private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
-        Card.Wallet(index: try decoder.decode(.walletIndex),
-                   publicKey: try decoder.decode(.walletPublicKey),
+        let settings = Card.Wallet.Settings(mask: try decoder.decode(.settingsMask),
+                                            signingMethods: try decoder.decode(.signingMethod))
+        
+        return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                    curve: try decoder.decode(.curveId),
-                   settingsMask: try decoder.decode(.settingsMask),
-                   signingMethods: try decoder.decode(.signingMethod),
-                   totalSignedHashes: try decoder.decode(.walletSignedHashes))
+                   settings: settings,
+                   totalSignedHashes: try decoder.decode(.walletSignedHashes),
+                   index: try decoder.decode(.walletIndex))
     }
 }

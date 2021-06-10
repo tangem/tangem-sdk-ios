@@ -141,13 +141,15 @@ public final class CreateWalletCommand: Command {
             throw TangemSdkError.unknownError
         }
         
-        let wallet = Card.Wallet(index: index,
-                                publicKey: try decoder.decode(.walletPublicKey),
-                                curve: curve,
-                                settingsMask: settings,
-                                signingMethods: method,
-                                totalSignedHashes: 0,
-                                remainingSignatures: environment.card?.remainingSignatures)
+        let walletSettings = Card.Wallet.Settings(mask: settings,
+                                                  signingMethods: method)
+        
+        let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+                                 curve: curve,
+                                 settings: walletSettings,
+                                 totalSignedHashes: 0,
+                                 remainingSignatures: environment.card?.remainingSignatures,
+                                 index: index)
         
         return CreateWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
     }

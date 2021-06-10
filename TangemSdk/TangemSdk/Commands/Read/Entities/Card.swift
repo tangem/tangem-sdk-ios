@@ -77,8 +77,10 @@ public extension Card {
         public let mask: SettingsMask
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
-        /// Card's signing methods according personalization. We need it to make Wallet for pre-v4 COS
-        let _v3_signingMethods: SigningMethod?
+        /// Card's default signing methods according personalization.
+        let defaultSigningMethods: SigningMethod?
+        /// Card's default signing methods according personalization.
+        let defaultCurve: EllipticCurve?
     }
 }
 

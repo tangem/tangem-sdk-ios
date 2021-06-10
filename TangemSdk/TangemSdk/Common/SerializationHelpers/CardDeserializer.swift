@@ -22,22 +22,20 @@ struct CardDeserializer {
         let pin2IsDefault: Bool? = firmware >= .pin2IsDefaultAvailable ?
             try decoder.decode(.pin2IsDefault) : nil
         
-        var supportedCurves: [EllipticCurve] = EllipticCurve.allCases
-        var signingMethods: SigningMethod? = nil
+        let defaultCurve: EllipticCurve = try decoder.decode(.curveId)
+        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? [defaultCurve] : EllipticCurve.allCases
+        let defaultSigningMethods: SigningMethod = try decoder.decode(.signingMethod)
         var wallets: [Card.Wallet] = []
         var remainingSignatures: Int? = nil
         
         if firmware < .multiwalletAvailable {
-            let curve: EllipticCurve = try decoder.decode(.curveId)
-            supportedCurves = [curve]  //Cos before v4 always has the only one curve
-            signingMethods = try decoder.decode(.signingMethod)
             remainingSignatures = try decoder.decode(.walletRemainingSignatures)
             
             let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask(),
-                                                      signingMethods: signingMethods!)
+                                                      signingMethods: defaultSigningMethods)
             
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                                     curve: curve,
+                                     curve: defaultCurve,
                                      settings: walletSettings,
                                      totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
                                      remainingSignatures: remainingSignatures!,
@@ -57,7 +55,8 @@ struct CardDeserializer {
         let settings = Card.Settings(securityDelay: try decoder.decode(.pauseBeforePin2),
                                      mask:  cardSettingsMask,
                                      maxWalletsCount: try decoder.decodeOptional(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
-                                     _v3_signingMethods: signingMethods)
+                                     defaultSigningMethods: defaultSigningMethods,
+                                     defaultCurve: defaultCurve)
         
         let card = Card(cardId: try decoder.decode(.cardId),
                         batchId: try cardDataDecoder.decode(.batchId),

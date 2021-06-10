@@ -134,9 +134,9 @@ public final class TlvDecoder {
             return productMask as! T
         case .settingsMask:
             do {
-                try typeCheck(SettingsMask.self, T.self, for: tag)
+                try typeCheck(Card.SettingsMask.self, T.self, for: tag)
                 let intValue = tagValue.toInt()
-                let settingsMask = SettingsMask(rawValue: intValue)
+                let settingsMask = Card.SettingsMask(rawValue: intValue)
                 return settingsMask as! T
             } catch TangemSdkError.decodingFailedTypeMismatch {
                 try typeCheck(Card.Wallet.SettingsMask.self, T.self, for: tag)
@@ -146,9 +146,9 @@ public final class TlvDecoder {
             }
         case .status:
             do {
-                try typeCheck(CardStatus.self, T.self, for: tag)
+                try typeCheck(Card.Status.self, T.self, for: tag)
                 let intValue = tagValue.toInt()
-                guard let cardStatus = CardStatus(rawValue: intValue) else {
+                guard let cardStatus = Card.Status(rawValue: intValue) else {
                     throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
                 }
                 

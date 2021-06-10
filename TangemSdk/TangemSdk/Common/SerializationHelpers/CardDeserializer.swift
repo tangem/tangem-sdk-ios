@@ -17,7 +17,7 @@ struct CardDeserializer {
         try assertActivation(try decoder.decode(.isActivated))
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
-        let cardSettingsMask: SettingsMask = try decoder.decode(.settingsMask)
+        let cardSettingsMask: Card.SettingsMask = try decoder.decode(.settingsMask)
         
         let pin2IsDefault: Bool? = firmware >= .pin2IsDefaultAvailable ?
             try decoder.decode(.pin2IsDefault) : nil
@@ -83,7 +83,7 @@ struct CardDeserializer {
         }
     }
     
-    private func assertStatus(_ status: CardStatus) throws {
+    private func assertStatus(_ status: Card.Status) throws {
         if status == .notPersonalized {
             throw TangemSdkError.notPersonalized
         }

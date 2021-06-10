@@ -21,7 +21,7 @@ public struct Card: Codable, JSONStringConvertible {
     public let firmwareVersion: FirmwareVersion
     /// Information about manufacturer
     public let manufacturer: Manufacturer
-    /// Issuer info
+    /// Information about issuer
     public let issuer: Issuer
     /// Card settings
     public let settings: Settings

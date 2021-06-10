@@ -81,3 +81,13 @@ public extension Card {
         let _v3_signingMethods: SigningMethod?
     }
 }
+
+extension Card {
+    /// Status of the card and its wallet.
+    enum Status: Int, Codable, StatusType {
+        case notPersonalized = 0
+        case empty = 1
+        case loaded = 2
+        case purged = 3
+    }
+}

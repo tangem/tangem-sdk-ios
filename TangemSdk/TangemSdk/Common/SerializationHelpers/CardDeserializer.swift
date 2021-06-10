@@ -33,13 +33,15 @@ struct CardDeserializer {
             signingMethods = try decoder.decode(.signingMethod)
             remainingSignatures = try decoder.decode(.walletRemainingSignatures)
             
-            let wallet = Card.Wallet(index: 0,
-                                publicKey: try decoder.decode(.walletPublicKey),
-                                curve: curve,
-                                settingsMask: cardSettingsMask.toWalletSettingsMask(),
-                                signingMethods: signingMethods!,
-                                totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
-                                remainingSignatures: remainingSignatures!)
+            let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask(),
+                                                      signingMethods: signingMethods!)
+            
+            let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+                                     curve: curve,
+                                     settings: walletSettings,
+                                     totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
+                                     remainingSignatures: remainingSignatures!,
+                                     index: 0)
             
             wallets.append(wallet)
         }

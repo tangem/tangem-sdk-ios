@@ -147,8 +147,8 @@ class TlvTests: XCTestCase {
         XCTAssertNil(settingsWrong)
         
         //card status
-        let status: WalletStatus = try! decoder.decode(.status)
-        XCTAssertEqual(status, WalletStatus.loaded)
+        let status: Card.Wallet.Status = try! decoder.decode(.status)
+        XCTAssertEqual(status, Card.Wallet.Status.loaded)
         
         let statusWrong: String? = try? decoder.decode(.status)
         XCTAssertNil(statusWrong)
@@ -210,9 +210,9 @@ class TlvTests: XCTestCase {
         XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: SettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))
         XCTAssertEqual(try! TlvBuilder().append(.status, value: CardStatus.notPersonalized).serialize(), Data(hexString: "020100"))
         XCTAssertEqual(try! TlvBuilder().append(.status, value: CardStatus.loaded).serialize(), Data(hexString: "020102"))
-        XCTAssertEqual(try! TlvBuilder().append(.status, value: WalletStatus.loaded).serialize(), Data(hexString: "020102"))
-        XCTAssertEqual(try! TlvBuilder().append(.status, value: WalletStatus.empty).serialize(), Data(hexString: "020101"))
-        XCTAssertEqual(try! TlvBuilder().append(.status, value: WalletStatus.purged).serialize(), Data(hexString: "020103"))
+        XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.loaded).serialize(), Data(hexString: "020102"))
+        XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.empty).serialize(), Data(hexString: "020101"))
+        XCTAssertEqual(try! TlvBuilder().append(.status, value: Card.Wallet.Status.purged).serialize(), Data(hexString: "020103"))
         XCTAssertEqual(try! TlvBuilder().append(.signingMethod, value: SigningMethod.signHash).serialize(), Data(hexString: "070181"))
 
         let date = Date(timeIntervalSince1970: 1532696400)

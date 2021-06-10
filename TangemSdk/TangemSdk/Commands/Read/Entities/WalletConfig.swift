@@ -12,14 +12,11 @@ import Foundation
 public struct WalletConfig {
     /// If `true` card will denied purge wallet request on this wallet
 	let isProhibitPurge: Bool?
-    /// Elliptic curve for wallet.
-	let curve: EllipticCurve?
     /// Determines which type of data is required for signing by wallet.
 	let signingMethods: SigningMethod?
 	
-	public init(isProhibitPurge: Bool? = nil, curve: EllipticCurve? = nil, signingMethods: SigningMethod? = nil) {
+	public init(isProhibitPurge: Bool? = nil, signingMethods: SigningMethod? = nil) {
 		self.isProhibitPurge = isProhibitPurge
-		self.curve = curve
 		self.signingMethods = signingMethods
 	}
 	

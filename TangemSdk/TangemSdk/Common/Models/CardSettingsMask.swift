@@ -8,17 +8,6 @@
 
 import Foundation
 
-public extension Card.Settings {
-    /// Stores and maps Tangem card settings.
-    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-        public let rawValue: Int
-        
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
-    }
-}
-
 //MARK:- Constants
 public extension Card.Settings.Mask {
     static let useActivation = Card.Settings.Mask(rawValue: 0x0002)

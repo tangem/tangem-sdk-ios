@@ -41,37 +41,13 @@ public extension Card.Wallet {
 public extension Card.Wallet.Settings {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0
-    struct Mask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible, LogStringConvertible {
+    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+        public static let isProhibitPurge = Mask(rawValue: 0x0004)
+        
         public var rawValue: Int
         
         public init(rawValue: Int) {
             self.rawValue = rawValue
-        }
-        
-        public static let isProhibitPurge = Mask(rawValue: 0x0004)
-        
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try container.encode(toStringArray())
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let values = try decoder.singleValueContainer()
-            let stringValues = try values.decode([String].self)
-            var mask = Mask()
-            if stringValues.contains("isProhibitPurge") {
-                mask.update(with: .isProhibitPurge)
-            }
-            self = mask
-        }
-        
-        func toStringArray() -> [String] {
-            var values = [String]()
-            
-            if contains(.isProhibitPurge) {
-                values.append("isProhibitPurge")
-            }
-            return values
         }
     }
 }
@@ -85,6 +61,19 @@ extension Card.Wallet {
         case loaded = 2
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
+    }
+}
+
+extension Card.Wallet.Settings.Mask: OptionSetCodable {
+    public enum OptionKeys: String, OptionKey {
+        case isProhibitPurge
+        
+        public var value: Card.Wallet.Settings.Mask {
+            switch self {
+            case .isProhibitPurge:
+                return .isProhibitPurge
+            }
+        }
     }
 }
 

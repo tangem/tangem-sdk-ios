@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol StatusType { //todo: remove?
+protocol StatusType {
     var rawValue: Int { get }
 }

@@ -185,7 +185,7 @@ extension Error {
 }
 
 extension Dictionary where Key == String, Value == Any {
-    func value<T: Decodable>(for key: String) throws -> Optional<T> {
+    func value<T: Decodable>(for key: String) throws -> T where T: ExpressibleByNilLiteral {
         do {
             return try value(for: key)
         } catch {
@@ -198,7 +198,7 @@ extension Dictionary where Key == String, Value == Any {
         }
     }
     
-    func value<T>(for key: String) throws -> T where T: Equatable, T: Decodable{
+    func value<T: Decodable>(for key: String) throws -> T {
         let value = self[key]
         if value == nil || String(describing: value) == "<null>" {
             throw JSONRPCError(.invalidParams, data: key)

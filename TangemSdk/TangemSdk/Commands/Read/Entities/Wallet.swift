@@ -38,22 +38,10 @@ public extension Card.Wallet {
     }
 }
 
-extension Card.Wallet {
-    /// Status of the wallet
-    enum Status: Int, StatusType {
-        /// Wallet not created
-        case empty = 1
-        /// Wallet created and can be used for signing
-        case loaded = 2
-        /// Wallet was purged and can't be recreated or used for signing
-        case purged = 3
-    }
-}
-
 public extension Card.Wallet {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0
-    struct SettingsMask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible {
+    struct SettingsMask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible, LogStringConvertible {
         public var rawValue: Int
         
         public init(rawValue: Int) {
@@ -88,7 +76,17 @@ public extension Card.Wallet {
     }
 }
 
-extension Card.Wallet.SettingsMask: LogStringConvertible {}
+extension Card.Wallet {
+    /// Status of the wallet
+    enum Status: Int, StatusType {
+        /// Wallet not created
+        case empty = 1
+        /// Wallet created and can be used for signing
+        case loaded = 2
+        /// Wallet was purged and can't be recreated or used for signing
+        case purged = 3
+    }
+}
 
 class WalletSettingsMaskBuilder {
     private var settingsMaskValue = 0

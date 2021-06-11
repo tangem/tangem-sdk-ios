@@ -811,6 +811,7 @@
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B0A9436525651E2600A7958E /* Models */,
 				5D6508242673935700A8D45B /* OptionSet */,
 				5D650820266E387C00A8D45B /* Core */,
 				5D65081F266E37E100A8D45B /* JSON */,
@@ -923,7 +924,7 @@
 			path = Files;
 			sourceTree = "<group>";
 		};
-		B0A9436525651E2600A7958E /* Entities */ = {
+		B0A9436525651E2600A7958E /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				B0A9447A256546DE00A7958E /* Card.swift */,
@@ -934,13 +935,12 @@
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
 				5D6508222672755600A8D45B /* Wallet.swift */,
 			);
-			path = Entities;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B0BAEECF25FFA07900F318A6 /* Read */ = {
 			isa = PBXGroup;
 			children = (
-				B0A9436525651E2600A7958E /* Entities */,
 				B00BC5C7260B82A700F0647D /* ReadMode.swift */,
 				5D6A92E22345F2A300158457 /* ReadCommand.swift */,
 				B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */,

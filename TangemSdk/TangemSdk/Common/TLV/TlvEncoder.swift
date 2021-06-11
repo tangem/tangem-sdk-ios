@@ -92,8 +92,8 @@ public final class TlvEncoder {
                 Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
 			}
 			
-			try typeCheck(value, Card.Wallet.SettingsMask.self, for: tag)
-			let mask = value as! Card.Wallet.SettingsMask
+            try typeCheck(value, Card.Wallet.Settings.Mask.self, for: tag)
+            let mask = value as! Card.Wallet.Settings.Mask
 			return mask.rawValue.bytes4
         case .status:
             guard let statusType = value as? StatusType else {

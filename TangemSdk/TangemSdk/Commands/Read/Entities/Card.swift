@@ -36,14 +36,6 @@ public struct Card: Codable, JSONStringConvertible {
     public let supportedCurves: [EllipticCurve]
     /// All wallets of the card
     internal(set) public var wallets: [Wallet] = []
-    /// True value indicates that the card experiences some hardware problems.
-    /// User should withdraw the value to other blockchain wallet as soon as possible.
-//    var cardHealth: Bool {
-//        if let health = health, health != 0 {
-//            return true
-//        }
-//        return false
-//    }
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.

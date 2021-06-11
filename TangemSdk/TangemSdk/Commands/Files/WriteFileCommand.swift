@@ -106,7 +106,7 @@ public final class WriteFileCommand: Command {
 		}
 		let decoder = TlvDecoder(tlv: tlv)
 		return WriteFileResponse(cardId: try decoder.decode(.cardId),
-									 fileIndex: try decoder.decodeOptional(.fileIndex))
+									 fileIndex: try decoder.decode(.fileIndex))
 	}
 	
 	// MARK: Private functions

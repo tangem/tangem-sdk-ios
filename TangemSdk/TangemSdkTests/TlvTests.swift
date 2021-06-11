@@ -73,11 +73,11 @@ class TlvTests: XCTestCase {
         XCTAssertNil(hexStringWrongType)
         
         //test decode optional parameter to optional
-        let optionalParameter: String? = try! decoder.decodeOptional(.manufacturerName)
+        let optionalParameter: String? = try! decoder.decode(.manufacturerName)
         XCTAssertNotNil(optionalParameter)
         
         //test missing optional
-        let missing: String? = try! decoder.decodeOptional(.tokenSymbol)
+        let missing: String? = try! decoder.decode(.tokenSymbol)
         XCTAssertNil(missing)
         
         //test missing not optional
@@ -97,7 +97,7 @@ class TlvTests: XCTestCase {
         }
         
         do {
-            let _: String? = try decoder.decodeOptional(.isActivated)
+            let _: String? = try decoder.decode(.isActivated)
             XCTAssertTrue(false)
         } catch {
             XCTAssertTrue(true)

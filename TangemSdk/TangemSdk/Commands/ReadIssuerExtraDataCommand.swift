@@ -182,9 +182,9 @@ public final class ReadIssuerExtraDataCommand: Command {
         let decoder = TlvDecoder(tlv: tlv)
         return ReadIssuerExtraDataResponse(
             cardId: try decoder.decode(.cardId),
-            size: try decoder.decodeOptional(.size),
-            issuerData: try decoder.decodeOptional(.issuerData) ?? Data(),
-            issuerDataSignature: try decoder.decodeOptional(.issuerDataSignature),
-            issuerDataCounter: try decoder.decodeOptional(.issuerDataCounter))
+            size: try decoder.decode(.size),
+            issuerData: try decoder.decode(.issuerData) ?? Data(),
+            issuerDataSignature: try decoder.decode(.issuerDataSignature),
+            issuerDataCounter: try decoder.decode(.issuerDataCounter))
     }
 }

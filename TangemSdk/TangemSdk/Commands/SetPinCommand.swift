@@ -27,15 +27,10 @@ public class SetPinCommand: Command {
     private var newPin1: Data?
     private var newPin2: Data?
     
-    private init(newPin1: Data?, newPin2: Data?, pinType: PinCode.PinType) {
-        self.newPin1 = newPin1
-        self.newPin2 = newPin2
+    private init(newPin1: String?, newPin2: String?, pinType: PinCode.PinType) {
+        self.newPin1 = newPin1?.sha256()
+        self.newPin2 = newPin2?.sha256()
         self.pinType = pinType
-    }
-    
-    /// Reset pin1 and pin2 to default values
-    public convenience init() {
-        self.init(newPin1: PinCode.defaultPin1.sha256(), newPin2: PinCode.defaultPin2.sha256(), pinType: .pin1)
     }
     
     /// Change pin
@@ -43,14 +38,14 @@ public class SetPinCommand: Command {
     ///   - pinType: Pin to change
     ///   - pin: If nil, pin will be requested automatically
     ///   - isExclusive: Reset other pin codes to the default values
-    public convenience init(pinType: PinCode.PinType, pin: Data? = nil, isExclusive: Bool = false) { //todo: string
+    public convenience init(pinType: PinCode.PinType, pin: String? = nil, isExclusive: Bool = false) {
         switch pinType {
         case .pin1:
             self.init(newPin1: pin,
-                      newPin2: isExclusive ? PinCode.defaultPin2.sha256() : nil,
+                      newPin2: isExclusive ? PinCode.defaultPin2 : nil,
                       pinType: pinType)
         case .pin2:
-            self.init(newPin1: isExclusive ? PinCode.defaultPin1.sha256() : nil,
+            self.init(newPin1: isExclusive ? PinCode.defaultPin1 : nil,
                       newPin2: pin,
                       pinType: pinType)
         }

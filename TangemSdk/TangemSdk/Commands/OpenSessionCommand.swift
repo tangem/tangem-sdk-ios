@@ -41,7 +41,7 @@ class OpenSessionCommand: ApduSerializable {
         
         let decoder = TlvDecoder(tlv: tlv)
         return OpenSessionResponse(sessionKeyB: try decoder.decode(.sessionKeyB),
-                                   uid: try decoder.decodeOptional(.uid))
+                                   uid: try decoder.decode(.uid))
     }
 }
 

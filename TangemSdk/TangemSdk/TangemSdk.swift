@@ -471,7 +471,7 @@ public final class TangemSdk {
         startSession(with: DepersonalizeCommand(), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
     
-    public func changePin1(pin: Data? = nil,
+    public func changePin1(pin: String? = nil,
                            cardId: String? = nil,
                            initialMessage: Message? = nil,
                            completion: @escaping CompletionResult<SetPinResponse>){
@@ -479,7 +479,7 @@ public final class TangemSdk {
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
-    public func changePin2(pin: Data? = nil,
+    public func changePin2(pin: String? = nil,
                            cardId: String? = nil,
                            initialMessage: Message? = nil,
                            completion: @escaping CompletionResult<SetPinResponse>){

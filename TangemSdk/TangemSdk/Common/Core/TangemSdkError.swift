@@ -50,7 +50,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when the `TlvEncoder` failed to encode nil value or failed to encode stiring with utf8 encoding
     case encodingFailed(_ message: String)
     
-    /// This error is returned when the `TlvDecoder` cannot find desired tag. You can use `decodeOptional` to handle this error automatically
+    /// This error is returned when the `TlvDecoder` cannot find desired tag. You can use `decode` to handle this error automatically
     case decodingFailedMissingTag(_ message: String)
     
     /// This error is returned when the `TlvDecoder` failed to decode value not matching `TlvTag` value type

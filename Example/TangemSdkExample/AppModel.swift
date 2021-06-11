@@ -101,10 +101,9 @@ extension AppModel {
     
     func createWallet() {
         let walletConfig = WalletConfig(isProhibitPurge: isProhibitPurgeWallet,
-                                        curve: curve,
                                         signingMethods: .signHash)
 
-        tangemSdk.createWallet(config: walletConfig, cardId: card?.cardId) { [unowned self] result in
+        tangemSdk.createWallet(curve: curve, config: walletConfig, cardId: card?.cardId) { [unowned self] result in
             switch result {
             case .success(let response):
                 self.log(response)

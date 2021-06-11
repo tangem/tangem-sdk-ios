@@ -106,11 +106,11 @@ public final class ReadFileCommand: Command {
 		}
 		let decoder = TlvDecoder(tlv: tlv)
 		return ReadFileResponse(cardId: try decoder.decode(.cardId),
-									size: try decoder.decodeOptional(.size),
-									fileData: try decoder.decodeOptional(.issuerData) ?? Data(),
-									fileIndex: try decoder.decodeOptional(.fileIndex) ?? 0,
-									fileSettings: try decoder.decodeOptional(.fileSettings) ?? .public,
-									fileDataSignature: try decoder.decodeOptional(.issuerDataSignature),
-									fileDataCounter: try decoder.decodeOptional(.issuerDataCounter))
+									size: try decoder.decode(.size),
+									fileData: try decoder.decode(.issuerData) ?? Data(),
+									fileIndex: try decoder.decode(.fileIndex) ?? 0,
+									fileSettings: try decoder.decode(.fileSettings) ?? .public,
+									fileDataSignature: try decoder.decode(.issuerDataSignature),
+									fileDataCounter: try decoder.decode(.issuerDataCounter))
 	}
 }

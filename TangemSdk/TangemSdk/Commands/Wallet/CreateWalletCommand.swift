@@ -162,7 +162,7 @@ public final class CreateWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let index = try decoder.decodeOptional(.walletIndex) ?? walletIndex!
+        let index = try decoder.decode(.walletIndex) ?? walletIndex!
         
         guard let settingsMask = config.settingsMask ?? environment.card?.settings.mask.toWalletSettingsMask(),
               let signingMethods = config.signingMethods ?? environment.card?.settings.defaultSigningMethods else {

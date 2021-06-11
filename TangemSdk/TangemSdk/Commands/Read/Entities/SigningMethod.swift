@@ -43,18 +43,34 @@ extension SigningMethod: Codable {
 }
 
 //MARK: - Constants
-extension SigningMethod {
-    public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
-    public static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
-    public static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
-    public static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
-    public static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4)) //todo: remove
-    public static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5)) //todo: remove
-    public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
+public extension SigningMethod {
+    static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
+    static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
+    static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
+    static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
+    static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4)) //todo: remove
+    static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5)) //todo: remove
+    static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
 }
 
-extension SigningMethod {
-    private enum Method: String, CaseIterable {
+extension SigningMethod: StringArrayConvertible {
+    func toStringArray() -> [String] {
+        var values = [String]()
+        
+        for item in Method.allCases {
+            if contains(item.value) {
+                values.append(item.rawValue.capitalizingFirst())
+            }
+        }
+        
+        return values
+    }
+}
+
+extension SigningMethod: LogStringConvertible, JSONStringConvertible {}
+
+private extension SigningMethod {
+    enum Method: String, CaseIterable {
         case signHash
         case signRaw
         case signHashSignedByIssuer
@@ -83,19 +99,3 @@ extension SigningMethod {
         }
     }
 }
-
-extension SigningMethod: StringArrayConvertible {
-    func toStringArray() -> [String] {
-        var values = [String]()
-        
-        for item in Method.allCases {
-            if contains(item.value) {
-                values.append(item.rawValue.capitalizingFirst())
-            }
-        }
-        
-        return values
-    }
-}
-
-extension SigningMethod: LogStringConvertible, JSONStringConvertible {}

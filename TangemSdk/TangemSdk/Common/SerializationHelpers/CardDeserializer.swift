@@ -37,7 +37,7 @@ struct CardDeserializer {
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                      curve: defaultCurve,
                                      settings: walletSettings,
-                                     totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes),
+                                     totalSignedHashes: try decoder.decode(.walletSignedHashes),
                                      remainingSignatures: remainingSignatures!,
                                      index: 0)
             
@@ -54,7 +54,7 @@ struct CardDeserializer {
         
         let settings = Card.Settings(securityDelay: try decoder.decode(.pauseBeforePin2),
                                      mask:  cardSettingsMask,
-                                     maxWalletsCount: try decoder.decodeOptional(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
+                                     maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      defaultSigningMethods: defaultSigningMethods,
                                      defaultCurve: defaultCurve)
         

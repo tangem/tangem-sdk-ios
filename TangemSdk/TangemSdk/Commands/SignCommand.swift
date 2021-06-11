@@ -184,7 +184,7 @@ public final class SignCommand: Command {
         let splittedSignatures = splitSignedSignature(try decoder.decode(.walletSignature), numberOfSignatures: getChunk().underestimatedCount)
         let resp = SignResponse(cardId: try decoder.decode(.cardId),
                                 signatures: splittedSignatures,
-                                totalSignedHashes: try decoder.decodeOptional(.walletSignedHashes))
+                                totalSignedHashes: try decoder.decode(.walletSignedHashes))
         return resp
     }
     

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
-public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible {
+public struct SigningMethod: OptionSet {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {
@@ -19,82 +19,83 @@ public struct SigningMethod: OptionSet, Codable, StringArrayConvertible, JSONStr
 			self.rawValue = 0b10000000|(1 << rawValue)
 		}
 	}
-	
-	public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
-	public static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
-	public static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
-	public static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
-	public static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4)) //todo: remove
-	public static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5)) //todo: remove
-	public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
-	
-	public func encode(to encoder: Encoder) throws {
-		var container = encoder.singleValueContainer()
-		try container.encode(toStringArray())
-	}
-	
-	public init(from decoder: Decoder) throws {
-		let values = try decoder.singleValueContainer()
-		let stringValues = try values.decode([String].self)
-		var mask = SigningMethod()
-		
-		if stringValues.contains("SignHash") {
-			mask.update(with: SigningMethod.signHash)
-		}
-		
-		if stringValues.contains("SignRaw") {
-			mask.update(with: SigningMethod.signRaw)
-		}
-		
-		if stringValues.contains("SignHashSignedByIssuer") {
-			mask.update(with: SigningMethod.signHashSignedByIssuer)
-		}
-		
-		if stringValues.contains("SignRawSignedByIssuer") {
-			mask.update(with: SigningMethod.signRawSignedByIssuer)
-		}
-		
-		if stringValues.contains("SignHashSignedByIssuerAndUpdateIssuerData") {
-			mask.update(with: SigningMethod.signHashSignedByIssuerAndUpdateIssuerData)
-		}
-		
-		if stringValues.contains("SignRawSignedByIssuerAndUpdateIssuerData") {
-			mask.update(with: SigningMethod.signRawSignedByIssuerAndUpdateIssuerData)
-		}
-		
-		if stringValues.contains("SignPos") {
-			mask.update(with: SigningMethod.signPos)
-		}
-		
-		self = mask
-	}
+}
+
+extension SigningMethod: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(toStringArray())
+    }
     
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.singleValueContainer()
+        let stringValues = try values.decode([String].self)
+        var mask = SigningMethod()
+        
+        for item in Method.allCases {
+            if stringValues.contains(item.rawValue.capitalizingFirst()) {
+                mask.update(with: item.value)
+            }
+        }
+        
+        self = mask
+    }
+}
+
+//MARK: - Constants
+extension SigningMethod {
+    public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
+    public static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
+    public static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
+    public static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
+    public static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 4)) //todo: remove
+    public static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000|(1 << 5)) //todo: remove
+    public static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
+}
+
+extension SigningMethod {
+    private enum Method: String, CaseIterable {
+        case signHash
+        case signRaw
+        case signHashSignedByIssuer
+        case signRawSignedByIssuer
+        case signHashSignedByIssuerAndUpdateIssuerData
+        case signRawSignedByIssuerAndUpdateIssuerData
+        case signPos
+        
+        var value: SigningMethod {
+            switch self {
+            case .signHash:
+                return .signHash
+            case .signRaw:
+                return .signRaw
+            case .signHashSignedByIssuer:
+                return .signHashSignedByIssuer
+            case .signRawSignedByIssuer:
+                return .signRawSignedByIssuer
+            case .signHashSignedByIssuerAndUpdateIssuerData:
+                return .signHashSignedByIssuerAndUpdateIssuerData
+            case .signRawSignedByIssuerAndUpdateIssuerData:
+                return .signRawSignedByIssuerAndUpdateIssuerData
+            case .signPos:
+                return .signPos
+            }
+        }
+    }
+}
+
+extension SigningMethod: StringArrayConvertible {
     func toStringArray() -> [String] {
         var values = [String]()
-        if contains(SigningMethod.signHash) {
-            values.append("SignHash")
+        
+        for item in Method.allCases {
+            if contains(item.value) {
+                values.append(item.rawValue.capitalizingFirst())
+            }
         }
-        if contains(SigningMethod.signRaw) {
-            values.append("SignRaw")
-        }
-        if contains(SigningMethod.signHashSignedByIssuer) {
-            values.append("SignHashSignedByIssuer")
-        }
-        if contains(SigningMethod.signRawSignedByIssuer) {
-            values.append("SignRawSignedByIssuer")
-        }
-        if contains(SigningMethod.signHashSignedByIssuerAndUpdateIssuerData) {
-            values.append("SignHashSignedByIssuerAndUpdateIssuerData")
-        }
-        if contains(SigningMethod.signRawSignedByIssuerAndUpdateIssuerData) {
-            values.append("SignRawSignedByIssuerAndUpdateIssuerData")
-        }
-        if contains(SigningMethod.signPos) {
-            values.append("SignPos")
-        }
+        
         return values
     }
 }
 
-
-extension SigningMethod: LogStringConvertible {}
+extension SigningMethod: LogStringConvertible, JSONStringConvertible {}

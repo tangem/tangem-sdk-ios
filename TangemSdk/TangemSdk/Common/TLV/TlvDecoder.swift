@@ -139,9 +139,9 @@ public final class TlvDecoder {
                 let settingsMask = Card.Settings.Mask(rawValue: intValue)
                 return settingsMask as! T
             } catch TangemSdkError.decodingFailedTypeMismatch {
-                try typeCheck(Card.Wallet.SettingsMask.self, T.self, for: tag)
+                try typeCheck(Card.Wallet.Settings.Mask.self, T.self, for: tag)
                 let intValue = tagValue.toInt()
-                let settingsMask = Card.Wallet.SettingsMask(rawValue: intValue)
+                let settingsMask = Card.Wallet.Settings.Mask(rawValue: intValue)
                 return settingsMask as! T
             }
         case .status:

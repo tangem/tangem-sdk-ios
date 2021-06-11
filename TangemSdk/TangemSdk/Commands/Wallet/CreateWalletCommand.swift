@@ -16,6 +16,29 @@ public struct CreateWalletResponse: JSONStringConvertible {
     public let wallet: Card.Wallet
 }
 
+/// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
+public struct WalletConfig {
+    /// If `true` card will denied purge wallet request on this wallet
+    let isProhibitPurge: Bool?
+    /// Determines which type of data is required for signing by wallet.
+    let signingMethods: SigningMethod?
+    
+    public init(isProhibitPurge: Bool? = nil, signingMethods: SigningMethod? = nil) {
+        self.isProhibitPurge = isProhibitPurge
+        self.signingMethods = signingMethods
+    }
+    
+    var settingsMask: Card.Wallet.SettingsMask? {
+        guard let isProhibitPurge = isProhibitPurge else { return nil }
+
+        let builder = WalletSettingsMaskBuilder()
+        if isProhibitPurge {
+            builder.add(.isProhibitPurge)
+        }
+        return builder.build()
+    }
+}
+
 /**
  * This command will create a new wallet on the card having ‘Empty’ state.
  * A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.

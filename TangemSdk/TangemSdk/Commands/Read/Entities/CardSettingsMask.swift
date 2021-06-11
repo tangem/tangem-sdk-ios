@@ -10,192 +10,130 @@ import Foundation
 
 public extension Card.Settings {
     /// Stores and maps Tangem card settings.
-    struct Mask: OptionSet, Codable, StringArrayConvertible, JSONStringConvertible, LogStringConvertible {
+    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
         public let rawValue: Int
         
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
+    }
+}
+
+//MARK:- Constants
+public extension Card.Settings.Mask {
+    static let useActivation = Card.Settings.Mask(rawValue: 0x0002)
+    static let useBlock = Card.Settings.Mask(rawValue: 0x0008)
+    static let allowSetPIN1 = Card.Settings.Mask(rawValue: 0x0010)
+    static let allowSetPIN2 = Card.Settings.Mask(rawValue: 0x0020)
+    static let useCvc = Card.Settings.Mask(rawValue: 0x0040)
+    static let prohibitDefaultPIN1 = Card.Settings.Mask(rawValue: 0x0080)
+    static let useOneCommandAtTime = Card.Settings.Mask(rawValue: 0x0100)
+    static let useNDEF = Card.Settings.Mask(rawValue: 0x0200)
+    static let useDynamicNDEF = Card.Settings.Mask(rawValue: 0x0400)
+    static let smartSecurityDelay = Card.Settings.Mask(rawValue: 0x0800)
+    static let allowUnencrypted = Card.Settings.Mask(rawValue: 0x1000)
+    static let allowFastEncryption = Card.Settings.Mask(rawValue: 0x2000)
+    static let protectIssuerDataAgainstReplay = Card.Settings.Mask(rawValue: 0x4000)
+    static let allowSelectBlockchain = Card.Settings.Mask(rawValue: 0x8000)
+    static let disablePrecomputedNDEF = Card.Settings.Mask(rawValue: 0x00010000)
+    static let skipSecurityDelayIfValidatedByIssuer = Card.Settings.Mask(rawValue: 0x00020000)
+    static let skipCheckPIN2CVCIfValidatedByIssuer = Card.Settings.Mask(rawValue: 0x00040000)
+    static let skipSecurityDelayIfValidatedByLinkedTerminal = Card.Settings.Mask(rawValue: 0x00080000)
+    static let restrictOverwriteIssuerExtraData = Card.Settings.Mask(rawValue: 0x00100000)
+    static let disableIssuerData = Card.Settings.Mask(rawValue: 0x01000000)
+    static let disableUserData = Card.Settings.Mask(rawValue: 0x02000000)
+    static let disableFiles = Card.Settings.Mask(rawValue: 0x04000000)
+}
+
+extension Card.Settings.Mask {
+    static let isReusable = Card.Settings.Mask(rawValue: 0x0001)
+    static let prohibitPurgeWallet = Card.Settings.Mask(rawValue: 0x0004)
+}
+
+//MARK:- OptionSetCodable conformance
+extension Card.Settings.Mask: OptionSetCodable {
+    public enum OptionKeys: String, OptionKey {
+        case useActivation
+        case useBlock
+        case allowSetPIN1
+        case allowSetPIN2
+        case useCvc
+        case prohibitDefaultPIN1
+        case useOneCommandAtTime
+        case useNDEF
+        case useDynamicNDEF
+        case smartSecurityDelay
+        case allowUnencrypted
+        case allowFastEncryption
+        case protectIssuerDataAgainstReplay
+        case allowSelectBlockchain
+        case disablePrecomputedNDEF
+        case skipSecurityDelayIfValidatedByIssuer
+        case skipCheckPIN2CVCIfValidatedByIssuer
+        case skipSecurityDelayIfValidatedByLinkedTerminal
+        case restrictOverwriteIssuerExtraData
+        case disableIssuerData
+        case disableUserData
+        case disableFiles
+        case isReusable
+        case prohibitPurgeWallet
         
-        public static let useActivation = Mask(rawValue: 0x0002)
-        public static let useBlock = Mask(rawValue: 0x0008)
-        public static let allowSetPIN1 = Mask(rawValue: 0x0010)
-        public static let allowSetPIN2 = Mask(rawValue: 0x0020)
-        public static let useCvc = Mask(rawValue: 0x0040)
-        public static let prohibitDefaultPIN1 = Mask(rawValue: 0x0080)
-        public static let useOneCommandAtTime = Mask(rawValue: 0x0100)
-        public static let useNDEF = Mask(rawValue: 0x0200)
-        public static let useDynamicNDEF = Mask(rawValue: 0x0400)
-        public static let smartSecurityDelay = Mask(rawValue: 0x0800)
-        public static let allowUnencrypted = Mask(rawValue: 0x1000)
-        public static let allowFastEncryption = Mask(rawValue: 0x2000)
-        public static let protectIssuerDataAgainstReplay = Mask(rawValue: 0x4000)
-        public static let allowSelectBlockchain = Mask(rawValue: 0x8000)
-        public static let disablePrecomputedNDEF = Mask(rawValue: 0x00010000)
-        public static let skipSecurityDelayIfValidatedByIssuer = Mask(rawValue: 0x00020000)
-        public static let skipCheckPIN2CVCIfValidatedByIssuer = Mask(rawValue: 0x00040000)
-        public static let skipSecurityDelayIfValidatedByLinkedTerminal = Mask(rawValue: 0x00080000)
-        public static let restrictOverwriteIssuerExtraData = Mask(rawValue: 0x00100000)
-        public static let disableIssuerData = Mask(rawValue: 0x01000000)
-        public static let disableUserData = Mask(rawValue: 0x02000000)
-        public static let disableFiles = Mask(rawValue: 0x04000000)
-        
-        static let isReusable = Mask(rawValue: 0x0001)
-        static let prohibitPurgeWallet = Mask(rawValue: 0x0004)
-        
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
-            try container.encode(toStringArray())
-        }
-        
-        public init(from decoder: Decoder) throws {
-            let values = try decoder.singleValueContainer()
-            let stringValues = try values.decode([String].self)
-            var mask = Mask()
-            
-            if stringValues.contains("UseActivation") {
-                mask.update(with: .useActivation)
+        public var value: Card.Settings.Mask {
+            switch self {
+            case .useActivation:
+                return .useActivation
+            case .useBlock:
+                return .useBlock
+            case .allowSetPIN1:
+                return .allowSetPIN1
+            case .allowSetPIN2:
+                return .allowSetPIN2
+            case .useCvc:
+                return .useCvc
+            case .prohibitDefaultPIN1:
+                return .prohibitDefaultPIN1
+            case .useOneCommandAtTime:
+                return .useOneCommandAtTime
+            case .useNDEF:
+                return .useNDEF
+            case .useDynamicNDEF:
+                return .useDynamicNDEF
+            case .smartSecurityDelay:
+                return .smartSecurityDelay
+            case .allowUnencrypted:
+                return .allowUnencrypted
+            case .allowFastEncryption:
+                return .allowFastEncryption
+            case .protectIssuerDataAgainstReplay:
+                return .protectIssuerDataAgainstReplay
+            case .allowSelectBlockchain:
+                return .allowSelectBlockchain
+            case .disablePrecomputedNDEF:
+                return .disablePrecomputedNDEF
+            case .skipSecurityDelayIfValidatedByIssuer:
+                return .skipSecurityDelayIfValidatedByIssuer
+            case .skipCheckPIN2CVCIfValidatedByIssuer:
+                return .skipCheckPIN2CVCIfValidatedByIssuer
+            case .skipSecurityDelayIfValidatedByLinkedTerminal:
+                return .skipSecurityDelayIfValidatedByLinkedTerminal
+            case .restrictOverwriteIssuerExtraData:
+                return .restrictOverwriteIssuerExtraData
+            case .disableIssuerData:
+                return .disableIssuerData
+            case .disableUserData:
+                return .disableUserData
+            case .disableFiles:
+                return .disableFiles
+            case .isReusable:
+                return .isReusable
+            case .prohibitPurgeWallet:
+                return .prohibitPurgeWallet
             }
-            if stringValues.contains("UseBlock") {
-                mask.update(with: .useBlock)
-            }
-            if stringValues.contains("AllowSetPIN1") {
-                mask.update(with: .allowSetPIN1)
-            }
-            if stringValues.contains("AllowSetPIN2") {
-                mask.update(with: .allowSetPIN2)
-            }
-            if stringValues.contains("UseCvc") {
-                mask.update(with: .useCvc)
-            }
-            if stringValues.contains("ProhibitDefaultPIN1") {
-                mask.update(with: .prohibitDefaultPIN1)
-            }
-            if stringValues.contains("UseOneCommandAtTime") {
-                mask.update(with: .useOneCommandAtTime)
-            }
-            if stringValues.contains("UseNDEF") {
-                mask.update(with: .useNDEF)
-            }
-            if stringValues.contains("UseDynamicNDEF") {
-                mask.update(with: .useDynamicNDEF)
-            }
-            if stringValues.contains("SmartSecurityDelay") {
-                mask.update(with: .smartSecurityDelay)
-            }
-            if stringValues.contains("AllowUnencrypted") {
-                mask.update(with: .allowUnencrypted)
-            }
-            if stringValues.contains("AllowFastEncryption") {
-                mask.update(with: .allowFastEncryption)
-            }
-            if stringValues.contains("ProtectIssuerDataAgainstReplay") {
-                mask.update(with: .protectIssuerDataAgainstReplay)
-            }
-            if stringValues.contains("AllowSelectBlockchain") {
-                mask.update(with: .allowSelectBlockchain)
-            }
-            if stringValues.contains("DisablePrecomputedNDEF") {
-                mask.update(with: .disablePrecomputedNDEF)
-            }
-            if stringValues.contains("SkipSecurityDelayIfValidatedByIssuer") {
-                mask.update(with: .skipSecurityDelayIfValidatedByIssuer)
-            }
-            if stringValues.contains("SkipCheckPIN2CVCIfValidatedByIssuer") {
-                mask.update(with: .skipCheckPIN2CVCIfValidatedByIssuer)
-            }
-            if stringValues.contains("SkipSecurityDelayIfValidatedByLinkedTerminal") {
-                mask.update(with: .skipSecurityDelayIfValidatedByLinkedTerminal)
-            }
-            if stringValues.contains("RestrictOverwriteIssuerExtraData") {
-                mask.update(with: .restrictOverwriteIssuerExtraData)
-            }
-            if stringValues.contains("DisableIssuerData") {
-                mask.update(with: .disableIssuerData)
-            }
-            if stringValues.contains("DisableUserData") {
-                mask.update(with: .disableUserData)
-            }
-            if stringValues.contains("DisableFiles") {
-                mask.update(with: .disableFiles)
-            }
-            
-            self = mask
-        }
-        
-        func toStringArray() -> [String] {
-            var values = [String]()
-            if contains(.useActivation) {
-                values.append("UseActivation")
-            }
-            if contains(.useBlock) {
-                values.append("UseBlock")
-            }
-            if contains(.allowSetPIN1) {
-                values.append("AllowSetPIN1")
-            }
-            if contains(.allowSetPIN2) {
-                values.append("AllowSetPIN2")
-            }
-            if contains(.useCvc) {
-                values.append("UseCvc")
-            }
-            if contains(.prohibitDefaultPIN1) {
-                values.append("ProhibitDefaultPIN1")
-            }
-            if contains(.useOneCommandAtTime) {
-                values.append("UseOneCommandAtTime")
-            }
-            if contains(.useNDEF) {
-                values.append("UseNDEF")
-            }
-            if contains(.useDynamicNDEF) {
-                values.append("UseDynamicNDEF")
-            }
-            if contains(.smartSecurityDelay) {
-                values.append("SmartSecurityDelay")
-            }
-            if contains(.allowUnencrypted) {
-                values.append("AllowUnencrypted")
-            }
-            if contains(.allowFastEncryption) {
-                values.append("AllowFastEncryption")
-            }
-            if contains(.protectIssuerDataAgainstReplay) {
-                values.append("ProtectIssuerDataAgainstReplay")
-            }
-            if contains(.allowSelectBlockchain) {
-                values.append("AllowSelectBlockchain")
-            }
-            if contains(.disablePrecomputedNDEF) {
-                values.append("DisablePrecomputedNDEF")
-            }
-            if contains(.skipSecurityDelayIfValidatedByIssuer) {
-                values.append("SkipSecurityDelayIfValidatedByIssuer")
-            }
-            if contains(.skipCheckPIN2CVCIfValidatedByIssuer) {
-                values.append("SkipCheckPIN2CVCIfValidatedByIssuer")
-            }
-            if contains(.skipSecurityDelayIfValidatedByLinkedTerminal) {
-                values.append("SkipSecurityDelayIfValidatedByLinkedTerminal")
-            }
-            if contains(.restrictOverwriteIssuerExtraData) {
-                values.append("RestrictOverwriteIssuerExtraData")
-            }
-            if contains(.disableIssuerData) {
-                values.append("DisableIssuerData")
-            }
-            if contains(.disableUserData) {
-                values.append("DisableUserData")
-            }
-            if contains(.disableFiles) {
-                values.append("DisableFiles")
-            }
-            return values
         }
     }
 }
 
+//MARK:- Other
 class SettingsMaskBuilder {
     private var settingsMaskValue = 0
 

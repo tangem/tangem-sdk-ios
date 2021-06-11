@@ -9,7 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
-public struct SigningMethod: OptionSet {
+public struct SigningMethod: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {
@@ -19,27 +19,6 @@ public struct SigningMethod: OptionSet {
 			self.rawValue = 0b10000000|(1 << rawValue)
 		}
 	}
-}
-
-extension SigningMethod: Codable {
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(toStringArray())
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.singleValueContainer()
-        let stringValues = try values.decode([String].self)
-        var mask = SigningMethod()
-        
-        for item in Method.allCases {
-            if stringValues.contains(item.rawValue.capitalizingFirst()) {
-                mask.update(with: item.value)
-            }
-        }
-        
-        self = mask
-    }
 }
 
 //MARK: - Constants
@@ -53,24 +32,9 @@ public extension SigningMethod {
     static let signPos = SigningMethod(rawValue: 0b10000000|(1 << 6)) //todo: remove
 }
 
-extension SigningMethod: StringArrayConvertible {
-    func toStringArray() -> [String] {
-        var values = [String]()
-        
-        for item in Method.allCases {
-            if contains(item.value) {
-                values.append(item.rawValue.capitalizingFirst())
-            }
-        }
-        
-        return values
-    }
-}
-
-extension SigningMethod: LogStringConvertible, JSONStringConvertible {}
-
-private extension SigningMethod {
-    enum Method: String, CaseIterable {
+//MARK: - OptionSetCodable conformance
+extension SigningMethod: OptionSetCodable {
+    public enum OptionKeys: String, OptionKey {
         case signHash
         case signRaw
         case signHashSignedByIssuer
@@ -79,7 +43,7 @@ private extension SigningMethod {
         case signRawSignedByIssuerAndUpdateIssuerData
         case signPos
         
-        var value: SigningMethod {
+        public var value: SigningMethod {
             switch self {
             case .signHash:
                 return .signHash

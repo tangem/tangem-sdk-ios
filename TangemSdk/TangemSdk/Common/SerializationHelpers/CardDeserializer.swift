@@ -17,7 +17,7 @@ struct CardDeserializer {
         try assertActivation(try decoder.decode(.isActivated))
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
-        let cardSettingsMask: Card.SettingsMask = try decoder.decode(.settingsMask)
+        let cardSettingsMask: Card.Settings.Mask = try decoder.decode(.settingsMask)
         
         let pin2IsDefault: Bool? = firmware >= .pin2IsDefaultAvailable ?
             try decoder.decode(.pin2IsDefault) : nil

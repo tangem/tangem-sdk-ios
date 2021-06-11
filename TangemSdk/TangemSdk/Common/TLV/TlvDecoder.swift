@@ -27,9 +27,9 @@ public final class TlvDecoder {
      *
      * - Returns: Value converted to an optional type `T`.
      */
-    public func decodeOptional<T>(_ tag: TlvTag) throws -> T? {
+    public func decode<T>(_ tag: TlvTag) throws -> T where T: ExpressibleByNilLiteral {
         do {
-            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag), asOptional: true)
+            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag))
             logTlv(tag, decoded)
             return decoded
         } catch TangemSdkError.decodingFailedMissingTag {
@@ -52,7 +52,7 @@ public final class TlvDecoder {
      */
     public func decode<T>(_ tag: TlvTag) throws -> T {
         do {
-            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag), asOptional: false)
+            let decoded: T = try innerDecode(tag, tagValue: tlv.value(for: tag))
             logTlv(tag, decoded)
             return decoded
         } catch {
@@ -68,12 +68,12 @@ public final class TlvDecoder {
         }
         
         return try tlvs.map {
-            let decoded: T = try innerDecode(tag, tagValue: $0.value, asOptional: false)
+            let decoded: T = try innerDecode(tag, tagValue: $0.value)
             return decoded
         }
     }
     
-    func innerDecode<T>(_ tag: TlvTag, tagValue: Data?, asOptional: Bool) throws -> T {
+    func innerDecode<T>(_ tag: TlvTag, tagValue: Data?) throws -> T {
         guard let tagValue = tagValue else {
             if tag.valueType == .boolValue {
                 guard Bool.self == T.self || Bool?.self == T.self else {

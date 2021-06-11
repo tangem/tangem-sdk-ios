@@ -107,6 +107,6 @@ public final class ReadIssuerDataCommand: Command {
             cardId: try decoder.decode(.cardId),
             issuerData: try decoder.decode(.issuerData),
             issuerDataSignature: try decoder.decode(.issuerDataSignature),
-            issuerDataCounter: try decoder.decodeOptional(.issuerDataCounter))
+            issuerDataCounter: try decoder.decode(.issuerDataCounter))
     }
 }

@@ -123,7 +123,7 @@ public struct CardConfig: JSONStringConvertible {
     }
     
     
-    func createSettingsMask() -> Card.SettingsMask {
+    func createSettingsMask() -> Card.Settings.Mask {
         let builder = SettingsMaskBuilder()
         
         if allowSetPIN1 {

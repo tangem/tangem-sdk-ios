@@ -74,7 +74,7 @@ public extension Card {
         /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
         public let securityDelay: Int //todo: convert to ms
         /// Card settings defined by personalization (bit mask: 0 – Enabled, 1 – Disabled).
-        public let mask: SettingsMask
+        public let mask: Mask
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Card's default signing methods according personalization.

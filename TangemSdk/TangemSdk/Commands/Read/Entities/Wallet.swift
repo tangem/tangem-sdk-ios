@@ -31,24 +31,24 @@ public extension Card {
 public extension Card.Wallet {
     struct Settings: Codable {
         /// Settings of the wallet
-        public let mask: SettingsMask
+        public let mask: Mask
         /// Defines what data should be submitted to SIGN command.
         public let signingMethods: SigningMethod
         /// Total number of signed hashes returned by the wallet since its creation
     }
 }
 
-public extension Card.Wallet {
+public extension Card.Wallet.Settings {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0
-    struct SettingsMask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible, LogStringConvertible {
+    struct Mask: Codable, OptionSet, StringArrayConvertible, JSONStringConvertible, LogStringConvertible {
         public var rawValue: Int
         
         public init(rawValue: Int) {
             self.rawValue = rawValue
         }
         
-        public static let isProhibitPurge = SettingsMask(rawValue: 0x0004)
+        public static let isProhibitPurge = Mask(rawValue: 0x0004)
         
         public func encode(to encoder: Encoder) throws {
             var container = encoder.singleValueContainer()
@@ -58,7 +58,7 @@ public extension Card.Wallet {
         public init(from decoder: Decoder) throws {
             let values = try decoder.singleValueContainer()
             let stringValues = try values.decode([String].self)
-            var mask = SettingsMask()
+            var mask = Mask()
             if stringValues.contains("isProhibitPurge") {
                 mask.update(with: .isProhibitPurge)
             }
@@ -91,11 +91,11 @@ extension Card.Wallet {
 class WalletSettingsMaskBuilder {
     private var settingsMaskValue = 0
     
-    func add(_ settings: Card.Wallet.SettingsMask) {
+    func add(_ settings: Card.Wallet.Settings.Mask) {
         settingsMaskValue |= settings.rawValue
     }
     
-    func build() -> Card.Wallet.SettingsMask {
-        Card.Wallet.SettingsMask(rawValue: settingsMaskValue)
+    func build() -> Card.Wallet.Settings.Mask {
+        Card.Wallet.Settings.Mask(rawValue: settingsMaskValue)
     }
 }

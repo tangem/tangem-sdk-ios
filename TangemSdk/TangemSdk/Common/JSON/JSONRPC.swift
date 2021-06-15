@@ -21,12 +21,11 @@ public final class JSONRPCConverter {
     private init() {}
 
     public func register(_ object: JSONRPCConvertible.Type) {
-        let methodName = String(describing: object).camelCaseToSnakeCase().uppercased()
-        runnables[methodName] = object
+        runnables[object.method.lowercased()] = object
     }
     
     public func convert(request: JSONRPCRequest) throws -> AnyJSONRPCRunnable {
-        guard let method = runnables[request.method.uppercased()] else {
+        guard let method = runnables[request.method.lowercased()] else {
             throw JSONRPCError(.methodNotFound, data: request.method)
         }
         
@@ -35,6 +34,7 @@ public final class JSONRPCConverter {
 }
 
 public protocol JSONRPCConvertible {
+    static var method: String { get }
     init(from parameters: [String: Any]) throws
     static func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable
 }
@@ -98,15 +98,15 @@ public struct JSONRPCRequest {
 
 public struct JSONRPCResponse: JSONStringConvertible {
     public let jsonrpc: String
-    public let id: Int?
-    public let result: String
+    public let result: AnyJSONRPCResponse?
     public let error: JSONRPCError?
+    public let id: Int?
     
-    public init(id: Int?, result: String, error: JSONRPCError?) {
+    public init(id: Int?, result: AnyJSONRPCResponse?, error: JSONRPCError?) {
         self.jsonrpc = "2.0"
-        self.id = id
         self.result = result
         self.error = error
+        self.id = id
     }
 }
 
@@ -162,7 +162,7 @@ extension Result where Success: JSONStringConvertible, Failure == TangemSdkError
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         switch self {
         case .success(let response):
-            return JSONRPCResponse(id: id, result: response.json, error: nil)
+            return JSONRPCResponse(id: id, result: response.eraseToAnyResponse(), error: nil)
         case .failure(let error):
             return error.toJsonResponse(id: id)
         }
@@ -171,7 +171,7 @@ extension Result where Success: JSONStringConvertible, Failure == TangemSdkError
 
 extension Error {
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
-        return JSONRPCResponse(id: id, result: "", error: toJsonError())
+        return JSONRPCResponse(id: id, result: nil, error: toJsonError())
     }
     
     func toJsonError() -> JSONRPCError {
@@ -241,6 +241,8 @@ extension Dictionary where Key == String, Value == Any {
 // MARK: - Commands implemetation
 
 extension SignCommand: JSONRPCConvertible {
+    public static var method: String { "sign" }
+    
     public convenience init(from parameters: [String : Any]) throws {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         self.init(hashes: try parameters.value(for: "hashes"), walletPublicKey: walletPublicKey)
@@ -248,6 +250,8 @@ extension SignCommand: JSONRPCConvertible {
 }
 
 extension ScanTask: JSONRPCConvertible {
+    public static var method: String { "scan" }
+    
     public convenience init(from parameters: [String : Any]) throws {
         self.init(cardVerification: try parameters.value(for: "cardVerification"))
     }

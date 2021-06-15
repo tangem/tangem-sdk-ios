@@ -19,7 +19,7 @@ struct CardDeserializer {
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
         let cardSettingsMask: Card.Settings.Mask = try decoder.decode(.settingsMask)
         
-        let pin2IsDefault: Bool? = firmware >= .pin2IsDefaultAvailable ?
+        let pin2IsDefault: Bool? = firmware >= .isPin2DefaultAvailable ?
             try decoder.decode(.pin2IsDefault) : nil
         
         let defaultCurve: EllipticCurve = try decoder.decode(.curveId)
@@ -68,7 +68,7 @@ struct CardDeserializer {
                         issuer: issuer,
                         settings: settings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
-                        pin2IsDefault: pin2IsDefault,
+                        isPin2Default: pin2IsDefault,
                         supportedCurves: supportedCurves,
                         wallets: wallets,
                         health: try decoder.decode(.health),

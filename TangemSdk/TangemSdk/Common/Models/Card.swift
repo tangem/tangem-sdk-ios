@@ -31,7 +31,7 @@ public struct Card: Codable, JSONStringConvertible {
     /// to be signed made with `TlvTag.TerminalPublicKey`.
     public let linkedTerminalStatus: LinkedTerminalStatus
     /// Available only for cards with COS v.4.0 and higher.
-    public let pin2IsDefault: Bool?
+    public let isPin2Default: Bool?
     /// All ellipctic curves, supported by this card
     public let supportedCurves: [EllipticCurve]
     /// All wallets of the card

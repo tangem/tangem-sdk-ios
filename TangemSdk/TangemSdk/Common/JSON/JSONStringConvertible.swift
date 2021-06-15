@@ -13,20 +13,13 @@ public protocol JSONStringConvertible: Encodable {
     var json: String {get}
 }
 
-extension JSONStringConvertible {
-    public var json: String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
-        encoder.dataEncodingStrategy = .custom{ data, encoder in
-            var container = encoder.singleValueContainer()
-            return try container.encode(data.hexString)
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        dateFormatter.dateStyle = .medium
-        encoder.dateEncodingStrategy = .formatted(dateFormatter)
-        let data = (try? encoder.encode(self)) ?? Data()
+public extension JSONStringConvertible {
+    var json: String {
+        let data = (try? JSONEncoder.tangemSdkEncoder.encode(self)) ?? Data()
         return String(data: data, encoding: .utf8)!
+    }
+    
+    func eraseToAnyResponse() -> AnyJSONRPCResponse {
+        AnyJSONRPCResponse(self)
     }
 }

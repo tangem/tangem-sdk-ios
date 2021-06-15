@@ -17,12 +17,32 @@ extension JSONDecoder {
             return Data(hexString: hex)
         }
         
+        decoder.dateDecodingStrategy  = .formatted(.tangemSdkDateFormatter)
+        return decoder
+    }
+}
+
+extension JSONEncoder {
+    public static var tangemSdkEncoder: JSONEncoder  {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
+        encoder.dataEncodingStrategy = .custom{ data, encoder in
+            var container = encoder.singleValueContainer()
+            return try container.encode(data.hexString)
+        }
+        
+        encoder.dateEncodingStrategy = .formatted(.tangemSdkDateFormatter)
+        return encoder
+    }
+}
+
+fileprivate extension DateFormatter {
+    static var tangemSdkDateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         dateFormatter.calendar = Calendar(identifier: .gregorian)
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         dateFormatter.locale = Locale(identifier: "en_US")
-        decoder.dateDecodingStrategy  = .formatted(dateFormatter)
-        return decoder
+        return dateFormatter
     }
 }

@@ -58,6 +58,8 @@ struct CardDeserializer {
                                      defaultSigningMethods: defaultSigningMethods,
                                      defaultCurve: defaultCurve)
         
+        let terminalIsLinked: Bool = try decoder.decode(.isLinked)
+        
         let card = Card(cardId: try decoder.decode(.cardId),
                         batchId: try cardDataDecoder.decode(.batchId),
                         cardPublicKey: try decoder.decode(.cardPublicKey),
@@ -65,7 +67,7 @@ struct CardDeserializer {
                         manufacturer: manufacturer,
                         issuer: issuer,
                         settings: settings,
-                        terminalIsLinked: try decoder.decode(.isLinked),
+                        linkedTerminalStatus: terminalIsLinked ? .current : .none,
                         pin2IsDefault: pin2IsDefault,
                         supportedCurves: supportedCurves,
                         wallets: wallets,

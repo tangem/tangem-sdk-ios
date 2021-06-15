@@ -45,7 +45,7 @@ public struct WalletConfig {
  * App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand`or `ReadCommand`
  * and then transform it into an address of corresponding blockchain wallet
  * according to a specific blockchain algorithm.
- * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
+ * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
 public final class CreateWalletCommand: Command {

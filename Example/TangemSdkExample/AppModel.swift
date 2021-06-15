@@ -138,7 +138,7 @@ extension AppModel {
                 return
             }
             
-            let verifyCommand = VerifyCardCommand()
+            let verifyCommand = AttestCardKeyCommand()
             verifyCommand.run(in: session) { result in
                 DispatchQueue.main.async {
                     print(result)

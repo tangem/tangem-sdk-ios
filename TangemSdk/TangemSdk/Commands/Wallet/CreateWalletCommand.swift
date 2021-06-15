@@ -23,7 +23,7 @@ public struct WalletConfig {
     /// Determines which type of data is required for signing by wallet.
     let signingMethods: SigningMethod?
     
-    public init(isProhibitPurge: Bool? = nil, signingMethods: SigningMethod? = nil) {
+    public init(isProhibitPurge: Bool?, signingMethods: SigningMethod?) {
         self.isProhibitPurge = isProhibitPurge
         self.signingMethods = signingMethods
     }
@@ -60,7 +60,7 @@ public final class CreateWalletCommand: Command {
     /// - Parameter config: Wallet configuration to create
     /// - COS v4+: Wallet configuration or default wallet configuration according to card personalization if nil
     /// - COS before v4: This parameter can be ignored.  Wallet will be created according to card personalization.
-    public init(curve: EllipticCurve, config: WalletConfig = .init()) {
+    public init(curve: EllipticCurve, config: WalletConfig = .init(isProhibitPurge: nil, signingMethods: nil)) {
         self.curve = curve
         self.config = config
     }

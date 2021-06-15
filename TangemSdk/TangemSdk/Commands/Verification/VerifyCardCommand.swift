@@ -104,7 +104,7 @@ public class VerifyCardCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
         
-        return CommandApdu(.verifyCard, tlv: tlvBuilder.serialize())
+        return CommandApdu(.attestCardKey, tlv: tlvBuilder.serialize())
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> VerifyCardResponse {

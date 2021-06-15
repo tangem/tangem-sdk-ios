@@ -161,7 +161,7 @@ public final class TangemSdk {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     public func createWallet(curve: EllipticCurve,
-                             config: WalletConfig = .init(),
+                             config: WalletConfig  = .init(isProhibitPurge: nil, signingMethods: nil),
                              cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
@@ -645,8 +645,8 @@ extension TangemSdk {
             try checkSession()
             let runnable = try jsonConverter.convert(request: request)
             configure()
-            cardSession = makeSession(with: try request.params.value(for: "cardId"),
-                                      initialMessage: try request.params.value(for: "initialMessage"))
+            cardSession = makeSession(with: try? request.params.value(for: "cardId"),
+                                      initialMessage: try? request.params.value(for: "initialMessage"))
             cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             
         } catch {

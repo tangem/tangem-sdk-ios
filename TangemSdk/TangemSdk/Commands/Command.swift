@@ -114,7 +114,7 @@ extension Command {
                         case .invalidParams:
                             if self.requiresPin2 {
                                 //Addition check for COS v4 and newer to prevent false-positive pin2 request
-                                if session.environment.card?.pin2IsDefault == true,
+                                if session.environment.card?.isPin2Default == true,
                                   session.environment.pin2.isDefault {
                                     fallthrough
                                 }

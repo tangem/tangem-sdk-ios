@@ -82,7 +82,7 @@ public final class CheckWalletCommand: Command {
             .append(.challenge, value: challenge)
             .append(.walletPublicKey, value: walletPublicKey)
 		
-        return CommandApdu(.checkWallet, tlv: tlvBuilder.serialize())
+        return CommandApdu(.attestWalletKey, tlv: tlvBuilder.serialize())
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CheckWalletResponse {

@@ -1,5 +1,5 @@
 //
-//  VerifyCardCommand.swift
+//  AttestCardKeyCommand.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 07.08.2020.
@@ -25,7 +25,7 @@ public struct VerifyResponse {
 }
 
 extension VerifyResponse {
-    internal init(verifyCardResponse: VerifyCardResponse, verificationState: VerifyCardState, artworkInfo: ArtworkInfo?) {
+    internal init(verifyCardResponse: AttestCardKeyResponse, verificationState: VerifyCardState, artworkInfo: ArtworkInfo?) {
         self.cardId = verifyCardResponse.cardId
         self.salt = verifyCardResponse.salt
         self.cardSignature = verifyCardResponse.cardSignature
@@ -36,8 +36,8 @@ extension VerifyResponse {
     }
 }
 
-/// Deserialized response from the Tangem card after `VerifyCardResponseCommand`.
-public struct VerifyCardResponse: JSONStringConvertible {
+/// Deserialized response from the Tangem card after `AttestCardKeyCommand`.
+public struct AttestCardKeyResponse: JSONStringConvertible {
     public let cardId: String
     public let salt: Data
     public let cardSignature: Data
@@ -53,8 +53,8 @@ public struct VerifyCardResponse: JSONStringConvertible {
     }
 }
 
-public class VerifyCardCommand: Command {
-    public typealias Response = VerifyCardResponse
+public class AttestCardKeyCommand: Command {
+    public typealias Response = AttestCardKeyResponse
     
     private var challenge: Data?
 
@@ -66,10 +66,10 @@ public class VerifyCardCommand: Command {
     }
     
     deinit {
-        Log.debug("VerifyCardCommand deinit")
+        Log.debug("AttestCardKeyCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<VerifyCardResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<AttestCardKeyResponse>) {
         if challenge == nil {
             do {
                 challenge = try CryptoUtils.generateRandomBytes(count: 16)
@@ -107,7 +107,7 @@ public class VerifyCardCommand: Command {
         return CommandApdu(.attestCardKey, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> VerifyCardResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AttestCardKeyResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -117,7 +117,7 @@ public class VerifyCardCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        return VerifyCardResponse(
+        return AttestCardKeyResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),
             cardSignature: try decoder.decode(.cardSignature),

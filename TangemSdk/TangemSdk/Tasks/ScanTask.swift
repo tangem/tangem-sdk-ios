@@ -9,7 +9,7 @@
 import Foundation
 
 /// Task that allows to read Tangem card and verify its private key.
-/// Returns data from a Tangem card after successful completion of `ReadCommand` and `CheckWalletCommand`, subsequently.
+/// Returns data from a Tangem card after successful completion of `ReadCommand` and `AttestWalletKeyCommand`, subsequently.
 public final class ScanTask: CardSessionRunnable {
     public typealias Response = Card
     
@@ -38,7 +38,7 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        VerifyCardCommand().run(in: session) { checkWalletResult in
+        AttestCardKeyCommand().run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 self.runCheckWalletIfNeeded(card, session, completion)
@@ -59,7 +59,7 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        CheckWalletCommand(publicKey: wallet.publicKey).run(in: session) { checkWalletResult in
+        AttestWalletKeyCommand(publicKey: wallet.publicKey).run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success(_):
                 completion(.success(card))

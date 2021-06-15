@@ -150,7 +150,7 @@ public final class TangemSdk {
     /// App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand` or `ReadCommand`
     /// and then transform it into an address of corresponding blockchain wallet
     /// according to a specific blockchain algorithm.
-    /// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `CheckWalletCommand`.
+    /// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyCommand`.
     /// RemainingSignature is set to MaxSignatures.
     ///
     /// - Note: `WalletConfig` available for cards with COS v.4.0 or higher
@@ -375,7 +375,7 @@ public final class TangemSdk {
     }
     
     /**
-     * This method launches a [VerifyCardCommand] on a new thread.
+     * This method launches a [AttestCardKeyCommand] on a new thread.
      *
      * The command to ensures the card has not been counterfeited.
      * By using standard challenge-response scheme, the card proves possession of CardPrivateKey
@@ -385,7 +385,7 @@ public final class TangemSdk {
      *
      * @param online flag that allows disable online verification. Do not use for developer cards
      * @param cardId CID, Unique Tangem card ID number.
-     * @param callback is triggered on the completion of the [VerifyCardCommand] and provides
+     * @param callback is triggered on the completion of the [AttestCardKeyCommand] and provides
      * card response in the form of [VerifyCardResponse] if the task was performed successfully
      * or [TangemSdkError] in case of an error.
      */
@@ -393,7 +393,7 @@ public final class TangemSdk {
                        cardId: String? = nil,
                        initialMessage: Message? = nil,
                        completion: @escaping CompletionResult<VerifyResponse>) {
-        startSession(with: VerifyCardCommand(), cardId: cardId, initialMessage: initialMessage) { result in
+        startSession(with: AttestCardKeyCommand(), cardId: cardId, initialMessage: initialMessage) { result in
             switch result {
             case .success(let response):
                 if online {

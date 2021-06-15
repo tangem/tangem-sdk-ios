@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "cardId": "c000111122223333",
+    "signatures": [
+      "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1",
+      "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c"
+    ],
+    "totalSignedHashes": 2
+  },
+  "id": 1
+}

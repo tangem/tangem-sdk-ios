@@ -25,9 +25,11 @@ public final class PreflightReadTask {
     typealias Response = ReadResponse
     
     private let readMode: PreflightReadMode
+    private let cardId: String?
     
-    public init(readMode: PreflightReadMode) {
+    public init(readMode: PreflightReadMode, cardId: String?) {
         self.readMode = readMode
+        self.cardId = cardId
     }
     
     deinit {
@@ -39,6 +41,17 @@ public final class PreflightReadTask {
         ReadCommand().run(in: session) { (result) in
             switch result {
             case .success(let readResponse):
+                if let expectedCardId = self.cardId?.uppercased(),
+                   expectedCardId != readResponse.cardId.uppercased() {
+                    completion(.failure(.wrongCardNumber))
+                    return
+                }
+                
+                if !session.environment.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
+                    completion(.failure(.wrongCardType))
+                    return
+                }
+                
                 self.finalizeRead(in: session, with: readResponse, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

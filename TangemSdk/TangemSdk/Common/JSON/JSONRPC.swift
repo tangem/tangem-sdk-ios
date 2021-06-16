@@ -110,7 +110,7 @@ public struct JSONRPCResponse: JSONStringConvertible {
     }
 }
 
-public struct JSONRPCError: Error, JSONStringConvertible {
+public struct JSONRPCError: Error, JSONStringConvertible, Equatable {
     public let code: Int
     public let message: String
     public let data: String?

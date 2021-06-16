@@ -7,3 +7,12 @@
 //
 
 import Foundation
+
+
+class TrustedCardsRepo {
+    let data: [Data: Attestation] = [:]
+    
+    func append(cardPublicKey: Data, attestation: Attestation) {
+        
+    }
+}

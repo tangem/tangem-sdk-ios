@@ -33,7 +33,6 @@
 		B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
 		B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
 		E53EB3F123F2D4B10079CC11 /* RobotApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53EB3EE23F2CD860079CC11 /* RobotApi.swift */; };
-		E53EB3F523F32A460079CC11 /* CardsData.plist in Resources */ = {isa = PBXBuildFile; fileRef = E53EB3F423F32A460079CC11 /* CardsData.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,7 +81,6 @@
 		E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkExampleDevelopmentUITests.swift; sourceTree = "<group>"; };
 		E53EB3E823F2C7C90079CC11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E53EB3EE23F2CD860079CC11 /* RobotApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotApi.swift; sourceTree = "<group>"; };
-		E53EB3F423F32A460079CC11 /* CardsData.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = CardsData.plist; sourceTree = "<group>"; };
 		F391CC3724B714DAE6648A97 /* Pods_TangemSdkExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemSdkExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -185,7 +183,6 @@
 				E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */,
 				E53EB3E823F2C7C90079CC11 /* Info.plist */,
 				E53EB3EE23F2CD860079CC11 /* RobotApi.swift */,
-				E53EB3F423F32A460079CC11 /* CardsData.plist */,
 			);
 			path = TangemSdkExampleDevelopmentUITests;
 			sourceTree = "<group>";
@@ -310,7 +307,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E53EB3F523F32A460079CC11 /* CardsData.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

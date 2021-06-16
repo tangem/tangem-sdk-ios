@@ -22,8 +22,9 @@
 		5D38D07126790D840052F67C /* SignResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignResult.json */; };
 		5D38D07326791F710052F67C /* ScanResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D07226791F710052F67C /* ScanResponse.json */; };
 		5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */; };
+		5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D077267A4B0C0052F67C /* AttestationTask.swift */; };
 		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
-		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
+		5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* Attestation.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
@@ -241,8 +242,9 @@
 		5D38D06F26790D730052F67C /* SignResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignResult.json; sourceTree = "<group>"; };
 		5D38D07226791F710052F67C /* ScanResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanResponse.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
+		5D38D077267A4B0C0052F67C /* AttestationTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationTask.swift; sourceTree = "<group>"; };
 		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
+		5D3F77B524B9B8F600E8695B /* Attestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attestation.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
@@ -514,9 +516,10 @@
 			children = (
 				5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */,
 				5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */,
-				5D3F77B524B9B8F600E8695B /* VerificationState.swift */,
+				5D3F77B524B9B8F600E8695B /* Attestation.swift */,
 				5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */,
 				5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */,
+				5D38D077267A4B0C0052F67C /* AttestationTask.swift */,
 			);
 			path = Attestation;
 			sourceTree = "<group>";
@@ -1286,11 +1289,12 @@
 				B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */,
 				5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */,
 				5D9ED3792667C711003948C0 /* Array+CardWallet.swift in Sources */,
-				5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */,
+				5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				B0A9447B256546DE00A7958E /* Card.swift in Sources */,
 				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
+				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,

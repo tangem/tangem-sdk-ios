@@ -21,8 +21,9 @@ class AppModel: ObservableObject {
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .custom(logLevel: [.apdu, .debug, .tlv], loggers: [ConsoleLogger()])
+        config.logСonfig = .custom(logLevel: [.apdu, .debug, .tlv])
         config.linkedTerminal = false
+        config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
     

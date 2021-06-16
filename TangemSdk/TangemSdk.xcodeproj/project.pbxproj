@@ -21,6 +21,7 @@
 		5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* ScanRequest.json */; };
 		5D38D07126790D840052F67C /* SignResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignResult.json */; };
 		5D38D07326791F710052F67C /* ScanResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D07226791F710052F67C /* ScanResponse.json */; };
+		5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */; };
 		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
 		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
@@ -239,6 +240,7 @@
 		5D38D06D26790B1A0052F67C /* ScanRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanRequest.json; sourceTree = "<group>"; };
 		5D38D06F26790D730052F67C /* SignResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignResult.json; sourceTree = "<group>"; };
 		5D38D07226791F710052F67C /* ScanResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanResponse.json; sourceTree = "<group>"; };
+		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
 		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
@@ -498,6 +500,15 @@
 			path = Jsons;
 			sourceTree = "<group>";
 		};
+		5D38D076267A44BF0052F67C /* Pins */ = {
+			isa = PBXGroup;
+			children = (
+				5DBD7324249122C9000DF4BD /* SetPinCommand.swift */,
+				5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */,
+			);
+			path = Pins;
+			sourceTree = "<group>";
+		};
 		5D3F77B424B9B8E700E8695B /* Attestation */ = {
 			isa = PBXGroup;
 			children = (
@@ -557,9 +568,10 @@
 			path = Localization;
 			sourceTree = "<group>";
 		};
-		5D6A92E12345F28F00158457 /* Commands */ = {
+		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				5D38D076267A44BF0052F67C /* Pins */,
 				5D2E7CBC2678F4C200FBFC53 /* IssuerAndUserData */,
 				B0BAEECF25FFA07900F318A6 /* Read */,
 				B0800F87252C4508007E04EE /* Files */,
@@ -568,25 +580,11 @@
 				B0BD1C8E255E58BE00119D82 /* Wallet */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92E42345F2B200158457 /* SignCommand.swift */,
-				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
-				5DBD7324249122C9000DF4BD /* SetPinCommand.swift */,
-				5DA3A2EE251CA507009A8E08 /* CheckPinCommand.swift */,
-			);
-			path = Commands;
-			sourceTree = "<group>";
-		};
-		5D6A92E82345FF1300158457 /* Tasks */ = {
-			isa = PBXGroup;
-			children = (
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				B006971325FFA4420040D203 /* PreflightReadTask.swift */,
-				B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */,
-				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
-				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
-				B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */,
-				B06EBBC425347B7800B0FEEA /* ChangeFilesSettingsTask.swift */,
+				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
 			);
-			path = Tasks;
+			path = Operations;
 			sourceTree = "<group>";
 		};
 		5D7F4E3F248FCEFB00A1700D /* UI */ = {
@@ -784,8 +782,7 @@
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D7F4E3F248FCEFB00A1700D /* UI */,
-				5D6A92E82345FF1300158457 /* Tasks */,
-				5D6A92E12345F28F00158457 /* Commands */,
+				5D6A92E12345F28F00158457 /* Operations */,
 				5DF7CFCA233D034E00461F4D /* Common */,
 				5DFFC1A2234DC969001C2F35 /* Crypto */,
 				5DD536882476B3FA00F5DE88 /* Haptics */,
@@ -836,6 +833,7 @@
 				5DE59F2E23D9703A00312DA4 /* SecureStorageService.swift */,
 				5DFCE40424B30589007B95AF /* StorageService.swift */,
 				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
+				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -934,10 +932,15 @@
 			isa = PBXGroup;
 			children = (
 				B01B9A7D2530B65300ECB6BF /* Settings */,
+				B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */,
+				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
+				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
+				B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */,
 				B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */,
 				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
 				B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */,
 				B06947BA253442AD0056A887 /* DeleteFileCommand.swift */,
+				B06EBBC425347B7800B0FEEA /* ChangeFilesSettingsTask.swift */,
 				B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */,
 			);
 			path = Files;
@@ -1241,6 +1244,7 @@
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
+				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
 				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictible.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,

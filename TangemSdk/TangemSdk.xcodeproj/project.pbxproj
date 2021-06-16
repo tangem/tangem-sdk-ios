@@ -19,7 +19,7 @@
 		5D38D06B2679066B0052F67C /* SignRequest.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignRequest.json */; };
 		5D38D06C267908650052F67C /* SignRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignRequest.json */; };
 		5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* ScanRequest.json */; };
-		5D38D07126790D840052F67C /* SignResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignResponse.json */; };
+		5D38D07126790D840052F67C /* SignResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignResult.json */; };
 		5D38D07326791F710052F67C /* ScanResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D07226791F710052F67C /* ScanResponse.json */; };
 		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
 		5D3F77B624B9B8F600E8695B /* VerificationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* VerificationState.swift */; };
@@ -237,7 +237,7 @@
 		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
 		5D38D06A2679066B0052F67C /* SignRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignRequest.json; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* ScanRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanRequest.json; sourceTree = "<group>"; };
-		5D38D06F26790D730052F67C /* SignResponse.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignResponse.json; sourceTree = "<group>"; };
+		5D38D06F26790D730052F67C /* SignResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignResult.json; sourceTree = "<group>"; };
 		5D38D07226791F710052F67C /* ScanResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanResponse.json; sourceTree = "<group>"; };
 		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* VerificationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationState.swift; sourceTree = "<group>"; };
@@ -491,7 +491,7 @@
 			isa = PBXGroup;
 			children = (
 				5D38D06A2679066B0052F67C /* SignRequest.json */,
-				5D38D06F26790D730052F67C /* SignResponse.json */,
+				5D38D06F26790D730052F67C /* SignResult.json */,
 				5D38D06D26790B1A0052F67C /* ScanRequest.json */,
 				5D38D07226791F710052F67C /* ScanResponse.json */,
 			);
@@ -1181,7 +1181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */,
-				5D38D07126790D840052F67C /* SignResponse.json in Resources */,
+				5D38D07126790D840052F67C /* SignResult.json in Resources */,
 				5D38D07326791F710052F67C /* ScanResponse.json in Resources */,
 				5D38D06C267908650052F67C /* SignRequest.json in Resources */,
 			);

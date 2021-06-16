@@ -330,25 +330,18 @@ public class CardSession {
     // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        PreflightReadTask(readMode: preflightReadMode).run(in: self) { [weak self] readResult in
+        let preflightTask = PreflightReadTask(readMode: preflightReadMode, cardId: cardId)
+        preflightTask.run(in: self) { [weak self] readResult in
             guard let self = self else { return }
-
+            
             switch readResult {
-            case .success(let readResponse):
-                var wrongCardError: TangemSdkError? = nil
-                let actualCardId = readResponse.cardId.uppercased()
-                
-                if let expectedCardId = self.cardId?.uppercased(),
-                   expectedCardId != actualCardId {
-                    wrongCardError = .wrongCardNumber
-                }
-                
-                if !self.environment.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
-                    wrongCardError = .wrongCardType
-                }
-                
-                if let wrongCardError = wrongCardError {
-                    self.viewDelegate.wrongCard(message: wrongCardError.localizedDescription)
+            case .success:
+                self.viewDelegate.sessionInitialized()
+                onSessionStarted(self, nil)
+            case .failure(let error):
+                switch error {
+                case .wrongCardType, .wrongCardNumber:
+                    self.viewDelegate.wrongCard(message: error.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isSessionReady.value else {
                             onSessionStarted(self, .userCancelled)
@@ -359,15 +352,10 @@ public class CardSession {
                         self.restartPolling()
                         self.preflightCheck(onSessionStarted)
                     }
-                    return
+                default:
+                    onSessionStarted(self, error)
+                    self.stop(error: error)
                 }
-                
-                self.cardId = readResponse.cardId
-                self.viewDelegate.sessionInitialized()
-                onSessionStarted(self, nil)
-            case .failure(let error):
-                onSessionStarted(self, error)
-                self.stop(error: error)
             }
         }
     }

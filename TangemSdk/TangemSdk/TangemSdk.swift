@@ -357,22 +357,6 @@ public final class TangemSdk {
         startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
-    /// Attest the card
-    /// - Parameters:
-    ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - mode: Attestattion mode. Normal by default
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<Attestation,TangemSdkError>`
-    public func attest(cardId: String,
-                       mode: AttestationTask.Mode = .normal,
-                       initialMessage: Message? = nil,
-                       completion: @escaping CompletionResult<Attestation>) {
-        startSession(with: AttestationTask(mode: mode),
-                     cardId: cardId,
-                     initialMessage: initialMessage,
-                     completion: completion)
-    }
-    
     /// Get the card info and verify with Tangem backend. Do not use for developer cards
     /// - Parameters:
     ///   - cardPublicKey: CardPublicKey returned by [ReadCommand]

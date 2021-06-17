@@ -22,8 +22,8 @@ public struct SigningMethod: OptionSet, JSONStringConvertible, OptionSetCustomSt
 }
 
 //MARK: - Constants
-public extension SigningMethod {
-    static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
+extension SigningMethod {
+    public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
     static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
     static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
     static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv

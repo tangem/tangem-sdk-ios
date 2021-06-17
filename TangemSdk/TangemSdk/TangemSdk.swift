@@ -139,16 +139,18 @@ public final class TangemSdk {
     /// - Note: `WalletConfig` available for cards with COS v.4.0 or higher
     /// - Parameters:
     ///   - curve: Wallet's elliptic curve
-    ///   - config: Configuration for wallet that should be created. This parameter available for cards with COS v.4.0 and higher. 
+    ///   - isPermanent: If this wallet can be deleted or not.
+    ///     COS v4+: Passed parameter or default wallet parameter according to card personalization if nil
+    ///     COS before v4: This parameter can be ignored.  Wallet will be created according to card personalization.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     public func createWallet(curve: EllipticCurve,
-                             config: WalletConfig  = .init(isProhibitPurge: nil, signingMethods: nil),
+                             isPermanent: Bool? = nil,
                              cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let task = CreateWalletCommand(curve: curve, config: config)
+        let task = CreateWalletCommand(curve: curve, isPermanent: isPermanent)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

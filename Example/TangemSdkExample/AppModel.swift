@@ -12,7 +12,7 @@ import TangemSdk
 
 class AppModel: ObservableObject {
     // Inputs
-    @Published var isProhibitPurgeWallet: Bool = false
+    @Published var isPermanent: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
     @Published var attestationMode: AttestationTask.Mode = .normal
     @Published var method: Method = .scan
@@ -117,11 +117,8 @@ extension AppModel {
     }
     
     func createWallet() {
-        let walletConfig = WalletConfig(isProhibitPurge: isProhibitPurgeWallet,
-                                        signingMethods: .signHash)
-
         tangemSdk.createWallet(curve: curve,
-                               config: walletConfig,
+                               isPermanent: isPermanent,
                                cardId: card?.cardId,
                                completion: handleCompletion)
     }

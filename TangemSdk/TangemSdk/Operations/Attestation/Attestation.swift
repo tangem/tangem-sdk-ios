@@ -9,36 +9,22 @@
 import Foundation
 
 public struct Attestation: Codable, JSONStringConvertible {
-    public let walletKeysAttestation: Status
-    public let cardKeyAttestation: Status
-    public let firmwareAttestation: Status
-    public let cardUniquenessAttestation: Status
+    public internal(set) var cardKeyAttestation: Status
+    public internal(set) var walletKeysAttestation: Status
+    public internal(set) var firmwareAttestation: Status
+    public internal(set) var cardUniquenessAttestation: Status
 }
 
 public extension Attestation {
     enum Status: String, Codable {
-        case verified, failed, skipped
+        case verified, verifiedOffline, failed, skipped
     }
 }
 
 public extension Attestation {
-    static var normalSuccess: Attestation {
-        .init(walletKeysAttestation: .skipped,
-              cardKeyAttestation: .verified,
-              firmwareAttestation: .skipped,
-              cardUniquenessAttestation: .skipped)
-    }
-    
-    static var fullSuccess: Attestation {
-        .init(walletKeysAttestation: .verified,
-              cardKeyAttestation: .verified,
-              firmwareAttestation: .skipped,
-              cardUniquenessAttestation: .skipped)
-    }
-    
     static var skipped: Attestation {
-        .init(walletKeysAttestation: .skipped,
-              cardKeyAttestation: .skipped,
+        .init(cardKeyAttestation: .skipped,
+              walletKeysAttestation: .skipped,
               firmwareAttestation: .skipped,
               cardUniquenessAttestation: .skipped)
     }

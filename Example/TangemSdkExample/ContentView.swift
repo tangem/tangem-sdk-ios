@@ -28,88 +28,55 @@ struct ContentView: View {
                             .padding(.horizontal, 8))
                 
                 ScrollView {
-                    VStack(spacing: 20) {
-                        
+                    VStack {
                         Button("Clear logs", action: model.clear)
                         
-                        VStack {
-                            Text("Common")
-                                .font(.title)
-                            
-                            Button("Scan", action: model.scan)
-                                .buttonStyle(ExampleButton(isLoading: model.isScanning))
-                                .frame(width: 100)
-                                .padding()
-                            
-                            Button("verifyCard", action: model.verifyCard)
-                            Button("chainingExample", action: model.chainingExample)
-                            Button("depersonalize", action: model.depersonalize)
-                            Button("changePin1", action: model.changePin1)
-                            Button("changePin2", action: model.changePin2)
-                        }
-                        
-                        VStack {
-                            Text("Sign")
-                                .font(.title)
-                            Button("Sign hash", action: model.signHash)
-                            Button("Sign hashes", action: model.signHashes)
-                        }
-                        
-                        VStack {
-                            Text("Wallet")
-                                .font(.title)
-                            
-                            VStack {
-                                Button("Create wallet with config", action: model.createWallet)
-                                
-                                Toggle("Prohibit purge wallet", isOn: $model.isProhibitPurgeWallet)
-                                
-                                Picker("", selection: $model.curve) {
-                                    ForEach(0..<EllipticCurve.allCases.count) { index in
-                                        Text(EllipticCurve.allCases[index].rawValue)
-                                            .tag(EllipticCurve.allCases[index])
-                                    }
-                                }
-                                .pickerStyle(SegmentedPickerStyle())
+                        Picker("Select method", selection: $model.method) {
+                            ForEach(0..<AppModel.Method.allCases.count) { index in
+                                Text(AppModel.Method.allCases[index].rawValue)
+                                    .tag(AppModel.Method.allCases[index])
                             }
+                        }
+                        
+                        Button("Start", action: model.start)
+                            .buttonStyle(ExampleButton(isLoading: model.isScanning))
+                            .frame(width: 100)
                             .padding()
-                            .cornerRadius(8)
-                            .overlay(RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.orange, lineWidth: 2))
-                            
-                            
-                            Button("Purge wallet", action: model.purgeWallet)
-                        }
                         
-                        VStack {
-                            Text("Operations with files")
-                                .font(.title)
-                            Button("readFiles", action: model.readFiles)
-                            Button("readPublicFiles", action: model.readPublicFiles)
-                            Button("writeSingleFile", action: model.writeSingleFile)
-                            Button("writeSingleSignedFile", action: model.writeSingleSignedFile)
-                            Button("writeMultipleFiles", action: model.writeMultipleFiles)
-                            Button("deleteFirstFile", action: model.deleteFirstFile)
-                            Button("deleteAllFiles", action: model.deleteAllFiles)
-                            Button("updateFirstFileSettings", action: model.updateFirstFileSettings)
-                        }
-                        
-                        VStack {
-                            Text("Deprecated commands")
-                                .font(.title)
-                            Button("GetIssuerData", action: model.getIssuerData)
-                            Button("writeIssuerData", action: model.writeIssuerData)
-                            Button("readIssuerExtraData", action: model.readIssuerExtraData)
-                            Button("writeIssuerExtraData", action: model.writeIssuerExtraData)
-                            Button("readUserData", action: model.readUserData)
-                            Button("writeUserData", action: model.writeUserData)
-                            Button("writeUserProtectedData", action: model.writeUserProtectedData)
-                        }
+                        additionalView
                     }
                     .padding(.horizontal, 20)
                     .frame(width: geo.size.width)
                 }
             }
+        }
+    }
+    
+    @ViewBuilder
+    var additionalView: some View {
+        switch model.method {
+        case .createWallet:
+            VStack {
+                Text("Create wallet configuration")
+                    .font(.headline)
+                    .bold()
+                
+                Toggle("Prohibit purge wallet", isOn: $model.isProhibitPurgeWallet)
+                
+                Picker("", selection: $model.curve) {
+                    ForEach(0..<EllipticCurve.allCases.count) { index in
+                        Text(EllipticCurve.allCases[index].rawValue)
+                            .tag(EllipticCurve.allCases[index])
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+            }
+            .padding()
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2))
+        default:
+            EmptyView()
         }
     }
 }

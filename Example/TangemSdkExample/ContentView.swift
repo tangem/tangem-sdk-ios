@@ -55,6 +55,24 @@ struct ContentView: View {
     @ViewBuilder
     var additionalView: some View {
         switch model.method {
+        case .attest:
+            VStack {
+                Text("Attestation configuration")
+                    .font(.headline)
+                    .bold()
+                
+                Picker("", selection: $model.attestationMode) {
+                    ForEach(0..<AttestationTask.Mode.allCases.count) { index in
+                        Text(AttestationTask.Mode.allCases[index].rawValue)
+                            .tag(AttestationTask.Mode.allCases[index])
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+            }
+            .padding()
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2))
         case .createWallet:
             VStack {
                 Text("Create wallet configuration")

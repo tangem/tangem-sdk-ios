@@ -52,38 +52,21 @@ public final class TangemSdk {
         self.config = config
     }
     
+    deinit {
+        Log.debug("TangemSdk deinit")
+    }
     /// To start using any card, you first need to read it using the `scanCard()` method.
     /// This method launches an NFC session, and once it’s connected with the card,
     /// it obtains the card data. Optionally, if the card contains a wallet (private and public key pair),
     /// it proves that the wallet owns a private key that corresponds to a public one.
     /// After successfull card scan, SDK will attempt to verify release cards online with Tangem backend.
     ///
-    /// - Note: `WalletIndex` available for cards with COS v.4.0 or higher
     /// - Parameters:
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
     public func scanCard(initialMessage: Message? = nil,
                          completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage) { result in
-            switch result {
-            case .success(let response):
-                if response.firmwareVersion.type == .release {
-                    self.loadCardInfo(cardPublicKey: response.cardPublicKey,
-                                      cardId: response.cardId) { onlineVerifyResult in
-                        switch onlineVerifyResult {
-                        case .success:
-                            completion(.success(response))
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
-                } else {
-                    completion(.success(response))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
     
     /// This method allows you to sign one hash and will return a corresponding signature.
@@ -374,50 +357,20 @@ public final class TangemSdk {
         startSession(with: writeUserDataCommand, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
-    /**
-     * This method launches a [AttestCardKeyCommand] on a new thread.
-     *
-     * The command to ensures the card has not been counterfeited.
-     * By using standard challenge-response scheme, the card proves possession of CardPrivateKey
-     * that corresponds to CardPublicKey returned by [ReadCommand]. Then the data is sent
-     * to Tangem server to prove that  this card was indeed issued by Tangem.
-     * The online part of the verification is unavailable for DevKit cards.
-     *
-     * @param online flag that allows disable online verification. Do not use for developer cards
-     * @param cardId CID, Unique Tangem card ID number.
-     * @param callback is triggered on the completion of the [AttestCardKeyCommand] and provides
-     * card response in the form of [VerifyCardResponse] if the task was performed successfully
-     * or [TangemSdkError] in case of an error.
-     */
-    public func verify(online: Bool = true,
-                       cardId: String? = nil,
+    /// Attest the card
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - mode: Attestattion mode. Normal by default
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<Attestation,TangemSdkError>`
+    public func attest(cardId: String,
+                       mode: AttestationTask.Mode = .normal,
                        initialMessage: Message? = nil,
-                       completion: @escaping CompletionResult<VerifyResponse>) {
-        startSession(with: AttestCardKeyCommand(), cardId: cardId, initialMessage: initialMessage) { result in
-            switch result {
-            case .success(let response):
-                if online {
-                    self.loadCardInfo(cardPublicKey: response.cardPublicKey, cardId: response.cardId) { onlineVerifyResult in
-                        switch onlineVerifyResult {
-                        case .success(let onlineVerifyResponse):
-                            let verifyResponse = VerifyResponse(verifyCardResponse: response,
-                                                                verificationState: .online,
-                                                                artworkInfo: onlineVerifyResponse.artwork)
-                            completion(.success(verifyResponse))
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
-                } else {
-                    let verifyResponse = VerifyResponse(verifyCardResponse: response,
-                                                        verificationState: .offline,
-                                                        artworkInfo: nil)
-                    completion(.success(verifyResponse))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+                       completion: @escaping CompletionResult<Attestation>) {
+        startSession(with: AttestationTask(mode: mode),
+                     cardId: cardId,
+                     initialMessage: initialMessage,
+                     completion: completion)
     }
     
     /// Get the card info and verify with Tangem backend. Do not use for developer cards

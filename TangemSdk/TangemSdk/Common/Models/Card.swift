@@ -30,11 +30,12 @@ public struct Card: Codable, JSONStringConvertible {
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data
     /// to be signed made with `TlvTag.TerminalPublicKey`.
     public let linkedTerminalStatus: LinkedTerminalStatus
+    /// PIN2 (aka Passcode) is default.
     /// Available only for cards with COS v.4.0 and higher.
     public let isPin2Default: Bool?
-    /// All ellipctic curves, supported by this card
+    /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
-    /// All wallets of the card
+    /// Wallets, created on the card, that can be used for signature
     internal(set) public var wallets: [Wallet] = []
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
@@ -49,7 +50,7 @@ public struct Card: Codable, JSONStringConvertible {
 
 public extension Card {
     struct Manufacturer: Codable {
-        /// Name of Tangem card manufacturer.
+        /// Card manufacturer name.
         public let name: String
         /// Timestamp of manufacturing.
         public let manufactureDate: Date
@@ -65,7 +66,7 @@ public extension Card {
     }
     
     struct Settings: Codable {
-        /// Delay in centiseconds before COS executes commands protected by PIN2. This is a security delay value
+        /// Delay before executing a command that affects any sensitive data or wallets on the card.
         public let securityDelay: Int //todo: convert to ms
         /// Card settings defined by personalization (bit mask: 0 – Enabled, 1 – Disabled).
         public let mask: Mask

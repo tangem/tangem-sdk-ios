@@ -14,6 +14,7 @@ class AppModel: ObservableObject {
     // Inputs
     @Published var isProhibitPurgeWallet: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
+    @Published var attestationMode: AttestationTask.Mode = .normal
     @Published var method: Method = .scan
     
     // Outputs
@@ -45,11 +46,10 @@ class AppModel: ObservableObject {
     private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
         switch completionResult {
         case .success(let response):
-            self.log(response)
+            self.complete(with: response)
         case .failure(let error):
-            self.handle(error)
+            self.complete(with: error)
         }
-        isScanning = false
     }
     
     private func log(_ object: Any) {
@@ -57,10 +57,17 @@ class AppModel: ObservableObject {
         logText = "\(text)\n\n" + logText
     }
     
-    private func handle(_ error: TangemSdkError) {
+    private func complete(with object: Any) {
+        log(object)
+        isScanning = false
+    }
+    
+    private func complete(with error: TangemSdkError) {
         if !error.isUserCancelled {
             self.log("\(error.localizedDescription)")
         }
+        
+        isScanning = false
     }
     
     private func getRandomHash(size: Int = 32) -> Data {
@@ -74,13 +81,24 @@ class AppModel: ObservableObject {
 // MARK:- Commands
 extension AppModel {
     func scan() {
-        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more"),
-                           completion: handleCompletion)
+        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { result in
+            if case let .success(card) = result {
+                self.card = card
+            }
+            
+            self.handleCompletion(result)
+        }
     }
     
     func attest() {
-        let attestationTask = AttestationTask(mode: .normal)
-        tangemSdk.startSession(with: attestationTask, completion: handleCompletion)
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
+        tangemSdk.attest(cardId: cardId,
+                         mode: attestationMode,
+                         completion: handleCompletion)
     }
     
     func signHash() {
@@ -147,17 +165,6 @@ extension AppModel {
         tangemSdk.depersonalize(completion: handleCompletion)
     }
     
-    func verifyCard() {
-        guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
-            return
-        }
-
-        tangemSdk.verify(online: true,
-                         cardId: cardId,
-                         completion: handleCompletion)
-    }
-    
     func changePin1() {
         tangemSdk.changePin1(pin: nil,
                              cardId: card?.cardId,
@@ -180,7 +187,7 @@ extension AppModel {
                 self.log(response)
                 self.savedFiles = response.files
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
         }
     }
@@ -192,7 +199,7 @@ extension AppModel {
                 self.savedFiles = response.files
                 self.log(response)
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
         }
     }
@@ -253,11 +260,10 @@ extension AppModel {
             switch result {
             case .success:
                 self.savedFiles = nil
-                self.log("First file deleted from card. Please, perform read files command")
+                self.complete(with: "First file deleted from card. Please, perform read files command")
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
-            self.isScanning = false
         }
     }
     
@@ -276,11 +282,10 @@ extension AppModel {
             switch result {
             case .success:
                 self.savedFiles = nil
-                self.log("All files where deleted from card. Please, perform read files command")
+                self.complete(with: "All files where deleted from card. Please, perform read files command")
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
-            self.isScanning = false
         }
     }
     
@@ -301,11 +306,10 @@ extension AppModel {
             switch result {
             case .success:
                 self.savedFiles = nil
-                self.log("File settings updated to \(newSettings.json). Please, perform read files command")
+                self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
-            self.isScanning = false
         }
     }
 }
@@ -337,15 +341,14 @@ extension AppModel {
     
     func readIssuerData() {
         tangemSdk.readIssuerData(cardId: card?.cardId,
-                                 initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
+                                 initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerDataResponse = issuerDataResponse
-                self.log(issuerDataResponse)
+                self.complete(with: issuerDataResponse)
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
-            self.isScanning = false
         }
     }
     
@@ -373,16 +376,15 @@ extension AppModel {
     }
     
     func readIssuerExtraData() {
-        tangemSdk.readIssuerExtraData(cardId: card?.cardId){ [unowned self] result in
+        tangemSdk.readIssuerExtraData(cardId: card?.cardId){ result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerExtraDataResponse = issuerDataResponse
-                self.log(issuerDataResponse)
+                self.complete(with: issuerDataResponse)
                 print(issuerDataResponse.issuerData)
             case .failure(let error):
-                self.handle(error)
+                self.complete(with: error)
             }
-            self.isScanning = false
         }
     }
 

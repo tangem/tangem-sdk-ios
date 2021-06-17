@@ -50,5 +50,11 @@ public struct Config {
     
     /// Logger configuration
     public var logСonfig: Log.Config = .debug
+    
+    /// ScanTask or scanCard method in TangemSdk class will use this mode to attest the card
+    public var attestationMode: AttestationTask.Mode = .normal
+    
+    /// If true, BAP cards will pass online attestation. Use only for debugging purposes and if you understand what to do
+    public var allowBAP: Bool = false
 }
 

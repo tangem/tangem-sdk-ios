@@ -14,6 +14,7 @@ class AppModel: ObservableObject {
     // Inputs
     @Published var isProhibitPurgeWallet: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
+    @Published var method: Method = .scan
     
     // Outputs
     @Published var logText: String = ""
@@ -21,7 +22,7 @@ class AppModel: ObservableObject {
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .custom(logLevel: [.apdu, .debug, .tlv])
+        config.logСonfig = .custom(logLevel: [.debug])
         config.linkedTerminal = false
         config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
@@ -36,9 +37,24 @@ class AppModel: ObservableObject {
         logText = ""
     }
     
+    func start() {
+        isScanning = true
+        chooseMethod()
+    }
+    
+    private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
+        switch completionResult {
+        case .success(let response):
+            self.log(response)
+        case .failure(let error):
+            self.handle(error)
+        }
+        isScanning = false
+    }
+    
     private func log(_ object: Any) {
         let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
-        logText = logText.appending("\(text)\n\n")
+        logText = "\(text)\n\n" + logText
     }
     
     private func handle(_ error: TangemSdkError) {
@@ -56,77 +72,55 @@ class AppModel: ObservableObject {
 }
 
 // MARK:- Commands
-
 extension AppModel {
     func scan() {
-        isScanning = true
-        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { [unowned self] result in
-            switch result {
-            case .success(let card):
-                self.card = card
-                self.log(card)
-            case .failure(let error):
-                self.handle(error)
-            }
-            isScanning = false
-        }
+        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more"),
+                           completion: handleCompletion)
+    }
+    
+    func attest() {
+        let attestationTask = AttestationTask(mode: .normal)
+        tangemSdk.startSession(with: attestationTask, completion: handleCompletion)
     }
     
     func signHash() {
         let hash = getRandomHash()
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
-        tangemSdk.sign(hash: hash, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)")) { [unowned self] result in
-            switch result {
-            case .success(let signResponse):
-                self.log(signResponse)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.sign(hash: hash,
+                       walletPublicKey: publicKey,
+                       cardId: card?.cardId,
+                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
+                       completion: handleCompletion)
     }
     
     func signHashes() {
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
-        tangemSdk.sign(hashes: hashes, walletPublicKey: publicKey, cardId: card?.cardId, initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)")) { [unowned self] result in
-            switch result {
-            case .success(let signResponse):
-                self.log(signResponse)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.sign(hashes: hashes,
+                       walletPublicKey: publicKey,
+                       cardId: card?.cardId,
+                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
+                       completion: handleCompletion)
     }
     
     func createWallet() {
         let walletConfig = WalletConfig(isProhibitPurge: isProhibitPurgeWallet,
                                         signingMethods: .signHash)
 
-        tangemSdk.createWallet(curve: curve, config: walletConfig, cardId: card?.cardId) { [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+        tangemSdk.createWallet(curve: curve,
+                               config: walletConfig,
+                               cardId: card?.cardId,
+                               completion: handleCompletion)
     }
     
     func purgeWallet() {
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
-        tangemSdk.purgeWallet(walletPublicKey: publicKey, cardId: card?.cardId) { [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+        tangemSdk.purgeWallet(walletPublicKey: publicKey,
+                              cardId: card?.cardId,
+                              completion: handleCompletion)
     }
     
 
@@ -150,14 +144,7 @@ extension AppModel {
     }
     
     func depersonalize() {
-        tangemSdk.depersonalize() { result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.depersonalize(completion: handleCompletion)
     }
     
     func verifyCard() {
@@ -165,38 +152,22 @@ extension AppModel {
             self.log("Please, scan card before")
             return
         }
-        // (sender as! UIButton).showActivityIndicator()
-        tangemSdk.verify(online: true, cardId: cardId) { result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-            // (sender as! UIButton).hideActivityIndicator()
-        }
+
+        tangemSdk.verify(online: true,
+                         cardId: cardId,
+                         completion: handleCompletion)
     }
     
     func changePin1() {
-        tangemSdk.changePin1(pin: nil, cardId: card?.cardId) { result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.changePin1(pin: nil,
+                             cardId: card?.cardId,
+                             completion: handleCompletion)
     }
     
     func changePin2() {
-        tangemSdk.changePin2(pin: nil, cardId: card?.cardId) { result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.changePin2(pin: nil,
+                             cardId: card?.cardId,
+                             completion: handleCompletion)
     }
 }
 
@@ -229,14 +200,7 @@ extension AppModel {
     func writeSingleFile() {
         let demoData = Data(repeating: UInt8(1), count: 2000)
         let data = FileDataProtectedByPasscode(data: demoData)
-        tangemSdk.writeFiles(files: [data]) { (result) in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        tangemSdk.writeFiles(files: [data], completion: handleCompletion)
     }
     
     func writeSingleSignedFile() {
@@ -261,14 +225,7 @@ extension AppModel {
                                          finalizingSignature: finalSignature,
                                          counter: counter,
                                          issuerPublicKey: Utils.issuer.publicKey)
-        ]) { (result) in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        ], completion: handleCompletion)
     }
     
     func writeMultipleFiles() {
@@ -276,14 +233,9 @@ extension AppModel {
         let data = FileDataProtectedByPasscode(data: demoData)
         let secondDemoData = Data(repeating: UInt8(1), count: 5)
         let secondData = FileDataProtectedByPasscode(data: secondDemoData)
-        tangemSdk.writeFiles(files: [data, secondData]) { (result) in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            }
-        }
+        
+        tangemSdk.writeFiles(files: [data, secondData],
+                             completion: handleCompletion)
     }
     
     func deleteFirstFile() {
@@ -305,6 +257,7 @@ extension AppModel {
             case .failure(let error):
                 self.handle(error)
             }
+            self.isScanning = false
         }
     }
     
@@ -327,6 +280,7 @@ extension AppModel {
             case .failure(let error):
                 self.handle(error)
             }
+            self.isScanning = false
         }
     }
     
@@ -351,6 +305,7 @@ extension AppModel {
             case .failure(let error):
                 self.handle(error)
             }
+            self.isScanning = false
         }
     }
 }
@@ -358,55 +313,39 @@ extension AppModel {
 //MARK:- Deprecated commands
 extension AppModel {
     func readUserData() {
-        tangemSdk.readUserData(cardId: card?.cardId) { [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+        tangemSdk.readUserData(cardId: card?.cardId,
+                               completion: handleCompletion)
     }
     
     func writeUserData() {
         let userData = Data(hexString: "0102030405060708")
         
-        tangemSdk.writeUserData(userData: userData, userCounter: 2, cardId: card?.cardId){ [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+        tangemSdk.writeUserData(userData: userData,
+                                userCounter: 2,
+                                cardId: card?.cardId,
+                                completion: handleCompletion)
     }
     
     func writeUserProtectedData() {
         let userData = Data(hexString: "01010101010101")
         
-        tangemSdk.writeUserProtectedData(userProtectedData: userData, userProtectedCounter: 1, cardId: card?.cardId){ [unowned self] result in
-            switch result {
-            case .success(let response):
-                self.log(response)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+        tangemSdk.writeUserProtectedData(userProtectedData: userData,
+                                         userProtectedCounter: 1,
+                                         cardId: card?.cardId,
+                                         completion: handleCompletion)
     }
     
-    func getIssuerData() {
-        tangemSdk.readIssuerData(cardId: card?.cardId, initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
+    func readIssuerData() {
+        tangemSdk.readIssuerData(cardId: card?.cardId,
+                                 initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ [unowned self] result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerDataResponse = issuerDataResponse
                 self.log(issuerDataResponse)
             case .failure(let error):
                 self.handle(error)
-            //handle completion. Unlock UI, etc.
             }
+            self.isScanning = false
         }
     }
     
@@ -429,15 +368,8 @@ extension AppModel {
         tangemSdk.writeIssuerData(issuerData: sampleData,
                                   issuerDataSignature: sig,
                                   issuerDataCounter: newCounter,
-                                  cardId: cardId) { [unowned self] result in
-            switch result {
-            case .success(let issuerDataResponse):
-                self.log(issuerDataResponse)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+                                  cardId: cardId,
+                                  completion: handleCompletion)
     }
     
     func readIssuerExtraData() {
@@ -449,8 +381,8 @@ extension AppModel {
                 print(issuerDataResponse.issuerData)
             case .failure(let error):
                 self.handle(error)
-            //handle completion. Unlock UI, etc.
             }
+            self.isScanning = false
         }
     }
 
@@ -476,15 +408,72 @@ extension AppModel {
                                        startingSignature: startSig,
                                        finalizingSignature: finalSig,
                                        issuerDataCounter: newCounter,
-                                       cardId: cardId) { [unowned self] result in
-            switch result {
-            case .success(let writeResponse):
-                self.log(writeResponse)
-            case .failure(let error):
-                self.handle(error)
-            //handle completion. Unlock UI, etc.
-            }
-        }
+                                       cardId: cardId,
+                                       completion: handleCompletion)
     }
     
 }
+
+
+extension AppModel {
+    enum Method: String, CaseIterable {
+        case scan
+        case signHash
+        case signHashes
+        case attest
+        case chainingExample
+        case depersonalize
+        case changePin1
+        case changePin2
+        case createWallet
+        case purgeWallet
+        //files
+        case readFiles
+        case readPublicFiles
+        case writeSingleFile
+        case writeSingleSignedFile
+        case writeMultipleFiles
+        case deleteFirstFile
+        case deleteAllFiles
+        case updateFirstFileSettings
+        //deprecated
+        case readIssuerData
+        case writeIssuerData
+        case readIssuerExtraData
+        case writeIssuerExtraData
+        case readUserData
+        case writeUserData
+        case writeUserProtectedData
+    }
+    
+    private func chooseMethod() {
+        switch method {
+        case .attest: attest()
+        case .chainingExample: chainingExample()
+        case .changePin1: changePin1()
+        case .changePin2: changePin2()
+        case .depersonalize: depersonalize()
+        case .scan: scan()
+        case .signHash: signHash()
+        case .signHashes:  signHashes()
+        case .createWallet: createWallet()
+        case .purgeWallet:  purgeWallet()
+        case .readFiles: readFiles()
+        case .readPublicFiles: readPublicFiles()
+        case .writeSingleFile: writeSingleFile()
+        case .writeSingleSignedFile: writeSingleSignedFile()
+        case .writeMultipleFiles: writeMultipleFiles()
+        case .deleteFirstFile: deleteFirstFile()
+        case .deleteAllFiles: deleteAllFiles()
+        case .updateFirstFileSettings: updateFirstFileSettings()
+        case .readIssuerData: readIssuerData()
+        case .writeIssuerData: writeIssuerData()
+        case .readIssuerExtraData: readIssuerExtraData()
+        case .writeIssuerExtraData: writeIssuerExtraData()
+        case .readUserData: readUserData()
+        case .writeUserData: writeUserData()
+        case .writeUserProtectedData: writeUserProtectedData()
+        }
+    }
+}
+

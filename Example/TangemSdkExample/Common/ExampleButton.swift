@@ -12,7 +12,7 @@ struct ExampleButton: ButtonStyle {
     var isDisabled: Bool = false
     var isLoading: Bool = false
     var bgColor: Color = .orange
-    var fgColor: Color = .accentColor
+    var fgColor: Color = .white
     var height: CGFloat = 50
     
     @ViewBuilder private var loadingOverlay: some View {

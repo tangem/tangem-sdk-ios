@@ -8,34 +8,6 @@
 
 import Foundation
 
-//todo: verify -> attestation
-public enum VerifyCardState: String, Codable, JSONStringConvertible {
-    case offline
-    case online
-}
-
-public struct VerifyResponse {
-    public let cardId: String
-    public let salt: Data
-    public let cardSignature: Data
-    public let challenge: Data
-    public let cardPublicKey: Data
-    public let verificationState: VerifyCardState
-    public let artworkInfo: ArtworkInfo?
-}
-
-extension VerifyResponse {
-    internal init(verifyCardResponse: AttestCardKeyResponse, verificationState: VerifyCardState, artworkInfo: ArtworkInfo?) {
-        self.cardId = verifyCardResponse.cardId
-        self.salt = verifyCardResponse.salt
-        self.cardSignature = verifyCardResponse.cardSignature
-        self.challenge = verifyCardResponse.challenge
-        self.cardPublicKey = verifyCardResponse.cardPublicKey
-        self.verificationState = verificationState
-        self.artworkInfo = artworkInfo
-    }
-}
-
 /// Deserialized response from the Tangem card after `AttestCardKeyCommand`.
 public struct AttestCardKeyResponse: JSONStringConvertible {
     public let cardId: String

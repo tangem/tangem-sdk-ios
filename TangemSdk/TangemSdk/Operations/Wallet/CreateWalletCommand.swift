@@ -17,22 +17,22 @@ public struct CreateWalletResponse: JSONStringConvertible {
 }
 
 /// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
-public struct WalletConfig {
+struct WalletConfig {
     /// If `true` card will denied purge wallet request on this wallet
-    let isProhibitPurge: Bool?
+    let isPermanent: Bool?
     /// Determines which type of data is required for signing by wallet.
     let signingMethods: SigningMethod?
     
-    public init(isProhibitPurge: Bool?, signingMethods: SigningMethod?) {
-        self.isProhibitPurge = isProhibitPurge
+    init(isPermanent: Bool?, signingMethods: SigningMethod?) {
+        self.isPermanent = isPermanent
         self.signingMethods = signingMethods
     }
     
     var settingsMask: Card.Wallet.Settings.Mask? {
-        guard let isProhibitPurge = isProhibitPurge else { return nil }
-
+        guard let isPermanent = isPermanent else { return nil }
+        
         let builder = WalletSettingsMaskBuilder()
-        if isProhibitPurge {
+        if isPermanent {
             builder.add(.isProhibitPurge)
         }
         return builder.build()
@@ -57,12 +57,13 @@ public final class CreateWalletCommand: Command {
     private var config: WalletConfig
     private var walletIndex: Int? = nil
     /// Default initializer
-    /// - Parameter config: Wallet configuration to create
-    /// - COS v4+: Wallet configuration or default wallet configuration according to card personalization if nil
+    /// - Parameter curve: Elliptic curve of the wallet
+    /// - Parameter isPermanent: If true, this wallet cannot be deleted.
+    /// - COS v4+: Passed parameter or default wallet parameter according to card personalization if nil
     /// - COS before v4: This parameter can be ignored.  Wallet will be created according to card personalization.
-    public init(curve: EllipticCurve, config: WalletConfig = .init(isProhibitPurge: nil, signingMethods: nil)) {
+    public init(curve: EllipticCurve, isPermanent: Bool? = nil) {
         self.curve = curve
-        self.config = config
+        self.config = WalletConfig(isPermanent: isPermanent, signingMethods: .signHash)
     }
     
     deinit {
@@ -80,7 +81,7 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if let designatedIsProhibitPurge = config.isProhibitPurge {
+            if let designatedIsProhibitPurge = config.isPermanent {
                 let currentIsProhibitPurge = card.settings.mask.contains(.prohibitPurgeWallet)
                 if designatedIsProhibitPurge != currentIsProhibitPurge {
                     return TangemSdkError.unsupportedWalletConfig

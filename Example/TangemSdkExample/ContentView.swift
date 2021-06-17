@@ -79,7 +79,7 @@ struct ContentView: View {
                     .font(.headline)
                     .bold()
                 
-                Toggle("Prohibit purge wallet", isOn: $model.isProhibitPurgeWallet)
+                Toggle("Is permanent wallet", isOn: $model.isPermanent)
                 
                 Picker("", selection: $model.curve) {
                     ForEach(0..<EllipticCurve.allCases.count) { index in

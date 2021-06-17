@@ -91,14 +91,7 @@ extension AppModel {
     }
     
     func attest() {
-        guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
-            return
-        }
-        
-        tangemSdk.attest(cardId: cardId,
-                         mode: attestationMode,
-                         completion: handleCompletion)
+        tangemSdk.startSession(with: AttestationTask(mode: attestationMode), completion: handleCompletion)
     }
     
     func signHash() {
@@ -212,7 +205,7 @@ extension AppModel {
     
     func writeSingleSignedFile() {
         guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
+            self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
@@ -223,7 +216,7 @@ extension AppModel {
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature
         else {
-            self.log("Failed to sign data with issuer signature")
+            self.complete(with: "Failed to sign data with issuer signature")
             return
         }
         tangemSdk.writeFiles(files: [
@@ -247,12 +240,12 @@ extension AppModel {
     
     func deleteFirstFile() {
         guard let savedFiles = self.savedFiles else {
-            log("Please, read files before")
+            self.complete(with: "Please, read files before")
             return
         }
         
         guard savedFiles.count > 0 else {
-            log("No saved files on card")
+            self.complete(with: "No saved files on card")
             return
         }
         
@@ -269,12 +262,12 @@ extension AppModel {
     
     func deleteAllFiles() {
         guard let savedFiles = self.savedFiles else {
-            log("Please, read files before")
+            self.complete(with: "Please, read files before")
             return
         }
         
         guard savedFiles.count > 0 else {
-            log("No saved files on card")
+            self.complete(with: "No saved files on card")
             return
         }
         
@@ -291,12 +284,12 @@ extension AppModel {
     
     func updateFirstFileSettings() {
         guard let savedFiles = self.savedFiles else {
-            log("Please, read files before")
+            self.complete(with: "Please, read files before")
             return
         }
         
         guard savedFiles.count > 0 else {
-            log("No saved files on card")
+            self.complete(with: "No saved files on card")
             return
         }
         
@@ -354,13 +347,13 @@ extension AppModel {
     
     func writeIssuerData() {
         guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
+            self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
         
         guard let issuerDataResponse = issuerDataResponse else {
-            self.log("Please, run ReadIssuerData before")
+            self.complete(with: "Please, run ReadIssuerData before")
             return
         }
         
@@ -390,13 +383,13 @@ extension AppModel {
 
     func writeIssuerExtraData() {
         guard let cardId = card?.cardId else {
-            self.log("Please, scan card before")
+            self.complete(with: "Please, scan card before")
             return
         }
         
         
         guard let issuerDataResponse = issuerExtraDataResponse else {
-            self.log("Please, run ReadIssuerExtraData before")
+            self.complete(with: "Please, run ReadIssuerExtraData before")
             return
         }
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1

@@ -61,7 +61,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		DispatchQueue.main.async {
 			switch indicatorMode {
 			case .sd:
-				self.infoScreen.setState(.spinner, animated: true)
+                self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
 			case .percent:
 				self.dismissInfoScreen()
 			}
@@ -112,8 +112,9 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		
 		infoScreenAppearWork?.cancel()
 		DispatchQueue.main.async {
+            Log.view(self.reader.isPaused)
 			self.presentInfoScreen()
-			self.infoScreen.setState(.spinner, animated: true)
+			self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
 		}
 	}
 	

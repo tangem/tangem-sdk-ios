@@ -47,7 +47,7 @@ public final class PreflightReadTask {
                     return
                 }
                 
-                if !session.environment.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
+                if !session.environment.config.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
                     completion(.failure(.wrongCardType))
                     return
                 }

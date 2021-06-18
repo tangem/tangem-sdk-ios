@@ -76,4 +76,8 @@ public protocol SessionViewDelegate: AnyObject {
 	func showInfoScreen()
     
     func setConfig(_ config: Config)
+    
+    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
+    
+    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void)
 }

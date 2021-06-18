@@ -66,28 +66,32 @@ public struct PinCode {
 
 /// Contains data relating to a Tangem card. It is used in constructing all the commands,
 /// and commands can return modified `SessionEnvironment`.
-public struct SessionEnvironment {    
+public struct SessionEnvironment {
     /// Current card, read by preflight `Read` command
-    public var card: Card? = nil
+    public internal(set) var card: Card? = nil
     
-    /// Keys for Linked Terminal feature
-    public var terminalKeys: KeyPair? = nil
+    let config: Config
     
-    public var encryptionMode: EncryptionMode = .none
+    weak var terminalKeysService: TerminalKeysService?
     
-    public var encryptionKey: Data? = nil
+    var encryptionMode: EncryptionMode = .none
     
-    public var cvc: Data? = nil //todo: remove
+    var encryptionKey: Data? = nil
     
-    var legacyMode: Bool = true
-    
-    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = FirmwareVersion.FirmwareType.allCases
-    
-    public var handleErrors: Bool = true
+    var cvc: Data? = nil //todo: remove
     
     var pin1: PinCode = PinCode(.pin1)
     
     var pin2: PinCode = PinCode(.pin2)
     
-    public init() {}
+    var legacyMode: Bool { config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice }
+    
+    /// Keys for Linked Terminal feature
+    var terminalKeys: KeyPair? {
+        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
+            return terminalKeysService?.keys
+        }
+        
+        return nil
+    }
 }

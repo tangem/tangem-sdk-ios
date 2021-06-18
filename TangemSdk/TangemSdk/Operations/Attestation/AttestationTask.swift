@@ -21,6 +21,9 @@ public final class AttestationTask: CardSessionRunnable {
     private var bag = Set<AnyCancellable>()
     
     
+    /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
+    public var shouldKeepSeesionOpened = false
+    
     public init(mode: Mode) {
         self.mode = mode
     }
@@ -36,6 +39,18 @@ public final class AttestationTask: CardSessionRunnable {
         }
         
         attestCard(session, completion)
+    }
+    
+    public func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+        onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
+        
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        runOnlineAttestation(card)
+        waitForOnlineAndComplete(session, completion)
     }
     
     private func attestCard(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
@@ -67,14 +82,7 @@ public final class AttestationTask: CardSessionRunnable {
     
     private func continueAttestaton(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         let card = session.environment.card!
-        
-        //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
-        //So, we can send the error to the publisher immediately
-        if card.firmwareVersion.type == .sdk || card.attestation.cardKeyAttestation == .failed {
-            onlinePublisher.send(completion: .failure(.cardVerificationFailed))
-        } else {
-            runOnlineAttestation(card)
-        }
+        runOnlineAttestation(card)
         
         switch self.mode {
         case .normal:
@@ -136,6 +144,13 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func runOnlineAttestation(_ card: Card) {
+        //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
+        //So, we can send the error to the publisher immediately
+        if card.firmwareVersion.type == .sdk || card.attestation.cardKeyAttestation == .failed {
+            onlinePublisher.send(completion: .failure(.cardVerificationFailed))
+            return
+        }
+        
         onlineCardVerifier
             .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
             .sink(receiveCompletion: { receivedCompletion in
@@ -148,7 +163,9 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func waitForOnlineAndComplete( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        session.pause() //Nothing to do with nfc anymore
+        if !shouldKeepSeesionOpened {
+            session.pause() //Nothing to do with nfc anymore
+        }
         
         onlinePublisher
             .compactMap { $0 }

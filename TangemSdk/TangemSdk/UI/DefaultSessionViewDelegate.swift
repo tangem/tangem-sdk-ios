@@ -197,6 +197,20 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         self.config = config
     }
     
+    //TODO: Refactor UI
+    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel)
+        }
+    }
+    
+    //TODO: Refactor UI
+    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel, onRetry: onRetry)
+        }
+    }
+    
 	private func presentInfoScreen() {
 		DispatchQueue.main.async {
 			guard
@@ -384,5 +398,23 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         
         let cidFormatter = CardIdFormatter()
         return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
+    }
+}
+
+//TODO: Localize
+fileprivate extension UIAlertController {
+    static func showShouldContinue(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "I understand", style: .destructive) { _ in onContinue() })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in onCancel() } )
+        controller.present(alert, animated: true)
+    }
+    
+    static func showShouldContinue(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "I understand", style: .destructive) { _ in onContinue() })
+        alert.addAction(UIAlertAction(title: "Retry", style: .default) { _ in onRetry() })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in onCancel() } )
+        controller.present(alert, animated: true)
     }
 }

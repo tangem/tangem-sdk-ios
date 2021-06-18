@@ -178,8 +178,9 @@ public class CardSession {
             .dropFirst()
             .debounce(for: 0.3, scheduler: RunLoop.main)
             .removeDuplicates()
+            .filter {[unowned self] _ in !self.reader.isPaused }
             .sink(receiveCompletion: { _ in },
-                  receiveValue: { [unowned self] tag in
+                  receiveValue: {[unowned self] tag in
                     if tag != nil {
                         self.viewDelegate.tagConnected()
                     } else {
@@ -199,6 +200,7 @@ public class CardSession {
         
         reader.isSessionReady //Subscription for handle session events and invoke viewDelegate
             .dropFirst()
+            .filter {[unowned self] _ in !self.reader.isPaused }
             .sink(receiveValue: { [unowned self] isReady in
                 isReady ?
                     self.viewDelegate.sessionStarted() :

@@ -608,21 +608,9 @@ extension TangemSdk {
         Log.config = config.logСonfig
     }
     
-    private func buildEnvironment() -> SessionEnvironment{
-        var environment = SessionEnvironment()
-        environment.legacyMode = config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice
-        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
-            environment.terminalKeys = terminalKeysService.getKeys()
-        }
-        environment.allowedCardTypes = config.allowedCardTypes
-        environment.handleErrors = config.handleErrors
-        
-        return environment
-    }
-    
     private func makeSession(with cardId: String?,
                              initialMessage: Message?) -> CardSession {
-        CardSession(environment: buildEnvironment(),
+        CardSession(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
                     cardId: cardId,
                     initialMessage: initialMessage,
                     cardReader: reader,

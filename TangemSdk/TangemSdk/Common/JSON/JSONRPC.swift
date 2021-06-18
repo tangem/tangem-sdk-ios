@@ -253,6 +253,6 @@ extension ScanTask: JSONRPCConvertible {
     public static var method: String { "scan" }
     
     public convenience init(from parameters: [String : Any]) throws {
-        self.init(cardVerification: try parameters.value(for: "cardVerification"))
+        self.init()
     }
 }

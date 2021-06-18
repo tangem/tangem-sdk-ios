@@ -51,7 +51,7 @@ struct WalletConfig {
 public final class CreateWalletCommand: Command {
     public typealias Response = CreateWalletResponse
     
-    public var requiresPin2: Bool { return true }
+    var requiresPin2: Bool { return true }
     
     private let curve: EllipticCurve
     private var config: WalletConfig

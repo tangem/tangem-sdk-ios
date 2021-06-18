@@ -13,7 +13,7 @@ import Foundation
 public final class DeleteFileCommand: Command {
 	public typealias Response = SuccessResponse
 	
-    public var requiresPin2: Bool { return true }
+    var requiresPin2: Bool { return true }
     
 	private let fileIndex: Int
 	

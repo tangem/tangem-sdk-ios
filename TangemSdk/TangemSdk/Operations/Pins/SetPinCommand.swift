@@ -19,9 +19,7 @@ public struct SetPinResponse: JSONStringConvertible {
 public class SetPinCommand: Command {
     public typealias Response = SetPinResponse
     
-    public var requiresPin2: Bool {
-        return true
-    }
+    var requiresPin2: Bool { return true }
     
     private let pinType: PinCode.PinType
     private var newPin1: Data?

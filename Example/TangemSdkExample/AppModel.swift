@@ -95,39 +95,59 @@ extension AppModel {
     }
     
     func signHash() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         let hash = getRandomHash()
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
         tangemSdk.sign(hash: hash,
                        walletPublicKey: publicKey,
-                       cardId: card?.cardId,
+                       cardId: cardId,
                        initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
                        completion: handleCompletion)
     }
     
     func signHashes() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: publicKey,
-                       cardId: card?.cardId,
+                       cardId: cardId,
                        initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
                        completion: handleCompletion)
     }
     
     func createWallet() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         tangemSdk.createWallet(curve: curve,
+                               cardId: cardId,
                                isPermanent: isPermanent,
-                               cardId: card?.cardId,
                                completion: handleCompletion)
     }
     
     func purgeWallet() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         guard let publicKey = card?.wallets.first?.publicKey else { return }
         
         tangemSdk.purgeWallet(walletPublicKey: publicKey,
-                              cardId: card?.cardId,
+                              cardId: cardId,
                               completion: handleCompletion)
     }
     

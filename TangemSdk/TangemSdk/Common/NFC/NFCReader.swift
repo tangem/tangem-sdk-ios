@@ -18,7 +18,7 @@ final class NFCReader: NSObject {
     
     /// Session paused indicator for pins UI
     
-    private var isPaused = false
+    var isPaused = false
     
     /// Current connected tag
     private var connectedTag: NFCTag? = nil
@@ -125,7 +125,7 @@ extension NFCReader: CardReader {
             }
             .assign (to: \.cancelled, on: self)
             .store(in: &bag)
-        
+
         $cancelled //speed up cancellation if no tag interaction
             .dropFirst()
             .filter { $0 }

@@ -27,6 +27,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
 /// Its default implementation, `NfcReader`, is in our module.
 public protocol CardReader: AnyObject {
 	/// For setting alertMessage into NFC popup
+    var isPaused: Bool { get }
     var alertMessage: String { get set }
     var tag: CurrentValueSubject<NFCTagType?,TangemSdkError> { get }
 	var isSessionReady: CurrentValueSubject<Bool, Never> { get }

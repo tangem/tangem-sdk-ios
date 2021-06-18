@@ -8,16 +8,36 @@
 
 import Foundation
 
-public struct Attestation: Codable, JSONStringConvertible {
+public struct Attestation: Codable, JSONStringConvertible, Equatable {
     public internal(set) var cardKeyAttestation: Status
     public internal(set) var walletKeysAttestation: Status
     public internal(set) var firmwareAttestation: Status
     public internal(set) var cardUniquenessAttestation: Status
+    
+    public var status: Status {
+        if !statuses.contains(where: { $0 != .skipped} ) {
+            return .skipped
+        }
+        
+        if statuses.contains(.failed) {
+            return .failed
+        }
+        
+        if statuses.contains(.verifiedOffline) {
+            return .verifiedOffline
+        }
+        
+        return .verified
+    }
+    
+    private var statuses: [Status] {
+        return [cardKeyAttestation, walletKeysAttestation, firmwareAttestation, cardUniquenessAttestation]
+    }
 }
 
 public extension Attestation {
     enum Status: String, Codable {
-        case verified, verifiedOffline, failed, skipped
+        case failed, skipped, verifiedOffline, verified
     }
 }
 

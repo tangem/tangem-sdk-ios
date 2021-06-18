@@ -23,9 +23,7 @@ import Foundation
 public final class WriteUserDataCommand: Command {
     public typealias Response = SuccessResponse
     
-    public var requiresPin2: Bool {
-        return true
-    }
+    var requiresPin2: Bool { return true }
     
     private static let maxSize = 512
     

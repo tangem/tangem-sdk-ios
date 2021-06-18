@@ -10,20 +10,8 @@ import Foundation
 
 /// Service for manage keypair, used for Linked Terminal feature. Can be disabled by legacyMode or manually
 public class TerminalKeysService {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case terminalPrivateKey //link card to terminal
-        case terminalPublicKey
-    }
-    
-    private let secureStorageService: SecureStorageService
-    
-    init(secureStorageService: SecureStorageService) {
-        self.secureStorageService = secureStorageService
-    }
-    
     /// Retrieve generated keys from keychain if they exist. Generate new and store in Keychain otherwise
-    func getKeys() -> KeyPair? {
+    lazy var keys: KeyPair?  = {
         if let privateKey = secureStorageService.get(key: StorageKey.terminalPrivateKey.rawValue) as? Data,
             let publicKey = secureStorageService.get(key: StorageKey.terminalPublicKey.rawValue) as? Data {
             return KeyPair(privateKey: privateKey, publicKey: publicKey)
@@ -36,5 +24,19 @@ public class TerminalKeysService {
         }
         
         return nil
+    }()
+    
+    private let secureStorageService: SecureStorageService
+    
+    init(secureStorageService: SecureStorageService) {
+        self.secureStorageService = secureStorageService
+    }
+}
+
+extension TerminalKeysService {
+    /// Keys used for store data in Keychain
+    enum StorageKey: String {
+        case terminalPrivateKey //link card to terminal
+        case terminalPublicKey
     }
 }

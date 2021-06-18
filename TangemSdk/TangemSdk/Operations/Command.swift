@@ -73,7 +73,7 @@ extension Command {
             return
         }
         
-        if session.environment.handleErrors, let card = session.environment.card {
+        if session.environment.config.handleErrors, let card = session.environment.card {
             if let error = performPreCheck(card) {
                 completion(.failure(error))
                 return
@@ -106,7 +106,7 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
-                    if session.environment.handleErrors {
+                    if session.environment.config.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
                         switch mappedError {
                         case .pin1Required:

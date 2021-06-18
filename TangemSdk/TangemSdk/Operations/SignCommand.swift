@@ -22,11 +22,9 @@ public struct SignResponse: Decodable, Equatable, JSONStringConvertible {
 public final class SignCommand: Command {
     public typealias Response = SignResponse
     
-    public var requiresPin2: Bool {
-        return true
-    }
-    
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
+    
+    var requiresPin2: Bool { return true }
     
     private let walletPublicKey: Data
     private let hashes: [Data]

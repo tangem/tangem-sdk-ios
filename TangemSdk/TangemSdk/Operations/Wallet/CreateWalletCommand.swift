@@ -59,9 +59,9 @@ public final class CreateWalletCommand: Command {
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet
     /// - Parameter isPermanent: If true, this wallet cannot be deleted.
-    /// - COS v4+: Passed parameter or default wallet parameter according to card personalization if nil
-    /// - COS before v4: This parameter can be ignored.  Wallet will be created according to card personalization.
-    public init(curve: EllipticCurve, isPermanent: Bool? = nil) {
+    ///   COS before v4: The card will be able to create a wallet according to its personalization only. The value of this parameter can be obtained in this way:
+    ///   `card.settings.mask.contains(.permanentWallet)`
+    public init(curve: EllipticCurve, isPermanent: Bool) {
         self.curve = curve
         self.config = WalletConfig(isPermanent: isPermanent, signingMethods: .signHash)
     }
@@ -82,7 +82,7 @@ public final class CreateWalletCommand: Command {
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
             if let designatedIsProhibitPurge = config.isPermanent {
-                let currentIsProhibitPurge = card.settings.mask.contains(.prohibitPurgeWallet)
+                let currentIsProhibitPurge = card.settings.mask.contains(.permanentWallet)
                 if designatedIsProhibitPurge != currentIsProhibitPurge {
                     return TangemSdkError.unsupportedWalletConfig
                 }

@@ -20,10 +20,13 @@ class AppModel: ObservableObject {
     // Outputs
     @Published var logText: String = ""
     @Published var isScanning: Bool = false
+    // Outputs for v3
+    @Published var canSelectWalletSettings: Bool = true
+    @Published var supportedCurves: [EllipticCurve] = EllipticCurve.allCases
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .custom(logLevel: [.debug])
+        config.logСonfig = .custom(logLevel: [.view])
         config.linkedTerminal = false
         config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
@@ -84,6 +87,8 @@ extension AppModel {
         tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { result in
             if case let .success(card) = result {
                 self.card = card
+                self.canSelectWalletSettings = card.firmwareVersion >= .multiwalletAvailable
+                self.supportedCurves = card.supportedCurves
             }
             
             self.handleCompletion(result)
@@ -132,9 +137,12 @@ extension AppModel {
             return
         }
         
+        let isPermanent = card!.firmwareVersion < .multiwalletAvailable ?
+            card!.settings.mask.contains(.permanentWallet) : self.isPermanent
+        
         tangemSdk.createWallet(curve: curve,
-                               cardId: cardId,
                                isPermanent: isPermanent,
+                               cardId: cardId,
                                completion: handleCompletion)
     }
     

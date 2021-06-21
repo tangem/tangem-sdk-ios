@@ -20,7 +20,8 @@ class AppModel: ObservableObject {
     // Outputs
     @Published var logText: String = ""
     @Published var isScanning: Bool = false
-    // Outputs for v3
+    
+    // Outputs for wallet creation
     @Published var canSelectWalletSettings: Bool = true
     @Published var supportedCurves: [EllipticCurve] = EllipticCurve.allCases
     

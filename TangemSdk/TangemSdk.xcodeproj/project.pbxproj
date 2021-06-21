@@ -16,16 +16,23 @@
 		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
 		5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */; };
-		5D38D06B2679066B0052F67C /* SignRequest.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignRequest.json */; };
-		5D38D06C267908650052F67C /* SignRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignRequest.json */; };
+		5D38D06B2679066B0052F67C /* SignHashesRequest.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashesRequest.json */; };
+		5D38D06C267908650052F67C /* SignHashesRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashesRequest.json */; };
 		5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* ScanRequest.json */; };
-		5D38D07126790D840052F67C /* SignResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignResult.json */; };
+		5D38D07126790D840052F67C /* SignCommandResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignCommandResult.json */; };
 		5D38D07326791F710052F67C /* ScanResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D07226791F710052F67C /* ScanResponse.json */; };
 		5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */; };
 		5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D077267A4B0C0052F67C /* AttestationTask.swift */; };
 		5D3F77AA24B4E05400E8695B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D3F77A924B4E05400E8695B /* Assets.xcassets */; };
 		5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* Attestation.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
+		5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1542681032B00DC6447 /* SignHashCommand.swift */; };
+		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
+		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
+		5D46F15C26811C0100DC6447 /* SignHashesResult.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F15B26811C0100DC6447 /* SignHashesResult.json */; };
+		5D46F15D26811CCD00DC6447 /* SignHashesResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15B26811C0100DC6447 /* SignHashesResult.json */; };
+		5D46F15F26811D4000DC6447 /* SignHashRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHashRequest.json */; };
+		5D46F16126811D4900DC6447 /* SignHashResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F16026811D4900DC6447 /* SignHashResult.json */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
 		5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* TangemSdkError.swift */; };
@@ -237,15 +244,21 @@
 		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
-		5D38D06A2679066B0052F67C /* SignRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignRequest.json; sourceTree = "<group>"; };
+		5D38D06A2679066B0052F67C /* SignHashesRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignHashesRequest.json; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* ScanRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanRequest.json; sourceTree = "<group>"; };
-		5D38D06F26790D730052F67C /* SignResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignResult.json; sourceTree = "<group>"; };
+		5D38D06F26790D730052F67C /* SignCommandResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignCommandResult.json; sourceTree = "<group>"; };
 		5D38D07226791F710052F67C /* ScanResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanResponse.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
 		5D38D077267A4B0C0052F67C /* AttestationTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationTask.swift; sourceTree = "<group>"; };
 		5D3F77A924B4E05400E8695B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* Attestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attestation.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
+		5D46F1542681032B00DC6447 /* SignHashCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignHashCommand.swift; sourceTree = "<group>"; };
+		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
+		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
+		5D46F15B26811C0100DC6447 /* SignHashesResult.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignHashesResult.json; sourceTree = "<group>"; };
+		5D46F15E26811D4000DC6447 /* SignHashRequest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHashRequest.json; sourceTree = "<group>"; };
+		5D46F16026811D4900DC6447 /* SignHashResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHashResult.json; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
 		5D58201F24221E060057EF40 /* CardSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSession.swift; sourceTree = "<group>"; };
@@ -494,8 +507,11 @@
 		5D38D0672679040C0052F67C /* Jsons */ = {
 			isa = PBXGroup;
 			children = (
-				5D38D06A2679066B0052F67C /* SignRequest.json */,
-				5D38D06F26790D730052F67C /* SignResult.json */,
+				5D38D06A2679066B0052F67C /* SignHashesRequest.json */,
+				5D46F15E26811D4000DC6447 /* SignHashRequest.json */,
+				5D38D06F26790D730052F67C /* SignCommandResult.json */,
+				5D46F15B26811C0100DC6447 /* SignHashesResult.json */,
+				5D46F16026811D4900DC6447 /* SignHashResult.json */,
 				5D38D06D26790B1A0052F67C /* ScanRequest.json */,
 				5D38D07226791F710052F67C /* ScanResponse.json */,
 			);
@@ -524,6 +540,16 @@
 			path = Attestation;
 			sourceTree = "<group>";
 		};
+		5D46F156268105A500DC6447 /* Sign */ = {
+			isa = PBXGroup;
+			children = (
+				5D6A92E42345F2B200158457 /* SignCommand.swift */,
+				5D46F1542681032B00DC6447 /* SignHashCommand.swift */,
+				5D46F157268105BF00DC6447 /* SignHashesCommand.swift */,
+			);
+			path = Sign;
+			sourceTree = "<group>";
+		};
 		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -539,6 +565,7 @@
 				5D94475D2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift */,
 				5D944757264EC52400EA9CD2 /* JSONRPC.swift */,
 				5DDD6C5D25D2E01800E48D7B /* Codable+.swift */,
+				5D46F1592681064A00DC6447 /* Handlers.swift */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -574,6 +601,7 @@
 		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				5D46F156268105A500DC6447 /* Sign */,
 				5D38D076267A44BF0052F67C /* Pins */,
 				5D2E7CBC2678F4C200FBFC53 /* IssuerAndUserData */,
 				B0BAEECF25FFA07900F318A6 /* Read */,
@@ -582,7 +610,6 @@
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				B0BD1C8E255E58BE00119D82 /* Wallet */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
-				5D6A92E42345F2B200158457 /* SignCommand.swift */,
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				B006971325FFA4420040D203 /* PreflightReadTask.swift */,
 				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
@@ -1186,10 +1213,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D46F16126811D4900DC6447 /* SignHashResult.json in Resources */,
+				5D46F15F26811D4000DC6447 /* SignHashRequest.json in Resources */,
+				5D46F15D26811CCD00DC6447 /* SignHashesResult.json in Resources */,
 				5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */,
-				5D38D07126790D840052F67C /* SignResult.json in Resources */,
+				5D38D07126790D840052F67C /* SignCommandResult.json in Resources */,
 				5D38D07326791F710052F67C /* ScanResponse.json in Resources */,
-				5D38D06C267908650052F67C /* SignRequest.json in Resources */,
+				5D38D06C267908650052F67C /* SignHashesRequest.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1206,6 +1236,7 @@
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				B00B3331252E0B5A00A9FE96 /* FileWriteSettings.swift in Sources */,
+				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
 				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
@@ -1295,6 +1326,7 @@
 				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
+				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
@@ -1336,6 +1368,7 @@
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
+				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1346,10 +1379,11 @@
 			files = (
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
-				5D38D06B2679066B0052F67C /* SignRequest.json in Sources */,
+				5D38D06B2679066B0052F67C /* SignHashesRequest.json in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
+				5D46F15C26811C0100DC6447 /* SignHashesResult.json in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,

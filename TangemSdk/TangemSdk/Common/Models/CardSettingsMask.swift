@@ -8,6 +8,17 @@
 
 import Foundation
 
+public extension Card.Settings {
+    /// Stores and maps Tangem card settings.
+    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+        public let rawValue: Int
+        
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+}
+
 //MARK:- Constants
 public extension Card.Settings.Mask {
     static let useActivation = Card.Settings.Mask(rawValue: 0x0002)
@@ -32,11 +43,11 @@ public extension Card.Settings.Mask {
     static let disableIssuerData = Card.Settings.Mask(rawValue: 0x01000000)
     static let disableUserData = Card.Settings.Mask(rawValue: 0x02000000)
     static let disableFiles = Card.Settings.Mask(rawValue: 0x04000000)
+    static let permanentWallet = Card.Settings.Mask(rawValue: 0x0004)
 }
 
 extension Card.Settings.Mask {
     static let isReusable = Card.Settings.Mask(rawValue: 0x0001)
-    static let prohibitPurgeWallet = Card.Settings.Mask(rawValue: 0x0004)
 }
 
 //MARK:- OptionSetCodable conformance
@@ -116,7 +127,7 @@ extension Card.Settings.Mask: OptionSetCodable {
             case .isReusable:
                 return .isReusable
             case .prohibitPurgeWallet:
-                return .prohibitPurgeWallet
+                return .permanentWallet
             }
         }
     }

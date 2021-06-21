@@ -11,39 +11,47 @@ import Foundation
 public final class JSONRPCConverter {
     public static let shared: JSONRPCConverter = {
         let converter = JSONRPCConverter()
-        converter.register(SignCommand.self)
-        converter.register(ScanTask.self)
+        converter.register(SignHashesHandler())
+        converter.register(SignHashHandler())
+        converter.register(ScanTaskHandler())
+        converter.register(CreateWalletHandler())
+        converter.register(PurgeWalletHandler())
+        converter.register(PersonalizeHandler())
+        converter.register(DepersonalizeHandler())
+        converter.register(SetPin1Handler())
+        converter.register(SetPin2Handler())
         return converter
     }()
     
-    public private(set) var runnables: [String: JSONRPCConvertible.Type] = [:]
+    public private(set) var handlers: [String: JSONRPCHandler] = [:]
     
     private init() {}
 
-    public func register(_ object: JSONRPCConvertible.Type) {
-        runnables[object.method.lowercased()] = object
+    public func register(_ object: JSONRPCHandler) {
+        handlers[object.method.lowercased()] = object
     }
     
     public func convert(request: JSONRPCRequest) throws -> AnyJSONRPCRunnable {
-        guard let method = runnables[request.method.lowercased()] else {
+        let handler = try getHandler(from: request)
+        return try handler.makeRunnable(from: request.params)
+    }
+    
+    public func getHandler(from request: JSONRPCRequest) throws -> JSONRPCHandler {
+        guard let handler = handlers[request.method.lowercased()] else {
             throw JSONRPCError(.methodNotFound, data: request.method)
         }
         
-        return try method.makeRunnable(from: request.params)
+        return handler
     }
 }
 
-public protocol JSONRPCConvertible {
-    static var method: String { get }
-    init(from parameters: [String: Any]) throws
-    static func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable
+public protocol JSONRPCHandler {
+    var method: String { get }
+    var requiresCardId: Bool { get }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable
 }
 
-public extension JSONRPCConvertible where Self: CardSessionRunnable, Self.Response: JSONStringConvertible {
-    static func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable {
-        return try Self.init(from: parameters).eraseToAnyRunnable()
-    }
-}
 
 // MARK: - JSONRPC Specification
 
@@ -237,37 +245,3 @@ extension Dictionary where Key == String, Value == Any {
         }
     }
 }
-
-// MARK: - Commands implemetation
-
-extension SignCommand: JSONRPCConvertible {
-    public static var method: String { "sign_hashes" }
-    
-    public convenience init(from parameters: [String : Any]) throws {
-        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
-        self.init(hashes: try parameters.value(for: "hashes"), walletPublicKey: walletPublicKey)
-    }
-}
-
-extension ScanTask: JSONRPCConvertible {
-    public static var method: String { "SCAN" }
-    
-    public convenience init(from parameters: [String : Any]) throws {
-        self.init()
-    }
-}
-
-//class SignHash: JSONRPCConvertible {
-//    public static var method: String { "sign_hash" }
-//
-//    required init(from parameters: [String : Any]) throws {
-//
-//    }
-//
-//    static func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-//        let hash: Data = try parameters.value(for: "hash")
-//        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
-//        let cardId: String = try parameters.value(for: "cardId")
-//        let signCommand = SignCommand(hashes: <#T##[Data]#>, walletPublicKey: <#T##Data#>)
-//    }
-//}

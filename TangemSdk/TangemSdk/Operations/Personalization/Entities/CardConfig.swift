@@ -11,7 +11,7 @@ import Foundation
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
-public struct CardConfig: JSONStringConvertible {
+public struct CardConfig: Decodable, JSONStringConvertible {
     let issuerName: String?
     let acquirerName: String?
     let series: String?

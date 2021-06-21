@@ -51,8 +51,8 @@ public final class TangemSdk {
     }
     
     /// Register custom task, that supported JSONRPC
-    /// - Parameter object: object, that conforms `JSONRPCConvertible.Type`
-    public func registerJSONRPCTask(_ object: JSONRPCConvertible.Type) {
+    /// - Parameter object: object, that conforms `JSONRPCHandler`
+    public func registerJSONRPCTask(_ object: JSONRPCHandler) {
         jsonConverter.register(object)
     }
 }
@@ -90,14 +90,11 @@ public extension TangemSdk {
               cardId: String,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<Data>) {
-        sign(hashes: [hash], walletPublicKey: walletPublicKey, cardId: cardId, initialMessage: initialMessage) { (result) in
-            switch result {
-            case .success(let signatures):
-                completion(.success(signatures[0]))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey)
+        startSession(with: command,
+                     cardId: cardId,
+                     initialMessage: initialMessage,
+                     completion: completion)
     }
     
     /// This method allows you to sign multiple hashes.
@@ -120,16 +117,11 @@ public extension TangemSdk {
               cardId: String,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<[Data]>) {
-        startSession(with: SignCommand(hashes: hashes, walletPublicKey: walletPublicKey),
+        let command = SignHashesCommand(hashes: hashes, walletPublicKey: walletPublicKey)
+        startSession(with: command,
                      cardId: cardId,
-                     initialMessage: initialMessage) { result in
-            switch result {
-            case .success(let response):
-                completion(.success(response.signatures))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+                     initialMessage: initialMessage,
+                     completion: completion)
     }
     
     /// This command will create a new wallet on the card having ‘Empty’ state.
@@ -594,10 +586,11 @@ extension TangemSdk {
         do {
             request = try JSONRPCRequest(jsonString: jsonRequest)
             try checkSession()
+            let cardId = try retrieveCardId(for: request)
             let runnable = try jsonConverter.convert(request: request)
             configure()
-            cardSession = makeSession(with: try? request.params.value(for: "cardId"),
-                                      initialMessage: try? request.params.value(for: "initialMessage"))
+            
+            cardSession = makeSession(with: cardId, initialMessage: try? request.params.value(for: "initialMessage"))
             cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             
         } catch {
@@ -627,5 +620,16 @@ private extension TangemSdk {
                     cardReader: reader,
                     viewDelegate: viewDelegate,
                     jsonConverter: jsonConverter)
+    }
+    
+    func retrieveCardId(for request: JSONRPCRequest) throws -> String? {
+        let cardId: String? = try? request.params.value(for: "cardId")
+        let handler = try jsonConverter.getHandler(from: request)
+        
+        if handler.requiresCardId && cardId == nil {
+            throw JSONRPCError(.invalidParams, data: request.method)
+        }
+        
+        return cardId
     }
 }

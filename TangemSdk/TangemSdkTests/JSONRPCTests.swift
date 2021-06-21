@@ -61,13 +61,25 @@ class JSONRPCTests: XCTestCase {
 //        XCTAssertNotNil(task)
     }
     
-    func testSign() {
-        let result = SignResponse(cardId: "c000111122223333",
-                                  signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
-                                               Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")],
-                                  totalSignedHashes: 2)
+//    func testSignCommand() {
+//        let result = SignResponse(cardId: "c000111122223333",
+//                                  signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
+//                                               Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")],
+//                                  totalSignedHashes: 2)
+//
+//        testMethod(name: "SignHashes", result: result)
+//    }
+    
+    func testSignHashes() {
+        let result = [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
+                      Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")]
         
-        testMethod(name: "Sign", result: result)
+        testMethod(name: "SignHashes", result: result)
+    }
+    
+    func testSignHash() {
+        let result = Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1")
+        testMethod(name: "SignHash", result: result)
     }
     
     func testMethodNotFound() {

@@ -241,7 +241,7 @@ extension Dictionary where Key == String, Value == Any {
 // MARK: - Commands implemetation
 
 extension SignCommand: JSONRPCConvertible {
-    public static var method: String { "sign" }
+    public static var method: String { "sign_hashes" }
     
     public convenience init(from parameters: [String : Any]) throws {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
@@ -250,9 +250,24 @@ extension SignCommand: JSONRPCConvertible {
 }
 
 extension ScanTask: JSONRPCConvertible {
-    public static var method: String { "scan" }
+    public static var method: String { "SCAN" }
     
     public convenience init(from parameters: [String : Any]) throws {
         self.init()
     }
 }
+
+//class SignHash: JSONRPCConvertible {
+//    public static var method: String { "sign_hash" }
+//
+//    required init(from parameters: [String : Any]) throws {
+//
+//    }
+//
+//    static func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+//        let hash: Data = try parameters.value(for: "hash")
+//        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
+//        let cardId: String = try parameters.value(for: "cardId")
+//        let signCommand = SignCommand(hashes: <#T##[Data]#>, walletPublicKey: <#T##Data#>)
+//    }
+//}

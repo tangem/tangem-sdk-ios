@@ -80,11 +80,12 @@ struct ContentView: View {
                     .bold()
                 
                 Toggle("Is permanent wallet", isOn: $model.isPermanent)
+                    .disabled(!model.canSelectWalletSettings)
                 
                 Picker("", selection: $model.curve) {
-                    ForEach(0..<EllipticCurve.allCases.count) { index in
-                        Text(EllipticCurve.allCases[index].rawValue)
-                            .tag(EllipticCurve.allCases[index])
+                    ForEach(0..<model.supportedCurves.count) { index in
+                        Text(model.supportedCurves[index].rawValue)
+                            .tag(model.supportedCurves[index])
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())

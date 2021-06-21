@@ -172,7 +172,7 @@ public struct CardConfig: JSONStringConvertible {
             builder.add(.protectIssuerDataAgainstReplay)
         }
         if prohibitPurgeWallet {
-            builder.add(.prohibitPurgeWallet)
+            builder.add(.permanentWallet)
         }
         if allowSelectBlockchain {
             builder.add(.allowSelectBlockchain)

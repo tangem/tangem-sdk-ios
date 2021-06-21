@@ -79,17 +79,6 @@ public extension Card {
     }
 }
 
-public extension Card.Settings {
-    /// Stores and maps Tangem card settings.
-    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-        public let rawValue: Int
-        
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
-    }
-}
-
 extension Card {
     /// Status of the card and its wallet.
     enum Status: Int, Codable, StatusType {

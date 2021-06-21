@@ -19,8 +19,7 @@ public struct SignResponse: Decodable, Equatable, JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public final class SignCommand: Command {
-    public typealias Response = SignResponse
+public class SignCommand: Command {
     
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     

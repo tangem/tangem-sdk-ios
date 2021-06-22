@@ -27,7 +27,7 @@ class JsonTests: XCTestCase {
             let curve: EllipticCurve
         }
         
-        let decoded = try? JSONDecoder().decode(TestStruct.self, from: testJson)
+        let decoded = try? JSONDecoder.tangemSdkDecoder.decode(TestStruct.self, from: testJson)
         XCTAssertNotNil(decoded)
     }
 }

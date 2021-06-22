@@ -84,12 +84,12 @@ public extension TangemSdk {
     ///   - walletPublicKey: Public key of wallet that should sign hash.
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns  `Swift.Result<Data,TangemSdkError>`
+    ///   - completion: Returns  `Swift.Result<SignHashResponse,TangemSdkError>`
     func sign(hash: Data,
               walletPublicKey: Data,
               cardId: String,
               initialMessage: Message? = nil,
-              completion: @escaping CompletionResult<Data>) {
+              completion: @escaping CompletionResult<SignHashResponse>) {
         let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey)
         startSession(with: command,
                      cardId: cardId,
@@ -111,13 +111,13 @@ public extension TangemSdk {
     ///   - walletPublicKey: Public key of wallet that should sign hashes.
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns  `Swift.Result<[Data],TangemSdkError>`
+    ///   - completion: Returns  `Swift.Result<SignHashesResponse,TangemSdkError>`
     func sign(hashes: [Data],
               walletPublicKey: Data,
               cardId: String,
               initialMessage: Message? = nil,
-              completion: @escaping CompletionResult<[Data]>) {
-        let command = SignHashesCommand(hashes: hashes, walletPublicKey: walletPublicKey)
+              completion: @escaping CompletionResult<SignHashesResponse>) {
+        let command = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,
@@ -581,16 +581,20 @@ extension TangemSdk {
     /// - Parameters:
     ///   - jsonRequest: A JSONRPCRequest, describing specific`CardSessionRunnable`
     ///   - completion: A JSONRPCResponse with with result of the operation
-    public func startSession(with jsonRequest: String, completion: @escaping (String) -> Void) {
+    public func startSession(with jsonRequest: String,
+                             cardId: String? = nil,
+                             initialMessage: String? = nil,
+                             completion: @escaping (String) -> Void) {
         var request: JSONRPCRequest!
         do {
             request = try JSONRPCRequest(jsonString: jsonRequest)
             try checkSession()
-            let cardId = try retrieveCardId(for: request)
+            try assertCardId(cardId, for: request)
             let runnable = try jsonConverter.convert(request: request)
             configure()
             
-            cardSession = makeSession(with: cardId, initialMessage: try? request.params.value(for: "initialMessage"))
+            let initialMessage = initialMessage.flatMap { Message($0) }
+            cardSession = makeSession(with: cardId, initialMessage: initialMessage)
             cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             
         } catch {
@@ -622,14 +626,10 @@ private extension TangemSdk {
                     jsonConverter: jsonConverter)
     }
     
-    func retrieveCardId(for request: JSONRPCRequest) throws -> String? {
-        let cardId: String? = try? request.params.value(for: "cardId")
+    func assertCardId(_ cardId: String?, for request: JSONRPCRequest) throws {
         let handler = try jsonConverter.getHandler(from: request)
-        
         if handler.requiresCardId && cardId == nil {
             throw JSONRPCError(.invalidParams, data: request.method)
         }
-        
-        return cardId
     }
 }

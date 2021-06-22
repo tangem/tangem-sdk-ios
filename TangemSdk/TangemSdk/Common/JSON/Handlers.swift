@@ -98,7 +98,7 @@ class DepersonalizeHandler: JSONRPCHandler {
 }
 
 class SetPin1Handler: JSONRPCHandler {
-    var method: String { "SETPIN1" }
+    var method: String { "SET_PIN1" }
     
     var requiresCardId: Bool { false }
     
@@ -110,13 +110,26 @@ class SetPin1Handler: JSONRPCHandler {
 }
 
 class SetPin2Handler: JSONRPCHandler {
-    var method: String { "SETPIN2" }
+    var method: String { "SET_PIN2" }
     
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let pin: String = try parameters.value(for: "pin")
         let command = SetPinCommand(pinType: .pin2, pin: pin)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+/// Runs PreflightReadTask in `fullCardRead` mode
+class PreflightReadHandler: JSONRPCHandler {
+    var method: String { "PREFLIGHT_READ" }
+    
+    var requiresCardId: Bool { false }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let cardId: String? = try parameters.value(for: "cardId")
+        let command = PreflightReadTask(readMode: .fullCardRead, cardId: cardId)
         return command.eraseToAnyRunnable()
     }
 }

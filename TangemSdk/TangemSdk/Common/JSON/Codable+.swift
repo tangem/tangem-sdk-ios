@@ -34,6 +34,12 @@ extension JSONEncoder {
         encoder.dateEncodingStrategy = .formatted(.tangemSdkDateFormatter)
         return encoder
     }
+    
+    public static var tangemSdkTestEncoder: JSONEncoder  {
+        let encoder = JSONEncoder.tangemSdkEncoder
+        encoder.outputFormatting = [.sortedKeys]
+        return encoder
+    }
 }
 
 fileprivate extension DateFormatter {

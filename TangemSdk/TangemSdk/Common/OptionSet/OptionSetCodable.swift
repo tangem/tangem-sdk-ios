@@ -38,7 +38,7 @@ public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element {
         var optionSet = Self()
         
         for item in OptionKeys.allCases {
-            if stringValues.contains(item.rawValue.capitalizingFirst()) {
+            if stringValues.contains(item.rawValue.lowercased()) {
                 optionSet.update(with: item.value)
             }
         }

@@ -11,6 +11,12 @@ import XCTest
 @testable import TangemSdk
 
 class JSONRPCTests: XCTestCase {
+    var testCard: Card {
+        let json = readFile(name: "Card")
+        let data = json.data(using: .utf8)!
+        let card = try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data)
+        return card
+    }
     func testJsonRPCRequestParse() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": {\"subtrahend\": 23, \"minuend\": 42}, \"id\": 3}"
         
@@ -64,20 +70,7 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testScan() {
-//        let result = Card(cardId: <#T##String#>,
-//                          batchId: <#T##String#>,
-//                          cardPublicKey: <#T##Data#>,
-//                          firmwareVersion: <#T##FirmwareVersion#>,
-//                          manufacturer: <#T##Card.Manufacturer#>,
-//                          issuer: <#T##Card.Issuer#>,
-//                          settings: <#T##Card.Settings#>,
-//                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
-//                          isPin2Default: <#T##Bool?#>,
-//                          supportedCurves: <#T##[EllipticCurve]#>,
-//                          health: <#T##Int?#>,
-//                          remainingSignatures: <#T##Int?#>)
-//
-//        testMethod(name: "Scan", result: result)
+        testMethod(name: "Scan", result: testCard)
     }
     
     func testCreateWallet() {
@@ -134,20 +127,7 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testPreflightRead() {
-        //        let result = Card(cardId: <#T##String#>,
-        //                          batchId: <#T##String#>,
-        //                          cardPublicKey: <#T##Data#>,
-        //                          firmwareVersion: <#T##FirmwareVersion#>,
-        //                          manufacturer: <#T##Card.Manufacturer#>,
-        //                          issuer: <#T##Card.Issuer#>,
-        //                          settings: <#T##Card.Settings#>,
-        //                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
-        //                          isPin2Default: <#T##Bool?#>,
-        //                          supportedCurves: <#T##[EllipticCurve]#>,
-        //                          health: <#T##Int?#>,
-        //                          remainingSignatures: <#T##Int?#>)
-        
-        //testMethod(name: "PreflightRead", result: result)
+        testMethod(name: "PreflightRead", result: testCard)
     }
     
     func testSignHashes() {

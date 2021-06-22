@@ -29,6 +29,11 @@
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
+		5D54408A2682260000F7D05B /* SetPin1.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetPin1.json */; };
+		5D54408C2682269400F7D05B /* SetPin2.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408B2682269400F7D05B /* SetPin2.json */; };
+		5D54408E268226B600F7D05B /* Depersonalize.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408D268226B600F7D05B /* Depersonalize.json */; };
+		5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408F268226BC00F7D05B /* PurgeWallet.json */; };
+		5D5440922682297A00F7D05B /* CreateWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440912682297A00F7D05B /* CreateWallet.json */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
 		5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* TangemSdkError.swift */; };
 		5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58B4BE233E4C6B00F33764 /* InputStream+.swift */; };
@@ -252,6 +257,11 @@
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D53A4092369D7D10021DAF6 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
+		5D5440892682260000F7D05B /* SetPin1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetPin1.json; sourceTree = "<group>"; };
+		5D54408B2682269400F7D05B /* SetPin2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetPin2.json; sourceTree = "<group>"; };
+		5D54408D268226B600F7D05B /* Depersonalize.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Depersonalize.json; sourceTree = "<group>"; };
+		5D54408F268226BC00F7D05B /* PurgeWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PurgeWallet.json; sourceTree = "<group>"; };
+		5D5440912682297A00F7D05B /* CreateWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CreateWallet.json; sourceTree = "<group>"; };
 		5D58201F24221E060057EF40 /* CardSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSession.swift; sourceTree = "<group>"; };
 		5D58202124221E2B0057EF40 /* TangemSdkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkError.swift; sourceTree = "<group>"; };
 		5D58B4BE233E4C6B00F33764 /* InputStream+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InputStream+.swift"; sourceTree = "<group>"; };
@@ -501,6 +511,11 @@
 				5D38D06A2679066B0052F67C /* SignHashes.json */,
 				5D46F15E26811D4000DC6447 /* SignHash.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
+				5D5440892682260000F7D05B /* SetPin1.json */,
+				5D54408B2682269400F7D05B /* SetPin2.json */,
+				5D54408D268226B600F7D05B /* Depersonalize.json */,
+				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
+				5D5440912682297A00F7D05B /* CreateWallet.json */,
 			);
 			path = Jsons;
 			sourceTree = "<group>";
@@ -1200,9 +1215,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D54408A2682260000F7D05B /* SetPin1.json in Resources */,
+				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
+				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
 				5D38D06C267908650052F67C /* SignHashes.json in Resources */,
+				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
+				5D54408C2682269400F7D05B /* SetPin2.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

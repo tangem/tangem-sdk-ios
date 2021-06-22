@@ -21,9 +21,7 @@ public enum PreflightReadMode: Equatable {
     case fullCardRead
 }
 
-public final class PreflightReadTask {
-    typealias Response = ReadResponse
-    
+public final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
     private let cardId: String?
     

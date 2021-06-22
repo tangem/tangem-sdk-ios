@@ -8,8 +8,17 @@
 
 import Foundation
 
+/// Response for `SignHashCommand`.
+public struct SignHashResponse: Decodable, Equatable, JSONStringConvertible {
+    /// CID, Unique Tangem card ID number
+    public let cardId: String
+    /// Signed hash
+    public let signature: Data
+    /// Total number of signed  hashes returned by the wallet since its creation. COS: 1.16+
+    public let totalSignedHashes: Int?
+}
+
 public final class SignHashCommand: CardSessionRunnable {
-    
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
     private let walletPublicKey: Data
@@ -28,15 +37,23 @@ public final class SignHashCommand: CardSessionRunnable {
         Log.debug("SignHashCommand deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Data>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashResponse>) {
         let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey)
         signCommand.run(in: session) { result in
             switch result {
             case .success(let signResponse):
-                completion(.success(signResponse.signatures[0]))
+                completion(.success(SignHashResponse(signResponse)))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+    }
+}
+
+extension SignHashResponse {
+    init(_ response: SignResponse) {
+        cardId = response.cardId
+        signature = response.signatures[0]
+        totalSignedHashes = response.totalSignedHashes
     }
 }

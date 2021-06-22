@@ -20,6 +20,17 @@ class JSONRPCTests: XCTestCase {
         XCTAssertEqual(request!.params["subtrahend"] as! Int, Int(23))
     }
     
+    func testInitialMessageInit() {
+        let json = "{\"header\": \"Some header\", \"body\": \"Some body\"}"
+        
+        if let message = Message(json) {
+            XCTAssertEqual(message.header, "Some header")
+            XCTAssertEqual(message.body, "Some body")
+        } else {
+            XCTAssertNotNil(nil)
+        }
+    }
+    
     func testJsonResponse() {
         let response = SuccessResponse(cardId: "c000111122223333")
         let result: Result<SuccessResponse, TangemSdkError> = .success(response)
@@ -52,33 +63,40 @@ class JSONRPCTests: XCTestCase {
         XCTAssert(data[1] == Data(hexString: "AABBCCDDEEFFGG"))
     }
     
-    func testScan() {
+//    func testScan() {
 //        let testJson = getTestData(for: "Scan", resultType: ScanTask.Response.self)
 //        let request = try? JSONRPCRequest(jsonString: testJson.request)
 //        XCTAssertNotNil(request)
 //
 //        let task = try? JSONRPCConverter.shared.convert(request: request!)
 //        XCTAssertNotNil(task)
-    }
-    
-//    func testSignCommand() {
-//        let result = SignResponse(cardId: "c000111122223333",
-//                                  signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
-//                                               Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")],
-//                                  totalSignedHashes: 2)
-//
-//        testMethod(name: "SignHashes", result: result)
 //    }
     
+//    func test {
+//
+//
+//        "cardId": "c000111122223333",
+//        "initialMessage": {
+//          "header": "Initial message header",
+//          "body": "Initial message body"
+//        }
+//
+//    }
+//
     func testSignHashes() {
-        let result = [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
-                      Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")]
+        let result = SignHashesResponse(cardId: "c000111122223333",
+                                        signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
+                                                     Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")],
+                                        totalSignedHashes: 2)
         
         testMethod(name: "SignHashes", result: result)
     }
     
     func testSignHash() {
-        let result = Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1")
+        let result = SignHashResponse(cardId: "c000111122223333",
+                                      signature: Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
+                                      totalSignedHashes: 2)
+        
         testMethod(name: "SignHash", result: result)
     }
     
@@ -100,6 +118,7 @@ class JSONRPCTests: XCTestCase {
         let testJson = getTestData(for: name, resultType: type(of: result))
         let request = try? JSONRPCRequest(jsonString: testJson.request)
         XCTAssertNotNil(request)
+        if request == nil { return }
         
         let task = try? JSONRPCConverter.shared.convert(request: request!)
         XCTAssertNotNil(task)

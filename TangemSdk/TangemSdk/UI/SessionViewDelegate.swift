@@ -36,6 +36,16 @@ public struct Message: Codable, JSONStringConvertible {
         self.header = header
         self.body = body
     }
+    
+    public init?(_ jsonString: String) {
+        guard let jsonData = jsonString.data(using: .utf8),
+              let decoded = try? JSONDecoder.tangemSdkDecoder.decode(Message.self, from: jsonData) else {
+            return nil
+        }
+
+        self.header = decoded.header
+        self.body = decoded.body
+    }
 }
 
 

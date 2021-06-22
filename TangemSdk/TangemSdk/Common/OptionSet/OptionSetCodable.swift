@@ -34,7 +34,7 @@ public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element {
     
     init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
-        let stringValues = try values.decode([String].self)
+        let stringValues = (try values.decode([String].self)).map { $0.lowercased() }
         var optionSet = Self()
         
         for item in OptionKeys.allCases {

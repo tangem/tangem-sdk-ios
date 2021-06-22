@@ -15,7 +15,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
-                
+
                 ScrollView {
                     Text(model.logText)
                         .padding(.horizontal, 16)
@@ -26,6 +26,11 @@ struct ContentView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
+                .contextMenu {
+                    Button("Copy") {
+                        UIPasteboard.general.string = model.logText
+                    }
+                }
                 
                 ScrollView {
                     VStack {

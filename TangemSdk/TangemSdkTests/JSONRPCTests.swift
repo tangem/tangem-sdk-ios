@@ -63,14 +63,92 @@ class JSONRPCTests: XCTestCase {
         XCTAssert(data[1] == Data(hexString: "AABBCCDDEEFFGG"))
     }
     
-//    func testScan() {
-//        let testJson = getTestData(for: "Scan", resultType: ScanTask.Response.self)
-//        let request = try? JSONRPCRequest(jsonString: testJson.request)
-//        XCTAssertNotNil(request)
+    func testScan() {
+//        let result = Card(cardId: <#T##String#>,
+//                          batchId: <#T##String#>,
+//                          cardPublicKey: <#T##Data#>,
+//                          firmwareVersion: <#T##FirmwareVersion#>,
+//                          manufacturer: <#T##Card.Manufacturer#>,
+//                          issuer: <#T##Card.Issuer#>,
+//                          settings: <#T##Card.Settings#>,
+//                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
+//                          isPin2Default: <#T##Bool?#>,
+//                          supportedCurves: <#T##[EllipticCurve]#>,
+//                          health: <#T##Int?#>,
+//                          remainingSignatures: <#T##Int?#>)
 //
-//        let task = try? JSONRPCConverter.shared.convert(request: request!)
-//        XCTAssertNotNil(task)
-//    }
+//        testMethod(name: "Scan", result: result)
+    }
+    
+    func testCreateWallet() {
+        let result = CreateWalletResponse(cardId: "c000111122223333",
+                                          wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
+                                                              curve: .secp256r1,
+                                                              settings: Card.Wallet.Settings(mask: .isProhibitPurge,
+                                                                                             signingMethods: .signHash),
+                                                              totalSignedHashes: 10,
+                                                              remainingSignatures: 100,
+                                                              index: 1))
+        testMethod(name: "CreateWallet", result: result)
+    }
+    
+    func testPurgeWallet() {
+        let result = PurgeWalletCommand.Response(cardId: "c000111122223333")
+        testMethod(name: "PurgeWallet", result: result)
+    }
+    
+    func testDepersonalize() {
+        let result = DepersonalizeResponse(success: true)
+        testMethod(name: "Depersonalize", result: result)
+    }
+    
+    func testPersonalize() {
+        //        let result = Card(cardId: <#T##String#>,
+        //                          batchId: <#T##String#>,
+        //                          cardPublicKey: <#T##Data#>,
+        //                          firmwareVersion: <#T##FirmwareVersion#>,
+        //                          manufacturer: <#T##Card.Manufacturer#>,
+        //                          issuer: <#T##Card.Issuer#>,
+        //                          settings: <#T##Card.Settings#>,
+        //                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
+        //                          isPin2Default: <#T##Bool?#>,
+        //                          supportedCurves: <#T##[EllipticCurve]#>,
+        //                          health: <#T##Int?#>,
+        //                          remainingSignatures: <#T##Int?#>)
+        
+        //testMethod(name: "Personalize", result: result)
+    }
+    
+    func testSetPin1() {
+        let result = SetPinResponse(cardId: "c000111122223333",
+                                    status: .pin1Changed)
+        
+        testMethod(name: "SetPin1", result: result)
+    }
+    
+    func testSetPin2() {
+        let result = SetPinResponse(cardId: "c000111122223333",
+                                    status: .pin2Changed)
+        
+        testMethod(name: "SetPin2", result: result)
+    }
+    
+    func testPreflightRead() {
+        //        let result = Card(cardId: <#T##String#>,
+        //                          batchId: <#T##String#>,
+        //                          cardPublicKey: <#T##Data#>,
+        //                          firmwareVersion: <#T##FirmwareVersion#>,
+        //                          manufacturer: <#T##Card.Manufacturer#>,
+        //                          issuer: <#T##Card.Issuer#>,
+        //                          settings: <#T##Card.Settings#>,
+        //                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
+        //                          isPin2Default: <#T##Bool?#>,
+        //                          supportedCurves: <#T##[EllipticCurve]#>,
+        //                          health: <#T##Int?#>,
+        //                          remainingSignatures: <#T##Int?#>)
+        
+        //testMethod(name: "PreflightRead", result: result)
+    }
     
     func testSignHashes() {
         let result = SignHashesResponse(cardId: "c000111122223333",
@@ -103,45 +181,59 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
-    private func testMethod<TResult>(name: String, result: TResult) where TResult: Equatable & Decodable {
-        guard let testData = getTestData(for: name) else { return }
+    private func testMethod<TResult: Encodable>(name: String, result: TResult) {
+        guard let testData = getTestData(for: name) else {
+            XCTAssert(false, "Failed to create test data \(name)")
+            return
+        }
         
         //test request
-        guard let request = try? JSONRPCRequest(jsonString: testData.request) else {
+        do {
+           let request = try JSONRPCRequest(jsonString: testData.request)
+            //test convert request
+            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
+        } catch {
             XCTAssert(false, "Failed to create request for \(name)")
             return
         }
-        
-        //test convert request
-        let task = try? JSONRPCConverter.shared.convert(request: request)
-        XCTAssertNotNil(task)
-        if task == nil { return }
-        
+
         //test response
         guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],
               let resultValue = responseJson["result"],
-              let resultData = try? JSONSerialization.data(withJSONObject: resultValue, options: .prettyPrinted),
-              let testResult = try? JSONDecoder.tangemSdkDecoder.decode(TResult.self, from: resultData) else {
+              let resultJsonData = try? JSONSerialization.data(withJSONObject: resultValue, options: .sortedKeys),
+              let resultData = try? JSONEncoder.tangemSdkTestEncoder.encode(result)
+        else {
             XCTAssert(false, "Failed to parse test response for \(name)")
             return
         }
-        
-        XCTAssertEqual(result, testResult)
+      
+        XCTAssertEqual(resultData.utf8String!.lowercased(), resultJsonData.utf8String!.lowercased())
     }
     
     private func getTestData(for method: String) -> (request: String, response: Data)? {
         let fileText = readFile(name: method)
         let jsonData = fileText.data(using: .utf8)!
         
-        guard let json = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any],
-              let requestData = try? JSONSerialization.data(withJSONObject: json[0], options: .prettyPrinted),
-              let responseData = try? JSONSerialization.data(withJSONObject: json[1], options: .prettyPrinted),
-              let requestValue = String(data: requestData, encoding: .utf8) else {
+        do {
+            guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any] else {
+                XCTAssert(false, "Failed to parse test json \(name)")
+                return nil
+            }
+            
+            let requestData = try JSONSerialization.data(withJSONObject: json[0], options: .prettyPrinted)
+            let responseData = try JSONSerialization.data(withJSONObject: json[1], options: .prettyPrinted)
+            
+            guard let requestValue = String(data: requestData, encoding: .utf8) else {
+                XCTAssert(false, "Failed to parse test json \(name)")
+                return nil
+            }
+            
+            return (requestValue, responseData)
+        } catch {
+            print(error)
             XCTAssert(false, "Failed to parse test json \(name)")
             return nil
         }
-
-        return (requestValue, responseData)
     }
     
     private func readFile(name: String) -> String {

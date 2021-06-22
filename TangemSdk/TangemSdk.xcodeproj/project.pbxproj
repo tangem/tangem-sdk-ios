@@ -19,7 +19,6 @@
 		5D38D06B2679066B0052F67C /* SignHashesRequest.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashesRequest.json */; };
 		5D38D06C267908650052F67C /* SignHashesRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashesRequest.json */; };
 		5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* ScanRequest.json */; };
-		5D38D07126790D840052F67C /* SignCommandResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06F26790D730052F67C /* SignCommandResult.json */; };
 		5D38D07326791F710052F67C /* ScanResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D07226791F710052F67C /* ScanResponse.json */; };
 		5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */; };
 		5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D077267A4B0C0052F67C /* AttestationTask.swift */; };
@@ -246,7 +245,6 @@
 		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
 		5D38D06A2679066B0052F67C /* SignHashesRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignHashesRequest.json; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* ScanRequest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanRequest.json; sourceTree = "<group>"; };
-		5D38D06F26790D730052F67C /* SignCommandResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignCommandResult.json; sourceTree = "<group>"; };
 		5D38D07226791F710052F67C /* ScanResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ScanResponse.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
 		5D38D077267A4B0C0052F67C /* AttestationTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationTask.swift; sourceTree = "<group>"; };
@@ -509,7 +507,6 @@
 			children = (
 				5D38D06A2679066B0052F67C /* SignHashesRequest.json */,
 				5D46F15E26811D4000DC6447 /* SignHashRequest.json */,
-				5D38D06F26790D730052F67C /* SignCommandResult.json */,
 				5D46F15B26811C0100DC6447 /* SignHashesResult.json */,
 				5D46F16026811D4900DC6447 /* SignHashResult.json */,
 				5D38D06D26790B1A0052F67C /* ScanRequest.json */,
@@ -1217,7 +1214,6 @@
 				5D46F15F26811D4000DC6447 /* SignHashRequest.json in Resources */,
 				5D46F15D26811CCD00DC6447 /* SignHashesResult.json in Resources */,
 				5D38D06E26790B1A0052F67C /* ScanRequest.json in Resources */,
-				5D38D07126790D840052F67C /* SignCommandResult.json in Resources */,
 				5D38D07326791F710052F67C /* ScanResponse.json in Resources */,
 				5D38D06C267908650052F67C /* SignHashesRequest.json in Resources */,
 			);

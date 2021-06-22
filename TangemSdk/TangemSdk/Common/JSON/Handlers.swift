@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ScanTaskHandler: JSONRPCHandler {
+class ScanHandler: JSONRPCHandler {
     var method: String { "SCAN" }
     var requiresCardId: Bool { false }
     

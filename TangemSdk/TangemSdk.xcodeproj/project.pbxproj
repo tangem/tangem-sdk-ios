@@ -34,6 +34,8 @@
 		5D54408E268226B600F7D05B /* Depersonalize.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408D268226B600F7D05B /* Depersonalize.json */; };
 		5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408F268226BC00F7D05B /* PurgeWallet.json */; };
 		5D5440922682297A00F7D05B /* CreateWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440912682297A00F7D05B /* CreateWallet.json */; };
+		5D544094268243F700F7D05B /* Card.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D544093268243F700F7D05B /* Card.json */; };
+		5D544096268244DB00F7D05B /* PreflightRead.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D544095268244DB00F7D05B /* PreflightRead.json */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
 		5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* TangemSdkError.swift */; };
 		5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58B4BE233E4C6B00F33764 /* InputStream+.swift */; };
@@ -262,6 +264,8 @@
 		5D54408D268226B600F7D05B /* Depersonalize.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Depersonalize.json; sourceTree = "<group>"; };
 		5D54408F268226BC00F7D05B /* PurgeWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PurgeWallet.json; sourceTree = "<group>"; };
 		5D5440912682297A00F7D05B /* CreateWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CreateWallet.json; sourceTree = "<group>"; };
+		5D544093268243F700F7D05B /* Card.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Card.json; sourceTree = "<group>"; };
+		5D544095268244DB00F7D05B /* PreflightRead.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PreflightRead.json; sourceTree = "<group>"; };
 		5D58201F24221E060057EF40 /* CardSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSession.swift; sourceTree = "<group>"; };
 		5D58202124221E2B0057EF40 /* TangemSdkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkError.swift; sourceTree = "<group>"; };
 		5D58B4BE233E4C6B00F33764 /* InputStream+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InputStream+.swift"; sourceTree = "<group>"; };
@@ -516,6 +520,8 @@
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
+				5D544095268244DB00F7D05B /* PreflightRead.json */,
+				5D544093268243F700F7D05B /* Card.json */,
 			);
 			path = Jsons;
 			sourceTree = "<group>";
@@ -1220,7 +1226,9 @@
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
+				5D544094268243F700F7D05B /* Card.json in Resources */,
 				5D38D06C267908650052F67C /* SignHashes.json in Resources */,
+				5D544096268244DB00F7D05B /* PreflightRead.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPin2.json in Resources */,
 			);

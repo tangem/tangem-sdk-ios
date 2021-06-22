@@ -72,17 +72,6 @@ class JSONRPCTests: XCTestCase {
 //        XCTAssertNotNil(task)
 //    }
     
-//    func test {
-//
-//
-//        "cardId": "c000111122223333",
-//        "initialMessage": {
-//          "header": "Initial message header",
-//          "body": "Initial message body"
-//        }
-//
-//    }
-//
     func testSignHashes() {
         let result = SignHashesResponse(cardId: "c000111122223333",
                                         signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
@@ -115,25 +104,89 @@ class JSONRPCTests: XCTestCase {
     }
     
     private func testMethod<TResult>(name: String, result: TResult) where TResult: Equatable & Decodable {
-        let testJson = getTestData(for: name, resultType: type(of: result))
-        let request = try? JSONRPCRequest(jsonString: testJson.request)
+        guard let testData = getTestData(for: name) else { return }
+        
+        //test request
+        let request = try? JSONRPCRequest(jsonString: testData.request)
         XCTAssertNotNil(request)
         if request == nil { return }
         
+        //test convert request
         let task = try? JSONRPCConverter.shared.convert(request: request!)
         XCTAssertNotNil(task)
         
-        XCTAssertEqual(result, testJson.result)
+        //test response
+        guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],
+              let resultValue = responseJson["result"],
+              let resultData = try? JSONSerialization.data(withJSONObject: resultValue, options: .prettyPrinted) else {
+            XCTAssertNotNil(nil)
+            return
+        }
+        
+        guard let testResult = try? JSONDecoder.tangemSdkDecoder.decode(TResult.self, from: resultData)  else {
+            XCTAssertNotNil(nil)
+            return
+        }
+        
+        XCTAssertEqual(result, testResult)
     }
     
-    private func getTestData<T: Decodable>(for method: String, resultType: T.Type) -> (request: String, result: T) {
-        let requestJson = readJson(for: method + "Request")
-        let resultJson =  readJson(for: method + "Result").data(using: .utf8)!
-        let result = try! JSONDecoder.tangemSdkDecoder.decode(T.self, from: resultJson)
-        return (requestJson, result)
+    private func getTestData(for method: String) -> (request: String, response: Data)? {
+        let fileText = readFile(name: method)
+        let jsonData = fileText.data(using: .utf8)!
+        
+        guard let json = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any],
+              let requestData = try? JSONSerialization.data(withJSONObject: json[0], options: .prettyPrinted),
+              let responseData = try? JSONSerialization.data(withJSONObject: json[1], options: .prettyPrinted),
+              let requestValue = String(data: requestData, encoding: .utf8) else {
+            XCTAssertNotNil(nil)
+            return nil
+        }
+        
+      
+  
+//        guard let re
+//
+//            if let requestValue = json[0] as? String {
+//
+//            } else {
+//                XCTAssertNotNil(nil)
+//                return nil
+//            }
+//
+//
+//            else {
+//                throw JSONRPCError(.invalidRequest, data: "jsonrpc")
+//            }
+//            if let idValue = json["id"] as? Int {
+//                id = idValue
+//            } else {
+//                throw JSONRPCError(.invalidRequest, data: "id")
+//            }
+//            if let methodValue = json["method"] as? String {
+//                method = methodValue
+//            } else {
+//                throw JSONRPCError(.invalidRequest, data: "method")
+//            }
+//            if let paramsValue = json["params"] as? [String:Any] {
+//                params = paramsValue
+//            } else {
+//                throw JSONRPCError(.invalidRequest, data: "params")
+//            }
+//
+//
+//
+//        let jsons = try! JSONDecoder.tangemSdkDecoder.decode([String].self, from: json)
+//        let resultData = jsons[1].data(using: .utf8)!
+//        let result = try! JSONDecoder.tangemSdkDecoder.decode(T.self, from: resultData)
+        
+//        let requestJson = readJson(for: method + "Request")
+//        let resultJson =  readJson(for: method + "Result").data(using: .utf8)!
+//        let result = try! JSONDecoder.tangemSdkDecoder.decode(T.self, from: resultJson)
+        return (requestValue, responseData)
     }
     
-    private func readJson(for  name: String) -> String {
+    private func readFile(name: String) -> String {
         let bundle = Bundle(for: type(of: self))
         let path = bundle.path(forResource: name, ofType: "json")!
         return try! String(contentsOfFile: path)

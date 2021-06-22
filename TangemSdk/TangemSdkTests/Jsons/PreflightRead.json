@@ -2,7 +2,10 @@
     {
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "scan",
+        "method": "preflight_read",
+        "params": {
+            "cardId": "BB03000000000004"
+        }
     },
     {
         "jsonrpc" : "2.0",

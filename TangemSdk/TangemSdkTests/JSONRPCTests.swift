@@ -117,14 +117,6 @@ class JSONRPCTests: XCTestCase {
         XCTAssertNotNil(task)
         if task == nil { return }
         
-        //test mandatory cardId
-        let handler = try! JSONRPCConverter.shared.getHandler(from: request)
-        let cardId: String? = try? request.params.value(for: "cardId")
-        if handler.requiresCardId && cardId == nil {
-            XCTAssert(false, "Missing cardId for \(name)")
-            return
-        }
-        
         //test response
         guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],
               let resultValue = responseJson["result"],

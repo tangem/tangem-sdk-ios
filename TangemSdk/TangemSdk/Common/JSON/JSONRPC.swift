@@ -13,7 +13,7 @@ public final class JSONRPCConverter {
         let converter = JSONRPCConverter()
         converter.register(SignHashesHandler())
         converter.register(SignHashHandler())
-        converter.register(ScanTaskHandler())
+        converter.register(ScanHandler())
         converter.register(CreateWalletHandler())
         converter.register(PurgeWalletHandler())
         converter.register(PersonalizeHandler())
@@ -94,7 +94,7 @@ public struct JSONRPCRequest {
                 if let paramsValue = json["params"] as? [String:Any] {
                     params = paramsValue
                 } else {
-                    throw JSONRPCError(.invalidRequest, data: "params")
+                    params = [:]
                 }
             } else {
                 throw JSONRPCError(.parseError)

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Response for `SignHashCommand`.
-public struct SignHashResponse: Decodable, Equatable, JSONStringConvertible {
+public struct SignHashResponse: JSONStringConvertible {
     /// CID, Unique Tangem card ID number
     public let cardId: String
     /// Signed hash

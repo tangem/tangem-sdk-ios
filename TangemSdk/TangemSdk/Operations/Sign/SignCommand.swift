@@ -19,9 +19,9 @@ public struct SignResponse: Decodable, Equatable, JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
-public class SignCommand: Command {
+class SignCommand: Command {
     
-    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
+    var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
     var requiresPin2: Bool { return true }
     
@@ -44,7 +44,7 @@ public class SignCommand: Command {
 	/// - Parameters:
 	///   - hashes: Array of transaction hashes.
 	///   - walletPublicKey: Public key of the wallet, using for sign.
-	public init(hashes: [Data], walletPublicKey: Data) {
+    init(hashes: [Data], walletPublicKey: Data) {
         self.hashes = hashes
 		self.walletPublicKey = walletPublicKey
     }
@@ -75,7 +75,7 @@ public class SignCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if hashes.count == 0 {
             completion(.failure(.emptyHashes))
             return

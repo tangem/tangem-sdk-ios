@@ -107,24 +107,30 @@ class JSONRPCTests: XCTestCase {
         guard let testData = getTestData(for: name) else { return }
         
         //test request
-        let request = try? JSONRPCRequest(jsonString: testData.request)
-        XCTAssertNotNil(request)
-        if request == nil { return }
+        guard let request = try? JSONRPCRequest(jsonString: testData.request) else {
+            XCTAssert(false, "Failed to create request for \(name)")
+            return
+        }
         
         //test convert request
-        let task = try? JSONRPCConverter.shared.convert(request: request!)
+        let task = try? JSONRPCConverter.shared.convert(request: request)
         XCTAssertNotNil(task)
+        if task == nil { return }
+        
+        //test mandatory cardId
+        let handler = try! JSONRPCConverter.shared.getHandler(from: request)
+        let cardId: String? = try? request.params.value(for: "cardId")
+        if handler.requiresCardId && cardId == nil {
+            XCTAssert(false, "Missing cardId for \(name)")
+            return
+        }
         
         //test response
         guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],
               let resultValue = responseJson["result"],
-              let resultData = try? JSONSerialization.data(withJSONObject: resultValue, options: .prettyPrinted) else {
-            XCTAssertNotNil(nil)
-            return
-        }
-        
-        guard let testResult = try? JSONDecoder.tangemSdkDecoder.decode(TResult.self, from: resultData)  else {
-            XCTAssertNotNil(nil)
+              let resultData = try? JSONSerialization.data(withJSONObject: resultValue, options: .prettyPrinted),
+              let testResult = try? JSONDecoder.tangemSdkDecoder.decode(TResult.self, from: resultData) else {
+            XCTAssert(false, "Failed to parse test response for \(name)")
             return
         }
         
@@ -139,50 +145,10 @@ class JSONRPCTests: XCTestCase {
               let requestData = try? JSONSerialization.data(withJSONObject: json[0], options: .prettyPrinted),
               let responseData = try? JSONSerialization.data(withJSONObject: json[1], options: .prettyPrinted),
               let requestValue = String(data: requestData, encoding: .utf8) else {
-            XCTAssertNotNil(nil)
+            XCTAssert(false, "Failed to parse test json \(name)")
             return nil
         }
-        
-      
-  
-//        guard let re
-//
-//            if let requestValue = json[0] as? String {
-//
-//            } else {
-//                XCTAssertNotNil(nil)
-//                return nil
-//            }
-//
-//
-//            else {
-//                throw JSONRPCError(.invalidRequest, data: "jsonrpc")
-//            }
-//            if let idValue = json["id"] as? Int {
-//                id = idValue
-//            } else {
-//                throw JSONRPCError(.invalidRequest, data: "id")
-//            }
-//            if let methodValue = json["method"] as? String {
-//                method = methodValue
-//            } else {
-//                throw JSONRPCError(.invalidRequest, data: "method")
-//            }
-//            if let paramsValue = json["params"] as? [String:Any] {
-//                params = paramsValue
-//            } else {
-//                throw JSONRPCError(.invalidRequest, data: "params")
-//            }
-//
-//
-//
-//        let jsons = try! JSONDecoder.tangemSdkDecoder.decode([String].self, from: json)
-//        let resultData = jsons[1].data(using: .utf8)!
-//        let result = try! JSONDecoder.tangemSdkDecoder.decode(T.self, from: resultData)
-        
-//        let requestJson = readJson(for: method + "Request")
-//        let resultJson =  readJson(for: method + "Result").data(using: .utf8)!
-//        let result = try! JSONDecoder.tangemSdkDecoder.decode(T.self, from: resultJson)
+
         return (requestValue, responseData)
     }
     

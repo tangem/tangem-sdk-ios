@@ -194,16 +194,12 @@ extension Error {
 
 extension Dictionary where Key == String, Value == Any {
     func value<T: Decodable>(for key: String) throws -> T where T: ExpressibleByNilLiteral {
-        do {
-            return try value(for: key)
-        } catch {
-            if let error = error as? JSONRPCError,
-               error.code == JSONRPCError.Code.invalidParams.rawValue {
-                return nil
-            }
-            
-            throw error
+        let value = self[key]
+        if value == nil || String(describing: value) == "<null>" {
+            return nil
         }
+        
+        return try decode(value!, for: key)
     }
     
     func value<T: Decodable>(for key: String) throws -> T {

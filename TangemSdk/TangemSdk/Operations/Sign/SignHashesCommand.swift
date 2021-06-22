@@ -7,14 +7,14 @@
 //
 
 import Foundation
+public typealias SignHashesResponse = SignResponse
 
 public final class SignHashesCommand: CardSessionRunnable {
-    
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-    
+
     private let walletPublicKey: Data
     private let hashes: [Data]
-    
+
     /// Default initializer
     /// - Parameters:
     ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
@@ -23,20 +23,13 @@ public final class SignHashesCommand: CardSessionRunnable {
         self.hashes = hashes
         self.walletPublicKey = walletPublicKey
     }
-    
+
     deinit {
         Log.debug("SignHashesCommand deinit")
     }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<[Data]>) {
+
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashesResponse>) {
         let signCommand = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey)
-        signCommand.run(in: session) { result in
-            switch result {
-            case .success(let signResponse):
-                completion(.success(signResponse.signatures))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        signCommand.run(in: session, completion: completion)
     }
 }

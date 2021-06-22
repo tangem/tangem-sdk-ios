@@ -20,6 +20,7 @@ public final class JSONRPCConverter {
         converter.register(DepersonalizeHandler())
         converter.register(SetPin1Handler())
         converter.register(SetPin2Handler())
+        converter.register(PreflightReadHandler())
         return converter
     }()
     
@@ -226,10 +227,18 @@ extension Dictionary where Key == String, Value == Any {
             }
         } else {
             do {
+                do {
                 if let jsonData = String(describing: value).data(using: .utf8) {
                     return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
                 } else {
                     throw JSONRPCError(.parseError, data: key)
+                }
+                } catch {
+                    if let jsonData =  "\"\(value)\"".data(using: .utf8) {
+                        return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
+                    } else {
+                        throw JSONRPCError(.parseError, data: key)
+                    }
                 }
             } catch {
                 if let converted = value as? T {

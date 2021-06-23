@@ -27,7 +27,7 @@ public final class JSONRPCConverter {
     public private(set) var handlers: [String: JSONRPCHandler] = [:]
     
     private init() {}
-
+    
     public func register(_ object: JSONRPCHandler) {
         handlers[object.method.lowercased()] = object
     }
@@ -219,34 +219,45 @@ extension Dictionary where Key == String, Value == Any {
             } else {
                 throw JSONRPCError(.parseError, data: key)
             }
-        } else if T.self == [Data].self || T.self == [Data]?.self {
+        }
+        
+        if T.self == [Data].self || T.self == [Data]?.self {
             if let hex = value as? [String] {
                 return hex.compactMap { Data(hexString: $0) } as! T
             } else {
                 throw JSONRPCError(.parseError, data: key)
             }
-        } else {
-            do {
-                do {
-                if let jsonData = String(describing: value).data(using: .utf8) {
-                    return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
-                } else {
-                    throw JSONRPCError(.parseError, data: key)
-                }
-                } catch {
-                    if let jsonData =  "\"\(value)\"".data(using: .utf8) {
-                        return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
-                    } else {
-                        throw JSONRPCError(.parseError, data: key)
-                    }
-                }
-            } catch {
-                if let converted = value as? T {
-                    return converted
-                } else {
-                    throw error
-                }
-            }
         }
+        
+        if let converted = value as? T {
+            return converted
+        }
+        
+        var someError: Error? = nil
+        
+        do {
+            if let jsonData =  "\"\(value)\"".data(using: .utf8) {
+                return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
+            }
+        } catch {
+            someError = error
+        }
+        
+//        do {
+//            if let jsonData = String(describing: value).data(using: .utf8) {
+//                return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
+//            }
+//        } catch {
+//            someError = error
+//        }
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: value, options: .prettyPrinted)
+            return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
+        } catch {
+            someError = error
+        }
+        
+        throw someError ?? JSONRPCError(.parseError, data: key)
     }
 }

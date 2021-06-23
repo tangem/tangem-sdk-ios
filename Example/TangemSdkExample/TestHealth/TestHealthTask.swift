@@ -14,7 +14,8 @@ class TestHealthTask: CardSessionRunnable {
     public var onStep: (() -> Void)? = nil
     
     private var runsCounter: Int = 0
-    private let maxRuns: Int = 5
+    private let maxRuns: Int = 10
+    private var currentWalletPublicKey: Data? = nil
     
     deinit {
         print("TestHealthTask deinit")
@@ -27,7 +28,10 @@ class TestHealthTask: CardSessionRunnable {
     func createWallet(in session: CardSession, completion: @escaping CompletionResult<Void>) {
         print("createWallet")
         CreateWalletCommand(curve: .secp256k1, isPermanent: false).run(in: session) { result in
-            if case let .failure(error) = result {
+            switch result {
+            case .success(let response):
+                self.currentWalletPublicKey = response.wallet.publicKey
+            case .failure(let error):
                 completion(.failure(error))
                 return
             }
@@ -37,9 +41,8 @@ class TestHealthTask: CardSessionRunnable {
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<Void>) {
         print("sign")
-        let publicKey = session.environment.card?.wallets.first?.publicKey
         let hash = try! CryptoUtils.generateRandomBytes(count: 32)
-        SignHashCommand(hash: hash, walletPublicKey: publicKey!).run(in: session)  { result in
+        SignHashCommand(hash: hash, walletPublicKey: self.currentWalletPublicKey!).run(in: session)  { result in
             if case let .failure(error) = result {
                 completion(.failure(error))
                 return
@@ -50,8 +53,7 @@ class TestHealthTask: CardSessionRunnable {
     
     func purgeWallet(in session: CardSession, completion: @escaping CompletionResult<Void>) {
         print("purge")
-        let publicKey = session.environment.card?.wallets.first?.publicKey
-        PurgeWalletCommand(publicKey: publicKey!).run(in: session)  { result in
+        PurgeWalletCommand(publicKey: self.currentWalletPublicKey!).run(in: session)  { result in
             if case let .failure(error) = result {
                 completion(.failure(error))
                 return

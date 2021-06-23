@@ -11,6 +11,7 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
+    @EnvironmentObject var testModel: TestHealthModel
     
     @State private var isOpenHealthTest = false
     
@@ -42,7 +43,7 @@ struct ContentView: View {
                             isOpenHealthTest = true
                         })
                         .sheet(isPresented: $isOpenHealthTest, content: {
-                            TestHealthView()
+                            TestHealthView().environmentObject(testModel)
                         })
                         .padding(.top, 8)
                         

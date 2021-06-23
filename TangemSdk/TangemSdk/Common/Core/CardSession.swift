@@ -248,11 +248,11 @@ public class CardSession {
         sessionDidStop()
     }
     
-    func pause(error: TangemSdkError? = nil) {
+    public func pause(error: TangemSdkError? = nil) {
         reader.pauseSession(with: error?.localizedDescription)
     }
     
-    func resume() {
+    public func resume() {
         reader.resumeSession()
     }
     

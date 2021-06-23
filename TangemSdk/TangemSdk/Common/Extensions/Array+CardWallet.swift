@@ -14,14 +14,18 @@ public extension Array where Element == Card.Wallet {
             return first(where: { $0.publicKey == publicKey })
         }
         set(newValue) {
-            guard let index = firstIndex(where: { $0.publicKey == newValue?.publicKey}) else {
-                return
-            }
+            let index = firstIndex(where: { $0.publicKey == publicKey })
             
             if let newValue = newValue {
-                self[index] = newValue
+                if let index = index {
+                    self[index] = newValue
+                } else {
+                    self.append(newValue)
+                }
             } else {
-                remove(at: index)
+                if let index = index {
+                    remove(at: index)
+                }
             }
         }
     }

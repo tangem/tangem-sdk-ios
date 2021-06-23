@@ -38,11 +38,12 @@ class TestHealthModel: ObservableObject {
         }
         
         tangemSdk.startSession(with: testTask!) { result in
-            if case let .failure(error) = result {
-                self.errorText = error.localizedDescription
+            DispatchQueue.main.async {
+                if case let .failure(error) = result {
+                    self.errorText = error.localizedDescription
+                }
+                self.isScanning = false
             }
-            
-            self.isScanning = false
         }
     }
 }

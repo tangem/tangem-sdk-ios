@@ -59,9 +59,68 @@ public struct CardConfig: Decodable, JSONStringConvertible {
     let ndefRecords: [NdefRecord]
     
     /// Number of wallets supported by card, by default - 1
-	let walletsCount: Byte?
+    let walletsCount: Byte?
     
     private let Alf = "ABCDEF0123456789"
+    
+    /* public init(from decoder: Decoder) throws {
+     let values = try decoder.container(keyedBy: CodingKeys.self)
+     issuerName = try values.decode(String.self, forKey: .issuerName)
+     acquirerName = try values.decode(String.self, forKey: .acquirerName)
+     series = try values.decode(String.self, forKey: .series)
+     startNumber = try values.decode(Int64.self, forKey: .startNumber)
+     count = try values.decode(Int.self, forKey: .count)
+     pin = Data((try values.decode([Int].self, forKey: .pin)).map( { Byte($0) }))
+     pin2 = Data((try values.decode([Int].self, forKey: .pin2)).map( { Byte($0) }))
+     pin3 = Data((try values.decode([Int].self, forKey: .pin3)).map( { Byte($0) }))
+     hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
+     cvc = try values.decode(String.self, forKey: .cvc)
+     pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
+     smartSecurityDelay = try values.decode(Bool.self, forKey: .smartSecurityDelay)
+     
+     let curveString = try values.decode(String.self, forKey: .curveID)
+     if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
+     self.curveID = curveID
+     } else {
+     throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
+     }
+     
+     let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
+     if let rawValue = signingMethodsDictionary["rawValue"]  {
+     signingMethods = SigningMethod(rawValue: rawValue)
+     } else {
+     throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
+     }
+     
+     maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
+     isReusable = try values.decode(Bool.self, forKey: .isReusable)
+     allowSetPIN1 = try values.decode(Bool.self, forKey: .allowSetPIN1)
+     allowSetPIN2 = try values.decode(Bool.self, forKey: .allowSetPIN2)
+     useActivation = try values.decode(Bool.self, forKey: .useActivation)
+     useCvc = try values.decode(Bool.self, forKey: .useCvc)
+     useNDEF = try values.decode(Bool.self, forKey: .useNDEF)
+     useDynamicNDEF = try values.decode(Bool.self, forKey: .useDynamicNDEF)
+     useOneCommandAtTime = try values.decode(Bool.self, forKey: .useOneCommandAtTime)
+     useBlock = try values.decode(Bool.self, forKey: .useBlock)
+     allowSelectBlockchain = try values.decode(Bool.self, forKey: .allowSelectBlockchain)
+     prohibitPurgeWallet = try values.decode(Bool.self, forKey: .prohibitPurgeWallet)
+     allowUnencrypted = try values.decode(Bool.self, forKey: .allowUnencrypted)
+     allowFastEncryption = try values.decode(Bool.self, forKey: .allowFastEncryption)
+     protectIssuerDataAgainstReplay = try values.decode(Bool.self, forKey: .protectIssuerDataAgainstReplay)
+     prohibitDefaultPIN1 = try values.decode(Bool.self, forKey: .prohibitDefaultPIN1)
+     disablePrecomputedNDEF = try values.decode(Bool.self, forKey: .disablePrecomputedNDEF)
+     skipSecurityDelayIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByIssuer)
+     skipCheckPIN2CVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2CVCIfValidatedByIssuer)
+     skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
+     restrictOverwriteIssuerExtraData = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerExtraData)
+     disableIssuerData = try values.decode(Bool.self, forKey: .disableIssuerData)
+     disableUserData = try values.decode(Bool.self, forKey: .disableUserData)
+     disableFiles = try values.decode(Bool.self, forKey: .disableFiles)
+     createWallet = try values.decode(Bool.self, forKey: .createWallet)
+     cardData = try values.decode(CardData.self, forKey: .cardData)
+     ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
+     walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
+     }*/
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -70,9 +129,9 @@ public struct CardConfig: Decodable, JSONStringConvertible {
         series = try values.decode(String.self, forKey: .series)
         startNumber = try values.decode(Int64.self, forKey: .startNumber)
         count = try values.decode(Int.self, forKey: .count)
-        pin = Data((try values.decode([Int].self, forKey: .pin)).map( { Byte($0) }))
-        pin2 = Data((try values.decode([Int].self, forKey: .pin2)).map( { Byte($0) }))
-        pin3 = Data((try values.decode([Int].self, forKey: .pin3)).map( { Byte($0) }))
+        pin = (try values.decode(String.self, forKey: .pin)).sha256()
+        pin2 = (try values.decode(String.self, forKey: .pin)).sha256()
+        pin3 = (try values.decode(String.self, forKey: .pin)).sha256()
         hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
         cvc = try values.decode(String.self, forKey: .cvc)
         pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
@@ -119,7 +178,7 @@ public struct CardConfig: Decodable, JSONStringConvertible {
         createWallet = try values.decode(Bool.self, forKey: .createWallet)
         cardData = try values.decode(CardData.self, forKey: .cardData)
         ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-		walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
+        walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
     }
     
     

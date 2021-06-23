@@ -129,7 +129,8 @@ class PreflightReadHandler: JSONRPCHandler {
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let cardId: String? = try parameters.value(for: "cardId")
-        let command = PreflightReadTask(readMode: .fullCardRead, cardId: cardId)
+        let mode: PreflightReadMode = try parameters.value(for: "readMode")
+        let command = PreflightReadTask(readMode: mode, cardId: cardId)
         return command.eraseToAnyRunnable()
     }
 }

@@ -74,10 +74,13 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testCreateWallet() {
+        let maskBuilder = WalletSettingsMaskBuilder()
+        maskBuilder.add(.isProhibitPurge)
+        maskBuilder.add(.isReusable)
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
                                                               curve: .secp256r1,
-                                                              settings: Card.Wallet.Settings(mask: .isProhibitPurge,
+                                                              settings: Card.Wallet.Settings(mask: maskBuilder.build(),
                                                                                              signingMethods: .signHash),
                                                               totalSignedHashes: 10,
                                                               remainingSignatures: 100,
@@ -96,20 +99,7 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testPersonalize() {
-        //        let result = Card(cardId: <#T##String#>,
-        //                          batchId: <#T##String#>,
-        //                          cardPublicKey: <#T##Data#>,
-        //                          firmwareVersion: <#T##FirmwareVersion#>,
-        //                          manufacturer: <#T##Card.Manufacturer#>,
-        //                          issuer: <#T##Card.Issuer#>,
-        //                          settings: <#T##Card.Settings#>,
-        //                          linkedTerminalStatus: <#T##Card.LinkedTerminalStatus#>,
-        //                          isPin2Default: <#T##Bool?#>,
-        //                          supportedCurves: <#T##[EllipticCurve]#>,
-        //                          health: <#T##Int?#>,
-        //                          remainingSignatures: <#T##Int?#>)
-        
-        //testMethod(name: "Personalize", result: result)
+        testMethod(name: "Personalize", result: testCard)
     }
     
     func testSetPin1() {
@@ -176,6 +166,8 @@ class JSONRPCTests: XCTestCase {
             XCTAssert(false, "Failed to create request for \(name)")
             return
         }
+        
+        if name == "personalize" { return }
 
         //test response
         guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],

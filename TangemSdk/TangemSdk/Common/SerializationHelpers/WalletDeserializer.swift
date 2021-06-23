@@ -18,7 +18,7 @@ class WalletDeserializer {
         return try deserialize(from: decoder)
     }
     
-    func deserializeWallets(from decoder: TlvDecoder) throws -> [Card.Wallet] {
+    func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
         guard cardWalletsData.count > 0 else {
@@ -39,7 +39,7 @@ class WalletDeserializer {
             }
         }
         
-        return wallets
+        return (wallets, cardWalletsData.count)
     }
     
     private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {

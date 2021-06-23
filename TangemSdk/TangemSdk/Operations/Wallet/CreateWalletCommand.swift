@@ -115,7 +115,17 @@ public final class CreateWalletCommand: Command {
             return
         }
         
-        transieve(in: session, completion: completion)
+        transieve(in: session) { result in
+            switch result {
+            case .success(let response):
+                var wallets: [Card.Wallet] = session.environment.card?.wallets ?? []
+                wallets.append(response.wallet)
+                session.environment.card?.wallets = wallets.sorted(by: { $0.index < $1.index })
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {

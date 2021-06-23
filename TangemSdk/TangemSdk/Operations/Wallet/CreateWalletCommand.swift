@@ -29,10 +29,10 @@ struct WalletConfig {
     }
     
     var settingsMask: Card.Wallet.Settings.Mask? {
-        guard let isPermanent = isPermanent else { return nil }
-        
         let builder = WalletSettingsMaskBuilder()
-        if isPermanent {
+        builder.add(.isReusable)
+        
+        if isPermanent ?? false {
             builder.add(.isProhibitPurge)
         }
         return builder.build()

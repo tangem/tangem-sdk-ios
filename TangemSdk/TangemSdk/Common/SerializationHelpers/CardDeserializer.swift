@@ -12,8 +12,8 @@ struct CardDeserializer {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
 		let decoder = try getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try getCardDataDecoder(with: environment, from: decoder.tlv)
-        
-        try assertStatus(try decoder.decode(.status))
+        let cardStatus: Card.Status = try decoder.decode(.status)
+        try assertStatus(cardStatus)
         try assertActivation(try decoder.decode(.isActivated))
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
@@ -28,7 +28,7 @@ struct CardDeserializer {
         var wallets: [Card.Wallet] = []
         var remainingSignatures: Int? = nil
         
-        if firmware < .multiwalletAvailable {
+        if firmware < .multiwalletAvailable, cardStatus == .loaded {
             remainingSignatures = try decoder.decode(.walletRemainingSignatures)
             
             let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask(),

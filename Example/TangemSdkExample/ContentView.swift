@@ -12,6 +12,8 @@ import TangemSdk
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
     
+    @State private var isOpenHealthTest = false
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -35,6 +37,14 @@ struct ContentView: View {
                 ScrollView {
                     VStack {
                         Button("Clear logs", action: model.clear)
+                        
+                        Button("Test card durability", action: {
+                            isOpenHealthTest = true
+                        })
+                        .sheet(isPresented: $isOpenHealthTest, content: {
+                            TestHealthView()
+                        })
+                        .padding(.top, 8)
                         
                         Picker("Select method", selection: $model.method) {
                             ForEach(0..<AppModel.Method.allCases.count) { index in

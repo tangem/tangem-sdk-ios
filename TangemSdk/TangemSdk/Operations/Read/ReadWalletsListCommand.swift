@@ -19,6 +19,7 @@ class ReadWalletsListCommand: Command {
     
     private var walletIndex: Int?
     private var loadedWallets: [Card.Wallet] = []
+    private var receivedWalletsCount: Int = 0
     
     public init() {}
     
@@ -31,23 +32,23 @@ class ReadWalletsListCommand: Command {
             switch result {
             case .success(let response):
                 self.loadedWallets.append(contentsOf: response.wallets)
-                let loadedWalletsCount = self.loadedWallets.count
                 
-                if loadedWalletsCount == 0 && response.wallets.count == 0 {
+                if self.receivedWalletsCount == 0 && response.wallets.count == 0 {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }
                 
-                guard loadedWalletsCount == session.environment.card?.settings.maxWalletsCount else {
-                    self.walletIndex = loadedWalletsCount
+                guard self.receivedWalletsCount == session.environment.card?.settings.maxWalletsCount else {
+                    self.walletIndex = self.receivedWalletsCount
                     self.run(in: session, completion: completion)
                     return
                 }
                 
-                session.environment.card?.wallets = response.wallets.sorted(by: { $0.index < $1.index })
+                let wallets = self.loadedWallets.sorted(by: { $0.index < $1.index })
+                session.environment.card?.wallets = wallets
                 
                 completion(.success(ReadWalletsListResponse(cardId: response.cardId,
-                                                       wallets: self.loadedWallets)))
+                                                            wallets: wallets)))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -77,8 +78,9 @@ class ReadWalletsListCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let wallets = try WalletDeserializer().deserializeWallets(from: decoder)
+        let deserializedData = try WalletDeserializer().deserializeWallets(from: decoder)
+        receivedWalletsCount += deserializedData.totalReceived
         return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
-                                       wallets: wallets)
+                                       wallets: deserializedData.wallets)
     }
 }

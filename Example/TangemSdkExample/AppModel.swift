@@ -27,8 +27,9 @@ class AppModel: ObservableObject {
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .custom(logLevel: [.view])
+        config.logСonfig = .verbose
         config.linkedTerminal = false
+        config.allowBAP = true
         config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
@@ -90,6 +91,7 @@ extension AppModel {
                 self.card = card
                 self.canSelectWalletSettings = card.firmwareVersion >= .multiwalletAvailable
                 self.supportedCurves = card.supportedCurves
+                self.curve = self.supportedCurves[0]
             }
             
             self.handleCompletion(result)

@@ -10,7 +10,7 @@ import Foundation
 
 /// Mode for preflight read task
 /// - Note: Valid for cards with COS v.4 and higher. Older card will always read the card and the wallet info. `fullCardRead` will be used by default
-public enum PreflightReadMode: Equatable {
+public enum PreflightReadMode: Decodable, Equatable {
     /// No card will be read at session start. `SessionEnvironment.card` will be empty
     case none
     /// Read only card info without wallet info. COS 4+. Older card will always read card and wallet info
@@ -19,6 +19,26 @@ public enum PreflightReadMode: Equatable {
     case readWallet(publicKey: Data)
     /// Read card info and all wallets. Used by default
     case fullCardRead
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.singleValueContainer()
+        let stringValue = try values.decode(String.self).lowercased()
+        
+        switch stringValue {
+        case "none":
+            self = .none
+        case "readcardonly":
+            self = .readCardOnly
+        case "fullcardread":
+            self = .fullCardRead
+        default:
+            if stringValue.count == 64 {
+                self = .readWallet(publicKey: Data(hexString: stringValue))
+            } else {
+                throw TangemSdkError.decodingFailed("Failed to decode PreflightReadMode")
+            }
+        }
+    }
 }
 
 public final class PreflightReadTask: CardSessionRunnable {

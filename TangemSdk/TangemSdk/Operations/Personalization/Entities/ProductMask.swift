@@ -8,9 +8,9 @@
 
 import Foundation
 struct ProductMask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-    public let rawValue: Byte
+    let rawValue: Byte
     
-    public init(rawValue: Byte) {
+    init(rawValue: Byte) {
         self.rawValue = rawValue
     }
 }

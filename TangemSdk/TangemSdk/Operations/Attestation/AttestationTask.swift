@@ -95,9 +95,9 @@ public final class AttestationTask: CardSessionRunnable {
     private func runWalletsAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         attestWallets(session) { result in
             switch result {
-            case .success:
+            case .success(let hasWarnings):
                 //Wallets attestation completed. Update status and continue attestation
-                self.currentAttestationStatus.walletKeysAttestation = .verified
+                self.currentAttestationStatus.walletKeysAttestation = hasWarnings ? .warning : .verified
                 self.runExtraAttestation(session, completion)
             case .failure(let error):
                 //Wallets attestation failed. Update status and continue attestation
@@ -117,20 +117,30 @@ public final class AttestationTask: CardSessionRunnable {
         self.waitForOnlineAndComplete(session, completion)
     }
     
-    private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Void>) {
+    private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {
         DispatchQueue.global(qos: .userInitiated).async {
             let card = session.environment.card!
             let walletsKeys = card.wallets.map{ $0.publicKey }
             let attestationCommands = walletsKeys.map { AttestWalletKeyCommand(publicKey: $0) }
-            
             let group = DispatchGroup()
+            
             var shoulReturn = false
+            //check for hacking attempts with signs
+            var hasWarnings = card.wallets.compactMap { $0.totalSignedHashes }
+                .contains(where: { $0 > Constants.maxCounter })
+            
             for command in attestationCommands {
                 if shoulReturn { return }
                 group.enter()
                 
                 command.run(in: session) { result in
-                    if case let .failure(error) = result {
+                    switch result {
+                    case .success(let response):
+                        //check for hacking attempts with attestWallet
+                        if let counter = response.counter, counter > Constants.maxCounter {
+                            hasWarnings = true
+                        }
+                    case .failure(let error):
                         shoulReturn = true
                         completion(.failure(error))
                     }
@@ -139,7 +149,7 @@ public final class AttestationTask: CardSessionRunnable {
                 
                 group.wait()
             }
-            completion(.success(()))
+            completion(.success(hasWarnings))
         }
     }
     
@@ -197,5 +207,13 @@ public final class AttestationTask: CardSessionRunnable {
 public extension AttestationTask {
     enum Mode: String, CaseIterable {
         case normal, full
+    }
+}
+
+private extension AttestationTask {
+    enum Constants {
+        //Attest wallet count or sign command count greater this value is looks suspicious.
+        //Possible hacking attempts
+        static let maxCounter = 100000
     }
 }

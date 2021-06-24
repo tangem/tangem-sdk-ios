@@ -212,6 +212,13 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         }
     }
     
+    //TODO: Refactor UI
+    func showAlert(title: String, message: String, onContinue: @escaping () -> Void) {
+        DispatchQueue.main.async {
+            UIAlertController.showAlert(from: self.infoScreen, title: title, message: message, onContinue: onContinue)
+        }
+    }
+    
 	private func presentInfoScreen() {
 		DispatchQueue.main.async {
 			guard
@@ -416,6 +423,12 @@ fileprivate extension UIAlertController {
         alert.addAction(UIAlertAction(title: "I understand", style: .destructive) { _ in onContinue() })
         alert.addAction(UIAlertAction(title: "Retry", style: .default) { _ in onRetry() })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in onCancel() } )
+        controller.present(alert, animated: true)
+    }
+    
+    static func showAlert(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default) { _ in onContinue() })
         controller.present(alert, animated: true)
     }
 }

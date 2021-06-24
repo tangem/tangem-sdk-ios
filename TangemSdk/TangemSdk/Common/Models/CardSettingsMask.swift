@@ -133,19 +133,6 @@ extension Card.Settings.Mask: OptionSetCodable {
     }
 }
 
-//MARK:- Other
-class SettingsMaskBuilder {
-    private var settingsMaskValue = 0
-
-    func add(_ settings: Card.Settings.Mask) {
-        settingsMaskValue |= settings.rawValue
-    }
-
-    func build() -> Card.Settings.Mask {
-        return .init(rawValue: settingsMaskValue)
-    }
-}
-
 extension Card.Settings.Mask {
     func toWalletSettingsMask() -> Card.Wallet.Settings.Mask {
         return .init(rawValue: rawValue)

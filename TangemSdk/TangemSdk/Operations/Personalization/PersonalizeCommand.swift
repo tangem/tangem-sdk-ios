@@ -81,22 +81,27 @@ public class PersonalizeCommand: Command {
             throw TangemSdkError.serializeCommandError
         }
         
+        let cardData = try config.cardData.createPersonalizationCardData(issuer: self.issuer,
+                                                                         manufacturer: self.manufacturer,
+                                                                         cardId: cardId)
+        let createWallet: Bool = config.createWallet != 0
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: cardId)
             .append(.curveId, value: config.curveID)
             .append(.maxSignatures, value: config.maxSignatures)
-            .append(.signingMethod, value: config.signingMethods)
+            .append(.signingMethod, value: config.signingMethod)
             .append(.settingsMask, value: config.createSettingsMask())
             .append(.pauseBeforePin2, value: config.pauseBeforePin2 / 10)
             .append(.cvc, value: config.cvc.data(using: .utf8))
-            .append(.createWalletAtPersonalize, value: config.createWallet)
+            .append(.createWalletAtPersonalize, value: createWallet)
             .append(.newPin, value: config.pin)
             .append(.newPin2, value: config.pin2)
             .append(.newPin3, value: config.pin3)
             .append(.crExKey, value: config.hexCrExKey)
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
-            .append(.cardData, value: serializeCardData(environment: environment, cardId: cardId, cardData: config.cardData))
+            .append(.cardData, value: cardData)
 			
         if let walletsCount = config.walletsCount {
             try tlvBuilder.append(.walletsCount, value: walletsCount)
@@ -115,17 +120,18 @@ public class PersonalizeCommand: Command {
     
     private func serializeNdef(_ config: CardConfig) throws -> Data {
         return try NdefEncoder(ndefRecords: config.ndefRecords,
-                               useDynamicNdef: config.useDynamicNDEF)
+                               useDynamicNdef: config.useDynamicNDEF ?? false)
             .encode()
     }
     
-    private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
+    private func serializeCardData(environment: SessionEnvironment, cardData: CardData) throws -> Data {
         let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)
             .append(.productMask, value: cardData.productMask)
             .append(.manufactureDateTime, value: cardData.manufactureDateTime)
             .append(.issuerName, value: issuer.id)
             .append(.blockchainName, value: cardData.blockchainName)
+            .append(.cardIDManufacturerSignature, value: cardData.manufacturerSignature)
         
         if cardData.tokenSymbol != nil {
             try tlvBuilder
@@ -134,12 +140,6 @@ public class PersonalizeCommand: Command {
                 .append(.tokenDecimal, value: cardData.tokenDecimal)
         }
         
-        if let signature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) {
-            try tlvBuilder.append(.cardIDManufacturerSignature, value: signature)
-        } else {
-            throw TangemSdkError.serializeCommandError
-        }
-
         return tlvBuilder.serialize()
     }
 }

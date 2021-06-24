@@ -83,6 +83,11 @@ public final class ScanTask: CardSessionRunnable {
                 }
             }
             
+        case .warning:
+            let message = "Some wallets on this card has signs of hacking attempts"
+            session.viewDelegate.showAlert(title: "Warning", message: message) {
+                completion(.success(session.environment.card!))
+            }
         }
     }
 }

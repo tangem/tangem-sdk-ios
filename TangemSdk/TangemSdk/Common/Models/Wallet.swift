@@ -42,7 +42,8 @@ public extension Card.Wallet.Settings {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0
     struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-        public static let isProhibitPurge = Mask(rawValue: 0x0004)
+        public static let isPermanent = Mask(rawValue: 0x0004)
+        
         static let isReusable = Mask(rawValue: 0x0001)
         
         public var rawValue: Int
@@ -67,13 +68,13 @@ extension Card.Wallet {
 
 extension Card.Wallet.Settings.Mask: OptionSetCodable {
     public enum OptionKeys: String, OptionKey {
-        case isProhibitPurge
+        case isPermanent
         case isReusable
         
         public var value: Card.Wallet.Settings.Mask {
             switch self {
-            case .isProhibitPurge:
-                return .isProhibitPurge
+            case .isPermanent:
+                return .isPermanent
             case .isReusable:
                 return .isReusable
             }

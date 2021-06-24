@@ -33,7 +33,7 @@ struct WalletConfig {
         builder.add(.isReusable)
         
         if isPermanent ?? false {
-            builder.add(.isProhibitPurge)
+            builder.add(.isPermanent)
         }
         return builder.build()
     }
@@ -81,9 +81,9 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if let designatedIsProhibitPurge = config.isPermanent {
-                let currentIsProhibitPurge = card.settings.mask.contains(.permanentWallet)
-                if designatedIsProhibitPurge != currentIsProhibitPurge {
+            if let designatedIsPermanent = config.isPermanent {
+                let currentIsPermanent = card.settings.mask.contains(.permanentWallet)
+                if designatedIsPermanent != currentIsPermanent {
                     return TangemSdkError.unsupportedWalletConfig
                 }
             }

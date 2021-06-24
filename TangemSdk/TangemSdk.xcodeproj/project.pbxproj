@@ -16,6 +16,7 @@
 		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
 		5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */; };
+		5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D3217452684B1DB000C3AAF /* v3.05ada.json */; };
 		5D38D06B2679066B0052F67C /* SignHashes.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashes.json */; };
 		5D38D06C267908650052F67C /* SignHashes.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashes.json */; };
 		5D38D06E26790B1A0052F67C /* Scan.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* Scan.json */; };
@@ -36,7 +37,7 @@
 		5D5440922682297A00F7D05B /* CreateWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440912682297A00F7D05B /* CreateWallet.json */; };
 		5D544094268243F700F7D05B /* Card.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D544093268243F700F7D05B /* Card.json */; };
 		5D544096268244DB00F7D05B /* PreflightRead.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D544095268244DB00F7D05B /* PreflightRead.json */; };
-		5D5440982682497100F7D05B /* Personalize.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440972682497100F7D05B /* Personalize.json */; };
+		5D5440982682497100F7D05B /* v4.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440972682497100F7D05B /* v4.json */; };
 		5D58202024221E060057EF40 /* CardSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58201F24221E060057EF40 /* CardSession.swift */; };
 		5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58202124221E2B0057EF40 /* TangemSdkError.swift */; };
 		5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58B4BE233E4C6B00F33764 /* InputStream+.swift */; };
@@ -247,6 +248,7 @@
 		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
+		5D3217452684B1DB000C3AAF /* v3.05ada.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v3.05ada.json; sourceTree = "<group>"; };
 		5D38D06A2679066B0052F67C /* SignHashes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignHashes.json; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* Scan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Scan.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
@@ -267,7 +269,7 @@
 		5D5440912682297A00F7D05B /* CreateWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CreateWallet.json; sourceTree = "<group>"; };
 		5D544093268243F700F7D05B /* Card.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Card.json; sourceTree = "<group>"; };
 		5D544095268244DB00F7D05B /* PreflightRead.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PreflightRead.json; sourceTree = "<group>"; };
-		5D5440972682497100F7D05B /* Personalize.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Personalize.json; sourceTree = "<group>"; };
+		5D5440972682497100F7D05B /* v4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v4.json; sourceTree = "<group>"; };
 		5D58201F24221E060057EF40 /* CardSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSession.swift; sourceTree = "<group>"; };
 		5D58202124221E2B0057EF40 /* TangemSdkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkError.swift; sourceTree = "<group>"; };
 		5D58B4BE233E4C6B00F33764 /* InputStream+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InputStream+.swift"; sourceTree = "<group>"; };
@@ -511,11 +513,20 @@
 			path = Endpoints;
 			sourceTree = "<group>";
 		};
+		5D3217442684B193000C3AAF /* Personalize */ = {
+			isa = PBXGroup;
+			children = (
+				5D5440972682497100F7D05B /* v4.json */,
+				5D3217452684B1DB000C3AAF /* v3.05ada.json */,
+			);
+			path = Personalize;
+			sourceTree = "<group>";
+		};
 		5D38D0672679040C0052F67C /* Jsons */ = {
 			isa = PBXGroup;
 			children = (
+				5D3217442684B193000C3AAF /* Personalize */,
 				5D38D06A2679066B0052F67C /* SignHashes.json */,
-				5D5440972682497100F7D05B /* Personalize.json */,
 				5D46F15E26811D4000DC6447 /* SignHash.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
 				5D5440892682260000F7D05B /* SetPin1.json */,
@@ -1226,12 +1237,13 @@
 			files = (
 				5D54408A2682260000F7D05B /* SetPin1.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
+				5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */,
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
 				5D544094268243F700F7D05B /* Card.json in Resources */,
 				5D38D06C267908650052F67C /* SignHashes.json in Resources */,
-				5D5440982682497100F7D05B /* Personalize.json in Resources */,
+				5D5440982682497100F7D05B /* v4.json in Resources */,
 				5D544096268244DB00F7D05B /* PreflightRead.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPin2.json in Resources */,

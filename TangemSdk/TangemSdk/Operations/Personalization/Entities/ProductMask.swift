@@ -21,6 +21,7 @@ extension ProductMask {
     static let tag = ProductMask(rawValue: 0x02)
     static let idCard = ProductMask(rawValue: 0x04)
     static let idIssuer = ProductMask(rawValue: 0x08)
+    static let authentication = ProductMask(rawValue: 0x10)
     static let twinCard = ProductMask(rawValue: 0x20)
 }
 

@@ -18,7 +18,8 @@ public protocol OptionSetCodable: Codable where Self: OptionSet {
     associatedtype OptionKeys: OptionKey
 }
 
-public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element {
+public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
+                                        Self.RawValue: Decodable {
      func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         var values = [String]()
@@ -34,6 +35,15 @@ public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element {
     
     init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
+        
+        //try decode from raw value. (e.g. from CardConfig)
+        do {
+            let rawValue = try values.decode(RawValue.self)
+            self = .init(rawValue: rawValue)
+            return
+        } catch {}
+        
+        //try decode string array
         let stringValues = (try values.decode([String].self)).map { $0.lowercased() }
         var optionSet = Self()
         

@@ -23,6 +23,10 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
             return .failed
         }
         
+        if statuses.contains(.warning) {
+            return .warning
+        }
+        
         if statuses.contains(.verifiedOffline) {
             return .verifiedOffline
         }
@@ -37,7 +41,7 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
 
 public extension Attestation {
     enum Status: String, Codable {
-        case failed, skipped, verifiedOffline, verified
+        case failed, warning, skipped, verifiedOffline, verified
     }
 }
 

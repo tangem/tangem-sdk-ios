@@ -99,7 +99,8 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testPersonalize() {
-        testMethod(name: "Personalize", result: testCard)
+        testPersonalizeConfig(name: "v4")
+        testPersonalizeConfig(name: "v3.05ada")
     }
     
     func testSetPin1() {
@@ -151,6 +152,23 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
+    private func testPersonalizeConfig(name: String) {
+        guard let testData = getTestData(for: name) else {
+            XCTAssert(false, "Failed to create test data \(name)")
+            return
+        }
+        
+        //test request
+        do {
+           let request = try JSONRPCRequest(jsonString: testData.request)
+            //test convert request
+            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
+        } catch {
+            XCTAssert(false, "Failed to create request for \(name)")
+            return
+        }
+    }
+    
     private func testMethod<TResult: Encodable>(name: String, result: TResult) {
         guard let testData = getTestData(for: name) else {
             XCTAssert(false, "Failed to create test data \(name)")
@@ -167,8 +185,6 @@ class JSONRPCTests: XCTestCase {
             return
         }
         
-        if name == "personalize" { return }
-
         //test response
         guard let responseJson = try? JSONSerialization.jsonObject(with: testData.response, options: []) as? [String: Any],
               let resultValue = responseJson["result"],

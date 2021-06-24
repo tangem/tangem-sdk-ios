@@ -89,5 +89,7 @@ public protocol SessionViewDelegate: AnyObject {
     
     func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
     
+    func showAlert(title: String, message: String, onContinue: @escaping () -> Void)
+    
     func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void)
 }

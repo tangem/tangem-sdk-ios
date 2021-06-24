@@ -75,7 +75,7 @@ class JSONRPCTests: XCTestCase {
     
     func testCreateWallet() {
         let maskBuilder = WalletSettingsMaskBuilder()
-        maskBuilder.add(.isProhibitPurge)
+        maskBuilder.add(.isPermanent)
         maskBuilder.add(.isReusable)
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),

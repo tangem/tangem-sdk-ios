@@ -146,7 +146,8 @@ public enum TlvTag: Byte {
             return .utf8String
         case .curveId:
             return .ellipticCurve
-        case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter, .userCounter, .tokenDecimal, .issuerDataCounter:
+        case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter,
+             .userCounter, .tokenDecimal, .issuerDataCounter, .checkWalletCounter:
             return .intValue
         case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault:
             return .boolValue

@@ -11,179 +11,81 @@ import Foundation
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
-public struct CardConfig: Decodable, JSONStringConvertible {
-    let issuerName: String?
-    let acquirerName: String?
+public struct CardConfig: Decodable {
+    let releaseVersion: Bool
+    let issuerName: String
     let series: String?
     let startNumber: Int64
     let count: Int
+    let numberFormat: String
     let pin: Data
     let pin2: Data
-    let pin3: Data
+    let pin3: Data?
     let hexCrExKey: String?
     let cvc: String
     let pauseBeforePin2: Int
     let smartSecurityDelay: Bool
     let curveID: EllipticCurve
-    let signingMethods: SigningMethod
-    let maxSignatures: Int
+    let signingMethod: SigningMethod
+    let maxSignatures: Int?
     let isReusable: Bool
     let allowSetPIN1: Bool
     let allowSetPIN2: Bool
     let useActivation: Bool
     let useCvc: Bool
     let useNDEF: Bool
-    let useDynamicNDEF: Bool
-    let useOneCommandAtTime: Bool
+    let useDynamicNDEF: Bool?
+    let useOneCommandAtTime: Bool?
     let useBlock: Bool
     let allowSelectBlockchain: Bool
     let prohibitPurgeWallet: Bool
     let allowUnencrypted: Bool
     let allowFastEncryption: Bool
-    let protectIssuerDataAgainstReplay: Bool
+    let protectIssuerDataAgainstReplay: Bool?
     let prohibitDefaultPIN1: Bool
-    let disablePrecomputedNDEF: Bool
+    let disablePrecomputedNDEF: Bool?
     let skipSecurityDelayIfValidatedByIssuer: Bool
     let skipCheckPIN2CVCIfValidatedByIssuer: Bool
     let skipSecurityDelayIfValidatedByLinkedTerminal: Bool
-    
-    let restrictOverwriteIssuerExtraData: Bool
-    
-    let disableIssuerData: Bool
-    let disableUserData: Bool
-    let disableFiles: Bool
-    
-    let createWallet: Bool
-    
-    let cardData: CardData
+    let restrictOverwriteIssuerExtraData: Bool?
+    let disableIssuerData: Bool?
+    let disableUserData: Bool?
+    let disableFiles: Bool?
+    let createWallet: Int
+    let cardData: CardConfigData
     let ndefRecords: [NdefRecord]
-    
     /// Number of wallets supported by card, by default - 1
     let walletsCount: Byte?
     
-    private let Alf = "ABCDEF0123456789"
+    private static let Alf = "ABCDEF0123456789"
     
-    /* public init(from decoder: Decoder) throws {
-     let values = try decoder.container(keyedBy: CodingKeys.self)
-     issuerName = try values.decode(String.self, forKey: .issuerName)
-     acquirerName = try values.decode(String.self, forKey: .acquirerName)
-     series = try values.decode(String.self, forKey: .series)
-     startNumber = try values.decode(Int64.self, forKey: .startNumber)
-     count = try values.decode(Int.self, forKey: .count)
-     pin = Data((try values.decode([Int].self, forKey: .pin)).map( { Byte($0) }))
-     pin2 = Data((try values.decode([Int].self, forKey: .pin2)).map( { Byte($0) }))
-     pin3 = Data((try values.decode([Int].self, forKey: .pin3)).map( { Byte($0) }))
-     hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
-     cvc = try values.decode(String.self, forKey: .cvc)
-     pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
-     smartSecurityDelay = try values.decode(Bool.self, forKey: .smartSecurityDelay)
-     
-     let curveString = try values.decode(String.self, forKey: .curveID)
-     if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
-     self.curveID = curveID
-     } else {
-     throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
-     }
-     
-     let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
-     if let rawValue = signingMethodsDictionary["rawValue"]  {
-     signingMethods = SigningMethod(rawValue: rawValue)
-     } else {
-     throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
-     }
-     
-     maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
-     isReusable = try values.decode(Bool.self, forKey: .isReusable)
-     allowSetPIN1 = try values.decode(Bool.self, forKey: .allowSetPIN1)
-     allowSetPIN2 = try values.decode(Bool.self, forKey: .allowSetPIN2)
-     useActivation = try values.decode(Bool.self, forKey: .useActivation)
-     useCvc = try values.decode(Bool.self, forKey: .useCvc)
-     useNDEF = try values.decode(Bool.self, forKey: .useNDEF)
-     useDynamicNDEF = try values.decode(Bool.self, forKey: .useDynamicNDEF)
-     useOneCommandAtTime = try values.decode(Bool.self, forKey: .useOneCommandAtTime)
-     useBlock = try values.decode(Bool.self, forKey: .useBlock)
-     allowSelectBlockchain = try values.decode(Bool.self, forKey: .allowSelectBlockchain)
-     prohibitPurgeWallet = try values.decode(Bool.self, forKey: .prohibitPurgeWallet)
-     allowUnencrypted = try values.decode(Bool.self, forKey: .allowUnencrypted)
-     allowFastEncryption = try values.decode(Bool.self, forKey: .allowFastEncryption)
-     protectIssuerDataAgainstReplay = try values.decode(Bool.self, forKey: .protectIssuerDataAgainstReplay)
-     prohibitDefaultPIN1 = try values.decode(Bool.self, forKey: .prohibitDefaultPIN1)
-     disablePrecomputedNDEF = try values.decode(Bool.self, forKey: .disablePrecomputedNDEF)
-     skipSecurityDelayIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByIssuer)
-     skipCheckPIN2CVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2CVCIfValidatedByIssuer)
-     skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
-     restrictOverwriteIssuerExtraData = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerExtraData)
-     disableIssuerData = try values.decode(Bool.self, forKey: .disableIssuerData)
-     disableUserData = try values.decode(Bool.self, forKey: .disableUserData)
-     disableFiles = try values.decode(Bool.self, forKey: .disableFiles)
-     createWallet = try values.decode(Bool.self, forKey: .createWallet)
-     cardData = try values.decode(CardData.self, forKey: .cardData)
-     ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-     walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
-     }*/
-    
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        issuerName = try values.decode(String.self, forKey: .issuerName)
-        acquirerName = try values.decode(String.self, forKey: .acquirerName)
-        series = try values.decode(String.self, forKey: .series)
-        startNumber = try values.decode(Int64.self, forKey: .startNumber)
-        count = try values.decode(Int.self, forKey: .count)
-        pin = (try values.decode(String.self, forKey: .pin)).sha256()
-        pin2 = (try values.decode(String.self, forKey: .pin)).sha256()
-        pin3 = (try values.decode(String.self, forKey: .pin)).sha256()
-        hexCrExKey = try values.decode(String.self, forKey: .hexCrExKey)
-        cvc = try values.decode(String.self, forKey: .cvc)
-        pauseBeforePin2 = try values.decode(Int.self, forKey: .pauseBeforePin2)
-        smartSecurityDelay = try values.decode(Bool.self, forKey: .smartSecurityDelay)
-        
-        let curveString = try values.decode(String.self, forKey: .curveID)
-        if let curveID = EllipticCurve(rawValue: curveString.lowercasingFirst()) {
-            self.curveID = curveID
-        } else {
-            throw TangemSdkError.decodingFailed("Failed to decode EllipticCurve")
-        }
-        
-        let signingMethodsDictionary = try values.decode([String:Byte].self, forKey: .signingMethods)
-        if let rawValue = signingMethodsDictionary["rawValue"]  {
-            signingMethods = SigningMethod(rawValue: rawValue)
-        } else {
-            throw TangemSdkError.decodingFailed("Failed to decode SigningMethods")
-        }
-        
-        maxSignatures = try values.decode(Int.self, forKey: .maxSignatures)
-        isReusable = try values.decode(Bool.self, forKey: .isReusable)
-        allowSetPIN1 = try values.decode(Bool.self, forKey: .allowSetPIN1)
-        allowSetPIN2 = try values.decode(Bool.self, forKey: .allowSetPIN2)
-        useActivation = try values.decode(Bool.self, forKey: .useActivation)
-        useCvc = try values.decode(Bool.self, forKey: .useCvc)
-        useNDEF = try values.decode(Bool.self, forKey: .useNDEF)
-        useDynamicNDEF = try values.decode(Bool.self, forKey: .useDynamicNDEF)
-        useOneCommandAtTime = try values.decode(Bool.self, forKey: .useOneCommandAtTime)
-        useBlock = try values.decode(Bool.self, forKey: .useBlock)
-        allowSelectBlockchain = try values.decode(Bool.self, forKey: .allowSelectBlockchain)
-        prohibitPurgeWallet = try values.decode(Bool.self, forKey: .prohibitPurgeWallet)
-        allowUnencrypted = try values.decode(Bool.self, forKey: .allowUnencrypted)
-        allowFastEncryption = try values.decode(Bool.self, forKey: .allowFastEncryption)
-        protectIssuerDataAgainstReplay = try values.decode(Bool.self, forKey: .protectIssuerDataAgainstReplay)
-        prohibitDefaultPIN1 = try values.decode(Bool.self, forKey: .prohibitDefaultPIN1)
-        disablePrecomputedNDEF = try values.decode(Bool.self, forKey: .disablePrecomputedNDEF)
-        skipSecurityDelayIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByIssuer)
-        skipCheckPIN2CVCIfValidatedByIssuer = try values.decode(Bool.self, forKey: .skipCheckPIN2CVCIfValidatedByIssuer)
-        skipSecurityDelayIfValidatedByLinkedTerminal = try values.decode(Bool.self, forKey: .skipSecurityDelayIfValidatedByLinkedTerminal)
-        restrictOverwriteIssuerExtraData = try values.decode(Bool.self, forKey: .restrictOverwriteIssuerExtraData)
-        disableIssuerData = try values.decode(Bool.self, forKey: .disableIssuerData)
-        disableUserData = try values.decode(Bool.self, forKey: .disableUserData)
-        disableFiles = try values.decode(Bool.self, forKey: .disableFiles)
-        createWallet = try values.decode(Bool.self, forKey: .createWallet)
-        cardData = try values.decode(CardData.self, forKey: .cardData)
-        ndefRecords = try values.decode([NdefRecord].self, forKey: .ndefRecords)
-        walletsCount = try? values.decode(Byte.self, forKey: .walletsCount)
+    enum CodingKeys: String, CodingKey {
+        case releaseVersion, issuerName, series, startNumber, count, numberFormat,
+             hexCrExKey, smartSecurityDelay, curveID, maxSignatures, isReusable,
+             useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
+             disableUserData, disableFiles, createWallet, cardData, walletsCount,
+             useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
+             disablePrecomputedNDEF, restrictOverwriteIssuerExtraData
+        case pin = "PIN"
+        case pin2 = "PIN2"
+        case pin3 = "PIN3"
+        case cvc = "CVC"
+        case pauseBeforePin2 = "pauseBeforePIN2"
+        case signingMethod = "SigningMethod"
+        case allowSetPIN1 = "allowSwapPIN"
+        case allowSetPIN2 = "allowSwapPIN2"
+        case useCvc = "useCVC"
+        case useNDEF = "useNDEF"
+        case prohibitPurgeWallet = "forbidPurgeWallet"
+        case allowUnencrypted = "protocolAllowUnencrypted"
+        case allowFastEncryption = "protocolAllowStaticEncryption"
+        case prohibitDefaultPIN1 = "forbidDefaultPIN"
+        case skipCheckPIN2CVCIfValidatedByIssuer = "skipCheckPIN2andCVCIfValidatedByIssuer"
+        case ndefRecords = "NDEF"
     }
     
-    
     func createSettingsMask() -> Card.Settings.Mask {
-        let builder = SettingsMaskBuilder()
+        let builder = MaskBuilder<Card.Settings.Mask>()
         
         if allowSetPIN1 {
             builder.add(.allowSetPIN1)
@@ -197,16 +99,16 @@ public struct CardConfig: Decodable, JSONStringConvertible {
         if isReusable {
             builder.add(.isReusable)
         }
-        if useOneCommandAtTime {
+        if useOneCommandAtTime ?? false {
             builder.add(.useOneCommandAtTime)
         }
         if useNDEF {
             builder.add(.useNDEF)
         }
-        if useDynamicNDEF {
+        if useDynamicNDEF ?? false {
             builder.add(.useDynamicNDEF)
         }
-        if disablePrecomputedNDEF {
+        if disablePrecomputedNDEF ?? false {
             builder.add(.disablePrecomputedNDEF)
         }
         if allowUnencrypted {
@@ -227,7 +129,7 @@ public struct CardConfig: Decodable, JSONStringConvertible {
         if smartSecurityDelay {
             builder.add(.smartSecurityDelay)
         }
-        if protectIssuerDataAgainstReplay {
+        if protectIssuerDataAgainstReplay ?? false {
             builder.add(.protectIssuerDataAgainstReplay)
         }
         if prohibitPurgeWallet {
@@ -245,16 +147,16 @@ public struct CardConfig: Decodable, JSONStringConvertible {
         if skipSecurityDelayIfValidatedByLinkedTerminal {
             builder.add(.skipSecurityDelayIfValidatedByLinkedTerminal)
         }
-        if restrictOverwriteIssuerExtraData {
+        if restrictOverwriteIssuerExtraData ?? false {
             builder.add(.restrictOverwriteIssuerExtraData)
         }
-        if disableIssuerData {
+        if disableIssuerData ?? false {
             builder.add(.disableIssuerData)
         }
-        if disableUserData {
+        if disableUserData ?? false  {
             builder.add(.disableUserData)
         }
-        if disableFiles {
+        if disableFiles ?? false {
             builder.add(.disableFiles)
         }
         return builder.build()
@@ -285,7 +187,7 @@ public struct CardConfig: Decodable, JSONStringConvertible {
             return nil
         }
         
-        if cardId.count != 15 || !Alf.contains(firstCidCharacter) || !Alf.contains(secondCidCharacter) {
+        if cardId.count != 15 || !CardConfig.Alf.contains(firstCidCharacter) || !CardConfig.Alf.contains(secondCidCharacter) {
             return nil
         }
         
@@ -312,7 +214,95 @@ public struct CardConfig: Decodable, JSONStringConvertible {
     }
     
     private func checkSeries(_ series: String) -> Bool {
-        let containsList = series.filter { Alf.contains($0) }
+        let containsList = series.filter { CardConfig.Alf.contains($0) }
         return containsList.count == series.count
+    }
+}
+
+extension CardConfig {
+    struct CardConfigData: Decodable {
+        let date: Date?
+        let batch: String
+        let blockchain: String
+        let productNote: Bool?
+        let productTag: Bool?
+        let productIdCard: Bool?
+        let productIdIssuer: Bool?
+        let productAuthentication: Bool?
+        let productTwin: Bool?
+        let tokenSymbol: String?
+        let tokenContractAddress: String?
+        let tokenDecimal: Int?
+        
+        enum CodingKeys: String, CodingKey {
+            case date, batch, blockchain
+            case productNote = "product_note"
+            case productTag = "product_tag"
+            case productIdCard = "product_id_card"
+            case productIdIssuer = "product_id_issuer"
+            case productAuthentication = "product_authentication"
+            case productTwin = "product_twin"
+            case tokenSymbol = "token_symbol"
+            case tokenContractAddress = "token_contract_address"
+            case tokenDecimal = "token_decimal"
+        }
+        
+        func createPersonalizationCardData(issuer: Issuer, manufacturer: Manufacturer, cardId: String) throws -> CardData {
+            guard let manufacturerSignature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
+                throw TangemSdkError.serializeCommandError
+            }
+            
+            return CardData(batchId: batch,
+                            manufactureDateTime: date ?? Date(),
+                            issuerName: issuer.name,
+                            blockchainName: blockchain,
+                            manufacturerSignature: manufacturerSignature,
+                            productMask: createProductMask(),
+                            tokenSymbol: tokenSymbol,
+                            tokenContractAddress: tokenContractAddress,
+                            tokenDecimal: tokenDecimal)
+        }
+        
+        func createProductMask() -> ProductMask {
+            let builder = MaskBuilder<ProductMask>()
+            
+            if productNote ?? false {
+                builder.add(.note)
+            }
+            
+            if productTag ?? false {
+                builder.add(.tag)
+            }
+            
+            if productIdCard ?? false {
+                builder.add(.idCard)
+            }
+            
+            if productIdIssuer ?? false {
+                builder.add(.idIssuer)
+            }
+            
+            if productTwin ?? false {
+                builder.add(.twinCard)
+            }
+            
+            if productAuthentication ?? false {
+                builder.add(.authentication)
+            }
+            
+            return builder.build()
+        }
+    }
+}
+
+class MaskBuilder<T: OptionSet> where T.RawValue: FixedWidthInteger {
+    private var rawValue: T.RawValue = 0
+    
+    func add(_ mask: T) {
+        rawValue |= mask.rawValue
+    }
+    
+    func build() -> T {
+        return .init(rawValue: rawValue)
     }
 }

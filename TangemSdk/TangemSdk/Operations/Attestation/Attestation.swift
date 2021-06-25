@@ -14,6 +14,9 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
     public internal(set) var firmwareAttestation: Status
     public internal(set) var cardUniquenessAttestation: Status
     
+    /// Date of attestation
+    public internal(set) var date: Date
+    
     public var status: Status {
         if !statuses.contains(where: { $0 != .skipped} ) {
             return .skipped
@@ -54,10 +57,11 @@ public extension Attestation {
 }
 
 public extension Attestation {
-    static var skipped: Attestation {
+    static var empty: Attestation {
         .init(cardKeyAttestation: .skipped,
               walletKeysAttestation: .skipped,
               firmwareAttestation: .skipped,
-              cardUniquenessAttestation: .skipped)
+              cardUniquenessAttestation: .skipped,
+              date: Date())
     }
 }

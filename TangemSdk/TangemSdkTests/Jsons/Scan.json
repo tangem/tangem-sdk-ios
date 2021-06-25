@@ -58,7 +58,8 @@
               "cardKeyAttestation" : "failed",
               "walletKeysAttestation" : "skipped",
               "firmwareAttestation" : "skipped",
-              "cardUniquenessAttestation" : "skipped"
+              "cardUniquenessAttestation" : "skipped",
+              "date" : "2021-06-25"
             },
             "cardId" : "BB03000000000004",
             "wallets" : [

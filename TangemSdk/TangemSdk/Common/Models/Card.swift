@@ -45,7 +45,7 @@ public struct Card: Codable, JSONStringConvertible {
     /// - Note: This counter were deprecated for cards with COS 4.0 and higher
     let remainingSignatures: Int?
     
-    internal(set) public var attestation: Attestation = .skipped
+    internal(set) public var attestation: Attestation = .empty
 }
 
 public extension Card {

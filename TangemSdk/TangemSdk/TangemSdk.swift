@@ -17,18 +17,13 @@ public final class TangemSdk {
     
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
-    private let secureStorageService = SecureStorageService()
     private let onlineCardVerifier = OnlineCardVerifier()
+    private let terminalKeysService = TerminalKeysService()
     private var cardSession: CardSession? = nil
     private var onlineVerificationCancellable: AnyCancellable? = nil
     
     private lazy var jsonConverter: JSONRPCConverter = {
         return .shared
-    }()
-    
-    private lazy var terminalKeysService: TerminalKeysService = {
-        let service = TerminalKeysService(secureStorageService: secureStorageService)
-        return service
     }()
     
     /// Default initializer

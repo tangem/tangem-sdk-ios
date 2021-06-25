@@ -16,7 +16,7 @@ public final class AttestationTask: CardSessionRunnable {
     private let trustedCardsRepo: TrustedCardsRepo = .init()
     private let onlineCardVerifier = OnlineCardVerifier()
     
-    private var currentAttestationStatus: Attestation = .skipped
+    private var currentAttestationStatus: Attestation = .empty
     private var onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
     private var bag = Set<AnyCancellable>()
     
@@ -58,7 +58,7 @@ public final class AttestationTask: CardSessionRunnable {
             switch checkWalletResult {
             case .success:
                 //This card already attested with the current or more secured mode
-                if let attestation = self.trustedCardsRepo.data[session.environment.card!.cardPublicKey],
+                if let attestation = self.trustedCardsRepo.attestation(for: session.environment.card!.cardPublicKey),
                    attestation.mode >= self.mode {
                     self.currentAttestationStatus = attestation
                     self.complete(session, completion)
@@ -206,13 +206,17 @@ public final class AttestationTask: CardSessionRunnable {
 }
 
 public extension AttestationTask {
-    enum Mode: Int, CaseIterable, Comparable {
+    enum Mode: String, CaseIterable, Comparable {
         case normal, full
         
         public static func < (lhs: AttestationTask.Mode, rhs: AttestationTask.Mode) -> Bool {
-            return lhs.rawValue < rhs.rawValue
+            switch (lhs, rhs) {
+            case (normal, full):
+                return true
+            default:
+                return false
+            }
         }
-        
     }
 }
 

@@ -34,6 +34,14 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
         return .verified
     }
     
+    var mode: AttestationTask.Mode {
+        if walletKeysAttestation == .skipped {
+            return .normal
+        }
+        
+        return .full
+    }
+    
     private var statuses: [Status] {
         return [cardKeyAttestation, walletKeysAttestation, firmwareAttestation, cardUniquenessAttestation]
     }

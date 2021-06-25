@@ -57,8 +57,9 @@ public final class AttestationTask: CardSessionRunnable {
         AttestCardKeyCommand().run(in: session) { checkWalletResult in
             switch checkWalletResult {
             case .success:
-                //This card already attested
-                if let attestation = self.trustedCardsRepo.data[session.environment.card!.cardPublicKey] {
+                //This card already attested with the current or more secured mode
+                if let attestation = self.trustedCardsRepo.data[session.environment.card!.cardPublicKey],
+                   attestation.mode >= self.mode {
                     self.currentAttestationStatus = attestation
                     self.complete(session, completion)
                     return
@@ -205,8 +206,13 @@ public final class AttestationTask: CardSessionRunnable {
 }
 
 public extension AttestationTask {
-    enum Mode: String, CaseIterable {
+    enum Mode: Int, CaseIterable, Comparable {
         case normal, full
+        
+        public static func < (lhs: AttestationTask.Mode, rhs: AttestationTask.Mode) -> Bool {
+            return lhs.rawValue < rhs.rawValue
+        }
+        
     }
 }
 

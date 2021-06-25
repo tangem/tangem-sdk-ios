@@ -8,11 +8,61 @@
 
 import Foundation
 
-//TODO: Implement
-class TrustedCardsRepo {
-    let data: [Data: Attestation] = [:]
+public class TrustedCardsRepo {
+    private let storage = SecureStorage()
+    private let secureEnclave = SecureEnclaveService()
+    
+    //Key is Hash of card's public key
+    private var data: [Data: Attestation] = [:]
+    
+    init() {
+        try? fetch()
+    }
     
     func append(cardPublicKey: Data, attestation: Attestation) {
+        if data.count >= Constants.maxCards {
+            if let earliestKey = data.min(by: { $0.value.date < $1.value.date })?.key {
+                data[earliestKey] = nil
+            }
+        }
         
+        let hash = cardPublicKey.getSha256()
+        data[hash] = attestation
+        try? save()
+    }
+    
+    func attestation(for cardPublicKey: Data) -> Attestation? {
+        let hash = cardPublicKey.getSha256()
+        return data[hash]
+    }
+    
+    private func save() throws {
+        let encoded = try JSONEncoder.tangemSdkEncoder.encode(data)
+        let signature = try secureEnclave.sign(data: encoded)
+        try storage.store(object: encoded, account: StorageKey.attestedCards.rawValue)
+        try storage.store(object: signature, account: StorageKey.signatureOfAttestedCards.rawValue)
+    }
+    
+    private func fetch() throws {
+        if let data = try storage.get(account: StorageKey.attestedCards.rawValue),
+           let signature = try storage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
+           try secureEnclave.verify(signature: signature, message: data) {
+            let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: Attestation].self, from: data)
+            self.data = decoded
+        }
+    }
+}
+
+private extension TrustedCardsRepo {
+    /// Keys used for store data in Keychain
+    enum StorageKey: String {
+        case attestedCards
+        case signatureOfAttestedCards
+    }
+}
+
+private extension TrustedCardsRepo {
+    enum Constants {
+        static var maxCards = 30
     }
 }

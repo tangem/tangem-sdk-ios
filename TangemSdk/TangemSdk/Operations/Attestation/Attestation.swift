@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Attestation: Codable, JSONStringConvertible, Equatable {
+public struct Attestation: JSONStringConvertible, Equatable {
     public internal(set) var cardKeyAttestation: Status
     public internal(set) var walletKeysAttestation: Status
     public internal(set) var firmwareAttestation: Status
@@ -51,7 +51,7 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
 }
 
 public extension Attestation {
-    enum Status: Int, Codable {
+    enum Status: String, Codable {
         case failed, warning, skipped, verifiedOffline, verified
     }
 }
@@ -67,17 +67,17 @@ public extension Attestation {
 
 extension Attestation {
     var rawRepresentaion: String {
-        return "\(index),\(cardKeyAttestation.rawValue),\(walletKeysAttestation.rawValue),\(firmwareAttestation.rawValue),\(cardUniquenessAttestation.rawValue)"
+        return "\(index),\(cardKeyAttestation.intRepresentation),\(walletKeysAttestation.intRepresentation),\(firmwareAttestation.intRepresentation),\(cardUniquenessAttestation.intRepresentation)"
     }
     
     init?(rawRepresentaion: String) {
         let values: [Int] = rawRepresentaion.split(separator: ",").compactMap { Int($0) }
         
         guard values.count == 5,
-              let cardKeyAttestation = Status(rawValue: values[1]),
-              let walletKeysAttestation = Status(rawValue: values[2]),
-              let firmwareAttestation = Status(rawValue: values[3]),
-              let cardUniquenessAttestation = Status(rawValue: values[4]) else {
+              let cardKeyAttestation = Status(intRepresentation: values[1]),
+              let walletKeysAttestation = Status(intRepresentation: values[2]),
+              let firmwareAttestation = Status(intRepresentation: values[3]),
+              let cardUniquenessAttestation = Status(intRepresentation: values[4]) else {
             return nil
         }
         
@@ -86,5 +86,58 @@ extension Attestation {
         self.walletKeysAttestation = walletKeysAttestation
         self.firmwareAttestation = firmwareAttestation
         self.cardUniquenessAttestation = cardUniquenessAttestation
+    }
+}
+
+extension Attestation.Status {
+    var intRepresentation: Int {
+        switch self {
+        case .failed: return 0
+        case .warning: return 1
+        case .skipped: return 2
+        case .verifiedOffline: return 3
+        case .verified: return 4
+        }
+    }
+    
+    public init?(intRepresentation: Int) {
+        switch intRepresentation {
+        case 0:
+            self = .failed
+        case 1:
+            self = .warning
+        case 2:
+            self = .skipped
+        case 3:
+            self = .verifiedOffline
+        case 4:
+            self = .verified
+        default:
+            return nil
+        }
+    }
+}
+
+extension Attestation: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.index = (try? container.decode(Int.self, forKey: .index)) ?? 0
+        self.cardKeyAttestation = try container.decode(Status.self, forKey: .cardKeyAttestation)
+        self.walletKeysAttestation = try container.decode(Status.self, forKey: .walletKeysAttestation)
+        self.firmwareAttestation = try container.decode(Status.self, forKey: .firmwareAttestation)
+        self.cardUniquenessAttestation = try container.decode(Status.self, forKey: .cardUniquenessAttestation)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy:  CodingKeys.self)
+        try container.encode(cardKeyAttestation, forKey: .cardKeyAttestation)
+        try container.encode(walletKeysAttestation, forKey: .walletKeysAttestation)
+        try container.encode(firmwareAttestation, forKey: .firmwareAttestation)
+        try container.encode(cardUniquenessAttestation, forKey: .cardUniquenessAttestation)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case index, cardKeyAttestation, walletKeysAttestation,
+             firmwareAttestation, cardUniquenessAttestation
     }
 }

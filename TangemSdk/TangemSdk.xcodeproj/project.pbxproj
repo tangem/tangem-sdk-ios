@@ -52,6 +52,7 @@
 		5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6795B1237AEFB60075A330 /* ApduTests.swift */; };
 		5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */; };
 		5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */; };
+		5D686C57268A09DC00ABFB83 /* BatchIdFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D686C56268A09DC00ABFB83 /* BatchIdFilter.swift */; };
 		5D6931D223D9AAD90088C6C0 /* TlvEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6931D123D9AAD90088C6C0 /* TlvEncoder.swift */; };
 		5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6931D323D9AC440088C6C0 /* TlvBuilder.swift */; };
 		5D6A92D82344E2D700158457 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5D6A92DA2344E2D700158457 /* Localizable.strings */; };
@@ -288,6 +289,7 @@
 		5D6795B1237AEFB60075A330 /* ApduTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApduTests.swift; sourceTree = "<group>"; };
 		5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletCommand.swift; sourceTree = "<group>"; };
 		5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurgeWalletCommand.swift; sourceTree = "<group>"; };
+		5D686C56268A09DC00ABFB83 /* BatchIdFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchIdFilter.swift; sourceTree = "<group>"; };
 		5D6931D123D9AAD90088C6C0 /* TlvEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvEncoder.swift; sourceTree = "<group>"; };
 		5D6931D323D9AC440088C6C0 /* TlvBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvBuilder.swift; sourceTree = "<group>"; };
 		5D6A92D92344E2D700158457 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -929,6 +931,7 @@
 				B0800F94252C6859007E04EE /* Files */,
 				B0EC64FE260110440088F03D /* Deserialization */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
+				5D686C56268A09DC00ABFB83 /* BatchIdFilter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1377,6 +1380,7 @@
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
+				5D686C57268A09DC00ABFB83 /* BatchIdFilter.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,

@@ -618,6 +618,7 @@
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
+				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -852,7 +853,6 @@
 				5DA80C9D231D247A00A50A10 /* TangemSdk.h */,
 				5D5369D124461F62002886E0 /* module.modulemap */,
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
-				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D7F4E3F248FCEFB00A1700D /* UI */,
 				5D6A92E12345F28F00158457 /* Operations */,
 				5DF7CFCA233D034E00461F4D /* Common */,
@@ -927,9 +927,8 @@
 				5DFFC4A0233BA5D2004964E8 /* Extensions */,
 				5D6A92D52344E2B400158457 /* Localization */,
 				B0800F94252C6859007E04EE /* Files */,
-				B0EC64FE260110440088F03D /* SerializationHelpers */,
+				B0EC64FE260110440088F03D /* Deserialization */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
-				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1034,6 +1033,7 @@
 		B0A9436525651E2600A7958E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 				B0A9447A256546DE00A7958E /* Card.swift */,
 				B0390F7A25658EEE0061E5ED /* CardSettingsMask.swift */,
 				B0390F8D25658FE80061E5ED /* StatusType.swift */,
@@ -1086,13 +1086,13 @@
 			path = InformationScreen;
 			sourceTree = "<group>";
 		};
-		B0EC64FE260110440088F03D /* SerializationHelpers */ = {
+		B0EC64FE260110440088F03D /* Deserialization */ = {
 			isa = PBXGroup;
 			children = (
 				B0E162C225656D8400E97D07 /* CardDeserializer.swift */,
 				B0EC64FF260110530088F03D /* WalletDeserializer.swift */,
 			);
-			path = SerializationHelpers;
+			path = Deserialization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

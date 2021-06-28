@@ -20,10 +20,13 @@ public class TrustedCardsRepo {
     }
     
     func append(cardPublicKey: Data, attestation: Attestation) {
-        if data.count >= Constants.maxCards {
-            if let earliestKey = data.min(by: { $0.value.date < $1.value.date })?.key {
-                data[earliestKey] = nil
-            }
+        let maxIndex = data.map({ $0.value.index }).max() ?? 0
+        var newAttestation = attestation
+        newAttestation.index = maxIndex + 1
+        
+        if newAttestation.index >= Constants.maxCards,
+           let keyWithMinIndex = data.min(by: { $0.value.index < $1.value.index })?.key {
+            data[keyWithMinIndex] = nil
         }
         
         let hash = cardPublicKey.getSha256()
@@ -37,7 +40,8 @@ public class TrustedCardsRepo {
     }
     
     private func save() throws {
-        let encoded = try JSONEncoder.tangemSdkEncoder.encode(data)
+        let convertedData = data.mapValues { $0.rawRepresentaion }
+        let encoded = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
         let signature = try secureEnclave.sign(data: encoded)
         try storage.store(object: encoded, account: StorageKey.attestedCards.rawValue)
         try storage.store(object: signature, account: StorageKey.signatureOfAttestedCards.rawValue)
@@ -47,8 +51,9 @@ public class TrustedCardsRepo {
         if let data = try storage.get(account: StorageKey.attestedCards.rawValue),
            let signature = try storage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
            try secureEnclave.verify(signature: signature, message: data) {
-            let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: Attestation].self, from: data)
-            self.data = decoded
+            let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
+            let converted = decoded.compactMapValues { Attestation(rawRepresentaion: $0) }
+            self.data = converted
         }
     }
 }

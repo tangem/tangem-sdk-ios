@@ -13,10 +13,11 @@ import XCTest
 class JSONRPCTests: XCTestCase {
     var testCard: Card {
         let json = readFile(name: "Card")
-        let data = json.data(using: .utf8)!
-        let card = try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data)
-        return card
+        let data = json.data(using: .utf8)
+        XCTAssertNotNil(data)
+        return try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
     }
+    
     func testJsonRPCRequestParse() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": {\"subtrahend\": 23, \"minuend\": 42}, \"id\": 3}"
         

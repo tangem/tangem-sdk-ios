@@ -14,8 +14,8 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
     public internal(set) var firmwareAttestation: Status
     public internal(set) var cardUniquenessAttestation: Status
     
-    /// Date of attestation
-    public internal(set) var date: Date
+    /// Index for storage
+    var index: Int = 0
     
     public var status: Status {
         if !statuses.contains(where: { $0 != .skipped} ) {
@@ -51,7 +51,7 @@ public struct Attestation: Codable, JSONStringConvertible, Equatable {
 }
 
 public extension Attestation {
-    enum Status: String, Codable {
+    enum Status: Int, Codable {
         case failed, warning, skipped, verifiedOffline, verified
     }
 }
@@ -61,7 +61,30 @@ public extension Attestation {
         .init(cardKeyAttestation: .skipped,
               walletKeysAttestation: .skipped,
               firmwareAttestation: .skipped,
-              cardUniquenessAttestation: .skipped,
-              date: Date())
+              cardUniquenessAttestation: .skipped)
+    }
+}
+
+extension Attestation {
+    var rawRepresentaion: String {
+        return "\(index),\(cardKeyAttestation.rawValue),\(walletKeysAttestation.rawValue),\(firmwareAttestation.rawValue),\(cardUniquenessAttestation.rawValue)"
+    }
+    
+    init?(rawRepresentaion: String) {
+        let values: [Int] = rawRepresentaion.split(separator: ",").compactMap { Int($0) }
+        
+        guard values.count == 5,
+              let cardKeyAttestation = Status(rawValue: values[1]),
+              let walletKeysAttestation = Status(rawValue: values[2]),
+              let firmwareAttestation = Status(rawValue: values[3]),
+              let cardUniquenessAttestation = Status(rawValue: values[4]) else {
+            return nil
+        }
+        
+        self.index = values[0]
+        self.cardKeyAttestation = cardKeyAttestation
+        self.walletKeysAttestation = walletKeysAttestation
+        self.firmwareAttestation = firmwareAttestation
+        self.cardUniquenessAttestation = cardUniquenessAttestation
     }
 }

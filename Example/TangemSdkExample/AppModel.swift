@@ -29,8 +29,6 @@ class AppModel: ObservableObject {
         var config = Config()
         config.logСonfig = .verbose
         config.linkedTerminal = false
-        config.attestationMode = .full
-        config.allowBAP = true
         config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()

@@ -21,4 +21,15 @@ class CommonTests: XCTestCase {
         XCTAssertTrue(AttestationTask.Mode.normal == AttestationTask.Mode.normal)
         XCTAssertFalse(AttestationTask.Mode.full == AttestationTask.Mode.normal)
     }
+    
+    func testAttestationRawRepresentation() {
+        let attestaion = Attestation(cardKeyAttestation: .verifiedOffline,
+                                     walletKeysAttestation: .verified,
+                                     firmwareAttestation: .skipped,
+                                     cardUniquenessAttestation: .failed)
+        
+        let fromRepresentation = Attestation(rawRepresentaion: attestaion.rawRepresentaion)
+        XCTAssertNotNil(fromRepresentation)
+        XCTAssertEqual(attestaion, fromRepresentation)
+    }
 }

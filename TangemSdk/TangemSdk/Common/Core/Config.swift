@@ -35,7 +35,6 @@ public struct Config {
     /// If not nil, will be used to validate Issuer data and issuer extra data. If nil, issuerPublicKey from current card will be used
     public var issuerPublicKey: Data?
     
-
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
     public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release]
 

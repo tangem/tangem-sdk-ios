@@ -56,12 +56,18 @@ public final class PreflightReadTask: CardSessionRunnable {
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
         Log.debug("=========================== Perform preflight check with settings: \(readMode) ======================")
-        ReadCommand().run(in: session) { (result) in
+        ReadCommand().run(in: session) { result in
             switch result {
             case .success(let readResponse):
                 if let expectedCardId = self.cardId?.uppercased(),
                    expectedCardId != readResponse.cardId.uppercased() {
                     completion(.failure(.wrongCardNumber))
+                    return
+                }
+                
+                if let batchIdFilter = session.environment.config.batchIdFilter,
+                   !batchIdFilter.isBatchIdAllowed(readResponse.batchId) {
+                    completion(.failure(.wrongCardType))
                     return
                 }
                 

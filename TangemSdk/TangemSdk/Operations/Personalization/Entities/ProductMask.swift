@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 struct ProductMask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
     let rawValue: Byte
     

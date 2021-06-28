@@ -9,7 +9,7 @@
 import Foundation
 import CryptoKit
 
-struct SecureEnclaveService {
+struct SecureEnclaveSign {
     private let storage = SecureStorage()
     
     func sign(data: Data) throws -> Data {
@@ -34,7 +34,7 @@ struct SecureEnclaveService {
     }
 }
 
-private extension SecureEnclaveService {
+private extension SecureEnclaveSign {
     /// Keys used for store data in Keychain
     enum StorageKey: String {
         case secureEnclaveP256Key

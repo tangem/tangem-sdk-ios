@@ -77,7 +77,7 @@ public protocol SessionViewDelegate: AnyObject {
     
     func sessionStarted()
     
-    func sessionStopped()
+    func sessionStopped(completion: (() -> Void)?)
     
     func sessionInitialized()
 	

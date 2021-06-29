@@ -49,31 +49,28 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		reader.alertMessage = text
 	}
 	
-	func hideUI(_ indicatorMode: IndicatorMode?) {
-        Log.view("HideUI with mode: \(String(describing: indicatorMode))")
-		guard let indicatorMode = indicatorMode else {
-			DispatchQueue.main.async {
-				self.dismissInfoScreen()
-			}
-			return
-		}
-		
-		DispatchQueue.main.async {
-			switch indicatorMode {
-			case .sd:
+    func hideUI(_ indicatorMode: IndicatorMode?) {
+        runInMainThread {
+            Log.view("HideUI with mode: \(String(describing: indicatorMode))")
+            guard let indicatorMode = indicatorMode else {
+                self.dismissInfoScreen(completion: nil)
+                return
+            }
+            
+            switch indicatorMode {
+            case .sd:
                 self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
-			case .percent:
-				self.dismissInfoScreen()
-			}
-		}
-	}
+            case .percent:
+                self.dismissInfoScreen(completion: nil)
+            }
+        }
+    }
 	
-
 	func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
         Log.view("Showing security delay. Ms: \(remainingMilliseconds). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
 		playTick()
         
-		DispatchQueue.main.async {
+        runInMainThread {
 			guard remainingMilliseconds >= 100 else {
 				self.infoScreen.setState(.spinner, animated: true)
 				return
@@ -99,7 +96,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		playTick()
 		showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
 		
-		DispatchQueue.main.async {
+        runInMainThread {
 			self.infoScreen.setState(.percentProgress, animated: true)
 			self.presentInfoScreen()
 			self.infoScreen.tickPercent(percentValue: percent, message: String(format: "%@%%", String(describing: percent)), hint: hint)
@@ -111,32 +108,36 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		guard remainingSecurityDelaySec <= 1 else { return }
 		
 		infoScreenAppearWork?.cancel()
-		DispatchQueue.main.async {
+        runInMainThread {
             Log.view(self.reader.isPaused)
 			self.presentInfoScreen()
 			self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
 		}
 	}
 	
-	func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
-        Log.view("Showing pin request with type: \(pinType)")
-		switch pinType {
-		case .pin1:
-			requestPin(.pin1, cardId: cardId, completion: completion)
-		case .pin2:
-			requestPin(.pin2, cardId: cardId, completion: completion)
-		}
-	}
+    func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
+        runInMainThread {
+            Log.view("Showing pin request with type: \(pinType)")
+            switch pinType {
+            case .pin1:
+                self.requestPin(.pin1, cardId: cardId, completion: completion)
+            case .pin2:
+                self.requestPin(.pin2, cardId: cardId, completion: completion)
+            }
+        }
+    }
 	
-	func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
-        Log.view("Showing pin change request with type: \(pinType)")
-		switch pinType {
-		case .pin1:
-			requestChangePin(.pin1, cardId: cardId, completion: completion)
-		case .pin2:
-			requestChangePin(.pin2, cardId: cardId, completion: completion)
-		}
-	}
+    func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+        runInMainThread {
+            Log.view("Showing pin change request with type: \(pinType)")
+            switch pinType {
+            case .pin1:
+                self.requestChangePin(.pin1, cardId: cardId, completion: completion)
+            case .pin2:
+                self.requestChangePin(.pin2, cardId: cardId, completion: completion)
+            }
+        }
+    }
 	
 	func tagConnected() {
         Log.view("Tag connected")
@@ -145,14 +146,18 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
             self.pinnedMessage = nil
         }
         playSuccess()
-		showUndefinedSpinner()
+        runInMainThread {
+            self.showUndefinedSpinner()
+        }
 	}
 	
 	func tagLost() {
         Log.view("Tag lost")
         pinnedMessage = reader.alertMessage
         showAlertMessage(Localization.nfcAlertDefault)
-		switchInfoScreen(to: .howToScan, animated: true)
+        runInMainThread {
+            self.switchInfoScreen(to: .howToScan, animated: true)
+        }
 	}
 	
 	func wrongCard(message: String?) {
@@ -181,69 +186,69 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         Log.view("Session initialized")
 	}
 	
-	func sessionStopped() {
+	func sessionStopped(completion: (() -> Void)?) {
 		Log.view("Session stopped")
 		infoScreenAppearWork?.cancel()
         pinnedMessage = nil
-		dismissInfoScreen()
 		stopHapticsEngine()
+        runInMainThread {
+            self.dismissInfoScreen(completion: completion)
+        }
 	}
 	
-	func showInfoScreen() {
-        Log.view("Show info screen")
-		switchInfoScreen(to: .howToScan, animated: false)
-	}
-	
+    func showInfoScreen() {
+        runInMainThread {
+            Log.view("Show info screen")
+            self.switchInfoScreen(to: .howToScan, animated: false)
+        }
+    }
+    
     func setConfig(_ config: Config) {
         self.config = config
     }
     
     //TODO: Refactor UI
     func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
-        DispatchQueue.main.async {
+        runInMainThread {
             UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel)
         }
     }
     
     //TODO: Refactor UI
     func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
-        DispatchQueue.main.async {
+        runInMainThread {
             UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel, onRetry: onRetry)
         }
     }
     
     //TODO: Refactor UI
     func showAlert(title: String, message: String, onContinue: @escaping () -> Void) {
-        DispatchQueue.main.async {
+        runInMainThread {
             UIAlertController.showAlert(from: self.infoScreen, title: title, message: message, onContinue: onContinue)
         }
     }
     
-	private func presentInfoScreen() {
-		DispatchQueue.main.async {
-			guard
-				self.infoScreen.presentingViewController == nil,
-				!self.infoScreen.isBeingPresented,
-				let topmostViewController = UIApplication.shared.topMostViewController,
-				!(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)
-			else { return }
-			
-			topmostViewController.present(self.infoScreen, animated: true, completion: nil)
-		}
-	}
+    private func presentInfoScreen() {
+        guard
+            self.infoScreen.presentingViewController == nil,
+            !self.infoScreen.isBeingPresented,
+            let topmostViewController = UIApplication.shared.topMostViewController,
+            !(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)
+        else { return }
+        
+        topmostViewController.present(self.infoScreen, animated: true, completion: nil)
+    }
 	
-	private func dismissInfoScreen() {
-		DispatchQueue.main.async {
-			if self.infoScreen.presentedViewController != nil ||
-				self.infoScreen.presentingViewController == nil ||
-				self.infoScreen.isBeingDismissed {
-				return
-			}
-			
-			self.infoScreen.dismiss(animated: true, completion: nil)
-		}
-	}
-	
+    private func dismissInfoScreen(completion: (() -> Void)?) {
+        if self.infoScreen.presentedViewController != nil ||
+            self.infoScreen.presentingViewController == nil ||
+            self.infoScreen.isBeingDismissed {
+            return
+        }
+        
+        self.infoScreen.dismiss(animated: true, completion: completion)
+    }
+    
 	private func switchInfoScreen(to state: InformationScreenViewController.State, animated: Bool = true) {
 		infoScreen.setState(state, animated: animated)
 		presentInfoScreen()
@@ -406,6 +411,16 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         
         let cidFormatter = CardIdFormatter()
         return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
+    }
+    
+    private func runInMainThread(_ block: @escaping () -> Void) {
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.async {
+                block()
+            }
+        }
     }
 }
 

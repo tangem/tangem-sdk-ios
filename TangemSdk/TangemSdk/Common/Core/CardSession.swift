@@ -143,11 +143,13 @@ public class CardSession {
                         Log.session("Runnable completed")
                         switch result {
                         case .success(let runnableResponse):
-                            self.stop(message: Localization.nfcAlertDefaultDone)
-                            DispatchQueue.main.async { completion(.success(runnableResponse)) }
+                            self.stop(message: Localization.nfcAlertDefaultDone) {
+                                completion(.success(runnableResponse))
+                            }
                         case .failure(let error):
-                            self.stop(error: error)
-                            DispatchQueue.main.async { completion(.failure(error)) }
+                            self.stop(error: error) {
+                                completion(.failure(error))
+                            }
                         }
                     }
                 }
@@ -204,7 +206,7 @@ public class CardSession {
             .sink(receiveValue: { [unowned self] isReady in
                 isReady ?
                     self.viewDelegate.sessionStarted() :
-                    self.viewDelegate.sessionStopped()
+                    self.viewDelegate.sessionStopped(completion: nil)
             })
             .store(in: &nfcReaderSubscriptions)
         
@@ -213,8 +215,9 @@ public class CardSession {
             .first()
             .sink(receiveCompletion: { [unowned self] readerCompletion in
                     if case let .failure(error) = readerCompletion {
-                        self.stop(error: error)
-                        onSessionStarted(self, error)
+                        self.stop(error: error) {
+                            onSessionStarted(self, error)
+                        }
                     }}, receiveValue: { [unowned self] tag in
                         if case .tag = tag, self.preflightReadMode != .none {
                             self.preflightCheck(onSessionStarted)
@@ -231,21 +234,21 @@ public class CardSession {
     // MARK: - Session stop and pause
     /// Stops the current session with the text message. If nil, the default message will be shown
     /// - Parameter message: The message to show
-    public func stop(message: String? = nil) {
+    public func stop(message: String? = nil, completion: (() -> Void)? = nil) {
         Log.session("Stop session")
         if let message = message {
             viewDelegate.showAlertMessage(message)
         }
         reader.stopSession()
-        sessionDidStop()
+        sessionDidStop(completion: completion)
     }
     
     /// Stops the current session with the error message.  Error's `localizedDescription` will be used
     /// - Parameter error: The error to show
-    public func stop(error: Error) {
+    public func stop(error: Error, completion: (() -> Void)?) {
         Log.session("Stop session")
         reader.stopSession(with: error.localizedDescription)
-        sessionDidStop()
+        sessionDidStop(completion: completion)
     }
     
     public func pause(error: TangemSdkError? = nil) {
@@ -321,11 +324,11 @@ public class CardSession {
         currentTag = nil
     }
     
-    private func sessionDidStop() {
+    private func sessionDidStop(completion: (() -> Void)?) {
         nfcReaderSubscriptions = []
         preflightReadMode = .fullCardRead
         sendSubscription = []
-        viewDelegate.sessionStopped()
+        viewDelegate.sessionStopped(completion: completion)
         state = .inactive
     }
     
@@ -347,7 +350,7 @@ public class CardSession {
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isSessionReady.value else {
                             onSessionStarted(self, .userCancelled)
-                            self.stop()
+                            self.stop(completion: nil)
                             return
                         }
                         
@@ -356,7 +359,7 @@ public class CardSession {
                     }
                 default:
                     onSessionStarted(self, error)
-                    self.stop(error: error)
+                    self.stop(error: error, completion: nil)
                 }
             }
         }

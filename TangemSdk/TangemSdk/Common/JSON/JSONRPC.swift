@@ -76,25 +76,14 @@ public struct JSONRPCRequest {
         
         do {
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                if let jsonrpcValue = json["jsonrpc"] as? String {
-                    jsonrpc = jsonrpcValue
-                } else {
-                    throw JSONRPCError(.invalidRequest, data: "jsonrpc")
-                }
-                if let idValue = json["id"] as? Int {
-                    id = idValue
-                } else {
-                    throw JSONRPCError(.invalidRequest, data: "id")
-                }
+                jsonrpc = json["jsonrpc"] as? String ?? "2.0"
+                id = json["id"] as? Int
+                params = json["params"] as? [String:Any] ?? [:]
+                
                 if let methodValue = json["method"] as? String {
                     method = methodValue
                 } else {
                     throw JSONRPCError(.invalidRequest, data: "method")
-                }
-                if let paramsValue = json["params"] as? [String:Any] {
-                    params = paramsValue
-                } else {
-                    params = [:]
                 }
             } else {
                 throw JSONRPCError(.parseError)

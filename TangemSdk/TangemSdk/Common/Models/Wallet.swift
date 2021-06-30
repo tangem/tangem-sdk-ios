@@ -81,15 +81,3 @@ extension Card.Wallet.Settings.Mask: OptionSetCodable {
         }
     }
 }
-
-class WalletSettingsMaskBuilder {
-    private var settingsMaskValue = 0
-    
-    func add(_ settings: Card.Wallet.Settings.Mask) {
-        settingsMaskValue |= settings.rawValue
-    }
-    
-    func build() -> Card.Wallet.Settings.Mask {
-        Card.Wallet.Settings.Mask(rawValue: settingsMaskValue)
-    }
-}

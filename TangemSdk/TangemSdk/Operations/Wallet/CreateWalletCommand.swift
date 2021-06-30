@@ -85,10 +85,6 @@ public final class CreateWalletCommand: Command {
                 return TangemSdkError.unsupportedWalletConfig
             }
             
-            if config.signingMethods != card.settings.defaultSigningMethods {
-                    return TangemSdkError.unsupportedWalletConfig
-            }
-            
             if !card.settings.mask.contains(.isReusable) {
                 return TangemSdkError.unsupportedWalletConfig
             }

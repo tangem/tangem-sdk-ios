@@ -19,20 +19,20 @@ public struct CreateWalletResponse: JSONStringConvertible {
 /// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
 struct WalletConfig {
     /// If `true` card will denied purge wallet request on this wallet
-    let isPermanent: Bool?
+    let isPermanent: Bool
     /// Determines which type of data is required for signing by wallet.
-    let signingMethods: SigningMethod?
+    let signingMethods: SigningMethod
     
-    init(isPermanent: Bool?, signingMethods: SigningMethod?) {
+    init(isPermanent: Bool, signingMethods: SigningMethod) {
         self.isPermanent = isPermanent
         self.signingMethods = signingMethods
     }
     
-    var settingsMask: Card.Wallet.Settings.Mask? {
+    var settingsMask: Card.Wallet.Settings.Mask {
         let builder = MaskBuilder<Card.Wallet.Settings.Mask>()
         builder.add(.isReusable)
         
-        if isPermanent ?? false {
+        if isPermanent {
             builder.add(.isPermanent)
         }
         return builder.build()
@@ -81,17 +81,21 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if let designatedIsPermanent = config.isPermanent {
-                let currentIsPermanent = card.settings.mask.contains(.permanentWallet)
-                if designatedIsPermanent != currentIsPermanent {
-                    return TangemSdkError.unsupportedWalletConfig
-                }
+            if config.isPermanent != card.settings.mask.contains(.permanentWallet) {
+                return TangemSdkError.unsupportedWalletConfig
             }
             
-            if let designatedSigningMethods = config.signingMethods {
-                if designatedSigningMethods != card.settings.defaultSigningMethods {
+            if config.signingMethods != card.settings.defaultSigningMethods {
                     return TangemSdkError.unsupportedWalletConfig
-                }
+            }
+            
+            if !card.settings.mask.contains(.isReusable) {
+                return TangemSdkError.unsupportedWalletConfig
+            }
+            
+            if let signingMethods = card.settings.defaultSigningMethods,
+               !signingMethods.contains(.signHash) {
+                return TangemSdkError.unsupportedWalletConfig
             }
         }
         
@@ -153,15 +157,9 @@ public final class CreateWalletCommand: Command {
         }
         
         if environment.card?.firmwareVersion >= .multiwalletAvailable {
-            if let settingsMask = config.settingsMask {
-                try tlvBuilder.append(.settingsMask, value: settingsMask)
-            }
-            
+            try tlvBuilder.append(.settingsMask, value: config.settingsMask)
             try tlvBuilder.append(.curveId, value: curve)
-            
-            if let signingMethods = config.signingMethods {
-                try tlvBuilder.append(.signingMethod, value: signingMethods)
-            }
+            try tlvBuilder.append(.signingMethod, value: config.signingMethods)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -174,14 +172,9 @@ public final class CreateWalletCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         let index = try decoder.decode(.walletIndex) ?? walletIndex!
-        
-        guard let settingsMask = config.settingsMask ?? environment.card?.settings.mask.toWalletSettingsMask(),
-              let signingMethods = config.signingMethods ?? environment.card?.settings.defaultSigningMethods else {
-            throw TangemSdkError.unknownError
-        }
-        
-        let walletSettings = Card.Wallet.Settings(mask: settingsMask,
-                                                  signingMethods: signingMethods)
+
+        let walletSettings = Card.Wallet.Settings(mask: config.settingsMask,
+                                                  signingMethods: config.signingMethods)
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                  curve: curve,

@@ -97,26 +97,26 @@ class DepersonalizeHandler: JSONRPCHandler {
     }
 }
 
-class SetPin1Handler: JSONRPCHandler {
-    var method: String { "SET_PIN1" }
+class SetAccessCodeHandler: JSONRPCHandler {
+    var method: String { "SET_ACCESSCODE" }
     
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let pin: String = try parameters.value(for: "pin")
-        let command = SetPinCommand(pinType: .pin1, pin: pin)
+        let code: String = try parameters.value(for: "accessCode")
+        let command = SetPinCommand(pinType: .pin1, pin: code)
         return command.eraseToAnyRunnable()
     }
 }
 
-class SetPin2Handler: JSONRPCHandler {
-    var method: String { "SET_PIN2" }
+class SetPasscodeHandler: JSONRPCHandler {
+    var method: String { "SET_PASSCODE" }
     
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let pin: String = try parameters.value(for: "pin")
-        let command = SetPinCommand(pinType: .pin2, pin: pin)
+        let code: String = try parameters.value(for: "passcode")
+        let command = SetPinCommand(pinType: .pin2, pin: code)
         return command.eraseToAnyRunnable()
     }
 }

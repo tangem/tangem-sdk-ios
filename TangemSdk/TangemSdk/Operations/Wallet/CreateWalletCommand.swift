@@ -29,7 +29,7 @@ struct WalletConfig {
     }
     
     var settingsMask: Card.Wallet.Settings.Mask? {
-        let builder = WalletSettingsMaskBuilder()
+        let builder = MaskBuilder<Card.Wallet.Settings.Mask>()
         builder.add(.isReusable)
         
         if isPermanent ?? false {

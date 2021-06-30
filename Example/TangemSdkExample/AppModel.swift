@@ -185,16 +185,16 @@ extension AppModel {
         tangemSdk.depersonalize(completion: handleCompletion)
     }
     
-    func changePin1() {
-        tangemSdk.changePin1(pin: nil,
-                             cardId: card?.cardId,
-                             completion: handleCompletion)
+    func setAccessCode() {
+        tangemSdk.setAccessCode(nil,
+                                cardId: card?.cardId,
+                                completion: handleCompletion)
     }
     
-    func changePin2() {
-        tangemSdk.changePin2(pin: nil,
-                             cardId: card?.cardId,
-                             completion: handleCompletion)
+    func setPasscode() {
+        tangemSdk.setPasscode(nil,
+                              cardId: card?.cardId,
+                              completion: handleCompletion)
     }
 }
 
@@ -445,8 +445,8 @@ extension AppModel {
         case attest
         case chainingExample
         case depersonalize
-        case changePin1
-        case changePin2
+        case setAccessCode
+        case setPasscode
         case createWallet
         case purgeWallet
         //files
@@ -472,8 +472,8 @@ extension AppModel {
         switch method {
         case .attest: attest()
         case .chainingExample: chainingExample()
-        case .changePin1: changePin1()
-        case .changePin2: changePin2()
+        case .setAccessCode: setAccessCode()
+        case .setPasscode: setPasscode()
         case .depersonalize: depersonalize()
         case .scan: scan()
         case .signHash: signHash()

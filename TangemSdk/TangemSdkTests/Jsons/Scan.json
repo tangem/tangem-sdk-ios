@@ -30,11 +30,7 @@
                 "SkipCheckPIN2CVCIfValidatedByIssuer",
                 "SkipSecurityDelayIfValidatedByLinkedTerminal",
                 "IsReusable"
-              ],
-              "defaultSigningMethods" : [
-                "SignHash"
-              ],
-              "defaultCurve" : "secp256k1"
+              ]
             },
             "issuer" : {
               "name" : "TANGEM SDK",
@@ -48,7 +44,6 @@
               "type" : "d SDK"
             },
             "batchId" : "FFFF",
-            "health" : 0,
             "manufacturer" : {
               "name" : "TANGEM",
               "manufactureDate" : "2021-03-14",

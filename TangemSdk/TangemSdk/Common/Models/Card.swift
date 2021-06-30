@@ -37,15 +37,17 @@ public struct Card: Codable, JSONStringConvertible {
     public let supportedCurves: [EllipticCurve]
     /// Wallets, created on the card, that can be used for signature
     internal(set) public var wallets: [Wallet] = []
+    /// Card's attestation report
+    internal(set) public var attestation: Attestation = .empty
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.
-    let health: Int? //todo refactor
+    @OmitCoding
+    var health: Int? //todo refactor
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     /// - Note: This counter were deprecated for cards with COS 4.0 and higher
-    let remainingSignatures: Int?
-    
-    internal(set) public var attestation: Attestation = .empty
+    @OmitCoding
+    var remainingSignatures: Int?
 }
 
 public extension Card {
@@ -73,9 +75,11 @@ public extension Card {
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Card's default signing methods according personalization.
-        let defaultSigningMethods: SigningMethod?
+        @OmitCoding
+        var defaultSigningMethods: SigningMethod?
         /// Card's default signing methods according personalization.
-        let defaultCurve: EllipticCurve?
+        @OmitCoding
+        var defaultCurve: EllipticCurve?
     }
 }
 

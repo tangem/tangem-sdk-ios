@@ -214,19 +214,31 @@ public extension TangemSdk {
         startSession(with: DepersonalizeCommand(), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
     
-    func changePin1(pin: String? = nil,
-                    cardId: String? = nil,
-                    initialMessage: Message? = nil,
-                    completion: @escaping CompletionResult<SetPinResponse>){
-        let command = SetPinCommand(pinType: .pin1, pin: pin)
+    /// Set or change card's access code
+    /// - Parameters:
+    ///   - accessCode: Access code to set. If nil, the user will be prompted to enter code before operation
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<SetPinResponse,TangemSdkError>`
+    func setAccessCode(_ accessCode: String? = nil,
+                       cardId: String? = nil,
+                       initialMessage: Message? = nil,
+                       completion: @escaping CompletionResult<SetPinResponse>){
+        let command = SetPinCommand(pinType: .pin1, pin: accessCode)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
-    func changePin2(pin: String? = nil,
-                    cardId: String? = nil,
-                    initialMessage: Message? = nil,
-                    completion: @escaping CompletionResult<SetPinResponse>){
-        let command = SetPinCommand(pinType: .pin2, pin: pin)
+    /// Set or change card's passcode
+    /// - Parameters:
+    ///   - passcode: Passcode to set. If nil, the user will be prompted to enter code before operation
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<SetPinResponse,TangemSdkError>`
+    func setPasscode(_ passcode: String? = nil,
+                     cardId: String? = nil,
+                     initialMessage: Message? = nil,
+                     completion: @escaping CompletionResult<SetPinResponse>){
+        let command = SetPinCommand(pinType: .pin2, pin: passcode)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
 }

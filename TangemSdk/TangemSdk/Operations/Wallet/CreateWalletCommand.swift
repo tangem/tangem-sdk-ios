@@ -93,8 +93,8 @@ public final class CreateWalletCommand: Command {
                 return TangemSdkError.unsupportedWalletConfig
             }
             
-            if let signingMethods = card.settings.defaultSigningMethods,
-               !signingMethods.contains(.signHash) {
+            if let cardSigningMethods = card.settings.defaultSigningMethods,
+                config.signingMethods.isSubset(of: cardSigningMethods) {
                 return TangemSdkError.unsupportedWalletConfig
             }
         }

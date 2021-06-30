@@ -16,7 +16,7 @@ extension JSONDecoder {
             let hex = try container.decode(String.self)
             return Data(hexString: hex)
         }
-        
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy  = .formatted(.tangemSdkDateFormatter)
         return decoder
     }

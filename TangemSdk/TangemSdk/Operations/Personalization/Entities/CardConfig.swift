@@ -234,19 +234,6 @@ extension CardConfig {
         let tokenContractAddress: String?
         let tokenDecimal: Int?
         
-        enum CodingKeys: String, CodingKey {
-            case date, batch, blockchain
-            case productNote = "product_note"
-            case productTag = "product_tag"
-            case productIdCard = "product_id_card"
-            case productIdIssuer = "product_id_issuer"
-            case productAuthentication = "product_authentication"
-            case productTwin = "product_twin"
-            case tokenSymbol = "token_symbol"
-            case tokenContractAddress = "token_contract_address"
-            case tokenDecimal = "token_decimal"
-        }
-        
         func createPersonalizationCardData(issuer: Issuer, manufacturer: Manufacturer, cardId: String) throws -> CardData {
             guard let manufacturerSignature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
                 throw TangemSdkError.serializeCommandError

@@ -75,14 +75,13 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testCreateWallet() {
-        let maskBuilder = WalletSettingsMaskBuilder()
-        maskBuilder.add(.isPermanent)
-        maskBuilder.add(.isReusable)
+        let config = WalletConfig(isPermanent: true, signingMethods: .signHash)
+        
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
                                                               curve: .secp256r1,
-                                                              settings: Card.Wallet.Settings(mask: maskBuilder.build(),
-                                                                                             signingMethods: .signHash),
+                                                              settings: Card.Wallet.Settings(mask: config.settingsMask,
+                                                                                             signingMethods: config.signingMethods),
                                                               totalSignedHashes: 10,
                                                               remainingSignatures: 100,
                                                               index: 1))

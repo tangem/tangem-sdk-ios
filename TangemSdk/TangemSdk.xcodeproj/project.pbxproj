@@ -21,6 +21,7 @@
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
 		5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */; };
 		5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D3217452684B1DB000C3AAF /* v3.05ada.json */; };
+		5D379C23268CC2FC00C7F473 /* CodableWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D379C22268CC2FC00C7F473 /* CodableWrappers.swift */; };
 		5D38D06B2679066B0052F67C /* SignHashes.json in Sources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashes.json */; };
 		5D38D06C267908650052F67C /* SignHashes.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06A2679066B0052F67C /* SignHashes.json */; };
 		5D38D06E26790B1A0052F67C /* Scan.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D38D06D26790B1A0052F67C /* Scan.json */; };
@@ -258,6 +259,7 @@
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemEndpoint.swift; sourceTree = "<group>"; };
 		5D3217452684B1DB000C3AAF /* v3.05ada.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = v3.05ada.json; sourceTree = "<group>"; };
+		5D379C22268CC2FC00C7F473 /* CodableWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableWrappers.swift; sourceTree = "<group>"; };
 		5D38D06A2679066B0052F67C /* SignHashes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SignHashes.json; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* Scan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Scan.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
@@ -610,6 +612,7 @@
 				5D944757264EC52400EA9CD2 /* JSONRPC.swift */,
 				5DDD6C5D25D2E01800E48D7B /* Codable+.swift */,
 				5D46F1592681064A00DC6447 /* Handlers.swift */,
+				5D379C22268CC2FC00C7F473 /* CodableWrappers.swift */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -1405,6 +1408,7 @@
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
+				5D379C23268CC2FC00C7F473 /* CodableWrappers.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,
 				B03BC4982551726300A8F1C4 /* CircularIndicatorView.swift in Sources */,
 				5DDD6C5E25D2E01800E48D7B /* Codable+.swift in Sources */,

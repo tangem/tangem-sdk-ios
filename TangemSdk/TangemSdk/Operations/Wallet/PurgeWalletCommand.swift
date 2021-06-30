@@ -37,6 +37,10 @@ public final class PurgeWalletCommand: Command {
             return .purgeWalletProhibited
         }
         
+        if !wallet.settings.mask.contains(.isReusable) {
+            return .purgeWalletProhibited
+        }
+        
         return nil
     }
 	

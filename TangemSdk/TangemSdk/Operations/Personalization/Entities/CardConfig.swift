@@ -28,7 +28,6 @@ public struct CardConfig: Decodable {
     let curveID: EllipticCurve
     let signingMethod: SigningMethod
     let maxSignatures: Int?
-    let isReusable: Bool
     let allowSetPIN1: Bool
     let allowSetPIN2: Bool
     let useActivation: Bool
@@ -61,7 +60,7 @@ public struct CardConfig: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case releaseVersion, issuerName, series, startNumber, count, numberFormat,
-             hexCrExKey, smartSecurityDelay, curveID, maxSignatures, isReusable,
+             hexCrExKey, smartSecurityDelay, curveID, maxSignatures,
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
@@ -96,9 +95,10 @@ public struct CardConfig: Decodable {
         if useCvc {
             builder.add(.useCvc)
         }
-        if isReusable {
-            builder.add(.isReusable)
-        }
+        
+        //Now we can personalize only reusable wallets
+        builder.add(.isReusable)
+        
         if useOneCommandAtTime ?? false {
             builder.add(.useOneCommandAtTime)
         }

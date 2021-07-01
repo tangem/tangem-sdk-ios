@@ -243,6 +243,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
         if self.infoScreen.presentedViewController != nil ||
             self.infoScreen.presentingViewController == nil ||
             self.infoScreen.isBeingDismissed {
+            completion?()
             return
         }
         

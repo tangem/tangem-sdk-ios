@@ -64,10 +64,12 @@ class SignCommand: Command {
             return .noRemainingSignatures
         }
         
-        if !wallet.settings.signingMethods.contains(.signHash) {
-            return .signHashesNotAvailable
+        if let defaultSigningMethods = card.settings.defaultSigningMethods {
+            if !defaultSigningMethods.contains(.signHash) {
+                return .signHashesNotAvailable
+            }
         }
-        
+      
         if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 1500 {
             return .oldCard
         }

@@ -16,29 +16,6 @@ public struct CreateWalletResponse: JSONStringConvertible {
     public let wallet: Card.Wallet
 }
 
-/// Configuration for `CreateWalletCommand`. This config will override default settings saved on card
-struct WalletConfig {
-    /// If `true` card will denied purge wallet request on this wallet
-    let isPermanent: Bool
-    /// Determines which type of data is required for signing by wallet.
-    let signingMethods: SigningMethod
-    
-    init(isPermanent: Bool, signingMethods: SigningMethod) {
-        self.isPermanent = isPermanent
-        self.signingMethods = signingMethods
-    }
-    
-    var settingsMask: Card.Wallet.Settings.Mask {
-        let builder = MaskBuilder<Card.Wallet.Settings.Mask>()
-        builder.add(.isReusable)
-        
-        if isPermanent {
-            builder.add(.isPermanent)
-        }
-        return builder.build()
-    }
-}
-
 /**
  * This command will create a new wallet on the card having ‘Empty’ state.
  * A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.
@@ -54,7 +31,9 @@ public final class CreateWalletCommand: Command {
     var requiresPin2: Bool { return true }
     
     private let curve: EllipticCurve
-    private var config: WalletConfig
+    private let isPermanent: Bool
+    private let signingMethod = SigningMethod.signHash
+    
     private var walletIndex: Int? = nil
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet
@@ -63,7 +42,7 @@ public final class CreateWalletCommand: Command {
     ///   `card.settings.mask.contains(.permanentWallet)`
     public init(curve: EllipticCurve, isPermanent: Bool) {
         self.curve = curve
-        self.config = WalletConfig(isPermanent: isPermanent, signingMethods: .signHash)
+        self.isPermanent = isPermanent
     }
     
     deinit {
@@ -81,7 +60,7 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if config.isPermanent != card.settings.mask.contains(.permanentWallet) {
+            if isPermanent != card.settings.mask.contains(.permanentWallet) {
                 return TangemSdkError.unsupportedWalletConfig
             }
             
@@ -90,7 +69,7 @@ public final class CreateWalletCommand: Command {
             }
             
             if let cardSigningMethods = card.settings.defaultSigningMethods,
-                !config.signingMethods.isSubset(of: cardSigningMethods) {
+                !signingMethod.isSubset(of: cardSigningMethods) {
                 return TangemSdkError.unsupportedWalletConfig
             }
         }
@@ -152,10 +131,16 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         
+        let maskBuilder = MaskBuilder<WalletSettingsMask>()
+        maskBuilder.add(.isReusable)
+        if isPermanent {
+            maskBuilder.add(.isPermanent)
+        }
+        
         if environment.card?.firmwareVersion >= .multiwalletAvailable {
-            try tlvBuilder.append(.settingsMask, value: config.settingsMask)
+            try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
             try tlvBuilder.append(.curveId, value: curve)
-            try tlvBuilder.append(.signingMethod, value: config.signingMethods)
+            try tlvBuilder.append(.signingMethod, value: signingMethod)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -168,13 +153,10 @@ public final class CreateWalletCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         let index = try decoder.decode(.walletIndex) ?? walletIndex!
-
-        let walletSettings = Card.Wallet.Settings(mask: config.settingsMask,
-                                                  signingMethods: config.signingMethods)
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                  curve: curve,
-                                 settings: walletSettings,
+                                 settings: Card.Wallet.Settings(isPermanent: isPermanent),
                                  totalSignedHashes: 0,
                                  remainingSignatures: environment.card?.remainingSignatures,
                                  index: index)

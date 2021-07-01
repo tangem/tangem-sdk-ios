@@ -83,8 +83,8 @@ public struct CardConfig: Decodable {
         case ndefRecords = "NDEF"
     }
     
-    func createSettingsMask() -> Card.Settings.Mask {
-        let builder = MaskBuilder<Card.Settings.Mask>()
+    func createSettingsMask() -> CardSettingsMask {
+        let builder = MaskBuilder<CardSettingsMask>()
         
         if allowSetPIN1 {
             builder.add(.allowSetPIN1)

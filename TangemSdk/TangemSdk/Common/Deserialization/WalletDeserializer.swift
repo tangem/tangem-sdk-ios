@@ -43,8 +43,8 @@ class WalletDeserializer {
     }
     
     private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
-        let settings = Card.Wallet.Settings(mask: try decoder.decode(.settingsMask),
-                                            signingMethods: try decoder.decode(.signingMethod))
+        let walletSettingsMask: WalletSettingsMask = try decoder.decode(.settingsMask)
+        let settings = Card.Wallet.Settings(isPermanent: walletSettingsMask.contains(.isPermanent))
         
         return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                    curve: try decoder.decode(.curveId),

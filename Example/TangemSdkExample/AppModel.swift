@@ -11,19 +11,20 @@ import SwiftUI
 import TangemSdk
 
 class AppModel: ObservableObject {
-    // Inputs
-    @Published var isPermanent: Bool = false
-    @Published var curve: EllipticCurve = .secp256k1
-    @Published var attestationMode: AttestationTask.Mode = .normal
+    //MARK:- Inputs
     @Published var method: Method = .scan
     
-    // Outputs
+    //Wallet creation
+    @Published var isPermanent: Bool = false
+    @Published var curve: EllipticCurve = .secp256k1
+    //Attestation
+    @Published var attestationMode: AttestationTask.Mode = .normal
+
+    //MARK:-  Outputs
     @Published var logText: String = ""
     @Published var isScanning: Bool = false
-    
-    // Outputs for wallet creation
-    @Published var canSelectWalletSettings: Bool = true
-    @Published var supportedCurves: [EllipticCurve] = EllipticCurve.allCases
+    @Published var card: Card?
+    @Published var showWalletSelection: Bool = false
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -32,8 +33,7 @@ class AppModel: ObservableObject {
         config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
-    
-    private var card: Card?
+  
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
@@ -42,9 +42,9 @@ class AppModel: ObservableObject {
         logText = ""
     }
     
-    func start() {
+    func start(walletPublicKey: Data? = nil) {
         isScanning = true
-        chooseMethod()
+        chooseMethod(walletPublicKey: walletPublicKey)
     }
     
     private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
@@ -80,6 +80,24 @@ class AppModel: ObservableObject {
         }
         return Data(array)
     }
+    
+    private func runWithPublicKey(_ method: (_ walletPublicKey: Data) -> Void, _ walletPublicKey: Data?) {
+        if let publicKey = walletPublicKey {
+            method(publicKey)
+            return
+        }
+        
+        guard let card = card, !card.wallets.isEmpty else {
+            self.complete(with: "Scan card to retrieve wallet")
+            return
+        }
+        
+        if card.wallets.count == 1 {
+            method(card.wallets.first!.publicKey)
+        } else {
+            showWalletSelection.toggle()
+        }
+    }
 }
 
 // MARK:- Commands
@@ -88,9 +106,7 @@ extension AppModel {
         tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more")) { result in
             if case let .success(card) = result {
                 self.card = card
-                self.canSelectWalletSettings = card.firmwareVersion >= .multiwalletAvailable
-                self.supportedCurves = card.supportedCurves
-                self.curve = self.supportedCurves[0]
+                self.curve = card.supportedCurves[0]
             }
             
             self.handleCompletion(result)
@@ -101,35 +117,33 @@ extension AppModel {
         tangemSdk.startSession(with: AttestationTask(mode: attestationMode), completion: handleCompletion)
     }
     
-    func signHash() {
+    func signHash(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
         let hash = getRandomHash()
-        guard let publicKey = card?.wallets.first?.publicKey else { return }
         
         tangemSdk.sign(hash: hash,
-                       walletPublicKey: publicKey,
+                       walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
+                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
                        completion: handleCompletion)
     }
     
-    func signHashes() {
+    func signHashes(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
-        guard let publicKey = card?.wallets.first?.publicKey else { return }
-        
+
         tangemSdk.sign(hashes: hashes,
-                       walletPublicKey: publicKey,
+                       walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(publicKey.hexString)"),
+                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
                        completion: handleCompletion)
     }
     
@@ -148,15 +162,13 @@ extension AppModel {
                                completion: handleCompletion)
     }
     
-    func purgeWallet() {
+    func purgeWallet(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        guard let publicKey = card?.wallets.first?.publicKey else { return }
-        
-        tangemSdk.purgeWallet(walletPublicKey: publicKey,
+        tangemSdk.purgeWallet(walletPublicKey: walletPublicKey,
                               cardId: cardId,
                               completion: handleCompletion)
     }
@@ -468,7 +480,7 @@ extension AppModel {
         case writeUserProtectedData
     }
     
-    private func chooseMethod() {
+    private func chooseMethod(walletPublicKey: Data? = nil) {
         switch method {
         case .attest: attest()
         case .chainingExample: chainingExample()
@@ -476,10 +488,10 @@ extension AppModel {
         case .setPasscode: setPasscode()
         case .depersonalize: depersonalize()
         case .scan: scan()
-        case .signHash: signHash()
-        case .signHashes:  signHashes()
+        case .signHash: runWithPublicKey(signHash, walletPublicKey)
+        case .signHashes: runWithPublicKey(signHashes, walletPublicKey)
         case .createWallet: createWallet()
-        case .purgeWallet:  purgeWallet()
+        case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
         case .readFiles: readFiles()
         case .readPublicFiles: readPublicFiles()
         case .writeSingleFile: writeSingleFile()

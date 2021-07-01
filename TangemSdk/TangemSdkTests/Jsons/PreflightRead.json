@@ -66,11 +66,7 @@
                 "totalSignedHashes" : 0,
                 "curve" : "secp256k1",
                 "settings" : {
-                  "signingMethods" : [
-                    "SignHash"
-                  ],
-                  "mask" : [
-                  ]
+                    "isPermanent" : true
                 },
                 "index" : 0
               },
@@ -79,11 +75,7 @@
                 "totalSignedHashes" : 0,
                 "curve" : "ed25519",
                 "settings" : {
-                  "signingMethods" : [
-                    "SignHash"
-                  ],
-                  "mask" : [
-                  ]
+                    "isPermanent" : true
                 },
                 "index" : 1
               },
@@ -92,11 +84,7 @@
                 "totalSignedHashes" : 0,
                 "curve" : "secp256r1",
                 "settings" : {
-                  "signingMethods" : [
-                    "SignHash"
-                  ],
-                  "mask" : [
-                  ]
+                    "isPermanent" : true
                 },
                 "index" : 2
               }

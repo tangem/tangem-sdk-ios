@@ -54,7 +54,7 @@ struct ContentView: View {
                             }
                         }
                         
-                        Button("Start", action: model.start)
+                        Button("Start") { model.start() }
                             .buttonStyle(ExampleButton(isLoading: model.isScanning))
                             .frame(width: 100)
                             .padding()
@@ -65,6 +65,24 @@ struct ContentView: View {
                     .frame(width: geo.size.width)
                 }
             }
+        }
+        .actionSheet(isPresented: $model.showWalletSelection) {
+            let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
+                let publicKey = wallet.publicKey.hexString
+                let formattedKey = "\(publicKey.prefix(6))...\(publicKey.suffix(6)) (\(wallet.curve.rawValue))"
+                
+                return ActionSheet.Button.default(Text(formattedKey)) {
+                    model.start(walletPublicKey: wallet.publicKey)
+                }
+            } ?? []
+            
+            let cancelButton = ActionSheet.Button.cancel {
+                model.isScanning = false
+            }
+
+            return ActionSheet(title: Text("Select wallet"),
+                               message: nil,
+                               buttons: walletButtons + [cancelButton])
         }
     }
     
@@ -96,15 +114,16 @@ struct ContentView: View {
                     .bold()
                 
                 Toggle("Is permanent wallet", isOn: $model.isPermanent)
-                    .disabled(!model.canSelectWalletSettings)
                 
-                Picker("", selection: $model.curve) {
-                    ForEach(0..<model.supportedCurves.count) { index in
-                        Text(model.supportedCurves[index].rawValue)
-                            .tag(model.supportedCurves[index])
+                if let supportedCurves = model.card?.supportedCurves {
+                    Picker("", selection: $model.curve) {
+                        ForEach(0..<supportedCurves.count) { index in
+                            Text(supportedCurves[index].rawValue)
+                                .tag(supportedCurves[index])
+                        }
                     }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
-                .pickerStyle(SegmentedPickerStyle())
             }
             .padding()
             .cornerRadius(8)

@@ -33,11 +33,7 @@ public final class PurgeWalletCommand: Command {
             return .walletNotFound
         }
         
-        if wallet.settings.mask.contains(.isPermanent) {
-            return .purgeWalletProhibited
-        }
-        
-        if !wallet.settings.mask.contains(.isReusable) {
+        if wallet.settings.isPermanent {
             return .purgeWalletProhibited
         }
         

@@ -10,7 +10,7 @@ import Foundation
 
 public extension Card {
     /// Describing wallets created on card
-    struct Wallet: Codable, JSONStringConvertible {
+    struct Wallet: Codable {
         /// Wallet's public key.
         public let publicKey: Data
         /// Elliptic curve used for all wallet key operations.
@@ -30,27 +30,8 @@ public extension Card {
 
 public extension Card.Wallet {
     struct Settings: Codable {
-        /// Settings of the wallet
-        public let mask: Mask
-        /// Defines what data should be submitted to SIGN command.
-        public let signingMethods: SigningMethod
-        /// Total number of signed hashes returned by the wallet since its creation
-    }
-}
-
-public extension Card.Wallet.Settings {
-    /// Stores and maps Wallet settings
-    /// - Note: Available only for cards with COS v.4.0
-    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-        public static let isPermanent = Mask(rawValue: 0x0004)
-        
-        static let isReusable = Mask(rawValue: 0x0001)
-        
-        public var rawValue: Int
-        
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
+        /// if true, erasing the wallet will be prohibited
+        public let isPermanent: Bool
     }
 }
 
@@ -66,12 +47,29 @@ extension Card.Wallet {
     }
 }
 
-extension Card.Wallet.Settings.Mask: OptionSetCodable {
-    public enum OptionKeys: String, OptionKey {
+extension Card.Wallet.Settings {
+    /// Stores and maps Wallet settings
+    /// - Note: Available only for cards with COS v.4.0
+    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+        var rawValue: Int
+        
+        static let isPermanent = Mask(rawValue: 0x0004)
+        static let isReusable = Mask(rawValue: 0x0001)
+        
+        init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+    }
+}
+
+typealias WalletSettingsMask = Card.Wallet.Settings.Mask
+
+extension WalletSettingsMask: OptionSetCodable {
+    enum OptionKeys: String, OptionKey {
         case isPermanent
         case isReusable
         
-        public var value: Card.Wallet.Settings.Mask {
+        var value: WalletSettingsMask {
             switch self {
             case .isPermanent:
                 return .isPermanent

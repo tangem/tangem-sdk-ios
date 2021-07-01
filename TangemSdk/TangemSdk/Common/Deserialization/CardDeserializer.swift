@@ -17,7 +17,7 @@ struct CardDeserializer {
         try assertActivation(try decoder.decode(.isActivated))
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
-        let cardSettingsMask: Card.Settings.Mask = try decoder.decode(.settingsMask)
+        let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
         
         let pin2IsDefault: Bool? = firmware >= .isPin2DefaultAvailable ?
             try decoder.decode(.pin2IsDefault) : nil
@@ -31,8 +31,8 @@ struct CardDeserializer {
         if firmware < .multiwalletAvailable, cardStatus == .loaded {
             remainingSignatures = try decoder.decode(.walletRemainingSignatures)
             
-            let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask(),
-                                                      signingMethods: defaultSigningMethods)
+            let walletSettingsMask = cardSettingsMask.toWalletSettingsMask()
+            let walletSettings = Card.Wallet.Settings(isPermanent: walletSettingsMask.contains(.isPermanent))
             
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                      curve: defaultCurve,

@@ -12,7 +12,7 @@ import CoreNFC
 
 protocol ApduSerializable {
     /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype CommandResponse: JSONStringConvertible
+    associatedtype CommandResponse
     
     /// Serializes data into an array of `Tlv`, then creates `CommandApdu` with this data.
     /// - Parameter environment: `SessionEnvironment` of the current card

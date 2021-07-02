@@ -8,9 +8,9 @@
 
 import Foundation
 
-public protocol OptionSetCustomStringConvertible: CustomStringConvertible {}
+protocol OptionSetCustomStringConvertible: CustomStringConvertible {}
 
-public extension OptionSetCustomStringConvertible where Self: OptionSetCodable {
+extension OptionSetCustomStringConvertible where Self: OptionSetCodable {
     var description: String {
         if let data = try? JSONEncoder().encode(self),
            let string = String(data: data, encoding: .utf8) {

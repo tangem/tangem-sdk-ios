@@ -9,7 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
-public struct SigningMethod: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
 	public let rawValue: Byte
 	
 	public init(rawValue: Byte) {
@@ -23,7 +23,7 @@ public struct SigningMethod: OptionSet, JSONStringConvertible, OptionSetCustomSt
 
 //MARK: - Constants
 extension SigningMethod {
-    public static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
+    static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
     static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
     static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 2))
     static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000|(1 << 3)) //todo: dv
@@ -34,7 +34,7 @@ extension SigningMethod {
 
 //MARK: - OptionSetCodable conformance
 extension SigningMethod: OptionSetCodable {
-    public enum OptionKeys: String, OptionKey {
+    enum OptionKeys: String, OptionKey {
         case signHash
         case signRaw
         case signHashSignedByIssuer
@@ -43,7 +43,7 @@ extension SigningMethod: OptionSetCodable {
         case signRawSignedByIssuerAndUpdateIssuerData
         case signPos
         
-        public var value: SigningMethod {
+        var value: SigningMethod {
             switch self {
             case .signHash:
                 return .signHash

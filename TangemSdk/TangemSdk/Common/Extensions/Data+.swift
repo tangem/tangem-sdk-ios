@@ -186,7 +186,3 @@ extension Data {
 		}
 	}
 }
-
-
-extension Data: JSONStringConvertible {}
-extension Array: JSONStringConvertible where Element == Data {}

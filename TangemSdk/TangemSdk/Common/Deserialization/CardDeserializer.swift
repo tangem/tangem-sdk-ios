@@ -31,8 +31,7 @@ struct CardDeserializer {
         if firmware < .multiwalletAvailable, cardStatus == .loaded {
             remainingSignatures = try decoder.decode(.walletRemainingSignatures)
             
-            let walletSettingsMask = cardSettingsMask.toWalletSettingsMask()
-            let walletSettings = Card.Wallet.Settings(isPermanent: walletSettingsMask.contains(.isPermanent))
+            let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask())
             
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                      curve: defaultCurve,
@@ -54,8 +53,8 @@ struct CardDeserializer {
         
         let securityDelay: Int? = try decoder.decode(.pauseBeforePin2)
         let settings = Card.Settings(securityDelay: securityDelay ?? 0,
-                                     mask:  cardSettingsMask,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
+                                     mask: cardSettingsMask,
                                      defaultSigningMethods: defaultSigningMethods,
                                      defaultCurve: defaultCurve)
         

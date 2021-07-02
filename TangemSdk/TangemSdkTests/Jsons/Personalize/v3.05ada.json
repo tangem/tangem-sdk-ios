@@ -1,5 +1,5 @@
-[
-    {
+{
+    "request": {
         "jsonrpc": "2.0",
         "method": "personalize",
         "params": {
@@ -44,22 +44,22 @@
                 "requireTerminalCertSignature": false,
                 "checkPIN3onCard": false,
                 "NDEF": [
-                  {
-                    "type": "AAR",
-                    "value": "com.tangem.wallet"
-                  }
+                    {
+                        "type": "AAR",
+                        "value": "com.tangem.wallet"
+                    }
                 ],
                 "cardData": {
-                  "date": "2020-08-12",
-                  "batch": "0063",
-                  "blockchain": "CARDANO-S",
-                  "product_note": true,
-                  "product_tag": false,
-                  "product_id_card": false
+                    "date": "2020-08-12",
+                    "batch": "0063",
+                    "blockchain": "CARDANO-S",
+                    "product_note": true,
+                    "product_tag": false,
+                    "product_id_card": false
                 },
                 "createWallet": 0,
                 "issuerData": null
-              },
+            },
             "manufacturer": {
                 "keyPair": {
                     "privateKey": "1b48cfd24bbb5b394771ed81f2bacf57479e4735eb1405083927372d40da9e92",
@@ -89,10 +89,5 @@
             }
         },
         "id": 1
-    },
-    {
-        "jsonrpc" : "2.0",
-        "result" : {},
-        "id" : 1
     }
-]
+}

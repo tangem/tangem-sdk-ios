@@ -1,5 +1,5 @@
-[
-    {
+{
+    "request" : {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "create_wallet",
@@ -8,7 +8,7 @@
             "isPermanent": true
         }
     },
-    {
+    "response" : {
         "jsonrpc" : "2.0",
         "result" : {
             "cardId": "c000111122223333",
@@ -24,4 +24,4 @@
         },
         "id" : 1
     }
-]
+}

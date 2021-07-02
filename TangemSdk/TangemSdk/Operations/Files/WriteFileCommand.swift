@@ -70,7 +70,7 @@ public final class WriteFileCommand: Command {
 			return .dataCannotBeWritten
 		}
 		
-        if case .invalidState = error, card.settings.mask.contains(.protectIssuerDataAgainstReplay) {
+        if case .invalidState = error, card.settings.isProtectIssuerDataAgainstReplay {
 			return .overwritingDataIsProhibited
 		}
         
@@ -155,7 +155,7 @@ public final class WriteFileCommand: Command {
 	
 	private func isCounterRequired(card: Card) -> Bool {
 		if dataToWrite.requiredPin2 { return false }
-        return card.settings.mask.contains(.protectIssuerDataAgainstReplay)
+        return card.settings.isProtectIssuerDataAgainstReplay
 	}
 	
 	private func verifySignatures(publicKey: Data, cardId: String) -> Bool {

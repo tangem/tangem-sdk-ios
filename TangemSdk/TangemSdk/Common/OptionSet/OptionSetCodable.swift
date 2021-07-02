@@ -8,19 +8,19 @@
 
 import Foundation
 
-public protocol OptionKey: CaseIterable, RawRepresentable where RawValue == String {
+protocol OptionKey: CaseIterable, RawRepresentable where RawValue == String {
     associatedtype SomeOptionSet: OptionSet
     
     var value: SomeOptionSet { get }
 }
 
-public protocol OptionSetCodable: Codable where Self: OptionSet {
+protocol OptionSetCodable: Codable where Self: OptionSet {
     associatedtype OptionKeys: OptionKey
 }
 
-public extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
-                                        Self.RawValue: Decodable {
-     func encode(to encoder: Encoder) throws {
+extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
+                                 Self.RawValue: Decodable {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         var values = [String]()
         

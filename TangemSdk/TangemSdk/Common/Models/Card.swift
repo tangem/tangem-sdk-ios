@@ -42,11 +42,11 @@ public struct Card: Codable, JSONStringConvertible {
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.
-    @OmitCoding
+    @SkipEncoding
     var health: Int? //todo refactor
     /// Remaining number of `SignCommand` operations before the wallet will stop signing transactions.
     /// - Note: This counter were deprecated for cards with COS 4.0 and higher
-    @OmitCoding
+    @SkipEncoding
     var remainingSignatures: Int?
 }
 
@@ -87,14 +87,14 @@ public extension Card {
         /// Is allowed to delete wallet. COS before v4
         public let isPermanentWallet: Bool
         /// Card's default signing methods according personalization.
-        @OmitCoding
+        @SkipEncoding
         var defaultSigningMethods: SigningMethod?
         /// Card's default signing methods according personalization.
-        @OmitCoding
+        @SkipEncoding
         var defaultCurve: EllipticCurve?
-        @OmitEncoding
+        @SkipEncoding
         var isProtectIssuerDataAgainstReplay: Bool
-        @OmitEncoding
+        @SkipEncoding
         var isAllowSelectBlockchain: Bool
     }
 }

@@ -10,43 +10,6 @@ import Foundation
 import Combine
 import CommonCrypto
 
-public typealias CompletionResult<T> = (Result<T, TangemSdkError>) -> Void
-
-/// Base protocol for run tasks in a card session
-public protocol CardSessionRunnable {
-    /// Mode for preflight read. Change this property only if you understand what to do
-    var preflightReadMode: PreflightReadMode { get }
-    
-    /// Simple interface for responses received after sending commands to Tangem cards.
-    associatedtype Response
-    
-    /// This method will be called before nfc session starts.
-    /// - Parameters:
-    ///   - session:You can use view delegate methods at this moment, but not commands execution
-    ///   - completion: Call the completion handler to complete the task.
-    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
-    
-    /// The starting point for custom business logic. Adopt this protocol and use `TangemSdk.startSession` to run
-    /// - Parameters:
-    ///   - session: You can run commands in this session
-    ///   - completion: Call the completion handler to complete the task.
-    func run(in session: CardSession, completion: @escaping CompletionResult<Response>)
-}
-
-extension CardSessionRunnable {    
-    public var preflightReadMode: PreflightReadMode { .fullCardRead }
-    
-    public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
-        completion(.success(()))
-    }
-}
-
-extension CardSessionRunnable where Response: JSONStringConvertible {
-    public func eraseToAnyRunnable() -> AnyJSONRPCRunnable {
-        AnyJSONRPCRunnable(self)
-    }
-}
-
 /// Allows interaction with Tangem cards. Should be open before sending commands
 public class CardSession {
     enum CardSessionState {
@@ -436,7 +399,6 @@ public class CardSession {
     }
 }
 //MARK: - JSON RPC
-
 extension CardSession {
     /// Convinience method for jsonrpc requests running
     /// - Parameters:

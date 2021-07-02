@@ -154,7 +154,7 @@ extension AppModel {
         }
         
         let isPermanent = card!.firmwareVersion < .multiwalletAvailable ?
-            card!.settings.mask.contains(.permanentWallet) : self.isPermanent
+            card!.settings.isPermanentWallet : self.isPermanent
         
         tangemSdk.createWallet(curve: curve,
                                isPermanent: isPermanent,

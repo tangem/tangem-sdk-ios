@@ -30,7 +30,7 @@ class OpenSessionCommand: ApduSerializable {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.sessionKeyA, value: sessionKeyA)
         
-        let p2 = environment.encryptionMode == .strong ? EncryptionMode.strong.rawValue : EncryptionMode.fast.rawValue
+        let p2 = environment.encryptionMode == .strong ? EncryptionMode.strong.byteValue : EncryptionMode.fast.byteValue
         return CommandApdu(ins: Instruction.openSession.rawValue, p2: p2, tlv: tlvBuilder.serialize())
     }
     

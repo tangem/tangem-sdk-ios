@@ -93,10 +93,9 @@ class SignCommand: Command {
             return
         }
        
-        let isLinkedTerminalSupported = card.settings.mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 5000
-        guard hashes.count <= chunkSize || (isLinkedTerminalSupported && hasTerminalKeys) || hasEnoughDelay else {
+        guard hashes.count <= chunkSize || (card.settings.isLinkedTerminalEnabled && hasTerminalKeys) || hasEnoughDelay else {
             completion(.failure(.tooManyHashesInOneTransaction))
             return
         }
@@ -162,8 +161,7 @@ class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        let isLinkedTerminalSupported = environment.card?.settings.mask
-            .contains(.skipSecurityDelayIfValidatedByLinkedTerminal)  ?? false
+        let isLinkedTerminalSupported = environment.card?.settings.isLinkedTerminalEnabled  ?? false
         if let keys = environment.terminalKeys, isLinkedTerminalSupported,
             let signedData = Secp256k1Utils.sign(flattenHashes, with: keys.privateKey) {
             try tlvBuilder

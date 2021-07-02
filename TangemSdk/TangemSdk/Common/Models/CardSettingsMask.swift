@@ -8,47 +8,44 @@
 
 import Foundation
 
-public typealias CardSettingsMask = Card.Settings.Mask
+typealias CardSettingsMask = Card.Settings.Mask
 
-public extension Card.Settings {
+extension Card.Settings {
     /// Stores and maps Tangem card settings.
     struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
-        public let rawValue: Int
+        let rawValue: Int
         
-        public init(rawValue: Int) {
+        init(rawValue: Int) {
             self.rawValue = rawValue
         }
     }
 }
 
 //MARK:- Constants
-public extension CardSettingsMask {
+extension CardSettingsMask {
     static let useActivation = CardSettingsMask(rawValue: 0x0002)
     static let useBlock = CardSettingsMask(rawValue: 0x0008)
-    static let allowSetPIN1 = CardSettingsMask(rawValue: 0x0010) //nado
-    static let allowSetPIN2 = CardSettingsMask(rawValue: 0x0020) //nado
+    static let allowSetPIN1 = CardSettingsMask(rawValue: 0x0010)
+    static let allowSetPIN2 = CardSettingsMask(rawValue: 0x0020)
     static let useCvc = CardSettingsMask(rawValue: 0x0040)
-    static let prohibitDefaultPIN1 = CardSettingsMask(rawValue: 0x0080) //nado
+    static let prohibitDefaultPIN1 = CardSettingsMask(rawValue: 0x0080)
     static let useOneCommandAtTime = CardSettingsMask(rawValue: 0x0100)
     static let useNDEF = CardSettingsMask(rawValue: 0x0200)
     static let useDynamicNDEF = CardSettingsMask(rawValue: 0x0400)
     static let smartSecurityDelay = CardSettingsMask(rawValue: 0x0800)
-    static let allowUnencrypted = CardSettingsMask(rawValue: 0x1000) //nado enum  { none, fast, strong }
-    static let allowFastEncryption = CardSettingsMask(rawValue: 0x2000) //nado ->
-    static let protectIssuerDataAgainstReplay = CardSettingsMask(rawValue: 0x4000) //nado internal (skip json)
-    static let allowSelectBlockchain = CardSettingsMask(rawValue: 0x8000) //nado internal (skip json)
+    static let allowUnencrypted = CardSettingsMask(rawValue: 0x1000)
+    static let allowFastEncryption = CardSettingsMask(rawValue: 0x2000)
+    static let protectIssuerDataAgainstReplay = CardSettingsMask(rawValue: 0x4000)
+    static let allowSelectBlockchain = CardSettingsMask(rawValue: 0x8000)
     static let disablePrecomputedNDEF = CardSettingsMask(rawValue: 0x00010000)
     static let skipSecurityDelayIfValidatedByIssuer = CardSettingsMask(rawValue: 0x00020000)
     static let skipCheckPIN2CVCIfValidatedByIssuer = CardSettingsMask(rawValue: 0x00040000)
-    static let skipSecurityDelayIfValidatedByLinkedTerminal = CardSettingsMask(rawValue: 0x00080000) //nado isLinkedTerminalEnabled
-    static let restrictOverwriteIssuerExtraData = CardSettingsMask(rawValue: 0x00100000) //nado
-    static let disableIssuerData = CardSettingsMask(rawValue: 0x01000000) //todo: precheck?
-    static let disableUserData = CardSettingsMask(rawValue: 0x02000000) //todo: precheck?
-    static let disableFiles = CardSettingsMask(rawValue: 0x04000000) //todo: precheck?
-    static let permanentWallet = CardSettingsMask(rawValue: 0x0004) //nado internal (skip json)
-}
-
-extension CardSettingsMask {
+    static let skipSecurityDelayIfValidatedByLinkedTerminal = CardSettingsMask(rawValue: 0x00080000)
+    static let restrictOverwriteIssuerExtraData = CardSettingsMask(rawValue: 0x00100000)
+    static let disableIssuerData = CardSettingsMask(rawValue: 0x01000000)
+    static let disableUserData = CardSettingsMask(rawValue: 0x02000000)
+    static let disableFiles = CardSettingsMask(rawValue: 0x04000000)
+    static let permanentWallet = CardSettingsMask(rawValue: 0x0004)
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
 }
 

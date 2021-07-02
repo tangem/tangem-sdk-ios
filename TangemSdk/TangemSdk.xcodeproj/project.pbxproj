@@ -15,7 +15,7 @@
 		5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */; };
 		5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1494802686488600C0D923 /* SecureEnclaveService.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
-		5D2E7CBA2678D51600FBFC53 /* LinkedTermianalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2E7CB92678D51500FBFC53 /* LinkedTermianalStatus.swift */; };
+		5D2E7CBA2678D51600FBFC53 /* LinkedTerminalStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2E7CB92678D51500FBFC53 /* LinkedTerminalStatus.swift */; };
 		5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */; };
 		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
@@ -253,7 +253,7 @@
 		5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
 		5D1494802686488600C0D923 /* SecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveService.swift; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
-		5D2E7CB92678D51500FBFC53 /* LinkedTermianalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedTermianalStatus.swift; sourceTree = "<group>"; };
+		5D2E7CB92678D51500FBFC53 /* LinkedTerminalStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedTerminalStatus.swift; sourceTree = "<group>"; };
 		5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestCardKeyCommand.swift; sourceTree = "<group>"; };
 		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -1039,15 +1039,15 @@
 		B0A9436525651E2600A7958E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 				B0A9447A256546DE00A7958E /* Card.swift */,
+				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 				B0390F7A25658EEE0061E5ED /* CardSettingsMask.swift */,
 				B0390F8D25658FE80061E5ED /* StatusType.swift */,
 				B0A9448425654BBC00A7958E /* FirmwareVersion.swift */,
 				B0390F8625658F620061E5ED /* SigningMethod.swift */,
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
 				5D6508222672755600A8D45B /* Wallet.swift */,
-				5D2E7CB92678D51500FBFC53 /* LinkedTermianalStatus.swift */,
+				5D2E7CB92678D51500FBFC53 /* LinkedTerminalStatus.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1296,7 +1296,7 @@
 				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
 				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				B089AD8A2577B075001BC1E5 /* DefaultSessionViewDelegate.swift in Sources */,
-				5D2E7CBA2678D51600FBFC53 /* LinkedTermianalStatus.swift in Sources */,
+				5D2E7CBA2678D51600FBFC53 /* LinkedTerminalStatus.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,

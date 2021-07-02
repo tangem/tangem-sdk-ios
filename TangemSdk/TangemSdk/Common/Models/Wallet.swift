@@ -62,6 +62,12 @@ extension Card.Wallet.Settings {
     }
 }
 
+extension Card.Wallet.Settings {
+    init(mask: WalletSettingsMask) {
+        self.isPermanent = mask.contains(.isPermanent)
+    }
+}
+
 typealias WalletSettingsMask = Card.Wallet.Settings.Mask
 
 extension WalletSettingsMask: OptionSetCodable {

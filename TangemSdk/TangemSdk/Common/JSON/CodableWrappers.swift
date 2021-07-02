@@ -12,10 +12,9 @@ import Foundation
 
 /// Add this to an Optional Property to not included it when Encoding or Decoding
 @propertyWrapper
-public struct OmitEncoding<WrappedType: Encodable>: OmitableFromEncoding {
-
-    public var wrappedValue: WrappedType?
-    public init(wrappedValue: WrappedType?) {
+public struct OmitEncoding<WrappedType: Codable>: OmitableFromEncoding {
+    public var wrappedValue: WrappedType
+    public init(wrappedValue: WrappedType) {
         self.wrappedValue = wrappedValue
     }
 }
@@ -44,7 +43,10 @@ public struct OmitCoding<WrappedType: Codable>: OmitableFromCoding {
 //MARK: - OmitCoding protocols
 
 /// Protocol to indicate instances should be skipped when encoding
-public protocol OmitableFromEncoding: Encodable { }
+public protocol OmitableFromEncoding: Codable {
+    associatedtype WrappedType: Decodable
+    init(wrappedValue: WrappedType)
+}
 
 extension KeyedDecodingContainer {
     // This is used to override the default decoding behavior for OptionalCodingWrapper to allow a value to avoid a missing key Error
@@ -63,6 +65,11 @@ extension KeyedEncodingContainer {
 extension OmitableFromEncoding {
     // This shouldn't ever be called since KeyedEncodingContainer should skip it due to the included extension
     public func encode(to encoder: Encoder) throws { return }
+    
+    public init(from decoder: Decoder) throws {
+        let value = try WrappedType(from: decoder)
+        self.init(wrappedValue: value)
+    }
 }
 
 /// Protocol to indicate instances should be skipped when decoding

@@ -50,7 +50,7 @@ extension Card.Wallet {
 extension Card.Wallet.Settings {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0
-    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+    struct Mask: OptionSet, OptionSetCustomStringConvertible {
         var rawValue: Int
         
         static let isPermanent = Mask(rawValue: 0x0004)

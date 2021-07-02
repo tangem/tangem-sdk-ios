@@ -70,22 +70,38 @@ public extension Card {
     struct Settings: Codable {
         /// Delay before executing a command that affects any sensitive data or wallets on the card.
         public let securityDelay: Int //todo: convert to ms
-        /// Card settings defined by personalization (bit mask: 0 – Enabled, 1 – Disabled).
-        public let mask: Mask
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
+        /// Is allowed to change access code
+        public let isAllowSetAccessCode: Bool
+        /// Is  allowed to change passcode
+        public let isAllowSetPasscode: Bool
+        /// Is allowed to set default access code
+        public let isProhibitDefaultAccessCode: Bool
+        /// Is LinkedTerminal feature enabled
+        public let isLinkedTerminalEnabled: Bool
+        /// Is resctrict owerwrite issuer extra data
+        public let isRestrictOverwriteIssuerExtraData: Bool
+        /// All  encryption modes supported by the card
+        public let supportedEncryptionModes: [EncryptionMode]
+        /// Is allowed to delete wallet. COS before v4
+        public let isPermanentWallet: Bool
         /// Card's default signing methods according personalization.
         @OmitCoding
         var defaultSigningMethods: SigningMethod?
         /// Card's default signing methods according personalization.
         @OmitCoding
         var defaultCurve: EllipticCurve?
+        @OmitEncoding
+        var isProtectIssuerDataAgainstReplay: Bool
+        @OmitEncoding
+        var isAllowSelectBlockchain: Bool
     }
 }
 
 extension Card {
     /// Status of the card and its wallet.
-    enum Status: Int, Codable, StatusType {
+    enum Status: Int, StatusType {
         case notPersonalized = 0
         case empty = 1
         case loaded = 2
@@ -93,3 +109,32 @@ extension Card {
     }
 }
 
+
+extension Card.Settings {
+    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
+         defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
+        self.securityDelay = securityDelay
+        self.maxWalletsCount = maxWalletsCount
+        self.defaultSigningMethods = defaultSigningMethods
+        self.defaultCurve = defaultCurve
+        
+        self.isAllowSetAccessCode = mask.contains(.allowSetPIN1)
+        self.isAllowSetPasscode = mask.contains(.allowSetPIN2)
+        self.isProhibitDefaultAccessCode = mask.contains(.prohibitDefaultPIN1)
+        self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
+        self.isRestrictOverwriteIssuerExtraData = mask.contains(.restrictOverwriteIssuerExtraData)
+        self.isProtectIssuerDataAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
+        self.isPermanentWallet = mask.contains(.permanentWallet)
+        self.isAllowSelectBlockchain = mask.contains(.allowSelectBlockchain)
+        
+        var encryptionModes: [EncryptionMode] = [.strong]
+        if mask.contains(.allowFastEncryption) {
+            encryptionModes.append(.fast)
+        }
+        if mask.contains(.allowUnencrypted) {
+            encryptionModes.append(.none)
+        }
+        
+        self.supportedEncryptionModes = encryptionModes
+    }
+}

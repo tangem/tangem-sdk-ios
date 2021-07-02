@@ -200,14 +200,22 @@ class JSONRPCTests: XCTestCase {
         let jsonData = fileText.data(using: .utf8)!
         
         do {
-            guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [Any] else {
+            guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
+                  let request = json["request"] else {
                 XCTAssert(false, "Failed to parse test json \(name)")
                 return nil
             }
             
-            let requestData = try JSONSerialization.data(withJSONObject: json[0], options: .prettyPrinted)
-            let responseData = try JSONSerialization.data(withJSONObject: json[1], options: .prettyPrinted)
+            let requestData = try JSONSerialization.data(withJSONObject: request, options: .prettyPrinted)
             
+            let responseData: Data
+            if let response = json["response"] {
+                responseData = try JSONSerialization.data(withJSONObject: response, options: .prettyPrinted)
+            } else {
+                let cardResponse = "{\"result\": \(testCard.json)}"
+                responseData = cardResponse.data(using: .utf8)!
+            }
+
             guard let requestValue = String(data: requestData, encoding: .utf8) else {
                 XCTAssert(false, "Failed to parse test json \(name)")
                 return nil

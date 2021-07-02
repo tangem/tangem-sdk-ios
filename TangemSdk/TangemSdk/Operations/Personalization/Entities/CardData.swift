@@ -9,7 +9,7 @@
 import Foundation
 
 /// Detailed information about card contents.
-struct CardData: JSONStringConvertible, Decodable {
+struct CardData {
 	/// Tangem internal manufacturing batch ID.
     let batchId: String
 	/// Timestamp of manufacturing.
@@ -28,24 +28,4 @@ struct CardData: JSONStringConvertible, Decodable {
     let tokenContractAddress: String?
 	/// Number of decimals in token value.
     let tokenDecimal: Int?
-}
-
-extension CardData {
-	init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
-		batchId = try values.decode(String.self, forKey: .batchId)
-		manufactureDateTime = try values.decode(Date.self, forKey: .manufactureDateTime)
-		issuerName = try values.decode(String.self, forKey: .issuerName)
-		blockchainName = try values.decode(String.self, forKey: .blockchainName)
-		manufacturerSignature = try? values.decode(Data.self, forKey: .manufacturerSignature)
-		if let productMaskDictionary = try? values.decode([String:UInt8].self, forKey: .productMask),
-			let rawValue = productMaskDictionary["rawValue"]  {
-			productMask = ProductMask(rawValue: rawValue)
-		} else {
-			productMask = try values.decode(ProductMask.self, forKey: .productMask)
-		}
-		tokenSymbol = try? values.decode(String.self, forKey: .tokenSymbol)
-		tokenContractAddress = try? values.decode(String.self, forKey: .tokenContractAddress)
-		tokenDecimal = try? values.decode(Int.self, forKey: .tokenDecimal)
-	}
 }

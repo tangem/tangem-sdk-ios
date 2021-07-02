@@ -1,5 +1,5 @@
-[
-    {
+{
+    "request" : {
         "jsonrpc": "2.0",
         "method": "sign_hash",
         "params": {
@@ -8,7 +8,7 @@
         },
         "id": 1
     },
-    {
+    "response" :  {
         "jsonrpc" : "2.0",
         "result" : {
             "cardId": "c000111122223333",
@@ -17,4 +17,4 @@
         },
         "id" : 1
     }
-]
+}

@@ -51,7 +51,7 @@ public final class CreateWalletCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion >= .multiwalletAvailable,
-           !card.settings.mask.contains(.allowSelectBlockchain) {
+           !card.settings.isAllowSelectBlockchain {
             return .walletCannotBeCreated
         }
         
@@ -60,11 +60,7 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if isPermanent != card.settings.mask.contains(.permanentWallet) {
-                return TangemSdkError.unsupportedWalletConfig
-            }
-            
-            if !card.settings.mask.contains(.isReusable) {
+            if isPermanent != card.settings.isPermanentWallet {
                 return TangemSdkError.unsupportedWalletConfig
             }
             

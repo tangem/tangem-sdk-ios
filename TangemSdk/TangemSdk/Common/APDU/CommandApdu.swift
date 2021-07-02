@@ -61,13 +61,13 @@ public struct CommandApdu: Equatable {
     /// - Parameter encryptionKey: encryption key
     /// - Returns: Encrypted APDU
     public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?) throws -> CommandApdu {
-        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.rawValue else { //skip if already encrypted or empty encryptionKey
+        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
             return self
         }
         let crc = data.crc16()
         let tlvDataToEncrypt = data.count.bytes2 + crc + data
         let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
-        return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.rawValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
+        return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.byteValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
     }
 }
 

@@ -9,11 +9,23 @@
 import Foundation
 
 /// All available encryption modes
-public enum EncryptionMode: Byte {
-    case none = 0x00
-    case fast = 0x01
-    case strong = 0x02
+public enum EncryptionMode: String, Codable {
+    case none
+    case fast
+    case strong
+    
+    var byteValue: Byte {
+        switch self {
+        case .none:
+            return 0x00
+        case .fast:
+            return 0x01
+        case .strong:
+            return 0x02
+        }
+    }
 }
+
 
 /// Pair of private and public key
 public struct KeyPair: Equatable, Codable {

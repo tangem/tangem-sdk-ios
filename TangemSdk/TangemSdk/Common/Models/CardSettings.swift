@@ -8,11 +8,77 @@
 
 import Foundation
 
+//MARK:- Card Settings
+
+public extension Card {
+    struct Settings: Codable {
+        /// Delay before executing a command that affects any sensitive data or wallets on the card.
+        public let securityDelay: Int //todo: convert to ms
+        /// Maximum number of wallets that can be created for this card
+        public let maxWalletsCount: Int
+        /// Is allowed to change access code
+        public let isAllowSetAccessCode: Bool
+        /// Is  allowed to change passcode
+        public let isAllowSetPasscode: Bool
+        /// Is allowed to set default access code
+        public let isProhibitDefaultAccessCode: Bool
+        /// Is LinkedTerminal feature enabled
+        public let isLinkedTerminalEnabled: Bool
+        /// Is resctrict owerwrite issuer extra data
+        public let isRestrictOverwriteIssuerExtraData: Bool
+        /// All  encryption modes supported by the card
+        public let supportedEncryptionModes: [EncryptionMode]
+        /// Is allowed to delete wallet. COS before v4
+        public let isPermanentWallet: Bool
+        /// Card's default signing methods according personalization.
+        @SkipEncoding
+        var defaultSigningMethods: SigningMethod?
+        /// Card's default signing methods according personalization.
+        @SkipEncoding
+        var defaultCurve: EllipticCurve?
+        @SkipEncoding
+        var isProtectIssuerDataAgainstReplay: Bool
+        @SkipEncoding
+        var isAllowSelectBlockchain: Bool
+    }
+}
+
+extension Card.Settings {
+    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
+         defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
+        self.securityDelay = securityDelay
+        self.maxWalletsCount = maxWalletsCount
+        self.defaultSigningMethods = defaultSigningMethods
+        self.defaultCurve = defaultCurve
+        
+        self.isAllowSetAccessCode = mask.contains(.allowSetPIN1)
+        self.isAllowSetPasscode = mask.contains(.allowSetPIN2)
+        self.isProhibitDefaultAccessCode = mask.contains(.prohibitDefaultPIN1)
+        self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
+        self.isRestrictOverwriteIssuerExtraData = mask.contains(.restrictOverwriteIssuerExtraData)
+        self.isProtectIssuerDataAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
+        self.isPermanentWallet = mask.contains(.permanentWallet)
+        self.isAllowSelectBlockchain = mask.contains(.allowSelectBlockchain)
+        
+        var encryptionModes: [EncryptionMode] = [.strong]
+        if mask.contains(.allowFastEncryption) {
+            encryptionModes.append(.fast)
+        }
+        if mask.contains(.allowUnencrypted) {
+            encryptionModes.append(.none)
+        }
+        
+        self.supportedEncryptionModes = encryptionModes
+    }
+}
+
+//MARK:- CardSettingsMask
+
 typealias CardSettingsMask = Card.Settings.Mask
 
 extension Card.Settings {
     /// Stores and maps Tangem card settings.
-    struct Mask: OptionSet, JSONStringConvertible, OptionSetCustomStringConvertible {
+    struct Mask: OptionSet, OptionSetCustomStringConvertible {
         let rawValue: Int
         
         init(rawValue: Int) {
@@ -21,7 +87,14 @@ extension Card.Settings {
     }
 }
 
-//MARK:- Constants
+extension CardSettingsMask {
+    func toWalletSettingsMask() -> WalletSettingsMask {
+        return .init(rawValue: rawValue)
+    }
+}
+
+//MARK:- CardSettingsMask Constants
+
 extension CardSettingsMask {
     static let useActivation = CardSettingsMask(rawValue: 0x0002)
     static let useBlock = CardSettingsMask(rawValue: 0x0008)
@@ -49,9 +122,10 @@ extension CardSettingsMask {
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
 }
 
-//MARK:- OptionSetCodable conformance
+//MARK:- CardSettingsMask OptionSetCodable conformance
+
 extension CardSettingsMask: OptionSetCodable {
-    public enum OptionKeys: String, OptionKey {
+    enum OptionKeys: String, OptionKey {
         case useActivation
         case useBlock
         case allowSetPIN1
@@ -77,7 +151,7 @@ extension CardSettingsMask: OptionSetCodable {
         case isReusable
         case prohibitPurgeWallet
         
-        public var value: CardSettingsMask {
+        var value: CardSettingsMask {
             switch self {
             case .useActivation:
                 return .useActivation
@@ -129,11 +203,5 @@ extension CardSettingsMask: OptionSetCodable {
                 return .permanentWallet
             }
         }
-    }
-}
-
-extension CardSettingsMask {
-    func toWalletSettingsMask() -> WalletSettingsMask {
-        return .init(rawValue: rawValue)
     }
 }

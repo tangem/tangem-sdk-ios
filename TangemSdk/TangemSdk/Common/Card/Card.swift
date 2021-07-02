@@ -66,6 +66,13 @@ public extension Card {
         /// Public key that is used by the card issuer to sign IssuerData field.
         public let publicKey: Data
     }
+    
+    /// Card's linked terminal status
+    enum LinkedTerminalStatus: String, Codable {
+        case current
+        case other
+        case none
+    }
 }
 
 extension Card {

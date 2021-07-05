@@ -11,8 +11,6 @@ import Foundation
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFilesSettingsTask: CardSessionRunnable {
-	public typealias Response = SuccessResponse
-    
 	private var changes: [FileSettingsChange]
 	
 	public init(changes: [FileSettingsChange]) {

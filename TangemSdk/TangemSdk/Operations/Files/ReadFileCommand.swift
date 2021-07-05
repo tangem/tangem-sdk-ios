@@ -23,8 +23,6 @@ public struct ReadFileResponse: JSONStringConvertible {
 /// Command that read single file at specified index. Reading private file will prompt user to input a passcode.
 @available (iOS 13.0, *)
 public final class ReadFileCommand: Command {
-	public typealias Response = ReadFileResponse
-	
 	public var requiresPin2: Bool { readPrivateFiles }
 	
 	private let fileIndex: Int

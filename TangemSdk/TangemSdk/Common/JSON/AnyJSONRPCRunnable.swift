@@ -10,8 +10,6 @@ import Foundation
 
 /// Type erased CardSessionRunnable which Response conforms  to JSONStringConvertible
 public class AnyJSONRPCRunnable: CardSessionRunnable {
-    public typealias Response = AnyJSONRPCResponse
-    
     public var preflightReadMode: PreflightReadMode = .fullCardRead
     
     private let runClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<AnyJSONRPCResponse>) -> Void

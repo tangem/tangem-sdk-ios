@@ -43,8 +43,6 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
  */
 @available(*, deprecated, message: "Use files instead")
 public final class ReadIssuerDataCommand: Command {
-    public typealias Response = ReadIssuerDataResponse
-    
     private var issuerPublicKey: Data?
     
     public init(issuerPublicKey: Data? = nil) {

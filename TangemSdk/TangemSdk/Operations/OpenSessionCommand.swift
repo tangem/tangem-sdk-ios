@@ -18,8 +18,6 @@ struct OpenSessionResponse {
 /// [OpenSessionCommand] generates secret session_key that is used by both host and card
 /// to encrypt and decrypt commands’ payload.
 class OpenSessionCommand: ApduSerializable {
-    typealias Response = OpenSessionResponse
-    
     private let sessionKeyA: Data
     
     init(sessionKeyA: Data) {

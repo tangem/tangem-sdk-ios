@@ -8,25 +8,21 @@
 
 import Foundation
 
-public typealias ReadResponse = Card
-
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 final class ReadCommand: Command {
-    typealias Response = ReadResponse
-    
     var preflightReadMode: PreflightReadMode { .none }
 
     deinit {
         Log.debug("ReadCommand deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         transieve(in: session) { result in
             switch result {
-            case .success(let readResponse):
-                session.environment.card = readResponse
-                completion(.success(readResponse))
+            case .success(let card):
+                session.environment.card = card
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -57,9 +53,8 @@ final class ReadCommand: Command {
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
-		let readResponse = try CardDeserializer().deserialize(with: environment, from: apdu)
-        
-		return readResponse
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
+		let card = try CardDeserializer().deserialize(with: environment, from: apdu)
+		return card
     }
 }

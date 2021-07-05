@@ -15,8 +15,6 @@ import Foundation
  */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteIssuerDataCommand: Command {
-    public typealias Response = SuccessResponse
-
     /// Data provided by issuer
     public let issuerData: Data
     /**

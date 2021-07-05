@@ -26,8 +26,6 @@ public struct AttestCardKeyResponse: JSONStringConvertible {
 }
 
 public class AttestCardKeyCommand: Command {
-    public typealias Response = AttestCardKeyResponse
-    
     private var challenge: Data?
 
     /// Default initializer

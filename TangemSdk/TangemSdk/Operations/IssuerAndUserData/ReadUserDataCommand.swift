@@ -34,8 +34,6 @@ public struct ReadUserDataResponse: JSONStringConvertible {
  */
 @available(*, deprecated, message: "Use files instead")
 public final class ReadUserDataCommand: Command {
-    public typealias Response = ReadUserDataResponse
-    
     public init() {}
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

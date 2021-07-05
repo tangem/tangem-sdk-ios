@@ -54,7 +54,7 @@ public final class PreflightReadTask: CardSessionRunnable {
         Log.debug("PreflightReadTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         Log.debug("=========================== Perform preflight check with settings: \(readMode) ======================")
         ReadCommand().run(in: session) { result in
             switch result {
@@ -83,38 +83,38 @@ public final class PreflightReadTask: CardSessionRunnable {
         }
     }
     
-    private func finalizeRead(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
-        if readResponse.firmwareVersion < .multiwalletAvailable {
-            completion(.success(readResponse))
+    private func finalizeRead(in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
+        if card.firmwareVersion < .multiwalletAvailable {
+            completion(.success(card))
             return
         }
         
         switch readMode {
         case .readWallet(let publicKey):
-            readWallet(with: publicKey, in: session, with: readResponse, completion: completion)
+            readWallet(with: publicKey, in: session, with: card, completion: completion)
         case .fullCardRead:
-            readWalletsList(in: session, with: readResponse, completion: completion)
+            readWalletsList(in: session, with: card, completion: completion)
         case .readCardOnly, .none:
-            completion(.success(readResponse))
+            completion(.success(card))
         }
     }
     
-    private func readWallet(with publicKey: Data, in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
+    private func readWallet(with publicKey: Data, in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
         ReadWalletCommand(publicKey: publicKey).run(in: session) { (result) in
             switch result {
             case .success:
-                completion(.success(readResponse))
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func readWalletsList(in session: CardSession, with readResponse: ReadResponse, completion: @escaping CompletionResult<ReadResponse>) {
+    private func readWalletsList(in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
         ReadWalletsListCommand().run(in: session) { (result) in
             switch result {
             case .success:
-                completion(.success(readResponse))
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }

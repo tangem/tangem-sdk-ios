@@ -21,8 +21,6 @@ import Foundation
 */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteUserDataCommand: Command {
-    public typealias Response = SuccessResponse
-    
     var requiresPin2: Bool { return true }
     
     private static let maxSize = 512

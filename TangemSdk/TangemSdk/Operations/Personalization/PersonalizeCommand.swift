@@ -13,8 +13,6 @@ import Foundation
 /// During this procedure a card setting is set up.
 /// During this procedure all data exchange is encrypted.
 public class PersonalizeCommand: Command {
-    public typealias Response = Card
-
     public var preflightReadMode: PreflightReadMode { .none }
     
     private let config: CardConfig

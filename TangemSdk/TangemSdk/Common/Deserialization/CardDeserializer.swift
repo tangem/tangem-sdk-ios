@@ -9,7 +9,7 @@
 import Foundation
 
 struct CardDeserializer {
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
 		let decoder = try getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try getCardDataDecoder(with: environment, from: decoder.tlv)
         let cardStatus: Card.Status = try decoder.decode(.status)

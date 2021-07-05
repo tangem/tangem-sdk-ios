@@ -10,8 +10,6 @@ import Foundation
 import Combine
 
 public final class AttestationTask: CardSessionRunnable {
-    public typealias Response = Attestation
-    
     private let mode: Mode
     private let trustedCardsRepo: TrustedCardsRepo = .init()
     private let onlineCardVerifier = OnlineCardVerifier()

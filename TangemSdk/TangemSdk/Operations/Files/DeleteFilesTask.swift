@@ -11,8 +11,6 @@ import Foundation
 /// Task for deleting files from card.
 @available (iOS 13.0, *)
 public final class DeleteFilesTask: CardSessionRunnable {
-	public typealias Response = SuccessResponse
-	
 	private var filesToDelete: [Int]?
 	
     /// Task for deleting files from card.

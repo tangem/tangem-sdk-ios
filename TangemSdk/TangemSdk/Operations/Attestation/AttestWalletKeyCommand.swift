@@ -24,8 +24,6 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
 public final class AttestWalletKeyCommand: Command {
-    public typealias Response = AttestWalletKeyResponse
-
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
 
     private var challenge: Data?

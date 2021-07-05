@@ -11,8 +11,6 @@ import Foundation
 /// Task for deleting all files from card.
 @available (iOS 13.0, *)
 public final class DeleteAllFilesTask: CardSessionRunnable {
-	public typealias Response = SuccessResponse
-    
 	public init() {}
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {

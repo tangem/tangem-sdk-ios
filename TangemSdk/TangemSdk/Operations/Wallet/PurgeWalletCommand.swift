@@ -10,8 +10,6 @@ import Foundation
 
 /// This command deletes all wallet data and its private and public keys
 public final class PurgeWalletCommand: Command {
-    public typealias Response = SuccessResponse
-    
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
     var requiresPin2: Bool { return true }

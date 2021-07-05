@@ -15,8 +15,6 @@ import Foundation
  */
 @available(*, deprecated, message: "Use files instead") //todo: text
 public final class WriteIssuerExtraDataCommand: Command {
-    public typealias Response = SuccessResponse
-    
     private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024
     

@@ -18,8 +18,6 @@ public struct DepersonalizeResponse: JSONStringConvertible {
 * erasing all data written during personalization and usage.
 */
 public class DepersonalizeCommand: Command {
-    public typealias Response = DepersonalizeResponse
-    
     public var preflightReadMode: PreflightReadMode { .none }
     
     public init() {}

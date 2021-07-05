@@ -71,7 +71,7 @@ class TestHealthTask: CardSessionRunnable {
             runsCounter = 0
             session.pause()
             
-            DispatchQueue.global().asyncAfter(deadline: .now() + 10) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 30) {
                 session.resume()
                 self.createWallet(in: session, completion: completion)
             }

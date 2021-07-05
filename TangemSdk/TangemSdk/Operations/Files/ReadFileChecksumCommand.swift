@@ -19,8 +19,6 @@ public struct ReadFileChecksumResponse: JSONStringConvertible {
 /// The command that prompts the card to create a file checksum. This checksum is used to check the integrity of the file on the card
 @available (iOS 13.0, *)
 public final class ReadFileChecksumCommand: Command {
-	public typealias Response = ReadFileChecksumResponse
-	
 	public var requiresPin2: Bool { readPrivateFiles }
 	
 	private let fileIndex: Int

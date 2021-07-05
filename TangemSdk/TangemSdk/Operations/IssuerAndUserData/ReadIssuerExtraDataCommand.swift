@@ -78,8 +78,6 @@ public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
  */
 @available(*, deprecated, message: "Use files instead")
 public final class ReadIssuerExtraDataCommand: Command {
-    public typealias Response = ReadIssuerExtraDataResponse
-    
     private var issuerPublicKey: Data?
     private var completion: CompletionResult<ReadIssuerExtraDataResponse>?
     private var viewDelegate: SessionViewDelegate?

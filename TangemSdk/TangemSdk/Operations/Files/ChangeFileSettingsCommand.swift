@@ -11,8 +11,6 @@ import Foundation
 /// Command for updating file settings
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsCommand: Command {
-	public typealias Response = SuccessResponse
-	
 	public var requiresPin2: Bool { true }
 	
     private let data: FileSettingsChange

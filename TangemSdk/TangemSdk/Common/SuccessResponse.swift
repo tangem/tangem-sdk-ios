@@ -10,4 +10,8 @@ import Foundation
 
 public struct SuccessResponse: JSONStringConvertible {
     public let cardId: String
+    
+    public init(cardId: String) {
+        self.cardId = cardId
+    }
 }

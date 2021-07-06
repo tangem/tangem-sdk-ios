@@ -18,7 +18,7 @@ public struct Attestation: JSONStringConvertible, Equatable {
     var index: Int = 0
     
     public var status: Status {
-        if !statuses.contains(where: { $0 != .skipped} ) {
+        if !statuses.contains(where: { $0 != .skipped } ) {
             return .skipped
         }
         
@@ -66,7 +66,7 @@ public extension Attestation {
 }
 
 extension Attestation {
-    var rawRepresentaion: String {
+    var rawRepresentation: String {
         return "\(index),\(cardKeyAttestation.intRepresentation),\(walletKeysAttestation.intRepresentation),\(firmwareAttestation.intRepresentation),\(cardUniquenessAttestation.intRepresentation)"
     }
     

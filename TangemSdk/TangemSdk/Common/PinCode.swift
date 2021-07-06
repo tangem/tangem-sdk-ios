@@ -10,8 +10,8 @@ import Foundation
 
 /// Contains information about pin code
 public struct PinCode {
-    static let defaultPin1 = "000000"
-    static let defaultPin2 = "000"
+    public static let defaultPin1 = "000000"
+    public static let defaultPin2 = "000"
     
     public enum PinType {
         case pin1

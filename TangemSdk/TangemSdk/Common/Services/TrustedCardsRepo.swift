@@ -40,7 +40,7 @@ public class TrustedCardsRepo {
     }
     
     private func save() throws {
-        let convertedData = data.mapValues { $0.rawRepresentaion }
+        let convertedData = data.mapValues { $0.rawRepresentation }
         let encoded = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
         let signature = try secureEnclave.sign(data: encoded)
         try storage.store(object: encoded, account: StorageKey.attestedCards.rawValue)

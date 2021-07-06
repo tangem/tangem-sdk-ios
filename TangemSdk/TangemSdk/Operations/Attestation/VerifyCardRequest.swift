@@ -72,7 +72,7 @@ public struct SubstitutionInfo: Codable {
     }
 }
 
-public struct ArtworkInfo: Codable {
+public struct ArtworkInfo: Codable, Equatable {
     public let id: String
     public let hash: String
     public let date: String

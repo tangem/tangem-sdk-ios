@@ -24,9 +24,9 @@ public struct SessionEnvironment {
     
     var cvc: Data? = nil //todo: remove
     
-    var pin1: PinCode = PinCode(.pin1)
+    var pin1: PinCode = .init(.pin1)
     
-    var pin2: PinCode = PinCode(.pin2)
+    var pin2: PinCode = .init(.pin2)
     
     var legacyMode: Bool { config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice }
     

@@ -19,32 +19,29 @@ public struct SetPinResponse: JSONStringConvertible {
 public class SetPinCommand: Command {
     var requiresPin2: Bool { return true }
     
-    private let pinType: PinCode.PinType
-    private var newPin1: Data?
-    private var newPin2: Data?
+    private var codes: [PinCode.PinType: UserCode] = [:]
     
-    private init(newPin1: String?, newPin2: String?, pinType: PinCode.PinType) {
-        self.newPin1 = newPin1?.sha256()
-        self.newPin2 = newPin2?.sha256()
-        self.pinType = pinType
+    /// Change access code only. Passcode will be remain the same
+    /// - Parameters:
+    ///   - accessCode: User code options
+    public init(accessCode: UserCode) {
+        codes[.pin1] = accessCode
     }
     
-    /// Change pin
+    /// Change  passcode only. Access code will be remain the same
     /// - Parameters:
-    ///   - pinType: Pin to change
-    ///   - pin: If nil, pin will be requested automatically
-    ///   - isExclusive: Reset other pin codes to the default values
-    public convenience init(pinType: PinCode.PinType, pin: String? = nil, isExclusive: Bool = false) {
-        switch pinType {
-        case .pin1:
-            self.init(newPin1: pin,
-                      newPin2: isExclusive ? PinCode.defaultPin2 : nil,
-                      pinType: pinType)
-        case .pin2:
-            self.init(newPin1: isExclusive ? PinCode.defaultPin1 : nil,
-                      newPin2: pin,
-                      pinType: pinType)
-        }
+    ///   - passcode: User code options
+    public init(passcode: UserCode) {
+        codes[.pin2] = passcode
+    }
+    
+    /// Change  access code and passcode.
+    /// - Parameters:
+    ///   - accessCode: User code options
+    ///   - passcode: User code options
+    public init(accessCode: UserCode, passcode: UserCode) {
+        codes[.pin1] = accessCode
+        codes[.pin2] = passcode
     }
     
     deinit {
@@ -52,47 +49,42 @@ public class SetPinCommand: Command {
     }
     
     public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
-        if newPin1 == nil && newPin2 == nil {
-            self.requestNewPin(in: session, completion: completion)
-        } else {
-            completion(.success(()))
-        }
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
-        if (newPin1 == nil && pinType == .pin1) || (newPin2 == nil && pinType == .pin2) {
-            session.pause(error: TangemSdkError.from(pinType: self.pinType, environment: nil))
-            DispatchQueue.main.async {
-                self.requestNewPin(in: session) { result in
+        requestIfNeeded(.pin1, in: session) { result  in
+            switch result {
+            case .success:
+                self.requestIfNeeded(.pin2, in: session) { result  in
                     switch result {
                     case .success:
-                        session.resume()
-                        self.transieve(in: session, completion: completion )
+                        completion(.success(()))
                     case .failure(let error):
                         completion(.failure(error))
                     }
                 }
-            }
-        } else {
-            self.transieve(in: session, completion: completion )
-        }
-    }
-    
-    private func requestNewPin(in session: CardSession, completion: @escaping CompletionResult<Void>) {
-        session.viewDelegate.requestPinChange(pinType: self.pinType, cardId: session.environment.card?.cardId ?? session.cardId) { result in
-            switch result {
-            case .success(let pinChangeResult):
-                let newPinData = pinChangeResult.newPin.sha256()
-                switch self.pinType {
-                case .pin1:
-                    self.newPin1 = newPinData
-                case .pin2:
-                    self.newPin2 = newPinData
-                }
-                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SetPinResponse>) {
+        if codes.values.contains(where: { $0 == .request }) { //If prepare not called e.g. chaining
+            if let error = getPauseError(environment: session.environment) {
+                session.pause(error: error)
+            } else {
+                session.pause()
+            }
+            
+            prepare(session) { result in
+                switch result {
+                case .success:
+                    session.resume()
+                    self.transieve(in: session, completion: completion )
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } else {
+            self.transieve(in: session, completion: completion )
         }
     }
     
@@ -101,8 +93,8 @@ public class SetPinCommand: Command {
             .append(.pin, value: environment.pin1.value)
             .append(.pin2, value: environment.pin2.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: newPin1 ?? environment.pin1.value )
-            .append(.newPin2, value: newPin2 ?? environment.pin2.value)
+            .append(.newPin, value: value(for: .pin1) ?? environment.pin1.value)
+            .append(.newPin2, value: value(for: .pin2) ?? environment.pin2.value)
         
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
@@ -125,6 +117,48 @@ public class SetPinCommand: Command {
             cardId: try decoder.decode(.cardId),
             status: status)
     }
+    
+    private func getPauseError(environment: SessionEnvironment) -> TangemSdkError? {
+        let filtered = codes.filter { $0.value == .request }
+        
+        guard filtered.count == 1, let type = filtered.first?.key else {
+            return nil
+        }
+        
+        return TangemSdkError.from(pinType: type, environment: environment)
+    }
+    
+    private func requestIfNeeded(_ pinType: PinCode.PinType, in session: CardSession, completion: @escaping CompletionResult<Void>) {
+        guard codes[pinType] == .request else {
+            completion(.success(()))
+            return
+        }
+        
+        session.viewDelegate.requestPinChange(pinType: pinType, cardId: session.cardId) { result in
+            switch result {
+            case .success(let pinChangeResult):
+                self.codes[pinType] = .value(pinChangeResult.newPin)
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func value(for type: PinCode.PinType) -> Data? {
+        guard let code = codes[type] else {
+            return nil
+        }
+        
+        switch code {
+        case .none:
+            return type.defaultValue
+        case .request:
+            return nil
+        case .value(let stringValue):
+            return stringValue.sha256()
+        }
+    }
 }
 
 public enum SetPinStatus: String, Codable, JSONStringConvertible {
@@ -146,5 +180,20 @@ public enum SetPinStatus: String, Codable, JSONStringConvertible {
         case .processCompleted: return .pinsNotChanged
         default: return nil
         }
+    }
+}
+
+public extension SetPinCommand {
+    /// - Note:
+    /// - `.none` - reset  code
+    /// - `.value(String)` -  code to set
+    /// - `request` - ask user to input the code
+    enum UserCode: Equatable {
+        /// Reset  code
+        case none
+        /// Code to set
+        case value(String)
+        /// Ask user to input the code
+        case request
     }
 }

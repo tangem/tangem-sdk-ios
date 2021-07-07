@@ -223,8 +223,9 @@ public extension TangemSdk {
     func setAccessCode(_ accessCode: String? = nil,
                        cardId: String? = nil,
                        initialMessage: Message? = nil,
-                       completion: @escaping CompletionResult<SetPinResponse>){
-        let command = SetPinCommand(pinType: .pin1, pin: accessCode)
+                       completion: @escaping CompletionResult<SetPinResponse>) {
+        let code: SetPinCommand.UserCode = accessCode.map { .value($0) } ?? .request
+        let command = SetPinCommand(accessCode: code)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -237,8 +238,9 @@ public extension TangemSdk {
     func setPasscode(_ passcode: String? = nil,
                      cardId: String? = nil,
                      initialMessage: Message? = nil,
-                     completion: @escaping CompletionResult<SetPinResponse>){
-        let command = SetPinCommand(pinType: .pin2, pin: passcode)
+                     completion: @escaping CompletionResult<SetPinResponse>) {
+        let code: SetPinCommand.UserCode = passcode.map { .value($0) } ?? .request
+        let command = SetPinCommand(passcode: code)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
 }

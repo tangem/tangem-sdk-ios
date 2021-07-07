@@ -35,15 +35,6 @@ public struct Config {
     /// If not nil, will be used to validate Issuer data and issuer extra data. If nil, issuerPublicKey from current card will be used
     public var issuerPublicKey: Data?
     
-    /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
-    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release]
-    
-    /// Use this filter to configure batches allowed to work with your app
-    public var batchIdFilter: BatchIdFilter? = nil
-    
-    /// If true, BAP cards will pass online attestation. Use only for debugging purposes and if you understand what to do
-    public var allowBAP: Bool = false
-    
     public var handleErrors: Bool = true
 
     public var savePin1InStaticField: Bool = true
@@ -58,5 +49,9 @@ public struct Config {
     
     /// ScanTask or scanCard method in TangemSdk class will use this mode to attest the card
     public var attestationMode: AttestationTask.Mode = .normal
+    
+    /// If true, BAP cards will pass online attestation. Use only for debugging purposes and if you understand what to do
+    public var allowBAP: Bool = false
+    
+    public var filter: CardFilter = .default
 }
-

@@ -8,35 +8,17 @@
 
 import Foundation
 
-/// Contains information about pin code
+///// Contains information about pin code
 public struct PinCode {
-    public static let defaultPin1 = "000000"
-    public static let defaultPin2 = "000"
-    
-    public enum PinType {
-        case pin1
-        case pin2
-    }
-    
     let type: PinType
     let value: Data?
     
     var isDefault: Bool {
-        switch type {
-        case .pin1:
-            return PinCode.defaultPin1.sha256() == value
-        case .pin2:
-            return PinCode.defaultPin2.sha256() == value
-        }
+        return value == type.defaultValue
     }
-
+    
     internal init(_ type: PinType) {
-        switch type {
-        case .pin1:
-            self.value = PinCode.defaultPin1.sha256()
-        case .pin2:
-            self.value = PinCode.defaultPin2.sha256()
-        }
+        self.value = type.defaultValue
         self.type = type
     }
     
@@ -49,4 +31,25 @@ public struct PinCode {
         self.value = value
         self.type = type
     }
+}
+
+public extension PinCode {
+    enum PinType {
+        case pin1
+        case pin2
+        
+        var defaultValue: Data {
+            switch self {
+            case .pin1:
+                return PinCode.defaultPin1.sha256()
+            case .pin2:
+                return PinCode.defaultPin2.sha256()
+            }
+        }
+    }
+}
+
+extension PinCode {
+    private static let defaultPin1 = "000000"
+    private static let defaultPin2 = "000"
 }

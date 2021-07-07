@@ -21,6 +21,10 @@ public struct CardFilter {
     static var `default`: CardFilter = .init()
     
     public func isCardAllowed(_ card: Card) -> Bool {
+        if !allowedCardTypes.contains(card.firmwareVersion.type) {
+            return false
+        }
+        
         if let batchIdFilter = batchIdFilter,
            !batchIdFilter.isAllowed(card.batchId) {
             return false
@@ -28,10 +32,6 @@ public struct CardFilter {
         
         if let issuerFilter = issuerFilter,
            !issuerFilter.isAllowed(card.issuer.name) {
-            return false
-        }
-        
-        if !allowedCardTypes.contains(card.firmwareVersion.type) {
             return false
         }
         

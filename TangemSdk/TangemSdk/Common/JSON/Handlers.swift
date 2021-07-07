@@ -103,8 +103,9 @@ class SetAccessCodeHandler: JSONRPCHandler {
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let code: String = try parameters.value(for: "accessCode")
-        let command = SetPinCommand(pinType: .pin1, pin: code)
+        let stringCode: String? = try parameters.value(for: "accessCode")
+        let code: SetPinCommand.UserCode = stringCode.map { .value($0) } ?? .request
+        let command = SetPinCommand(accessCode: code)
         return command.eraseToAnyRunnable()
     }
 }
@@ -115,8 +116,9 @@ class SetPasscodeHandler: JSONRPCHandler {
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let code: String = try parameters.value(for: "passcode")
-        let command = SetPinCommand(pinType: .pin2, pin: code)
+        let stringCode: String? = try parameters.value(for: "passcode")
+        let code: SetPinCommand.UserCode = stringCode.map { .value($0) } ?? .request
+        let command = SetPinCommand(passcode: code)
         return command.eraseToAnyRunnable()
     }
 }

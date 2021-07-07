@@ -65,13 +65,7 @@ public final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                if let batchIdFilter = session.environment.config.batchIdFilter,
-                   !batchIdFilter.isBatchIdAllowed(readResponse.batchId) {
-                    completion(.failure(.wrongCardType))
-                    return
-                }
-                
-                if !session.environment.config.allowedCardTypes.contains(readResponse.firmwareVersion.type) {
+                if !session.environment.config.filter.isCardAllowed(readResponse) {
                     completion(.failure(.wrongCardType))
                     return
                 }

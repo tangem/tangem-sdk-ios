@@ -32,7 +32,7 @@ public struct Card: Codable, JSONStringConvertible {
     public let linkedTerminalStatus: LinkedTerminalStatus
     /// PIN2 (aka Passcode) is default.
     /// Available only for cards with COS v.4.0 and higher.
-    public let isPin2Default: Bool?
+    public let isPasscodeSet: Bool?
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
     /// Wallets, created on the card, that can be used for signature

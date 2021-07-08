@@ -21,7 +21,7 @@ class AppModel: ObservableObject {
     @Published var attestationMode: AttestationTask.Mode = .normal
 
     //MARK:-  Outputs
-    @Published var logText: String = ""
+    @Published var logText: String = AppModel.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
@@ -37,9 +37,14 @@ class AppModel: ObservableObject {
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
+    private static let logPlaceholder = "Logs will appear here"
     
     func clear() {
         logText = ""
+    }
+    
+    func copy() {
+        UIPasteboard.general.string = logText
     }
     
     func start(walletPublicKey: Data? = nil) {
@@ -58,6 +63,9 @@ class AppModel: ObservableObject {
     
     private func log(_ object: Any) {
         let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
+        if logText == AppModel.logPlaceholder {
+            logText = ""
+        }
         logText = "\(text)\n\n" + logText
     }
     

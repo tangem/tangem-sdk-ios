@@ -21,7 +21,7 @@ class TestHealthModel: ObservableObject {
         var config = Config()
         config.logСonfig = .release
         //config.linkedTerminal = false
-        config.allowedCardTypes = [.sdk]
+        config.filter.allowedCardTypes = [.sdk]
         return TangemSdk(config: config)
     }()
     

@@ -36,8 +36,8 @@ public extension Card.Wallet {
 }
 
 extension Card.Wallet {
-    /// Status of the wallet
-    enum Status: Int, StatusType {
+    /// Status of the wallet. Only for cards with COS before v.4.0
+    enum Status: Int, StatusType { //TODO: Specify
         /// Wallet not created
         case empty = 1
         /// Wallet created and can be used for signing

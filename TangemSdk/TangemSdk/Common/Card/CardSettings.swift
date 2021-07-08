@@ -12,8 +12,8 @@ import Foundation
 
 public extension Card {
     struct Settings: Codable {
-        /// Delay before executing a command that affects any sensitive data or wallets on the card.
-        public let securityDelay: Int //todo: convert to ms
+        /// Delay before executing a command that affects any sensitive data or wallets on the card. Milliseconds
+        public let securityDelay: Int
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Is allowed to change access code

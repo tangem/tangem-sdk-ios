@@ -52,7 +52,8 @@ struct CardDeserializer {
                                  publicKey: try decoder.decode(.issuerPublicKey))
         
         let securityDelay: Int? = try decoder.decode(.pauseBeforePin2)
-        let settings = Card.Settings(securityDelay: securityDelay ?? 0,
+        let securityDelayMs = securityDelay.map { $0 * 10 } ?? 0
+        let settings = Card.Settings(securityDelay: securityDelayMs,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      mask: cardSettingsMask,
                                      defaultSigningMethods: defaultSigningMethods,

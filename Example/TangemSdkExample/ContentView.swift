@@ -18,34 +18,25 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
-
+                
                 ScrollView {
                     Text(model.logText)
                         .padding(.horizontal, 16)
-                        .font(.body)
+                        .padding(.vertical, 8)
+                        .font(.caption)
                 }
                 .clipped()
-                .frame(width: geo.size.width, height: 400)
+                .frame(width: geo.size.width)
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
-                .contextMenu {
-                    Button("Copy") {
-                        UIPasteboard.general.string = model.logText
-                    }
-                }
                 
                 ScrollView {
-                    VStack {
-                        Button("Clear logs", action: model.clear)
-                        
-                        Button("Test card durability", action: {
-                            isOpenHealthTest = true
-                        })
-                        .sheet(isPresented: $isOpenHealthTest, content: {
-                            TestHealthView().environmentObject(testModel)
-                        })
-                        .padding(.top, 8)
+                    VStack(spacing: 4) {
+                        HStack {
+                            Button("Clear", action: model.clear)
+                            Button("Copy", action: model.copy)
+                        }
                         
                         Picker("Select method", selection: $model.method) {
                             ForEach(0..<AppModel.Method.allCases.count) { index in
@@ -60,6 +51,13 @@ struct ContentView: View {
                             .padding()
                         
                         additionalView
+                        
+                        Button("Stress test", action: {
+                            isOpenHealthTest = true
+                        })
+                        .sheet(isPresented: $isOpenHealthTest, content: {
+                            TestHealthView().environmentObject(testModel)
+                        })
                     }
                     .padding(.horizontal, 20)
                     .frame(width: geo.size.width)
@@ -79,7 +77,7 @@ struct ContentView: View {
             let cancelButton = ActionSheet.Button.cancel {
                 model.isScanning = false
             }
-
+            
             return ActionSheet(title: Text("Select wallet"),
                                message: nil,
                                buttons: walletButtons + [cancelButton])
@@ -140,6 +138,7 @@ struct ContentView_Previews: PreviewProvider {
     
     static var previews: some View {
         ContentView()
+            .previewDevice("iPhone 8")
             .environmentObject(model)
     }
 }

@@ -62,13 +62,6 @@ public class CardSession {
         Log.debug("Card session deinit")
     }
     
-    // MARK: - Prepearing session
-    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
-        Log.session("Prepare card session")
-        preflightReadMode = runnable.preflightReadMode
-        runnable.prepare(self, completion: completion)
-    }
-    
     // MARK: - Session start
     /// This metod starts a card session, performs preflight `Read` command,  invokes the `run ` method of `CardSessionRunnable` and closes the session.
     /// - Parameters:
@@ -293,6 +286,13 @@ public class CardSession {
         sendSubscription = []
         viewDelegate.sessionStopped(completion: completion)
         state = .inactive
+    }
+    
+    // MARK: - Prepearing session
+    private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
+        Log.session("Prepare card session")
+        preflightReadMode = runnable.preflightReadMode
+        runnable.prepare(self, completion: completion)
     }
     
     // MARK: - Preflight check

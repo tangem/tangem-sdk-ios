@@ -63,7 +63,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .extendedDataSizeTooLarge
         }
         
-        if card.settings.isProtectIssuerDataAgainstReplay
+        if card.settings.isIssuerDataProtectedAgainstReplay
             && issuerDataCounter == nil {
             return .missingCounter
         }
@@ -86,7 +86,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if card?.settings.isProtectIssuerDataAgainstReplay ?? false {
+        if card?.settings.isIssuerDataProtectedAgainstReplay ?? false {
             if case .invalidParams = error {
                 return .dataCannotBeWritten
             }

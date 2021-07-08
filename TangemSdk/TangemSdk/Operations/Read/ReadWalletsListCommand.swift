@@ -17,7 +17,6 @@ struct ReadWalletsListResponse: JSONStringConvertible {
 class ReadWalletsListCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private var walletIndex: Int?
     private var loadedWallets: [Card.Wallet] = []
     private var receivedWalletsCount: Int = 0
     
@@ -39,7 +38,6 @@ class ReadWalletsListCommand: Command {
                 }
                 
                 guard self.receivedWalletsCount == session.environment.card?.settings.maxWalletsCount else {
-                    self.walletIndex = self.receivedWalletsCount
                     self.run(in: session, completion: completion)
                     return
                 }
@@ -65,8 +63,8 @@ class ReadWalletsListCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        if let walletIndex = walletIndex {
-            try tlvBuilder.append(.walletIndex, value: walletIndex)
+        if receivedWalletsCount > 0 {
+            try tlvBuilder.append(.walletIndex, value: receivedWalletsCount)
         }
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())

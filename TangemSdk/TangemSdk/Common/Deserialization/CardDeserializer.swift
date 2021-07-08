@@ -68,7 +68,7 @@ struct CardDeserializer {
                         issuer: issuer,
                         settings: settings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
-                        isPin2Default: pin2IsDefault,
+                        isPasscodeSet: pin2IsDefault,
                         supportedCurves: supportedCurves,
                         wallets: wallets,
                         health: try decoder.decode(.health),

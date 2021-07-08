@@ -67,10 +67,13 @@ public extension Card {
         public let publicKey: Data
     }
     
-    /// Card's linked terminal status
+    /// Card's linked terminal status. SDK can generate asymmetric key-pair and then use it for linking a card.
     enum LinkedTerminalStatus: String, Codable {
+        // Current app instance is linked to the card
         case current
+        // The other app/device is linked to the card
         case other
+        // No app/device is linked
         case none
     }
 }

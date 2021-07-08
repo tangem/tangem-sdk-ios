@@ -1,5 +1,5 @@
 //
-//  SecureEnclaveKey.swift
+//  SecureEnclaveService.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 25.06.2021.
@@ -9,7 +9,7 @@
 import Foundation
 import CryptoKit
 
-struct SecureEnclaveSign {
+struct SecureEnclaveService {
     private let storage = SecureStorage()
     
     func sign(data: Data) throws -> Data {
@@ -34,7 +34,7 @@ struct SecureEnclaveSign {
     }
 }
 
-private extension SecureEnclaveSign {
+private extension SecureEnclaveService {
     /// Keys used for store data in Keychain
     enum StorageKey: String {
         case secureEnclaveP256Key

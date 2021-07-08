@@ -70,7 +70,7 @@ class SignCommand: Command {
             }
         }
       
-        if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 1500 {
+        if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 15000 {
             return .oldCard
         }
         
@@ -94,7 +94,7 @@ class SignCommand: Command {
         }
        
         let hasTerminalKeys = session.environment.terminalKeys != nil
-        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 5000
+        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
         guard hashes.count <= chunkSize || (card.settings.isLinkedTerminalEnabled && hasTerminalKeys) || hasEnoughDelay else {
             completion(.failure(.tooManyHashesInOneTransaction))
             return

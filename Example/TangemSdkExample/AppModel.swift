@@ -30,7 +30,7 @@ class AppModel: ObservableObject {
         var config = Config()
         config.logСonfig = .verbose
         config.linkedTerminal = false
-        config.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
+        config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
   

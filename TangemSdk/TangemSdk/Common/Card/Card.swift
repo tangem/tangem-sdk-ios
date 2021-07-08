@@ -80,7 +80,7 @@ public extension Card {
 
 extension Card {
     /// Status of the card and its wallet.
-    enum Status: Int, StatusType {
+    enum Status: Int, StatusType { //TODO: Specify
         case notPersonalized = 0
         case empty = 1
         case loaded = 2

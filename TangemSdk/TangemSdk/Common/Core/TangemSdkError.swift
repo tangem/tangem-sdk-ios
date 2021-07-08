@@ -428,7 +428,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
 		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
 		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
-        case .walletCannotBeCreated: return "error_card_create_wallet".localized
+        case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongPin1: return "error_wrong_pin1".localized
         case .wrongPin2: return "error_wrong_pin2".localized
         case .encodingFailed(let message):

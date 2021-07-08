@@ -10,7 +10,7 @@ import Foundation
 
 public class TrustedCardsRepo {
     private let storage = SecureStorage()
-    private let secureEnclave = SecureEnclaveSign()
+    private let secureEnclave = SecureEnclaveService()
     
     //Key is Hash of card's public key
     private var data: [Data: Attestation] = [:]

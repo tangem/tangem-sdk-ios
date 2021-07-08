@@ -17,15 +17,15 @@ public extension Card {
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Is allowed to change access code
-        public let isAllowSetAccessCode: Bool
+        public let isSettingAccessCodeAllowed: Bool
         /// Is  allowed to change passcode
-        public let isAllowSetPasscode: Bool
+        public let isSettingPasscodeAllowed: Bool
         /// Is allowed to set default access code
-        public let isProhibitDefaultAccessCode: Bool
+        public let isRemovingAccessCodeAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// Is resctrict owerwrite issuer extra data
-        public let isRestrictOverwriteIssuerExtraData: Bool
+        public let isOverwritingIssuerExtraDataRestricted: Bool
         /// All  encryption modes supported by the card
         public let supportedEncryptionModes: [EncryptionMode]
         /// Is allowed to delete wallet. COS before v4
@@ -33,13 +33,13 @@ public extension Card {
         /// Card's default signing methods according personalization.
         @SkipEncoding
         var defaultSigningMethods: SigningMethod?
-        /// Card's default signing methods according personalization.
+        /// Card's default curve according personalization.
         @SkipEncoding
         var defaultCurve: EllipticCurve?
         @SkipEncoding
-        var isProtectIssuerDataAgainstReplay: Bool
+        var isIssuerDataProtectedAgainstReplay: Bool
         @SkipEncoding
-        var isAllowSelectBlockchain: Bool
+        var isSelectBlockchainAllowed: Bool
     }
 }
 
@@ -51,14 +51,14 @@ extension Card.Settings {
         self.defaultSigningMethods = defaultSigningMethods
         self.defaultCurve = defaultCurve
         
-        self.isAllowSetAccessCode = mask.contains(.allowSetPIN1)
-        self.isAllowSetPasscode = mask.contains(.allowSetPIN2)
-        self.isProhibitDefaultAccessCode = mask.contains(.prohibitDefaultPIN1)
+        self.isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
+        self.isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
+        self.isRemovingAccessCodeAllowed = mask.contains(.prohibitDefaultPIN1)
         self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
-        self.isRestrictOverwriteIssuerExtraData = mask.contains(.restrictOverwriteIssuerExtraData)
-        self.isProtectIssuerDataAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
+        self.isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
+        self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
         self.isPermanentWallet = mask.contains(.permanentWallet)
-        self.isAllowSelectBlockchain = mask.contains(.allowSelectBlockchain)
+        self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {

@@ -106,8 +106,8 @@ extension FirmwareVersion: Comparable {
 public extension FirmwareVersion {
     /// Multi-wallet
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
-    /// Field on card that describes is pin2 is default value or not
-    static let isPin2DefaultAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Field on card that describes is passcode is default value or not
+    static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
     /// Read-write files
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     

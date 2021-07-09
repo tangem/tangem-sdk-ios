@@ -9,15 +9,6 @@
 import Foundation
 
 class WalletDeserializer {
-    func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
-        let status: Card.Wallet.Status = try decoder.decode(.status)
-        guard status == .loaded else { //We need only loaded wallets
-            throw TangemSdkError.walletIsNotCreated
-        }
-        
-        return try deserialize(from: decoder)
-    }
-    
     func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
@@ -40,6 +31,15 @@ class WalletDeserializer {
         }
         
         return (wallets, cardWalletsData.count)
+    }
+    
+    func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
+        let status: Card.Wallet.Status = try decoder.decode(.status)
+        guard status == .loaded else { //We need only loaded wallets
+            throw TangemSdkError.walletIsNotCreated
+        }
+        
+        return try deserialize(from: decoder)
     }
     
     private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {

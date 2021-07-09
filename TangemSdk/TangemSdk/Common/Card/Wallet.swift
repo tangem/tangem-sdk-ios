@@ -24,7 +24,7 @@ public extension Card {
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
         public var remainingSignatures: Int?
         /// Index of the wallet in the card storage
-        internal let index: Int
+        public let index: Int
     }
 }
 

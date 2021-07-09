@@ -41,8 +41,8 @@ public struct CardFilter {
 
 public extension CardFilter {
     enum ItemFilter {
-        case allow(_ items: [String])
-        case deny(_ items: [String])
+        case allow(_ items: Set<String>)
+        case deny(_ items: Set<String>)
         
         func isAllowed(_ item: String) -> Bool {
             switch self {

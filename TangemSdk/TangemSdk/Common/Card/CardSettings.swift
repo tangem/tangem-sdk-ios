@@ -12,7 +12,7 @@ import Foundation
 
 public extension Card {
     struct Settings: Codable {
-        /// Delay before executing a command that affects any sensitive data or wallets on the card. Milliseconds
+        /// Delay in milliseconds before executing a command that affects any sensitive data or wallets on the card
         public let securityDelay: Int
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
@@ -20,11 +20,11 @@ public extension Card {
         public let isSettingAccessCodeAllowed: Bool
         /// Is  allowed to change passcode
         public let isSettingPasscodeAllowed: Bool
-        /// Is allowed to set default access code
+        /// Is allowed to remove access code
         public let isRemovingAccessCodeAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
-        /// Is resctrict owerwrite issuer extra data
+        /// Is overwriting issuer extra data resctricted
         public let isOverwritingIssuerExtraDataRestricted: Bool
         /// All  encryption modes supported by the card
         public let supportedEncryptionModes: [EncryptionMode]

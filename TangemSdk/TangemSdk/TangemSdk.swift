@@ -52,8 +52,10 @@ public final class TangemSdk {
     }
 }
 
-//MARK: - Common operations
+//MARK: - Card operations
 public extension TangemSdk {
+    //MARK: - Common
+    
     /// To start using any card, you first need to read it using the `scanCard()` method.
     /// This method launches an NFC session, and once it’s connected with the card,
     /// it obtains the card data. Optionally, if the card contains a wallet (private and public key pair),
@@ -141,8 +143,8 @@ public extension TangemSdk {
                       cardId: String,
                       initialMessage: Message? = nil,
                       completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let task = CreateWalletCommand(curve: curve, isPermanent: isPermanent)
-        startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        let command = CreateWalletCommand(curve: curve, isPermanent: isPermanent)
+        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     /// This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
@@ -243,10 +245,9 @@ public extension TangemSdk {
         let command = SetPinCommand(passcode: code)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
-}
-
-//MARK: - Operations with files
-public extension TangemSdk {
+    
+    //MARK: - Files
+    
     /// This command reads all files stored on card.
     ///
     /// By default command trying to read all files (including private), to change this behaviour - setup your ` ReadFileDataTaskSetting `
@@ -334,10 +335,9 @@ public extension TangemSdk {
     func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) -> FileHashData {
         return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }
-}
-
-//MARK: - Issuer/User data operations
-public extension TangemSdk {
+    
+    //MARK: - Issuer/User data
+    
     /**
      * This command returns 512-byte Issuer Data field and its issuer’s signature.
      * Issuer Data is never changed or parsed from within the Tangem COS. The issuer defines purpose of use,

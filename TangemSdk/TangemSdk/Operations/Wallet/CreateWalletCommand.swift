@@ -105,7 +105,7 @@ public final class CreateWalletCommand: Command {
         if case .invalidParams = error {
             guard let card = card else { return error }
             
-            if card.firmwareVersion >= .isPin2DefaultAvailable,
+            if card.firmwareVersion >= .isPasscodeStatusAvailable,
                let pin2IsDefault = card.isPasscodeSet, pin2IsDefault {
                 return .alreadyCreated
             }

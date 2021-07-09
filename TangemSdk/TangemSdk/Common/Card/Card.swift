@@ -30,9 +30,10 @@ public struct Card: Codable, JSONStringConvertible {
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data
     /// to be signed made with `TlvTag.TerminalPublicKey`.
     public let linkedTerminalStatus: LinkedTerminalStatus
-    /// PIN2 (aka Passcode) is default.
+    /// PIN2 (aka Passcode) is set.
     /// Available only for cards with COS v.4.0 and higher.
     public let isPasscodeSet: Bool?
+    //TODO: isAccesscCodeSet
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
     /// Wallets, created on the card, that can be used for signature

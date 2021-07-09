@@ -638,7 +638,8 @@ private extension TangemSdk {
     func assertCardId(_ cardId: String?, for request: JSONRPCRequest) throws {
         let handler = try jsonConverter.getHandler(from: request)
         if handler.requiresCardId && cardId == nil {
-            throw JSONRPCError(.invalidParams, data: request.method)
+            let data = "Method: \(request.method). CardId is required" //TODO: Localize
+            throw JSONRPCError(.invalidParams, data: data)
         }
     }
 }

@@ -14,7 +14,7 @@ class TestHealthTask: CardSessionRunnable {
     public var onStep: (() -> Void)? = nil
     
     private var runsCounter: Int = 0
-    private let maxRuns: Int = 50
+    private let maxRuns: Int = 60
     private var currentWalletPublicKey: Data? = nil
     
     deinit {
@@ -71,14 +71,17 @@ class TestHealthTask: CardSessionRunnable {
             runsCounter = 0
             session.pause()
             
-            DispatchQueue.global().asyncAfter(deadline: .now() + 30) {
+            DispatchQueue.global().asyncAfter(deadline: .now() + 5) {
                 session.resume()
                 self.createWallet(in: session, completion: completion)
             }
-        } else {
+        } else if runsCounter == maxRuns / 2 {
             DispatchQueue.global().async {
+                session.restartPolling()
                 self.createWallet(in: session, completion: completion)
             }
+        } else {
+            self.createWallet(in: session, completion: completion)
         }
     }
 }

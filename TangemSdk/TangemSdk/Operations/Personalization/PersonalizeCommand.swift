@@ -67,7 +67,7 @@ public class PersonalizeCommand: Command {
         let encryptionKey = session.environment.encryptionKey
         session.environment.encryptionMode = .none
         session.environment.encryptionKey = devPersonalizationKey
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             session.environment.encryptionMode = encryptionMode
             session.environment.encryptionKey = encryptionKey
             completion(result)

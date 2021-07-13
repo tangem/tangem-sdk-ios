@@ -55,10 +55,6 @@ public final class WriteIssuerExtraDataCommand: Command {
             issuerPublicKey = card.issuer.publicKey
         }
         
-        if issuerPublicKey == nil  {
-            return .missingIssuerPublicKey
-        }
-        
         if issuerData.count > WriteIssuerExtraDataCommand.maxSize {
             return .extendedDataSizeTooLarge
         }

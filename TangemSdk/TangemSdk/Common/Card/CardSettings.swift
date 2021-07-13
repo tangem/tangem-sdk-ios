@@ -24,12 +24,13 @@ public extension Card {
         public let isRemovingAccessCodeAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
-        /// Is overwriting issuer extra data resctricted
-        public let isOverwritingIssuerExtraDataRestricted: Bool
         /// All  encryption modes supported by the card
         public let supportedEncryptionModes: [EncryptionMode]
         /// Is allowed to delete wallet. COS before v4
         public let isPermanentWallet: Bool
+        /// Is overwriting issuer extra data resctricted
+        @SkipEncoding
+        var isOverwritingIssuerExtraDataRestricted: Bool
         /// Card's default signing methods according personalization.
         @SkipEncoding
         var defaultSigningMethods: SigningMethod?

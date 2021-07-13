@@ -20,7 +20,7 @@ public final class AttestationTask: CardSessionRunnable {
     
     
     /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
-    public var shouldKeepSeesionOpened = false
+    public var shouldKeepSessionOpened = false
     
     public init(mode: Mode) {
         self.mode = mode
@@ -52,8 +52,8 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func attestCard(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        AttestCardKeyCommand().run(in: session) { checkWalletResult in
-            switch checkWalletResult {
+        AttestCardKeyCommand().run(in: session) { result in
+            switch result {
             case .success:
                 //This card already attested with the current or more secured mode
                 if let attestation = self.trustedCardsRepo.attestation(for: session.environment.card!.cardPublicKey),
@@ -123,13 +123,13 @@ public final class AttestationTask: CardSessionRunnable {
             let attestationCommands = walletsKeys.map { AttestWalletKeyCommand(publicKey: $0) }
             let group = DispatchGroup()
             
-            var shoulReturn = false
+            var shouldReturn = false
             //check for hacking attempts with signs
             var hasWarnings = card.wallets.compactMap { $0.totalSignedHashes }
                 .contains(where: { $0 > Constants.maxCounter })
             
             for command in attestationCommands {
-                if shoulReturn { return }
+                if shouldReturn { return }
                 group.enter()
                 
                 command.run(in: session) { result in
@@ -140,7 +140,7 @@ public final class AttestationTask: CardSessionRunnable {
                             hasWarnings = true
                         }
                     case .failure(let error):
-                        shoulReturn = true
+                        shouldReturn = true
                         completion(.failure(error))
                     }
                     group.leave()
@@ -172,7 +172,7 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func waitForOnlineAndComplete( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        if !shouldKeepSeesionOpened {
+        if !shouldKeepSessionOpened {
             session.pause() //Nothing to do with nfc anymore
             session.viewDelegate.showUndefinedSpinner()
         }
@@ -221,7 +221,6 @@ public extension AttestationTask {
 private extension AttestationTask {
     enum Constants {
         //Attest wallet count or sign command count greater this value is looks suspicious.
-        //Possible hacking attempts
         static let maxCounter = 100000
     }
 }

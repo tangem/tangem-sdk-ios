@@ -51,7 +51,7 @@ public final class AttestWalletKeyCommand: Command {
             }
         }
         
-        transieve(in: session) {result in
+        transceive(in: session) {result in
             switch result {
             case .success(let checkWalletResponse):
                 guard let curve = session.environment.card?.wallets[self.walletPublicKey]?.curve else {

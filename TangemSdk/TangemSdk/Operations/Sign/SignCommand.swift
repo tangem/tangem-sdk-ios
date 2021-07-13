@@ -123,7 +123,7 @@ class SignCommand: Command {
             session.viewDelegate.showAlertMessage("Signing part \(currentChunkNumber + 1) of \(numberOfChunks)")
         }
         
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 self.signatures.append(contentsOf: response.signatures)

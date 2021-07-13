@@ -18,7 +18,7 @@ final class ReadCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let card):
                 session.environment.card = card
@@ -52,7 +52,7 @@ final class ReadCommand: Command {
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
-    
+    //TODO: (Card, LegacyData)
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
 		let card = try CardDeserializer().deserialize(with: environment, from: apdu)
 		return card

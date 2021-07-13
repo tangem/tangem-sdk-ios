@@ -88,7 +88,7 @@ public final class CreateWalletCommand: Command {
             return
         }
         
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 var wallets: [Card.Wallet] = session.environment.card?.wallets ?? []

@@ -33,7 +33,7 @@ public struct Card: Codable, JSONStringConvertible {
     /// PIN2 (aka Passcode) is set.
     /// Available only for cards with COS v.4.0 and higher.
     public let isPasscodeSet: Bool?
-    //TODO: isAccesscCodeSet
+    //TODO: isAccessCodeSet
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
     /// Wallets, created on the card, that can be used for signature

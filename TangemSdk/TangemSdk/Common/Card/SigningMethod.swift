@@ -10,9 +10,9 @@ import Foundation
 
 /// Determines which type of data is required for signing.
 struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
-	public let rawValue: Byte
+    let rawValue: Byte
 	
-	public init(rawValue: Byte) {
+    init(rawValue: Byte) {
 		if rawValue & 0x80 != 0 {
 			self.rawValue = rawValue
 		} else {

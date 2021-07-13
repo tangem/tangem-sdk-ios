@@ -23,7 +23,7 @@ public final class CheckPinCommand: Command {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CheckPinResponse>) {
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success:
                 completion(.success(CheckPinResponse(isPin1Default: session.environment.pin1.isDefault,

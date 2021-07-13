@@ -78,7 +78,7 @@ public class SetPinCommand: Command {
                 switch result {
                 case .success:
                     session.resume()
-                    self.transieve(in: session, completion: completion )
+                    self.transceive(in: session, completion: completion )
                 case .failure(let error):
                     completion(.failure(error))
                 }

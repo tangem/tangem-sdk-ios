@@ -112,7 +112,7 @@ public final class ReadIssuerExtraDataCommand: Command {
     
     private func readData(_ session: CardSession) {
         showProgress()
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 if let dataSize = response.size {

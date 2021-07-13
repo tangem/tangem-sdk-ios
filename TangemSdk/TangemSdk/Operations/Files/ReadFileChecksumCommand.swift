@@ -42,7 +42,7 @@ public final class ReadFileChecksumCommand: Command {
 	}
 	
 	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
-		transieve(in: session) { (result) in
+		transceive(in: session) { (result) in
 			switch result {
 			case .success(let response):
 				completion(.success(response))

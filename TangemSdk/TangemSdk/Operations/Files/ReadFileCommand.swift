@@ -51,7 +51,7 @@ public final class ReadFileCommand: Command {
 	}
     
 	private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
-		transieve(in: session) { (result) in
+		transceive(in: session) { (result) in
 			switch result {
 			case .success(let response):
 				if let size = response.size {

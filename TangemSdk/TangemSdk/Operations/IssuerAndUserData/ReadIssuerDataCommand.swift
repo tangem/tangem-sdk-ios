@@ -67,7 +67,7 @@ public final class ReadIssuerDataCommand: Command {
 
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 guard response.issuerData.count > 0 else {

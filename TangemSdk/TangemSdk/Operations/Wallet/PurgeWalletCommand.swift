@@ -39,7 +39,7 @@ public final class PurgeWalletCommand: Command {
     }
 	
 	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-		transieve(in: session) { (result) in
+		transceive(in: session) { (result) in
 			switch result {
 			case .success(let response):
                 session.environment.card?.wallets[self.walletPublicKey] = nil

@@ -52,7 +52,7 @@ extension Command {
     var requiresPin2: Bool { return false }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        transieve(in: session, completion: completion)
+        transceive(in: session, completion: completion)
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -63,7 +63,7 @@ extension Command {
         return error
     }
     
-    func transieve(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+    func transceive(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         let commandName = "\(self)".remove("TangemSdk.").remove("Command")
         Log.command("=======================") //TODO: refactor
         Log.command("Send command: \(commandName)")
@@ -83,17 +83,17 @@ extension Command {
         if session.environment.pin2.value == nil && requiresPin2 {
            requestPin(.pin2, session, completion: completion)
         } else {
-           transieveInternal(in: session, completion: completion)
+           transceiveInternal(in: session, completion: completion)
         }
     }
     
-    private func transieveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+    private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
             session.rememberTag()
             Log.apdu("----Serialize command:-----")
             let commandApdu = try serialize(with: session.environment)
             Log.apdu("---------------------------")
-            transieve(apdu: commandApdu, in: session) { result in
+            transceive(apdu: commandApdu, in: session) { result in
                 session.releaseTag()
                 switch result {
                 case .success(let responseApdu):
@@ -134,7 +134,7 @@ extension Command {
         }
     }
     
-    private func transieve(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
+    private func transceive(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
         session.send(apdu: apdu) { result in
             switch result {
             case .success(let responseApdu):
@@ -149,7 +149,7 @@ extension Command {
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
                             session.restartPolling()
                         }
-                        self.transieve(apdu: apdu, in: session, completion: completion)                        
+                        self.transceive(apdu: apdu, in: session, completion: completion)                        
                     }
                 case .needEcryption:
                     switch session.environment.encryptionMode {
@@ -164,7 +164,7 @@ extension Command {
                     case .strong:
                         break
                     }
-                    self.transieve(apdu: apdu, in: session, completion: completion)
+                    self.transceive(apdu: apdu, in: session, completion: completion)
                 case .unknown:
                     completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
                 default:
@@ -204,7 +204,7 @@ extension Command {
                 switch result {
                 case .success:
                     session.resume()
-                    self.transieveInternal(in: session, completion: completion)
+                    self.transceiveInternal(in: session, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
                 }

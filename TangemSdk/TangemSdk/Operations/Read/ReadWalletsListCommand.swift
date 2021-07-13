@@ -27,7 +27,7 @@ class ReadWalletsListCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 self.loadedWallets.append(contentsOf: response.wallets)

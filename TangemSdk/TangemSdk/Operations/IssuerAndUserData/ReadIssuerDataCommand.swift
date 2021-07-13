@@ -54,12 +54,12 @@ public final class ReadIssuerDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if issuerPublicKey == nil {
-            issuerPublicKey = card.issuer.publicKey
+        if card.firmwareVersion >= .filesAvailable {
+            return .notSupportedFirmwareVersion
         }
         
         if issuerPublicKey == nil {
-            return .missingIssuerPublicKey
+            issuerPublicKey = card.issuer.publicKey
         }
         
         return nil

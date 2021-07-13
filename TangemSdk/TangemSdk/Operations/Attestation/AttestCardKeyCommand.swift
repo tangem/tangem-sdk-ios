@@ -48,7 +48,7 @@ public class AttestCardKeyCommand: Command {
             }
         }
         
-        transieve(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 guard let verified = response.verify() else {

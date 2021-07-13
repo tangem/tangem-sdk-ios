@@ -111,7 +111,7 @@ public final class WriteFileCommand: Command {
 	
 	private func writeFileData(session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
 		// TODO: Insert view delegate method to display progress to user
-		transieve(in: session) { (result) in
+		transceive(in: session) { (result) in
 			switch result {
 			case .success(let response):
 				switch self.mode {

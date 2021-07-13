@@ -127,7 +127,7 @@ extension Attestation: Decodable {
         self.firmwareAttestation = try container.decode(Status.self, forKey: .firmwareAttestation)
         self.cardUniquenessAttestation = try container.decode(Status.self, forKey: .cardUniquenessAttestation)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy:  CodingKeys.self)
         try container.encode(cardKeyAttestation, forKey: .cardKeyAttestation)
@@ -135,7 +135,7 @@ extension Attestation: Decodable {
         try container.encode(firmwareAttestation, forKey: .firmwareAttestation)
         try container.encode(cardUniquenessAttestation, forKey: .cardUniquenessAttestation)
     }
-    
+
     enum CodingKeys: String, CodingKey {
         case index, cardKeyAttestation, walletKeysAttestation,
              firmwareAttestation, cardUniquenessAttestation

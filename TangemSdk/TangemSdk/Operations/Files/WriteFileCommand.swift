@@ -111,7 +111,7 @@ public final class WriteFileCommand: Command {
 	
 	private func writeFileData(session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
 		// [REDACTED_TODO_COMMENT]
-		transieve(in: session) { (result) in
+		transceive(in: session) { (result) in
 			switch result {
 			case .success(let response):
 				switch self.mode {

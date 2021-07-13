@@ -96,10 +96,6 @@ public final class ReadIssuerExtraDataCommand: Command {
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
-        
-        if issuerPublicKey == nil {
-            return .missingIssuerPublicKey
-        }
 		
 		if card.firmwareVersion >= .filesAvailable {
 			return .notSupportedFirmwareVersion

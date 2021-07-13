@@ -96,7 +96,7 @@ public final class WriteIssuerExtraDataCommand: Command {
     
     private func writeData(_ session: CardSession) {
         showProgress()
-        transieve(in: session) {result in
+        transceive(in: session) {result in
             switch result {
             case .success(let response):
                 switch self.mode {

@@ -68,6 +68,6 @@ private extension TrustedCardsRepo {
 
 private extension TrustedCardsRepo {
     enum Constants {
-        static var maxCards = 30
+        static var maxCards = 1000 //todo: Think about it!
     }
 }

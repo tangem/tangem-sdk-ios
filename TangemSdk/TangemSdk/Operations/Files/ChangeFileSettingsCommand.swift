@@ -11,7 +11,7 @@ import Foundation
 /// Command for updating file settings
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsCommand: Command {
-	public var requiresPin2: Bool { true }
+	public var requiresPasscode: Bool { true }
 	
     private let data: FileSettingsChange
 	
@@ -30,8 +30,8 @@ public final class ChangeFileSettingsCommand: Command {
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
 		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
 			.append(.cardId, value: environment.card?.cardId)
-			.append(.pin, value: environment.pin1.value)
-			.append(.pin2, value: environment.pin2.value)
+			.append(.pin, value: environment.accessCode.value)
+			.append(.pin2, value: environment.passcode.value)
 			.append(.interactionMode, value: FileDataMode.changeFileSettings)
             .append(.fileIndex, value: data.fileIndex)
             .append(.fileSettings, value: data.settings)

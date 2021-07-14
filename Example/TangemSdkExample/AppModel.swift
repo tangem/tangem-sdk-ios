@@ -206,15 +206,35 @@ extension AppModel {
     }
     
     func setAccessCode() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         tangemSdk.setAccessCode(nil,
-                                cardId: card?.cardId,
+                                cardId: cardId,
                                 completion: handleCompletion)
     }
     
     func setPasscode() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
         tangemSdk.setPasscode(nil,
-                              cardId: card?.cardId,
+                              cardId: cardId,
                               completion: handleCompletion)
+    }
+    
+    func resetUserCodes() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
+        tangemSdk.resetUserCodes(cardId: cardId,
+                                 completion: handleCompletion)
     }
 }
 
@@ -467,6 +487,7 @@ extension AppModel {
         case depersonalize
         case setAccessCode
         case setPasscode
+        case resetUserCodes
         case createWallet
         case purgeWallet
         //files
@@ -494,6 +515,7 @@ extension AppModel {
         case .chainingExample: chainingExample()
         case .setAccessCode: setAccessCode()
         case .setPasscode: setPasscode()
+        case .resetUserCodes: resetUserCodes()
         case .depersonalize: depersonalize()
         case .scan: scan()
         case .signHash: runWithPublicKey(signHash, walletPublicKey)

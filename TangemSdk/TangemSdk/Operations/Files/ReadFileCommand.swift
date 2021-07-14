@@ -23,7 +23,7 @@ public struct ReadFileResponse: JSONStringConvertible {
 /// Command that read single file at specified index. Reading private file will prompt user to input a passcode.
 @available (iOS 13.0, *)
 public final class ReadFileCommand: Command {
-	public var requiresPin2: Bool { readPrivateFiles }
+	public var requiresPasscode: Bool { readPrivateFiles }
 	
 	private let fileIndex: Int
 	private let readPrivateFiles: Bool
@@ -88,12 +88,12 @@ public final class ReadFileCommand: Command {
 	
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
 		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-			.append(.pin, value: environment.pin1.value)
+			.append(.pin, value: environment.accessCode.value)
 			.append(.cardId, value: environment.card?.cardId)
 			.append(.fileIndex, value: fileIndex)
 			.append(.offset, value: offset)
 		if readPrivateFiles {
-			try tlvBuilder.append(.pin2, value: environment.pin2.value)
+			try tlvBuilder.append(.pin2, value: environment.passcode.value)
 		}
 		return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
 	}

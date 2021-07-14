@@ -355,7 +355,7 @@ public class CardSession {
                     }
                 }
                 
-                guard let protocolKey = self.environment.pin1.value?.pbkdf2sha256(salt: uid, rounds: 50),
+                guard let protocolKey = self.environment.accessCode.value?.pbkdf2sha256(salt: uid, rounds: 50),
                       let secret = encryptionHelper.generateSecret(keyB: response.sessionKeyB) else {
                     return Fail(error: .cryptoUtilsError).eraseToAnyPublisher()
                 }
@@ -366,30 +366,30 @@ public class CardSession {
             }.eraseToAnyPublisher()
     }
     
-    // MARK: - Request PIN
-    func requestPinIfNeeded(_ pinType: PinCode.PinType, _ completion: @escaping CompletionResult<Void>) {
-        switch pinType {
-        case .pin1:
-            guard environment.pin1.value == nil else {
+    // MARK: - Request User code
+    func requestUserCodeIfNeeded(_ type: UserCodeType, _ completion: @escaping CompletionResult<Void>) {
+        switch type {
+        case .accessCode:
+            guard environment.accessCode.value == nil else {
                 completion(.success(()))
                 return
             }
-        case .pin2:
-            guard environment.pin2.value == nil else {
+        case .passcode:
+            guard environment.passcode.value == nil else {
                 completion(.success(()))
                 return
             }
         }
-        Log.session("Request pin of type: \(pinType)")
-        viewDelegate.requestPin(pinType: pinType, cardId: environment.card?.cardId ?? cardId) {[weak self] pin in
+        Log.session("Request user code of type: \(type)")
+        viewDelegate.requestUserCode(type: type, cardId: environment.card?.cardId ?? cardId) {[weak self] code in
             guard let self = self else { return }
             
-            if let pin = pin {
-                switch pinType {
-                case .pin1:
-                    self.environment.pin1 = PinCode(.pin1, stringValue: pin)
-                case .pin2:
-                    self.environment.pin2 = PinCode(.pin2, stringValue: pin)
+            if let code = code {
+                switch type {
+                case .accessCode:
+                    self.environment.accessCode = UserCode(.accessCode, stringValue: code)
+                case .passcode:
+                    self.environment.passcode = UserCode(.passcode, stringValue: code)
                 }
                 completion(.success(()))
             } else {

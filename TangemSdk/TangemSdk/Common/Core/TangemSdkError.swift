@@ -102,7 +102,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cannotBeDepersonalized
     
     // Read Errors
-    case pin1Required
+    case accessCodeRequired
     
     // CreateWallet Errors
     case alreadyCreated
@@ -113,9 +113,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case purgeWalletProhibited
     
     // SetPin Errors
-    case pin1CannotBeChanged
-    case pin2CannotBeChanged
-    case pin1CannotBeDefault
+    case accessCodeCannotBeChanged
+    case passcodeCannotBeChanged
+    case accessCodeCannotBeDefault
     
     //Sign Errors
     case noRemainingSignatures
@@ -146,7 +146,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case walletIsPurged
     
-    case pin2Required
+    case passcodeRequired
     
     /// This error is returned when SDK checks unsuccessfully either
     /// a card's ability to sign with its private key, or the validity of issuer data.
@@ -169,11 +169,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when `issuerPublicKey` requires to perform operation
     case missingIssuerPublicKey
     
-    ///User entered wrong pin
-    case wrongPin1
+    ///User entered wrong Access Code
+    case wrongAccessCode
     
-    ///User entered wrong pin
-    case wrongPin2
+    ///User entered wrong Passcode
+    case wrongPasscode
     
     //MARK: SDK errors
     
@@ -298,7 +298,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .notPersonalized: return 40001
         case .notActivated: return 40002
         case .walletIsPurged: return 40003
-        case .pin2Required: return 40004
+        case .passcodeRequired: return 40004
         case .verificationFailed: return 40005
         case .dataSizeTooLarge: return 40006
         case .missingCounter: return 40007
@@ -306,14 +306,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .dataCannotBeWritten: return 40009
         case .missingIssuerPublicKey: return 40010
         case .cardVerificationFailed: return 40011
-        case .wrongPin1: return 40012
-        case .wrongPin2: return 40013
+        case .wrongAccessCode: return 40012
+        case .wrongPasscode: return 40013
             
         case .alreadyPersonalized: return 40101
             
         case .cannotBeDepersonalized: return 40201
             
-        case .pin1Required: return 40401
+        case .accessCodeRequired: return 40401
         case .cardReadWrongWallet: return 40402
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
@@ -325,9 +325,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .purgeWalletProhibited: return 40601
             
-        case .pin1CannotBeChanged: return 40801
-        case .pin2CannotBeChanged: return 40802
-        case .pin1CannotBeDefault: return 40803
+        case .accessCodeCannotBeChanged: return 40801
+        case .passcodeCannotBeChanged: return 40802
+        case .accessCodeCannotBeDefault: return 40803
         
         case .noRemainingSignatures: return 40901
         case .emptyHashes: return 40902
@@ -408,9 +408,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .notActivated: return "error_not_activated".localized
         case .notPersonalized: return "error_not_personalized".localized
         case .overwritingDataIsProhibited: return "error_data_cannot_be_written".localized
-        case .pin1CannotBeChanged: return "error_pin1_cannot_be_changed".localized
-        case .pin1CannotBeDefault: return "error_pin1_cannot_be_default".localized
-        case .pin2CannotBeChanged: return "error_pin2_cannot_be_changed".localized
+        case .accessCodeCannotBeChanged: return "error_pin1_cannot_be_changed".localized
+        case .accessCodeCannotBeDefault: return "error_pin1_cannot_be_default".localized
+        case .passcodeCannotBeChanged: return "error_pin2_cannot_be_changed".localized
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .signHashesNotAvailable: return "error_cannot_be_signed".localized
         case .tagLost: return "error_tag_lost".localized
@@ -420,8 +420,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cardVerificationFailed: return "error_card_verification_failed".localized
         case .wrongCardNumber: return "error_wrong_card_number".localized
         case .wrongCardType: return "error_wrong_card_type".localized
-        case .pin1Required: return "error_pin1_required".localized
-        case .pin2Required: return "error_pin2_required".localized
+        case .accessCodeRequired: return "error_pin1_required".localized
+        case .passcodeRequired: return "error_pin2_required".localized
         case .underlying(let error): return error.localizedDescription
 		case .fileNotFound: return "error_file_not_found".localized
 		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
@@ -429,8 +429,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
 		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
-        case .wrongPin1: return "error_wrong_pin1".localized
-        case .wrongPin2: return "error_wrong_pin2".localized
+        case .wrongAccessCode: return "error_wrong_pin1".localized
+        case .wrongPasscode: return "error_wrong_pin2".localized
         case .encodingFailed(let message):
             return Localization.genericErrorCode("\(self.code). \(message)")
         case .encodingFailedTypeMismatch(let message):
@@ -528,15 +528,17 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// Get error according to the pin type
     /// - Parameters:
-    ///   - pinType: Specific pin type
+    ///   - userCodeType: Specific user code type
     ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
     /// - Returns: TangemSdkError
-    static func from(pinType: PinCode.PinType, environment: SessionEnvironment?) -> TangemSdkError {
-        switch pinType {
-        case .pin1:
-            return (environment?.pin1.isDefault ?? true) ? .pin1Required : .wrongPin1
-        case .pin2:
-            return (environment?.pin2.isDefault ?? true) ? .pin2Required : .wrongPin2
+    static func from(userCodeType: UserCodeType, environment: SessionEnvironment?) -> TangemSdkError {
+        let isCodeSet = environment?.isUserCodeSet(userCodeType) ?? false
+        
+        switch userCodeType {
+        case .accessCode:
+            return isCodeSet ? .wrongAccessCode : .accessCodeRequired
+        case .passcode:
+            return isCodeSet ? .wrongPasscode : .passcodeRequired
         }
     }
 }

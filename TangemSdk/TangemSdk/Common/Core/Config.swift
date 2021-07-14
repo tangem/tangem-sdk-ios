@@ -51,7 +51,7 @@ public struct Config {
     public var attestationMode: AttestationTask.Mode = .normal
     
     /// If true, BAP cards will pass online attestation. Use only for debugging purposes and if you understand what to do
-    public var allowUnrustedCards: Bool = false
+    public var allowUntrustedCards: Bool = false
     
     public var filter: CardFilter = .default
 }

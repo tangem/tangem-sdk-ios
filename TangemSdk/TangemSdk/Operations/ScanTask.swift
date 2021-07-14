@@ -45,7 +45,7 @@ public final class ScanTask: CardSessionRunnable {
             let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
             
             //Possible production sample or development card
-            if isDevelopmentCard || session.environment.config.allowUnrustedCards {
+            if isDevelopmentCard || session.environment.config.allowUntrustedCards {
                 let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
                     : "This card may be production sample or conterfeit. You can continue at your own risk"
                 

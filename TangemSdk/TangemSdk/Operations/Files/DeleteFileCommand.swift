@@ -11,7 +11,7 @@ import Foundation
 /// Command that deletes file at specified index
 @available (iOS 13.0, *)
 public final class DeleteFileCommand: Command {
-    var requiresPin2: Bool { return true }
+    var requiresPasscode: Bool { return true }
     
 	private let fileIndex: Int
 	
@@ -30,8 +30,8 @@ public final class DeleteFileCommand: Command {
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
 		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
 			.append(.cardId, value: environment.card?.cardId)
-			.append(.pin, value: environment.pin1.value)
-			.append(.pin2, value: environment.pin2.value)
+			.append(.pin, value: environment.accessCode.value)
+			.append(.pin2, value: environment.passcode.value)
 			.append(.interactionMode, value: FileDataMode.deleteFile)
 			.append(.fileIndex, value: fileIndex)
 		return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())

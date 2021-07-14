@@ -115,25 +115,24 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		}
 	}
 	
-    func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void) {
+    func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void) {
         runInMainThread {
-            Log.view("Showing pin request with type: \(pinType)")
-            switch pinType {
-            case .pin1:
+            Log.view("Showing user code request with type: \(type)")
+            switch type {
+            case .accessCode:
                 self.requestPin(.pin1, cardId: cardId, completion: completion)
-            case .pin2:
+            case .passcode:
                 self.requestPin(.pin2, cardId: cardId, completion: completion)
             }
         }
     }
-	
-    func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+    func requestUserCodeChange(type: UserCodeType, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
         runInMainThread {
-            Log.view("Showing pin change request with type: \(pinType)")
-            switch pinType {
-            case .pin1:
+            Log.view("Showing user code change request with type: \(type)")
+            switch type {
+            case .accessCode:
                 self.requestChangePin(.pin1, cardId: cardId, completion: completion)
-            case .pin2:
+            case .passcode:
                 self.requestChangePin(.pin2, cardId: cardId, completion: completion)
             }
         }
@@ -270,7 +269,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
 		}
 	}
 	
-	private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+	private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
         let cardId = formatCardId(cardId)
 		let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
 		let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in

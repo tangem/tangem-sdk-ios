@@ -92,7 +92,7 @@ public final class WriteIssuerDataCommand: Command {
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1.value)
+            .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.issuerData, value: issuerData)
             .append(.issuerDataSignature, value: issuerDataSignature)

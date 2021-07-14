@@ -10,8 +10,7 @@
     "response" : {
         "jsonrpc" : "2.0",
         "result" : {
-            "cardId": "c000111122223333",
-            "status": "PIN2CHANGED"
+            "cardId": "c000111122223333"
         },
         "id" : 1
     }

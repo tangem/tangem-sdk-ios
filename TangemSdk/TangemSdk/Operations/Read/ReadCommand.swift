@@ -31,7 +31,7 @@ final class ReadCommand: Command {
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
-            return .pin1Required
+            return .accessCodeRequired
         }
         
         return error
@@ -43,7 +43,7 @@ final class ReadCommand: Command {
         /// In order to obtain card’s data, [ReadCommand] should use the correct pin 1 value.
         /// The card will not respond if wrong pin 1 has been submitted.
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1.value)
+            .append(.pin, value: environment.accessCode.value)
             .append(.interactionMode, value: ReadMode.card)
         if let keys = environment.terminalKeys {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)

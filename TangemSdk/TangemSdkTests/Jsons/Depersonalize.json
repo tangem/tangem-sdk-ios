@@ -3,9 +3,7 @@
         "jsonrpc": "2.0",
         "id": 1,
         "method": "depersonalize",
-        "params": {
-            "pin": "ABCDEFGH"
-        }
+        "params": {}
     },
     "response" : {
         "jsonrpc" : "2.0",

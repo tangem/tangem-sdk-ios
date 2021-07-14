@@ -18,7 +18,7 @@ public struct WriteFileResponse: JSONStringConvertible {
 /// Command for writing file on card
 @available (iOS 13.0, *)
 public final class WriteFileCommand: Command {
-	public var requiresPin2: Bool { dataToWrite.requiredPin2 }
+	public var requiresPasscode: Bool { dataToWrite.requiredPasscode }
 	
 	private static let singleWriteSize = 900
 	private static let maxSize = 48 * 1024
@@ -78,7 +78,7 @@ public final class WriteFileCommand: Command {
 	func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
 		let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
 			.append(.cardId, value: environment.card?.cardId)
-			.append(.pin, value: environment.pin1.value)
+			.append(.pin, value: environment.accessCode.value)
 			.append(.interactionMode, value: mode)
 		switch mode {
 		case .initiateWritingFile:
@@ -152,7 +152,7 @@ public final class WriteFileCommand: Command {
 	}
 	
 	private func isCounterRequired(card: Card) -> Bool {
-		if dataToWrite.requiredPin2 { return false }
+		if dataToWrite.requiredPasscode { return false }
         return card.settings.isIssuerDataProtectedAgainstReplay
 	}
 	

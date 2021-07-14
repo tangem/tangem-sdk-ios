@@ -9,7 +9,7 @@
 import UIKit
 
 class ChangePinViewController: UIViewController, UITextFieldDelegate {
-    var completionHandler: CompletionResult<(currentPin: String, newPin: String)>
+    var completionHandler: CompletionResult<(currentCode: String, newCode: String)>
     let state: PinViewControllerState
     let cardId: String?
     var validationTimer: Timer? = nil
@@ -56,7 +56,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    init?(coder: NSCoder, state: PinViewControllerState, cardId: String? = nil, completionHandler: @escaping CompletionResult<(currentPin: String, newPin: String)>) {
+    init?(coder: NSCoder, state: PinViewControllerState, cardId: String? = nil, completionHandler: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
         self.completionHandler = completionHandler
         self.state = state
         self.cardId = cardId
@@ -86,7 +86,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
     @IBAction func btnSaveTapped(_ sender: UIButton) {
         self.dismiss(animated: true) {
             if let newText = self.newText.text?.trim() {
-                self.completionHandler(.success((currentPin: "", newPin: newText)))
+                self.completionHandler(.success((currentCode: "", newCode: newText)))
             } else {
                 self.completionHandler(.failure(.unknownError))
             }

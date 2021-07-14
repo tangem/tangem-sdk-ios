@@ -88,3 +88,4 @@ extension Card {
         case purged = 3
     }
 }
+

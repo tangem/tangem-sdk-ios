@@ -100,14 +100,7 @@ class SignCommand: Command {
             return
         }
         
-        sign(in: session) { r in
-            switch r {
-            case .success(let response):
-                completion(.success(response))
-            case .failure(let err):
-                completion(.failure(err))
-            }
-        }
+        sign(in: session, completion: completion)
     }
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {        
@@ -146,13 +139,18 @@ class SignCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1.value)
-            .append(.pin2, value: environment.pin2.value)
+            .append(.pin, value: environment.accessCode.value)
+            .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.transactionOutHashSize, value: hashes.first!.count)
             .append(.transactionOutHash, value: flattenHashes)
             //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
             .append(.walletPublicKey, value: walletPublicKey)
+        
+        if let cvc = environment.cvc {
+            try tlvBuilder.append(.cvc, value: cvc)
+        }
+        
         /**
          * Application can optionally submit a public key Terminal_PublicKey in [SignCommand].
          * Submitted key is stored by the Tangem card if it differs from a previous submitted Terminal_PublicKey.

@@ -221,13 +221,12 @@ public extension TangemSdk {
     ///   - accessCode: Access code to set. If nil, the user will be prompted to enter code before operation
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<SetPinResponse,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<UserCodeCommandResponse,TangemSdkError>`
     func setAccessCode(_ accessCode: String? = nil,
-                       cardId: String? = nil,
+                       cardId: String,
                        initialMessage: Message? = nil,
-                       completion: @escaping CompletionResult<SetPinResponse>) {
-        let code: SetPinCommand.UserCode = accessCode.map { .value($0) } ?? .request
-        let command = SetPinCommand(accessCode: code)
+                       completion: @escaping CompletionResult<SuccessResponse>) {
+        let command = SetUserCodeCommand(accessCode: accessCode)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -236,14 +235,24 @@ public extension TangemSdk {
     ///   - passcode: Passcode to set. If nil, the user will be prompted to enter code before operation
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<SetPinResponse,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
     func setPasscode(_ passcode: String? = nil,
-                     cardId: String? = nil,
+                     cardId: String,
                      initialMessage: Message? = nil,
-                     completion: @escaping CompletionResult<SetPinResponse>) {
-        let code: SetPinCommand.UserCode = passcode.map { .value($0) } ?? .request
-        let command = SetPinCommand(passcode: code)
+                     completion: @escaping CompletionResult<SuccessResponse>) {
+        let command = SetUserCodeCommand(passcode: passcode)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+    
+    /// Reset all user codes
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
+    func resetUserCodes(cardId: String,
+                        initialMessage: Message? = nil,
+                        completion: @escaping CompletionResult<SuccessResponse>) {
+        startSession(with: SetUserCodeCommand.resetUserCodes, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     //MARK: - Files
@@ -251,7 +260,7 @@ public extension TangemSdk {
     /// This command reads all files stored on card.
     ///
     /// By default command trying to read all files (including private), to change this behaviour - setup your ` ReadFileDataTaskSetting `
-    /// - Note: When performing reading private files command, you must  provide `pin2`
+    /// - Note: When performing reading private files command, you must  provide `passcode`
     /// - Warning: Command available only for cards with COS 3.29 and higher
     /// - Parameters:
     ///   - readPrivateFiles: If true - all files saved on card will be read otherwise
@@ -290,9 +299,9 @@ public extension TangemSdk {
     ///
     /// There are 2 main implementation of `DataToWrite` protocol:
     ///  1. `FileDataProtectedBySignature` - for files  signed by Issuer (specified on card during personalization)
-    ///  2. `FileDataProtectedByPasscode` - write files protected by Pin2
+    ///  2. `FileDataProtectedByPasscode` - write files protected by Passcode
     /// - Warning: This command available for COS 3.29 and higher
-    /// - Note: Writing files protected by Pin2 only available for COS 3.34 and higher
+    /// - Note: Writing files protected by Passcode only available for COS 3.34 and higher
     /// - Parameters:
     ///   - files: List of files that should be written to card
     ///   - cardId: CID, Unique Tangem card ID number.
@@ -478,7 +487,7 @@ public extension TangemSdk {
      * of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use.
      * For example, this fields may contain blockchain nonce value.
      *
-     * Writing of UserCounter and UserData is protected only by PIN1.
+     * Writing of UserCounter and UserData is protected only by Access Code.
      * - Parameters:
      *   - userData: Data defined by user’s App
      *   - userCounter: Counter initialized by user’s App and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
@@ -507,10 +516,10 @@ public extension TangemSdk {
      * of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use.
      * For example, this fields may contain blockchain nonce value.
      *
-     * UserProtectedCounter and UserProtectedData is protected by PIN1 and need additionally PIN2 to confirmation.
+     * UserProtectedCounter and UserProtectedData is protected by Access Code and need additionally Passcode to confirmation.
      * - Parameters:
-     *   - userProtectedData: Data defined by user’s App (confirmed by PIN2)
-     *   - userProtectedCounter: Counter initialized by user’s App (confirmed by PIN2) and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
+     *   - userProtectedData: Data defined by user’s App (confirmed by Passcode)
+     *   - userProtectedCounter: Counter initialized by user’s App (confirmed by Passcode) and increased on every signing of new transaction.  If nil, the current counter value will not be overwritten.
      *   - cardId:  CID, Unique Tangem card ID number.
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`

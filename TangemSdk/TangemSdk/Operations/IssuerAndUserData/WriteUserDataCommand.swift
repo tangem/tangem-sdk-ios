@@ -21,7 +21,7 @@ import Foundation
 */
 @available(*, deprecated, message: "Use files instead")
 public final class WriteUserDataCommand: Command {
-    var requiresPin2: Bool { return true }
+    var requiresPasscode: Bool { return true }
     
     private static let maxSize = 512
     
@@ -82,7 +82,7 @@ public final class WriteUserDataCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.pin1.value)
+            .append(.pin, value: environment.accessCode.value)
         
         if let userData = userData {
             try tlvBuilder.append(.userData, value: userData)
@@ -98,11 +98,11 @@ public final class WriteUserDataCommand: Command {
         
         if let userProtectedCounter = userProtectedCounter {
             try tlvBuilder.append(.userProtectedCounter, value: userProtectedCounter)
-                .append(.pin2, value: environment.pin2.value)
+                .append(.pin2, value: environment.passcode.value)
         }
         
         if userProtectedData != nil || userProtectedCounter != nil {
-            try tlvBuilder.append(.pin2, value: environment.pin2.value)
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
         }
     
         return CommandApdu(.writeUserData, tlv: tlvBuilder.serialize())

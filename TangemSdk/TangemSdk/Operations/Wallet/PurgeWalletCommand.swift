@@ -12,7 +12,7 @@ import Foundation
 public final class PurgeWalletCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
-    var requiresPin2: Bool { return true }
+    var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
     
@@ -52,8 +52,8 @@ public final class PurgeWalletCommand: Command {
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1.value)
-            .append(.pin2, value: environment.pin2.value)
+            .append(.pin, value: environment.accessCode.value)
+            .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.walletPublicKey, value: walletPublicKey)
 		

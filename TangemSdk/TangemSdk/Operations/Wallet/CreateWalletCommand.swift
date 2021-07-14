@@ -26,7 +26,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * RemainingSignature is set to MaxSignatures.
  */
 public final class CreateWalletCommand: Command {
-    var requiresPin2: Bool { return true }
+    var requiresPasscode: Bool { return true }
     
     private let curve: EllipticCurve
     private let isPermanent: Bool
@@ -106,7 +106,7 @@ public final class CreateWalletCommand: Command {
             guard let card = card else { return error }
             
             if card.firmwareVersion >= .isPasscodeStatusAvailable,
-               let pin2IsDefault = card.isPasscodeSet, pin2IsDefault {
+               let isPasscodeSet = card.isPasscodeSet, !isPasscodeSet {
                 return .alreadyCreated
             }
         }
@@ -116,8 +116,8 @@ public final class CreateWalletCommand: Command {
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.pin1.value)
-            .append(.pin2, value: environment.pin2.value)
+            .append(.pin, value: environment.accessCode.value)
+            .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.walletIndex, value: walletIndex)
         

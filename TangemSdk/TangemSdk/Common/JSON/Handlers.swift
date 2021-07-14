@@ -100,12 +100,11 @@ class DepersonalizeHandler: JSONRPCHandler {
 class SetAccessCodeHandler: JSONRPCHandler {
     var method: String { "SET_ACCESSCODE" }
     
-    var requiresCardId: Bool { false }
+    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let stringCode: String? = try parameters.value(for: "accessCode")
-        let code: SetPinCommand.UserCode = stringCode.map { .value($0) } ?? .request
-        let command = SetPinCommand(accessCode: code)
+        let accessCode: String? = try parameters.value(for: "accessCode")
+        let command = SetUserCodeCommand(accessCode: accessCode)
         return command.eraseToAnyRunnable()
     }
 }
@@ -113,15 +112,25 @@ class SetAccessCodeHandler: JSONRPCHandler {
 class SetPasscodeHandler: JSONRPCHandler {
     var method: String { "SET_PASSCODE" }
     
-    var requiresCardId: Bool { false }
+    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let stringCode: String? = try parameters.value(for: "passcode")
-        let code: SetPinCommand.UserCode = stringCode.map { .value($0) } ?? .request
-        let command = SetPinCommand(passcode: code)
+        let passcode: String? = try parameters.value(for: "passcode")
+        let command = SetUserCodeCommand(passcode: passcode)
         return command.eraseToAnyRunnable()
     }
 }
+
+class ResetUserCodesHandler: JSONRPCHandler {
+    var method: String { "RESET_USERCODES" }
+    
+    var requiresCardId: Bool { true }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        return SetUserCodeCommand.resetUserCodes.eraseToAnyRunnable()
+    }
+}
+//todo: reset array
 
 /// Runs PreflightReadTask in `fullCardRead` mode
 class PreflightReadHandler: JSONRPCHandler {

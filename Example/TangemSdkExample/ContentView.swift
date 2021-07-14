@@ -11,8 +11,6 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
-    @EnvironmentObject var testModel: TestHealthModel
-    
     @State private var isOpenHealthTest = false
     
     var body: some View {
@@ -51,13 +49,6 @@ struct ContentView: View {
                             .padding()
                         
                         additionalView
-                        
-                        Button("Stress test", action: {
-                            isOpenHealthTest = true
-                        })
-                        .sheet(isPresented: $isOpenHealthTest, content: {
-                            TestHealthView().environmentObject(testModel)
-                        })
                     }
                     .padding(.horizontal, 20)
                     .frame(width: geo.size.width)

@@ -99,7 +99,7 @@ public class PersonalizeCommand: Command {
             .append(.crExKey, value: config.hexCrExKey)
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
-            .append(.cardData, value: cardData)
+            .append(.cardData, value: try serializeCardData(environment: environment, cardData: cardData))
 			
         if let walletsCount = config.walletsCount {
             try tlvBuilder.append(.walletsCount, value: walletsCount)

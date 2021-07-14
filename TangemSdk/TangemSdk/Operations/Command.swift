@@ -41,15 +41,15 @@ extension ApduSerializable {
 
 /// The basic protocol for card commands
 protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
-    /// If set to `true` and ` SessionEnvironment.pin2` is nil, pin2 will be requested automatically before transieve the apdu. Default is `false`
-    var requiresPin2: Bool { get }
+    /// If set to `true` and ` SessionEnvironment.passcode` is nil, pin2 will be requested automatically before transieve the apdu. Default is `false`
+    var requiresPasscode: Bool { get }
     
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
 
 extension Command {
-    var requiresPin2: Bool { return false }
+    var requiresPasscode: Bool { return false }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transceive(in: session, completion: completion)
@@ -62,7 +62,7 @@ extension Command {
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         return error
     }
-    
+
     func transceive(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         let commandName = "\(self)".remove("TangemSdk.").remove("Command")
         Log.command("=======================") //TODO: refactor
@@ -80,8 +80,8 @@ extension Command {
             }
         }
         
-        if session.environment.pin2.value == nil && requiresPin2 {
-           requestPin(.pin2, session, completion: completion)
+        if session.environment.passcode.value == nil && requiresPasscode {
+           requestPin(.passcode, session, completion: completion)
         } else {
            transceiveInternal(in: session, completion: completion)
         }
@@ -109,17 +109,17 @@ extension Command {
                     if session.environment.config.handleErrors {
                         let mappedError = self.mapError(session.environment.card, error)
                         switch mappedError {
-                        case .pin1Required:
-                            self.requestPin(.pin1, session, completion: completion) //only read command
+                        case .accessCodeRequired:
+                            self.requestPin(.accessCode, session, completion: completion) //only read command
                         case .invalidParams:
-                            if self.requiresPin2 {
+                            if self.requiresPasscode {
                                 //Addition check for COS v4 and newer to prevent false-positive pin2 request
-                                if session.environment.card?.isPasscodeSet == true,
-                                  session.environment.pin2.isDefault {
+                                if session.environment.card?.isPasscodeSet == false,
+                                   !session.environment.isUserCodeSet(.passcode) {
                                     fallthrough
                                 }
                                 
-                                self.requestPin(.pin2, session, completion: completion)
+                                self.requestPin(.passcode, session, completion: completion)
                             } else { fallthrough }
                         default:
                             completion(.failure(mappedError))
@@ -189,18 +189,18 @@ extension Command {
         return (remainingMilliseconds, saveToFlash)
     }
     
-    private func requestPin(_ pinType: PinCode.PinType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause(error: TangemSdkError.from(pinType: pinType, environment: session.environment))
+    private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        session.pause(error: TangemSdkError.from(userCodeType: type, environment: session.environment))
         
-        switch pinType {
-        case .pin1:
-            session.environment.pin1 = PinCode(.pin1, value: nil)
-        case .pin2:
-            session.environment.pin2 = PinCode(.pin2, value: nil)
+        switch type {
+        case .accessCode:
+            session.environment.accessCode = UserCode(.accessCode, value: nil)
+        case .passcode:
+            session.environment.passcode = UserCode(.passcode, value: nil)
         }
         
         DispatchQueue.main.async {
-            session.requestPinIfNeeded(pinType) { result in
+            session.requestUserCodeIfNeeded(type) { result in
                 switch result {
                 case .success:
                     session.resume()

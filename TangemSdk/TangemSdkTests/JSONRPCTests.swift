@@ -101,15 +101,13 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testSetPin1() {
-        let result = SetPinResponse(cardId: "c000111122223333",
-                                    status: .pin1Changed)
+        let result = SuccessResponse(cardId: "c000111122223333")
         
         testMethod(name: "SetAccessCode", result: result)
     }
     
     func testSetPin2() {
-        let result = SetPinResponse(cardId: "c000111122223333",
-                                    status: .pin2Changed)
+        let result = SuccessResponse(cardId: "c000111122223333")
         
         testMethod(name: "SetPasscode", result: result)
     }

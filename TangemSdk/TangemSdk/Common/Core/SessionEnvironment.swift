@@ -24,9 +24,9 @@ public struct SessionEnvironment {
     
     var cvc: Data? = nil //todo: remove
     
-    var pin1: PinCode = .init(.pin1)
+    var accessCode: UserCode = .init(.accessCode)
     
-    var pin2: PinCode = .init(.pin2)
+    var passcode: UserCode = .init(.passcode)
     
     var legacyMode: Bool { config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice }
     
@@ -37,5 +37,14 @@ public struct SessionEnvironment {
         }
         
         return nil
+    }
+    
+    func isUserCodeSet(_ type: UserCodeType) -> Bool {
+        switch type {
+        case .accessCode:
+            return accessCode.value != type.defaultValue.sha256()
+        case .passcode:
+            return passcode.value != type.defaultValue.sha256()
+        }
     }
 }

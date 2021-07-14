@@ -59,11 +59,11 @@ public protocol SessionViewDelegate: AnyObject {
     
     func showPercentLoading(_ percent: Int, message: Message?, hint: String?)
     
-    /// It is called when a user is expected to enter pin1 code.
-    func requestPin(pinType: PinCode.PinType, cardId: String?, completion: @escaping (_ pin: String?) -> Void)
+    /// It is called when a user is expected to enter user code.
+    func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void)
     
-    /// It is called when a user is expected to enter pin1 code.
-    func requestPinChange(pinType: PinCode.PinType, cardId: String?, completion: @escaping CompletionResult<(currentPin: String, newPin: String)>)
+    /// It is called when a user is expected to change  user code.
+    func requestUserCodeChange(type: UserCodeType, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>)
     
     /// It is called when tag was found
     func tagConnected()

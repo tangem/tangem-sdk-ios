@@ -46,11 +46,7 @@ public final class ScanTask: CardSessionRunnable {
             
             //Possible production sample or development card
             if isDevelopmentCard || session.environment.config.allowUntrustedCards {
-                let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
-                    : "This card may be production sample or conterfeit. You can continue at your own risk"
-                
-                session.viewDelegate.showShouldContinue(title: TangemSdkError.cardVerificationFailed.localizedDescription,
-                                                        message: message) {
+                session.viewDelegate.attesttionDidFail(isDevelopmentCard: isDevelopmentCard) {
                     completion(.success(session.environment.card!))
                 } onCancel: {
                     completion(.failure(.userCancelled))
@@ -65,8 +61,7 @@ public final class ScanTask: CardSessionRunnable {
             completion(.success(session.environment.card!))
             
         case .verifiedOffline:
-            session.viewDelegate.showShouldContinue(title: "Online attestation failed",
-                                                    message: "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation") {
+            session.viewDelegate.attestationCompletedOffline() {
                 completion(.success(session.environment.card!))
             } onCancel: {
                 completion(.failure(.userCancelled))
@@ -82,8 +77,7 @@ public final class ScanTask: CardSessionRunnable {
             }
             
         case .warning:
-            let message = "Some wallets on this card has signs of hacking attempts"
-            session.viewDelegate.showAlert(title: "Warning", message: message) {
+            session.viewDelegate.attestationCompletedWithWarnings {
                 completion(.success(session.environment.card!))
             }
         }

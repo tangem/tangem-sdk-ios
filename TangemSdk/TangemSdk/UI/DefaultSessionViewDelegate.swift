@@ -207,21 +207,30 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     }
     
     //TODO: Refactor UI
-    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+    func attesttionDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+        let title = TangemSdkError.cardVerificationFailed.localizedDescription
+        let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
+            : "This card may be production sample or conterfeit. You can continue at your own risk"
+        
         runInMainThread {
             UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel)
         }
     }
     
     //TODO: Refactor UI
-    func showShouldContinue(title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+    func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+        let title =  "Online attestation failed"
+        let message = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation"
+        
         runInMainThread {
             UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel, onRetry: onRetry)
         }
     }
     
     //TODO: Refactor UI
-    func showAlert(title: String, message: String, onContinue: @escaping () -> Void) {
+    func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
+        let title = "Warning"
+        let message = "Too large runs count of Attest Wallet or Sign looks suspicious."
         runInMainThread {
             UIAlertController.showAlert(from: self.infoScreen, title: title, message: message, onContinue: onContinue)
         }

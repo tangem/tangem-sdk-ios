@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     let model = AppModel()
-    let testModel = TestHealthModel()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -25,8 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
         let window = UIWindow()
         window.rootViewController = UIHostingController(rootView: ContentView()
-                                                            .environmentObject(model)
-                                                            .environmentObject(testModel))
+                                                            .environmentObject(model))
         self.window = window
         window.makeKeyAndVisible()
         return true

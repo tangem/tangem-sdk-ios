@@ -12,7 +12,7 @@ import Foundation
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 final class ReadCommand: Command {
     var preflightReadMode: PreflightReadMode { .none }
-
+    
     deinit {
         Log.debug("ReadCommand deinit")
     }
@@ -20,9 +20,10 @@ final class ReadCommand: Command {
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         transceive(in: session) { result in
             switch result {
-            case .success(let card):
-                session.environment.card = card
-                completion(.success(card))
+            case .success(let response):
+                session.environment.card = response.0
+                session.environment.walletData = response.1
+                completion(.success(response.0))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -52,9 +53,12 @@ final class ReadCommand: Command {
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
-    //TODO: (Card, LegacyData)
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
-		let card = try CardDeserializer().deserialize(with: environment, from: apdu)
-		return card
+    
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> (Card, WalletData?) {
+        let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
+        let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
+        let card = try CardDeserializer().deserialize(decoder: decoder, cardDataDecoder: cardDataDecoder)
+        let walletData = try WalletDataDeserializer().deserialize(cardDataDecoder: cardDataDecoder)
+        return (card, walletData)
     }
 }

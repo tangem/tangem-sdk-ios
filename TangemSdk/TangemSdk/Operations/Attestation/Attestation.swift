@@ -9,9 +9,13 @@
 import Foundation
 
 public struct Attestation: JSONStringConvertible, Equatable {
+    /// Attestation status of card's public key
     public internal(set) var cardKeyAttestation: Status
+    /// Attestation status of all wallet public key in the card
     public internal(set) var walletKeysAttestation: Status
+    /// Attestation status of card's firmware. Not implemented for this time
     public internal(set) var firmwareAttestation: Status
+    /// Attestation status of card's uniqueness. Not implemented for this time
     public internal(set) var cardUniquenessAttestation: Status
     
     /// Index for storage

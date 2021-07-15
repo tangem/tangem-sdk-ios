@@ -11,9 +11,11 @@ import Foundation
 struct WalletDataDeserializer {
     func deserialize(cardDataDecoder: TlvDecoder) throws -> WalletData? {
         let blockchain: String? = try cardDataDecoder.decode(.blockchainName)
-        guard let blockchain = blockchain else { return nil }
+        if blockchain == nil {
+            return nil
+        }
 
-        return WalletData(blockchain: blockchain,
+        return WalletData(blockchain: blockchain!,
                           token: try deserializeToken(cardDataDecoder: cardDataDecoder))
     }
     

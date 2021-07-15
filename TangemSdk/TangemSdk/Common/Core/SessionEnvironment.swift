@@ -14,6 +14,9 @@ public struct SessionEnvironment {
     /// Current card, read by preflight `Read` command
     public internal(set) var card: Card? = nil
     
+    /// Current card's wallet data, read by preflight `Read` command
+    public internal(set) var walletData: WalletData? = nil
+    
     let config: Config
     
     weak var terminalKeysService: TerminalKeysService?

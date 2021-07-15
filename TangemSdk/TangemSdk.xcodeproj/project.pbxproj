@@ -15,6 +15,8 @@
 		5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */; };
 		5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1494802686488600C0D923 /* SecureEnclaveService.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
+		5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2426A0199100D2EDC1 /* WalletData.swift */; };
+		5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */; };
 		5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */; };
 		5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */; };
 		5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2FE06624DDA3080086B5E8 /* NetworkService.swift */; };
@@ -257,6 +259,8 @@
 		5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
 		5D1494802686488600C0D923 /* SecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveService.swift; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
+		5D270F2426A0199100D2EDC1 /* WalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletData.swift; sourceTree = "<group>"; };
+		5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataDeserializer.swift; sourceTree = "<group>"; };
 		5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestCardKeyCommand.swift; sourceTree = "<group>"; };
 		5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCardRequest.swift; sourceTree = "<group>"; };
 		5D2FE06624DDA3080086B5E8 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
@@ -1060,6 +1064,7 @@
 				B0390F91256590250061E5ED /* EllipticCurve.swift */,
 				5D6508222672755600A8D45B /* Wallet.swift */,
 				5D379C26268FA47600C7F473 /* EncryptionMode.swift */,
+				5D270F2426A0199100D2EDC1 /* WalletData.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -1109,6 +1114,7 @@
 			children = (
 				B0E162C225656D8400E97D07 /* CardDeserializer.swift */,
 				B0EC64FF260110530088F03D /* WalletDeserializer.swift */,
+				5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */,
 			);
 			path = Deserialization;
 			sourceTree = "<group>";
@@ -1339,6 +1345,7 @@
 				B0C6B4C4254C45CC00C0A1E1 /* InformationScreen.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
+				5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */,
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
@@ -1372,6 +1379,7 @@
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
+				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */,

@@ -9,9 +9,7 @@
 import Foundation
 
 struct CardDeserializer {
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
-		let decoder = try getDecoder(with: environment, from: apdu)
-        let cardDataDecoder = try getCardDataDecoder(with: environment, from: decoder.tlv)
+    func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
         try assertActivation(try decoder.decode(.isActivated))
@@ -79,6 +77,23 @@ struct CardDeserializer {
 		return card
 	}
     
+    static func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
+        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
+            throw TangemSdkError.deserializeApduFailed
+        }
+        
+        return TlvDecoder(tlv: tlv)
+    }
+    
+    static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder {
+        guard let cardDataValue = tlv.value(for: .cardData),
+              let cardDataTlv = Tlv.deserialize(cardDataValue) else {
+            throw TangemSdkError.deserializeApduFailed
+        }
+        
+        return TlvDecoder(tlv: cardDataTlv)
+    }
+    
     private func assertActivation(_ isNeedActivation: Bool) throws {
         if isNeedActivation {
             throw TangemSdkError.notActivated
@@ -93,22 +108,5 @@ struct CardDeserializer {
         if status == .purged {
             throw TangemSdkError.walletIsPurged
         }
-    }
-    
-    private func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        return TlvDecoder(tlv: tlv)
-    }
-    
-    private func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder {
-        guard let cardDataValue = tlv.value(for: .cardData),
-            let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-                throw TangemSdkError.deserializeApduFailed
-        }
-        
-        return TlvDecoder(tlv: cardDataTlv)
     }
 }

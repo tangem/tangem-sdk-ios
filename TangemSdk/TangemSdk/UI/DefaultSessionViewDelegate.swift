@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CoreHaptics
 
-
+@available(iOS 13.0, *)
 final class DefaultSessionViewDelegate: SessionViewDelegate {
     public var config: Config
     

@@ -10,6 +10,7 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
+@available(iOS 13.0, *)
 extension Data {
     public var hexString: String {
         return self.map { return String(format: "%02X", $0) }.joined()

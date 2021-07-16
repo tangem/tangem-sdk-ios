@@ -10,6 +10,7 @@
 import Foundation
 import CoreNFC
 
+@available(iOS 13.0, *)
 protocol ApduSerializable {
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype CommandResponse
@@ -27,6 +28,7 @@ protocol ApduSerializable {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CommandResponse
 }
 
+@available(iOS 13.0, *)
 extension ApduSerializable {
     /// Fix nfc issues with long-running commands and security delay for iPhone 7/7+. Card firmware 2.39
     /// 4 - Timeout setting for ping nfc-module
@@ -40,6 +42,7 @@ extension ApduSerializable {
 }
 
 /// The basic protocol for card commands
+@available(iOS 13.0, *)
 protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
     /// If set to `true` and ` SessionEnvironment.passcode` is nil, pin2 will be requested automatically before transieve the apdu. Default is `false`
     var requiresPasscode: Bool { get }
@@ -48,6 +51,7 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
 
+@available(iOS 13.0, *)
 extension Command {
     var requiresPasscode: Bool { return false }
 

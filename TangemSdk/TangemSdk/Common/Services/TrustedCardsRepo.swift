@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public class TrustedCardsRepo {
     private let storage = SecureStorage()
     private let secureEnclave = SecureEnclaveService()
@@ -58,6 +59,7 @@ public class TrustedCardsRepo {
     }
 }
 
+@available(iOS 13.0, *)
 private extension TrustedCardsRepo {
     /// Keys used for store data in Keychain
     enum StorageKey: String {
@@ -66,6 +68,7 @@ private extension TrustedCardsRepo {
     }
 }
 
+@available(iOS 13.0, *)
 private extension TrustedCardsRepo {
     enum Constants {
         static var maxCards = 1000 //todo: Think about it!

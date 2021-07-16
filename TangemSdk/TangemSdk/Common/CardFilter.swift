@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public struct CardFilter {
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
     public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release]
@@ -39,6 +40,7 @@ public struct CardFilter {
     }
 }
 
+@available(iOS 13.0, *)
 public extension CardFilter {
     enum ItemFilter {
         case allow(_ items: Set<String>)

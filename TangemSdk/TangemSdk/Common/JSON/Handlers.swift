@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 class ScanHandler: JSONRPCHandler {
     var method: String { "SCAN" }
     var requiresCardId: Bool { false }
@@ -18,6 +19,7 @@ class ScanHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class SignHashesHandler: JSONRPCHandler {
     var method: String { "SIGN_HASHES" }
     var requiresCardId: Bool { true }
@@ -31,6 +33,7 @@ class SignHashesHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class SignHashHandler: JSONRPCHandler {
     var method: String { "SIGN_HASH" }
     var requiresCardId: Bool { true }
@@ -45,6 +48,7 @@ class SignHashHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class CreateWalletHandler: JSONRPCHandler {
     var method: String { "CREATE_WALLET" }
     var requiresCardId: Bool { true }
@@ -57,6 +61,7 @@ class CreateWalletHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class PurgeWalletHandler: JSONRPCHandler {
     var method: String { "PURGE_WALLET" }
     var requiresCardId: Bool { true }
@@ -68,6 +73,7 @@ class PurgeWalletHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class PersonalizeHandler: JSONRPCHandler {
     var method: String { "PERSONALIZE" }
     
@@ -87,6 +93,7 @@ class PersonalizeHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class DepersonalizeHandler: JSONRPCHandler {
     var method: String { "DEPERSONALIZE" }
     var requiresCardId: Bool { false }
@@ -97,6 +104,7 @@ class DepersonalizeHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class SetAccessCodeHandler: JSONRPCHandler {
     var method: String { "SET_ACCESSCODE" }
     
@@ -109,6 +117,7 @@ class SetAccessCodeHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class SetPasscodeHandler: JSONRPCHandler {
     var method: String { "SET_PASSCODE" }
     
@@ -121,6 +130,7 @@ class SetPasscodeHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
 class ResetUserCodesHandler: JSONRPCHandler {
     var method: String { "RESET_USERCODES" }
     
@@ -133,6 +143,7 @@ class ResetUserCodesHandler: JSONRPCHandler {
 //todo: reset array
 
 /// Runs PreflightReadTask in `fullCardRead` mode
+@available(iOS 13.0, *)
 class PreflightReadHandler: JSONRPCHandler {
     var method: String { "PREFLIGHT_READ" }
     

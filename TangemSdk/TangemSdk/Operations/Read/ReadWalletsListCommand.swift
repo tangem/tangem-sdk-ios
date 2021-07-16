@@ -8,12 +8,14 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 struct ReadWalletsListResponse: JSONStringConvertible {
     let cardId: String
     let wallets: [Card.Wallet]
 }
 
 /// Read all wallets on card.
+@available(iOS 13.0, *)
 class ReadWalletsListCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     

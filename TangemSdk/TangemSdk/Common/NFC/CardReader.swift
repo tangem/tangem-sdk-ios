@@ -25,6 +25,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
 
 /// Allows interaction between the phone or any other terminal and Tangem card.
 /// Its default implementation, `NfcReader`, is in our module.
+@available(iOS 13.0, *)
 public protocol CardReader: AnyObject {
 	/// For setting alertMessage into NFC popup
     var isPaused: Bool { get }
@@ -39,6 +40,7 @@ public protocol CardReader: AnyObject {
     func restartPolling()
 }
 
+@available(iOS 13.0, *)
 public extension CardReader {
     func startSession(with message: String? = nil) {
         startSession(with: message)

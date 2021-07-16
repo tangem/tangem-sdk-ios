@@ -9,6 +9,7 @@
 import Foundation
 
 /// Service for manage keypair, used for Linked Terminal feature. Can be disabled by legacyMode or manually
+@available(iOS 13.0, *)
 public class TerminalKeysService {
     let secureStorage = SecureStorage()
     
@@ -38,6 +39,7 @@ public class TerminalKeysService {
     }()
 }
 
+@available(iOS 13.0, *)
 private extension TerminalKeysService {
     /// Keys used for store data in Keychain
     enum StorageKey: String {

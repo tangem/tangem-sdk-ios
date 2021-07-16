@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 class WalletDeserializer {
     func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)

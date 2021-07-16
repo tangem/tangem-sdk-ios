@@ -9,7 +9,7 @@
 import Foundation
 
 //MARK:- Card Settings
-
+@available(iOS 13.0, *)
 public extension Card {
     struct Settings: Codable {
         /// Delay in milliseconds before executing a command that affects any sensitive data or wallets on the card
@@ -44,6 +44,7 @@ public extension Card {
     }
 }
 
+@available(iOS 13.0, *)
 extension Card.Settings {
     init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
          defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
@@ -74,9 +75,10 @@ extension Card.Settings {
 }
 
 //MARK:- CardSettingsMask
-
+@available(iOS 13.0, *)
 typealias CardSettingsMask = Card.Settings.Mask
 
+@available(iOS 13.0, *)
 extension Card.Settings {
     /// Stores and maps Tangem card settings.
     struct Mask: OptionSet, OptionSetCustomStringConvertible {
@@ -88,6 +90,7 @@ extension Card.Settings {
     }
 }
 
+@available(iOS 13.0, *)
 extension CardSettingsMask {
     func toWalletSettingsMask() -> WalletSettingsMask {
         return .init(rawValue: rawValue)
@@ -95,7 +98,7 @@ extension CardSettingsMask {
 }
 
 //MARK:- CardSettingsMask Constants
-
+@available(iOS 13.0, *)
 extension CardSettingsMask {
     static let useActivation = CardSettingsMask(rawValue: 0x0002)
     static let useBlock = CardSettingsMask(rawValue: 0x0008)
@@ -124,7 +127,7 @@ extension CardSettingsMask {
 }
 
 //MARK:- CardSettingsMask OptionSetCodable conformance
-
+@available(iOS 13.0, *)
 extension CardSettingsMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case useActivation

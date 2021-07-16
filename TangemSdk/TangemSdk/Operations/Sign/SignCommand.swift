@@ -19,6 +19,7 @@ public struct SignResponse: JSONStringConvertible {
 }
 
 /// Signs transaction hashes using a wallet private key, stored on the card.
+@available(iOS 13.0, *)
 class SignCommand: Command {
     
     var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
@@ -34,7 +35,7 @@ class SignCommand: Command {
         signatures.count / chunkSize
     }
     private lazy var chunkSize: Int = {
-        return NfcUtils.isPoorNfcQualityDevice ? 2 : 10
+        return NFCUtils.isPoorNfcQualityDevice ? 2 : 10
     }()
     private lazy var numberOfChunks: Int = {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount

@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public extension String {
     func remove(_ substring: String) -> String {
         return self.replacingOccurrences(of: substring, with: "")
@@ -53,7 +54,7 @@ public extension String {
     }
 }
 
-
+@available(iOS 13.0, *)
 extension DefaultStringInterpolation {
     mutating func appendInterpolation(_ data: Data) {
         appendLiteral(data.hexString)

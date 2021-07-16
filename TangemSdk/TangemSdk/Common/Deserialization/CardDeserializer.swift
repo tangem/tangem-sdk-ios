@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 struct CardDeserializer {
     func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)

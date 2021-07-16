@@ -9,6 +9,7 @@
 import Foundation
 
 /// Base protocol for run tasks in a card session
+@available(iOS 13.0, *)
 public protocol CardSessionRunnable {
     /// Mode for preflight read. Change this property only if you understand what to do
     var preflightReadMode: PreflightReadMode { get }
@@ -29,6 +30,7 @@ public protocol CardSessionRunnable {
     func run(in session: CardSession, completion: @escaping CompletionResult<Response>)
 }
 
+@available(iOS 13.0, *)
 extension CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode { .fullCardRead }
     
@@ -37,6 +39,7 @@ extension CardSessionRunnable {
     }
 }
 
+@available(iOS 13.0, *)
 extension CardSessionRunnable where Response: JSONStringConvertible {
     public func eraseToAnyRunnable() -> AnyJSONRPCRunnable {
         AnyJSONRPCRunnable(self)

@@ -42,6 +42,7 @@ public enum NetworkServiceError: Error, LocalizedError {
     }
 }
 
+@available(iOS 13.0, *)
 public class NetworkService {
     private lazy var session: URLSession = {
         let configuration = URLSessionConfiguration.default

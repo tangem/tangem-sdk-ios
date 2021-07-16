@@ -9,6 +9,7 @@
 import Foundation
 
 /// Deserialized response from the Tangem card after `AttestCardKeyCommand`.
+@available(iOS 13.0, *)
 public struct AttestCardKeyResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
@@ -28,6 +29,7 @@ public struct AttestCardKeyResponse: JSONStringConvertible {
     }
 }
 
+@available(iOS 13.0, *)
 public class AttestCardKeyCommand: Command {
     private var challenge: Data?
 

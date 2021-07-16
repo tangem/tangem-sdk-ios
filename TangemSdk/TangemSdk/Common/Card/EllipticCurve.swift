@@ -9,6 +9,7 @@
 import Foundation
 
 /// Elliptic curve used for wallet key operations.
+@available(iOS 13.0, *)
 public enum EllipticCurve: String, Codable, CaseIterable {
 	case secp256k1
 	case ed25519

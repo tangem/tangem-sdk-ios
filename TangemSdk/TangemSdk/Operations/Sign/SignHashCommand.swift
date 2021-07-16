@@ -18,6 +18,7 @@ public struct SignHashResponse: JSONStringConvertible {
     public let totalSignedHashes: Int?
 }
 
+@available(iOS 13.0, *)
 public final class SignHashCommand: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     

@@ -13,6 +13,7 @@ public struct CheckUserCodesResponse: JSONStringConvertible {
     public let isPasscodeSet: Bool
 }
 
+@available(iOS 13.0, *)
 public final class CheckUserCodesCommand: CardSessionRunnable {
     public init() {}
     

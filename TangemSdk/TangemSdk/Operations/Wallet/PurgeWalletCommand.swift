@@ -9,6 +9,7 @@
 import Foundation
 
 /// This command deletes all wallet data and its private and public keys
+@available(iOS 13.0, *)
 public final class PurgeWalletCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     

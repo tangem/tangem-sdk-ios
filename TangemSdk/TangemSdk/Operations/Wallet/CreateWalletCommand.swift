@@ -9,6 +9,7 @@
 import Foundation
 
 /// Response from the Tangem card after `CreateWalletCommand`.
+@available(iOS 13.0, *)
 public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
     public let cardId: String
@@ -25,6 +26,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
+@available(iOS 13.0, *)
 public final class CreateWalletCommand: Command {
     var requiresPasscode: Bool { return true }
     

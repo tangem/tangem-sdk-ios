@@ -11,6 +11,7 @@ import Combine
 import CommonCrypto
 
 /// Allows interaction with Tangem cards. Should be open before sending commands
+@available(iOS 13.0, *)
 public class CardSession {
     enum CardSessionState {
         case inactive
@@ -68,7 +69,7 @@ public class CardSession {
     ///   - runnable: The CardSessionRunnable implemetation
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.Response>) where T : CardSessionRunnable {
-        guard TangemSdk.isNFCAvailable else {
+        guard NFCUtils.isNFCAvailable else {
             completion(.failure(.unsupportedDevice))
             return
         }
@@ -119,7 +120,7 @@ public class CardSession {
     /// Starts a card session and performs preflight `Read` command.
     /// - Parameter onSessionStarted: Delegate with the card session. Can contain error
     public func start(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
-        guard TangemSdk.isNFCAvailable else {
+        guard NFCUtils.isNFCAvailable else {
             onSessionStarted(self, .unsupportedDevice)
             return
         }
@@ -399,6 +400,7 @@ public class CardSession {
     }
 }
 //MARK: - JSON RPC
+@available(iOS 13.0, *)
 extension CardSession {
     /// Convinience method for jsonrpc requests running
     /// - Parameters:

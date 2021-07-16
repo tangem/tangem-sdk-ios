@@ -12,6 +12,7 @@ import Foundation
 /// Personalization is an initialization procedure, required before starting using a card.
 /// During this procedure a card setting is set up.
 /// During this procedure all data exchange is encrypted.
+@available(iOS 13.0, *)
 public class PersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
     

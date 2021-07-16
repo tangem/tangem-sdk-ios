@@ -10,6 +10,7 @@ import Foundation
 
 /// Contains data relating to a Tangem card. It is used in constructing all the commands,
 /// and commands can return modified `SessionEnvironment`.
+@available(iOS 13.0, *)
 public struct SessionEnvironment {
     /// Current card, read by preflight `Read` command
     public internal(set) var card: Card? = nil
@@ -31,11 +32,11 @@ public struct SessionEnvironment {
     
     var passcode: UserCode = .init(.passcode)
     
-    var legacyMode: Bool { config.legacyMode ?? NfcUtils.isPoorNfcQualityDevice }
+    var legacyMode: Bool { config.legacyMode ?? NFCUtils.isPoorNfcQualityDevice }
     
     /// Keys for Linked Terminal feature
     var terminalKeys: KeyPair? {
-        if config.linkedTerminal ?? !NfcUtils.isPoorNfcQualityDevice {
+        if config.linkedTerminal ?? !NFCUtils.isPoorNfcQualityDevice {
             return terminalKeysService?.keys
         }
         

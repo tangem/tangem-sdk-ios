@@ -10,6 +10,7 @@ import Foundation
 import Security
 
 /// Helper class for Keychain
+@available(iOS 13.0, *)
 struct SecureStorage {
     func get(account: String) throws -> Data? {
         let query = [kSecClass: kSecClassGenericPassword,
@@ -69,6 +70,7 @@ struct SecureStorage {
     }
 }
 
+@available(iOS 13.0, *)
 extension SecureStorage {
     /// Stores a CryptoKit key in the keychain as a generic password.
     func storeKey<T: GenericPasswordConvertible>(_ key: T, account: String) throws {

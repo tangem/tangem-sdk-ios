@@ -9,6 +9,7 @@
 import Foundation
 
 /// Determines which type of data is required for signing.
+@available(iOS 13.0, *)
 struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
     let rawValue: Byte
 	
@@ -22,6 +23,7 @@ struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
 }
 
 //MARK: - Constants
+@available(iOS 13.0, *)
 extension SigningMethod {
     static let signHash = SigningMethod(rawValue: 0b10000000|(1 << 0))
     static let signRaw = SigningMethod(rawValue: 0b10000000|(1 << 1)) //todo: dv
@@ -33,6 +35,7 @@ extension SigningMethod {
 }
 
 //MARK: - OptionSetCodable conformance
+@available(iOS 13.0, *)
 extension SigningMethod: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case signHash

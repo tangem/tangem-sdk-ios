@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public final class TlvEncoder {
     public func encode<T>(_ tag: TlvTag, value: T?) throws -> Tlv {
         do {
@@ -123,4 +124,5 @@ public final class TlvEncoder {
     }
 }
 
+@available(iOS 13.0, *)
 extension TlvEncoder: TlvLogging {}

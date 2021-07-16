@@ -9,6 +9,7 @@
 import Foundation
 public typealias SignHashesResponse = SignResponse
 
+@available(iOS 13.0, *)
 public final class SignHashesCommand: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
 

@@ -10,6 +10,7 @@ import Foundation
 import Combine
 
 /// Online verification for Tangem cards. Do not use for developer cards
+@available(iOS 13.0, *)
 public class OnlineCardVerifier {
     private let networkService = NetworkService()
     

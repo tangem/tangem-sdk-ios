@@ -11,6 +11,7 @@ import Foundation
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand].
  */
+@available(iOS 13.0, *)
 public struct CardConfig: Decodable {
     let releaseVersion: Bool
     let issuerName: String
@@ -219,6 +220,7 @@ public struct CardConfig: Decodable {
     }
 }
 
+@available(iOS 13.0, *)
 extension CardConfig {
     struct CardConfigData: Decodable {
         let date: Date?

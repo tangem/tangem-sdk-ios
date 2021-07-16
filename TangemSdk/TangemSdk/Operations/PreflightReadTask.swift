@@ -10,6 +10,7 @@ import Foundation
 
 /// Mode for preflight read task
 /// - Note: Valid for cards with COS v.4 and higher. Older card will always read the card and the wallet info. `fullCardRead` will be used by default
+@available(iOS 13.0, *)
 public enum PreflightReadMode: Decodable, Equatable {
     /// No card will be read at session start. `SessionEnvironment.card` will be empty
     case none
@@ -41,6 +42,7 @@ public enum PreflightReadMode: Decodable, Equatable {
     }
 }
 
+@available(iOS 13.0, *)
 public final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
     private let cardId: String?

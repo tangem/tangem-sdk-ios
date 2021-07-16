@@ -11,6 +11,7 @@ import XCTest
 import CoreNFC
 @testable import TangemSdk
 
+@available(iOS 13.0, *)
 class TlvTests: XCTestCase {
     func testTlvSerialization() {
         let testData = Data(hexString: "0105000000000050020101")

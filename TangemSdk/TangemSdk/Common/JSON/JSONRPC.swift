@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public final class JSONRPCConverter {
     public static let shared: JSONRPCConverter = {
         let converter = JSONRPCConverter()
@@ -46,6 +47,7 @@ public final class JSONRPCConverter {
     }
 }
 
+@available(iOS 13.0, *)
 public protocol JSONRPCHandler {
     var method: String { get }
     var requiresCardId: Bool { get }
@@ -55,7 +57,7 @@ public protocol JSONRPCHandler {
 
 
 // MARK: - JSONRPC Specification
-
+@available(iOS 13.0, *)
 public struct JSONRPCRequest {
     public let jsonrpc: String
     public let id: Int?
@@ -94,6 +96,7 @@ public struct JSONRPCRequest {
     }
 }
 
+@available(iOS 13.0, *)
 public struct JSONRPCResponse: JSONStringConvertible {
     public let jsonrpc: String
     public let result: AnyJSONRPCResponse?
@@ -108,6 +111,7 @@ public struct JSONRPCResponse: JSONStringConvertible {
     }
 }
 
+@available(iOS 13.0, *)
 public struct JSONRPCError: Error, JSONStringConvertible, Equatable {
     public let code: Int
     public let message: String
@@ -126,6 +130,7 @@ public struct JSONRPCError: Error, JSONStringConvertible, Equatable {
     }
 }
 
+@available(iOS 13.0, *)
 extension JSONRPCError {
     public enum Code: Int {
         case parseError = -32700
@@ -155,7 +160,7 @@ extension JSONRPCError {
 }
 
 // MARK: - JSONRPC Helper extensions
-
+@available(iOS 13.0, *)
 extension Result where Success: JSONStringConvertible, Failure == TangemSdkError {
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         switch self {
@@ -167,6 +172,7 @@ extension Result where Success: JSONStringConvertible, Failure == TangemSdkError
     }
 }
 
+@available(iOS 13.0, *)
 extension Error {
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         return JSONRPCResponse(id: id, result: nil, error: toJsonError())
@@ -182,6 +188,7 @@ extension Error {
     }
 }
 
+@available(iOS 13.0, *)
 extension Dictionary where Key == String, Value == Any {
     func value<T: Decodable>(for key: String) throws -> T where T: ExpressibleByNilLiteral {
         let value = self[key]

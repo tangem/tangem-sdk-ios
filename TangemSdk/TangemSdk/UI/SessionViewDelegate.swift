@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 /// Wrapper for a message that can be shown to user after a start of NFC session.
+@available(iOS 13.0, *)
 public struct Message: Codable {
     let header: String?
     let body: String?
@@ -51,6 +52,7 @@ public struct Message: Codable {
 
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
+@available(iOS 13.0, *)
 public protocol SessionViewDelegate: AnyObject {
     func showAlertMessage(_ text: String)
     

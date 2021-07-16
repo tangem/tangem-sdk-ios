@@ -8,6 +8,7 @@
 
 import UIKit
 
+@available(iOS 13.0, *)
 class ChangePinViewController: UIViewController, UITextFieldDelegate {
     var completionHandler: CompletionResult<(currentCode: String, newCode: String)>
     let state: PinViewControllerState
@@ -104,6 +105,7 @@ class ChangePinViewController: UIViewController, UITextFieldDelegate {
         confirmText.isSecureTextEntry.toggle()
     }
     
+    @available(iOS 13.0, *)
     @IBAction func textFieldChanged(_ sender: UITextField) {
         validationTimer?.invalidate()
         validationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { [weak self] timer in

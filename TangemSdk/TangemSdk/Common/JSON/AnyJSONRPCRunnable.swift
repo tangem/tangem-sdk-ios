@@ -9,6 +9,7 @@
 import Foundation
 
 /// Type erased CardSessionRunnable which Response conforms  to JSONStringConvertible
+@available(iOS 13.0, *)
 public class AnyJSONRPCRunnable: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode = .fullCardRead
     
@@ -34,6 +35,7 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
     }
 }
 
+@available(iOS 13.0, *)
 public struct AnyJSONRPCResponse: JSONStringConvertible {
     let response: JSONStringConvertible
     

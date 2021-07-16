@@ -9,6 +9,7 @@
 import Foundation
 
 ///// Contains information about the user code
+@available(iOS 13.0, *)
 struct UserCode {
     let type: UserCodeType
     let value: Data?

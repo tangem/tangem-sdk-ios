@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 struct NdefRecord: Codable {
     enum NdefRecordType: String, Codable {
         case uri

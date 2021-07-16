@@ -23,6 +23,7 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 }
 
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
+@available(iOS 13.0, *)
 public final class AttestWalletKeyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
 

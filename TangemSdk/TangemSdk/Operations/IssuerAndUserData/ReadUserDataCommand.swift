@@ -33,6 +33,7 @@ public struct ReadUserDataResponse: JSONStringConvertible {
  * For example, this fields may contain blockchain nonce value.
  */
 @available(*, deprecated, message: "Use files instead")
+@available(iOS 13.0, *)
 public final class ReadUserDataCommand: Command {
     public init() {}
     

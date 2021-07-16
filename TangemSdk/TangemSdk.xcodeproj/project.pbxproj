@@ -175,7 +175,7 @@
 		5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */; };
 		5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */; };
 		5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */; };
-		5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */; };
+		5DE59F2B23D96F8B00312DA4 /* NFCUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2A23D96F8B00312DA4 /* NFCUtils.swift */; };
 		5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */; };
 		5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */; };
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
@@ -423,7 +423,7 @@
 		5DDF4F89235F06F600E46EAB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserDataCommand.swift; sourceTree = "<group>"; };
 		5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteUserDataCommand.swift; sourceTree = "<group>"; };
-		5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NfcUtils.swift; sourceTree = "<group>"; };
+		5DE59F2A23D96F8B00312DA4 /* NFCUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCUtils.swift; sourceTree = "<group>"; };
 		5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalKeysService.swift; sourceTree = "<group>"; };
 		5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorage.swift; sourceTree = "<group>"; };
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
@@ -978,7 +978,7 @@
 		5DFFC49D233B9D4C004964E8 /* NFC */ = {
 			isa = PBXGroup;
 			children = (
-				5DE59F2A23D96F8B00312DA4 /* NfcUtils.swift */,
+				5DE59F2A23D96F8B00312DA4 /* NFCUtils.swift */,
 				5DF7CFCD233D058D00461F4D /* CardReader.swift */,
 				5DFFC49E233B9D69004964E8 /* NFCReader.swift */,
 			);
@@ -1422,7 +1422,7 @@
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D379C2D268FA53D00C7F473 /* KeyPair.swift in Sources */,
 				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
-				5DE59F2B23D96F8B00312DA4 /* NfcUtils.swift in Sources */,
+				5DE59F2B23D96F8B00312DA4 /* NFCUtils.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */,
 				B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */,
@@ -1551,7 +1551,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1622,7 +1622,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1659,7 +1659,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1698,7 +1698,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

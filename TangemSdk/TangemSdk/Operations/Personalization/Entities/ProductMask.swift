@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 struct ProductMask: OptionSet, OptionSetCustomStringConvertible {
     let rawValue: Byte
     
@@ -17,6 +18,7 @@ struct ProductMask: OptionSet, OptionSetCustomStringConvertible {
 }
 
 //MARK:- Constants
+@available(iOS 13.0, *)
 extension ProductMask {
     static let note = ProductMask(rawValue: 0x01)
     static let tag = ProductMask(rawValue: 0x02)
@@ -27,6 +29,7 @@ extension ProductMask {
 }
 
 //MARK: - OptionSetCodable conformance
+@available(iOS 13.0, *)
 extension ProductMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case note

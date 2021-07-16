@@ -11,6 +11,7 @@ import CoreNFC
 
 /// Class that provides conversion of serialized request and Instruction code
 /// to a raw data that can be sent to the card.
+@available(iOS 13.0, *)
 public struct CommandApdu: Equatable {
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
@@ -71,6 +72,7 @@ public struct CommandApdu: Equatable {
     }
 }
 
+@available(iOS 13.0, *)
 extension CommandApdu: CustomStringConvertible {
     public var description: String {
         let instruction = Instruction(rawValue: ins) ?? .unknown
@@ -79,6 +81,7 @@ extension CommandApdu: CustomStringConvertible {
     }
 }
 
+@available(iOS 13.0, *)
 extension NFCISO7816APDU {
     convenience init(_ commandApdu: CommandApdu) {
         self.init(instructionClass: commandApdu.cla,

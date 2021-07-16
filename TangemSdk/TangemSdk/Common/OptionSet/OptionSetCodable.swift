@@ -8,16 +8,19 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 protocol OptionKey: CaseIterable, RawRepresentable where RawValue == String {
     associatedtype SomeOptionSet: OptionSet
     
     var value: SomeOptionSet { get }
 }
 
+@available(iOS 13.0, *)
 protocol OptionSetCodable: Codable where Self: OptionSet {
     associatedtype OptionKeys: OptionKey
 }
 
+@available(iOS 13.0, *)
 extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
                                  Self.RawValue: Decodable {
     func encode(to encoder: Encoder) throws {

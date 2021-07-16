@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 struct WalletDataDeserializer {
     func deserialize(cardDataDecoder: TlvDecoder) throws -> WalletData? {
         let blockchain: String? = try cardDataDecoder.decode(.blockchainName)

@@ -10,10 +10,14 @@ import Foundation
 
 @available(iOS 13.0, *)
 struct CardDeserializer {
-    func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder) throws -> Card {
+    func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
         try assertActivation(try decoder.decode(.isActivated))
+        
+        guard let cardDataDecoder = cardDataDecoder  else {
+            throw TangemSdkError.deserializeApduFailed
+        }
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
         let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
@@ -86,10 +90,10 @@ struct CardDeserializer {
         return TlvDecoder(tlv: tlv)
     }
     
-    static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder {
+    static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder? {
         guard let cardDataValue = tlv.value(for: .cardData),
               let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-            throw TangemSdkError.deserializeApduFailed
+           return nil
         }
         
         return TlvDecoder(tlv: cardDataTlv)

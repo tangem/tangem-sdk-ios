@@ -13,6 +13,11 @@ public struct WalletData: Equatable, Hashable {
     public let blockchain: String
     /// Token of the specified blockchain.
     public let token: Token?
+    
+    public init(blockchain: String, token: Token?) {
+        self.blockchain = blockchain
+        self.token = token
+    }
 }
 
 public struct Token: Equatable, Hashable {
@@ -24,4 +29,11 @@ public struct Token: Equatable, Hashable {
     public let contractAddress: String
     /// Number of decimals in token value.
     public let decimals: Int
+    
+    public init(name: String, symbol: String, contractAddress: String, decimals: Int) {
+        self.name = name
+        self.symbol = symbol
+        self.contractAddress = contractAddress
+        self.decimals = decimals
+    }
 }

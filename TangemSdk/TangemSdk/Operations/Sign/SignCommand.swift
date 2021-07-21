@@ -24,7 +24,7 @@ class SignCommand: Command {
     
     var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
     
-    var requiresPin2: Bool { return true }
+    var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
     private let hashes: [Data]

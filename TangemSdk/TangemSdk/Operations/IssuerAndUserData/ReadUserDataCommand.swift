@@ -37,14 +37,6 @@ public struct ReadUserDataResponse: JSONStringConvertible {
 public final class ReadUserDataCommand: Command {
     public init() {}
     
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion >= .filesAvailable {
-            return .notSupportedFirmwareVersion
-        }
-        
-        return nil
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

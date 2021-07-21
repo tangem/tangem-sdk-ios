@@ -64,11 +64,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             && issuerDataCounter == nil {
             return .missingCounter
         }
-		
-		if card.firmwareVersion >= .filesAvailable {
-			return .notSupportedFirmwareVersion
-		}
-        
+		        
         if !verify(with: card.cardId) {
             return .verificationFailed
         }

@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class SetUserCodeCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool = true
     var shouldRestrictDefaultCodes = true
     
     private var codes: [UserCodeType: UserCodeAction] = [:]

@@ -24,7 +24,7 @@ public final class CheckUserCodesCommand: CardSessionRunnable {
     public func run(in session: CardSession, completion: @escaping CompletionResult<CheckUserCodesResponse>) {
         let command = SetUserCodeCommand(accessCode: session.environment.accessCode.value,
                                     passcode: session.environment.passcode.value)
-        
+        command.shouldRestrictDefaultCodes = false
         command.run(in: session) { result in
             switch result {
             case .success:

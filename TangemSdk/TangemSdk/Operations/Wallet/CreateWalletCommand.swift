@@ -65,7 +65,7 @@ public final class CreateWalletCommand: Command {
             }
             
             if let cardSigningMethods = card.settings.defaultSigningMethods,
-                !signingMethod.isSubset(of: cardSigningMethods) {
+               !signingMethod.isSubset(of: cardSigningMethods) {
                 return TangemSdkError.unsupportedWalletConfig
             }
         }
@@ -78,7 +78,7 @@ public final class CreateWalletCommand: Command {
             completion(.failure(.missingPreflightRead))
             return
         }
-
+        
         let maxIndex = card.settings.maxWalletsCount
         let occupiedIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex
@@ -127,16 +127,17 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         
-        let maskBuilder = MaskBuilder<WalletSettingsMask>()
-        maskBuilder.add(.isReusable)
-        if isPermanent {
-            maskBuilder.add(.isPermanent)
-        }
-        
         if environment.card?.firmwareVersion >= .multiwalletAvailable {
+            let maskBuilder = MaskBuilder<WalletSettingsMask>()
+            maskBuilder.add(.isReusable)
+            
+            if isPermanent {
+                maskBuilder.add(.isPermanent)
+            }
+            
             try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
-            try tlvBuilder.append(.curveId, value: curve)
-            try tlvBuilder.append(.signingMethod, value: signingMethod)
+                .append(.curveId, value: curve)
+                .append(.signingMethod, value: signingMethod)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

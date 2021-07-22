@@ -14,7 +14,7 @@ struct ReadWalletResponse: JSONStringConvertible {
     let wallet: Card.Wallet
 }
 
-/// Read signle wallet on card. This command executes before interacting with specific wallet to retrieve information about it and perform prechecks
+/// Read single wallet on card. This command executes before interacting with specific wallet to retrieve information about it and perform prechecks
 @available(iOS 13.0, *)
 class ReadWalletCommand: Command {
     

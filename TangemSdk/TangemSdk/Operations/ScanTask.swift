@@ -47,7 +47,7 @@ public final class ScanTask: CardSessionRunnable {
             
             //Possible production sample or development card
             if isDevelopmentCard || session.environment.config.allowUntrustedCards {
-                session.viewDelegate.attesttionDidFail(isDevelopmentCard: isDevelopmentCard) {
+                session.viewDelegate.attestationDidFail(isDevelopmentCard: isDevelopmentCard) {
                     completion(.success(session.environment.card!))
                 } onCancel: {
                     completion(.failure(.userCancelled))

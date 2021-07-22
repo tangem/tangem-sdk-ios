@@ -89,7 +89,7 @@ public protocol SessionViewDelegate: AnyObject {
     
     func setConfig(_ config: Config)
     
-    func attesttionDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
+    func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
     
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void)
     

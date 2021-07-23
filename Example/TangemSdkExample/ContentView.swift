@@ -11,7 +11,6 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
-    @State private var isOpenHealthTest = false
     
     var body: some View {
         GeometryReader { geo in

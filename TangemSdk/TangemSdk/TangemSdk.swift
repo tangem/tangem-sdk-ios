@@ -38,7 +38,7 @@ public final class TangemSdk {
     public init(cardReader: CardReader? = nil, viewDelegate: SessionViewDelegate? = nil, config: Config = Config()) {
         let reader = cardReader ?? NFCReader()
         self.reader = reader
-        self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader, config: config)
+        self.viewDelegate = viewDelegate ?? SwiftUISessionViewDelegate(reader: reader, config: config)
         self.config = config
     }
     

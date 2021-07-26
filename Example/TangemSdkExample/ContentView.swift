@@ -16,12 +16,12 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geo in
             VStack {
-                
                 ScrollView {
                     Text(model.logText)
                         .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 32)
                         .font(.caption)
+                        .frame(maxWidth: .infinity) //Fix iOS 13 issue
                 }
                 .clipped()
                 .frame(width: geo.size.width)
@@ -36,7 +36,7 @@ struct ContentView: View {
                             Button("Copy", action: model.copy)
                         }
                         
-                        Picker("Select method", selection: $model.method) {
+                        Picker("", selection: $model.method) {
                             ForEach(0..<AppModel.Method.allCases.count) { index in
                                 Text(AppModel.Method.allCases[index].rawValue)
                                     .tag(AppModel.Method.allCases[index])

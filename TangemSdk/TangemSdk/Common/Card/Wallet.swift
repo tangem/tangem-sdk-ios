@@ -20,10 +20,10 @@ public extension Card {
         public let settings: Settings
         /// Total number of signed hashes returned by the wallet since its creation
         /// COS 1.16+
-        public var totalSignedHashes: Int?
+        public internal(set) var totalSignedHashes: Int?
         /// Remaining number of `Sign` operations before the wallet will stop signing any data.
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
-        public var remainingSignatures: Int?
+        public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
     }

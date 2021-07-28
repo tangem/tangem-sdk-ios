@@ -41,13 +41,13 @@ class SignCommand: Command {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount
     }()
     
-	/// Command initializer
-	/// - Parameters:
-	///   - hashes: Array of transaction hashes.
-	///   - walletPublicKey: Public key of the wallet, using for sign.
+    /// Command initializer
+    /// - Parameters:
+    ///   - hashes: Array of transaction hashes.
+    ///   - walletPublicKey: Public key of the wallet, using for sign.
     init(hashes: [Data], walletPublicKey: Data) {
         self.hashes = hashes
-		self.walletPublicKey = walletPublicKey
+        self.walletPublicKey = walletPublicKey
     }
     
     deinit {
@@ -70,7 +70,7 @@ class SignCommand: Command {
                 return .signHashesNotAvailable
             }
         }
-      
+        
         if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 15000 {
             return .oldCard
         }
@@ -93,7 +93,7 @@ class SignCommand: Command {
             completion(.failure(.missingPreflightRead))
             return
         }
-       
+        
         let hasTerminalKeys = session.environment.terminalKeys != nil
         let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
         guard hashes.count <= chunkSize || (card.settings.isLinkedTerminalEnabled && hasTerminalKeys) || hasEnoughDelay else {
@@ -122,6 +122,12 @@ class SignCommand: Command {
             case .success(let response):
                 self.signatures.append(contentsOf: response.signatures)
                 if self.signatures.count == self.hashes.count {
+                    session.environment.card?.wallets[self.walletPublicKey]?.totalSignedHashes = response.totalSignedHashes
+                    
+                    if let remainingSignatures = session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures {
+                        session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures = remainingSignatures - self.signatures.count
+                    }
+                    
                     completion(.success(SignResponse(cardId: response.cardId,
                                                      signatures: self.signatures,
                                                      totalSignedHashes: response.totalSignedHashes)))
@@ -162,7 +168,7 @@ class SignCommand: Command {
          */
         let isLinkedTerminalSupported = environment.card?.settings.isLinkedTerminalEnabled  ?? false
         if let keys = environment.terminalKeys, isLinkedTerminalSupported,
-            let signedData = Secp256k1Utils.sign(flattenHashes, with: keys.privateKey) {
+           let signedData = Secp256k1Utils.sign(flattenHashes, with: keys.privateKey) {
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)

@@ -10,14 +10,14 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct DelayView: View {
-    var currentDelay: CGFloat = 0
-    var totalDelay: CGFloat = 0
-    
+    let currentDelay: Int
+    let totalDelay: Int
+
     var bgColor: Color = .lightGray
     var strokerColor: Color = .tngBlue
     
     private var normalizedDelay: CGFloat {
-        1 - (totalDelay - currentDelay)/totalDelay
+        1.0 - CGFloat(totalDelay - currentDelay)/CGFloat(totalDelay)
     }
     
     var body: some View {
@@ -26,32 +26,21 @@ struct DelayView: View {
                 .stroke(bgColor, lineWidth: 15)
             
             Circle()
-                .trim(from: 0.0, to: normalizedDelay)
+                .trim(from: 0, to: normalizedDelay)
                 .stroke(strokerColor, lineWidth: 15)
                 .rotationEffect(Angle(degrees: -90))
-                .animation(.spring(dampingFraction: 0.6)
-                            .speed(2))
+                .animation(.linear(duration: 1.0))
             
-            CounterView(currentDelay: currentDelay,
+            CounterView(currentDelay: currentDelay + 1,
                         totalDelay: totalDelay)
         }
-//        .onAppear {
-//            _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-//                withAnimation() {
-//                    self.currentDelay -= 1
-//                    if self.currentDelay == 0 {
-//                        timer.invalidate()
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
 @available(iOS 13.0, *)
 struct DelayView_Previews: PreviewProvider {
     static var previews: some View {
-        DelayView()
+        DelayView(currentDelay: 4, totalDelay: 5)
             .frame(width: 200, height: 200)
     }
 }

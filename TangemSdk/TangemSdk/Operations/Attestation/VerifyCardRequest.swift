@@ -63,7 +63,7 @@ public struct SubstitutionInfo: Codable {
     let data: String?
     let signature: String?
     
-    var substutionData: CardSubstitutionDataModel? {
+    var substitutionData: CardSubstitutionDataModel? {
         if let data = data?.data(using: .utf8),
             let model = try? JSONDecoder().decode(CardSubstitutionDataModel.self, from: data) {
             return model

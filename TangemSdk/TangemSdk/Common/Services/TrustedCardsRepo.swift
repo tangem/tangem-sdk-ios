@@ -53,7 +53,7 @@ public class TrustedCardsRepo {
            let signature = try storage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
            try secureEnclave.verify(signature: signature, message: data) {
             let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
-            let converted = decoded.compactMapValues { Attestation(rawRepresentaion: $0) }
+            let converted = decoded.compactMapValues { Attestation(rawRepresentation: $0) }
             self.data = converted
         }
     }

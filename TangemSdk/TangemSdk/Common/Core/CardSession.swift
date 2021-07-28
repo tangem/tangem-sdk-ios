@@ -161,9 +161,12 @@ public class CardSession {
             .dropFirst()
             .filter {[unowned self] _ in !self.reader.isPaused }
             .sink(receiveValue: { [unowned self] isReady in
-                isReady ?
-                    self.viewDelegate.sessionStarted() :
+                if isReady {
+                    self.viewDelegate.sessionStarted()
+                    self.viewDelegate.setState(.scan)
+                } else {
                     self.viewDelegate.sessionStopped(completion: nil)
+                }
             })
             .store(in: &nfcReaderSubscriptions)
         
@@ -179,7 +182,6 @@ public class CardSession {
                         if case .tag = tag, self.preflightReadMode != .none {
                             self.preflightCheck(onSessionStarted)
                         } else {
-                            self.viewDelegate.sessionInitialized()
                             onSessionStarted(self, nil)
                         }
                     })
@@ -305,7 +307,6 @@ public class CardSession {
             
             switch readResult {
             case .success:
-                self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
                 switch error {

@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
-    var state: State = .scan
+    var state: SessionViewState = .scan
     var indicatorSize: CGSize = .init(width: 240, height: 240)
     
     var body: some View {
@@ -18,6 +18,7 @@ struct MainView: View {
             Spacer()
             
             mainView
+                .transition(.opacity)
 
             Spacer()
             
@@ -36,24 +37,14 @@ struct MainView: View {
             DelayView(currentDelay: currentDelay, totalDelay: totalDelay)
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
-        case .progress(let circleProgress):
-            ProgressView(circleProgress: circleProgress)
+        case .progress(let progress):
+            ProgressView(circleProgress: progress)
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
         case .scan:
             ReadView()
                 .padding(.top, 40)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-extension MainView {
-    enum State {
-        case delay(currentDelay: CGFloat, totalDelay: CGFloat)
-        case progress(circleProgress: CGFloat)
-        case `default`
-        case scan
     }
 }
 

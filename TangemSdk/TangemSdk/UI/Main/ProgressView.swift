@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct ProgressView: View {
-    var circleProgress: CGFloat = 0.0
+    var circleProgress: Int = 0
     var bigCircleColor: Color = .lightGray
     var strokerColor: Color = .tngBlue
     var textSize: CGFloat = 34
@@ -22,12 +22,12 @@ struct ProgressView: View {
                 .stroke(bigCircleColor, lineWidth: 15)
             
             Circle()
-                .trim(from: 0.0, to: circleProgress)
+                .trim(from: 0.0, to: CGFloat(circleProgress)/100.0)
                 .stroke(Color.tngBlue, lineWidth: 15)
                 .rotationEffect(Angle(degrees: -90))
                 .animation(.easeIn)
             
-            Text("\(Int(self.circleProgress*100))%")
+            Text("\(self.circleProgress)%")
                 .font(.system(size: textSize,
                               weight: .medium,
                               design: .default)

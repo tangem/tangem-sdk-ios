@@ -10,8 +10,8 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct CounterView: View {
-    var currentDelay: CGFloat = 30.0
-    var totalDelay: CGFloat = 30.0
+    var currentDelay: Int = 30
+    var totalDelay: Int = 30
     var textSize: CGFloat = 34
     var foregroundColor: Color = .tngBlue
     
@@ -22,8 +22,8 @@ struct CounterView: View {
             
             ZStack {
                 VStack(spacing: 0) {
-                    ForEach(0..<Int(totalDelay)) { index in
-                        Text("\(Int(index))")
+                    ForEach(0..<totalDelay) { index in
+                        Text("\(index)")
                             .font(.system(size: textSize,
                                           weight: .medium,
                                           design: .default)
@@ -32,7 +32,7 @@ struct CounterView: View {
                             .frame(height: itemHeight)
                     }
                 }
-                .offset(y: totalDelay * itemHeight / 2 - itemHeight/2)
+                .offset(y: CGFloat(totalDelay) * itemHeight / 2 - itemHeight/2)
                 .offset(y: -CGFloat(currentDelay) * itemHeight)
                 .animation(.spring(dampingFraction: 0.6).speed(2))
             }

@@ -122,10 +122,10 @@ class SignCommand: Command {
             case .success(let response):
                 self.signatures.append(contentsOf: response.signatures)
                 if self.signatures.count == self.hashes.count {
-                    session.environment.card?.wallets[walletPublicKey]?.totalSignedHashes = response.totalSignedHashes
+                    session.environment.card?.wallets[self.walletPublicKey]?.totalSignedHashes = response.totalSignedHashes
                     
-                    if let remainingSignatures = session.environment.card?.wallets[walletPublicKey]?.remainingSignatures {
-                        session.environment.card?.wallets[walletPublicKey]?.remainingSignatures = remainingSignatures - self.signatures.count
+                    if let remainingSignatures = session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures {
+                        session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures = remainingSignatures - self.signatures.count
                     }
                     
                     completion(.success(SignResponse(cardId: response.cardId,

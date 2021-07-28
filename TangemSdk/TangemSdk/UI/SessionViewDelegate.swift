@@ -56,11 +56,6 @@ public struct Message: Codable {
 public protocol SessionViewDelegate: AnyObject {
     func showAlertMessage(_ text: String)
     
-    /// It is called when security delay is triggered by the card. A user is expected to hold the card until the security delay is over.
-    func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) //todo: rename santiseconds
-    
-    func showPercentLoading(_ percent: Int, message: Message?, hint: String?)
-    
     /// It is called when a user is expected to enter user code.
     func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void)
     
@@ -73,19 +68,11 @@ public protocol SessionViewDelegate: AnyObject {
     /// It is called when tag was lost
     func tagLost()
     
-    func hideUI(_ indicatorMode: IndicatorMode?)
-    
     func wrongCard(message: String?)
     
     func sessionStarted()
     
     func sessionStopped(completion: (() -> Void)?)
-    
-    func sessionInitialized()
-	
-	func showUndefinedSpinner()
-	
-	func showInfoScreen()
     
     func setConfig(_ config: Config)
     
@@ -94,4 +81,14 @@ public protocol SessionViewDelegate: AnyObject {
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void)
     
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void)
+    
+    func setState(_ state: SessionViewState)
+}
+
+
+public enum SessionViewState {
+    case delay(remaining: Int, total: Int) //seconds
+    case progress(percent: Int)
+    case `default`
+    case scan
 }

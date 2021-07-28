@@ -66,7 +66,6 @@
 		5D78C1B9234F435B008D7478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5D78C1C2234F435C008D7478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D78C1C5234F435C008D7478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		5D78C1C7234F435C008D7478 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = Common/Info.plist; sourceTree = "<group>"; };
 		5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TangemSdkExample.entitlements; sourceTree = "<group>"; };
 		5DBC25C6235F053F005F0C79 /* TangemSdkExampleDevelopment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExampleDevelopment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TangemSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,7 +146,6 @@
 			children = (
 				5D032000266A6A15008472EC /* AppModel.swift */,
 				5D031FFC266A6960008472EC /* ContentView.swift */,
-				5D78C1C7234F435C008D7478 /* Info.plist */,
 				5D03200C266A8548008472EC /* Common */,
 				5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */,
 			);
@@ -258,7 +256,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */;
+			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -646,7 +644,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */ = {
+		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D78C1C8234F435C008D7478 /* Debug */,

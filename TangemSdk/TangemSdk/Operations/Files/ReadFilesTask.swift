@@ -72,7 +72,7 @@ public class ReadFilesTask: CardSessionRunnable {
                 let file = File(response: response)
                 self.files.append(file)
                 
-                if self.index == indices.last {
+                if self.index == indices.count {
                     completion(.success(ReadFilesResponse(files: self.files)))
                     return
                 }

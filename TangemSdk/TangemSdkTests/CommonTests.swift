@@ -29,7 +29,7 @@ class CommonTests: XCTestCase {
                                      firmwareAttestation: .skipped,
                                      cardUniquenessAttestation: .failed)
         
-        let fromRepresentation = Attestation(rawRepresentaion: attestaion.rawRepresentation)
+        let fromRepresentation = Attestation(rawRepresentation: attestaion.rawRepresentation)
         XCTAssertNotNil(fromRepresentation)
         XCTAssertEqual(attestaion, fromRepresentation)
     }

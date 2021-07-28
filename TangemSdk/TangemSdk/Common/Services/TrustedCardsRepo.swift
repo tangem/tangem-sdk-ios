@@ -31,7 +31,7 @@ public class TrustedCardsRepo {
         }
         
         let hash = cardPublicKey.getSha256()
-        data[hash] = attestation
+        data[hash] = newAttestation
         try? save()
     }
     

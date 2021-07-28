@@ -190,6 +190,7 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */; };
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
 		5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */; };
+		5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
 		5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */; };
@@ -448,6 +449,7 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorage.swift; sourceTree = "<group>"; };
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
 		5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineCardVerifier.swift; sourceTree = "<group>"; };
+		5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsEngine.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
 		5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardIdFormatter.swift; sourceTree = "<group>"; };
@@ -710,6 +712,7 @@
 				5D7F4E49248FF4DF00A1700D /* KeyboardLayoutConstraint.swift */,
 				B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */,
 				5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */,
+				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1449,6 +1452,7 @@
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
+				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,

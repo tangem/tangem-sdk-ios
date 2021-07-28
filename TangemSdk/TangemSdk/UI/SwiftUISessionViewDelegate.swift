@@ -9,19 +9,17 @@
 import Foundation
 import UIKit
 import SwiftUI
-import CoreHaptics
 
 @available(iOS 13.0, *)
 final class SwiftUISessionViewDelegate: SessionViewDelegate {
     public var config: Config
     
     private let reader: CardReader
-    private var engine: CHHapticEngine?
-    private var engineNeedsStart = true
-    private let transitioningDelegate: FadeTransitionDelegate
-    private var infoScreenAppearWork: DispatchWorkItem?
+    private let engine: HapticsEngine
+   // private let transitioningDelegate: FadeTransitionDelegate
+   // private var infoScreenAppearWork: DispatchWorkItem?
     private var pinnedMessage: String?
-    private var remainingSecurityDelaySec: Float = 0
+   // private var remainingSecurityDelaySec: Float = 0
     
     private lazy var infoScreen: MainViewController = {
         let controller =  MainViewController(rootView: MainView())
@@ -30,15 +28,19 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         return controller
     }()
     
-    private lazy var supportsHaptics: Bool = {
-        return CHHapticEngine.capabilitiesForHardware().supportsHaptics
-    }()
-    
     init(reader: CardReader, config: Config) {
         self.reader = reader
         self.config = config
-        self.transitioningDelegate = FadeTransitionDelegate()
-        createHapticEngine()
+        self.engine = HapticsEngine()
+       // self.transitioningDelegate = FadeTransitionDelegate()
+        engine.create()
+    }
+    
+    func setState(_ state: SessionViewState) {
+        Log.view(state)
+        runInMainThread {
+            self.infoScreen.setState(state, animated: true)
+        }
     }
     
     func showAlertMessage(_ text: String) {
@@ -46,72 +48,72 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         reader.alertMessage = text
     }
     
-    func hideUI(_ indicatorMode: IndicatorMode?) {
-        runInMainThread {
-            Log.view("HideUI with mode: \(String(describing: indicatorMode))")
-            guard let indicatorMode = indicatorMode else {
-                self.dismissInfoScreen(completion: nil)
-                return
-            }
-            
-            switch indicatorMode {
-            case .sd:
-                self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
-            case .percent:
-                self.dismissInfoScreen(completion: nil)
-            }
-        }
-    }
+//    func hideUI(_ indicatorMode: IndicatorMode?) {
+//        runInMainThread {
+//            Log.view("HideUI with mode: \(String(describing: indicatorMode))")
+//            guard let indicatorMode = indicatorMode else {
+//                self.dismissInfoScreen(completion: nil)
+//                return
+//            }
+//
+//            switch indicatorMode {
+//            case .sd:
+//                self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
+//            case .percent:
+//                self.dismissInfoScreen(completion: nil)
+//            }
+//        }
+//    }
     
-    func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
-        Log.view("Showing security delay. Ms: \(remainingMilliseconds). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
-        playTick()
-        
-        runInMainThread {
-            guard remainingMilliseconds >= 100 else {
-                self.infoScreen.setState(.spinner, animated: true)
-                return
-            }
-            
-            let remainingSeconds = Float(remainingMilliseconds/100)
-            self.remainingSecurityDelaySec = remainingSeconds
-            
-            if self.infoScreen.state != .securityDelay {
-                self.infoScreen.setupIndicatorTotal(remainingSeconds + 1)
-            }
-            
-            self.infoScreen.setState(.securityDelay, animated: true)
-                
-            self.presentInfoScreen()
-            self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: hint ?? Localization.nfcAlertDefault)
-        }
-    }
+//    func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
+//        Log.view("Showing security delay. Ms: \(remainingMilliseconds). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
+//        playTick()
+//
+//        runInMainThread {
+//            guard remainingMilliseconds >= 100 else {
+//                self.infoScreen.setState(.spinner, animated: true)
+//                return
+//            }
+//
+//            let remainingSeconds = Float(remainingMilliseconds/100)
+//            self.remainingSecurityDelaySec = remainingSeconds
+//
+//            if self.infoScreen.state != .securityDelay {
+//                self.infoScreen.setupIndicatorTotal(remainingSeconds + 1)
+//            }
+//
+//            self.infoScreen.setState(.securityDelay, animated: true)
+//
+//            self.presentInfoScreen()
+//            self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: hint ?? Localization.nfcAlertDefault)
+//        }
+//    }
+//
+//
+//    func showPercentLoading(_ percent: Int, message: Message?, hint: String?) {
+//        Log.view("Showing percents. %: \(percent). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
+//        playTick()
+//        showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
+//
+//        runInMainThread {
+//            self.infoScreen.setState(.percentProgress, animated: true)
+//            self.presentInfoScreen()
+//            self.infoScreen.tickPercent(percentValue: percent, message: String(format: "%@%%", String(describing: percent)), hint: hint)
+//        }
+//    }
     
-    
-    func showPercentLoading(_ percent: Int, message: Message?, hint: String?) {
-        Log.view("Showing percents. %: \(percent). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
-        playTick()
-        showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
-        
-        runInMainThread {
-            self.infoScreen.setState(.percentProgress, animated: true)
-            self.presentInfoScreen()
-            self.infoScreen.tickPercent(percentValue: percent, message: String(format: "%@%%", String(describing: percent)), hint: hint)
-        }
-    }
-    
-    func showUndefinedSpinner() {
-        Log.view("Showing undefined spinner")
-        guard remainingSecurityDelaySec <= 1 else { return }
-        
-        infoScreenAppearWork?.cancel()
-        runInMainThread {
-            Log.view(self.reader.isPaused)
-            self.presentInfoScreen()
-            self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
-        }
-    }
-    
+//    func showUndefinedSpinner() {
+//        Log.view("Showing undefined spinner")
+//        guard remainingSecurityDelaySec <= 1 else { return }
+//
+//        infoScreenAppearWork?.cancel()
+//        runInMainThread {
+//            Log.view(self.reader.isPaused)
+//            self.presentInfoScreen()
+//            self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
+//        }
+//    }
+//
     func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void) {
         runInMainThread {
             Log.view("Showing user code request with type: \(type)")
@@ -141,24 +143,20 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
             showAlertMessage(pinnedMessage)
             self.pinnedMessage = nil
         }
-        playSuccess()
-        runInMainThread {
-            self.showUndefinedSpinner()
-        }
+        engine.playSuccess()
+        setState(.default)
     }
     
     func tagLost() {
         Log.view("Tag lost")
         pinnedMessage = reader.alertMessage
         showAlertMessage(Localization.nfcAlertDefault)
-        runInMainThread {
-            self.switchInfoScreen(to: .howToScan, animated: true)
-        }
+        setState(.scan)
     }
     
     func wrongCard(message: String?) {
         Log.view("Wrong card detected")
-        playError()
+        engine.playError()
         
         if let message = message {
             let oldMessage = reader.alertMessage
@@ -171,34 +169,28 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
         Log.view("Session started")
-        infoScreenAppearWork = DispatchWorkItem(block: {
-            self.showInfoScreen()
-        })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: infoScreenAppearWork!)
-        startHapticsEngine()
-    }
-    
-    func sessionInitialized() {
-        Log.view("Session initialized")
+        
+        runInMainThread {
+            self.presentInfoScreen()
+        }
+//        infoScreenAppearWork = DispatchWorkItem(block: {
+//                Log.view("Show info screen")
+//                self.switchInfoScreen(to: .howToScan, animated: false)
+//        })
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: infoScreenAppearWork!)
+        engine.start()
     }
     
     func sessionStopped(completion: (() -> Void)?) {
         Log.view("Session stopped")
-        infoScreenAppearWork?.cancel()
+      //  infoScreenAppearWork?.cancel()
         pinnedMessage = nil
-        stopHapticsEngine()
+        engine.stop()
         runInMainThread {
             self.dismissInfoScreen(completion: completion)
         }
     }
-    
-    func showInfoScreen() {
-        runInMainThread {
-            Log.view("Show info screen")
-            self.switchInfoScreen(to: .howToScan, animated: false)
-        }
-    }
-    
+
     func setConfig(_ config: Config) {
         self.config = config
     }
@@ -235,18 +227,18 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     
     private func presentInfoScreen() {
         guard
-            self.infoScreen.presentingViewController == nil,
+            /*self.infoScreen.presentingViewController == nil,*/
             !self.infoScreen.isBeingPresented,
-            let topmostViewController = UIApplication.shared.topMostViewController,
-            !(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)
+            let topmostViewController = UIApplication.shared.topMostViewController
+            /*!(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)*/
         else { return }
         
         topmostViewController.present(self.infoScreen, animated: true, completion: nil)
     }
     
     private func dismissInfoScreen(completion: (() -> Void)?) {
-        if self.infoScreen.presentedViewController != nil ||
-            self.infoScreen.presentingViewController == nil ||
+        if /*self.infoScreen.presentedViewController != nil ||
+            self.infoScreen.presentingViewController == nil ||*/
             self.infoScreen.isBeingDismissed {
             completion?()
             return
@@ -255,10 +247,10 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         self.infoScreen.dismiss(animated: true, completion: completion)
     }
     
-    private func switchInfoScreen(to state: InformationScreenViewController.State, animated: Bool = true) {
-        infoScreen.setState(state, animated: animated)
-        presentInfoScreen()
-    }
+//    private func switchInfoScreen(to state: InformationScreenViewController.State, animated: Bool = true) {
+//        infoScreen.setState(state, animated: animated)
+//        presentInfoScreen()
+//    }
     
     private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
         let cardId = formatCardId(cardId)
@@ -268,9 +260,9 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
-            infoScreenAppearWork?.cancel()
+           // infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
-        } else {
+        } else {//
             completion(nil)
         }
     }
@@ -283,130 +275,10 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
-            infoScreenAppearWork?.cancel()
+           // infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {
             completion(.failure(.unknownError))
-        }
-    }
-    
-    private func playSuccess() {
-        if supportsHaptics {
-            do {
-                
-                guard let path = Bundle.sdkBundle.path(forResource: "Success", ofType: "ahap") else {
-                    return
-                }
-                
-                try engine?.playPattern(from: URL(fileURLWithPath: path))
-            } catch let error {
-                Log.error("Error creating a haptic transient pattern: \(error)")
-            }
-        }
-    }
-    
-    private func playError() {
-        if supportsHaptics {
-            do {
-                guard let path = Bundle.sdkBundle.path(forResource: "Error", ofType: "ahap") else {
-                    return
-                }
-                
-                try engine?.playPattern(from: URL(fileURLWithPath: path))
-            } catch let error {
-                Log.error("Error creating a haptic transient pattern: \(error)")
-            }
-        } else {
-            let notificationGenerator = UINotificationFeedbackGenerator()
-            notificationGenerator.notificationOccurred(.error)
-        }
-    }
-    
-    private func playTick() {
-        if supportsHaptics {
-            do {
-                // Create an event (static) parameter to represent the haptic's intensity.
-                let intensityParameter = CHHapticEventParameter(parameterID: .hapticIntensity,
-                                                                value: 0.75)
-                
-                // Create an event (static) parameter to represent the haptic's sharpness.
-                let sharpnessParameter = CHHapticEventParameter(parameterID: .hapticSharpness,
-                                                                value: 0.5)
-                
-                // Create an event to represent the transient haptic pattern.
-                let event = CHHapticEvent(eventType: .hapticTransient,
-                                          parameters: [intensityParameter, sharpnessParameter],
-                                          relativeTime: 0)
-                
-                let pattern = try CHHapticPattern(events: [event], parameters: [])
-                
-                // Create a player to play the haptic pattern.
-                let player = try engine?.makePlayer(with: pattern)
-                try player?.start(atTime: CHHapticTimeImmediate) // Play now.
-            } catch let error {
-                Log.error("Error creating a haptic transient pattern: \(error)")
-            }
-        } else {
-            let generator = UIImpactFeedbackGenerator(style: UIImpactFeedbackGenerator.FeedbackStyle.light)
-            generator.impactOccurred()
-        }
-    }
-    
-    private func stopHapticsEngine() {
-        guard supportsHaptics else {
-            return
-        }
-        
-        engine?.stop(completionHandler: {[weak self] error in
-            if let error = error {
-                Log.error("Haptic Engine Shutdown Error: \(error)")
-                return
-            }
-            self?.engineNeedsStart = true
-        })
-    }
-    
-    private func startHapticsEngine() {
-        guard supportsHaptics && engineNeedsStart else {
-            return
-        }
-        
-        engine?.start(completionHandler: {[weak self] error in
-            if let error = error {
-                Log.error("Haptic Engine Start Error: \(error)")
-                return
-            }
-            self?.engineNeedsStart = false
-        })
-    }
-    
-    private func createHapticEngine() {
-        guard supportsHaptics else {
-            return
-        }
-        
-        do {
-            engine = try CHHapticEngine()
-            engine!.playsHapticsOnly = true
-            engine!.stoppedHandler = {[weak self] reason in
-                Log.debug("CHHapticEngine stop handler: The engine stopped for reason: \(reason.rawValue)")
-                self?.engineNeedsStart = true
-            }
-            engine!.resetHandler = {[weak self] in
-                Log.debug("Reset Handler: Restarting the engine.")
-                do {
-                    // Try restarting the engine.
-                    try self?.engine?.start()
-                    
-                    // Indicate that the next time the app requires a haptic, the app doesn't need to call engine.start().
-                    self?.engineNeedsStart = false
-                    
-                } catch {
-                    Log.error("Failed to start the engine with error: \(error)")
-                }
-            }
-        } catch {
-            Log.error("CHHapticEngine error: \(error)")
         }
     }
     

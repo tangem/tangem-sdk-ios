@@ -11,46 +11,22 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 class MainViewController: UIHostingController<MainView> {
-    private(set) var state: InformationScreenViewController.State = .howToScan
-    
-    private var indicatorTotal: CGFloat = 0
-    
-    public func tickSD(remainingValue: Float, message: String, hint: String? = nil) {
-        rootView.state = .delay(currentDelay: CGFloat(remainingValue), totalDelay: indicatorTotal)
-//        indicatorView.tickSD(remainingValue: remainingValue)
-//        hintLabel.text = hint
-//        indicatorLabel.text = message
-    }
-    
-    
-    public func tickPercent(percentValue: Int, message: String, hint: String? = nil) {
-        rootView.state = .progress(circleProgress: CGFloat(percentValue)/100.0)
-//        indicatorView.tickPercent(percentValue: percentValue)
-//        indicatorLabel.text = message
-//        hintLabel.text = hint
-//        indicatorView.currentPercentValue = percentValue
-    }
-    
-    func setupIndicatorTotal(_ value: Float) {
-        indicatorTotal = CGFloat(value)
-    }
-    
-    func setState(_ state: InformationScreenViewController.State, animated: Bool) {
-        switch state {
-        case .howToScan:
-            rootView.state = .scan
-        case .idle:
-            rootView.state = .default
-        case .pausedSpinner:
-            rootView.state = .default
-        case .percentProgress:
-            break
-        case .securityDelay:
-            break
-        case .spinner:
-            rootView.state = .default
+    var trues: Bool = true
+    func setState(_ state: SessionViewState, animated: Bool) {
+        if case let .delay(remaining, total) = state {
+            if trues {
+                rootView.state = state
+                trues = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.rootView.state = .delay(remaining: remaining - 1, total: total)
+                }
+              
+            } else {
+            
+            rootView.state = .delay(remaining: remaining - 1, total: total)
+            }
+        } else {
+            rootView.state = state
         }
-        
-        self.state = state
     }
 }

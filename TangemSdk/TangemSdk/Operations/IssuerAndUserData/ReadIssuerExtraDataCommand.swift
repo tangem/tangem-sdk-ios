@@ -133,7 +133,7 @@ public final class ReadIssuerExtraDataCommand: Command {
                                                                     issuerData: self.issuerData,
                                                                     issuerDataSignature: response.issuerDataSignature,
                                                                     issuerDataCounter: response.issuerDataCounter)
-                    self.viewDelegate?.hideUI(.percent)
+                    self.viewDelegate?.setState(.default)
                     if let result = finalResponse.verify(with: self.issuerPublicKey!),
                         result == true {
                         self.completion?(.success(finalResponse))
@@ -142,7 +142,7 @@ public final class ReadIssuerExtraDataCommand: Command {
                     }                    
                 }
             case .failure(let error):
-                self.viewDelegate?.hideUI(.percent)
+                self.viewDelegate?.setState(.default)
                 self.completion?(.failure(error))
             }
         }
@@ -153,7 +153,7 @@ public final class ReadIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(issuerData.count)/Float(issuerDataSize) * 100.0))
-        viewDelegate?.showPercentLoading(progress, message: nil, hint: nil)
+        viewDelegate?.setState(.progress(percent: progress))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

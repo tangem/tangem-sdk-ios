@@ -210,7 +210,7 @@ final class DefaultSessionViewDelegate: SessionViewDelegate {
     func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
         let title = TangemSdkError.cardVerificationFailed.localizedDescription
         let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
-            : "This card may be production sample or conterfeit. You can continue at your own risk"
+            : "This card may be production sample or counterfeit. You can continue at your own risk"
         
         runInMainThread {
             UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel)

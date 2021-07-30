@@ -74,6 +74,47 @@ public final class Secp256k1Utils {
         return KeyPair(privateKey: Data(privateKey), publicKey: Data(publicKeyUncompressed))
     }
     
+    public static func createPublicKey(privateKey: Data, compressed: Bool) -> Data? {
+        guard let ctx = context else { return nil }
+        
+        let privateKey = privateKey.toBytes
+        var publicKey = secp256k1_pubkey()
+        
+        guard secp256k1_ec_seckey_verify(ctx, privateKey) == 1 else { return nil }
+        
+        guard secp256k1_ec_pubkey_create(ctx, &publicKey, privateKey) == 1 else { return nil }
+        
+        guard let serializedKey = serializePublicKey(publicKey: &publicKey, compressed: compressed) else { return nil }
+        
+        return serializedKey
+    }
+    
+    public static func sum(compressedPubKey1: Data, compressedPubKey2: Data) -> Data? {
+        guard let ctx = context else { return nil }
+
+        var pubKey1 = secp256k1_pubkey()
+        var pubKey2 = secp256k1_pubkey()
+        guard secp256k1_ec_pubkey_parse(ctx, &pubKey1, Array(compressedPubKey1), 33) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubKey2, Array(compressedPubKey2), 33) == 1 else { return nil }
+        
+        var publicKeySecp = secp256k1_pubkey()
+        var result: Int32 = 0
+        
+        withUnsafePointer(to: &pubKey1) { pointer1 in
+            withUnsafePointer(to: &pubKey2) { pointer2 in
+                var pubkeyPointers: [UnsafePointer<secp256k1_pubkey>?] = [pointer1, pointer2]
+                
+                result = secp256k1_ec_pubkey_combine(ctx, &publicKeySecp, &pubkeyPointers, 2)
+            }
+        }
+       
+        guard result == 1 else { return nil }
+
+        guard let serializedKey = serializePublicKey(publicKey: &publicKeySecp, compressed: true) else { return nil }
+        
+        return serializedKey
+    }
+    
     public static func serializeToDer(secp256k1Signature: Data) -> Data? {
         guard let ctx = context else { return nil }
         

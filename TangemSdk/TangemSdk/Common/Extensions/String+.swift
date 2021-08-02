@@ -8,7 +8,6 @@
 
 import Foundation
 
-@available(iOS 13.0, *)
 public extension String {
     var titleFormatted: String {
         let separator = Array(repeating: "-", count: 16).joined()
@@ -19,11 +18,13 @@ public extension String {
         return self.replacingOccurrences(of: substring, with: "")
     }
     
+    @available(iOS 13.0, *)
     func sha256() -> Data {
         let data = Data(Array(utf8))
         return data.getSha256()
     }
     
+    @available(iOS 13.0, *)
     func sha512() -> Data {
         let data = Data(Array(utf8))
         return data.getSha512()
@@ -37,6 +38,7 @@ public extension String {
         return prefix(1).lowercased() + dropFirst()
     }
     
+    @available(iOS 13.0, *)
     internal var localized: String {
         Localization.getFormat(for: self)
     }
@@ -67,5 +69,11 @@ extension DefaultStringInterpolation {
     
     mutating func appendInterpolation(_ byte: Byte) {
         appendLiteral(byte.hexString)
+    }
+}
+
+extension String.SubSequence {
+    internal func trim() -> String {
+        return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

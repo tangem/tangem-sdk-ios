@@ -37,4 +37,48 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(key, "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea")
         XCTAssertEqual(chainCode, "f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c")
     }
+    
+    func testParsePath() {
+        let derivationPath = DerivationPath(rawPath: "m / 44' / 0' / 0' / 1 / 0")
+        let derivationPath1 = DerivationPath(rawPath: "m/44'/0'/0'/1/0")
+        let derivationPath2 = DerivationPath(rawPath: "M/44'/0'/0'/1/0")
+        XCTAssertNotNil(derivationPath)
+        XCTAssertNotNil(derivationPath1)
+        XCTAssertNotNil(derivationPath2)
+        XCTAssertEqual(derivationPath?.path, derivationPath1?.path)
+        XCTAssertEqual(derivationPath?.path, derivationPath2?.path)
+        
+        XCTAssertEqual(derivationPath?.path[0], DerivationNode.hardened(44))
+        XCTAssertEqual(derivationPath?.path[1], DerivationNode.hardened(0))
+        XCTAssertEqual(derivationPath?.path[2], DerivationNode.hardened(0))
+        XCTAssertEqual(derivationPath?.path[3], DerivationNode.notHardened(1))
+        XCTAssertEqual(derivationPath?.path[4], DerivationNode.notHardened(0))
+        
+        let derivationPathWrong = DerivationPath(rawPath: "44'/m'/0'/1/0")
+        XCTAssertNil(derivationPathWrong)
+        let derivationPathWrong1 = DerivationPath(rawPath: "m /")
+        XCTAssertNil(derivationPathWrong1)
+        let derivationPathWrong2 = DerivationPath(rawPath: "m|44'|0'|0'|1|0")
+        XCTAssertNil(derivationPathWrong2)
+    }
+    
+    func testTlvSerialization() {
+        let path = DerivationPath(rawPath: "m/0/1")!
+        let tlv = path.encodeTlv(with: .walletHDPath)
+        let hexValue = tlv.value.hexString
+        XCTAssertEqual("0000000000000001", hexValue)
+        
+        let path1 = DerivationPath(rawPath: "m/0'/1'/2")!
+        let tlv1 = path1.encodeTlv(with: .walletHDPath)
+        let hexValue1 = tlv1.value.hexString
+        XCTAssertEqual("800000008000000100000002", hexValue1)
+    }
+    
+    func testTlvDeserialization() {
+        let path = DerivationPath(from: Data(hexString: "0000000000000001"))
+        XCTAssertEqual("m/0/1", path.rawPath)
+        
+        let path1 = DerivationPath(from: Data(hexString: "800000008000000100000002"))
+        XCTAssertEqual("m/0'/1'/2", path1.rawPath)
+    }
 }

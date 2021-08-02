@@ -25,6 +25,7 @@ public enum TlvValueType: String {
     case uint16
     case interactionMode
 	case fileSettings
+    case derivationPath
 }
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
@@ -134,7 +135,12 @@ public enum TlvTag: Byte {
 	
 	case fileTypeName = 0x70
 	case fileData = 0x71
+    
 	case fileOwnerIndex = 0x75
+    
+    // MARK: - HDWallet
+    case walletHDPath = 0x6A
+    case walletHDChain = 0x6B
 	
 	// MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
@@ -170,6 +176,8 @@ public enum TlvTag: Byte {
             return .uint16
 		case .fileSettings:
 			return .fileSettings
+        case .walletHDPath:
+            return .derivationPath
         default:
             return .data
         }

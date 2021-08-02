@@ -8,7 +8,13 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public extension String {
+    var titleFormatted: String {
+        let separator = Array(repeating: "-", count: 16).joined()
+        return "\(separator) \(self) \(separator)"
+    }
+    
     func remove(_ substring: String) -> String {
         return self.replacingOccurrences(of: substring, with: "")
     }
@@ -53,13 +59,13 @@ public extension String {
     }
 }
 
-
+@available(iOS 13.0, *)
 extension DefaultStringInterpolation {
     mutating func appendInterpolation(_ data: Data) {
-        appendLiteral(data.asHexString())
+        appendLiteral(data.hexString)
     }
     
     mutating func appendInterpolation(_ byte: Byte) {
-        appendLiteral(byte.asHexString())
+        appendLiteral(byte.hexString)
     }
 }

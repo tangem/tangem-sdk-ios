@@ -75,6 +75,8 @@
 		5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D705B5A23DAF2BB002CCD7A /* Config.swift */; };
 		5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */; };
 		5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */; };
+		5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */; };
+		5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */; };
 		5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */; };
 		5D7D5FB423449F2300058D69 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB323449F2300058D69 /* Command.swift */; };
 		5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */; };
@@ -321,6 +323,8 @@
 		5D705B5A23DAF2BB002CCD7A /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringUtilsTest.swift; sourceTree = "<group>"; };
 		5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteUtilsTest.swift; sourceTree = "<group>"; };
+		5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivationPath.swift; sourceTree = "<group>"; };
+		5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivationNode.swift; sourceTree = "<group>"; };
 		5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironment.swift; sourceTree = "<group>"; };
 		5D7D5FB323449F2300058D69 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TangemSdk+Combine.swift"; sourceTree = "<group>"; };
@@ -536,6 +540,8 @@
 			isa = PBXGroup;
 			children = (
 				5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */,
+				5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */,
+				5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */,
 			);
 			path = HDWallet;
 			sourceTree = "<group>";
@@ -1383,6 +1389,7 @@
 				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
+				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				B0AAEBEC255148BE00CF52BC /* CAAnimations+.swift in Sources */,
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
@@ -1420,6 +1427,7 @@
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
+				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,

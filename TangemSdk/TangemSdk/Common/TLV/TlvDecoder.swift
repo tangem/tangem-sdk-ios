@@ -194,7 +194,7 @@ public final class TlvDecoder {
             return fileSettings as! T
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)
-            return DerivationPath(from: tagValue) as! T
+            return try DerivationPath(from: tagValue) as! T
         }
     }
     

@@ -10,6 +10,8 @@
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
+		5D14091C26B9692500B811A1 /* Bip44PathBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091B26B9692500B811A1 /* Bip44PathBuilder.swift */; };
+		5D14091E26B9886800B811A1 /* HDWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091D26B9886800B811A1 /* HDWalletError.swift */; };
 		5D14947A268625A400C0D923 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D149479268625A400C0D923 /* CommonTests.swift */; };
 		5D14947D2686453C00C0D923 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947C2686453C00C0D923 /* KeyStoreError.swift */; };
 		5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */; };
@@ -258,6 +260,8 @@
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		5D14091B26B9692500B811A1 /* Bip44PathBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bip44PathBuilder.swift; sourceTree = "<group>"; };
+		5D14091D26B9886800B811A1 /* HDWalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletError.swift; sourceTree = "<group>"; };
 		5D149479268625A400C0D923 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
 		5D14947C2686453C00C0D923 /* KeyStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -542,6 +546,8 @@
 				5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */,
 				5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */,
 				5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */,
+				5D14091B26B9692500B811A1 /* Bip44PathBuilder.swift */,
+				5D14091D26B9886800B811A1 /* HDWalletError.swift */,
 			);
 			path = HDWallet;
 			sourceTree = "<group>";
@@ -1322,6 +1328,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */,
+				5D14091E26B9886800B811A1 /* HDWalletError.swift in Sources */,
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
 				5D379C27268FA47600C7F473 /* EncryptionMode.swift in Sources */,
@@ -1344,6 +1351,7 @@
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
+				5D14091C26B9692500B811A1 /* Bip44PathBuilder.swift in Sources */,
 				B0E162C325656D8400E97D07 /* CardDeserializer.swift in Sources */,
 				B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,

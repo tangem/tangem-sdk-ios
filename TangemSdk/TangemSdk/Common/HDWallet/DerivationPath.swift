@@ -12,17 +12,22 @@ public struct DerivationPath {
     public let rawPath: String
     public let path: [DerivationNode]
     
+    init(rawPath: String, path: [DerivationNode]) {
+        self.rawPath = rawPath
+        self.path = path
+    }
+    
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
-    public init?(rawPath: String) {
+    public init(rawPath: String) throws {
         let splittedPath = rawPath.lowercased().split(separator: Constants.separatorSymbol)
         
         guard splittedPath.count >= 2 else {
-            return nil
+            throw HDWalletError.wrongPath
         }
         
         guard splittedPath[0].trim() == Constants.masterKeySymbol else {
-            return nil
+            throw HDWalletError.wrongPath
         }
         
         var derivationPath: [DerivationNode] = []
@@ -30,27 +35,36 @@ public struct DerivationPath {
         for pathItem in splittedPath.suffix(from: 1) {
             let isHardened = pathItem.contains(Constants.hardenedSymbol)
             let cleanedPathItem = pathItem.trim().remove(Constants.hardenedSymbol)
-            guard let index = Int(cleanedPathItem) else { return nil }
+            guard let index = Int(cleanedPathItem) else {
+                throw HDWalletError.wrongPath
+            }
             
             let node = isHardened ? DerivationNode.hardened(index) : DerivationNode.notHardened(index)
             derivationPath.append(node)
         }
         
-        self.path = derivationPath
-        self.rawPath = rawPath
+        self.init(rawPath: rawPath, path: derivationPath)
+    }
+    
+    public init(path: [DerivationNode]) {
+        self.path = path
+        
+        let description = path.map { $0.pathDescription }.joined(separator: String(Constants.separatorSymbol))
+        self.rawPath =  "\(Constants.masterKeySymbol)\(Constants.separatorSymbol)\(description)"
     }
 }
 
-
 @available(iOS 13.0, *)
 extension DerivationPath {
-    init(from tlvData: Data) {
+    init(from tlvData: Data) throws {
+        guard tlvData.count % 4 == 0 else {
+            throw TangemSdkError.decodingFailed("Failed to parse DerivationPath. Data too short.")
+        }
+        
         let chunks = 0..<tlvData.count/4
         let dataChunks = chunks.map {  tlvData.dropFirst($0 * 4).prefix(4) }
-        self.path = dataChunks.map { DerivationNode.deserialize(from: $0) }
-        
-        let description = self.path.map { $0.pathDescription }.joined(separator: String(Constants.separatorSymbol))
-        self.rawPath = "\(Constants.masterKeySymbol)\(Constants.separatorSymbol)\(description)"
+        let path = dataChunks.map { DerivationNode.deserialize(from: $0) }
+        self.init(path: path)
     }
     
     func encodeTlv(with tag: TlvTag) -> Tlv {

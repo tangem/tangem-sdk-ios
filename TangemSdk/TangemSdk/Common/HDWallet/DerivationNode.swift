@@ -12,7 +12,7 @@ public enum DerivationNode: Equatable {
     case hardened(Int)
     case notHardened(Int)
     
-    var pathDescription: String {
+    public var pathDescription: String {
         switch self {
         case .hardened(let index):
             return "\(index)\(DerivationPath.Constants.hardenedSymbol)"
@@ -20,17 +20,21 @@ public enum DerivationNode: Equatable {
             return "\(index)"
         }
     }
+    
+    public var index: Int {
+        switch self {
+        case .hardened(let index):
+            let hardenedIndex = index + Constants.hardenedOffset
+            return hardenedIndex
+        case .notHardened(let index):
+            return index
+        }
+    }
 }
 
 extension DerivationNode {
     func serialize() -> Data {
-        switch self {
-        case .hardened(let index):
-            let hardenedIndex = index + Constants.hardenedOffset
-            return hardenedIndex.bytes4
-        case .notHardened(let index):
-            return index.bytes4
-        }
+        index.bytes4
     }
     
     static func deserialize(from data: Data) -> DerivationNode {

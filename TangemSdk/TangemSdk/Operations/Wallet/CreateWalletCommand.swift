@@ -152,6 +152,7 @@ public final class CreateWalletCommand: Command {
         let index = try decoder.decode(.walletIndex) ?? walletIndex!
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+                                 chainCode: try decoder.decode(.walletHDChain),
                                  curve: curve,
                                  settings: Card.Wallet.Settings(isPermanent: isPermanent),
                                  totalSignedHashes: 0,

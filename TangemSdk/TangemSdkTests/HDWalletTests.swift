@@ -118,6 +118,36 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(childKey?.compressedPublicKey.hexString.lowercased(), "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea")
     }
     
+    func testPathDerivation1() {
+        let path = try! DerivationPath(rawPath: "m/0/1")
+        //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
+        let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+        
+        let childKey = try? masterKey.derivePublicKey(path: path)
+        
+        XCTAssertEqual(childKey?.chainCode.hexString.lowercased(),
+                       "8d5e25bfe038e4ef37e2c5ec963b7a7c7a745b4319bff873fc40f1a52c7d6fd1")
+        XCTAssertEqual(childKey?.compressedPublicKey.hexString.lowercased(),
+                       "02d27a781fd1b3ec5ba5017ca55b9b900fde598459a0204597b37e6c66a0e35c98")
+    }
+    
+    func testEthDerivation() {
+        //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
+        let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+        
+        let childKey = try! masterKey.derivePublicKey(coin: .ethereum)
+        let childKey1 = try! masterKey.derivePublicKey(path: try! DerivationPath(rawPath: "m/60"))
+        
+        XCTAssertEqual(childKey, childKey1)
+
+        XCTAssertEqual(childKey.chainCode.hexString.lowercased(),
+                       "1a7a178628cd4fd9f01d405899eda8be0e1e0a7964b08884914923d63dbe75e1")
+        XCTAssertEqual(childKey.compressedPublicKey.hexString.lowercased(),
+                       "02cf206797856a725a8716da0d62087229f0f15b756005fd04048d24b41182376c")
+    }
+    
     func testPathDerivationBip44() {
         let buidler = Bip44PathBuilder(coinType: .bitcoin,
                                        account: 0,
@@ -150,6 +180,5 @@ class HDWalletTests: XCTestCase {
             let hdError = error as? HDWalletError
             XCTAssertEqual(HDWalletError.hardenedNotSupported, hdError)
         }
-       
     }
 }

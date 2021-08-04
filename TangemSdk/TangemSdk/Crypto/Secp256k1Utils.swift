@@ -299,7 +299,6 @@ public final class Secp256k1Utils {
         secp256k1_ec_pubkey_serialize(ctx, &pubKeyCompressed, &pubLength, &pubkey, UInt32(SECP256K1_EC_COMPRESSED))
         
         return Data(pubKeyCompressed)
-        
     }
     
     public static func normalizeVerify(secp256k1Signature: Data, hash: Data, publicKey: Data) -> Data? {

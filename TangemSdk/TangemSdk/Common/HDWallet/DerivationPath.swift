@@ -30,7 +30,7 @@ public struct DerivationPath {
         for pathItem in splittedPath.suffix(from: 1) {
             let isHardened = pathItem.contains(HDWalletConstants.hardenedSymbol)
             let cleanedPathItem = pathItem.trim().remove(HDWalletConstants.hardenedSymbol)
-            guard let index = Int(cleanedPathItem) else {
+            guard let index = UInt32(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }
             

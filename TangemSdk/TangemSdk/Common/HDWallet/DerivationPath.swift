@@ -12,11 +12,6 @@ public struct DerivationPath {
     public let rawPath: String
     public let path: [DerivationNode]
     
-    init(rawPath: String, path: [DerivationNode]) {
-        self.rawPath = rawPath
-        self.path = path
-    }
-    
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
     public init(rawPath: String) throws {
@@ -52,6 +47,11 @@ public struct DerivationPath {
         let description = path.map { $0.pathDescription }.joined(separator: String(HDWalletConstants.separatorSymbol))
         self.rawPath =  "\(HDWalletConstants.masterKeySymbol)\(HDWalletConstants.separatorSymbol)\(description)"
     }
+    
+    private init(rawPath: String, path: [DerivationNode]) {
+        self.rawPath = rawPath
+        self.path = path
+    }
 }
 
 @available(iOS 13.0, *)
@@ -70,11 +70,5 @@ extension DerivationPath {
     func encodeTlv(with tag: TlvTag) -> Tlv {
         let serialized = path.map { $0.serialize() }.joined()
         return Tlv(tag, value: Data(serialized))
-    }
-}
-
-extension DerivationPath {
-    enum Constants {
-    
     }
 }

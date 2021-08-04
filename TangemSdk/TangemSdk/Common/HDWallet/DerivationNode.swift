@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public enum DerivationNode: Equatable {
     case hardened(Int)
     case notHardened(Int)
@@ -15,16 +16,17 @@ public enum DerivationNode: Equatable {
     public var pathDescription: String {
         switch self {
         case .hardened(let index):
-            return "\(index)\(DerivationPath.Constants.hardenedSymbol)"
+            return "\(index)\(HDWalletConstants.hardenedSymbol)"
         case .notHardened(let index):
             return "\(index)"
         }
     }
     
+    
     public var index: Int {
         switch self {
         case .hardened(let index):
-            let hardenedIndex = index + Constants.hardenedOffset
+            let hardenedIndex = index + HDWalletConstants.hardenedOffset
             return hardenedIndex
         case .notHardened(let index):
             return index
@@ -39,16 +41,10 @@ extension DerivationNode {
     
     static func deserialize(from data: Data) -> DerivationNode {
         let index = data.toInt()
-        if index >= Constants.hardenedOffset {
-            return .hardened(index - Constants.hardenedOffset)
+        if index >= HDWalletConstants.hardenedOffset {
+            return .hardened(index - HDWalletConstants.hardenedOffset)
         }
         
         return .notHardened(index)
-    }
-}
-
-private extension DerivationNode {
-    enum Constants {
-        static let hardenedOffset: Int = .init(0x80000000)
     }
 }

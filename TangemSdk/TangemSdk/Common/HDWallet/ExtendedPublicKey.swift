@@ -10,7 +10,7 @@ import Foundation
 import CryptoKit
 
 @available(iOS 13.0, *)
-public struct ExtendedPublicKey {
+public struct ExtendedPublicKey: Equatable {
     public let compressedPublicKey: Data
     public let chainCode: Data
     
@@ -21,7 +21,7 @@ public struct ExtendedPublicKey {
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
     ///  It is only defined for non-hardened child keys.
-    public func derivePublicKey(index: Int) throws -> ExtendedPublicKey {
+    public func derivePublicKey(index: UInt32) throws -> ExtendedPublicKey {
         //We can derive only non-hardened keys
         guard index >= 0 && index < HDWalletConstants.hardenedOffset else {
             throw HDWalletError.hardenedNotSupported
@@ -48,6 +48,12 @@ public struct ExtendedPublicKey {
     ///  It is only defined for non-hardened child keys.
     public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
         try derivePublicKey(index: node.index)
+    }
+    
+    /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
+    ///  It is only defined for non-hardened child keys.
+    public func derivePublicKey(coin: CoinType) throws -> ExtendedPublicKey {
+        try derivePublicKey(index: coin.index)
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.

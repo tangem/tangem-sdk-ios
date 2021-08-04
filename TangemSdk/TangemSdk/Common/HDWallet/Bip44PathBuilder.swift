@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public struct Bip44PathBuilder {
     public let purpose: Int = 44
     public let coinType: CoinType
@@ -67,7 +66,7 @@ public enum CoinType {
     case polygon
     case other(index: Int)
     
-    var index: Int {
+    public var index: Int {
         switch self {
         case .bitcoin: return 0
         case .testnet: return 1

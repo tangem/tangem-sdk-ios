@@ -9,13 +9,13 @@
 import Foundation
 
 public struct Bip44PathBuilder {
-    public let purpose: Int = 44
+    public let purpose: UInt32 = 44
     public let coinType: CoinType
-    public let account: Int
+    public let account: UInt32
     public let change: Bip44Chain
-    public let addressIndex: Int
+    public let addressIndex: UInt32
     
-    public init(coinType: CoinType, account: Int, change: Bip44Chain, addressIndex: Int) {
+    public init(coinType: CoinType, account: UInt32, change: Bip44Chain, addressIndex: UInt32) {
         self.coinType = coinType
         self.account = account
         self.change = change
@@ -40,7 +40,7 @@ public enum Bip44Chain {
     case external
     case `internal`
     
-    public var index: Int {
+    public var index: UInt32 {
         switch self {
         case .external:
             return 0
@@ -64,9 +64,9 @@ public enum CoinType {
     case xrp
     case tezos
     case polygon
-    case other(index: Int)
+    case other(index: UInt32)
     
-    public var index: Int {
+    public var index: UInt32 {
         switch self {
         case .bitcoin: return 0
         case .testnet: return 1

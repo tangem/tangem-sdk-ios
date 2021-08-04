@@ -20,21 +20,21 @@ public struct DerivationPath {
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
     public init(rawPath: String) throws {
-        let splittedPath = rawPath.lowercased().split(separator: Constants.separatorSymbol)
+        let splittedPath = rawPath.lowercased().split(separator: HDWalletConstants.separatorSymbol)
         
         guard splittedPath.count >= 2 else {
             throw HDWalletError.wrongPath
         }
         
-        guard splittedPath[0].trim() == Constants.masterKeySymbol else {
+        guard splittedPath[0].trim() == HDWalletConstants.masterKeySymbol else {
             throw HDWalletError.wrongPath
         }
         
         var derivationPath: [DerivationNode] = []
         
         for pathItem in splittedPath.suffix(from: 1) {
-            let isHardened = pathItem.contains(Constants.hardenedSymbol)
-            let cleanedPathItem = pathItem.trim().remove(Constants.hardenedSymbol)
+            let isHardened = pathItem.contains(HDWalletConstants.hardenedSymbol)
+            let cleanedPathItem = pathItem.trim().remove(HDWalletConstants.hardenedSymbol)
             guard let index = Int(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }
@@ -49,8 +49,8 @@ public struct DerivationPath {
     public init(path: [DerivationNode]) {
         self.path = path
         
-        let description = path.map { $0.pathDescription }.joined(separator: String(Constants.separatorSymbol))
-        self.rawPath =  "\(Constants.masterKeySymbol)\(Constants.separatorSymbol)\(description)"
+        let description = path.map { $0.pathDescription }.joined(separator: String(HDWalletConstants.separatorSymbol))
+        self.rawPath =  "\(HDWalletConstants.masterKeySymbol)\(HDWalletConstants.separatorSymbol)\(description)"
     }
 }
 
@@ -75,8 +75,6 @@ extension DerivationPath {
 
 extension DerivationPath {
     enum Constants {
-        static let hardenedSymbol: String = "'"
-        static let masterKeySymbol: String = "m"
-        static let separatorSymbol: Character = "/"
+    
     }
 }

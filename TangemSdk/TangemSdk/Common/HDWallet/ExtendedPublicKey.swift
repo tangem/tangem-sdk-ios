@@ -23,7 +23,7 @@ public struct ExtendedPublicKey {
     ///  It is only defined for non-hardened child keys.
     public func derivePublicKey(index: Int) throws -> ExtendedPublicKey {
         //We can derive only non-hardened keys
-        guard index >= 0 && index <= Constants.maxNonHardenedIndex else {
+        guard index >= 0 && index < HDWalletConstants.hardenedOffset else {
             throw HDWalletError.hardenedNotSupported
         }
         
@@ -60,12 +60,5 @@ public struct ExtendedPublicKey {
         }
         
         return key
-    }
-}
-
-@available(iOS 13.0, *)
-extension ExtendedPublicKey {
-    enum Constants {
-        static let maxNonHardenedIndex: Int = 2147483647 // 2^31-1. Index must be less then or equal this value
     }
 }

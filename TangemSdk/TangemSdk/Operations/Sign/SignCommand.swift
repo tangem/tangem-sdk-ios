@@ -27,6 +27,7 @@ class SignCommand: Command {
     var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
+    private let hdPath: DerivationPath?
     private let hashes: [Data]
     
     private var signatures: [Data] = []
@@ -45,9 +46,11 @@ class SignCommand: Command {
     /// - Parameters:
     ///   - hashes: Array of transaction hashes.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    init(hashes: [Data], walletPublicKey: Data) {
+    ///   - hdPath: Derivation path of the wallet. Optional
+    init(hashes: [Data], walletPublicKey: Data, hdPath: DerivationPath? = nil) {
         self.hashes = hashes
         self.walletPublicKey = walletPublicKey
+        self.hdPath = hdPath
     }
     
     deinit {
@@ -172,6 +175,10 @@ class SignCommand: Command {
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: keys.publicKey)
+        }
+        
+        if let hdPath = self.hdPath {
+            try tlvBuilder.append(.walletHDPath, value: hdPath)
         }
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())

@@ -37,6 +37,7 @@ struct CardDeserializer {
             let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask())
             
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+                                     chainCode: nil,
                                      curve: defaultCurve,
                                      settings: walletSettings,
                                      totalSignedHashes: try decoder.decode(.walletSignedHashes),

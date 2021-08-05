@@ -29,31 +29,31 @@ struct ContentView: View {
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
                 
-                ScrollView {
-                    VStack(spacing: 4) {
-                        HStack {
-                            Button("Clear", action: model.clear)
-                            Button("Copy", action: model.copy)
-                        }
-                        
-                        Picker("", selection: $model.method) {
-                            ForEach(0..<AppModel.Method.allCases.count) { index in
-                                Text(AppModel.Method.allCases[index].rawValue)
-                                    .tag(AppModel.Method.allCases[index])
-                            }
-                        }
-                        
-                        Button("Start") { model.start() }
-                            .buttonStyle(ExampleButton(isLoading: model.isScanning))
-                            .frame(width: 100)
-                            .padding()
-                        
-                        additionalView
+                VStack(spacing: 4) {
+                    HStack {
+                        Button("Clear", action: model.clear)
+                        Button("Copy", action: model.copy)
                     }
-                    .padding(.horizontal, 20)
-                    .frame(width: geo.size.width)
+                    
+                    additionalView
+                        .padding(.top, 4)
+
+                    Picker("", selection: $model.method) {
+                        ForEach(0..<AppModel.Method.allCases.count) { index in
+                            Text(AppModel.Method.allCases[index].rawValue)
+                                .tag(AppModel.Method.allCases[index])
+                        }
+                    }
+
+                    Button("Start") { model.start() }
+                        .buttonStyle(ExampleButton(isLoading: model.isScanning))
+                        .frame(width: 100)
+                        .padding()
                 }
+                .padding(.horizontal, 8)
+                .frame(width: geo.size.width)
             }
+            .padding(.bottom, 8)
         }
         .actionSheet(isPresented: $model.showWalletSelection) {
             let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
@@ -113,6 +113,21 @@ struct ContentView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
+            }
+            .padding()
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2))
+        case .signHash, .signHashes:
+            VStack {
+                Text("Optional hd path")
+                    .font(.headline)
+                    .bold()
+                
+                TextField("\"m/0/1\"", text: $model.hdPath)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
             }
             .padding()
             .cornerRadius(8)

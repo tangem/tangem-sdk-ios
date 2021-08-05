@@ -127,6 +127,28 @@ public extension TangemSdk {
                      completion: completion)
     }
     
+    /// This method derives the public key by the card, according to the BIP32.
+    /// You can derive the public key without the card, if you need non-hardened derivation only.
+    /// It's preferred to use `ExtendedPublicKey.derivePublicKey(at: UInt32)` for non-hardened derivation,
+    /// because the card never reveals the secret key. `secp256k1` only
+    /// - Parameters:
+    ///   - walletPublicKey: Public key of wallet that should sign hashes.
+    ///   - cardId: CID, Unique Tangem card ID number
+    ///   - hdPath: Derivation path of the wallet
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns  `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    func derivePublicKey(walletPublicKey: Data,
+                         cardId: String,
+                         hdPath: DerivationPath,
+                         initialMessage: Message? = nil,
+                         completion: @escaping CompletionResult<ExtendedPublicKey>) {
+        let command = DerivePublicKeyCommand(publicKey: walletPublicKey, hdPath: hdPath)
+        startSession(with: command,
+                     cardId: cardId,
+                     initialMessage: initialMessage,
+                     completion: completion)
+    }
+    
     /// This command will create a new wallet on the card having ‘Empty’ state.
     /// A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.
     /// App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand` or `ReadCommand`

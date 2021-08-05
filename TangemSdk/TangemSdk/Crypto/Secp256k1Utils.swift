@@ -18,18 +18,21 @@ public final class Secp256k1Utils {
     }
     
     public static func verify(publicKey: Data, message: Data, signature: Data) -> Bool? {
+        return verify(publicKey: publicKey, hash: message.getSha256(), signature: signature)
+    }
+    
+    public static func verify(publicKey: Data, hash: Data, signature: Data) -> Bool? {
         guard let ctx = context else { return nil }
         
-        let hashedMessage = message.getSha256()
         var sig = secp256k1_ecdsa_signature()
         var normalized = secp256k1_ecdsa_signature()
         guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature.toBytes) == 1 else { return nil }
         
         _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
         var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, 65) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { return nil }
         
-        let result = secp256k1_ecdsa_verify(ctx, &normalized, hashedMessage.toBytes, &pubkey) == 1
+        let result = secp256k1_ecdsa_verify(ctx, &normalized, hash.toBytes, &pubkey) == 1
         return result
     }
     
@@ -139,7 +142,7 @@ public final class Secp256k1Utils {
         
         _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
         var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), 65) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), publicKey.count) == 1 else { return nil }
         guard secp256k1_ecdsa_verify(ctx, &normalized, Array(hash), &pubkey) == 1 else { return nil }
         
         var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
@@ -241,7 +244,7 @@ public final class Secp256k1Utils {
         
         _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
         var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), 65) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), publicKey.count) == 1 else { return nil }
         guard secp256k1_ecdsa_verify(ctx, &normalized, Array(hash), &pubkey) == 1 else { return nil }
         
         var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
@@ -255,7 +258,7 @@ public final class Secp256k1Utils {
         
         let privkey = privateKey.toBytes
         var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, 65) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { return nil }
         
         var sharedSecret = Array(repeating: UInt8(0), count: 32)
         guard secp256k1_ecdh(ctx, &sharedSecret, &pubkey, privkey, nil, nil) == 1 else { return nil }

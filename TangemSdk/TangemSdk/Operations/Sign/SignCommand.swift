@@ -46,7 +46,7 @@ class SignCommand: Command {
     /// - Parameters:
     ///   - hashes: Array of transaction hashes.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    ///   - hdPath: Derivation path of the wallet. Optional
+    ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
     init(hashes: [Data], walletPublicKey: Data, hdPath: DerivationPath? = nil) {
         self.hashes = hashes
         self.walletPublicKey = walletPublicKey
@@ -60,6 +60,10 @@ class SignCommand: Command {
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard let wallet = card.wallets[walletPublicKey] else {
             return .walletNotFound
+        }
+        
+        if hdPath != nil, card.firmwareVersion < .hdWalletAvailable {
+            return .notSupportedFirmwareVersion
         }
         
         //Before v4

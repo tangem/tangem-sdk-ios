@@ -30,7 +30,7 @@ public final class SignHashCommand: CardSessionRunnable {
     /// - Parameters:
     ///   - hash: Transaction hash for sign by card.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    ///   - hdPath: Derivation path of the wallet. Optional
+    ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
     public init(hash: Data, walletPublicKey: Data, hdPath: DerivationPath? = nil) {
         self.hash = hash
         self.walletPublicKey = walletPublicKey

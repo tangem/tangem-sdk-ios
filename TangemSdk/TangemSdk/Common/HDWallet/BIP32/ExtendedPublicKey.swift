@@ -10,8 +10,8 @@ import Foundation
 import CryptoKit
 
 @available(iOS 13.0, *)
-/// BIP32 extended public key
-public struct ExtendedPublicKey: Equatable {
+/// BIP32 extended public key for `secp256k1`.
+public struct ExtendedPublicKey: Equatable, JSONStringConvertible {
     public let compressedPublicKey: Data
     public let chainCode: Data
     
@@ -21,7 +21,7 @@ public struct ExtendedPublicKey: Equatable {
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
-    ///  It is only defined for non-hardened child keys.
+    ///  It is only defined for non-hardened child keys. `secp256k1` only
     public func derivePublicKey(index: UInt32) throws -> ExtendedPublicKey {
         //We can derive only non-hardened keys
         guard index >= 0 && index < BIP32.Constants.hardenedOffset else {

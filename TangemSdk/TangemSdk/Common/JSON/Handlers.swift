@@ -159,3 +159,18 @@ class PreflightReadHandler: JSONRPCHandler {
         return command.eraseToAnyRunnable()
     }
 }
+
+@available(iOS 13.0, *)
+class DerivePublicKeyHandler: JSONRPCHandler {
+    var method: String { "DERIVE_PUBLIC_KEY" }
+    var requiresCardId: Bool { true }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {        
+        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
+        let hdRawPath: String = try parameters.value(for: "hdPath")
+        let hdPath: DerivationPath = try DerivationPath(rawPath: hdRawPath)
+        
+        let command = DerivePublicKeyCommand(publicKey: walletPublicKey, hdPath: hdPath)
+        return command.eraseToAnyRunnable()
+    }
+}

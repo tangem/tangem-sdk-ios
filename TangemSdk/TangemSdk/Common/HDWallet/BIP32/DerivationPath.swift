@@ -29,8 +29,8 @@ public struct DerivationPath {
         var derivationPath: [DerivationNode] = []
         
         for pathItem in splittedPath.suffix(from: 1) {
-            let isHardened = pathItem.contains(BIP32.Constants.hardenedSymbol)
-            let cleanedPathItem = pathItem.trim().remove(BIP32.Constants.hardenedSymbol)
+            let isHardened = pathItem.contains(BIP32.Constants.hardenedSymbol) || pathItem.contains(BIP32.Constants.alternativeHardenedSymbol)
+            let cleanedPathItem = pathItem.trim().remove(BIP32.Constants.hardenedSymbol).remove(BIP32.Constants.alternativeHardenedSymbol)
             guard let index = UInt32(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }

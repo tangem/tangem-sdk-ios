@@ -14,7 +14,7 @@ import XCTest
 class HDWalletTests: XCTestCase {
     func testDerivation1() {
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"),
-                                      chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"))
+                                          chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"))
         
         let derived = try? masterKey.derivePublicKey(index: 1)
         XCTAssertNotNil(derived)
@@ -27,7 +27,7 @@ class HDWalletTests: XCTestCase {
     
     func testDerivation0() {
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                      chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
         
         let derived = try? masterKey.derivePublicKey(index: 0)
         XCTAssertNotNil(derived)
@@ -42,19 +42,19 @@ class HDWalletTests: XCTestCase {
         let derivationPath = try? DerivationPath(rawPath: "m / 44' / 0' / 0' / 1 / 0")
         let derivationPath1 = try? DerivationPath(rawPath: "m/44'/0'/0'/1/0")
         let derivationPath2 = try? DerivationPath(rawPath: "M/44'/0'/0'/1/0")
-        let derivationPath3 = DerivationPath(path: [.hardened(44), .hardened(0), .hardened(0), .notHardened(1), .notHardened(0)])
+        let derivationPath3 = DerivationPath(nodes: [.hardened(44), .hardened(0), .hardened(0), .notHardened(1), .notHardened(0)])
         XCTAssertNotNil(derivationPath)
         XCTAssertNotNil(derivationPath1)
         XCTAssertNotNil(derivationPath2)
-        XCTAssertEqual(derivationPath?.path, derivationPath1?.path)
-        XCTAssertEqual(derivationPath?.path, derivationPath2?.path)
-        XCTAssertEqual(derivationPath?.path, derivationPath3.path)
+        XCTAssertEqual(derivationPath?.nodes, derivationPath1?.nodes)
+        XCTAssertEqual(derivationPath?.nodes, derivationPath2?.nodes)
+        XCTAssertEqual(derivationPath?.nodes, derivationPath3.nodes)
         
-        XCTAssertEqual(derivationPath?.path[0], DerivationNode.hardened(44))
-        XCTAssertEqual(derivationPath?.path[1], DerivationNode.hardened(0))
-        XCTAssertEqual(derivationPath?.path[2], DerivationNode.hardened(0))
-        XCTAssertEqual(derivationPath?.path[3], DerivationNode.notHardened(1))
-        XCTAssertEqual(derivationPath?.path[4], DerivationNode.notHardened(0))
+        XCTAssertEqual(derivationPath?.nodes[0], DerivationNode.hardened(44))
+        XCTAssertEqual(derivationPath?.nodes[1], DerivationNode.hardened(0))
+        XCTAssertEqual(derivationPath?.nodes[2], DerivationNode.hardened(0))
+        XCTAssertEqual(derivationPath?.nodes[3], DerivationNode.notHardened(1))
+        XCTAssertEqual(derivationPath?.nodes[4], DerivationNode.notHardened(0))
         
         let derivationPathWrong = try? DerivationPath(rawPath: "44'/m'/0'/1/0")
         XCTAssertNil(derivationPathWrong)
@@ -88,19 +88,19 @@ class HDWalletTests: XCTestCase {
     }
     
     func testBitcoinBip44() {
-        let buidler = Bip44PathBuilder(coinType: .bitcoin,
-                                       account: 0,
-                                       change: .external,
-                                       addressIndex: 0)
+        let buidler = BIP44(coinType: 0,
+                            account: 0,
+                            change: .external,
+                            addressIndex: 0)
         let path = buidler.buildPath(notHardenedOnly: false).rawPath
         XCTAssertEqual(path, "m/44'/0'/0'/0/0")
     }
     
     func testBitcoinBip44ForTangem() {
-        let buidler = Bip44PathBuilder(coinType: .bitcoin,
-                                       account: 0,
-                                       change: .external,
-                                       addressIndex: 0)
+        let buidler = BIP44(coinType: 0,
+                            account: 0,
+                            change: .external,
+                            addressIndex: 0)
         
         let path = buidler.buildPath().rawPath
         XCTAssertEqual(path, "m/44/0/0/0/0")
@@ -120,7 +120,7 @@ class HDWalletTests: XCTestCase {
     
     func testPathDerivation1() {
         let path = try! DerivationPath(rawPath: "m/0/1")
-        //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
+        //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8doc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
         
@@ -136,23 +136,23 @@ class HDWalletTests: XCTestCase {
         //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
-        
-        let childKey = try! masterKey.derivePublicKey(coin: .ethereum)
-        let childKey1 = try! masterKey.derivePublicKey(path: try! DerivationPath(rawPath: "m/60"))
+        let ethPath = BIP44.buildPath(for: 60)
+        let childKey = try! masterKey.derivePublicKey(path: ethPath)
+        let childKey1 = try! masterKey.derivePublicKey(path: try! DerivationPath(rawPath: "m/44/60"))
         
         XCTAssertEqual(childKey, childKey1)
-
+        
         XCTAssertEqual(childKey.chainCode.hexString.lowercased(),
-                       "1a7a178628cd4fd9f01d405899eda8be0e1e0a7964b08884914923d63dbe75e1")
+                       "8bef790efd848a775aef08bbfd702dc8fe7fabaab2fcce473ddd8a9bd113aef1")
         XCTAssertEqual(childKey.compressedPublicKey.hexString.lowercased(),
-                       "02cf206797856a725a8716da0d62087229f0f15b756005fd04048d24b41182376c")
+                       "02c2fd0dc466bc05b0aadd14d933bf7ece3705af0846c471eaf16cf98c1341013d")
     }
     
     func testPathDerivationBip44() {
-        let buidler = Bip44PathBuilder(coinType: .bitcoin,
-                                       account: 0,
-                                       change: .internal,
-                                       addressIndex: 0)
+        let buidler = BIP44(coinType: 0,
+                            account: 0,
+                            change: .internal,
+                            addressIndex: 0)
         
         let path = buidler.buildPath()
         
@@ -166,10 +166,10 @@ class HDWalletTests: XCTestCase {
     }
     
     func testPathDerivationFailed() {
-        let buidler = Bip44PathBuilder(coinType: .bitcoin,
-                                       account: 0,
-                                       change: .external,
-                                       addressIndex: 0)
+        let buidler = BIP44(coinType: 0,
+                            account: 0,
+                            change: .external,
+                            addressIndex: 0)
         
         let path = buidler.buildPath(notHardenedOnly: false)
         

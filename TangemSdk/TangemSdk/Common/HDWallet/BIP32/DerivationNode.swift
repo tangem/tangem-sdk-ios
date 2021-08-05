@@ -15,7 +15,7 @@ public enum DerivationNode: Equatable {
     public var pathDescription: String {
         switch self {
         case .hardened(let index):
-            return "\(index)\(HDWalletConstants.hardenedSymbol)"
+            return "\(index)\(BIP32.Constants.hardenedSymbol)"
         case .notHardened(let index):
             return "\(index)"
         }
@@ -25,7 +25,7 @@ public enum DerivationNode: Equatable {
     public var index: UInt32 {
         switch self {
         case .hardened(let index):
-            let hardenedIndex = index + HDWalletConstants.hardenedOffset
+            let hardenedIndex = index + BIP32.Constants.hardenedOffset
             return hardenedIndex
         case .notHardened(let index):
             return index
@@ -40,8 +40,8 @@ extension DerivationNode {
     
     static func deserialize(from data: Data) -> DerivationNode {
         let index = UInt32(data.toInt())
-        if index >= HDWalletConstants.hardenedOffset {
-            return .hardened(index - HDWalletConstants.hardenedOffset)
+        if index >= BIP32.Constants.hardenedOffset {
+            return .hardened(index - BIP32.Constants.hardenedOffset)
         }
         
         return .notHardened(index)

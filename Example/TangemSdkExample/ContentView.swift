@@ -118,7 +118,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
-        case .signHash, .signHashes:
+        case .signHash, .signHashes, .derivePublicKey:
             VStack {
                 Text("Optional hd path")
                     .font(.headline)

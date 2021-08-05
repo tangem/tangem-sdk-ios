@@ -17,6 +17,8 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var isPermanent: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
+    //Sign
+    @Published var hdPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
 
@@ -30,6 +32,7 @@ class AppModel: ObservableObject {
         var config = Config()
         config.logСonfig = .verbose
         config.linkedTerminal = false
+        config.allowUntrustedCards = true
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
@@ -131,12 +134,17 @@ extension AppModel {
             return
         }
         
-        let hash = getRandomHash()
+        guard let path: DerivationPath? = hdPath.isEmpty ? nil
+                : try? DerivationPath(rawPath: hdPath) else {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
         
-        tangemSdk.sign(hash: hash,
+        tangemSdk.sign(hash: getRandomHash(),
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
+                       hdPath: path,
+                       initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
     
@@ -146,12 +154,19 @@ extension AppModel {
             return
         }
         
+        guard let path: DerivationPath? = hdPath.isEmpty ? nil
+                : try? DerivationPath(rawPath: hdPath) else {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
-
+        
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
+                       hdPath: path,
+                       initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
     
@@ -540,4 +555,3 @@ extension AppModel {
         }
     }
 }
-

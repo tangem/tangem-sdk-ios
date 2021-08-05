@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum HDWalletError: Error {
+enum HDWalletError: String, Error {
     case hardenedNotSupported
     case derivationFailed
     case wrongPath

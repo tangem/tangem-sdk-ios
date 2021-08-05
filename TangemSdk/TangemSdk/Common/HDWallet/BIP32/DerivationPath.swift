@@ -8,28 +8,29 @@
 
 import Foundation
 
+/// BIP32 derivation Path
 public struct DerivationPath {
     public let rawPath: String
-    public let path: [DerivationNode]
+    public let nodes: [DerivationNode]
     
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
     public init(rawPath: String) throws {
-        let splittedPath = rawPath.lowercased().split(separator: HDWalletConstants.separatorSymbol)
+        let splittedPath = rawPath.lowercased().split(separator: BIP32.Constants.separatorSymbol)
         
         guard splittedPath.count >= 2 else {
             throw HDWalletError.wrongPath
         }
         
-        guard splittedPath[0].trim() == HDWalletConstants.masterKeySymbol else {
+        guard splittedPath[0].trim() == BIP32.Constants.masterKeySymbol else {
             throw HDWalletError.wrongPath
         }
         
         var derivationPath: [DerivationNode] = []
         
         for pathItem in splittedPath.suffix(from: 1) {
-            let isHardened = pathItem.contains(HDWalletConstants.hardenedSymbol)
-            let cleanedPathItem = pathItem.trim().remove(HDWalletConstants.hardenedSymbol)
+            let isHardened = pathItem.contains(BIP32.Constants.hardenedSymbol)
+            let cleanedPathItem = pathItem.trim().remove(BIP32.Constants.hardenedSymbol)
             guard let index = UInt32(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }
@@ -38,19 +39,19 @@ public struct DerivationPath {
             derivationPath.append(node)
         }
         
-        self.init(rawPath: rawPath, path: derivationPath)
+        self.init(rawPath: rawPath, nodes: derivationPath)
     }
     
-    public init(path: [DerivationNode]) {
-        self.path = path
+    public init(nodes: [DerivationNode]) {
+        self.nodes = nodes
         
-        let description = path.map { $0.pathDescription }.joined(separator: String(HDWalletConstants.separatorSymbol))
-        self.rawPath =  "\(HDWalletConstants.masterKeySymbol)\(HDWalletConstants.separatorSymbol)\(description)"
+        let description = nodes.map { $0.pathDescription }.joined(separator: String(BIP32.Constants.separatorSymbol))
+        self.rawPath =  "\(BIP32.Constants.masterKeySymbol)\(BIP32.Constants.separatorSymbol)\(description)"
     }
     
-    private init(rawPath: String, path: [DerivationNode]) {
+    private init(rawPath: String, nodes: [DerivationNode]) {
         self.rawPath = rawPath
-        self.path = path
+        self.nodes = nodes
     }
 }
 
@@ -64,11 +65,11 @@ extension DerivationPath {
         let chunks = 0..<tlvData.count/4
         let dataChunks = chunks.map {  tlvData.dropFirst($0 * 4).prefix(4) }
         let path = dataChunks.map { DerivationNode.deserialize(from: $0) }
-        self.init(path: path)
+        self.init(nodes: path)
     }
     
     func encodeTlv(with tag: TlvTag) -> Tlv {
-        let serialized = path.map { $0.serialize() }.joined()
+        let serialized = nodes.map { $0.serialize() }.joined()
         return Tlv(tag, value: Data(serialized))
     }
 }

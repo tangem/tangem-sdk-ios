@@ -70,11 +70,13 @@ public class CardSession {
     ///   - completion: Completion handler. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`
     public func start<T>(with runnable: T, completion: @escaping CompletionResult<T.Response>) where T : CardSessionRunnable {
         guard NFCUtils.isNFCAvailable else {
+            Log.error(TangemSdkError.unsupportedDevice)
             completion(.failure(.unsupportedDevice))
             return
         }
         
         guard state == .inactive /*&& !reader.isSessionReady.value */ else {
+            Log.error(TangemSdkError.busy)
             completion(.failure(.busy))
             return
         }
@@ -86,6 +88,7 @@ public class CardSession {
                     guard let self = self else { return }
                     
                     if let error = error {
+                        Log.error(error)
                         DispatchQueue.main.async {
                             completion(.failure(error))
                         }
@@ -104,6 +107,7 @@ public class CardSession {
                                 completion(.success(runnableResponse))
                             }
                         case .failure(let error):
+                            Log.error(error)
                             self.stop(error: error) {
                                 completion(.failure(error))
                             }
@@ -111,6 +115,7 @@ public class CardSession {
                     }
                 }
             case .failure(let error):
+                Log.error(error)
                 completion(.failure(error))
             }
         }
@@ -231,11 +236,13 @@ public class CardSession {
     public final func send(apdu: CommandApdu, completion: @escaping CompletionResult<ResponseApdu>) {
         Log.session("Send")
         guard sendSubscription.isEmpty else {
+            Log.error(TangemSdkError.busy)
             completion(.failure(.busy))
             return
         }
         
         guard state == .active else {
+            Log.error(TangemSdkError.sessionInactive)
             completion(.failure(.sessionInactive))
             return
         }
@@ -262,6 +269,7 @@ public class CardSession {
             .sink(receiveCompletion: {[unowned self] readerCompletion in
                 self.sendSubscription = []
                 if case let .failure(error) = readerCompletion {
+                    Log.error(error)
                     completion(.failure(error))
                 }
             }, receiveValue: {[unowned self] responseApdu in

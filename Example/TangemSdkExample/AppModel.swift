@@ -134,11 +134,14 @@ extension AppModel {
             return
         }
         
-        guard let path: DerivationPath? = hdPath.isEmpty ? nil
-                : try? DerivationPath(rawPath: hdPath) else {
+        
+        let path = try? DerivationPath(rawPath: hdPath)
+        if !hdPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
+        
+        UIApplication.shared.endEditing()
         
         tangemSdk.sign(hash: getRandomHash(),
                        walletPublicKey: walletPublicKey,
@@ -154,11 +157,13 @@ extension AppModel {
             return
         }
         
-        guard let path: DerivationPath? = hdPath.isEmpty ? nil
-                : try? DerivationPath(rawPath: hdPath) else {
+        let path = try? DerivationPath(rawPath: hdPath)
+        if !hdPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
+        
+        UIApplication.shared.endEditing()
         
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
         
@@ -168,6 +173,30 @@ extension AppModel {
                        hdPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
+    }
+    
+    func derivePublicKey() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+        
+        guard let wallet = card?.wallets.first(where: { $0.curve == .secp256k1 }) else {
+            self.complete(with: "The wallet with the secp256k1 curve not found")
+            return
+        }
+        
+        guard let path = try? DerivationPath(rawPath: hdPath) else {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+        
+        tangemSdk.derivePublicKey(walletPublicKey: wallet.publicKey,
+                                  cardId: cardId,
+                                  hdPath: path,
+                                  completion: handleCompletion)
     }
     
     func createWallet() {
@@ -497,6 +526,7 @@ extension AppModel {
         case scan
         case signHash
         case signHashes
+        case derivePublicKey
         case attest
         case chainingExample
         case depersonalize
@@ -552,6 +582,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
+        case .derivePublicKey: derivePublicKey()
         }
     }
 }

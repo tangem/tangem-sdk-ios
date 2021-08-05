@@ -14,7 +14,7 @@ public extension Card {
     struct Wallet: Codable {
         /// Wallet's public key.
         public let publicKey: Data
-        /// Optional chan code for BIP32 derivation.
+        /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?
         /// Elliptic curve used for all wallet key operations.
         public let curve: EllipticCurve

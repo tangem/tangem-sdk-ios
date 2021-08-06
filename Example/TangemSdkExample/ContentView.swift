@@ -120,7 +120,7 @@ struct ContentView: View {
                         .stroke(Color.orange, lineWidth: 2))
         case .signHash, .signHashes, .derivePublicKey:
             VStack {
-                Text("Optional hd path")
+                Text("Hd path")
                     .font(.headline)
                     .bold()
                 

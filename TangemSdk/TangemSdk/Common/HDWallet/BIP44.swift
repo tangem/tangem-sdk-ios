@@ -24,13 +24,11 @@ public struct BIP44 {
     }
     
     /// Build path
-    /// - Parameter notHardenedOnly: Because we don't have access to the private key,
-    /// we can use non-hardened derivation only without tapping the Tangem card.
     /// - Returns: Path according BIP32
-    public func buildPath(notHardenedOnly: Bool = true) -> DerivationPath {
-        let nodes: [DerivationNode] = [notHardenedOnly ? .notHardened(BIP44.purpose) : .hardened(BIP44.purpose),
-                                       notHardenedOnly ? .notHardened(coinType) : .hardened(coinType),
-                                       notHardenedOnly ? .notHardened(account) : .hardened(account),
+    public func buildPath() -> DerivationPath {
+        let nodes: [DerivationNode] = [.hardened(BIP44.purpose),
+                                       .hardened(coinType),
+                                       .hardened(account),
                                        .notHardened(change.index),
                                        .notHardened(addressIndex)]
         return DerivationPath(nodes: nodes)

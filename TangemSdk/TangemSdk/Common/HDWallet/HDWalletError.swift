@@ -8,8 +8,12 @@
 
 import Foundation
 
-enum HDWalletError: String, Error {
+enum HDWalletError: String, Error, LocalizedError {
     case hardenedNotSupported
     case derivationFailed
     case wrongPath
+    
+    var errorDescription: String? {
+        return rawValue
+    }
 }

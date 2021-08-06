@@ -92,7 +92,7 @@ class HDWalletTests: XCTestCase {
                             account: 0,
                             change: .external,
                             addressIndex: 0)
-        let path = buidler.buildPath(notHardenedOnly: false).rawPath
+        let path = buidler.buildPath().rawPath
         XCTAssertEqual(path, "m/44'/0'/0'/0/0")
     }
     
@@ -102,7 +102,7 @@ class HDWalletTests: XCTestCase {
                             change: .external,
                             addressIndex: 0)
         
-        let path = buidler.buildPath().rawPath
+        let path = buidler.buildPath().toNonHardened().rawPath
         XCTAssertEqual(path, "m/44/0/0/0/0")
     }
     
@@ -154,7 +154,7 @@ class HDWalletTests: XCTestCase {
                             change: .internal,
                             addressIndex: 0)
         
-        let path = buidler.buildPath()
+        let path = buidler.buildPath().toNonHardened()
         
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
@@ -171,7 +171,7 @@ class HDWalletTests: XCTestCase {
                             change: .external,
                             addressIndex: 0)
         
-        let path = buidler.buildPath(notHardenedOnly: false)
+        let path = buidler.buildPath()
         
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))

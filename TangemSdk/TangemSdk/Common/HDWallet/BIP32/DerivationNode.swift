@@ -21,7 +21,6 @@ public enum DerivationNode: Equatable {
         }
     }
     
-    
     public var index: UInt32 {
         switch self {
         case .hardened(let index):

@@ -62,8 +62,14 @@ class SignCommand: Command {
             return .walletNotFound
         }
         
-        if hdPath != nil, card.firmwareVersion < .hdWalletAvailable {
-            return .notSupportedFirmwareVersion
+        if hdPath != nil {
+            if card.firmwareVersion < .hdWalletAvailable {
+                return .notSupportedFirmwareVersion
+            }
+            
+            if wallet.curve != .secp256k1 {
+                return .unsupportedCurve
+            }
         }
         
         //Before v4

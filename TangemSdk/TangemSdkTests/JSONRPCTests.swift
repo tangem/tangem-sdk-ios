@@ -134,13 +134,6 @@ class JSONRPCTests: XCTestCase {
         
         testMethod(name: "SignHash", result: result)
     }
-
-    func testDerivePublicKey() {
-        let result = DerivePublicKeyCommand.Response(compressedPublicKey: Data(hexString: "03E9EC49A559E9C5F31CAD60733AB16F694D69045B12CE9F669A7F33B68B230F7B"),
-                                                     chainCode: Data(hexString: "A37E3B27C64AA0DB1107175E9929F870B2AD5968A33A51864C1CDB12BCE49325"))
-        
-        testMethod(name: "DerivePublicKey", result: result)
-    }
     
     func testMethodNotFound() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_task\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"

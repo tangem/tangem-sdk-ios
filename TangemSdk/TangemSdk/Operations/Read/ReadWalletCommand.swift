@@ -21,9 +21,11 @@ class ReadWalletCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
     private let walletPublicKey: Data
+    private let hdPath: DerivationPath?
     
-    init(publicKey: Data) {
+    init(publicKey: Data, hdPath: DerivationPath? = nil) {
         self.walletPublicKey = publicKey
+        self.hdPath = hdPath
     }
     
     deinit {
@@ -52,6 +54,10 @@ class ReadWalletCommand: Command {
         
         if let keys = environment.terminalKeys {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
+        }
+        
+        if let hdPath = hdPath {
+            try tlvBuilder.append(.walletHDPath, value:  hdPath)
         }
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())

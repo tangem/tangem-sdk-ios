@@ -27,8 +27,13 @@ class SignHashesHandler: JSONRPCHandler {
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         let hashes: [Data] = try parameters.value(for: "hashes")
+        
+        let hdRawPath: String? = try parameters.value(for: "hdPath")
+        let hdPath: DerivationPath? = try hdRawPath.map{ try DerivationPath(rawPath: $0) }
+        
         let command = SignHashesCommand(hashes: hashes,
-                                  walletPublicKey: walletPublicKey)
+                                        walletPublicKey: walletPublicKey,
+                                        hdPath: hdPath)
         return command.eraseToAnyRunnable()
     }
 }
@@ -42,8 +47,12 @@ class SignHashHandler: JSONRPCHandler {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         let hash: Data = try parameters.value(for: "hash")
         
+        let hdRawPath: String? = try parameters.value(for: "hdPath")
+        let hdPath: DerivationPath? = try hdRawPath.map{ try DerivationPath(rawPath: $0) }
+        
         let command = SignHashCommand(hash: hash,
-                                  walletPublicKey: walletPublicKey)
+                                      walletPublicKey: walletPublicKey,
+                                      hdPath: hdPath)
         return command.eraseToAnyRunnable()
     }
 }
@@ -76,7 +85,6 @@ class PurgeWalletHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class PersonalizeHandler: JSONRPCHandler {
     var method: String { "PERSONALIZE" }
-    
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
@@ -107,7 +115,6 @@ class DepersonalizeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SetAccessCodeHandler: JSONRPCHandler {
     var method: String { "SET_ACCESSCODE" }
-    
     var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
@@ -120,7 +127,6 @@ class SetAccessCodeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SetPasscodeHandler: JSONRPCHandler {
     var method: String { "SET_PASSCODE" }
-    
     var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
@@ -133,20 +139,17 @@ class SetPasscodeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class ResetUserCodesHandler: JSONRPCHandler {
     var method: String { "RESET_USERCODES" }
-    
     var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         return SetUserCodeCommand.resetUserCodes.eraseToAnyRunnable()
     }
 }
-//todo: reset array
 
 /// Runs PreflightReadTask in `fullCardRead` mode
 @available(iOS 13.0, *)
 class PreflightReadHandler: JSONRPCHandler {
     var method: String { "PREFLIGHT_READ" }
-    
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {

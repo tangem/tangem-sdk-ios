@@ -47,9 +47,10 @@ class WalletDeserializer {
         let settings = Card.Wallet.Settings(mask: try decoder.decode(.settingsMask))
         
         return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                   curve: try decoder.decode(.curveId),
-                   settings: settings,
-                   totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                   index: try decoder.decode(.walletIndex))
+                           chainCode: try decoder.decode(.walletHDChain),
+                           curve: try decoder.decode(.curveId),
+                           settings: settings,
+                           totalSignedHashes: try decoder.decode(.walletSignedHashes),
+                           index: try decoder.decode(.walletIndex))
     }
 }

@@ -69,3 +69,9 @@ extension UIView {
         self.layer.add(animation, forKey: CATransitionType.fade.rawValue)
     }
 }
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}

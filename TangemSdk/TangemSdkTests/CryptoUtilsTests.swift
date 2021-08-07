@@ -71,4 +71,13 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify, true)
     }
+    
+    func testKeyCompression() {
+        let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
+        
+        let compressedKey = Secp256k1Utils.compressPublicKey(publicKey)!
+        XCTAssertEqual(compressedKey.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
+        let decompressedKey = Secp256k1Utils.decompressPublicKey(compressedKey)!
+        XCTAssertEqual(decompressedKey,publicKey)
+    }
 }

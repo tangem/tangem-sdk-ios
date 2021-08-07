@@ -25,9 +25,10 @@ struct CardDeserializer {
         let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
         
-        let defaultCurve: EllipticCurve = try decoder.decode(.curveId)
-        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? [defaultCurve] : EllipticCurve.allCases
-        let defaultSigningMethods: SigningMethod = try decoder.decode(.signingMethod)
+        let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)
+        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? defaultCurve.map { [$0] } ?? []
+            : EllipticCurve.allCases
+        
         var wallets: [Card.Wallet] = []
         var remainingSignatures: Int? = nil
         
@@ -36,11 +37,16 @@ struct CardDeserializer {
             
             let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask())
             
+            guard let defaultCurve = defaultCurve else {
+                throw TangemSdkError.decodingFailed("Missing curve id")
+            }
+            
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+                                     chainCode: nil,
                                      curve: defaultCurve,
                                      settings: walletSettings,
                                      totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                                     remainingSignatures: remainingSignatures!,
+                                     remainingSignatures: remainingSignatures,
                                      index: 0)
             
             wallets.append(wallet)
@@ -59,7 +65,7 @@ struct CardDeserializer {
         let settings = Card.Settings(securityDelay: securityDelayMs,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      mask: cardSettingsMask,
-                                     defaultSigningMethods: defaultSigningMethods,
+                                     defaultSigningMethods: try decoder.decode(.signingMethod),
                                      defaultCurve: defaultCurve)
         
         let terminalIsLinked: Bool = try decoder.decode(.isLinked)

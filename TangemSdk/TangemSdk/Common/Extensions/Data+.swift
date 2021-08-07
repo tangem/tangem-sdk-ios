@@ -10,7 +10,6 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
-@available(iOS 13.0, *)
 extension Data {
     public var hexString: String {
         return self.map { return String(format: "%02X", $0) }.joined()
@@ -80,11 +79,13 @@ extension Data {
         }
     }
     
+    @available(iOS 13.0, *)
     public func getSha256() -> Data {
         let digest = SHA256.hash(data: self)
         return Data(digest)
     }
     
+    @available(iOS 13.0, *)
     public func getSha512() -> Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
@@ -94,6 +95,7 @@ extension Data {
         return Array(self)
     }
     
+    @available(iOS 13.0, *)
     func decodeTlv<T>(tag: TlvTag) -> T? {
         guard let tlv = Tlv.deserialize(self) else{
             return nil
@@ -156,6 +158,7 @@ extension Data {
     /// - Parameter encryptionKey: key to encrypt
     /// - Throws: encription errors
     /// - Returns: Encripted data
+    @available(iOS 13.0, *)
     public func encrypt(with encryptionKey: Data) throws -> Data {
         return try CryptoUtils.crypt(operation: kCCEncrypt,
                                      algorithm: kCCAlgorithmAES,
@@ -168,6 +171,7 @@ extension Data {
     /// - Parameter encryptionKey: key to decrypt
     /// - Throws: decryption errors
     /// - Returns: Decrypted data
+    @available(iOS 13.0, *)
     public func decrypt(with encryptionKey: Data) throws -> Data {
         return try CryptoUtils.crypt(operation: kCCDecrypt,
                                      algorithm: kCCAlgorithmAES,
@@ -177,6 +181,7 @@ extension Data {
         
     }
 	
+    @available(iOS 13.0, *)
 	public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
 		switch curve {
 		case .secp256k1:

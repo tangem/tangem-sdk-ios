@@ -192,6 +192,9 @@ public final class TlvDecoder {
                 throw TangemSdkError.notSupportedFileSettings
             }
             return fileSettings as! T
+        case .derivationPath:
+            try typeCheck(DerivationPath.self, T.self, for: tag)
+            return try DerivationPath(from: tagValue) as! T
         }
     }
     

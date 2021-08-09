@@ -26,7 +26,7 @@ public struct SessionEnvironment {
     
     var encryptionKey: Data? = nil
     
-    var currentSecurityDelay: Int? = nil
+    var currentSecurityDelay: Float? = nil
     
     var cvc: Data? = nil //todo: remove
     

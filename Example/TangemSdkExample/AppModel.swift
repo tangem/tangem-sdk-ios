@@ -17,6 +17,8 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var isPermanent: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
+    //Sign
+    @Published var hdPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
 
@@ -30,6 +32,7 @@ class AppModel: ObservableObject {
         var config = Config()
         config.logСonfig = .verbose
         config.linkedTerminal = false
+        config.allowUntrustedCards = true
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
@@ -131,12 +134,20 @@ extension AppModel {
             return
         }
         
-        let hash = getRandomHash()
         
-        tangemSdk.sign(hash: hash,
+        let path = try? DerivationPath(rawPath: hdPath)
+        if !hdPath.isEmpty && path == nil {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+        
+        tangemSdk.sign(hash: getRandomHash(),
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
+                       hdPath: path,
+                       initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
     
@@ -146,13 +157,57 @@ extension AppModel {
             return
         }
         
+        let path = try? DerivationPath(rawPath: hdPath)
+        if !hdPath.isEmpty && path == nil {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+        
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
-
+        
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       initialMessage: Message(header: "Signing hashes", body: "Signing hashes with wallet with pubkey: \(walletPublicKey.hexString)"),
+                       hdPath: path,
+                       initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
+    }
+    
+    func derivePublicKey() {
+        guard let card = card else {
+            self.complete(with: "Scan card before")
+            return
+        }
+        
+        guard card.firmwareVersion >= .hdWalletAvailable else {
+            self.complete(with: "Not supported firmware verison.")
+            return
+        }
+        
+        guard let wallet = card.wallets.first(where: { $0.curve == .secp256k1 }),
+              let chainCode = wallet.chainCode else {
+            self.complete(with: "The wallet with the secp256k1 curve not found")
+            return
+        }
+        
+        guard let path = try? DerivationPath(rawPath: hdPath) else {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+        
+        let masterKey = ExtendedPublicKey(compressedPublicKey: wallet.publicKey,
+                                          chainCode: chainCode)
+        
+        do {
+            let childKey = try masterKey.derivePublicKey(path: path)
+            handleCompletion(.success(childKey))
+        } catch {
+            self.complete(with: error.localizedDescription)
+        }
     }
     
     func createWallet() {
@@ -482,6 +537,7 @@ extension AppModel {
         case scan
         case signHash
         case signHashes
+        case derivePublicKey
         case attest
         case chainingExample
         case depersonalize
@@ -537,7 +593,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
+        case .derivePublicKey: derivePublicKey()
         }
     }
 }
-

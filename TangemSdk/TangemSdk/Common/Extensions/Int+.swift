@@ -50,3 +50,10 @@ extension UInt64 {
         return data
     }
 }
+
+extension UInt32 {
+    public var bytes4: Data {
+        let data = withUnsafeBytes(of: self.bigEndian) { Data($0) }
+        return data
+    }
+}

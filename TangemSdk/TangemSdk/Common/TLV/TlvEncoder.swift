@@ -114,6 +114,10 @@ public final class TlvEncoder {
 			try typeCheck(value, FileSettings.self, for: tag)
 			let settings = value as! FileSettings
 			return settings.rawValue.bytes2
+        case .derivationPath:
+            try typeCheck(value, DerivationPath.self, for: tag)
+            let path = value as! DerivationPath
+            return path.encodeTlv(with: tag).value
         }
     }
     

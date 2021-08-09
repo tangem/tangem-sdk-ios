@@ -65,6 +65,10 @@ public final class WriteUserDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if 2.30..<3.34 ~= card.firmwareVersion.doubleValue {
+            return .notSupportedFirmwareVersion
+        }
+        
         if let userData = userData, userData.count > WriteUserDataCommand.maxSize {
             return .dataSizeTooLarge
         }

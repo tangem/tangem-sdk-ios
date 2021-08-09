@@ -194,14 +194,14 @@ extension Command {
     
     /// Helper method to parse security delay information received from a card.
     /// - Returns: Remaining security delay in milliseconds.
-    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Int,
+    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Float,
                                                                                                                      saveToFlash: Bool)? {
         guard let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey),
               let remainingCs = tlv.value(for: .pause)?.toInt() else {
             return nil
         }
         
-        let seconds = remainingCs / 100
+        let seconds: Float = Float(remainingCs) / 100.0
         
         let saveToFlash = tlv.contains(tag: .flash)
         return (seconds, saveToFlash)

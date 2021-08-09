@@ -54,10 +54,6 @@ public final class WriteIssuerDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if 2.30..<3.34 ~= card.firmwareVersion.doubleValue {
-            return .notSupportedFirmwareVersion
-        }
-        
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }

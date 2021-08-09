@@ -87,7 +87,7 @@ public protocol SessionViewDelegate: AnyObject {
 
 
 public enum SessionViewState {
-    case delay(remaining: Int, total: Int) //seconds
+    case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)
     case `default`
     case scan

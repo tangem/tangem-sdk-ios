@@ -34,7 +34,7 @@ struct MainView: View {
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
         case .delay(let currentDelay, let totalDelay):
-            DelayView(currentDelay: currentDelay, totalDelay: totalDelay)
+            DelayView(currentDelay: CGFloat(currentDelay), totalDelay: CGFloat(totalDelay))
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
         case .progress(let progress):

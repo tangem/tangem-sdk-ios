@@ -16,10 +16,7 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     
     private let reader: CardReader
     private let engine: HapticsEngine
-   // private let transitioningDelegate: FadeTransitionDelegate
-   // private var infoScreenAppearWork: DispatchWorkItem?
     private var pinnedMessage: String?
-   // private var remainingSecurityDelaySec: Float = 0
     
     private lazy var infoScreen: MainViewController = {
         let controller =  MainViewController(rootView: MainView())
@@ -32,7 +29,6 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         self.reader = reader
         self.config = config
         self.engine = HapticsEngine()
-       // self.transitioningDelegate = FadeTransitionDelegate()
         engine.create()
     }
     
@@ -48,72 +44,6 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         reader.alertMessage = text
     }
     
-//    func hideUI(_ indicatorMode: IndicatorMode?) {
-//        runInMainThread {
-//            Log.view("HideUI with mode: \(String(describing: indicatorMode))")
-//            guard let indicatorMode = indicatorMode else {
-//                self.dismissInfoScreen(completion: nil)
-//                return
-//            }
-//
-//            switch indicatorMode {
-//            case .sd:
-//                self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
-//            case .percent:
-//                self.dismissInfoScreen(completion: nil)
-//            }
-//        }
-//    }
-    
-//    func showSecurityDelay(remainingMilliseconds: Int, message: Message?, hint: String?) {
-//        Log.view("Showing security delay. Ms: \(remainingMilliseconds). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
-//        playTick()
-//
-//        runInMainThread {
-//            guard remainingMilliseconds >= 100 else {
-//                self.infoScreen.setState(.spinner, animated: true)
-//                return
-//            }
-//
-//            let remainingSeconds = Float(remainingMilliseconds/100)
-//            self.remainingSecurityDelaySec = remainingSeconds
-//
-//            if self.infoScreen.state != .securityDelay {
-//                self.infoScreen.setupIndicatorTotal(remainingSeconds + 1)
-//            }
-//
-//            self.infoScreen.setState(.securityDelay, animated: true)
-//
-//            self.presentInfoScreen()
-//            self.infoScreen.tickSD(remainingValue: remainingSeconds, message: "\(Int(remainingSeconds))", hint: hint ?? Localization.nfcAlertDefault)
-//        }
-//    }
-//
-//
-//    func showPercentLoading(_ percent: Int, message: Message?, hint: String?) {
-//        Log.view("Showing percents. %: \(percent). Message: \(String(describing: message)). Hint: \(String(describing: hint))")
-//        playTick()
-//        showAlertMessage(message?.alertMessage ?? Localization.nfcAlertDefault)
-//
-//        runInMainThread {
-//            self.infoScreen.setState(.percentProgress, animated: true)
-//            self.presentInfoScreen()
-//            self.infoScreen.tickPercent(percentValue: percent, message: String(format: "%@%%", String(describing: percent)), hint: hint)
-//        }
-//    }
-    
-//    func showUndefinedSpinner() {
-//        Log.view("Showing undefined spinner")
-//        guard remainingSecurityDelaySec <= 1 else { return }
-//
-//        infoScreenAppearWork?.cancel()
-//        runInMainThread {
-//            Log.view(self.reader.isPaused)
-//            self.presentInfoScreen()
-//            self.infoScreen.setState(self.reader.isPaused ? .pausedSpinner : .spinner, animated: true)
-//        }
-//    }
-//
     func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void) {
         runInMainThread {
             Log.view("Showing user code request with type: \(type)")
@@ -173,24 +103,19 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         runInMainThread {
             self.presentInfoScreen()
         }
-//        infoScreenAppearWork = DispatchWorkItem(block: {
-//                Log.view("Show info screen")
-//                self.switchInfoScreen(to: .howToScan, animated: false)
-//        })
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: infoScreenAppearWork!)
+        
         engine.start()
     }
     
     func sessionStopped(completion: (() -> Void)?) {
         Log.view("Session stopped")
-      //  infoScreenAppearWork?.cancel()
         pinnedMessage = nil
         engine.stop()
         runInMainThread {
             self.dismissInfoScreen(completion: completion)
         }
     }
-
+    
     func setConfig(_ config: Config) {
         self.config = config
     }
@@ -226,31 +151,28 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     }
     
     private func presentInfoScreen() {
-        guard
-            /*self.infoScreen.presentingViewController == nil,*/
-            !self.infoScreen.isBeingPresented,
-            let topmostViewController = UIApplication.shared.topMostViewController
-            /*!(topmostViewController is PinViewController || topmostViewController is ChangePinViewController)*/
+        guard !self.infoScreen.isBeingPresented,
+              let topmostViewController = UIApplication.shared.topMostViewController
         else { return }
         
         topmostViewController.present(self.infoScreen, animated: true, completion: nil)
     }
     
     private func dismissInfoScreen(completion: (() -> Void)?) {
-        if /*self.infoScreen.presentedViewController != nil ||
-            self.infoScreen.presentingViewController == nil ||*/
-            self.infoScreen.isBeingDismissed {
+        if self.infoScreen.isBeingDismissed {
             completion?()
+            return
+        }
+        
+        if self.infoScreen.isBeingPresented {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.infoScreen.dismiss(animated: false, completion: completion)
+            }
             return
         }
         
         self.infoScreen.dismiss(animated: true, completion: completion)
     }
-    
-//    private func switchInfoScreen(to state: InformationScreenViewController.State, animated: Bool = true) {
-//        infoScreen.setState(state, animated: animated)
-//        presentInfoScreen()
-//    }
     
     private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
         let cardId = formatCardId(cardId)
@@ -260,7 +182,7 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
-           // infoScreenAppearWork?.cancel()
+            // infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {//
             completion(nil)
@@ -275,7 +197,7 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         })
         if let topmostViewController = UIApplication.shared.topMostViewController {
             vc.modalPresentationStyle = .fullScreen
-           // infoScreenAppearWork?.cancel()
+            // infoScreenAppearWork?.cancel()
             topmostViewController.present(vc, animated: true, completion: nil)
         } else {
             completion(.failure(.unknownError))

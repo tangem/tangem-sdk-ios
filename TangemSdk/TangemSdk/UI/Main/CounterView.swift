@@ -10,19 +10,19 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct CounterView: View {
-    var currentDelay: Int = 30
-    var totalDelay: Int = 30
+    var currentDelay: Int
+    var totalDelay: Int
     var textSize: CGFloat = 34
     var foregroundColor: Color = .tngBlue
     
     private var itemHeight: CGFloat { textSize + 8 }
+    private var range: Range<Int> { Range(0...totalDelay) }
     
     var body: some View {
         ZStack {
-            
             ZStack {
                 VStack(spacing: 0) {
-                    ForEach(0..<totalDelay) { index in
+                    ForEach(range) { index in
                         Text("\(index)")
                             .font(.system(size: textSize,
                                           weight: .medium,
@@ -32,30 +32,30 @@ struct CounterView: View {
                             .frame(height: itemHeight)
                     }
                 }
-                .offset(y: CGFloat(totalDelay) * itemHeight / 2 - itemHeight/2)
+                .offset(y: CGFloat(totalDelay) * itemHeight / 2)
                 .offset(y: -CGFloat(currentDelay) * itemHeight)
-                .animation(.spring(dampingFraction: 0.6).speed(2))
+                .animation(.spring(dampingFraction: 0.7).speed(1.5))
             }
             .frame(width: 100, height: itemHeight)
             .clipped()
         }
-        //        .onAppear {
-        //            _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-        //                withAnimation() {
-        //                    self.currentDelay -= 1
-        //
-        //                    if self.currentDelay == 0 {
-        //                        timer.invalidate()
-        //                    }
-        //                }
-        //            }
-        //        }
+//                .onAppear {
+//                    _ = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+//                        withAnimation() {
+//                            self.currentDelay -= 1
+//
+//                            if self.currentDelay == 0 {
+//                                timer.invalidate()
+//                            }
+//                        }
+//                    }
+//                }
     }
 }
 
 @available(iOS 13.0, *)
 struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
-        CounterView()
+        CounterView(currentDelay: 4, totalDelay: 5)
     }
 }

@@ -152,7 +152,6 @@ extension Command {
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
-                        
                         if session.environment.currentSecurityDelay == nil {
                             session.environment.currentSecurityDelay = securityDelayResponse.remainingSeconds + 1
                         }

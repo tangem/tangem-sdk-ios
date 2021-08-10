@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
-    var state: SessionViewState = .scan
+    var state: State = .scan
     var indicatorSize: CGSize = .init(width: 240, height: 240)
     
     var body: some View {
@@ -33,8 +33,10 @@ struct MainView: View {
             NFCFieldView(isAnimationOn: true)
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
-        case .delay(let currentDelay, let totalDelay):
-            DelayView(currentDelay: CGFloat(currentDelay), totalDelay: CGFloat(totalDelay))
+        case .delay(let remaining, let total, let label):
+            DelayView(currentValue: CGFloat(remaining),
+                      totalValue: CGFloat(total),
+                      labelValue: CGFloat(label))
                 .frame(width: indicatorSize.width, height: indicatorSize.height)
             
         case .progress(let progress):
@@ -45,6 +47,16 @@ struct MainView: View {
             ReadView()
                 .padding(.top, 40)
         }
+    }
+}
+
+@available(iOS 13.0, *)
+extension MainView {
+    enum State {
+        case delay(remaining: Float, total: Float, label: Float) //seconds
+        case progress(percent: Int)
+        case `default`
+        case scan
     }
 }
 

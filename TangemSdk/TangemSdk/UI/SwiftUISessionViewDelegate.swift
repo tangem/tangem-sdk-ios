@@ -33,7 +33,10 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     }
     
     func setState(_ state: SessionViewState) {
-        Log.view(state)
+        Log.view("Set state: \(state)")
+        if state.shouldPlayHaptics {
+            engine.playTick()
+        }
         runInMainThread {
             self.infoScreen.setState(state, animated: true)
         }

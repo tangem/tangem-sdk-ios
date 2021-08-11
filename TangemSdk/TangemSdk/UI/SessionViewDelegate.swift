@@ -86,9 +86,18 @@ public protocol SessionViewDelegate: AnyObject {
 }
 
 
-public enum SessionViewState {
+public enum SessionViewState: Equatable {
     case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)
     case `default`
     case scan
+    
+    var shouldPlayHaptics: Bool {
+        switch self {
+        case .delay, .progress:
+            return true
+        default:
+            return false
+        }
+    }
 }

@@ -147,7 +147,7 @@ class SignCommand: Command {
                     return
                 }
                 
-                session.restartPolling()
+                session.restartPolling(silent: true)
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

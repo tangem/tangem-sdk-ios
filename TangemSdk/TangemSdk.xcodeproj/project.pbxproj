@@ -174,6 +174,7 @@
 		5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvDecoder.swift */; };
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
 		5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */; };
+		5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAB0FB26C434E800ADEE7D /* Color+.swift */; };
 		5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD127A124F3D1A0009ACA29 /* JsonTests.swift */; };
 		5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD536892476B3FA00F5DE88 /* Success.ahap */; };
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
@@ -196,6 +197,7 @@
 		5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */; };
 		5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */; };
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
+		5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */; };
 		5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */; };
 		5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
@@ -439,6 +441,7 @@
 		5DC62D3D23506CF300195A51 /* TlvDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvDecoder.swift; sourceTree = "<group>"; };
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerDataCommand.swift; sourceTree = "<group>"; };
+		5DCAB0FB26C434E800ADEE7D /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		5DD127A124F3D1A0009ACA29 /* JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonTests.swift; sourceTree = "<group>"; };
 		5DD1D62D25557E7F007910EF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
@@ -463,6 +466,7 @@
 		5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalKeysService.swift; sourceTree = "<group>"; };
 		5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorage.swift; sourceTree = "<group>"; };
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
+		5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkStyle.swift; sourceTree = "<group>"; };
 		5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineCardVerifier.swift; sourceTree = "<group>"; };
 		5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsEngine.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
@@ -750,6 +754,7 @@
 				B0AAEBEF25514B6700CF52BC /* AnimKeyPaths.swift */,
 				5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */,
 				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
+				5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1088,6 +1093,7 @@
 				5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */,
 				B0D3C48A26088ECD0038A5C9 /* Array+Tlv.swift */,
 				5D9ED3782667C711003948C0 /* Array+CardWallet.swift */,
+				5DCAB0FB26C434E800ADEE7D /* Color+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1519,12 +1525,14 @@
 				5D170AF126B42CA3000D4F36 /* ExtendedPublicKey.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
 				5DDAF04A26AAE4A400673D44 /* CounterView.swift in Sources */,
+				5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */,
 				5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */,
 				B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */,
 				5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */,
 				5DA5B61A233E12780058C720 /* TlvTag.swift in Sources */,
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				5D91226A26AAC75900AAD931 /* MainView.swift in Sources */,
+				5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */,
 				5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */,
 				5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,

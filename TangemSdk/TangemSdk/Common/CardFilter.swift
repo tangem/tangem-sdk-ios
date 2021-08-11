@@ -19,7 +19,7 @@ public struct CardFilter {
     /// Use this filter to configure issuers allowed to work with your app
     public var issuerFilter: ItemFilter? = nil
     
-    static var `default`: CardFilter = .init()
+    public static var `default`: CardFilter = .init()
     
     public func isCardAllowed(_ card: Card) -> Bool {
         if !allowedCardTypes.contains(card.firmwareVersion.type) {

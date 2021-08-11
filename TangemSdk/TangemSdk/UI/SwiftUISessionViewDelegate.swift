@@ -11,7 +11,7 @@ import UIKit
 import SwiftUI
 
 @available(iOS 13.0, *)
-final class SwiftUISessionViewDelegate: SessionViewDelegate {
+final class SwiftUISessionViewDelegate {
     public var config: Config
     
     private let reader: CardReader
@@ -27,6 +27,82 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         engine.create()
     }
     
+    private func presentInfoScreen() {
+        guard !self.infoScreen.isBeingPresented,
+              let topmostViewController = UIApplication.shared.topMostViewController
+        else { return }
+        
+        topmostViewController.present(self.infoScreen, animated: true, completion: nil)
+    }
+    
+    private func dismissInfoScreen(completion: (() -> Void)?) {
+        if self.infoScreen.isBeingDismissed {
+            completion?()
+            return
+        }
+        
+        if self.infoScreen.isBeingPresented {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.infoScreen.dismiss(animated: false, completion: completion)
+            }
+            return
+        }
+        
+        self.infoScreen.dismiss(animated: true, completion: completion)
+    }
+    
+    private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
+        let cardId = formatCardId(cardId)
+        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
+        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
+            return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
+        })
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            vc.modalPresentationStyle = .fullScreen
+            // infoScreenAppearWork?.cancel()
+            topmostViewController.present(vc, animated: true, completion: nil)
+        } else {//
+            completion(nil)
+        }
+    }
+    
+    private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
+        let cardId = formatCardId(cardId)
+        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
+        let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
+            return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
+        })
+        if let topmostViewController = UIApplication.shared.topMostViewController {
+            vc.modalPresentationStyle = .fullScreen
+            // infoScreenAppearWork?.cancel()
+            topmostViewController.present(vc, animated: true, completion: nil)
+        } else {
+            completion(.failure(.unknownError))
+        }
+    }
+    
+    private func formatCardId(_ cid: String?) -> String? {
+        guard let cid = cid else {
+            return nil
+        }
+        
+        let cidFormatter = CardIdFormatter()
+        return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
+    }
+    
+    private func runInMainThread(_ block: @escaping () -> Void) {
+        if Thread.isMainThread {
+            block()
+        } else {
+            DispatchQueue.main.async {
+                block()
+            }
+        }
+    }
+}
+
+@available(iOS 13.0, *)
+extension SwiftUISessionViewDelegate: SessionViewDelegate {
     func setState(_ state: SessionViewState) {
         Log.view("Set state: \(state)")
         if state.shouldPlayHaptics {
@@ -146,79 +222,6 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
         let message = "Too large runs count of Attest Wallet or Sign looks suspicious."
         runInMainThread {
             UIAlertController.showAlert(from: self.infoScreen, title: title, message: message, onContinue: onContinue)
-        }
-    }
-    
-    private func presentInfoScreen() {
-        guard !self.infoScreen.isBeingPresented,
-              let topmostViewController = UIApplication.shared.topMostViewController
-        else { return }
-        
-        topmostViewController.present(self.infoScreen, animated: true, completion: nil)
-    }
-    
-    private func dismissInfoScreen(completion: (() -> Void)?) {
-        if self.infoScreen.isBeingDismissed {
-            completion?()
-            return
-        }
-        
-        if self.infoScreen.isBeingPresented {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.infoScreen.dismiss(animated: false, completion: completion)
-            }
-            return
-        }
-        
-        self.infoScreen.dismiss(animated: true, completion: completion)
-    }
-    
-    private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
-        let cardId = formatCardId(cardId)
-        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
-        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
-            return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
-        })
-        if let topmostViewController = UIApplication.shared.topMostViewController {
-            vc.modalPresentationStyle = .fullScreen
-            // infoScreenAppearWork?.cancel()
-            topmostViewController.present(vc, animated: true, completion: nil)
-        } else {//
-            completion(nil)
-        }
-    }
-    
-    private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
-        let cardId = formatCardId(cardId)
-        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
-        let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
-            return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
-        })
-        if let topmostViewController = UIApplication.shared.topMostViewController {
-            vc.modalPresentationStyle = .fullScreen
-            // infoScreenAppearWork?.cancel()
-            topmostViewController.present(vc, animated: true, completion: nil)
-        } else {
-            completion(.failure(.unknownError))
-        }
-    }
-    
-    private func formatCardId(_ cid: String?) -> String? {
-        guard let cid = cid else {
-            return nil
-        }
-        
-        let cidFormatter = CardIdFormatter()
-        return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
-    }
-    
-    private func runInMainThread(_ block: @escaping () -> Void) {
-        if Thread.isMainThread {
-            block()
-        } else {
-            DispatchQueue.main.async {
-                block()
-            }
         }
     }
 }

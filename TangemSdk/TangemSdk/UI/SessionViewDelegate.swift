@@ -9,47 +9,6 @@
 import Foundation
 import UIKit
 
-/// Wrapper for a message that can be shown to user after a start of NFC session.
-@available(iOS 13.0, *)
-public struct Message: Codable {
-    let header: String?
-    let body: String?
-    
-    var alertMessage: String? {
-        if header == nil && body == nil {
-            return nil
-        }
-        
-        var alertMessage = ""
-        
-        if let header = header {
-            alertMessage = "\(header)\n"
-        }
-        
-        if let body = body {
-            alertMessage += body
-        }
-        
-        return alertMessage
-    }
-    
-    public init(header: String?, body: String? = nil) {
-        self.header = header
-        self.body = body
-    }
-    
-    public init?(_ jsonString: String) {
-        guard let jsonData = jsonString.data(using: .utf8),
-              let decoded = try? JSONDecoder.tangemSdkDecoder.decode(Message.self, from: jsonData) else {
-            return nil
-        }
-
-        self.header = decoded.header
-        self.body = decoded.body
-    }
-}
-
-
 /// Allows interaction with users and shows visual elements.
 /// Its default implementation, `DefaultSessionViewDelegate`, is in our SDK.
 @available(iOS 13.0, *)
@@ -84,7 +43,6 @@ public protocol SessionViewDelegate: AnyObject {
     
     func setState(_ state: SessionViewState)
 }
-
 
 public enum SessionViewState: Equatable {
     case delay(remaining: Float, total: Float) //seconds

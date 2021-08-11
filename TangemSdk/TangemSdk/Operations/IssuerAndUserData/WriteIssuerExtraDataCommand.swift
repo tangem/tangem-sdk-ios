@@ -143,6 +143,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             return
         }
         let progress = Int(round(Float(offset)/Float(issuerData.count) * 100.0))
+        viewDelegate?.setState(.progress(percent: progress))
         viewDelegate?.showAlertMessage(Localization.writeProgress(String(describing: progress)))
     }
     

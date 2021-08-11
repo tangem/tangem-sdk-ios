@@ -10,9 +10,8 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct ReadView: View {
-    
     @State private var cardOffset: CGSize = .init(width: -220, height: -160)
-
+    
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -42,6 +41,11 @@ struct ReadView: View {
 @available(iOS 13.0, *)
 struct ReadView_Previews: PreviewProvider {
     static var previews: some View {
-        ReadView()
+        Group {
+            ReadView()
+            ReadView()
+                .preferredColorScheme(.dark)
+        }
+        .environmentObject(TangemSdkStyle())
     }
 }

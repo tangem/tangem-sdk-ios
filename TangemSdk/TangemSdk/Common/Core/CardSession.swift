@@ -35,7 +35,6 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var preflightReadMode: PreflightReadMode = .fullCardRead
-    
     private var currentTag: NFCTagType? = nil
     /// Main initializer
     /// - Parameters:
@@ -138,41 +137,34 @@ public class CardSession {
         Log.session("Start card session with delegate")
         state = .active
         
-        reader.tag //Subscription for handle tag lost/connected events and invoke viewDelegate
+        
+        reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
-            .debounce(for: 0.3, scheduler: RunLoop.main)
             .removeDuplicates()
-            .filter {[unowned self] _ in !self.reader.isPaused }
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: {[unowned self] tag in
-                    if tag != nil {
-                        self.viewDelegate.tagConnected()
-                    } else {
-                        self.viewDelegate.tagLost()
-                    }
-                  })
+            .sink(receiveValue: { [unowned self] event in
+                switch event {
+                case .none:
+                    break
+                case .sessionStarted:
+                    self.viewDelegate.sessionStarted()
+                    self.viewDelegate.setState(.scan)
+                case .sessionStopped:
+                    self.viewDelegate.sessionStopped(completion: nil)
+                case .tagConnected:
+                    self.viewDelegate.tagConnected()
+                case .tagLost:
+                    self.viewDelegate.tagLost()
+                }
+            })
             .store(in: &nfcReaderSubscriptions)
         
-        reader.tag //Subscription for handle tag lost/connected events
+        reader.tag //Subscription for handle tag lost events
             .dropFirst()
             .filter { $0 == nil }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     self.environment.encryptionKey = nil
                   })
-            .store(in: &nfcReaderSubscriptions)
-        
-        reader.isSessionReady //Subscription for handle session events and invoke viewDelegate
-            .dropFirst()
-            .filter {[unowned self] _ in !self.reader.isPaused }
-            .sink(receiveValue: { [unowned self] isReady in
-                if isReady {
-                    self.viewDelegate.sessionStarted()
-                    self.viewDelegate.setState(.scan)
-                } else {
-                    self.viewDelegate.sessionStopped(completion: nil)
-                }
-            })
             .store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
@@ -225,9 +217,10 @@ public class CardSession {
     
     // MARK: - Restart polling
     /// Restarts the polling sequence so the reader session can discover new tags.
-    public func restartPolling() {
+    /// - Parameter silent: If true, view delegate's tag lost/connected events will not be called
+    public func restartPolling(silent: Bool = false) {
         Log.session("Restart polling")
-        reader.restartPolling()
+        reader.restartPolling(silent: silent)
     }
     
     // MARK: - APDU sending
@@ -321,7 +314,7 @@ public class CardSession {
                 case .wrongCardType, .wrongCardNumber:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isSessionReady.value else {
+                        guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)
                             self.stop(completion: nil)
                             return

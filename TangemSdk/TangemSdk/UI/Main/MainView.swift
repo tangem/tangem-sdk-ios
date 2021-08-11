@@ -52,7 +52,7 @@ struct MainView: View {
 
 @available(iOS 13.0, *)
 extension MainView {
-    enum State {
+    enum State: Equatable {
         case delay(remaining: Float, total: Float, label: Float) //seconds
         case progress(percent: Int)
         case `default`

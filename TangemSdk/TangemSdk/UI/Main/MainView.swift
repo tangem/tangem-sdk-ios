@@ -10,6 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
+    var style: TangemSdkStyle
     var state: State = .scan
     var indicatorSize: CGSize = .init(width: 240, height: 240)
     
@@ -19,6 +20,7 @@ struct MainView: View {
             
             mainView
                 .transition(.opacity)
+                .environmentObject(style)
 
             Spacer()
             
@@ -63,6 +65,6 @@ extension MainView {
 @available(iOS 13.0, *)
 struct MainView_Preview: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainView(style: .default)
     }
 }

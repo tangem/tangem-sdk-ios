@@ -16,31 +16,17 @@ struct NFCFieldView: View {
         }
     }
     
-    let duration: Double = 0.9
+    @EnvironmentObject var style: TangemSdkStyle
     
-    var smallCircleColor: Color {
-        .init(.sRGB,
-              red: 213.0/255.0,
-              green: 218.0/255.0,
-              blue: 221.0/255.0,
-              opacity: 0.9)
-    }
+    private let duration: Double = 0.9
     
-    var bigCircleColor: Color {
-        .init(.sRGB,
-              red: 240.0/255.0,
-              green: 241.0/255.0,
-              blue: 242.0/255.0,
-              opacity: 0.9)
-    }
-    
-    var bigCircleAnimation: Animation {
+    private var bigCircleAnimation: Animation {
         .easeInOut(duration: duration)
             .repeatForever()
             .delay(0.1)
     }
     
-    var smallCircleAnimation: Animation {
+    private var smallCircleAnimation: Animation {
         .easeInOut(duration: duration)
             .repeatForever()
     }
@@ -51,12 +37,12 @@ struct NFCFieldView: View {
         GeometryReader { geo in
             ZStack {
                 Circle()
-                    .fill(bigCircleColor)
+                    .fill(style.colors.nfcBigCircle)
                     .scaleEffect(circleScale)
                     .animation(isAnimationOn ? bigCircleAnimation : nil)
                 
                 Circle()
-                    .fill(smallCircleColor)
+                    .fill(style.colors.nfcSmallCircle)
                     .frame(width: 0.6 * geo.size.width,
                            height: 0.6 * geo.size.width)
                     .scaleEffect(circleScale)
@@ -73,6 +59,11 @@ struct NFCFieldView: View {
 struct NFCView_Previews: PreviewProvider {
     @State static var animation: Bool = true
     static var previews: some View {
-        NFCFieldView(isAnimationOn: animation)
+        Group {
+            NFCFieldView(isAnimationOn: animation)
+            NFCFieldView(isAnimationOn: animation)
+                .preferredColorScheme(.dark)
+        }
+        .environmentObject(TangemSdkStyle())
     }
 }

@@ -12,10 +12,10 @@ import SwiftUI
 struct CounterView: View {
     var currentDelay: Int
     var totalDelay: Int
-    var textSize: CGFloat = 34
-    var foregroundColor: Color = .tngBlue
     
-    private var itemHeight: CGFloat { textSize + 8 }
+    @EnvironmentObject var style: TangemSdkStyle
+    
+    private var itemHeight: CGFloat { style.textSizes.indicatorLabel + 8 }
     private var range: Range<Int> { Range(0...totalDelay) }
     
     var body: some View {
@@ -24,11 +24,11 @@ struct CounterView: View {
                 VStack(spacing: 0) {
                     ForEach(range) { index in
                         Text("\(index)")
-                            .font(.system(size: textSize,
+                            .font(.system(size: style.textSizes.indicatorLabel,
                                           weight: .medium,
                                           design: .default)
                                     .monospacedDigit())
-                            .foregroundColor(foregroundColor)
+                            .foregroundColor(style.colors.tint)
                             .frame(height: itemHeight)
                     }
                 }
@@ -57,5 +57,6 @@ struct CounterView: View {
 struct CounterView_Previews: PreviewProvider {
     static var previews: some View {
         CounterView(currentDelay: 4, totalDelay: 5)
+            .environmentObject(TangemSdkStyle())
     }
 }

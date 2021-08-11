@@ -55,4 +55,6 @@ public struct Config {
     public var allowUntrustedCards: Bool = false
     
     public var filter: CardFilter = .default
+    
+    public var style: TangemSdkStyle = .default
 }

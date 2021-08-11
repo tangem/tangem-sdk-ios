@@ -175,6 +175,7 @@
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
 		5DCAA7892383E25200249F42 /* WriteIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */; };
 		5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAB0FB26C434E800ADEE7D /* Color+.swift */; };
+		5DCAB0FE26C43D2100ADEE7D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAB0FD26C43D2100ADEE7D /* Message.swift */; };
 		5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD127A124F3D1A0009ACA29 /* JsonTests.swift */; };
 		5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD536892476B3FA00F5DE88 /* Success.ahap */; };
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
@@ -442,6 +443,7 @@
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAA7882383E25200249F42 /* WriteIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerDataCommand.swift; sourceTree = "<group>"; };
 		5DCAB0FB26C434E800ADEE7D /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
+		5DCAB0FD26C43D2100ADEE7D /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5DD127A124F3D1A0009ACA29 /* JsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonTests.swift; sourceTree = "<group>"; };
 		5DD1D62D25557E7F007910EF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
@@ -755,6 +757,7 @@
 				5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */,
 				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
 				5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */,
+				5DCAB0FD26C43D2100ADEE7D /* Message.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1440,6 +1443,7 @@
 				5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
+				5DCAB0FE26C43D2100ADEE7D /* Message.swift in Sources */,
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
 				5DFCE40C24B347A8007B95AF /* ChangePinViewController.swift in Sources */,
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,

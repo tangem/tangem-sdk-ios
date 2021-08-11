@@ -10,29 +10,22 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct PhoneView: View {
+    @EnvironmentObject var style: TangemSdkStyle
     
-    var strokeColor: Color {
-        .init(.sRGB,
-              red: 0.164705882353,
-              green: 0.196078431373,
-              blue: 0.274509803922,
-              opacity: 1)
-    }
-    
-    var capsuleHeight: CGFloat = 40
+    private let capsuleHeight: CGFloat = 40
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 RoundedRectangle(cornerRadius: 35)
                     .inset(by: 4)
-                    .stroke(Color.black, lineWidth: 14)
-                    .background(Color.white
+                    .stroke(style.colors.phoneStroke, lineWidth: 14)
+                    .background(style.colors.phoneBackground
                                     .opacity(0.955))
                     .clipShape(RoundedRectangle(cornerRadius:35))
                 
                 Capsule(style: .continuous)
-                    .fill(Color.black)
+                    .fill(style.colors.phoneStroke)
                     .frame(width: 0.5 * geo.size.width,
                            height: capsuleHeight)
                     .clipShape(Rectangle().offset(y: capsuleHeight/2))
@@ -45,6 +38,14 @@ struct PhoneView: View {
 @available(iOS 13.0, *)
 struct PhoneView_Previews: PreviewProvider {
     static var previews: some View {
-        PhoneView().padding(50)
+        Group {
+            PhoneView()
+                .padding(50)
+            
+            PhoneView()
+                .preferredColorScheme(.dark)
+                .padding(50)
+        }
+        .environmentObject(TangemSdkStyle())
     }
 }

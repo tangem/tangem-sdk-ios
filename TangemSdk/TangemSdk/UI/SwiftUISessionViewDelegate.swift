@@ -17,18 +17,13 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     private let reader: CardReader
     private let engine: HapticsEngine
     private var pinnedMessage: String?
-    
-    private lazy var infoScreen: MainViewController = {
-        let controller =  MainViewController(rootView: MainView())
-        controller.modalPresentationStyle = .overFullScreen
-        controller.modalTransitionStyle = .crossDissolve
-        return controller
-    }()
+    private var infoScreen: MainViewController
     
     init(reader: CardReader, config: Config) {
         self.reader = reader
         self.config = config
         self.engine = HapticsEngine()
+        self.infoScreen = MainViewController.makeController(with: config)
         engine.create()
     }
     
@@ -121,6 +116,7 @@ final class SwiftUISessionViewDelegate: SessionViewDelegate {
     
     func setConfig(_ config: Config) {
         self.config = config
+        self.infoScreen = MainViewController.makeController(with: config)
     }
     
     //TODO: Refactor UI

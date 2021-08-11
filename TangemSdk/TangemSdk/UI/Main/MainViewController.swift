@@ -45,3 +45,13 @@ class MainViewController: UIHostingController<MainView> {
         }
     }
 }
+
+@available(iOS 13.0, *)
+extension MainViewController {
+    static func makeController(with config: Config) -> MainViewController {
+        let controller =  MainViewController(rootView: MainView(style: config.style))
+        controller.modalPresentationStyle = .overFullScreen
+        controller.modalTransitionStyle = .crossDissolve
+        return controller
+    }
+}

@@ -26,7 +26,7 @@ class MainViewController: UIHostingController<MainView> {
         }
     }
     
-    private func map(state: SessionViewState) -> MainView.State {
+    private func map(state: SessionViewState) -> MainView.ViewState {
         switch state {
         case .default:
             return .default
@@ -36,10 +36,14 @@ class MainViewController: UIHostingController<MainView> {
             return .progress(percent: percent)
         case .scan:
             return .scan
+        case .requestCode(let type, cardId: let cardId, completion: let completion):
+            return .requestCode(type, cardId: cardId ?? "", completion: completion)
+        case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
+            return .requestCodeChange(type, cardId: cardId ?? "", completion: completion)
         }
     }
     
-    private func setState(_ state: MainView.State) {
+    private func setState(_ state: MainView.ViewState) {
         withAnimation {
             rootView.state = state
         }

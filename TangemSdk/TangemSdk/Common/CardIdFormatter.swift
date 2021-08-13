@@ -13,13 +13,13 @@ import Foundation
 public struct CardIdFormatter {
     public init() {}
     
-    public func crop(cid: String, with length: Int? = nil) -> String {
-        length == nil ? cid : String(cid.dropLast().suffix(length!))
+    public func crop(cardId: String, with length: Int? = nil) -> String {
+        length == nil ? cardId : String(cardId.dropLast().suffix(length!))
     }
     
-    public func formatted(cid: String, numbers: Int? = nil) -> String {
-        let croppedCid = crop(cid: cid, with: numbers)
+    public func formatted(cardId: String, numbers: Int? = nil) -> String {
+        let croppedCardId = crop(cardId: cardId, with: numbers)
         let format = "cid_format".localized
-        return String(format: format, croppedCid)
+        return String(format: format, croppedCardId)
     }
 }

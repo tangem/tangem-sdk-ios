@@ -10,6 +10,11 @@
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
+		5D0F8CFE26C6A255002E84A4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */; };
+		5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */; };
+		5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */; };
+		5D0F8D0426C6AD52002E84A4 /* ChangeUserCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */; };
+		5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0526C6C363002E84A4 /* Binding+.swift */; };
 		5D14091C26B9692500B811A1 /* BIP44.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091B26B9692500B811A1 /* BIP44.swift */; };
 		5D14091E26B9886800B811A1 /* HDWalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091D26B9886800B811A1 /* HDWalletError.swift */; };
 		5D14092026BAABD400B811A1 /* BIP32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091F26BAABD400B811A1 /* BIP32.swift */; };
@@ -82,6 +87,7 @@
 		5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */; };
 		5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */; };
 		5D7D5FB423449F2300058D69 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB323449F2300058D69 /* Command.swift */; };
+		5D7E49CC26C5443A00F77D62 /* EnterUserCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */; };
 		5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */; };
 		5D7F4E43248FCF7E00A1700D /* PinStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */; };
 		5D7F4E46248FCF9700A1700D /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E45248FCF9700A1700D /* PinViewController.swift */; };
@@ -275,6 +281,11 @@
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
+		5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
+		5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeHeaderView.swift; sourceTree = "<group>"; };
+		5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeUserCodeView.swift; sourceTree = "<group>"; };
+		5D0F8D0526C6C363002E84A4 /* Binding+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+.swift"; sourceTree = "<group>"; };
 		5D14091B26B9692500B811A1 /* BIP44.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP44.swift; sourceTree = "<group>"; };
 		5D14091D26B9886800B811A1 /* HDWalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletError.swift; sourceTree = "<group>"; };
 		5D14091F26BAABD400B811A1 /* BIP32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP32.swift; sourceTree = "<group>"; };
@@ -348,6 +359,7 @@
 		5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivationNode.swift; sourceTree = "<group>"; };
 		5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironment.swift; sourceTree = "<group>"; };
 		5D7D5FB323449F2300058D69 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterUserCodeView.swift; sourceTree = "<group>"; };
 		5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TangemSdk+Combine.swift"; sourceTree = "<group>"; };
 		5D7F4E42248FCF7E00A1700D /* PinStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PinStoryboard.storyboard; sourceTree = "<group>"; };
 		5D7F4E45248FCF9700A1700D /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
@@ -903,6 +915,12 @@
 				5DDAF04726AADF4D00673D44 /* DelayView.swift */,
 				5DDAF04926AAE4A400673D44 /* CounterView.swift */,
 				5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */,
+				5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */,
+				5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */,
+				5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */,
+				5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */,
+				5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */,
+				5D0F8D0526C6C363002E84A4 /* Binding+.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1416,6 +1434,7 @@
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,
 				5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */,
+				5D7E49CC26C5443A00F77D62 /* EnterUserCodeView.swift in Sources */,
 				5D14091C26B9692500B811A1 /* BIP44.swift in Sources */,
 				B0E162C325656D8400E97D07 /* CardDeserializer.swift in Sources */,
 				B0F9F613255032C5001CA52D /* CGSize+.swift in Sources */,
@@ -1430,6 +1449,7 @@
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
+				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
@@ -1501,6 +1521,7 @@
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				B0A9447B256546DE00A7958E /* Card.swift in Sources */,
 				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
+				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
@@ -1522,6 +1543,7 @@
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D2B798626BC3DBF002A78D4 /* DerivePublicKeyCommand.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
+				5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D379C2D268FA53D00C7F473 /* KeyPair.swift in Sources */,
 				B0AAEBF025514B6700CF52BC /* AnimKeyPaths.swift in Sources */,
@@ -1537,6 +1559,7 @@
 				5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */,
 				5D91226A26AAC75900AAD931 /* MainView.swift in Sources */,
 				5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */,
+				5D0F8D0426C6AD52002E84A4 /* ChangeUserCodeView.swift in Sources */,
 				5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */,
 				5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
@@ -1550,6 +1573,7 @@
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
+				5D0F8CFE26C6A255002E84A4 /* RoundedButtonStyle.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */,
 				5D14092026BAABD400B811A1 /* BIP32.swift in Sources */,

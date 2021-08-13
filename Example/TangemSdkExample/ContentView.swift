@@ -27,13 +27,13 @@ struct ContentView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
-                
+
                 VStack(spacing: 4) {
                     HStack {
                         Button("Clear", action: model.clear)
                         Button("Copy", action: model.copy)
                     }
-                    
+
                     additionalView
                         .padding(.top, 4)
 

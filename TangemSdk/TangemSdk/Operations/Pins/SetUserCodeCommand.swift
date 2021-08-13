@@ -153,15 +153,20 @@ public class SetUserCodeCommand: Command {
             return
         }
         
-        session.viewDelegate.requestUserCodeChange(type: type, cardId: session.cardId) { result in
-            switch result {
-            case .success(let pinChangeResult):
-                self.codes[type] = .stringValue(pinChangeResult.newCode)
+        let formattedCid = session.cardId.map { CardIdFormatter().formatted(cardId: $0,
+                                                                            numbers: session.environment.config.cardIdDisplayedNumbersCount) }
+        
+        session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { code in
+            
+            if let code = code {
+                session.viewDelegate.setState(.default)
+                self.codes[type] = .stringValue(code)
                 completion(.success(()))
-            case .failure(let error):
-                completion(.failure(error))
+            } else {
+                session.viewDelegate.sessionStopped(completion: nil)
+                completion(.failure(.userCancelled))
             }
-        }
+        }))
     }
 }
 // MARK:- Reset codes

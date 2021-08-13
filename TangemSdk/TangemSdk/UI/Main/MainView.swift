@@ -11,9 +11,9 @@ import SwiftUI
 @available(iOS 13.0, *)
 struct MainView: View {
     var style: TangemSdkStyle
-    var state: State = .scan
+    var state: ViewState = .scan
     var indicatorSize: CGSize = .init(width: 240, height: 240)
-    
+
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
@@ -21,10 +21,11 @@ struct MainView: View {
             mainView
                 .transition(.opacity)
                 .environmentObject(style)
-
-            Spacer()
             
-            Color.clear.frame(height: 380)
+            if !state.isFullScreen {
+                Spacer()
+                Color.clear.frame(height: 380)
+            }
         }
     }
     
@@ -48,17 +49,39 @@ struct MainView: View {
         case .scan:
             ReadView()
                 .padding(.top, 40)
+        case .requestCode(let type, cardId: let cardId, completion: let completion):
+            EnterUserCodeView(title: type.enterCodeTitle,
+                              cardId: cardId,
+                              placeholder: type.name,
+                              completion: completion)
+        case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
+            ChangeUserCodeView(title: type.changeCodeTitle,
+                              cardId: cardId,
+                              placeholder: type.name,
+                              confirmationPlaceholder: type.confirmCodeTitle,
+                              completion: completion)
         }
     }
 }
 
 @available(iOS 13.0, *)
 extension MainView {
-    enum State: Equatable {
+    enum ViewState {
         case delay(remaining: Float, total: Float, label: Float) //seconds
         case progress(percent: Int)
         case `default`
         case scan
+        case requestCode(_ type: UserCodeType, cardId: String, completion: ((_ code: String?) -> Void))
+        case requestCodeChange(_ type: UserCodeType, cardId: String, completion: ((_ code: String?) -> Void))
+        
+        var isFullScreen: Bool {
+            switch self {
+            case .requestCode, .requestCodeChange:
+                return true
+            default:
+                return false
+            }
+        }
     }
 }
 

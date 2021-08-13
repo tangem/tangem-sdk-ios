@@ -22,6 +22,8 @@ public extension TangemSdkStyle {
     struct Colors {
         public var tint: Color = Color(.LightPalette.tint)
         
+        public var errorTint: Color = Color(.LightPalette.errorTint)
+        
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: .LightPalette.indicatorBackground)
         
         public var nfcSmallCircle: Color = .adaptiveColor(dark: .darkGray, light: .LightPalette.smallCircleColor)

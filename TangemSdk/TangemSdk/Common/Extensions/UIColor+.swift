@@ -32,6 +32,13 @@ extension UIColor {
                   alpha: 1.0)
         }
         
+        static var errorTint: UIColor {
+            .init(red: 1.0,
+                  green: 69.0/255.0,
+                  blue: 58.0/255.0,
+                  alpha: 1.0)
+        }
+        
         static var smallCircleColor: UIColor {
             .init(red: 213.0/255.0,
                   green: 218.0/255.0,

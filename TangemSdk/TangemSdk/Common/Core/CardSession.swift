@@ -384,8 +384,15 @@ public class CardSession {
             }
         }
         Log.session("Request user code of type: \(type)")
-        viewDelegate.requestUserCode(type: type, cardId: environment.card?.cardId ?? cardId) {[weak self] code in
+        
+        
+        let cardId = environment.card?.cardId ?? cardId
+        let formattedCardId = cardId.map { CardIdFormatter().formatted(cardId: $0, numbers: environment.config.cardIdDisplayedNumbersCount) }
+        
+        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in
             guard let self = self else { return }
+            
+            self.viewDelegate.setState(.default)
             
             if let code = code {
                 switch type {
@@ -398,7 +405,7 @@ public class CardSession {
             } else {
                 completion(.failure(.userCancelled))
             }
-        }
+        }))
     }
 }
 //MARK: - JSON RPC

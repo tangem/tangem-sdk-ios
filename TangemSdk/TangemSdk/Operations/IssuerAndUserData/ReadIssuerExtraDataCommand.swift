@@ -95,6 +95,10 @@ public final class ReadIssuerExtraDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion >= .multiwalletAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }

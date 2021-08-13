@@ -33,9 +33,9 @@ extension Data {
         let year = Int(hexData: self[0...1])
         let month = Int(self[2])
         let day = Int(self[3])
-
-        let components = DateComponents(year: year, month: month, day: day)
-        let calendar = Calendar(identifier: .gregorian)
+        
+        let components = DateComponents(timeZone: TimeZone(secondsFromGMT: 0), year: year, month: month, day: day)
+        let calendar = Calendar.current
         return calendar.date(from: components)
     }
     

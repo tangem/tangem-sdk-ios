@@ -15,12 +15,6 @@ import UIKit
 public protocol SessionViewDelegate: AnyObject {
     func showAlertMessage(_ text: String)
     
-    /// It is called when a user is expected to enter user code.
-    func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void)
-    
-    /// It is called when a user is expected to change  user code.
-    func requestUserCodeChange(type: UserCodeType, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>)
-    
     /// It is called when tag was found
     func tagConnected()
     
@@ -44,11 +38,14 @@ public protocol SessionViewDelegate: AnyObject {
     func setState(_ state: SessionViewState)
 }
 
-public enum SessionViewState: Equatable {
+@available(iOS 13.0, *)
+public enum SessionViewState {
     case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)
     case `default`
     case scan
+    case requestCode(_ type: UserCodeType, cardId: String?, completion: ((_ code: String?) -> Void))
+    case requestCodeChange(_ type: UserCodeType, cardId: String?, completion: ((_ code: String?) -> Void))
     
     var shouldPlayHaptics: Bool {
         switch self {

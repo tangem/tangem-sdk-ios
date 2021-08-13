@@ -27,8 +27,8 @@ final class SwiftUISessionViewDelegate {
         engine.create()
     }
     
-    private func presentInfoScreen() {
-        guard !self.infoScreen.isBeingPresented,
+    private func presentInfoScreenIfNeeded() {
+        guard !self.infoScreen.isBeingPresented, self.infoScreen.presentingViewController == nil,
               let topmostViewController = UIApplication.shared.topMostViewController
         else { return }
         
@@ -51,46 +51,7 @@ final class SwiftUISessionViewDelegate {
         self.infoScreen.dismiss(animated: true, completion: completion)
     }
     
-    private func requestPin(_ state: PinViewControllerState, cardId: String?, completion: @escaping (String?) -> Void) {
-        let cardId = formatCardId(cardId)
-        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
-        let vc = storyBoard.instantiateViewController(identifier: "PinViewController", creator: { coder in
-            return PinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
-        })
-        if let topmostViewController = UIApplication.shared.topMostViewController {
-            vc.modalPresentationStyle = .fullScreen
-            // infoScreenAppearWork?.cancel()
-            topmostViewController.present(vc, animated: true, completion: nil)
-        } else {//
-            completion(nil)
-        }
-    }
-    
-    private func requestChangePin(_ state: PinViewControllerState, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
-        let cardId = formatCardId(cardId)
-        let storyBoard = UIStoryboard(name: "PinStoryboard", bundle: .sdkBundle)
-        let vc = storyBoard.instantiateViewController(identifier: "ChangePinViewController", creator: { coder in
-            return  ChangePinViewController(coder: coder, state: state, cardId: cardId, completionHandler: completion)
-        })
-        if let topmostViewController = UIApplication.shared.topMostViewController {
-            vc.modalPresentationStyle = .fullScreen
-            // infoScreenAppearWork?.cancel()
-            topmostViewController.present(vc, animated: true, completion: nil)
-        } else {
-            completion(.failure(.unknownError))
-        }
-    }
-    
-    private func formatCardId(_ cid: String?) -> String? {
-        guard let cid = cid else {
-            return nil
-        }
-        
-        let cidFormatter = CardIdFormatter()
-        return cidFormatter.formatted(cid: cid, numbers: config.cardIdDisplayedNumbersCount)
-    }
-    
-    private func runInMainThread(_ block: @escaping () -> Void) {
+    private func runInMainThread(_ block: @autoclosure @escaping () -> Void) {
         if Thread.isMainThread {
             block()
         } else {
@@ -108,37 +69,14 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
         if state.shouldPlayHaptics {
             engine.playTick()
         }
-        runInMainThread {
-            self.infoScreen.setState(state, animated: true)
-        }
+
+        runInMainThread(self.infoScreen.setState(state, animated: true))
+        runInMainThread(self.presentInfoScreenIfNeeded())
     }
     
     func showAlertMessage(_ text: String) {
         Log.view("Show alert message: \(text)")
         reader.alertMessage = text
-    }
-    
-    func requestUserCode(type: UserCodeType, cardId: String?, completion: @escaping (_ code: String?) -> Void) {
-        runInMainThread {
-            Log.view("Showing user code request with type: \(type)")
-            switch type {
-            case .accessCode:
-                self.requestPin(.pin1, cardId: cardId, completion: completion)
-            case .passcode:
-                self.requestPin(.pin2, cardId: cardId, completion: completion)
-            }
-        }
-    }
-    func requestUserCodeChange(type: UserCodeType, cardId: String?, completion: @escaping CompletionResult<(currentCode: String, newCode: String)>) {
-        runInMainThread {
-            Log.view("Showing user code change request with type: \(type)")
-            switch type {
-            case .accessCode:
-                self.requestChangePin(.pin1, cardId: cardId, completion: completion)
-            case .passcode:
-                self.requestChangePin(.pin2, cardId: cardId, completion: completion)
-            }
-        }
     }
     
     func tagConnected() {
@@ -173,11 +111,7 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
     
     func sessionStarted() {
         Log.view("Session started")
-        
-        runInMainThread {
-            self.presentInfoScreen()
-        }
-        
+        runInMainThread(self.presentInfoScreenIfNeeded())
         engine.start()
     }
     
@@ -185,9 +119,7 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
         Log.view("Session stopped")
         pinnedMessage = nil
         engine.stop()
-        runInMainThread {
-            self.dismissInfoScreen(completion: completion)
-        }
+        runInMainThread(self.dismissInfoScreen(completion: completion))
     }
     
     func setConfig(_ config: Config) {
@@ -201,9 +133,11 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
         let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
             : "This card may be production sample or conterfeit. You can continue at your own risk"
         
-        runInMainThread {
-            UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel)
-        }
+        runInMainThread(UIAlertController.showShouldContinue(from: self.infoScreen,
+                                                             title: title,
+                                                             message: message,
+                                                             onContinue: onContinue,
+                                                             onCancel: onCancel))
     }
     
     //TODO: Refactor UI
@@ -211,18 +145,22 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
         let title =  "Online attestation failed"
         let message = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation"
         
-        runInMainThread {
-            UIAlertController.showShouldContinue(from: self.infoScreen, title: title, message: message, onContinue: onContinue, onCancel: onCancel, onRetry: onRetry)
-        }
+        runInMainThread(UIAlertController.showShouldContinue(from: self.infoScreen,
+                                                             title: title,
+                                                             message: message,
+                                                             onContinue: onContinue,
+                                                             onCancel: onCancel,
+                                                             onRetry: onRetry))
     }
     
     //TODO: Refactor UI
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
         let title = "Warning"
         let message = "Too large runs count of Attest Wallet or Sign looks suspicious."
-        runInMainThread {
-            UIAlertController.showAlert(from: self.infoScreen, title: title, message: message, onContinue: onContinue)
-        }
+        runInMainThread(UIAlertController.showAlert(from: self.infoScreen,
+                                                    title: title,
+                                                    message: message,
+                                                    onContinue: onContinue))
     }
 }
 

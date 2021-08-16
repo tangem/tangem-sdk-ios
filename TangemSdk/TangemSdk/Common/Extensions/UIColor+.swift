@@ -13,8 +13,8 @@ extension UIColor {
     struct LightPalette {
         static var tint: UIColor {
             .init(red: 0.0,
-                  green: 41.0/255.0,
-                  blue: 1.0,
+                  green: 43.0/255.0,
+                  blue: 90.0,
                   alpha: 1.0)
         }
         

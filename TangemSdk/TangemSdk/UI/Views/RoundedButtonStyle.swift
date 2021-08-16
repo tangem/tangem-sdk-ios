@@ -14,6 +14,7 @@ struct RoundedButton: ButtonStyle {
     var isDisabled: Bool = false
     var isLoading: Bool = false
     var bgColor: Color = .blue
+    var bgDisabledColor: Color = .gray
     var height: CGFloat = 50
     
     @ViewBuilder private var loadingOverlay: some View {
@@ -29,7 +30,7 @@ struct RoundedButton: ButtonStyle {
     
     @ViewBuilder private var disabledOverlay: some View {
         if isDisabled  {
-            Color.white.opacity(0.4)
+            Color.white.opacity(0.6)
         } else {
             Color.clear
         }
@@ -45,9 +46,8 @@ struct RoundedButton: ButtonStyle {
         .padding(.horizontal, 10)
         .font(.system(size: 17, weight: .semibold, design: .default))
         .foregroundColor(Color.white)
-        .background(bgColor)
+        .background(isDisabled ? bgDisabledColor : bgColor)
         .overlay(loadingOverlay)
-        .overlay(disabledOverlay)
         .cornerRadius(8)
         .allowsHitTesting(!isDisabled && !isLoading)
     }

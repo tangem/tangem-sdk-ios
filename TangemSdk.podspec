@@ -27,7 +27,7 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
   s.source           = { :git => 'https://github.com/Tangem/tangem-sdk-ios.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/Tangem'
   s.platform = :ios
-  s.ios.deployment_target = '13.0'
+  s.ios.deployment_target = '11.0'
   s.swift_version = '5.0'
 
   s.source_files = 'TangemSdk/TangemSdk/**/*.{swift}', 
@@ -50,15 +50,9 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
     'OTHER_CFLAGS' => '-pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-shorten-64-to-32 -Wno-conditional-uninitialized -Wno-unused-function -Wno-long-long -Wno-overlength-strings -O3',
   }
 
-  # s.resource_bundles = {
-  #   'TangemSdk' => ['TangemSdk/Assets/*.png']
-  # 
-
-  s.weak_frameworks = 'CoreNFC', 'CryptoKit', 'Combine'
+  s.weak_frameworks = 'CoreNFC', 'CryptoKit', 'Combine', 'SwiftUI'
 
   s.resource_bundles = { 'TangemSdk' => ['TangemSdk/TangemSdk/**/*.lproj/*.strings', 
-					'TangemSdk/TangemSdk/Haptics/*.ahap',
-					'TangemSdk/TangemSdk/UI/**/*.storyboard',
-					'TangemSdk/TangemSdk/Common/Assets/**/*']}
+					'TangemSdk/TangemSdk/Haptics/*.ahap']}
 
 end

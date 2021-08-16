@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D0243BE26CACACD00B76F37 /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* SpinnerView.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
@@ -172,6 +173,7 @@
 		5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */; };
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
+		5DBC0A8826CADB53004BF91C /* MainViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBC0A8726CADB53004BF91C /* MainViewMode.swift */; };
 		5DBD7325249122C9000DF4BD /* SetUserCodeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DBD7324249122C9000DF4BD /* SetUserCodeCommand.swift */; };
 		5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC62D3D23506CF300195A51 /* TlvDecoder.swift */; };
 		5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */; };
@@ -183,7 +185,6 @@
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
 		5DDAF04626AAD94500673D44 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04526AAD94500673D44 /* ProgressView.swift */; };
 		5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04726AADF4D00673D44 /* DelayView.swift */; };
-		5DDAF04A26AAE4A400673D44 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04926AAE4A400673D44 /* CounterView.swift */; };
 		5DDAF04C26AB195F00673D44 /* SwiftUISessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */; };
 		5DDAF04E26AB1BCB00673D44 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */; };
 		5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */; };
@@ -261,6 +262,7 @@
 
 /* Begin PBXFileReference section */
 		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5D0243BD26CACACD00B76F37 /* SpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
@@ -429,6 +431,7 @@
 		5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensionTests.swift; sourceTree = "<group>"; };
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		5DBC0A8726CADB53004BF91C /* MainViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewMode.swift; sourceTree = "<group>"; };
 		5DBD7324249122C9000DF4BD /* SetUserCodeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserCodeCommand.swift; sourceTree = "<group>"; };
 		5DC62D3D23506CF300195A51 /* TlvDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvDecoder.swift; sourceTree = "<group>"; };
 		5DCAA7862383DDC200249F42 /* ReadIssuerDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerDataCommand.swift; sourceTree = "<group>"; };
@@ -441,7 +444,6 @@
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
 		5DDAF04526AAD94500673D44 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		5DDAF04726AADF4D00673D44 /* DelayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayView.swift; sourceTree = "<group>"; };
-		5DDAF04926AAE4A400673D44 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
 		5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUISessionViewDelegate.swift; sourceTree = "<group>"; };
 		5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvLogging.swift; sourceTree = "<group>"; };
@@ -724,8 +726,9 @@
 		5D7F4E3F248FCEFB00A1700D /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				5D908C5926A7467B00270FA3 /* Main */,
+				5D908C5926A7467B00270FA3 /* Views */,
 				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
+				5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */,
 				5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */,
 				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
 				5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */,
@@ -853,7 +856,7 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		5D908C5926A7467B00270FA3 /* Main */ = {
+		5D908C5926A7467B00270FA3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				5D908C5A26A7469100270FA3 /* CardView.swift */,
@@ -863,16 +866,15 @@
 				5D91226926AAC75900AAD931 /* MainView.swift */,
 				5DDAF04526AAD94500673D44 /* ProgressView.swift */,
 				5DDAF04726AADF4D00673D44 /* DelayView.swift */,
-				5DDAF04926AAE4A400673D44 /* CounterView.swift */,
-				5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */,
 				5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */,
 				5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */,
 				5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */,
 				5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */,
 				5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */,
-				5D0F8D0526C6C363002E84A4 /* Binding+.swift */,
+				5D0243BD26CACACD00B76F37 /* SpinnerView.swift */,
+				5DBC0A8726CADB53004BF91C /* MainViewMode.swift */,
 			);
-			path = Main;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		5DA5B614233E11DD0058C720 /* APDU */ = {
@@ -1035,6 +1037,7 @@
 		5DFFC4A0233BA5D2004964E8 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5D0F8D0526C6C363002E84A4 /* Binding+.swift */,
 				5D7F4E51249006DB00A1700D /* Bundle+.swift */,
 				5DFFC4A1233BA5E0004964E8 /* Byte+.swift */,
 				5D58B4BE233E4C6B00F33764 /* InputStream+.swift */,
@@ -1353,7 +1356,9 @@
 				B0E162C325656D8400E97D07 /* CardDeserializer.swift in Sources */,
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
+				5DBC0A8826CADB53004BF91C /* MainViewMode.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
+				5D0243BE26CACACD00B76F37 /* SpinnerView.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
@@ -1455,7 +1460,6 @@
 				5DE59F2B23D96F8B00312DA4 /* NFCUtils.swift in Sources */,
 				5D170AF126B42CA3000D4F36 /* ExtendedPublicKey.swift in Sources */,
 				5D7F4E3E2489456E00A1700D /* TangemSdk+Combine.swift in Sources */,
-				5DDAF04A26AAE4A400673D44 /* CounterView.swift in Sources */,
 				5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */,
 				5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */,
 				B0390F8E25658FE80061E5ED /* StatusType.swift in Sources */,

@@ -44,7 +44,8 @@ struct EnterUserCodeView: View {
             Button("common_continue".localized, action: onDone)
                 .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
                                            isLoading: isLoading,
-                                           bgColor: style.colors.tint))
+                                           bgColor: style.colors.tint,
+                                           bgDisabledColor: style.colors.disabledButton))
         }
         .padding([.horizontal, .bottom])
         .onAppear {

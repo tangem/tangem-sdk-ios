@@ -31,18 +31,7 @@ struct ProgressView: View {
                               design: .default)
                         .monospacedDigit())
                 .foregroundColor(style.colors.tint)
-                .animation(nil)
         }
-        //        .onAppear {
-        //            _ = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-        //                withAnimation() {
-        //                    self.circleProgress += 0.01
-        //                    if self.circleProgress >= 1.0 {
-        //                        timer.invalidate()
-        //                    }
-        //                }
-        //            }
-        //        }
     }
 }
 

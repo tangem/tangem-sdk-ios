@@ -11,8 +11,21 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 class MainViewController: UIHostingController<MainView> {
-    func setState(_ state: SessionViewState, animated: Bool) {
-        switch (rootView.state, state) {
+
+    init(config: Config) {
+        //self.model = MainViewModel()
+        let view = MainView(style: config.style)
+        super.init(rootView: view)
+        modalPresentationStyle = .overFullScreen
+        modalTransitionStyle = .crossDissolve
+    }
+    
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setState(_ state: SessionViewState) {
+        switch (rootView.viewState, state) {
         case (.delay, .delay):
             setState(map(state: state))
         case (_, .delay(let remaining, let total)):
@@ -44,18 +57,6 @@ class MainViewController: UIHostingController<MainView> {
     }
     
     private func setState(_ state: MainView.ViewState) {
-        withAnimation {
-            rootView.state = state
-        }
-    }
-}
-
-@available(iOS 13.0, *)
-extension MainViewController {
-    static func makeController(with config: Config) -> MainViewController {
-        let controller =  MainViewController(rootView: MainView(style: config.style))
-        controller.modalPresentationStyle = .overFullScreen
-        controller.modalTransitionStyle = .crossDissolve
-        return controller
+        rootView.viewState = state
     }
 }

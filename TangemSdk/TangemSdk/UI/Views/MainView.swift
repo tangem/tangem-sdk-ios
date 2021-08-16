@@ -10,45 +10,42 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
-    var style: TangemSdkStyle
-    var state: ViewState = .scan
-    var indicatorSize: CGSize = .init(width: 240, height: 240)
-
+    let style: TangemSdkStyle
+    var viewState: ViewState = .scan
+    
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-            
-            mainView
-                .transition(.opacity)
-                .environmentObject(style)
-            
-            if !state.isFullScreen {
-                Spacer()
-                Color.clear.frame(height: 380)
-            }
-        }
+        mainView
+            .transition(.identity.combined(with: .opacity))
+            .environmentObject(style)
     }
     
     @ViewBuilder
     var mainView: some View {
-        switch state {
+        switch viewState {
         case .default:
-            NFCFieldView(isAnimationOn: true)
-                .frame(width: indicatorSize.width, height: indicatorSize.height)
+            SpinnerView()
+                .frame(width: style.indicatorSize, height: style.indicatorSize)
+                .padding(.top, 40)
+                .padding(.bottom, 360)
             
         case .delay(let remaining, let total, let label):
             DelayView(currentValue: CGFloat(remaining),
                       totalValue: CGFloat(total),
                       labelValue: CGFloat(label))
-                .frame(width: indicatorSize.width, height: indicatorSize.height)
+                .frame(width: style.indicatorSize, height: style.indicatorSize)
+                .padding(.top, 40)
+                .padding(.bottom, 360)
             
         case .progress(let progress):
             ProgressView(circleProgress: progress)
-                .frame(width: indicatorSize.width, height: indicatorSize.height)
+                .frame(width: style.indicatorSize, height: style.indicatorSize)
+                .padding(.top, 40)
+                .padding(.bottom, 360)
             
         case .scan:
             ReadView()
-                .padding(.top, 40)
+                .padding(.bottom, 60)
+            
         case .requestCode(let type, cardId: let cardId, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
                               cardId: cardId,
@@ -56,16 +53,17 @@ struct MainView: View {
                               completion: completion)
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
             ChangeUserCodeView(title: type.changeCodeTitle,
-                              cardId: cardId,
-                              placeholder: type.name,
-                              confirmationPlaceholder: type.confirmCodeTitle,
-                              completion: completion)
+                               cardId: cardId,
+                               placeholder: type.name,
+                               confirmationPlaceholder: type.confirmCodeTitle,
+                               completion: completion)
         }
     }
 }
 
 @available(iOS 13.0, *)
 extension MainView {
+    @available(iOS 13.0, *) //fix preview bug
     enum ViewState {
         case delay(remaining: Float, total: Float, label: Float) //seconds
         case progress(percent: Int)

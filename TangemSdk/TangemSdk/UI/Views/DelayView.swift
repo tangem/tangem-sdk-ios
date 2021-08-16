@@ -15,7 +15,7 @@ struct DelayView: View {
     let labelValue: CGFloat
     
     @EnvironmentObject var style: TangemSdkStyle
-
+    
     private var targetDelay: CGFloat {
         1.0 - (totalValue - currentValue)/totalValue
     }
@@ -29,10 +29,14 @@ struct DelayView: View {
                 .trim(from: 0, to: targetDelay)
                 .stroke(style.colors.tint, lineWidth: 15)
                 .rotationEffect(Angle(degrees: -90))
-                .animation(.linear(duration: 0.9))
+                .animation(.spring(dampingFraction: 0.7).speed(1.8))
             
-            CounterView(currentDelay: Int(labelValue),
-                        totalDelay: Int(totalValue))
+            
+            Text("\(Int(labelValue))")
+                .font(.system(size: style.textSizes.indicatorLabel,
+                              weight: .medium,
+                              design: .default))
+                .foregroundColor(style.colors.tint)
         }
     }
 }
@@ -41,7 +45,7 @@ struct DelayView: View {
 struct DelayView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            DelayView(currentValue: 3, totalValue: 5, labelValue: 4)
+            DelayView(currentValue: 8, totalValue: 16, labelValue: 8)
                 .frame(width: 200, height: 200)
             DelayView(currentValue: 3, totalValue: 5, labelValue: 4)
                 .preferredColorScheme(.dark)

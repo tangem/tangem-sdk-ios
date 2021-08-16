@@ -23,7 +23,7 @@ final class SwiftUISessionViewDelegate {
         self.reader = reader
         self.config = config
         self.engine = HapticsEngine()
-        self.infoScreen = MainViewController.makeController(with: config)
+        self.infoScreen = MainViewController(config: config)
         engine.create()
     }
     
@@ -66,11 +66,11 @@ final class SwiftUISessionViewDelegate {
 extension SwiftUISessionViewDelegate: SessionViewDelegate {
     func setState(_ state: SessionViewState) {
         Log.view("Set state: \(state)")
-        if state.shouldPlayHaptics {
-            engine.playTick()
-        }
+//        if state.shouldPlayHaptics {
+//            engine.playTick()
+//        }
 
-        runInMainThread(self.infoScreen.setState(state, animated: true))
+        runInMainThread(self.infoScreen.setState(state))
         runInMainThread(self.presentInfoScreenIfNeeded())
     }
     
@@ -85,7 +85,7 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
             showAlertMessage(pinnedMessage)
             self.pinnedMessage = nil
         }
-        engine.playSuccess()
+      //  engine.playSuccess()
         setState(.default)
     }
     
@@ -124,7 +124,7 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
     
     func setConfig(_ config: Config) {
         self.config = config
-        self.infoScreen = MainViewController.makeController(with: config)
+        self.infoScreen = MainViewController(config: config)
     }
     
     //TODO: Refactor UI

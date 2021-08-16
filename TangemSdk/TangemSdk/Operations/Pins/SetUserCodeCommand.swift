@@ -159,7 +159,9 @@ public class SetUserCodeCommand: Command {
         session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { code in
             
             if let code = code {
-                session.viewDelegate.setState(.default)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { //prevent animation glitches
+                    session.viewDelegate.setState(.default)
+                }
                 self.codes[type] = .stringValue(code)
                 completion(.success(()))
             } else {

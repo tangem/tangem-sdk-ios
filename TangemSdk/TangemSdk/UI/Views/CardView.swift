@@ -11,23 +11,10 @@ import SwiftUI
 @available(iOS 13.0, *)
 struct CardView: View {
     @EnvironmentObject var style: TangemSdkStyle
-
+    
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(style.colors.cardColor)
-                
-                let chipWidth = 0.15 * geo.size.width
-                let chipHeight = 0.7 * chipWidth
-                
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(style.colors.cardChipColor)
-                    .frame(width: chipWidth, height: chipHeight)
-                    .offset(x: 1.5 * chipWidth-geo.size.width/2,
-                            y: -0.5*chipHeight)
-            }
-        }
+        RoundedRectangle(cornerRadius: 18)
+            .fill(style.colors.cardColor)
     }
 }
 

@@ -10,21 +10,7 @@ import Foundation
 import UIKit
 
 extension UIColor {
-    struct LightPalette {
-        static var tint: UIColor {
-            .init(red: 0.0,
-                  green: 43.0/255.0,
-                  blue: 90.0,
-                  alpha: 1.0)
-        }
-        
-        static var errorTint: UIColor {
-            .init(red: 1.0,
-                  green: 69.0/255.0,
-                  blue: 58.0/255.0,
-                  alpha: 1.0)
-        }
-        
+    struct LightPalette {        
         static var smallCircleColor: UIColor {
             .init(red: 213.0/255.0,
                   green: 218.0/255.0,
@@ -52,16 +38,16 @@ extension UIColor {
                   blue: 0.274509803922,
                   alpha: 1)
         }
-        
-        static var cardChipColor: UIColor {
-            .init(red: 0.901960784314,
-                  green: 0.929411764706,
-                  blue: 0.945098039216,
-                  alpha: 1)
-        }
     }
 }
 
 extension UIColor {
-    enum DarkPalette {}
+    enum DarkPalette {
+        static var cardColor: UIColor {
+            .init(red: 209.0/255.0,
+                  green: 209/255.0,
+                  blue: 214.0/255.0,
+                  alpha: 1)
+        }
+    }
 }

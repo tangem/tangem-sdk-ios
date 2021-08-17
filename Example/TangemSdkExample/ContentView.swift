@@ -42,7 +42,7 @@ struct ContentView: View {
                             Text(AppModel.Method.allCases[index].rawValue)
                                 .tag(AppModel.Method.allCases[index])
                         }
-                    }
+                    }.labelsHidden()
 
                     Button("Start") { model.start() }
                         .buttonStyle(ExampleButton(isLoading: model.isScanning))

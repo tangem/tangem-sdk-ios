@@ -186,7 +186,7 @@
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
 		5DDAF04626AAD94500673D44 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04526AAD94500673D44 /* ProgressView.swift */; };
 		5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04726AADF4D00673D44 /* DelayView.swift */; };
-		5DDAF04C26AB195F00673D44 /* SwiftUISessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */; };
+		5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */; };
 		5DDAF04E26AB1BCB00673D44 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */; };
 		5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */; };
 		5DDD6C5A25D2DFA700E48D7B /* JSONStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */; };
@@ -446,7 +446,7 @@
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
 		5DDAF04526AAD94500673D44 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		5DDAF04726AADF4D00673D44 /* DelayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayView.swift; sourceTree = "<group>"; };
-		5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUISessionViewDelegate.swift; sourceTree = "<group>"; };
+		5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionViewDelegate.swift; sourceTree = "<group>"; };
 		5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvLogging.swift; sourceTree = "<group>"; };
 		5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONStringConvertible.swift; sourceTree = "<group>"; };
@@ -780,7 +780,7 @@
 				5D908C5926A7467B00270FA3 /* Views */,
 				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
 				5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */,
-				5DDAF04B26AB195F00673D44 /* SwiftUISessionViewDelegate.swift */,
+				5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */,
 				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
 				5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */,
 				5DCAB0FD26C43D2100ADEE7D /* Message.swift */,
@@ -1466,7 +1466,7 @@
 				5D379C2F268FA57500C7F473 /* UserCode.swift in Sources */,
 				B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */,
 				5DBD7325249122C9000DF4BD /* SetUserCodeCommand.swift in Sources */,
-				5DDAF04C26AB195F00673D44 /* SwiftUISessionViewDelegate.swift in Sources */,
+				5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,
 				B00B3265252DC33500A9FE96 /* ReadFileChecksumCommand.swift in Sources */,
 				B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */,

@@ -22,7 +22,8 @@ struct ReadView: View {
                 CardView()
                     .frame(width: 210, height: 130)
                     .offset(cardOffset)
-                    .animation(.easeInOut(duration: 1)
+                    .animation(Animation
+                                .easeInOut(duration: 1)
                                 .delay(1)
                                 .repeatForever())
                 

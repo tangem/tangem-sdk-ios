@@ -12,7 +12,7 @@ env:
 jobs:
   tag:
     name: Create tag
-    runs-on: macos-11
+    runs-on: macOS-latest
     steps:
     - name: Extract branch name
       shell: bash

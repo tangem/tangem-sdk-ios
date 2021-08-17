@@ -19,33 +19,38 @@ struct EnterUserCodeView: View {
     
     @State private var isLoading: Bool = false
     @State private var code: String = ""
-
+    
     private var isContinueDisabled: Bool {
         code.trim().isEmpty
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            
             UserCodeHeaderView(title: title,
                                cardId: cardId,
                                onCancel: onCancel)
+                .padding(.top, 8)
+            
             SecureField(placeholder, text: $code, onCommit: onDone)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .font(.system(size: 17))
-                .padding(.top, 36)
+                .padding(.top, 16)
             
             Color(UIColor.opaqueSeparator)
                 .frame(height: 1)
             
-            Spacer()
-            
-            Button("common_continue".localized, action: onDone)
-                .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
-                                           isLoading: isLoading,
-                                           bgColor: style.colors.tint,
-                                           bgDisabledColor: style.colors.disabledButton))
+            VStack(spacing: 0) {
+                
+                Spacer()
+                
+                Button("common_continue".localized, action: onDone)
+                    .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
+                                               isLoading: isLoading,
+                                               bgColor: style.colors.tint,
+                                               bgDisabledColor: style.colors.disabledButton))
+            }
+            .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
         .onAppear {

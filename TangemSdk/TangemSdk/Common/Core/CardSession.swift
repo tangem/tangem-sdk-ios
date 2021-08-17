@@ -168,7 +168,7 @@ public class CardSession {
             .store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
-            .compactMap{ $0 }
+            .filter { $0 != .none }
             .first()
             .sink(receiveCompletion: { [unowned self] readerCompletion in
                     if case let .failure(error) = readerCompletion {
@@ -243,7 +243,7 @@ public class CardSession {
         }
         
         reader.tag
-            .compactMap{ $0 }
+            .filter { $0 != .none }
             .filter {[unowned self] tag in
                 guard let currentTag = currentTag else { return true } //Skip filtration because we have nothing to compare with
                 

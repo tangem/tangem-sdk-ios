@@ -386,7 +386,7 @@ public class CardSession {
         Log.session("Request user code of type: \(type)")
         
         
-        let cardId = environment.card?.cardId ?? cardId
+        let cardId = environment.card?.cardId ?? self.cardId
         let formattedCardId = cardId.map { CardIdFormatter().formatted(cardId: $0, numbers: environment.config.cardIdDisplayedNumbersCount) }
         
         viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in

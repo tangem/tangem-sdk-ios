@@ -1,5 +1,5 @@
 //
-//  SwiftUISessionViewDelegate.swift
+//  DefaultSessionViewDelegate.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 02/12/20.
@@ -11,7 +11,7 @@ import UIKit
 import SwiftUI
 
 @available(iOS 13.0, *)
-final class SwiftUISessionViewDelegate {
+final class DefaultSessionViewDelegate {
     public var config: Config
     
     private let reader: CardReader
@@ -63,12 +63,12 @@ final class SwiftUISessionViewDelegate {
 }
 
 @available(iOS 13.0, *)
-extension SwiftUISessionViewDelegate: SessionViewDelegate {
+extension DefaultSessionViewDelegate: SessionViewDelegate {
     func setState(_ state: SessionViewState) {
         Log.view("Set state: \(state)")
-//        if state.shouldPlayHaptics {
-//            engine.playTick()
-//        }
+        if state.shouldPlayHaptics {
+            engine.playTick()
+        }
 
         runInMainThread(self.infoScreen.setState(state))
         runInMainThread(self.presentInfoScreenIfNeeded())
@@ -85,15 +85,13 @@ extension SwiftUISessionViewDelegate: SessionViewDelegate {
             showAlertMessage(pinnedMessage)
             self.pinnedMessage = nil
         }
-      //  engine.playSuccess()
-        setState(.default)
+        engine.playSuccess()
     }
     
     func tagLost() {
         Log.view("Tag lost")
         pinnedMessage = reader.alertMessage
         showAlertMessage(Localization.nfcAlertDefault)
-        setState(.scan)
     }
     
     func wrongCard(message: String?) {

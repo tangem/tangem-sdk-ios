@@ -10,7 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
-    let style: TangemSdkStyle
+    var style: TangemSdkStyle = .default
     var viewState: ViewState = .scan
     
     var body: some View {
@@ -20,37 +20,29 @@ struct MainView: View {
     }
     
     @ViewBuilder
-    var mainView: some View {
+    private var mainView: some View {
         switch viewState {
         case .default:
-            SpinnerView()
-                .frame(width: style.indicatorSize, height: style.indicatorSize)
-                .padding(.top, 40)
-                .padding(.bottom, 360)
+            indicatorView(SpinnerView())
             
         case .delay(let remaining, let total, let label):
-            DelayView(currentValue: CGFloat(remaining),
-                      totalValue: CGFloat(total),
-                      labelValue: CGFloat(label))
-                .frame(width: style.indicatorSize, height: style.indicatorSize)
-                .padding(.top, 40)
-                .padding(.bottom, 360)
+            indicatorView(DelayView(currentValue: CGFloat(remaining),
+                                    totalValue: CGFloat(total),
+                                    labelValue: CGFloat(label)))
             
         case .progress(let progress):
-            ProgressView(circleProgress: progress)
-                .frame(width: style.indicatorSize, height: style.indicatorSize)
-                .padding(.top, 40)
-                .padding(.bottom, 360)
+            indicatorView(ProgressView(circleProgress: progress))
             
         case .scan:
             ReadView()
-                .padding(.bottom, 60)
+                .padding(.bottom, 20)
             
         case .requestCode(let type, cardId: let cardId, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
                               cardId: cardId,
                               placeholder: type.name,
                               completion: completion)
+            
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
             ChangeUserCodeView(title: type.changeCodeTitle,
                                cardId: cardId,
@@ -59,11 +51,31 @@ struct MainView: View {
                                completion: completion)
         }
     }
+    
+    @ViewBuilder
+    private func indicatorView<V: View>(_ view: V) -> some View {
+        GeometryReader { geo in
+            
+            let size = geo.size.width * 0.6
+            
+            HStack(alignment: .center, spacing: 0) {
+                
+                Spacer()
+                
+                view
+                    .frame(width: size, height: size)
+                    .padding(.top, geo.size.height * 0.2)
+                
+                Spacer()
+            }
+        }
+        .padding(.bottom, 360)
+    }
 }
 
 @available(iOS 13.0, *)
 extension MainView {
-    @available(iOS 13.0, *) //fix preview bug
+    @available(iOS 13.0, *) //fix preview not compile issue
     enum ViewState {
         case delay(remaining: Float, total: Float, label: Float) //seconds
         case progress(percent: Int)
@@ -86,6 +98,7 @@ extension MainView {
 @available(iOS 13.0, *)
 struct MainView_Preview: PreviewProvider {
     static var previews: some View {
-        MainView(style: .default)
+        MainView(viewState: .default)
+        MainView(viewState: .scan)
     }
 }

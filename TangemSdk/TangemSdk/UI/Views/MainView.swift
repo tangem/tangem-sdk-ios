@@ -15,7 +15,9 @@ struct MainView: View {
     
     var body: some View {
         mainView
-            .transition(.identity.combined(with: .opacity))
+            .transition(AnyTransition
+                            .identity
+                            .combined(with: .opacity))
             .environmentObject(style)
     }
     

@@ -29,7 +29,7 @@ struct DelayView: View {
                 .trim(from: 0, to: targetDelay)
                 .stroke(style.colors.tint, lineWidth: 15)
                 .rotationEffect(Angle(degrees: -90))
-                .animation(.spring(dampingFraction: 0.7).speed(1.8))
+                .animation(Animation.spring(dampingFraction: 0.7).speed(1.8))
             
             
             Text("\(Int(labelValue))")

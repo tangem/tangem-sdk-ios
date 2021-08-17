@@ -21,13 +21,15 @@ struct NFCFieldView: View {
     private let duration: Double = 0.9
     
     private var bigCircleAnimation: Animation {
-        .easeInOut(duration: duration)
+        Animation
+            .easeInOut(duration: duration)
             .repeatForever()
             .delay(0.1)
     }
     
     private var smallCircleAnimation: Animation {
-        .easeInOut(duration: duration)
+        Animation
+            .easeInOut(duration: duration)
             .repeatForever()
     }
     

@@ -25,7 +25,7 @@ struct UserCodeHeaderView: View {
             }.padding(.bottom, 16)
             
             Text(title)
-                .font(.system(size: 34).bold())
+                .font(Font.system(size: 34).bold())
             
             Text(cardId)
                 .font(.system(size: 17))

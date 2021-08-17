@@ -23,7 +23,7 @@ struct ReadView: View {
                     .frame(width: 210, height: 130)
                     .offset(cardOffset)
                     .animation(.easeInOut(duration: 1)
-                                .delay(0.5)
+                                .delay(1)
                                 .repeatForever())
                 
                 PhoneView()

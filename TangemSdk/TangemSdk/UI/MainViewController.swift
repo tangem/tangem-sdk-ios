@@ -44,7 +44,7 @@ class MainViewController: UIHostingController<MainView> {
         case .default:
             return .default
         case .delay(let remaining, let total):
-            return .delay(remaining: remaining - 1, total: total, label: remaining)
+            return .delay(remaining: remaining - 1, total: total, label: remaining - 1)
         case .progress(let percent):
             return .progress(percent: percent)
         case .scan:

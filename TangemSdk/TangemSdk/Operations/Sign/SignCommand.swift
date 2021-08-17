@@ -141,9 +141,15 @@ class SignCommand: Command {
                         session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures = remainingSignatures - self.signatures.count
                     }
                     
-                    completion(.success(SignResponse(cardId: response.cardId,
-                                                     signatures: self.signatures,
-                                                     totalSignedHashes: response.totalSignedHashes)))
+                    do {
+                        let signatures = try self.processSignatures(with: session.environment)
+                        completion(.success(SignResponse(cardId: response.cardId,
+                                                         signatures: signatures,
+                                                         totalSignedHashes: response.totalSignedHashes)))
+                    } catch {
+                        completion(.failure(error.toTangemSdkError()))
+                    }
+                    
                     return
                 }
                 
@@ -205,6 +211,20 @@ class SignCommand: Command {
                                 signatures: splittedSignatures,
                                 totalSignedHashes: try decoder.decode(.walletSignedHashes))
         return resp
+    }
+    
+    private func processSignatures(with environment: SessionEnvironment) throws -> [Data] {
+        if environment.card?.wallets[self.walletPublicKey]?.curve == .secp256k1,
+           environment.config.canonizeSecp256k1Signatures {
+            let normalizedDignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
+            if normalizedDignatures.count != signatures.count {
+                throw TangemSdkError.cryptoUtilsError
+            }
+            
+            return normalizedDignatures
+        }
+        
+        return self.signatures
     }
     
     private func getChunk() -> Range<Int> {

@@ -13,7 +13,7 @@ env:
 jobs:
   test:
     name: Test
-    runs-on: macos-11
+    runs-on: macOS-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2   

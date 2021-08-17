@@ -15,7 +15,7 @@ import UIKit
 @available(iOS 13.0, *)
 final class NFCReader: NSObject {
     var viewEventsPublisher = CurrentValueSubject<CardReaderViewEvent, Never>(.none)
-    private(set) var tag = CurrentValueSubject<NFCTagType?, TangemSdkError>(nil)
+    private(set) var tag = CurrentValueSubject<NFCTagType, TangemSdkError>(.none)
     
     var isReady: Bool { isSessionReady }
     
@@ -155,9 +155,9 @@ extension NFCReader: CardReader {
                     //Actually we need this stuff for immediate cancel(or error) handling only,
                     //before the session detect any tags or if restart polling in action
                     self.tag.send(completion: .failure(error))
-                    self.tag = .init(nil)
+                    self.tag = .init(.none)
                 } else {
-                    self.tag.send(nil)
+                    self.tag.send(.none)
                 }
                 
                 isSessionReady = false
@@ -188,7 +188,7 @@ extension NFCReader: CardReader {
             .sink { _ in  }
                 receiveValue: {[unowned self] tag in
                     Log.nfc("Received tag: \(String(describing: tag))")
-                    if tag != nil {
+                    if tag != .none {
                         self.startTagTimer()
                         if case .tag = tag {
                             self.startIdleTimer()
@@ -201,10 +201,10 @@ extension NFCReader: CardReader {
                     }
                     
                     if !isPaused && !isSilentRestartPolling {
-                        viewEventsPublisher.send(tag == nil ? .tagLost : .tagConnected)
+                        viewEventsPublisher.send(tag == .none ? .tagLost : .tagConnected)
                     }
                     
-                    if isSilentRestartPolling && tag != nil { //reset silent mode
+                    if isSilentRestartPolling && tag != .none { //reset silent mode
                         isSilentRestartPolling = false
                     }
                 }
@@ -220,7 +220,7 @@ extension NFCReader: CardReader {
                 
                 self.isSilentRestartPolling = isSilent
                 Log.nfc("Restart polling invoked")
-                self.tag.send(nil)
+                self.tag.send(.none)
                 session.restartPolling()
                 
                 if isSilent {

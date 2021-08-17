@@ -26,7 +26,7 @@ struct ProgressView: View {
                 .animation(.easeIn)
             
             Text("\(self.circleProgress)%")
-                .font(.system(size: style.textSizes.indicatorLabel,
+                .font(Font.system(size: style.textSizes.indicatorLabel,
                               weight: .medium,
                               design: .default)
                         .monospacedDigit())

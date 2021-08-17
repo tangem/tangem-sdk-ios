@@ -26,17 +26,17 @@ public extension TangemSdkStyle {
         
         public var errorTint: Color = Color.red
         
-        public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: .LightPalette.indicatorBackground)
+        public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
         
-        public var nfcSmallCircle: Color = .adaptiveColor(dark: .darkGray, light: .LightPalette.smallCircleColor)
+        public var nfcSmallCircle: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.smallCircleColor)
         
-        public var nfcBigCircle: Color = .adaptiveColor(dark: .gray, light: .LightPalette.bigCircleColor)
+        public var nfcBigCircle: Color = .adaptiveColor(dark: .gray, light: UIColor.LightPalette.bigCircleColor)
         
         public var phoneBackground: Color = .adaptiveColor(dark: .black, light: .white)
         
         public var phoneStroke: Color = .adaptiveColor(dark: .white, light: .black)
         
-        public var cardColor: Color = .adaptiveColor(dark: .DarkPalette.cardColor, light: .LightPalette.cardColor)
+        public var cardColor: Color = .adaptiveColor(dark: UIColor.DarkPalette.cardColor, light: UIColor.LightPalette.cardColor)
         
         public static var `default`: Colors = .init()
     }

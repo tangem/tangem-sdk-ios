@@ -160,7 +160,7 @@ public class CardSession {
         
         reader.tag //Subscription for handle tag lost events
             .dropFirst()
-            .filter { $0 == nil }
+            .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     self.environment.encryptionKey = nil

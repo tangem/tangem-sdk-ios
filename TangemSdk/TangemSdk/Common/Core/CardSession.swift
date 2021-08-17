@@ -35,7 +35,7 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var preflightReadMode: PreflightReadMode = .fullCardRead
-    private var currentTag: NFCTagType? = nil
+    private var currentTag: NFCTagType = .none
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -247,7 +247,7 @@ public class CardSession {
         reader.tag
             .filter { $0 != .none }
             .filter {[unowned self] tag in
-                guard let currentTag = currentTag else { return true } //Skip filtration because we have nothing to compare with
+                guard currentTag != .none else { return true } //Skip filtration because we have nothing to compare with
                 
                 if tag != currentTag { //handle wrong tag connection during any operation
                     self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber.localizedDescription)
@@ -283,7 +283,7 @@ public class CardSession {
     
     /// The command has been completed. We don't need this tag anymore
     func releaseTag() {
-        currentTag = nil
+        currentTag = .none
     }
     
     private func sessionDidStop(completion: (() -> Void)?) {

@@ -152,8 +152,10 @@ public class CardSession {
                     self.viewDelegate.sessionStopped(completion: nil)
                 case .tagConnected:
                     self.viewDelegate.tagConnected()
+                    self.viewDelegate.setState(.default)
                 case .tagLost:
                     self.viewDelegate.tagLost()
+                    self.viewDelegate.setState(.scan)
                 }
             })
             .store(in: &nfcReaderSubscriptions)

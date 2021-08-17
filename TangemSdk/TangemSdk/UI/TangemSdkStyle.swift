@@ -13,7 +13,6 @@ import SwiftUI
 public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
-    public var indicatorSize: CGFloat = 240
     
     public static var `default`: TangemSdkStyle = .init()
 }
@@ -25,7 +24,7 @@ public extension TangemSdkStyle {
         
         public var disabledButton: Color = Color.gray
         
-        public var errorTint: Color = Color(.LightPalette.errorTint)
+        public var errorTint: Color = Color.red
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: .LightPalette.indicatorBackground)
         
@@ -37,7 +36,7 @@ public extension TangemSdkStyle {
         
         public var phoneStroke: Color = .adaptiveColor(dark: .white, light: .black)
         
-        public var cardColor: Color = Color(.LightPalette.cardColor)
+        public var cardColor: Color = .adaptiveColor(dark: .DarkPalette.cardColor, light: .LightPalette.cardColor)
         
         public static var `default`: Colors = .init()
     }

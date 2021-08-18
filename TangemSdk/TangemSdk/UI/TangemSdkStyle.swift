@@ -13,6 +13,7 @@ import SwiftUI
 public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
+    public var indicatorWidth: Float = 12
     
     public static var `default`: TangemSdkStyle = .init()
 }

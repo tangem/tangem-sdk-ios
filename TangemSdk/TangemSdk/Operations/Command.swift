@@ -147,10 +147,13 @@ extension Command {
                 switch responseApdu.statusWord {
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                      .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
-                    if session.environment.currentSecurityDelay != nil {
+                    
+                    if let finishedDelay = session.environment.currentSecurityDelay {
+                        session.viewDelegate.setState(.delay(remaining: 0, total: finishedDelay))
                         session.environment.currentSecurityDelay = nil
-                        session.viewDelegate.setState(.default)
+                       // session.viewDelegate.setState(.default) //TODO: test
                     }
+                    
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {

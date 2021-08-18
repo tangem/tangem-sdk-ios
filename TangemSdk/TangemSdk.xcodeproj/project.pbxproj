@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5D0243BE26CACACD00B76F37 /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* SpinnerView.swift */; };
+		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
@@ -184,8 +184,7 @@
 		5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD127A124F3D1A0009ACA29 /* JsonTests.swift */; };
 		5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD536892476B3FA00F5DE88 /* Success.ahap */; };
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
-		5DDAF04626AAD94500673D44 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04526AAD94500673D44 /* ProgressView.swift */; };
-		5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04726AADF4D00673D44 /* DelayView.swift */; };
+		5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6762B26CD621500D8C909 /* UIScreen+.swift */; };
 		5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */; };
 		5DDAF04E26AB1BCB00673D44 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */; };
 		5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */; };
@@ -263,7 +262,7 @@
 
 /* Begin PBXFileReference section */
 		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		5D0243BD26CACACD00B76F37 /* SpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
+		5D0243BD26CACACD00B76F37 /* IndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorView.swift; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
@@ -444,8 +443,7 @@
 		5DD1D62D25557E7F007910EF /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
-		5DDAF04526AAD94500673D44 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
-		5DDAF04726AADF4D00673D44 /* DelayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayView.swift; sourceTree = "<group>"; };
+		5DD6762B26CD621500D8C909 /* UIScreen+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+.swift"; sourceTree = "<group>"; };
 		5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionViewDelegate.swift; sourceTree = "<group>"; };
 		5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvLogging.swift; sourceTree = "<group>"; };
@@ -625,16 +623,6 @@
 				5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */,
 			);
 			path = UserCodes;
-			sourceTree = "<group>";
-		};
-		5D2F3EE926CBE33B00779CAC /* Indicators */ = {
-			isa = PBXGroup;
-			children = (
-				5DDAF04526AAD94500673D44 /* ProgressView.swift */,
-				5DDAF04726AADF4D00673D44 /* DelayView.swift */,
-				5D0243BD26CACACD00B76F37 /* SpinnerView.swift */,
-			);
-			path = Indicators;
 			sourceTree = "<group>";
 		};
 		5D2FE06824DDA84F0086B5E8 /* Endpoints */ = {
@@ -910,12 +898,12 @@
 		5D908C5926A7467B00270FA3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5D2F3EE926CBE33B00779CAC /* Indicators */,
 				5D2F3EE826CBE31F00779CAC /* UserCodes */,
 				5D2F3EE726CBE30800779CAC /* Common */,
 				5D2F3EE626CBE2E700779CAC /* Scan */,
 				5D2F3EE126CBDAA000779CAC /* KeyboardAvoidance */,
 				5D91226926AAC75900AAD931 /* MainView.swift */,
+				5D0243BD26CACACD00B76F37 /* IndicatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1099,6 +1087,7 @@
 				B0D3C48A26088ECD0038A5C9 /* Array+Tlv.swift */,
 				5D9ED3782667C711003948C0 /* Array+CardWallet.swift */,
 				5DCAB0FB26C434E800ADEE7D /* Color+.swift */,
+				5DD6762B26CD621500D8C909 /* UIScreen+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1372,7 +1361,6 @@
 				5D58B4BF233E4C6B00F33764 /* InputStream+.swift in Sources */,
 				5D14091E26B9886800B811A1 /* HDWalletError.swift in Sources */,
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
-				5DDAF04626AAD94500673D44 /* ProgressView.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
 				5D379C27268FA47600C7F473 /* EncryptionMode.swift in Sources */,
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
@@ -1400,7 +1388,7 @@
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
-				5D0243BE26CACACD00B76F37 /* SpinnerView.swift in Sources */,
+				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
@@ -1513,7 +1501,6 @@
 				5D91226A26AAC75900AAD931 /* MainView.swift in Sources */,
 				5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */,
 				5D0F8D0426C6AD52002E84A4 /* ChangeUserCodeView.swift in Sources */,
-				5DDAF04826AADF4D00673D44 /* DelayView.swift in Sources */,
 				5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */,
 				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
 				5D379C23268CC2FC00C7F473 /* SkipEncoding.swift in Sources */,
@@ -1532,6 +1519,7 @@
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
+				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,

@@ -13,7 +13,6 @@ struct FloatingTextField: View {
     let title: String
     let text: Binding<String>
     var onCommit: () -> Void = {}
-    
     var isSecured: Bool = false
     
     @EnvironmentObject var style: TangemSdkStyle

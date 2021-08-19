@@ -21,11 +21,15 @@ public class TangemSdkStyle: ObservableObject {
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
     struct Colors {
-        public var tint: Color = Color.blue
+        public var tint: Color = .blue
         
-        public var disabledButton: Color = Color.gray
+        public var disabledButtonBackground: Color = Color(UIColor.systemGray6)
         
-        public var errorTint: Color = Color.red
+        public var buttonForeground: Color = .white
+        
+        public var disabledButtonForeground: Color = .gray
+        
+        public var errorTint: Color = .red
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
         

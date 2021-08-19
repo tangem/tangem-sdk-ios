@@ -85,9 +85,7 @@ struct MainView_Preview: PreviewProvider {
     }
 }
 
-@available(iOS 13.0, *)
 fileprivate extension SessionViewState {
-    
     var isFullScreen: Bool {
         switch self {
         case .requestCode, .requestCodeChange:
@@ -97,6 +95,7 @@ fileprivate extension SessionViewState {
         }
     }
     
+    @available(iOS 13.0, *)
     var indicatorState: IndicatorView.ViewState? {
         switch self {
         case .default:

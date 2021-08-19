@@ -33,4 +33,24 @@ class CommonTests: XCTestCase {
         XCTAssertNotNil(fromRepresentation)
         XCTAssertEqual(attestaion, fromRepresentation)
     }
+    
+    func testCardIdFormatter() {
+        var formatter = CardIdFormatter()
+        let cardIdString = "CB79000000018201"
+        XCTAssertEqual(formatter.string(from: cardIdString), "CB79 0000 0001 8201")
+        formatter.style = .lastLunh(4)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #1820")
+        formatter.style = .last(1)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #1")
+        formatter.style = .last(2)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #01")
+        formatter.style = .last(4)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #8201")
+        formatter.style = .last(6)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #01 8201")
+        formatter.style = .last(20)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #CB79 0000 0001 8201")
+        formatter.style = .last(16)
+        XCTAssertEqual(formatter.string(from: cardIdString), "Card #CB79 0000 0001 8201")
+    }
 }

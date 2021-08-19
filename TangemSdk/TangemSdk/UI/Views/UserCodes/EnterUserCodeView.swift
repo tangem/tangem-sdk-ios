@@ -40,9 +40,7 @@ struct EnterUserCodeView: View {
                 
                 Button("common_continue".localized, action: onDone)
                     .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
-                                               isLoading: isLoading,
-                                               bgColor: style.colors.tint,
-                                               bgDisabledColor: style.colors.disabledButton))
+                                               isLoading: isLoading))
             }
             .keyboardAdaptive(animated: .constant(true))
         }

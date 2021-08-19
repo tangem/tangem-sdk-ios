@@ -11,20 +11,6 @@ import UIKit
 
 extension UIColor {
     struct LightPalette {        
-        static var smallCircleColor: UIColor {
-            .init(red: 213.0/255.0,
-                  green: 218.0/255.0,
-                  blue: 221.0/255.0,
-                  alpha: 0.9)
-        }
-        
-        static var bigCircleColor: UIColor {
-            .init(red: 240.0/255.0,
-                  green: 241.0/255.0,
-                  blue: 242.0/255.0,
-                  alpha: 0.9)
-        }
-        
         static var indicatorBackground: UIColor {
             .init(red: 240.0/255.0,
                   green: 241.0/255.0,

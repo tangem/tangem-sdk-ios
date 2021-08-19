@@ -52,9 +52,7 @@ struct ChangeUserCodeView: View {
                 
                 Button("common_continue".localized, action: onDone)
                     .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
-                                               isLoading: false,
-                                               bgColor: style.colors.tint,
-                                               bgDisabledColor: style.colors.disabledButton))
+                                               isLoading: false))
             }
             .keyboardAdaptive(animated: .constant(true))
         }

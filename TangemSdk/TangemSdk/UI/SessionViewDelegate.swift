@@ -38,7 +38,7 @@ public protocol SessionViewDelegate: AnyObject {
     func setState(_ state: SessionViewState)
 }
 
-@available(iOS 13.0, *)
+
 public enum SessionViewState {
     case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)

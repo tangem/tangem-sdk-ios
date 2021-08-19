@@ -29,10 +29,6 @@ public extension TangemSdkStyle {
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
         
-        public var nfcSmallCircle: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.smallCircleColor)
-        
-        public var nfcBigCircle: Color = .adaptiveColor(dark: .gray, light: UIColor.LightPalette.bigCircleColor)
-        
         public var phoneBackground: Color = .adaptiveColor(dark: .black, light: .white)
         
         public var phoneStroke: Color = .adaptiveColor(dark: .white, light: .black)

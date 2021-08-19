@@ -42,8 +42,8 @@ public struct Config {
     
     public var savePin2InStaticField: Bool = true
     
-    /// Full CID will be displayed, if nil
-    public var cardIdDisplayedNumbersCount: Int? = nil
+    /// Card id display format. Full card id will be displayed by default
+    public var cardIdDisplayFormat: CardIdDisplayFormat = .full
     
     /// Logger configuration
     public var logСonfig: Log.Config = .debug
@@ -57,4 +57,10 @@ public struct Config {
     public var filter: CardFilter = .default
     
     public var style: TangemSdkStyle = .default
+}
+
+public enum CardIdDisplayFormat {
+    case full
+    case last(_ numbers: Int)
+    case lastLunh(_ numbers: Int) //n numbers from the end except last
 }

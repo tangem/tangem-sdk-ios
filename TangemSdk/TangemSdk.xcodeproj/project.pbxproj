@@ -25,6 +25,7 @@
 		5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1494802686488600C0D923 /* SecureEnclaveService.swift */; };
 		5D170AF126B42CA3000D4F36 /* ExtendedPublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */; };
 		5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */; };
+		5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C42326CE749F00A1A280 /* FloatingTextField.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
 		5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2426A0199100D2EDC1 /* WalletData.swift */; };
 		5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */; };
@@ -281,6 +282,7 @@
 		5D1494802686488600C0D923 /* SecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveService.swift; sourceTree = "<group>"; };
 		5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPublicKey.swift; sourceTree = "<group>"; };
 		5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletTests.swift; sourceTree = "<group>"; };
+		5D23C42326CE749F00A1A280 /* FloatingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingTextField.swift; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
 		5D270F2426A0199100D2EDC1 /* WalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletData.swift; sourceTree = "<group>"; };
 		5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataDeserializer.swift; sourceTree = "<group>"; };
@@ -609,6 +611,7 @@
 		5D2F3EE726CBE30800779CAC /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				5D23C42326CE749F00A1A280 /* FloatingTextField.swift */,
 				5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */,
 				5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */,
 			);
@@ -1391,6 +1394,7 @@
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
+				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
 				5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,

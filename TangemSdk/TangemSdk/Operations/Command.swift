@@ -148,10 +148,9 @@ extension Command {
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                      .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
                     
-                    if let finishedDelay = session.environment.currentSecurityDelay {
-                        session.viewDelegate.setState(.delay(remaining: 0, total: finishedDelay))
+                    if session.environment.currentSecurityDelay != nil {
                         session.environment.currentSecurityDelay = nil
-                       // session.viewDelegate.setState(.default) //TODO: test
+                        session.viewDelegate.setState(.default)
                     }
                     
                     completion(.success(responseApdu))

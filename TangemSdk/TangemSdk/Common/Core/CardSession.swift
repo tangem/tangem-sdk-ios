@@ -389,7 +389,7 @@ public class CardSession {
         
         
         let cardId = environment.card?.cardId ?? self.cardId
-        let formattedCardId = cardId.map { CardIdFormatter().formatted(cardId: $0, numbers: environment.config.cardIdDisplayedNumbersCount) }
+        let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
         viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in
             guard let self = self else { return }

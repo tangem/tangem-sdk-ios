@@ -39,12 +39,12 @@ struct NFCFieldView: View {
         GeometryReader { geo in
             ZStack {
                 Circle()
-                    .fill(style.colors.nfcBigCircle)
+                    .fill(style.colors.tint.opacity(0.2))
                     .scaleEffect(circleScale)
                     .animation(isAnimationOn ? bigCircleAnimation : nil)
                 
                 Circle()
-                    .fill(style.colors.nfcSmallCircle)
+                    .fill(style.colors.tint.opacity(0.2))
                     .frame(width: 0.6 * geo.size.width,
                            height: 0.6 * geo.size.width)
                     .scaleEffect(circleScale)

@@ -146,7 +146,7 @@ public enum TlvTag: Byte {
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId, .crExKey:
+        case .cardId, .batchId:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenName, .tokenContractAddress,
 			 .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:

@@ -124,6 +124,8 @@ extension CardSettingsMask {
     static let disableFiles = CardSettingsMask(rawValue: 0x04000000)
     static let permanentWallet = CardSettingsMask(rawValue: 0x0004)
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
+    static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
+    static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
 }
 
 //MARK:- CardSettingsMask OptionSetCodable conformance

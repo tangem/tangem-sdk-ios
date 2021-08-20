@@ -22,7 +22,10 @@ struct NdefRecord: Codable {
     func toBytes() -> Data? {
         return value.data(using: .utf8)
     }
-    
+}
+
+@available(iOS 13.0, *)
+extension NdefRecord {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         let typeString = try values.decode(String.self, forKey: .type)

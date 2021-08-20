@@ -10,6 +10,8 @@ import Foundation
 
 @available(iOS 13.0, *)
 struct CardDeserializer {
+    var allowNotPersonalized: Bool = false
+    
     func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
@@ -112,7 +114,7 @@ struct CardDeserializer {
     }
     
     private func assertStatus(_ status: Card.Status) throws {
-        if status == .notPersonalized {
+        if status == .notPersonalized && !allowNotPersonalized {
             throw TangemSdkError.notPersonalized
         }
         

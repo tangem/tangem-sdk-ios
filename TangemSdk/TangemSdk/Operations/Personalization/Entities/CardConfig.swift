@@ -19,10 +19,10 @@ public struct CardConfig: Decodable {
     let startNumber: Int64
     let count: Int
     let numberFormat: String
-    let pin: Data
-    let pin2: Data
-    let pin3: Data?
-    let hexCrExKey: String?
+    let pin: String
+    let pin2: String
+    let pin3: String?
+    let hexCrExKey: Data?
     let cvc: String
     let pauseBeforePin2: Int
     let smartSecurityDelay: Bool
@@ -51,6 +51,8 @@ public struct CardConfig: Decodable {
     let disableIssuerData: Bool?
     let disableUserData: Bool?
     let disableFiles: Bool?
+    let allowHDWallets: Bool?
+    let allowBackup: Bool?
     let createWallet: Int
     let cardData: CardConfigData
     let ndefRecords: [NdefRecord]
@@ -65,7 +67,7 @@ public struct CardConfig: Decodable {
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
-             disablePrecomputedNDEF
+             disablePrecomputedNDEF, allowHDWallets, allowBackup
         case pin = "PIN"
         case pin2 = "PIN2"
         case pin3 = "PIN3"
@@ -161,6 +163,13 @@ public struct CardConfig: Decodable {
         if disableFiles ?? false {
             builder.add(.disableFiles)
         }
+        if allowHDWallets ?? false {
+            builder.add(.allowHDWallets)
+        }
+        if allowBackup ?? false {
+            builder.add(.allowBackup)
+        }
+        
         return builder.build()
     }
     
@@ -237,16 +246,10 @@ extension CardConfig {
         let tokenContractAddress: String?
         let tokenDecimal: Int?
         
-        func createPersonalizationCardData(issuer: Issuer, manufacturer: Manufacturer, cardId: String) throws -> CardData {
-            guard let manufacturerSignature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
-                throw TangemSdkError.serializeCommandError
-            }
-            
+        func createPersonalizationCardData() -> CardData {
             return CardData(batchId: batch,
                             manufactureDateTime: date ?? Date(),
-                            issuerName: issuer.name,
                             blockchainName: blockchain,
-                            manufacturerSignature: manufacturerSignature,
                             productMask: createProductMask(),
                             tokenSymbol: tokenSymbol,
                             tokenContractAddress: tokenContractAddress,

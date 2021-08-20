@@ -62,7 +62,7 @@ public class PersonalizeCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
         let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
-        return try CardDeserializer().deserialize(decoder: decoder, cardDataDecoder: cardDataDecoder)
+        return try CardDeserializer(allowNotPersonalized: true).deserialize(decoder: decoder, cardDataDecoder: cardDataDecoder)
     }
     
     private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
@@ -82,57 +82,66 @@ public class PersonalizeCommand: Command {
             throw TangemSdkError.serializeCommandError
         }
         
-        let cardData = try config.cardData.createPersonalizationCardData(issuer: self.issuer,
-                                                                         manufacturer: self.manufacturer,
-                                                                         cardId: cardId)
+        let cardData = config.cardData.createPersonalizationCardData()
         let createWallet: Bool = config.createWallet != 0
         
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: cardId)
             .append(.curveId, value: config.curveID)
-            .append(.maxSignatures, value: config.maxSignatures)
+            .append(.maxSignatures, value: config.maxSignatures ?? Int(UInt32.max))
             .append(.signingMethod, value: config.signingMethod)
             .append(.settingsMask, value: config.createSettingsMask())
             .append(.pauseBeforePin2, value: config.pauseBeforePin2 / 10)
             .append(.cvc, value: config.cvc.data(using: .utf8))
             .append(.createWalletAtPersonalize, value: createWallet)
-            .append(.newPin, value: config.pin)
-            .append(.newPin2, value: config.pin2)
-            .append(.newPin3, value: config.pin3)
-            .append(.crExKey, value: config.hexCrExKey)
+            .append(.ndefData, value: serializeNdef(config))
+            .append(.newPin, value: config.pin.sha256())
+            .append(.newPin2, value: config.pin2.sha256())
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
-            .append(.cardData, value: try serializeCardData(environment: environment, cardData: cardData))
-			
-        if let walletsCount = config.walletsCount {
-            try tlvBuilder.append(.walletsCount, value: walletsCount)
+            .append(.cardData, value: try serializeCardData(environment: environment, cardId: cardId, cardData: cardData))
+        
+        if let pin3 = config.pin3?.sha256() {
+            try tlvBuilder.append(.newPin3, value: pin3)
         }
         
-        if !config.ndefRecords.isEmpty {
-            try tlvBuilder.append(.ndefData, value: serializeNdef(config))
+        if let hexCrExKey = config.hexCrExKey {
+            try tlvBuilder.append(.crExKey, value: hexCrExKey)
+        }
+        
+        if let walletsCount = config.walletsCount {
+            try tlvBuilder.append(.walletsCount, value: walletsCount)
         }
         
         if let acquirer = acquirer {
             try tlvBuilder.append(.acquirerPublicKey, value: acquirer.keyPair.publicKey)
         }
-
+        
         return tlvBuilder.serialize()
     }
     
     private func serializeNdef(_ config: CardConfig) throws -> Data {
+        guard !config.ndefRecords.isEmpty else {
+            return Data()
+        }
+        
         return try NdefEncoder(ndefRecords: config.ndefRecords,
                                useDynamicNdef: config.useDynamicNDEF ?? false)
             .encode()
     }
     
-    private func serializeCardData(environment: SessionEnvironment, cardData: CardData) throws -> Data {
+    private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
+        guard let signature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
+            throw TangemSdkError.cryptoUtilsError
+        }
+        
         let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)
             .append(.productMask, value: cardData.productMask)
             .append(.manufactureDateTime, value: cardData.manufactureDateTime)
             .append(.issuerName, value: issuer.id)
             .append(.blockchainName, value: cardData.blockchainName)
-            .append(.cardIDManufacturerSignature, value: cardData.manufacturerSignature)
+            .append(.cardIDManufacturerSignature, value: signature)
         
         if cardData.tokenSymbol != nil {
             try tlvBuilder

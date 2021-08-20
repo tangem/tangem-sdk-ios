@@ -529,6 +529,19 @@ extension AppModel {
                                        completion: handleCompletion)
     }
     
+    func personalize() {
+        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonMaster.data(using: .utf8)!)
+        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+        let acquirer = try! JSONDecoder.tangemSdkDecoder.decode(Acquirer.self, from: AppModel.acquirerJson.data(using: .utf8)!)
+        
+        tangemSdk.personalize(config: config,
+                              issuer: issuer,
+                              manufacturer: manufacturer,
+                              acquirer: acquirer,
+                              initialMessage: nil,
+                              completion: handleCompletion)
+    }
 }
 
 
@@ -563,6 +576,8 @@ extension AppModel {
         case readUserData
         case writeUserData
         case writeUserProtectedData
+        
+        case personalize
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -594,6 +609,7 @@ extension AppModel {
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
         case .derivePublicKey: derivePublicKey()
+        case .personalize: personalize()
         }
     }
 }

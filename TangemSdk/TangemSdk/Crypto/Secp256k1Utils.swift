@@ -235,6 +235,24 @@ public final class Secp256k1Utils {
         return serializePublicKey(publicKey: &pubkey, compressed: false)
     }
     
+    public static func normalize(secp256k1Signature: Data) -> Data? {
+        guard let ctx = context else { return nil }
+        
+        var sig = secp256k1_ecdsa_signature()
+        var normalized = secp256k1_ecdsa_signature()
+        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, Array(secp256k1Signature)) == 1 else { return nil }
+        
+        let result = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
+      
+        if result == 0 { //already normalized
+            return secp256k1Signature
+        }
+        
+        var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
+        secp256k1_ecdsa_signature_serialize_compact(ctx, &serialized, &normalized)
+        return Data(serialized)
+    }
+    
     public static func normalizeVerify(secp256k1Signature: Data, hash: Data, publicKey: Data) -> Data? {
         guard let ctx = context else { return nil }
         

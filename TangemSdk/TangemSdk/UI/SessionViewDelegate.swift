@@ -38,7 +38,7 @@ public protocol SessionViewDelegate: AnyObject {
     func setState(_ state: SessionViewState)
 }
 
-
+/// Current state of the sdk's UI
 public enum SessionViewState {
     case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)

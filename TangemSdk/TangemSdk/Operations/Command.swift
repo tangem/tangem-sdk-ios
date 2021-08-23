@@ -54,7 +54,7 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
 @available(iOS 13.0, *)
 extension Command {
     var requiresPasscode: Bool { return false }
-
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transceive(in: session, completion: completion)
     }
@@ -66,7 +66,7 @@ extension Command {
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         return error
     }
-
+    
     func transceive(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         Log.sendCommand(self)
         
@@ -83,9 +83,9 @@ extension Command {
         }
         
         if session.environment.passcode.value == nil && requiresPasscode {
-           requestPin(.passcode, session, completion: completion)
+            requestPin(.passcode, session, completion: completion)
         } else {
-           transceiveInternal(in: session, completion: completion)
+            transceiveInternal(in: session, completion: completion)
         }
     }
     
@@ -147,13 +147,26 @@ extension Command {
                 switch responseApdu.statusWord {
                 case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                      .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
-					session.viewDelegate.showUndefinedSpinner()
+                    
+                    if session.environment.currentSecurityDelay != nil {
+                        session.environment.currentSecurityDelay = nil
+                        session.viewDelegate.setState(.default)
+                    }
+                    
                     completion(.success(responseApdu))
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
-                        session.viewDelegate.showSecurityDelay(remainingMilliseconds: securityDelayResponse.remainingMilliseconds, message: nil, hint: nil)
+                        if session.environment.currentSecurityDelay == nil {
+                            session.environment.currentSecurityDelay = securityDelayResponse.remainingSeconds + 1
+                        }
+                        
+                        let totalSd = session.environment.currentSecurityDelay!
+                        if totalSd > 0 {
+                            session.viewDelegate.setState(.delay(remaining: securityDelayResponse.remainingSeconds, total: totalSd))
+                        }
+                        
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
-                            session.restartPolling()
+                            session.restartPolling(silent: true)
                         }
                         self.transceive(apdu: apdu, in: session, completion: completion)                        
                     }
@@ -177,7 +190,6 @@ extension Command {
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }
             case .failure(let error):
-				session.viewDelegate.hideUI(nil)
                 completion(.failure(error))
             }
         }
@@ -185,14 +197,17 @@ extension Command {
     
     /// Helper method to parse security delay information received from a card.
     /// - Returns: Remaining security delay in milliseconds.
-    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingMilliseconds: Int, saveToFlash: Bool)? {
+    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Float,
+                                                                                                                     saveToFlash: Bool)? {
         guard let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey),
-            let remainingMilliseconds = tlv.value(for: .pause)?.toInt() else {
-                return nil
+              let remainingCs = tlv.value(for: .pause)?.toInt() else {
+            return nil
         }
         
+        let seconds: Float = Float(remainingCs) / 100.0
+        
         let saveToFlash = tlv.contains(tag: .flash)
-        return (remainingMilliseconds, saveToFlash)
+        return (seconds, saveToFlash)
     }
     
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {

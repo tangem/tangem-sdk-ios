@@ -216,12 +216,12 @@ class SignCommand: Command {
     private func processSignatures(with environment: SessionEnvironment) throws -> [Data] {
         if environment.card?.wallets[self.walletPublicKey]?.curve == .secp256k1,
            environment.config.canonizeSecp256k1Signatures {
-            let normalizedDignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
-            if normalizedDignatures.count != signatures.count {
+            let normalizedSignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
+            if normalizedSignatures.count != signatures.count {
                 throw TangemSdkError.cryptoUtilsError
             }
             
-            return normalizedDignatures
+            return normalizedSignatures
         }
         
         return self.signatures

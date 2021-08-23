@@ -159,3 +159,73 @@ class PreflightReadHandler: JSONRPCHandler {
         return command.eraseToAnyRunnable()
     }
 }
+
+@available(iOS 13.0, *)
+class ReadFilesHandler: JSONRPCHandler {
+    var method: String { "READ_FILES" }
+    var requiresCardId: Bool { false }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let readPrivateFiles: Bool? = try parameters.value(for: "readPrivateFiles")
+        let indices: [Int]? = try parameters.value(for: "indices")
+        
+        let command = ReadFilesTask(readPrivateFiles: readPrivateFiles ?? false,
+                                    indices: indices)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class WriteFilesHandler: JSONRPCHandler {
+    var method: String { "WRITE_FILES" }
+    var requiresCardId: Bool { false }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        var files: [DataToWrite] = []
+        
+        guard let filesArray = parameters["files"] as? [Any] else {
+            throw JSONRPCError(.parseError, data: "files")
+        }
+        
+        let overwriteAllFiles: Bool? = try parameters.value(for: "overwriteAllFiles")
+        
+        for file in filesArray {
+            let jsonData = try JSONSerialization.data(withJSONObject: file)
+            
+            if let decoded = try? JSONDecoder.tangemSdkDecoder.decode(FileDataProtectedBySignature.self, from: jsonData) {
+                files.append(decoded)
+            } else if let decoded = try? JSONDecoder.tangemSdkDecoder.decode(FileDataProtectedByPasscode.self, from: jsonData) {
+                files.append(decoded)
+            } else {
+                throw JSONRPCError(.parseError, data: "files")
+            }
+        }
+
+        let command = WriteFilesTask(files: files, overwriteAllFiles: overwriteAllFiles ?? false)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class DeleteFilesHandler: JSONRPCHandler {
+    var method: String { "DELETE_FILES" }
+    var requiresCardId: Bool { false }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let indices: [Int]? = try parameters.value(for: "indicesToDelete")
+        let command = DeleteFilesTask(filesToDelete: indices)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class ChangeFileSettingsHandler: JSONRPCHandler {
+    var method: String { "CHANGE_FILE_SETTINGS" }
+    var requiresCardId: Bool { false }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let changes: [FileSettingsChange] = try parameters.value(for: "changes")
+        let command = ChangeFilesSettingsTask(changes: changes)
+        return command.eraseToAnyRunnable()
+    }
+}

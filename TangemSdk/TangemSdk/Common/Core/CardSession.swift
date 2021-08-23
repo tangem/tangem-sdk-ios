@@ -35,8 +35,7 @@ public class CardSession {
     private var nfcReaderSubscriptions: [AnyCancellable] = []
     
     private var preflightReadMode: PreflightReadMode = .fullCardRead
-    
-    private var currentTag: NFCTagType? = nil
+    private var currentTag: NFCTagType = .none
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -138,42 +137,40 @@ public class CardSession {
         Log.session("Start card session with delegate")
         state = .active
         
-        reader.tag //Subscription for handle tag lost/connected events and invoke viewDelegate
+        
+        reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
-            .debounce(for: 0.3, scheduler: RunLoop.main)
             .removeDuplicates()
-            .filter {[unowned self] _ in !self.reader.isPaused }
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: {[unowned self] tag in
-                    if tag != nil {
-                        self.viewDelegate.tagConnected()
-                    } else {
-                        self.viewDelegate.tagLost()
-                    }
-                  })
+            .sink(receiveValue: { [unowned self] event in
+                switch event {
+                case .none:
+                    break
+                case .sessionStarted:
+                    self.viewDelegate.sessionStarted()
+                    self.viewDelegate.setState(.scan)
+                case .sessionStopped:
+                    self.viewDelegate.sessionStopped(completion: nil)
+                case .tagConnected:
+                    self.viewDelegate.tagConnected()
+                    self.viewDelegate.setState(.default)
+                case .tagLost:
+                    self.viewDelegate.tagLost()
+                    self.viewDelegate.setState(.scan)
+                }
+            })
             .store(in: &nfcReaderSubscriptions)
         
-        reader.tag //Subscription for handle tag lost/connected events
+        reader.tag //Subscription for handle tag lost events
             .dropFirst()
-            .filter { $0 == nil }
+            .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
                     self.environment.encryptionKey = nil
                   })
             .store(in: &nfcReaderSubscriptions)
         
-        reader.isSessionReady //Subscription for handle session events and invoke viewDelegate
-            .dropFirst()
-            .filter {[unowned self] _ in !self.reader.isPaused }
-            .sink(receiveValue: { [unowned self] isReady in
-                isReady ?
-                    self.viewDelegate.sessionStarted() :
-                    self.viewDelegate.sessionStopped(completion: nil)
-            })
-            .store(in: &nfcReaderSubscriptions)
-        
         reader.tag //Subscription for session initialization and handling any error before session is activated
-            .compactMap{ $0 }
+            .filter { $0 != .none }
             .first()
             .sink(receiveCompletion: { [unowned self] readerCompletion in
                     if case let .failure(error) = readerCompletion {
@@ -184,7 +181,6 @@ public class CardSession {
                         if case .tag = tag, self.preflightReadMode != .none {
                             self.preflightCheck(onSessionStarted)
                         } else {
-                            self.viewDelegate.sessionInitialized()
                             onSessionStarted(self, nil)
                         }
                     })
@@ -223,9 +219,10 @@ public class CardSession {
     
     // MARK: - Restart polling
     /// Restarts the polling sequence so the reader session can discover new tags.
-    public func restartPolling() {
+    /// - Parameter silent: If true, view delegate's tag lost/connected events will not be called
+    public func restartPolling(silent: Bool = false) {
         Log.session("Restart polling")
-        reader.restartPolling()
+        reader.restartPolling(silent: silent)
     }
     
     // MARK: - APDU sending
@@ -248,9 +245,9 @@ public class CardSession {
         }
         
         reader.tag
-            .compactMap{ $0 }
+            .filter { $0 != .none }
             .filter {[unowned self] tag in
-                guard let currentTag = currentTag else { return true } //Skip filtration because we have nothing to compare with
+                guard currentTag != .none else { return true } //Skip filtration because we have nothing to compare with
                 
                 if tag != currentTag { //handle wrong tag connection during any operation
                     self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber.localizedDescription)
@@ -286,7 +283,7 @@ public class CardSession {
     
     /// The command has been completed. We don't need this tag anymore
     func releaseTag() {
-        currentTag = nil
+        currentTag = .none
     }
     
     private func sessionDidStop(completion: (() -> Void)?) {
@@ -313,14 +310,13 @@ public class CardSession {
             
             switch readResult {
             case .success:
-                self.viewDelegate.sessionInitialized()
                 onSessionStarted(self, nil)
             case .failure(let error):
                 switch error {
                 case .wrongCardType, .wrongCardNumber:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        guard self.reader.isSessionReady.value else {
+                        guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)
                             self.stop(completion: nil)
                             return
@@ -390,9 +386,18 @@ public class CardSession {
             }
         }
         Log.session("Request user code of type: \(type)")
-        viewDelegate.requestUserCode(type: type, cardId: environment.card?.cardId ?? cardId) {[weak self] code in
+        
+        
+        let cardId = environment.card?.cardId ?? self.cardId
+        let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
+        
+        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in
             guard let self = self else { return }
             
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { //prevent animation glitches
+                self.viewDelegate.setState(.default)
+            }
+
             if let code = code {
                 switch type {
                 case .accessCode:
@@ -404,7 +409,7 @@ public class CardSession {
             } else {
                 completion(.failure(.userCancelled))
             }
-        }
+        }))
     }
 }
 //MARK: - JSON RPC

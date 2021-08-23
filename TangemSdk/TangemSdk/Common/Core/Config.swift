@@ -63,7 +63,10 @@ public struct Config {
 }
 
 public enum CardIdDisplayFormat {
+    ///Full cardId splitted by 4 numbers
     case full
+    ///n numbers from the end
     case last(_ numbers: Int)
-    case lastLunh(_ numbers: Int) //n numbers from the end except last
+    ///n numbers from the end except last
+    case lastLunh(_ numbers: Int)
 }

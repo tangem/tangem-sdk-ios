@@ -57,10 +57,16 @@ public struct Config {
     public var filter: CardFilter = .default
     
     public var style: TangemSdkStyle = .default
+    
+    /// Convert all secp256k1 signatures, produced by the card, to a lower-S form. True by default
+    public var canonizeSecp256k1Signatures: Bool = true
 }
 
 public enum CardIdDisplayFormat {
+    ///Full cardId splitted by 4 numbers
     case full
+    ///n numbers from the end
     case last(_ numbers: Int)
-    case lastLunh(_ numbers: Int) //n numbers from the end except last
+    ///n numbers from the end except last
+    case lastLunh(_ numbers: Int)
 }

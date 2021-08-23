@@ -58,7 +58,7 @@ public struct Config {
     
     public var style: TangemSdkStyle = .default
     
-    /// Convert all secp256k1 signatures, produced by the card,  to a lowers-S form. True by default
+    /// Convert all secp256k1 signatures, produced by the card, to a lower-S form. True by default
     public var canonizeSecp256k1Signatures: Bool = true
 }
 

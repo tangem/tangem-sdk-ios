@@ -11,15 +11,40 @@ import Foundation
 /// Formatting CID in more readable manner
 @available(iOS 13.0, *)
 public struct CardIdFormatter {
-    public init() {}
+    public var style: CardIdDisplayFormat
     
-    public func crop(cid: String, with length: Int? = nil) -> String {
-        length == nil ? cid : String(cid.dropLast().suffix(length!))
+    public init(style: CardIdDisplayFormat = .full) {
+        self.style = style
     }
     
-    public func formatted(cid: String, numbers: Int? = nil) -> String {
-        let croppedCid = crop(cid: cid, with: numbers)
+    public func string(from cardId: String) -> String {
+        switch style {
+        case .full:
+            return split(cardId)
+        case .last(let numbers):
+            let cropped = String(cardId.suffix(numbers))
+            let splitted = split(cropped)
+            return format(splitted)
+        case .lastLunh(let numbers):
+            let cropped = String(cardId.dropLast().suffix(numbers))
+            let splitted = split(cropped)
+            return format(splitted)
+        }
+    }
+    
+    private func format(_ string: String) -> String {
         let format = "cid_format".localized
-        return String(format: format, croppedCid)
+        return String(format: format, string)
+    }
+    
+    private func split(_ cardId: String) -> String {
+        let chunks: [String] = stride(from: cardId.count, to: 0, by: -4).map {
+            let endIndex = cardId.index(cardId.startIndex, offsetBy: $0)
+            let offset = Swift.max($0 - 4, 0)
+            let startIndex = cardId.index(cardId.startIndex, offsetBy: offset)
+            return String(cardId[startIndex ..< endIndex])
+        }
+        
+        return chunks.reversed().joined(separator: " ")
     }
 }

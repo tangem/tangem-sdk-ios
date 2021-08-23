@@ -175,7 +175,6 @@ public final class AttestationTask: CardSessionRunnable {
     private func waitForOnlineAndComplete( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         if !shouldKeepSessionOpened {
             session.pause() //Nothing to do with nfc anymore
-            session.viewDelegate.showUndefinedSpinner()
         }
         
         onlinePublisher

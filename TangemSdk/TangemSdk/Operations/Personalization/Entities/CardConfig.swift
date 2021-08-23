@@ -65,7 +65,7 @@ public struct CardConfig: Decodable {
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
-             disablePrecomputedNDEF, restrictOverwriteIssuerExtraData
+             disablePrecomputedNDEF
         case pin = "PIN"
         case pin2 = "PIN2"
         case pin3 = "PIN3"
@@ -82,6 +82,7 @@ public struct CardConfig: Decodable {
         case prohibitDefaultPIN1 = "forbidDefaultPIN"
         case skipCheckPIN2CVCIfValidatedByIssuer = "skipCheckPIN2andCVCIfValidatedByIssuer"
         case ndefRecords = "NDEF"
+        case restrictOverwriteIssuerExtraData = "restrictOverwriteIssuerDataEx"
     }
     
     func createSettingsMask() -> CardSettingsMask {

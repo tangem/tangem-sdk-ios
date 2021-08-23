@@ -11,7 +11,6 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
-    @State private var isOpenHealthTest = false
     
     var body: some View {
         GeometryReader { geo in
@@ -28,13 +27,13 @@ struct ContentView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
-                
+
                 VStack(spacing: 4) {
                     HStack {
                         Button("Clear", action: model.clear)
                         Button("Copy", action: model.copy)
                     }
-                    
+
                     additionalView
                         .padding(.top, 4)
 
@@ -43,7 +42,7 @@ struct ContentView: View {
                             Text(AppModel.Method.allCases[index].rawValue)
                                 .tag(AppModel.Method.allCases[index])
                         }
-                    }
+                    }.labelsHidden()
 
                     Button("Start") { model.start() }
                         .buttonStyle(ExampleButton(isLoading: model.isScanning))

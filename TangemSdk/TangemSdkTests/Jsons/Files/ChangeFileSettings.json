@@ -1,0 +1,22 @@
+{
+    "request" : {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "CHANGE_FILE_SETTINGS",
+        "params": {
+            "changes": [
+            {
+                "fileIndex": 1,
+                "settings": 0
+            }, {
+                "fileIndex": 2,
+                "settings": 1
+            }]
+        }
+    },
+    "response" : {
+        "jsonrpc" : "2.0",
+        "result" : {},
+        "id" : 1
+    }
+}

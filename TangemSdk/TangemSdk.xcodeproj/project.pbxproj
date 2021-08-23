@@ -54,6 +54,11 @@
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
+		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
+		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
+		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
+		5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127C26D3D351006E173C /* WriteFiles.json */; };
+		5D4B128026D3F176006E173C /* ReadFilesByIndex.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetAccessCode.json */; };
 		5D54408C2682269400F7D05B /* SetPasscode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408B2682269400F7D05B /* SetPasscode.json */; };
@@ -312,6 +317,11 @@
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
+		5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReadFilesByIndex.json; sourceTree = "<group>"; };
+		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
+		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
+		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
+		5D4B127C26D3D351006E173C /* WriteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WriteFiles.json; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D5440892682260000F7D05B /* SetAccessCode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetAccessCode.json; sourceTree = "<group>"; };
 		5D54408B2682269400F7D05B /* SetPasscode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetPasscode.json; sourceTree = "<group>"; };
@@ -650,6 +660,7 @@
 		5D38D0672679040C0052F67C /* Jsons */ = {
 			isa = PBXGroup;
 			children = (
+				5D4B127426D3CCE5006E173C /* Files */,
 				5D3217442684B193000C3AAF /* Personalize */,
 				5D46F15E26811D4000DC6447 /* SignHash.json */,
 				5D3B9F0226BD678500532CC7 /* SignHashes.json */,
@@ -695,6 +706,18 @@
 				5D46F157268105BF00DC6447 /* SignHashesCommand.swift */,
 			);
 			path = Sign;
+			sourceTree = "<group>";
+		};
+		5D4B127426D3CCE5006E173C /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */,
+				5D4B127626D3CEE7006E173C /* ReadFiles.json */,
+				5D4B127826D3CF4F006E173C /* DeleteFiles.json */,
+				5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */,
+				5D4B127C26D3D351006E173C /* WriteFiles.json */,
+			);
+			path = Files;
 			sourceTree = "<group>";
 		};
 		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
@@ -1348,12 +1371,17 @@
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
+				5D4B128026D3F176006E173C /* ReadFilesByIndex.json in Resources */,
+				5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */,
+				5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */,
 				5D544094268243F700F7D05B /* Card.json in Resources */,
 				5D5440982682497100F7D05B /* v4.json in Resources */,
+				5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */,
 				5D3B9F0326BD678500532CC7 /* SignHashes.json in Resources */,
 				5D544096268244DB00F7D05B /* PreflightRead.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
+				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

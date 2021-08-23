@@ -14,7 +14,7 @@ public enum FileSettings: Int, Codable, JSONStringConvertible {
 }
 
 /// Describes the new settings for the file by the specified index
-public struct FileSettingsChange {
+public struct FileSettingsChange: Decodable {
     /// Index of file that will be updated
     let fileIndex: Int
     /// New settings for file

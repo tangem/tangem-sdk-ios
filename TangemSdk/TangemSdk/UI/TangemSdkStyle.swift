@@ -13,6 +13,7 @@ import SwiftUI
 public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
+    public var indicatorWidth: Float = 12
     
     public static var `default`: TangemSdkStyle = .init()
 }
@@ -20,17 +21,17 @@ public class TangemSdkStyle: ObservableObject {
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
     struct Colors {
-        public var tint: Color = Color.blue
+        public var tint: Color = .blue
         
-        public var disabledButton: Color = Color.gray
+        public var disabledButtonBackground: Color = Color(UIColor.systemGray6)
         
-        public var errorTint: Color = Color.red
+        public var buttonForeground: Color = .white
+        
+        public var disabledButtonForeground: Color = .gray
+        
+        public var errorTint: Color = .red
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
-        
-        public var nfcSmallCircle: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.smallCircleColor)
-        
-        public var nfcBigCircle: Color = .adaptiveColor(dark: .gray, light: UIColor.LightPalette.bigCircleColor)
         
         public var phoneBackground: Color = .adaptiveColor(dark: .black, light: .white)
         

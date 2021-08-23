@@ -135,6 +135,14 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "SignHash", result: result)
     }
     
+    func testFiles() {
+        testMethodRequest(name: "ReadFiles")
+        testMethodRequest(name: "ReadFilesByIndex")
+        testMethodRequest(name: "DeleteFiles")
+        testMethodRequest(name: "WriteFiles")
+        testMethodRequest(name: "ChangeFileSettings")
+    }
+    
     func testMethodNotFound() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_task\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"
         let request = try? JSONRPCRequest(jsonString: json)
@@ -193,6 +201,23 @@ class JSONRPCTests: XCTestCase {
         }
       
         XCTAssertEqual(resultData.utf8String!.lowercased(), resultJsonData.utf8String!.lowercased())
+    }
+    
+    private func testMethodRequest(name: String) {
+        guard let testData = getTestData(for: name) else {
+            XCTAssert(false, "Failed to create test data \(name)")
+            return
+        }
+        
+        //test request
+        do {
+           let request = try JSONRPCRequest(jsonString: testData.request)
+            //test convert request
+            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
+        } catch {
+            XCTAssert(false, "Failed to create request for \(name)")
+            return
+        }
     }
     
     private func getTestData(for method: String) -> (request: String, response: Data)? {

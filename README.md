@@ -28,7 +28,7 @@ The Tangem card is a self-custodial hardware wallet for blockchain assets. The m
 ## Getting Started
 
 ### Requirements
-iOS 13+ (CoreNFC is required), Xcode 12+
+iOS 13+ (CoreNFC is required), Xcode 12.5.1
 
 SDK can be imported to iOS 11, but it will work only since iOS 13.
 

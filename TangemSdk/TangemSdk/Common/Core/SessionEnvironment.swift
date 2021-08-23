@@ -26,6 +26,8 @@ public struct SessionEnvironment {
     
     var encryptionKey: Data? = nil
     
+    var currentSecurityDelay: Float? = nil
+    
     var cvc: Data? = nil //todo: remove
     
     var accessCode: UserCode = .init(.accessCode)

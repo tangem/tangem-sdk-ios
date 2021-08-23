@@ -42,8 +42,8 @@ public struct Config {
     
     public var savePin2InStaticField: Bool = true
     
-    /// Full CID will be displayed, if nil
-    public var cardIdDisplayedNumbersCount: Int? = nil
+    /// Card id display format. Full card id will be displayed by default
+    public var cardIdDisplayFormat: CardIdDisplayFormat = .full
     
     /// Logger configuration
     public var logСonfig: Log.Config = .debug
@@ -60,4 +60,10 @@ public struct Config {
     
     /// Convert all secp256k1 signatures, produced by the card,  to a lowers-S form. True by default
     public var canonizeSecp256k1Signatures: Bool = true
+}
+
+public enum CardIdDisplayFormat {
+    case full
+    case last(_ numbers: Int)
+    case lastLunh(_ numbers: Int) //n numbers from the end except last
 }

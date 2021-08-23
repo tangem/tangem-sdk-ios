@@ -32,27 +32,15 @@ struct ChangeUserCodeView: View {
                                onCancel: onCancel)
                 .padding(.top, 8)
             
-            TextField(placeholder,
-                      text: $code.onUpdate(scheduleValidation),
-                      onCommit: onDone)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .font(.system(size: 17))
+            FloatingTextField(title: placeholder,
+                              text: $code.onUpdate(scheduleValidation),
+                              onCommit: onDone)
                 .padding(.top, 16)
             
-            Color(UIColor.opaqueSeparator)
-                .frame(height: 1)
-            
-            TextField(confirmationPlaceholder,
-                      text: $confirmation.onUpdate(scheduleValidation),
-                      onCommit: onDone)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .font(.system(size: 17))
+            FloatingTextField(title: confirmationPlaceholder,
+                              text: $confirmation.onUpdate(scheduleValidation),
+                              onCommit: onDone)
                 .padding(.top, 8)
-            
-            Color(UIColor.opaqueSeparator)
-                .frame(height: 1)
             
             Text(error)
                 .font(.system(size: 13))
@@ -64,9 +52,7 @@ struct ChangeUserCodeView: View {
                 
                 Button("common_continue".localized, action: onDone)
                     .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
-                                               isLoading: false,
-                                               bgColor: style.colors.tint,
-                                               bgDisabledColor: style.colors.disabledButton))
+                                               isLoading: false))
             }
             .keyboardAdaptive(animated: .constant(true))
         }

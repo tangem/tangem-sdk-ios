@@ -31,14 +31,8 @@ struct EnterUserCodeView: View {
                                onCancel: onCancel)
                 .padding(.top, 8)
             
-            SecureField(placeholder, text: $code, onCommit: onDone)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .font(.system(size: 17))
+            FloatingTextField(title: placeholder, text: $code, onCommit: onDone, isSecured: true)
                 .padding(.top, 16)
-            
-            Color(UIColor.opaqueSeparator)
-                .frame(height: 1)
             
             VStack(spacing: 0) {
                 
@@ -46,9 +40,7 @@ struct EnterUserCodeView: View {
                 
                 Button("common_continue".localized, action: onDone)
                     .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
-                                               isLoading: isLoading,
-                                               bgColor: style.colors.tint,
-                                               bgDisabledColor: style.colors.disabledButton))
+                                               isLoading: isLoading))
             }
             .keyboardAdaptive(animated: .constant(true))
         }

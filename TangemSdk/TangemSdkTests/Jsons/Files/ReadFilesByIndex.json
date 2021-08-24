@@ -5,12 +5,26 @@
         "method": "READ_FILES",
         "params": {
             "readPrivateFiles": true,
-            "indices": [1,2,3,5]
+            "indices": [1,2]
         }
     },
     "response" : {
         "jsonrpc" : "2.0",
-        "result" : {},
+        "result" : {
+            "files": [
+                {
+                    "fileIndex": 1,
+                    "fileData": "00AABBCCDD",
+                    "fileSettings": 0,
+                    "fileValidationStatus": "notValidated"
+                },
+                {
+                    "fileIndex": 2,
+                    "fileData": "00AABBCCDD",
+                    "fileSettings": 1,
+                    "fileValidationStatus": "notValidated"
+                }
+            ]},
         "id" : 1
     }
 }

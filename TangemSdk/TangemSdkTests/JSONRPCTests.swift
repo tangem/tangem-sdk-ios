@@ -141,7 +141,7 @@ class JSONRPCTests: XCTestCase {
                                                                             File(fileIndex: 2, fileSettings: .public, fileData: Data(hexString: "00AABBCCDD"))]))
         testMethod(name: "DeleteFiles", result: DeleteFilesTask.Response(cardId: "c000111122223333"))
         testMethod(name: "WriteFiles", result: WriteFilesTask.Response(cardId: "c000111122223333", filesIndices: [0,1]))
-        testMethod(name: "ChangeFileSettings", result: ChangeFilesSettingsTask.Response(cardId: "c000111122223333"))
+        testMethod(name: "ChangeFileSettings", result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
     }
     
     func testMethodNotFound() {

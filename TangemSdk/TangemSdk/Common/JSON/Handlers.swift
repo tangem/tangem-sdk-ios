@@ -225,7 +225,7 @@ class ChangeFileSettingsHandler: JSONRPCHandler {
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let changes: [FileSettingsChange] = try parameters.value(for: "changes")
-        let command = ChangeFilesSettingsTask(changes: changes)
+        let command = ChangeFileSettingsTask(changes: changes)
         return command.eraseToAnyRunnable()
     }
 }

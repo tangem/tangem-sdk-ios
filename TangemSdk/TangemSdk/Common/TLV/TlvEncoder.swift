@@ -118,6 +118,10 @@ public final class TlvEncoder {
             try typeCheck(value, DerivationPath.self, for: tag)
             let path = value as! DerivationPath
             return path.encodeTlv(with: tag).value
+        case .backupStatus:
+            try typeCheck(value, Card.BackupStatus.self, for: tag)
+            let status = value as! Card.BackupStatus
+            return status.rawValue.bytes2
         }
     }
     

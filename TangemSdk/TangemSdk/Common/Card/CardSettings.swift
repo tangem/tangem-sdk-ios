@@ -28,6 +28,10 @@ public extension Card {
         public let supportedEncryptionModes: [EncryptionMode]
         /// Is allowed to delete wallet. COS before v4
         public let isPermanentWallet: Bool
+        /// Is allowed to use hd wallets
+        public let isHDWalletsAllowed: Bool
+        /// Is allowed to create backup
+        public let isBackupAllowed: Bool
         /// Is overwriting issuer extra data resctricted
         @SkipEncoding
         var isOverwritingIssuerExtraDataRestricted: Bool
@@ -41,6 +45,8 @@ public extension Card {
         var isIssuerDataProtectedAgainstReplay: Bool
         @SkipEncoding
         var isSelectBlockchainAllowed: Bool
+        @SkipEncoding
+        var mask: CardSettingsMask
     }
 }
 
@@ -61,6 +67,9 @@ extension Card.Settings {
         self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
         self.isPermanentWallet = mask.contains(.permanentWallet)
         self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
+        self.isHDWalletsAllowed = mask.contains(.allowHDWallets)
+        self.isBackupAllowed = mask.contains(.allowBackup)
+        self.mask = mask
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {

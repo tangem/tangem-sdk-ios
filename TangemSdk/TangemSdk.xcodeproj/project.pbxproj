@@ -239,7 +239,7 @@
 		B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BA253442AD0056A887 /* DeleteFileCommand.swift */; };
 		B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06947BE2534570B0056A887 /* DeleteFilesTask.swift */; };
 		B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */; };
-		B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06EBBC425347B7800B0FEEA /* ChangeFilesSettingsTask.swift */; };
+		B06EBBC525347B7800B0FEEA /* ChangeFileSettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06EBBC425347B7800B0FEEA /* ChangeFileSettingsTask.swift */; };
 		B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */; };
 		B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F88252C4514007E04EE /* ReadFileCommand.swift */; };
 		B0800F8D252C46B1007E04EE /* FileSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0800F8C252C46B1007E04EE /* FileSettings.swift */; };
@@ -506,7 +506,7 @@
 		B06947BA253442AD0056A887 /* DeleteFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFileCommand.swift; sourceTree = "<group>"; };
 		B06947BE2534570B0056A887 /* DeleteFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteFilesTask.swift; sourceTree = "<group>"; };
 		B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFileSettingsCommand.swift; sourceTree = "<group>"; };
-		B06EBBC425347B7800B0FEEA /* ChangeFilesSettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFilesSettingsTask.swift; sourceTree = "<group>"; };
+		B06EBBC425347B7800B0FEEA /* ChangeFileSettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeFileSettingsTask.swift; sourceTree = "<group>"; };
 		B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFilesTask.swift; sourceTree = "<group>"; };
 		B0800F88252C4514007E04EE /* ReadFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommand.swift; sourceTree = "<group>"; };
 		B0800F8C252C46B1007E04EE /* FileSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSettings.swift; sourceTree = "<group>"; };
@@ -1143,7 +1143,7 @@
 				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
 				B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */,
 				B06947BA253442AD0056A887 /* DeleteFileCommand.swift */,
-				B06EBBC425347B7800B0FEEA /* ChangeFilesSettingsTask.swift */,
+				B06EBBC425347B7800B0FEEA /* ChangeFileSettingsTask.swift */,
 				B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */,
 			);
 			path = Files;
@@ -1499,7 +1499,7 @@
 				5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */,
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				B0A9447B256546DE00A7958E /* Card.swift in Sources */,
-				B06EBBC525347B7800B0FEEA /* ChangeFilesSettingsTask.swift in Sources */,
+				B06EBBC525347B7800B0FEEA /* ChangeFileSettingsTask.swift in Sources */,
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,

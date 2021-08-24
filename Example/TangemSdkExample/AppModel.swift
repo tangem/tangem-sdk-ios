@@ -345,8 +345,7 @@ extension AppModel {
             FileDataProtectedBySignature(data: demoData,
                                          startingSignature: startSignature,
                                          finalizingSignature: finalSignature,
-                                         counter: counter,
-                                         issuerPublicKey: Utils.issuer.publicKey)
+                                         counter: counter)
         ], completion: handleCompletion)
     }
     
@@ -417,7 +416,7 @@ extension AppModel {
         
         let file = savedFiles[0]
         let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
-        tangemSdk.changeFilesSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
+        tangemSdk.changeFileSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
             switch result {
             case .success:
                 self.savedFiles = nil

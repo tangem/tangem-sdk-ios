@@ -51,7 +51,7 @@ public struct CardConfig: Decodable {
     let disableIssuerData: Bool?
     let disableUserData: Bool?
     let disableFiles: Bool?
-    let allowHDWallets: Bool?
+    let allowHDWallets: Bool? //TODO: add precheck to specific commands
     let allowBackup: Bool?
     let createWallet: Int
     let cardData: CardConfigData

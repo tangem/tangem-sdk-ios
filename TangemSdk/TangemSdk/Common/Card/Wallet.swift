@@ -49,6 +49,10 @@ extension Card.Wallet {
         case loaded = 2
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
+        /// Wallet created and can be used for signing, backup data read
+        case backuped = 0x82
+        /// Wallet was purged and can't be recreated or used for signing, but backup data read and wallet can be usable on backup card
+        case backupedAndPurged = 0x83
     }
 }
 

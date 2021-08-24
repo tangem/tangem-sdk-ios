@@ -24,7 +24,10 @@
     },
     "response" : {
         "jsonrpc" : "2.0",
-        "result" : {},
+        "result" : {
+            "cardId": "c000111122223333",
+            "filesIndices": [0,1]
+        },
         "id" : 1
     }
 }

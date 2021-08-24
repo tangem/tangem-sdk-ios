@@ -345,8 +345,7 @@ extension AppModel {
             FileDataProtectedBySignature(data: demoData,
                                          startingSignature: startSignature,
                                          finalizingSignature: finalSignature,
-                                         counter: counter,
-                                         issuerPublicKey: Utils.issuer.publicKey)
+                                         counter: counter)
         ], completion: handleCompletion)
     }
     

@@ -41,6 +41,8 @@ public struct Card: Codable, JSONStringConvertible {
     internal(set) public var wallets: [Wallet] = []
     /// Card's attestation report
     internal(set) public var attestation: Attestation = .empty
+    /// Status of card's backup
+    internal(set) public var backupStatus: BackupStatus? = nil
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.
@@ -79,12 +81,19 @@ public extension Card {
         // No app/device is linked
         case none
     }
+    
+    /// Card's backup status
+    enum BackupStatus: Int, Codable {
+        case noBackup = 0
+        case cardLinked = 1
+        case active = 2
+    }
 }
 
 @available(iOS 13.0, *)
 extension Card {
     /// Status of the card and its wallet.
-    enum Status: Int, StatusType { //TODO: Specify
+    enum Status: Int, StatusType { //TODO: TBD
         case notPersonalized = 0
         case empty = 1
         case loaded = 2

@@ -1,5 +1,5 @@
 //
-//  ChangeFilesSettingsTask.swift
+//  ChangeFileSettingsTask.swift
 //  TangemSdk
 //
 //  Created by Andrew Son on 10/12/20.
@@ -10,7 +10,7 @@ import Foundation
 
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
-public final class ChangeFilesSettingsTask: CardSessionRunnable {
+public final class ChangeFileSettingsTask: CardSessionRunnable {
 	private var changes: [FileSettingsChange]
 	
 	public init(changes: [FileSettingsChange]) {

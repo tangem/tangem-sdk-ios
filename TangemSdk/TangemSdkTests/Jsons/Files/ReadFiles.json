@@ -7,7 +7,16 @@
     },
     "response" : {
         "jsonrpc" : "2.0",
-        "result" : {},
+        "result" : {
+            "files": [
+                {
+                    "fileIndex": 0,
+                    "fileData": "00AABBCCDD",
+                    "fileSettings": 1,
+                    "fileValidationStatus": "notValidated"
+                }
+            ]
+        },
         "id" : 1
     }
 }

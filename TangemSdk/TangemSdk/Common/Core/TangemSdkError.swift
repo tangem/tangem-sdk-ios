@@ -206,7 +206,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletError
     
     /// This error is returned when SDK fails to perform some low-level crypto algorithm
-    case cryptoUtilsError
+    case cryptoUtilsError(_ message: String)
     
     /// This error is returned when the error occurs inside third-party crypto libraries code
     case failedToGenerateRandomSequence
@@ -254,6 +254,16 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
         
+    // MARK: BAckup errors
+    case backupCannotBeCreated
+    case backupSlaveCardAlreadyInList
+    case backupNoMaster
+    case backupInvalidSignature
+    case backupMasterCardRequired
+    case backupToMuchSlaveCards
+    case backupSlaveCardRequired
+    case backupInvalidCommandSequence
+    
     public var code: Int {
         switch self {
         // MARK: 1xxxx Errors
@@ -339,7 +349,16 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .oldCard: return 40907
             
         case .extendedDataSizeTooLarge: return 41101
-            
+        
+        case .backupCannotBeCreated: return 41201
+        case .backupSlaveCardAlreadyInList: return 41202
+        case .backupNoMaster: return 41203
+        case .backupInvalidSignature: return 41204
+        case .backupMasterCardRequired: return 41205
+        case .backupToMuchSlaveCards: return 41206
+        case .backupSlaveCardRequired: return 41207
+        case .backupInvalidCommandSequence: return 41208
+
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001

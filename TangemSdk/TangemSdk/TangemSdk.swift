@@ -293,11 +293,11 @@ public extension TangemSdk {
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`
-    func changeFilesSettings(changes: [FileSettingsChange],
+    func changeFileSettings(changes: [FileSettingsChange],
                              cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<SuccessResponse>) {
-        let task = ChangeFilesSettingsTask(changes: changes)
+        let task = ChangeFileSettingsTask(changes: changes)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

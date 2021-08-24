@@ -132,7 +132,7 @@ public class PersonalizeCommand: Command {
     
     private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
         guard let signature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
-            throw TangemSdkError.cryptoUtilsError
+            throw TangemSdkError.cryptoUtilsError("Failed to sign data")
         }
         
         let tlvBuilder = try TlvBuilder()

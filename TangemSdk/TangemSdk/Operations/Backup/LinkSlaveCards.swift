@@ -19,6 +19,7 @@ struct LinkSlaveCardsResponse {
 @available(iOS 13.0, *)
 final class LinkSlaveCardsCommand: Command {
     var requiresPasscode: Bool { return true }
+    //todo: slaves
     
     private let backupSession: BackupSession
     
@@ -30,15 +31,15 @@ final class LinkSlaveCardsCommand: Command {
         if card.wallets.isEmpty || !card.settings.isBackupAllowed {
             return .backupCannotBeCreated
         }
-        
+        //todo: check by cardId
         if backupSession.master.cardKey != card.cardPublicKey {
             return .backupMasterCardRequired
         }
-        
+        //todo: move to service
         if backupSession.slaves.isEmpty {
             return .backupSlaveCardRequired
         }
-        
+        //todo: move to service
         if backupSession.slaves.count > 2 {
             return .backupToMuchSlaveCards
         }
@@ -46,12 +47,13 @@ final class LinkSlaveCardsCommand: Command {
         return nil
     }
     
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.backupCount, value: backupSession.slaves.count)
-            .append(.newPin, value: backupSession.newPIN)
+            .append(.newPin, value: backupSession.newPIN) //todo: TBD
             .append(.newPin2, value: backupSession.newPIN2)
         
         for (index, card) in backupSession.slaves.enumerated() {

@@ -101,8 +101,6 @@ struct ContentView: View {
                     .font(.headline)
                     .bold()
                 
-                Toggle("Is permanent wallet", isOn: $model.isPermanent)
-                
                 if let supportedCurves = model.card?.supportedCurves {
                     Picker("", selection: $model.curve) {
                         ForEach(0..<supportedCurves.count) { index in

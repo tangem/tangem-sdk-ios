@@ -23,7 +23,7 @@ final class GetMasterKeyCommand: Command {
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.wallets.isEmpty || !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupCannotBeCreated //todo: split errors
         }
         
         return nil
@@ -49,7 +49,7 @@ final class GetMasterKeyCommand: Command {
         let decoder = TlvDecoder(tlv: tlv)
         let master = BackupMaster(backupKey: try decoder.decode(.backupMasterKey),
                                   cardKey: cardKey)
-        
+        //todo: refactor response
         return GetMasterKeyResponse(cardId: try decoder.decode(.cardId),
                                     master: master)
     }

@@ -74,3 +74,14 @@ extension NFCTagReaderSession {
         }}.eraseToAnyPublisher()
     }
 }
+
+@available(iOS 13.0, *)
+extension TangemSdk {
+    func startSessionPublisher<T: CardSessionRunnable>(with runnable: T,
+                                                       cardId: String? = nil,
+                                                       initialMessage: Message? = nil) -> AnyPublisher<T.Response, TangemSdkError> {
+        return Deferred { Future() {
+            self.startSession(with: runnable, cardId: cardId, initialMessage: initialMessage, completion: $0)
+        }}.eraseToAnyPublisher()
+    }
+}

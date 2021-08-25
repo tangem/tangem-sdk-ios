@@ -7,10 +7,10 @@
             "changes": [
             {
                 "fileIndex": 1,
-                "settings": 0
+                "settings": "private"
             }, {
                 "fileIndex": 2,
-                "settings": 1
+                "settings": "public"
             }]
         }
     },

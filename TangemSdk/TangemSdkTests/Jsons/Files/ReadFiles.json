@@ -12,8 +12,7 @@
                 {
                     "fileIndex": 0,
                     "fileData": "00AABBCCDD",
-                    "fileSettings": 1,
-                    "fileValidationStatus": "notValidated"
+                    "fileSettings": "public"
                 }
             ]
         },

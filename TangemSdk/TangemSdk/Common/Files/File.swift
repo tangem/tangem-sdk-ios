@@ -17,8 +17,7 @@ public class File: Codable, CustomStringConvertible, JSONStringConvertible {
 	public let fileData: Data
 	
 	public var fileSettings: FileSettings?
-	public var fileValidationStatus: FileValidation = .notValidated
-	
+
 	public init(fileIndex: Int, fileSettings: FileSettings?, fileData: Data) {
 		self.fileIndex = fileIndex
 		self.fileSettings = fileSettings
@@ -32,7 +31,7 @@ public class File: Codable, CustomStringConvertible, JSONStringConvertible {
 	}
 	
 	public var description: String {
-		"File \(fileData) at index \(fileIndex) with settings: \(String(describing: fileSettings)) and validation status: \(fileValidationStatus)"
+		"File \(fileData) at index \(fileIndex) with settings: \(String(describing: fileSettings))"
 	}
 	
 }

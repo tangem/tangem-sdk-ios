@@ -15,14 +15,12 @@
                 {
                     "fileIndex": 1,
                     "fileData": "00AABBCCDD",
-                    "fileSettings": 0,
-                    "fileValidationStatus": "notValidated"
+                    "fileSettings": "private"
                 },
                 {
                     "fileIndex": 2,
                     "fileData": "00AABBCCDD",
-                    "fileSettings": 1,
-                    "fileValidationStatus": "notValidated"
+                    "fileSettings": "public"
                 }
             ]},
         "id" : 1

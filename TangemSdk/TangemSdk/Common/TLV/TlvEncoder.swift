@@ -121,7 +121,7 @@ public final class TlvEncoder {
         case .backupStatus:
             try typeCheck(value, Card.BackupStatus.self, for: tag)
             let status = value as! Card.BackupStatus
-            return status.rawValue.bytes2
+            return status.intValue.bytes2
         }
     }
     

@@ -22,7 +22,7 @@ struct GetSlaveKeyResponse {
 final class GetSlaveKeyCommand: Command {
     var requiresPasscode: Bool { return false }
 
-    private let backupSession: BackupSession
+    private let backupSession: BackupSession //todo: backupSession.master.backupKey
     
     init(backupSession: BackupSession) {
         self.backupSession = backupSession
@@ -33,6 +33,7 @@ final class GetSlaveKeyCommand: Command {
             return .backupCannotBeCreated
         }
         
+        //todo: move to service?
         if backupSession.slaves.keys.contains(card.cardId) {
             return .backupSlaveCardAlreadyInList
         }
@@ -62,14 +63,14 @@ final class GetSlaveKeyCommand: Command {
         let slave = BackupSlave(backupKey: try decoder.decode(.backupSlaveKey),
                                 cardKey: cardKey,
                                 attestSignature: try decoder.decode(.cardSignature))
-        
+        //todo: move to run
         let prefix = "BACKUP_SLAVE".data(using: .utf8)!
         let dataAttest = prefix + backupSession.master.backupKey + slave.backupKey
         let verified = try CryptoUtils.verify(curve: .secp256k1, publicKey: slave.cardKey, message: dataAttest, signature: slave.attestSignature)
         if !verified {
             throw TangemSdkError.backupInvalidSignature
         }
-        
+        //todo: refactor response
         return GetSlaveKeyResponse(cardId: try decoder.decode(.cardId),
                                    slave: slave)
     }

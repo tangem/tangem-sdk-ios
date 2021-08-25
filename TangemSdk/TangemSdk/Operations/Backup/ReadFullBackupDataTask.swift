@@ -12,8 +12,8 @@ import Foundation
 struct ReadFullBackupDataResponse {
     let slaves: [String:BackupSlave]
 }
-@available(iOS 13.0, *)
 
+@available(iOS 13.0, *)
 class ReadFullBackupDataTask: CardSessionRunnable {
     private let backupSession: BackupSession
     private var index = 0

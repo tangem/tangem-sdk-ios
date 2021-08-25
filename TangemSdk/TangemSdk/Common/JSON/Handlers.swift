@@ -212,7 +212,7 @@ class DeleteFilesHandler: JSONRPCHandler {
     var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let indices: [Int]? = try parameters.value(for: "indicesToDelete")
+        let indices: [Int]? = try parameters.value(for: "filesToDelete")
         let command = DeleteFilesTask(filesToDelete: indices)
         return command.eraseToAnyRunnable()
     }

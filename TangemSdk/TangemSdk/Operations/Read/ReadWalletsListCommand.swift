@@ -77,8 +77,12 @@ class ReadWalletsListCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
+        guard let card = environment.card else {
+            throw TangemSdkError.unknownError
+        }
+        
         let decoder = TlvDecoder(tlv: tlv)
-        let deserializedData = try WalletDeserializer().deserializeWallets(from: decoder)
+        let deserializedData = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallets(from: decoder)
         receivedWalletsCount += deserializedData.totalReceived
         return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
                                        wallets: deserializedData.wallets)

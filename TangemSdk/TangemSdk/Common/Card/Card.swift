@@ -37,12 +37,12 @@ public struct Card: Codable, JSONStringConvertible {
     //TODO: isAccessCodeSet
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
+    /// Status of card's backup
+    internal(set) public var backupStatus: BackupStatus?
     /// Wallets, created on the card, that can be used for signature
     internal(set) public var wallets: [Wallet] = []
     /// Card's attestation report
     internal(set) public var attestation: Attestation = .empty
-    /// Status of card's backup
-    internal(set) public var backupStatus: BackupStatus? = nil
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.
@@ -83,10 +83,33 @@ public extension Card {
     }
     
     /// Card's backup status
-    enum BackupStatus: Int, Codable {
-        case noBackup = 0
-        case cardLinked = 1
-        case active = 2
+    enum BackupStatus: String, StringCodable {
+        case noBackup
+        case cardLinked
+        case active
+        
+        var intValue: Int { //TODO: make generic tlvintconvertible
+            switch self {
+            case .noBackup:
+                return 0
+            case .cardLinked:
+                return 1
+            case .active:
+                return 2
+            }
+        }
+        
+        static func make(from intValue: Int) -> BackupStatus? {
+            if intValue == 0 {
+                return .noBackup
+            } else if intValue == 1 {
+                return .cardLinked
+            } else if intValue == 2 {
+                return .active
+            }
+            
+            return nil
+        }
     }
 }
 

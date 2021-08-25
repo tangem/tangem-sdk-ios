@@ -15,7 +15,6 @@ class AppModel: ObservableObject {
     @Published var method: Method = .scan
     
     //Wallet creation
-    @Published var isPermanent: Bool = false
     @Published var curve: EllipticCurve = .secp256k1
     //Sign
     @Published var hdPath: String = ""
@@ -216,11 +215,7 @@ extension AppModel {
             return
         }
         
-        let isPermanent = card!.firmwareVersion < .multiwalletAvailable ?
-            card!.settings.isPermanentWallet : self.isPermanent
-        
         tangemSdk.createWallet(curve: curve,
-                               isPermanent: isPermanent,
                                cardId: cardId,
                                completion: handleCompletion)
     }

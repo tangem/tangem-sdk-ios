@@ -188,7 +188,7 @@ public final class TlvDecoder {
         case .fileSettings:
             try typeCheck(FileSettings.self, T.self, for: tag)
             let intValue = tagValue.toInt()
-            guard let fileSettings = FileSettings(rawValue: intValue) else {
+            guard let fileSettings = FileSettings.make(from: intValue) else {
                 throw TangemSdkError.notSupportedFileSettings
             }
             return fileSettings as! T

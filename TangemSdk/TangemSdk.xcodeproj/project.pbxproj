@@ -101,6 +101,7 @@
 		5D7F4E48248FD31700A1700D /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E47248FD31700A1700D /* UIViewController.swift */; };
 		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
 		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
+		5D81348426D62F8900494A71 /* StringCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D81348326D62F8900494A71 /* StringCodable.swift */; };
 		5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */; };
 		5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F378247EC275005E7A35 /* secp256k1_recovery.h */; };
 		5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */; };
@@ -364,6 +365,7 @@
 		5D7F4E47248FD31700A1700D /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
+		5D81348326D62F8900494A71 /* StringCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCodable.swift; sourceTree = "<group>"; };
 		5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
 		5D83F378247EC275005E7A35 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
 		5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
@@ -736,6 +738,7 @@
 				5DDD6C5D25D2E01800E48D7B /* Codable+.swift */,
 				5D46F1592681064A00DC6447 /* Handlers.swift */,
 				5D379C22268CC2FC00C7F473 /* SkipEncoding.swift */,
+				5D81348326D62F8900494A71 /* StringCodable.swift */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -1412,6 +1415,7 @@
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
 				5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */,
+				5D81348426D62F8900494A71 /* StringCodable.swift in Sources */,
 				B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
 				5D2FE06A24DDA85E0086B5E8 /* TangemEndpoint.swift in Sources */,

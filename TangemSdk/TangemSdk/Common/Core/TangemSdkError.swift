@@ -256,13 +256,16 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         
     // MARK: BAckup errors
     case backupCannotBeCreated
-    case backupSlaveCardAlreadyInList
-    case backupNoMaster
-    case backupInvalidSignature
-    case backupMasterCardRequired
-    case backupToMuchSlaveCards
-    case backupSlaveCardRequired
+    case backupCardAlreadyInList
+    case missingOriginCard
+    case invalidLinkingSignature
+    case originCardRequired
+    case tooMuchBackupCards
+    case backupCardRequired
     case backupInvalidCommandSequence
+    case backupCannotBeCreatedEmptyWallets
+    case backupCannotBeCreatedNotEmptyWallets
+    case certificateRequired
     
     public var code: Int {
         switch self {
@@ -351,14 +354,17 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .extendedDataSizeTooLarge: return 41101
         
         case .backupCannotBeCreated: return 41201
-        case .backupSlaveCardAlreadyInList: return 41202
-        case .backupNoMaster: return 41203
-        case .backupInvalidSignature: return 41204
-        case .backupMasterCardRequired: return 41205
-        case .backupToMuchSlaveCards: return 41206
-        case .backupSlaveCardRequired: return 41207
+        case .backupCardAlreadyInList: return 41202
+        case .missingOriginCard: return 41203
+        case .invalidLinkingSignature: return 41204
+        case .originCardRequired: return 41205
+        case .tooMuchBackupCards: return 41206
+        case .backupCardRequired: return 41207
         case .backupInvalidCommandSequence: return 41208
-
+        case .backupCannotBeCreatedEmptyWallets: return 41209
+        case .backupCannotBeCreatedNotEmptyWallets: return 41210
+        case .certificateRequired: return 41211
+            
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001

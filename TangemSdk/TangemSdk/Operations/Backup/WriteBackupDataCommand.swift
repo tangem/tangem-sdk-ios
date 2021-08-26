@@ -1,5 +1,5 @@
 //
-//  WriteBackupData.swift
+//  WriteBackupDataCommand.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 24.08.2021.
@@ -13,17 +13,21 @@ import Foundation
 struct WriteBackupDataResponse {
     /// Unique Tangem card ID number
     let cardId: String
-    let state: Card.BackupStatus
+    let backupStatus: Card.BackupStatus
 }
 
 @available(iOS 13.0, *)
 final class WriteBackupDataCommand: Command {
     var requiresPasscode: Bool { return false }
     
-    private let backupSession: BackupSession
+    private let backupData: EncryptedBackupData
+    private let accessCode: Data
+    private let passcode: Data
     
-    init(backupSession: BackupSession) {
-        self.backupSession = backupSession
+    init(backupData: EncryptedBackupData, accessCode: Data, passcode: Data) {
+        self.backupData = backupData
+        self.accessCode = accessCode
+        self.passcode = passcode
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -31,26 +35,30 @@ final class WriteBackupDataCommand: Command {
             return .backupCannotBeCreated
         }
         
-        guard let card = backupSession.slaves[card.cardId] else {
-            return .backupSlaveCardRequired
-        }
-        
-        if card.encryptedData == nil {
-            return .backupInvalidCommandSequence
-        }
-        
         return nil
+    }
+    
+    func run(in session: CardSession, completion: @escaping CompletionResult<WriteBackupDataResponse>) {
+        transceive(in: session) { result in
+            switch result {
+            case .success(let response):
+                session.environment.card?.backupStatus = response.backupStatus
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.pin2, value: environment.passcode.value)
-            .append(.salt, value: backupSession.slaves[environment.card!.cardId]!.encryptionSalt)
-            .append(.issuerData, value: backupSession.slaves[environment.card!.cardId]!.encryptedData)
+            .append(.pin, value: accessCode)
+            .append(.pin2, value: passcode)
+            .append(.salt, value: backupData.salt)
+            .append(.issuerData, value: backupData.data)
         
-        return CommandApdu(.backupWriteData, tlv: tlvBuilder.serialize())
+        return CommandApdu(.writeBackupData, tlv: tlvBuilder.serialize())
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteBackupDataResponse {
@@ -61,7 +69,7 @@ final class WriteBackupDataCommand: Command {
         let decoder = TlvDecoder(tlv: tlv)
         
         return WriteBackupDataResponse(cardId: try decoder.decode(.cardId),
-                                       state: try decoder.decode(.backupStatus))
+                                       backupStatus: try decoder.decode(.backupStatus))
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  ReadBackupData.swift
+//  ReadBackupDataCommand.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 24.08.2021.
@@ -13,30 +13,25 @@ import Foundation
 struct ReadBackupDataResponse {
     /// Unique Tangem card ID number
     let cardId: String
-    let encryptedData: Data
-    let encryptionSalt: Data
+    let data: EncryptedBackupData
 }
 
 @available(iOS 13.0, *)
 final class ReadBackupDataCommand: Command {
     var requiresPasscode: Bool { return false }
     
-    private let backupSession: BackupSession
-    private let slaveBackupKey: Data
+    private let backupCardLinkingKey: Data
+    private let accessCode: Data
     
-    init(backupSession: BackupSession, slaveBackupKey: Data) {
-        self.backupSession = backupSession
-        self.slaveBackupKey = slaveBackupKey
+    init(backupCardLinkingKey: Data, accessCode: Data) {
+        self.backupCardLinkingKey = backupCardLinkingKey
+        self.accessCode = accessCode
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.backupStatus == .noBackup {
-            return .backupCannotBeCreated
-        }
-        
-        if backupSession.master.cardKey != card.cardPublicKey {
-            return .backupMasterCardRequired
-        }
+//        if card.backupStatus == .noBackup { //TODO: Actually we can skip this check. TBD
+//            return .backupCannotBeCreated
+//        }
         
         return nil
     }
@@ -44,10 +39,10 @@ final class ReadBackupDataCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.backupSlaveKey, value: slaveBackupKey)
+            .append(.pin, value: accessCode)
+            .append(.backupCardLinkingKey, value: backupCardLinkingKey)
         
-        return CommandApdu(.backupReadData, tlv: tlvBuilder.serialize())
+        return CommandApdu(.readBackupData, tlv: tlvBuilder.serialize())
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadBackupDataResponse {
@@ -58,8 +53,8 @@ final class ReadBackupDataCommand: Command {
         let decoder = TlvDecoder(tlv: tlv)
         
         return ReadBackupDataResponse(cardId: try decoder.decode(.cardId),
-                                      encryptedData: try decoder.decode(.issuerData),
-                                      encryptionSalt: try decoder.decode(.salt))
+                                      data: EncryptedBackupData (data: try decoder.decode(.issuerData),
+                                                                 salt: try decoder.decode(.salt)))
     }
 }
 

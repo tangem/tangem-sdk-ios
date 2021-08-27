@@ -145,7 +145,6 @@ class ResetUserCodesHandler: JSONRPCHandler {
     }
 }
 
-/// Runs PreflightReadTask in `fullCardRead` mode
 @available(iOS 13.0, *)
 class PreflightReadHandler: JSONRPCHandler {
     var method: String { "PREFLIGHT_READ" }

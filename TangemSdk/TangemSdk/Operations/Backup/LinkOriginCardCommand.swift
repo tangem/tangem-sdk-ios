@@ -13,7 +13,7 @@ import Foundation
 struct LinkOriginCardResponse {
     /// Unique Tangem card ID number
     let cardId: String
-    let backupStatus: Card.BackupStatus
+    let backupStatus: Card.BackupRawStatus
 }
 
 @available(iOS 13.0, *)
@@ -46,7 +46,7 @@ final class LinkOriginCardCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                session.environment.card?.backupStatus = response.backupStatus
+                session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))

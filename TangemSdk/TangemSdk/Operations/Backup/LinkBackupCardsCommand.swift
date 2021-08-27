@@ -70,6 +70,9 @@ final class LinkBackupCardsCommand: Command {
                     if !verified {
                         throw TangemSdkError.invalidLinkingSignature
                     }
+                    
+                    session.environment.card?.backupStatus = .cardLinked(cardsCount: self.backupCards.count)
+                    completion(.success(response))
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
                 }

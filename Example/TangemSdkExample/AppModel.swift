@@ -27,6 +27,10 @@ class AppModel: ObservableObject {
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
     
+    lazy var backupService: BackupService = {
+        return BackupService(sdk: tangemSdk)
+    }()
+    
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
         config.logСonfig = .verbose

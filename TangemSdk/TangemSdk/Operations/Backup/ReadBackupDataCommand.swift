@@ -36,6 +36,20 @@ final class ReadBackupDataCommand: Command {
         return nil
     }
     
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadBackupDataResponse>) {
+        transceive(in: session) { result in
+            switch result {
+            case .success(let response):
+                if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
+                    session.environment.card?.backupStatus = .active(cardsCount: cardsCount)
+                }
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

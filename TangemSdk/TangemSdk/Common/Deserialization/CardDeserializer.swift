@@ -72,6 +72,10 @@ struct CardDeserializer {
         
         let terminalIsLinked: Bool = try decoder.decode(.isLinked)
 
+        let backupRawStatus: Card.BackupRawStatus? = try decoder.decode(.backupStatus)
+        let backupCardsCount: Int? = try decoder.decode(.backupCount)
+        let backupStatus: Card.BackupStatus? = try backupRawStatus.map { try Card.BackupStatus(from: $0, cardsCount: backupCardsCount) }
+        
         let card = Card(cardId: try decoder.decode(.cardId),
                         batchId: try cardDataDecoder.decode(.batchId),
                         cardPublicKey: try decoder.decode(.cardPublicKey),
@@ -82,11 +86,10 @@ struct CardDeserializer {
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
                         isPasscodeSet: isPasscodeSet,
                         supportedCurves: supportedCurves,
-                        backupStatus: try decoder.decode(.backupStatus),
+                        backupStatus: backupStatus,
                         wallets: wallets,
                         health: try decoder.decode(.health),
                         remainingSignatures: remainingSignatures)
-        
         
 		return card
 	}

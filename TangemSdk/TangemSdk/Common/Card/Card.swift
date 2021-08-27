@@ -83,7 +83,70 @@ public extension Card {
     }
     
     /// Card's backup status
-    enum BackupStatus: String, StringCodable {
+    enum BackupStatus: Codable, Equatable {
+        case noBackup
+        case cardLinked(cardsCount: Int)
+        case active(cardsCount: Int)
+        
+        public init(from decoder: Decoder) throws {
+            let codableStruct = try BackupStatusCodable(from: decoder)
+            try self.init(from: codableStruct.status, cardsCount: codableStruct.cardsCount )
+        }
+        
+        init(from rawStatus: BackupRawStatus, cardsCount: Int?) throws {
+            switch rawStatus {
+            case .active:
+                guard let cardsCount = cardsCount else {
+                    throw TangemSdkError.decodingFailed("Failed to decode BackupStatus")
+                }
+                
+                self = .active(cardsCount: cardsCount)
+            case .cardLinked:
+                guard let cardsCount = cardsCount else {
+                    throw TangemSdkError.decodingFailed("Failed to decode BackupStatus")
+                }
+                
+                self = .cardLinked(cardsCount: cardsCount)
+            case .noBackup:
+                self = .noBackup
+            }
+        }
+        
+        public func encode(to encoder: Encoder) throws {
+            let codableStruct = toBackupStatusCodable()
+            try codableStruct.encode(to: encoder)
+        }
+        
+        private func toBackupStatusCodable() -> BackupStatusCodable {
+            switch self {
+            case .active(let cardsCount):
+                return BackupStatusCodable(status: .active, cardsCount: cardsCount)
+            case .cardLinked(let cardsCount):
+                return BackupStatusCodable(status: .cardLinked, cardsCount: cardsCount)
+            case .noBackup:
+                return BackupStatusCodable(status: .noBackup, cardsCount: nil)
+            }
+        }
+        
+        private struct BackupStatusCodable: Codable {
+            let status: BackupRawStatus
+            let cardsCount: Int?
+        }
+    }
+}
+
+@available(iOS 13.0, *)
+extension Card {
+    /// Status of the card and its wallet.
+    enum Status: Int, StatusType { //TODO: TBD
+        case notPersonalized = 0
+        case empty = 1
+        case loaded = 2
+        case purged = 3
+    }
+    
+    /// Card's backup status
+    enum BackupRawStatus: String, StringCodable {
         case noBackup
         case cardLinked
         case active
@@ -99,7 +162,7 @@ public extension Card {
             }
         }
         
-        static func make(from intValue: Int) -> BackupStatus? {
+        static func make(from intValue: Int) -> BackupRawStatus? {
             if intValue == 0 {
                 return .noBackup
             } else if intValue == 1 {
@@ -110,17 +173,6 @@ public extension Card {
             
             return nil
         }
-    }
-}
-
-@available(iOS 13.0, *)
-extension Card {
-    /// Status of the card and its wallet.
-    enum Status: Int, StatusType { //TODO: TBD
-        case notPersonalized = 0
-        case empty = 1
-        case loaded = 2
-        case purged = 3
     }
 }
 

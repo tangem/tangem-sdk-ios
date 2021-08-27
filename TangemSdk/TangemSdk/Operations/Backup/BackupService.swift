@@ -10,11 +10,11 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, *)
-public class BackupService {
+public class BackupService: ObservableObject {
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
     
-    public private(set) var currentState: BackupServiceState = .needBackupCardsCount
+    @Published public private(set) var currentState: BackupServiceState = .needBackupCardsCount
     
     public init(sdk: TangemSdk) {
         //todo: init with backup count, codes and select proper initial currentState
@@ -98,11 +98,19 @@ public class BackupService {
             throw TangemSdkError.invalidParams
         }
         
+        guard count > 0 && count < 2 else {
+            throw TangemSdkError.invalidParams
+        }
+        
         repo.backupCardsCount = count
     }
     
     private func handleAccessCode(_ params: StateParams) throws {
         guard case let .accessCode(code) = params else {
+            throw TangemSdkError.invalidParams
+        }
+        
+        guard !code.isEmpty else {
             throw TangemSdkError.invalidParams
         }
         

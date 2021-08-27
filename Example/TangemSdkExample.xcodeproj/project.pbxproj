@@ -20,6 +20,8 @@
 		5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
 		5D032010266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
 		5D3ABA3D26D02C5C0087EF4A /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
+		5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
+		5D3C2BD026D9402800722E33 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
 		5D5F0EEF26D02EDF0087068A /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
 		5D78C1BA234F435B008D7478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* AppDelegate.swift */; };
 		5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
@@ -65,6 +67,7 @@
 		5D032008266A8523008472EC /* ExampleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleButton.swift; sourceTree = "<group>"; };
 		5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationData.swift; sourceTree = "<group>"; };
+		5D3C2BCE26D93E7200722E33 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
 		5D78C1B6234F435B008D7478 /* TangemSdkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D78C1B9234F435B008D7478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5D78C1C2234F435C008D7478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -149,6 +152,7 @@
 			children = (
 				5D032000266A6A15008472EC /* AppModel.swift */,
 				5D031FFC266A6960008472EC /* ContentView.swift */,
+				5D3C2BCE26D93E7200722E33 /* BackupView.swift */,
 				5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */,
 				5D03200C266A8548008472EC /* Common */,
 				5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */,
@@ -360,6 +364,7 @@
 				5D032009266A8523008472EC /* ExampleButton.swift in Sources */,
 				B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */,
 				5DDCEC7525C957930002090D /* UI+.swift in Sources */,
+				5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */,
 				5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -375,6 +380,7 @@
 				5D03200A266A8523008472EC /* ExampleButton.swift in Sources */,
 				B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */,
 				5DDCEC7A25C958220002090D /* UI+.swift in Sources */,
+				5D3C2BD026D9402800722E33 /* BackupView.swift in Sources */,
 				5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

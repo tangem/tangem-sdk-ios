@@ -252,7 +252,7 @@ extension AppModel {
     }
     
     func depersonalize() {
-        tangemSdk.depersonalize(completion: handleCompletion)
+        tangemSdk.startSession(with: DepersonalizeCommand(), completion: handleCompletion)
     }
     
     func setAccessCode() {
@@ -529,12 +529,12 @@ extension AppModel {
         let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
         let acquirer = try! JSONDecoder.tangemSdkDecoder.decode(Acquirer.self, from: AppModel.acquirerJson.data(using: .utf8)!)
         
-        tangemSdk.personalize(config: config,
-                              issuer: issuer,
-                              manufacturer: manufacturer,
-                              acquirer: acquirer,
-                              initialMessage: nil,
-                              completion: handleCompletion)
+        let personalizeCommand = PersonalizeCommand(config: config,
+                                                    issuer: issuer,
+                                                    manufacturer: manufacturer,
+                                                    acquirer: acquirer)
+        
+        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
     }
 }
 

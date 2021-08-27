@@ -62,6 +62,8 @@ final class StartBackupCardLinkingCommand: Command {
                     if !verified {
                         throw TangemSdkError.invalidLinkingSignature
                     }
+                    
+                    completion(.success(response))
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
                 }

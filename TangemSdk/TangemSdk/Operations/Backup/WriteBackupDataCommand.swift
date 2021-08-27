@@ -13,7 +13,7 @@ import Foundation
 struct WriteBackupDataResponse {
     /// Unique Tangem card ID number
     let cardId: String
-    let backupStatus: Card.BackupStatus
+    let backupStatus: Card.BackupRawStatus
 }
 
 @available(iOS 13.0, *)
@@ -42,7 +42,9 @@ final class WriteBackupDataCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                session.environment.card?.backupStatus = response.backupStatus
+                if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
+                    session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: cardsCount)
+                }
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))

@@ -33,7 +33,7 @@ class AppModel: ObservableObject {
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .verbose
+        config.logСonfig = .custom(logLevel: [.apdu, .command, .debug, .error, .nfc, .session, .view, .warning, .tlv])
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
@@ -528,7 +528,7 @@ extension AppModel {
     }
     
     func personalize() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonSlave2.data(using: .utf8)!)
+        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup2.data(using: .utf8)!)
         let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
         let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
         let acquirer = try! JSONDecoder.tangemSdkDecoder.decode(Acquirer.self, from: AppModel.acquirerJson.data(using: .utf8)!)

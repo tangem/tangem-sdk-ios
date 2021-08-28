@@ -197,7 +197,7 @@ public final class TlvDecoder {
             return try DerivationPath(from: tagValue) as! T
         case .backupStatus:
             let intValue = tagValue.toInt()
-            try typeCheck(Card.BackupStatus.self, T.self, for: tag)
+            try typeCheck(Card.BackupRawStatus.self, T.self, for: tag)
             guard let status = Card.BackupRawStatus.make(from: intValue) else {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown iBackupStatus")
             }

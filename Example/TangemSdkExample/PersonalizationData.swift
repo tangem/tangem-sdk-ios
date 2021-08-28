@@ -11,7 +11,7 @@ import Foundation
 //MARK:- Personalization jsons
 
 extension AppModel {
-    static var configJsonMaster =
+    static var configJsonOrigin =
         """
      {
         "releaseVersion": true,
@@ -64,7 +64,7 @@ extension AppModel {
     }
     """
     
-    static var configJsonSlave1 =
+    static var configJsonBackup1 =
         """
      {
         "releaseVersion": true,
@@ -77,7 +77,7 @@ extension AppModel {
         "PIN2": "000",
         "CVC": "000",
         "walletsCount": 6,
-        "pauseBeforePIN2": 30000,
+        "pauseBeforePIN2": 5000,
         "smartSecurityDelay": true,
         "curveID": "secp256k1",
         "SigningMethod": 0,
@@ -117,7 +117,7 @@ extension AppModel {
     }
     """
     
-    static var configJsonSlave2 =
+    static var configJsonBackup2 =
         """
      {
         "releaseVersion": true,
@@ -130,7 +130,7 @@ extension AppModel {
         "PIN2": "000",
         "CVC": "000",
         "walletsCount": 6,
-        "pauseBeforePIN2": 30000,
+        "pauseBeforePIN2": 5000,
         "smartSecurityDelay": true,
         "curveID": "secp256k1",
         "SigningMethod": 0,

@@ -30,6 +30,10 @@ final class WriteBackupDataCommand: Command {
         self.passcode = passcode
     }
     
+    deinit {
+        Log.debug("WriteBackupDataCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.backupStatus == .noBackup {
             return .backupCannotBeCreated

@@ -11,6 +11,7 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
+    @State private var showBackupView: Bool = false
     
     var body: some View {
         GeometryReader { geo in
@@ -44,10 +45,18 @@ struct ContentView: View {
                         }
                     }.labelsHidden()
 
+                    HStack {
+                        
                     Button("Start") { model.start() }
                         .buttonStyle(ExampleButton(isLoading: model.isScanning))
                         .frame(width: 100)
                         .padding()
+                    
+                    Button("Backup") { showBackupView = true }
+                        .buttonStyle(ExampleButton(isLoading: false))
+                        .frame(width: 100)
+                        .padding()
+                    }
                 }
                 .padding(.horizontal, 8)
                 .frame(width: geo.size.width)
@@ -72,6 +81,10 @@ struct ContentView: View {
                                message: nil,
                                buttons: walletButtons + [cancelButton])
         }
+        .sheet(isPresented: $showBackupView, content: {
+            BackupView()
+                .environmentObject(model)
+        })
     }
     
     @ViewBuilder

@@ -27,40 +27,36 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         self.passcode = passcode
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        linkOriginCard(session: session) { linkResult in
-            switch linkResult {
-            case .success:
-                self.writeBackupData(session: session) { writeReslut in
-                    switch writeReslut {
-                    case .success(let writeResponse):
-                        completion(.success(SuccessResponse(cardId: writeResponse.cardId)))
-                    case .failure(let error):
-                        completion(.failure(error))
-                    }
-                }
-
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+    deinit {
+        Log.debug("FinalizeBackupCardTask deinit")
     }
     
-    private func linkOriginCard(session: CardSession, completion: @escaping CompletionResult<LinkOriginCardResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         let command = LinkOriginCardCommand(originCard: originCard,
                                             backupCards: backupCards,
                                             attestSignature: attestSignature,
                                             accessCode: accessCode,
                                             passcode: passcode)
         
-        command.run(in: session, completion: completion)
-    }
-    
-    private func writeBackupData(session: CardSession, completion: @escaping CompletionResult<WriteBackupDataResponse>) {
-        let command = WriteBackupDataCommand(backupData: backupData,
-                                             accessCode: accessCode,
-                                             passcode: passcode)
-        
-        command.run(in: session, completion: completion)
+        command.run(in: session) { linkResult in
+            switch linkResult {
+            case .success:
+                let writeCommand = WriteBackupDataCommand(backupData: self.backupData,
+                                                          accessCode: self.accessCode,
+                                                          passcode: self.passcode)
+                
+                writeCommand.run(in: session) { writeResult in
+                    switch writeResult {
+                    case .success(let writeResponse):
+                        completion(.success(SuccessResponse(cardId: writeResponse.cardId)))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }

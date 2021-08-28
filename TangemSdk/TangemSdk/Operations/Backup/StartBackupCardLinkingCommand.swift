@@ -31,6 +31,10 @@ final class StartBackupCardLinkingCommand: Command {
         self.originCardLinkingKey = originCardLinkingKey
     }
     
+    deinit {
+        Log.debug("StartBackupCardLinkingCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if !card.settings.isBackupAllowed {
             return .backupCannotBeCreated

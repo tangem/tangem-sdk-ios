@@ -28,6 +28,10 @@ final class ReadBackupDataCommand: Command {
         self.accessCode = accessCode
     }
     
+    deinit {
+        Log.debug("ReadBackupDataCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
 //        if card.backupStatus == .noBackup { //TODO: Actually we can skip this check. TBD
 //            return .backupCannotBeCreated

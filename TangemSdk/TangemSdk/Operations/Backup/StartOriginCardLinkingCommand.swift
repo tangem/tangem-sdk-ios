@@ -23,6 +23,10 @@ struct StartOriginCardLinkingResponse {
 final class StartOriginCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
+    deinit {
+        Log.debug("StartOriginCardLinkingCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if !card.settings.isBackupAllowed {
             return .backupCannotBeCreated

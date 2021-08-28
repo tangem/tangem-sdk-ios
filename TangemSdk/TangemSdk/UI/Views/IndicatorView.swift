@@ -70,9 +70,6 @@ struct IndicatorView: View {
             return nil
         case .delay(let currentValue, _):
             let intValue = Int(currentValue)
-            if intValue == 0 {
-                return ""
-            }
             return "\(intValue)"
         case .progress(let progress):
             return "\(progress)%"

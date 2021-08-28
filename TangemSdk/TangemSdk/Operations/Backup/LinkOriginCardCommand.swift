@@ -34,6 +34,10 @@ final class LinkOriginCardCommand: Command {
         self.passcode = passcode
     }
     
+    deinit {
+        Log.debug("LinkOriginCardCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if !card.wallets.isEmpty || !card.settings.isBackupAllowed {
             return .backupCannotBeCreated

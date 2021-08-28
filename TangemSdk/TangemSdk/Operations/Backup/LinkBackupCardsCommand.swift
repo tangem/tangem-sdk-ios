@@ -32,6 +32,10 @@ final class LinkBackupCardsCommand: Command {
         self.originCardLinkingKey = originCardLinkingKey
     }
     
+    deinit {
+        Log.debug("LinkBackupCardsCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if !card.settings.isBackupAllowed {
             return .backupCannotBeCreated
@@ -84,6 +88,7 @@ final class LinkBackupCardsCommand: Command {
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+            .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.backupCount, value: backupCards.count)

@@ -98,7 +98,7 @@ public class BackupService: ObservableObject {
             throw TangemSdkError.invalidParams
         }
         
-        guard count > 0 && count < 2 else {
+        guard count > 0 && count < 3 else {
             throw TangemSdkError.invalidParams
         }
         
@@ -150,8 +150,7 @@ public class BackupService: ObservableObject {
             
             switch result {
             case .success(let response):
-                let backupCard = BackupCard(index: index,
-                                            cardId: response.cardId,
+                let backupCard = BackupCard(cardId: response.cardId,
                                             cardPublicKey: response.cardPublicKey,
                                             linkingKey: response.linkingKey,
                                             attestSignature: response.attestSignature)
@@ -195,7 +194,7 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.backupCardRequired
             }
             
-            guard linkableBackupCards.count < 2 else {
+            guard linkableBackupCards.count < 3 else {
                 throw TangemSdkError.tooMuchBackupCards
             }
             
@@ -211,6 +210,7 @@ public class BackupService: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.repo.attestSignature = response.attestSignature
+                    self.repo.backupData = response.backupData
                     completion(.success(()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -244,7 +244,9 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.certificateRequired
             }
             
-            guard let backupCard = repo.backupCards.first(where: {$0.index == index}) else {
+            let cardIndex = index - 1
+            
+            guard cardIndex < repo.backupCards.count else {
                 throw TangemSdkError.backupCardRequired
             }
             
@@ -252,9 +254,11 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.backupCardRequired
             }
             
-            guard repo.backupCards.count < 2 else {
+            guard repo.backupCards.count < 3 else {
                 throw TangemSdkError.tooMuchBackupCards
             }
+            
+            let backupCard = repo.backupCards[cardIndex]
             
             guard let backupData = repo.backupData[backupCard.cardId] else {
                 throw TangemSdkError.backupInvalidCommandSequence
@@ -268,7 +272,7 @@ public class BackupService: ObservableObject {
                                                  passcode: passcode)
             
             sdk.startSession(with: command, cardId: backupCard.cardId,
-                             initialMessage: Message(header: "Scan backup card with index: \(index)")) { result in
+                             initialMessage: Message(header: "Scan backup card with cardId: \(originCard.cardId)")) { result in
                 switch result {
                 case .success:
                     completion(.success(()))
@@ -285,7 +289,7 @@ public class BackupService: ObservableObject {
     private func fetchCertificate(for cardId: String, cardPublicKey: Data) {
         //todo: fetch from backend
         
-        let issuerPrivateKey = Data()
+        let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
         let signature = cardPublicKey.sign(privateKey: issuerPrivateKey)!
         let certificate = try! TlvBuilder()
             .append(.cardPublicKey, value: cardPublicKey)
@@ -329,7 +333,6 @@ struct LinkableOriginCard {
 }
 
 struct BackupCard {
-    let index: Int
     let cardId: String
     let cardPublicKey: Data
     let linkingKey: Data

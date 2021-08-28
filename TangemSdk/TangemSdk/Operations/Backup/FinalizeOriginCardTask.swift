@@ -22,7 +22,6 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     private let passcode: Data
     private let originCardLinkingKey: Data //only for verification
     
-    private var index = 0
     private var backupData: [String:EncryptedBackupData] = [:]
     
     init(backupCards: [LinkableBackupCard], accessCode: Data, passcode: Data, originCardLinkingKey: Data) {
@@ -32,11 +31,20 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         self.originCardLinkingKey = originCardLinkingKey
     }
     
+    deinit {
+        Log.debug("FinalizeOriginCardTask deinit")
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<FinalizeOriginCardResponse>) {
-        linkBackupCards(session: session) { linkResult in
+        let command = LinkBackupCardsCommand(backupCards: backupCards,
+                                             accessCode: accessCode,
+                                             passcode: passcode,
+                                             originCardLinkingKey: originCardLinkingKey)
+        
+        command.run(in: session) { linkResult in
             switch linkResult {
             case .success(let linkResponse):
-                self.readBackupData(session: session) { readResult in
+                self.readBackupData(session: session, index: 0) { readResult in
                     switch readResult {
                     case .success(let backupData):
                         completion(.success(FinalizeOriginCardResponse(attestSignature: linkResponse.attestSignature,
@@ -51,30 +59,20 @@ class FinalizeOriginCardTask: CardSessionRunnable {
             }
         }
     }
-    
-    private func linkBackupCards(session: CardSession, completion: @escaping CompletionResult<LinkBackupCardsResponse>) {
-        let command = LinkBackupCardsCommand(backupCards: backupCards,
-                                             accessCode: accessCode,
-                                             passcode: passcode,
-                                             originCardLinkingKey: originCardLinkingKey)
+
+    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<[String:EncryptedBackupData]>) {
+        if index >= backupCards.count {
+            completion(.success(self.backupData))
+            return
+        }
         
-        command.run(in: session, completion: completion)
-    }
-    
-    private func readBackupData(session: CardSession, completion: @escaping CompletionResult<[String:EncryptedBackupData]>) {
         let currentBackupCard = backupCards[index]
         let command = ReadBackupDataCommand(backupCardLinkingKey: currentBackupCard.linkingKey, accessCode: accessCode)
         command.run(in: session) { result in
             switch result {
             case .success(let response):
                 self.backupData[currentBackupCard.cardId] = response.data
-                self.index += 1
-                
-                if self.index >= self.backupCards.count {
-                    completion(.success(self.backupData))
-                } else {
-                    self.readBackupData(session: session, completion: completion)
-                }
+                self.readBackupData(session: session, index: index + 1, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }

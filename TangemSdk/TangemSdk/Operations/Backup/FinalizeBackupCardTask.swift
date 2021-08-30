@@ -17,6 +17,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
     private let attestSignature: Data
     private let accessCode: Data
     private let passcode: Data
+    private var commandsBag: [Any]  = .init()
     
     init(originCard: LinkableOriginCard, backupCards: [BackupCard], backupData: EncryptedBackupData, attestSignature: Data, accessCode: Data, passcode: Data) {
         self.originCard = originCard
@@ -44,7 +45,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
                 let writeCommand = WriteBackupDataCommand(backupData: self.backupData,
                                                           accessCode: self.accessCode,
                                                           passcode: self.passcode)
-                
+                self.commandsBag.append(writeCommand)
                 writeCommand.run(in: session) { writeResult in
                     switch writeResult {
                     case .success(let writeResponse):

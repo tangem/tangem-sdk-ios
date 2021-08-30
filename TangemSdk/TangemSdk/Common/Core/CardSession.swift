@@ -243,6 +243,8 @@ public class CardSession {
             completion(.failure(.sessionInactive))
             return
         }
+
+        Log.apdu("Serialized apdu: \(apdu)")
         
         reader.tag
             .filter { $0 != .none }

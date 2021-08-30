@@ -39,8 +39,16 @@ final class LinkOriginCardCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if !card.wallets.isEmpty || !card.settings.isBackupAllowed {
+        if card.firmwareVersion < .backupAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if !card.settings.isBackupAllowed {
             return .backupCannotBeCreated
+        }
+        
+        if !card.wallets.isEmpty {
+            return .backupCannotBeCreatedNotEmptyWallets
         }
         
         return nil

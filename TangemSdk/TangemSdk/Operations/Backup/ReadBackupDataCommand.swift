@@ -33,9 +33,17 @@ final class ReadBackupDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-//        if card.backupStatus == .noBackup { //TODO: Actually we can skip this check. TBD
-//            return .backupCannotBeCreated
-//        }
+        if card.firmwareVersion < .backupAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if !card.settings.isBackupAllowed {
+            return .backupCannotBeCreated
+        }
+        
+        if card.backupStatus == .noBackup {
+            return .backupCannotBeCreated
+        }
         
         return nil
     }

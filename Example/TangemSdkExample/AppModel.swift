@@ -209,6 +209,28 @@ extension AppModel {
         }
     }
     
+    func runJsonRpc() {
+        let json =
+        """
+            [
+                {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "method": "scan"
+                },
+                {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "create_wallet",
+                    "params": {
+                        "curve": "secp256k1"
+                    }
+                }
+            ]
+        """
+        tangemSdk.startSession(with: json) { self.complete(with: $0) }
+    }
+    
     func createWallet() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
@@ -549,6 +571,8 @@ extension AppModel {
         case deleteFirstFile
         case deleteAllFiles
         case updateFirstFileSettings
+        //case json-rpc
+        case jsonrpc
         //deprecated
         case readIssuerData
         case writeIssuerData
@@ -588,6 +612,7 @@ extension AppModel {
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
         case .derivePublicKey: derivePublicKey()
+        case .jsonrpc: runJsonRpc()
         }
     }
 }

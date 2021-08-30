@@ -11,12 +11,11 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct RoundedButton: ButtonStyle {
+    var style: TangemSdkStyle
     var isDisabled: Bool = false
     var isLoading: Bool = false
     
     var height: CGFloat = 50
-    
-    @EnvironmentObject var style: TangemSdkStyle
     
     @ViewBuilder private var loadingOverlay: some View {
         if isLoading  {

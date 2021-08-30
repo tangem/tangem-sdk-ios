@@ -28,7 +28,7 @@ class AppModel: ObservableObject {
     @Published var showWalletSelection: Bool = false
     
     lazy var backupService: BackupService = {
-        return BackupService(sdk: tangemSdk)
+        return try! BackupService(sdk: tangemSdk)
     }()
     
     private lazy var tangemSdk: TangemSdk = {
@@ -527,16 +527,36 @@ extension AppModel {
                                        completion: handleCompletion)
     }
     
-    func personalize() {
+    func personalizeBackup2() {
         let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup2.data(using: .utf8)!)
         let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
         let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        let acquirer = try! JSONDecoder.tangemSdkDecoder.decode(Acquirer.self, from: AppModel.acquirerJson.data(using: .utf8)!)
         
         let personalizeCommand = PersonalizeCommand(config: config,
                                                     issuer: issuer,
-                                                    manufacturer: manufacturer,
-                                                    acquirer: acquirer)
+                                                    manufacturer: manufacturer)
+        
+        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
+    }
+    
+    func personalizeBackup1() {
+        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup1.data(using: .utf8)!)
+        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+        let personalizeCommand = PersonalizeCommand(config: config,
+                                                    issuer: issuer,
+                                                    manufacturer: manufacturer)
+        
+        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
+    }
+    
+    func personalizeOrigin() {
+        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonOrigin.data(using: .utf8)!)
+        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+        let personalizeCommand = PersonalizeCommand(config: config,
+                                                    issuer: issuer,
+                                                    manufacturer: manufacturer)
         
         tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
     }
@@ -551,7 +571,6 @@ extension AppModel {
         case derivePublicKey
         case attest
         case chainingExample
-        case depersonalize
         case setAccessCode
         case setPasscode
         case resetUserCodes
@@ -574,8 +593,11 @@ extension AppModel {
         case readUserData
         case writeUserData
         case writeUserProtectedData
-        
-        case personalize
+        //developer
+        case depersonalize
+        case personalizeO
+        case personalizeB1
+        case personalizeB2
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -607,7 +629,9 @@ extension AppModel {
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
         case .derivePublicKey: derivePublicKey()
-        case .personalize: personalize()
+        case .personalizeO: personalizeOrigin()
+        case .personalizeB1: personalizeBackup1()
+        case .personalizeB2: personalizeBackup2()
         }
     }
 }

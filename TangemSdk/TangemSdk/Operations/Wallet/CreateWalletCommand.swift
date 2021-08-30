@@ -31,18 +31,13 @@ public final class CreateWalletCommand: Command {
     var requiresPasscode: Bool { return true }
     
     private let curve: EllipticCurve
-    private let isPermanent: Bool
     private let signingMethod = SigningMethod.signHash
     
     private var walletIndex: Int? = nil
     /// Default initializer
-    /// - Parameter curve: Elliptic curve of the wallet
-    /// - Parameter isPermanent: If true, this wallet cannot be deleted.
-    ///   COS before v4: The card will be able to create a wallet according to its personalization only. The value of this parameter can be obtained in this way:
-    ///   `card.settings.mask.contains(.permanentWallet)`
-    public init(curve: EllipticCurve, isPermanent: Bool) {
+    /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
+    public init(curve: EllipticCurve) {
         self.curve = curve
-        self.isPermanent = isPermanent
     }
     
     deinit {
@@ -60,10 +55,6 @@ public final class CreateWalletCommand: Command {
         }
         
         if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
-            if isPermanent != card.settings.isPermanentWallet {
-                return TangemSdkError.unsupportedWalletConfig
-            }
-            
             if let cardSigningMethods = card.settings.defaultSigningMethods,
                !signingMethod.isSubset(of: cardSigningMethods) {
                 return TangemSdkError.unsupportedWalletConfig
@@ -131,10 +122,6 @@ public final class CreateWalletCommand: Command {
             let maskBuilder = MaskBuilder<WalletSettingsMask>()
             maskBuilder.add(.isReusable)
             
-            if isPermanent {
-                maskBuilder.add(.isPermanent)
-            }
-            
             try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
                 .append(.curveId, value: curve)
                 .append(.signingMethod, value: signingMethod)
@@ -148,15 +135,19 @@ public final class CreateWalletCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
+        guard let card = environment.card else {
+            throw TangemSdkError.unknownError
+        }
+        
         let decoder = TlvDecoder(tlv: tlv)
         let index = try decoder.decode(.walletIndex) ?? walletIndex!
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                  chainCode: try decoder.decode(.walletHDChain),
                                  curve: curve,
-                                 settings: Card.Wallet.Settings(isPermanent: isPermanent),
+                                 settings: Card.Wallet.Settings(isPermanent: card.settings.isPermanentWallet),
                                  totalSignedHashes: 0,
-                                 remainingSignatures: environment.card?.remainingSignatures,
+                                 remainingSignatures: card.remainingSignatures,
                                  index: index)
         
         return CreateWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)

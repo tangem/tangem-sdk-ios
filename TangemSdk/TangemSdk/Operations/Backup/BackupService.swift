@@ -16,9 +16,22 @@ public class BackupService: ObservableObject {
     
     @Published public private(set) var currentState: BackupServiceState = .needBackupCardsCount
     
-    public init(sdk: TangemSdk) {
-        //todo: init with backup count, codes and select proper initial currentState
+    public init(sdk: TangemSdk, backupCardsCount: Int? = nil, accessCode: String? = nil) throws {
         self.sdk = sdk
+        
+        if let backupCardsCount = backupCardsCount {
+            try self.handleBackupCount(.backupCardsCount(backupCardsCount))
+            nextState()
+        }
+        
+        if let accessCode = accessCode {
+            try self.handleAccessCode(.accessCode(accessCode))
+            nextState()
+        }
+    }
+    
+    deinit {
+        Log.debug("BackupService deinit")
     }
     
     public func continueProcess(with params: StateParams = .empty, completion: @escaping CompletionResult<BackupServiceState>) {
@@ -31,20 +44,20 @@ public class BackupService: ObservableObject {
                 try handleAccessCode(params)
                 completion(.success(nextState()))
             case .needScanOriginCard:
-                handleReadOriginCard() {[weak self] in
-                    self?.handleCompletion($0, completion: completion)
+                handleReadOriginCard() {
+                    self.handleCompletion($0, completion: completion)
                 }
             case .needScanBackupCard(let index):
-                handleReadBackupCard(index: index) {[weak self] in
-                    self?.handleCompletion($0, completion: completion)
+                handleReadBackupCard(index: index) {
+                    self.handleCompletion($0, completion: completion)
                 }
             case .needWriteOriginCard:
-                handleWriteOriginCard() {[weak self] in
-                    self?.handleCompletion($0, completion: completion)
+                handleWriteOriginCard() {
+                    self.handleCompletion($0, completion: completion)
                 }
             case .needWriteBackupCard(let index):
-                handleWriteBackupCard(index: index) {[weak self] in
-                    self?.handleCompletion($0, completion: completion)
+                handleWriteBackupCard(index: index) {
+                    self.handleCompletion($0, completion: completion)
                 }
             case .finished:
                 completion(.success(.finished))
@@ -64,6 +77,7 @@ public class BackupService: ObservableObject {
         }
     }
     
+    @discardableResult
     private func nextState() -> BackupServiceState {
         switch currentState {
         case .needBackupCardsCount:
@@ -374,33 +388,4 @@ public enum BackupServiceState {
     case needWriteOriginCard
     case needWriteBackupCard(index: Int)
     case finished
-}
-
-
-@available(iOS 13.0, *)
-public class BackupExample {
-    public func start() {
-        let sdk = TangemSdk()
-        let backupService = BackupService(sdk: sdk)
-        
-        // build ui with initial state
-        _ = backupService.currentState
-        
-        backupService.continueProcess(with: .backupCardsCount(2), completion: handleCompletion)
-        
-        backupService.continueProcess(with: .accessCode("111111"), completion: handleCompletion)
-        
-        backupService.continueProcess(completion: handleCompletion)
-        backupService.continueProcess(completion: handleCompletion)
-        backupService.continueProcess(completion: handleCompletion)
-    }
-    
-    private func handleCompletion(_ result: Result<BackupServiceState, TangemSdkError>) -> Void {
-        switch result {
-        case .success(let newState):
-            print("Success. New state is \(newState)")
-        case .failure(let error):
-            print("Error occured. \(error)")
-        }
-    }
 }

@@ -35,6 +35,14 @@ final class WriteBackupDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .backupAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if !card.settings.isBackupAllowed {
+            return .backupCannotBeCreated
+        }
+        
         if card.backupStatus == .noBackup {
             return .backupCannotBeCreated
         }

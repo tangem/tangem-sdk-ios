@@ -28,6 +28,10 @@ final class StartOriginCardLinkingCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .backupAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
         if !card.settings.isBackupAllowed {
             return .backupCannotBeCreated
         }

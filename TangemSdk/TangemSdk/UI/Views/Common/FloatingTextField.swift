@@ -43,7 +43,7 @@ struct FloatingTextField: View {
     @ViewBuilder
     private var textField: some View {
         if isSecured {
-            SecureField("placeholder", text: text, onCommit: onCommit)
+            SecureField("", text: text, onCommit: onCommit)
         } else {
             TextField("", text: text, onCommit: onCommit)
         }

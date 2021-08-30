@@ -80,22 +80,47 @@ public struct JSONRPCRequest {
             throw JSONRPCError(.parseError)
         }
         
+        try self.init(data: data)
+    }
+    
+    public init(data: Data) throws {
         do {
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                jsonrpc = json["jsonrpc"] as? String ?? "2.0"
-                id = json["id"] as? Int
-                params = json["params"] as? [String:Any] ?? [:]
-                
-                if let methodValue = json["method"] as? String {
-                    method = methodValue
-                } else {
-                    throw JSONRPCError(.invalidRequest, data: "method")
-                }
+                try self.init(json: json)
             } else {
                 throw JSONRPCError(.parseError)
             }
         } catch {
             throw JSONRPCError(.parseError, data: error.localizedDescription)
+        }
+    }
+    
+    public init(json: [String: Any]) throws {
+        jsonrpc = json["jsonrpc"] as? String ?? "2.0"
+        id = json["id"] as? Int
+        params = json["params"] as? [String:Any] ?? [:]
+        
+        if let methodValue = json["method"] as? String {
+            method = methodValue
+        } else {
+            throw JSONRPCError(.invalidRequest, data: "method")
+        }
+    }
+}
+
+@available(iOS 13.0, *)
+struct JSONRPCRequestParser {
+    func parse(jsonString: String) throws -> [JSONRPCRequest] {
+        guard let data = jsonString.data(using: .utf8) else {
+            throw JSONRPCError(.parseError)
+        }
+        
+        if let requestArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
+            let requests = try requestArray.map { try JSONRPCRequest(json: $0 )}
+            return requests
+        } else {
+            let request = try JSONRPCRequest(data: data)
+            return [request]
         }
     }
 }

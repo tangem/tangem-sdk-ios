@@ -51,7 +51,8 @@ struct ChangeUserCodeView: View {
                 Spacer()
                 
                 Button("common_continue".localized, action: onDone)
-                    .buttonStyle(RoundedButton(isDisabled: isContinueDisabled,
+                    .buttonStyle(RoundedButton(style: style,
+                                               isDisabled: isContinueDisabled,
                                                isLoading: false))
             }
             .keyboardAdaptive(animated: .constant(true))

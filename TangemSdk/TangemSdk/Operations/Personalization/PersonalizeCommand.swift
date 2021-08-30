@@ -16,6 +16,8 @@ import Foundation
 public class PersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
     
+    var requiresPasscode: Bool { false }
+    
     private let config: CardConfig
     private let issuer: Issuer
     private let manufacturer: Manufacturer

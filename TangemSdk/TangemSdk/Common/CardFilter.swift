@@ -11,7 +11,7 @@ import Foundation
 @available(iOS 13.0, *)
 public struct CardFilter {
     /// Filter that can be used to limit cards that can be interacted with in TangemSdk.
-    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release]
+    public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release, .sdk]
     
     /// Use this filter to configure batches allowed to work with your app
     public var batchIdFilter: ItemFilter? = nil

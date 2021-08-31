@@ -566,20 +566,39 @@ extension TangemSdk {
                              cardId: String? = nil,
                              initialMessage: String? = nil,
                              completion: @escaping (String) -> Void) {
-        var request: JSONRPCRequest!
+        
+        
         do {
-            request = try JSONRPCRequest(jsonString: jsonRequest)
+            let requests = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
+            let runnables = try requests.map { try jsonConverter.convert(request: $0) }
+            
+            if requests.count == 1 {
+                try assertCardId(cardId, for: requests[0])
+            }
+            
             try checkSession()
-            try assertCardId(cardId, for: request)
-            let runnable = try jsonConverter.convert(request: request)
             configure()
             
             let initialMessage = initialMessage.flatMap { Message($0) }
             cardSession = makeSession(with: cardId, initialMessage: initialMessage)
-            cardSession!.start(with: runnable) { completion($0.toJsonResponse(id: request.id).json) }
             
+            if runnables.count == 1 {
+                let singleRunnable = runnables[0]
+                cardSession!.start(with: singleRunnable) { completion($0.toJsonResponse(id: singleRunnable.id).json) }
+            } else {
+                let task = RunnablesTask(runnables: runnables)
+                cardSession!.start(with: task) { result in
+                    switch result {
+                    case .success(let response):
+                        completion(response.json)
+                    case .failure(let error):
+                        //Is this a possible scenario?
+                        completion(error.toJsonResponse().json)
+                    }
+                }
+            }
         } catch {
-            completion(error.toJsonResponse(id: request?.id).json)
+            completion(error.toJsonResponse().json)
         }
     }
 }

@@ -158,6 +158,36 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
+    func testParseArrayOfRequests() {
+        let name = "TestArray"
+        let fileText = readFile(name: name)
+        let jsonData = fileText.data(using: .utf8)!
+        
+        do {
+            guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
+                  let requests = json["requests"] else {
+                XCTAssert(false, "Failed to parse test json \(name)")
+                return
+            }
+            
+            let requestsData = try JSONSerialization.data(withJSONObject: requests, options: .prettyPrinted)
+            
+            guard let requestsValue = String(data: requestsData, encoding: .utf8) else {
+                XCTAssert(false, "Failed to parse test json \(name)")
+                return
+            }
+            
+            
+           let parser = JSONRPCRequestParser()
+           let parsedRequests = try parser.parse(jsonString: requestsValue)
+           print(parsedRequests)
+        
+        } catch {
+            print(error)
+            XCTAssert(false, "Failed to parse test json \(name)")
+        }
+    }
+    
     private func testPersonalizeConfig(name: String) {
         guard let testData = getTestData(for: name) else {
             XCTAssert(false, "Failed to create test data \(name)")

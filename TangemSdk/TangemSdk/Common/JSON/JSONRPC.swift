@@ -217,7 +217,7 @@ extension Error {
             return jsonError
         } else {
             let sdkError = toTangemSdkError()
-            return JSONRPCError(.internalError, data: sdkError.localizedDescription)
+            return JSONRPCError(.serverError, data: sdkError.localizedDescription)
         }
     }
 }

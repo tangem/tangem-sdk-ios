@@ -130,6 +130,32 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
+        case .jsonrpc:
+            VStack {
+                Text("Insert json or json array")
+                    .font(.headline)
+                    .bold()
+                
+                    if #available(iOS 14.0, *) {
+                        TextEditor(text: $model.json)
+                            .frame(height: 100)
+                    } else {
+                        TextField("", text: $model.json)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+            }
+            .autocapitalization(.none)
+            .disableAutocorrection(true)
+            .padding()
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2))
+            .onAppear(perform: {
+                if model.json.isEmpty {
+                    model.json = model.jsonRpcTemplate
+                }
+            })
+            
         default:
             EmptyView()
         }

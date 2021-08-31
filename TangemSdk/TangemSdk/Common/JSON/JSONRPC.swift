@@ -39,7 +39,9 @@ public final class JSONRPCConverter {
     
     public func convert(request: JSONRPCRequest) throws -> AnyJSONRPCRunnable {
         let handler = try getHandler(from: request)
-        return try handler.makeRunnable(from: request.params)
+        let runnable = try handler.makeRunnable(from: request.params)
+        runnable.id = request.id
+        return runnable
     }
     
     public func getHandler(from request: JSONRPCRequest) throws -> JSONRPCHandler {
@@ -139,6 +141,9 @@ public struct JSONRPCResponse: JSONStringConvertible {
         self.id = id
     }
 }
+
+@available(iOS 13.0, *)
+extension Array: JSONStringConvertible where Element: JSONStringConvertible {}
 
 @available(iOS 13.0, *)
 public struct JSONRPCError: Error, JSONStringConvertible, Equatable {

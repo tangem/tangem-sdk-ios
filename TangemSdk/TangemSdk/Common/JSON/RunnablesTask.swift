@@ -25,10 +25,10 @@ final class RunnablesTask: CardSessionRunnable {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<RunnablesTaskResponse>) {
-        runRunnable(in: session, with: 0, completion: completion)
+        run(in: session, with: 0, completion: completion)
     }
     
-    private func runRunnable(in session: CardSession, with index: Int, completion: @escaping CompletionResult<RunnablesTaskResponse>) {
+    private func run(in session: CardSession, with index: Int, completion: @escaping CompletionResult<RunnablesTaskResponse>) {
         if index >= runnables.count {
             completion(.success(responses))
             return
@@ -38,7 +38,7 @@ final class RunnablesTask: CardSessionRunnable {
         runnable.run(in: session) {
             let jsonResponse = $0.toJsonResponse(id: runnable.id)
             self.responses.append(jsonResponse)
-            self.runRunnable(in: session, with: index + 1, completion: completion)
+            self.run(in: session, with: index + 1, completion: completion)
         }
     }
 }

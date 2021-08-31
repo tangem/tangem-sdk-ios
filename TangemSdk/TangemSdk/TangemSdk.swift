@@ -602,23 +602,28 @@ extension TangemSdk {
         do {
             let requests = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
             let runnables = try requests.map { try jsonConverter.convert(request: $0) }
+            
             if requests.count == 1 {
                 try assertCardId(cardId, for: requests[0])
             }
+            
             try checkSession()
             configure()
+            
             let initialMessage = initialMessage.flatMap { Message($0) }
             cardSession = makeSession(with: cardId, initialMessage: initialMessage)
             
             if runnables.count == 1 {
-                cardSession!.start(with: runnables[0]) { completion($0.toJsonResponse(id: requests[0].id).json) }
+                let singleRunnable = runnables[0]
+                cardSession!.start(with: singleRunnable) { completion($0.toJsonResponse(id: singleRunnable.id).json) }
             } else {
                 let task = RunnablesTask(runnables: runnables)
                 cardSession!.start(with: task) { result in
                     switch result {
                     case .success(let response):
-                        completion("[\(response.map ({ $0.toJsonResponse().json }).joined(separator: ","))]")
+                        completion(response.json)
                     case .failure(let error):
+                        //Is this a possible scenario?
                         completion(error.toJsonResponse().json)
                     }
                 }

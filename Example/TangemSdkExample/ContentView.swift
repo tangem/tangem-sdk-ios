@@ -27,23 +27,23 @@ struct ContentView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.orange, lineWidth: 2)
                             .padding(.horizontal, 8))
-
+                
                 VStack(spacing: 4) {
                     HStack {
                         Button("Clear", action: model.clear)
                         Button("Copy", action: model.copy)
                     }
-
+                    
                     additionalView
                         .padding(.top, 4)
-
+                    
                     Picker("", selection: $model.method) {
                         ForEach(0..<AppModel.Method.allCases.count) { index in
                             Text(AppModel.Method.allCases[index].rawValue)
                                 .tag(AppModel.Method.allCases[index])
                         }
                     }.labelsHidden()
-
+                    
                     Button("Start") { model.start() }
                         .buttonStyle(ExampleButton(isLoading: model.isScanning))
                         .frame(width: 100)
@@ -132,22 +132,22 @@ struct ContentView: View {
                         .stroke(Color.orange, lineWidth: 2))
         case .jsonrpc:
             VStack {
-                Text("Insert json request or array of requests")
+                Text("Json request")
                     .font(.headline)
                     .bold()
                 
-                    if #available(iOS 14.0, *) {
-                        TextEditor(text: $model.json)
-                            .frame(height: 100)
-                    } else {
-                        TextField("", text: $model.json)
-                            .frame(height: 50)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                    }
-                
-                Button("Paste json") {
-                    if let string = UIPasteboard.general.string {
-                        model.json = string
+                if #available(iOS 14.0, *) {
+                    TextEditor(text: $model.json)
+                        .frame(height: 100)
+                    
+                    Button("Paste json", action: model.pasteJson)
+                } else {
+                    HStack {
+                        Spacer()
+                        Button("Print json", action: model.printJson)
+                        Spacer()
+                        Button("Paste json", action: model.pasteJson)
+                        Spacer()
                     }
                 }
             }

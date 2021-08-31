@@ -32,6 +32,10 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
         }
     }
     
+    deinit {
+        Log.debug("AnyJSONRPCRunnable deinit")
+    }
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<AnyJSONRPCResponse>) {
         runClosure(session, completion)
     }

@@ -9,7 +9,7 @@
 import Foundation
 
 @available(iOS 13.0, *)
-typealias RunnablesTaskResponse = [Result<AnyJSONRPCResponse, TangemSdkError>]
+typealias RunnablesTaskResponse = [JSONRPCResponse]
 
 @available(iOS 13.0, *)
 final class RunnablesTask: CardSessionRunnable {
@@ -34,8 +34,10 @@ final class RunnablesTask: CardSessionRunnable {
             return
         }
         
-        runnables[index].run(in: session) {
-            self.responses.append($0)
+        let runnable = runnables[index]
+        runnable.run(in: session) {
+            let jsonResponse = $0.toJsonResponse(id: runnable.id)
+            self.responses.append(jsonResponse)
             self.runRunnable(in: session, with: index + 1, completion: completion)
         }
     }

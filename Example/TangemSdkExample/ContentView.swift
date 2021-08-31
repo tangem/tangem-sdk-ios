@@ -132,7 +132,7 @@ struct ContentView: View {
                         .stroke(Color.orange, lineWidth: 2))
         case .jsonrpc:
             VStack {
-                Text("Insert json or json array")
+                Text("Insert json request or array of requests")
                     .font(.headline)
                     .bold()
                 
@@ -141,8 +141,15 @@ struct ContentView: View {
                             .frame(height: 100)
                     } else {
                         TextField("", text: $model.json)
+                            .frame(height: 50)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
+                
+                Button("Paste json") {
+                    if let string = UIPasteboard.general.string {
+                        model.json = string
+                    }
+                }
             }
             .autocapitalization(.none)
             .disableAutocorrection(true)

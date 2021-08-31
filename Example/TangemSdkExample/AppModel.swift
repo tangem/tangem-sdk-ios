@@ -21,26 +21,13 @@ class AppModel: ObservableObject {
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
-    @Published var json: String = ""
+    @Published var json: String =  ""
     
     //MARK:-  Outputs
     @Published var logText: String = AppModel.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
-    
-    var jsonRpcTemplate: String {
-        """
-        {
-            "jsonrpc": "2.0",
-            "id": 2,
-            "method": "",
-            "params": {
-                
-            }
-        }
-        """
-    }
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -222,11 +209,6 @@ extension AppModel {
         } catch {
             self.complete(with: error.localizedDescription)
         }
-    }
-    
-    func runJsonRpc() {
-        UIApplication.shared.endEditing()
-        tangemSdk.startSession(with: json) { self.complete(with: $0) }
     }
     
     func createWallet() {
@@ -542,6 +524,41 @@ extension AppModel {
                                        completion: handleCompletion)
     }
     
+}
+
+//MARK:- Json RPC
+extension AppModel {
+    var jsonRpcTemplate: String {
+    """
+    {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "",
+        "params": {
+            
+        }
+    }
+    """
+    }
+    
+    func runJsonRpc() {
+        UIApplication.shared.endEditing()
+        tangemSdk.startSession(with: json) { self.complete(with: $0) }
+    }
+    
+    func pasteJson() {
+        if let string = UIPasteboard.general.string {
+            json = string
+            
+            if #available(iOS 14.0, *) {} else {
+                log(json)
+            }
+        }
+    }
+    
+    func printJson() {
+        log(json)
+    }
 }
 
 

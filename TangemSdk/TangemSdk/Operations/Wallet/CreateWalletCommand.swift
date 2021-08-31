@@ -61,15 +61,6 @@ public final class CreateWalletCommand: Command {
             }
         }
         
-        return nil
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
         let maxIndex = card.settings.maxWalletsCount
         let occupiedIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex
@@ -77,10 +68,13 @@ public final class CreateWalletCommand: Command {
             self.walletIndex = firstAvailableIndex
         } else {
             //already created for old cards mostly
-            completion(.failure(maxIndex == 1 ? .alreadyCreated : .maxNumberOfWalletsCreated))
-            return
+           return maxIndex == 1 ? .alreadyCreated : .maxNumberOfWalletsCreated
         }
         
+        return nil
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):

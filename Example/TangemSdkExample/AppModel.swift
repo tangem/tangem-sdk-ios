@@ -20,12 +20,27 @@ class AppModel: ObservableObject {
     @Published var hdPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
-
+    //JSON-RPC
+    @Published var json: String = ""
+    
     //MARK:-  Outputs
     @Published var logText: String = AppModel.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
+    
+    var jsonRpcTemplate: String {
+        """
+        {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "",
+            "params": {
+                
+            }
+        }
+        """
+    }
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
@@ -210,24 +225,7 @@ extension AppModel {
     }
     
     func runJsonRpc() {
-        let json =
-        """
-            [
-                {
-                    "jsonrpc": "2.0",
-                    "id": 1,
-                    "method": "scan"
-                },
-                {
-                    "jsonrpc": "2.0",
-                    "id": 2,
-                    "method": "create_wallet",
-                    "params": {
-                        "curve": "secp256k1"
-                    }
-                }
-            ]
-        """
+        UIApplication.shared.endEditing()
         tangemSdk.startSession(with: json) { self.complete(with: $0) }
     }
     
@@ -252,7 +250,6 @@ extension AppModel {
                               cardId: cardId,
                               completion: handleCompletion)
     }
-    
 
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in

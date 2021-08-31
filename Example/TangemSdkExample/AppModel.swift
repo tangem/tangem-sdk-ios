@@ -20,7 +20,9 @@ class AppModel: ObservableObject {
     @Published var hdPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
-
+    //JSON-RPC
+    @Published var json: String =  ""
+    
     //MARK:-  Outputs
     @Published var logText: String = AppModel.logPlaceholder
     @Published var isScanning: Bool = false
@@ -234,7 +236,6 @@ extension AppModel {
                               cardId: cardId,
                               completion: handleCompletion)
     }
-    
 
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
@@ -562,6 +563,41 @@ extension AppModel {
     }
 }
 
+//MARK:- Json RPC
+extension AppModel {
+    var jsonRpcTemplate: String {
+    """
+    {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "",
+        "params": {
+            
+        }
+    }
+    """
+    }
+    
+    func runJsonRpc() {
+        UIApplication.shared.endEditing()
+        tangemSdk.startSession(with: json) { self.complete(with: $0) }
+    }
+    
+    func pasteJson() {
+        if let string = UIPasteboard.general.string {
+            json = string
+            
+            if #available(iOS 14.0, *) {} else {
+                log(json)
+            }
+        }
+    }
+    
+    func printJson() {
+        log(json)
+    }
+}
+
 
 extension AppModel {
     enum Method: String, CaseIterable {
@@ -585,6 +621,8 @@ extension AppModel {
         case deleteFirstFile
         case deleteAllFiles
         case updateFirstFileSettings
+        //case json-rpc
+        case jsonrpc
         //deprecated
         case readIssuerData
         case writeIssuerData
@@ -629,6 +667,7 @@ extension AppModel {
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
         case .derivePublicKey: derivePublicKey()
+        case .jsonrpc: runJsonRpc()
         case .personalizeO: personalizeOrigin()
         case .personalizeB1: personalizeBackup1()
         case .personalizeB2: personalizeBackup2()

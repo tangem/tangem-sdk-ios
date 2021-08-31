@@ -12,6 +12,8 @@ import Foundation
 @available(iOS 13.0, *)
 public class AnyJSONRPCRunnable: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode = .fullCardRead
+    /// Request Id
+    public var id: Int? = nil
     
     private let runClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<AnyJSONRPCResponse>) -> Void
 
@@ -28,6 +30,10 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
                 }
             }
         }
+    }
+    
+    deinit {
+        Log.debug("AnyJSONRPCRunnable deinit")
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<AnyJSONRPCResponse>) {

@@ -45,8 +45,6 @@ public extension Card {
         var isIssuerDataProtectedAgainstReplay: Bool
         @SkipEncoding
         var isSelectBlockchainAllowed: Bool
-        @SkipEncoding
-        var mask: CardSettingsMask
     }
 }
 
@@ -69,7 +67,6 @@ extension Card.Settings {
         self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
         self.isHDWalletsAllowed = mask.contains(.allowHDWallets)
         self.isBackupAllowed = mask.contains(.allowBackup)
-        self.mask = mask
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {

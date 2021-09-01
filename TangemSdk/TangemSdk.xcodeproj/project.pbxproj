@@ -31,7 +31,7 @@
 		5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2426A0199100D2EDC1 /* WalletData.swift */; };
 		5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */; };
 		5D2B798626BC3DBF002A78D4 /* DerivePublicKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B798526BC3DBF002A78D4 /* DerivePublicKeyCommand.swift */; };
-		5D2BDF8626DD4869002F7E19 /* TestArray.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8526DD4869002F7E19 /* TestArray.json */; };
+		5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */; };
 		5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */; };
 		5D2F3EE426CBDAA100779CAC /* KeyboardHeightPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2F3EE226CBDAA000779CAC /* KeyboardHeightPublisher.swift */; };
 		5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2F3EE326CBDAA000779CAC /* KeyboardAdaptive.swift */; };
@@ -306,7 +306,7 @@
 		5D270F2426A0199100D2EDC1 /* WalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletData.swift; sourceTree = "<group>"; };
 		5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataDeserializer.swift; sourceTree = "<group>"; };
 		5D2B798526BC3DBF002A78D4 /* DerivePublicKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivePublicKeyCommand.swift; sourceTree = "<group>"; };
-		5D2BDF8526DD4869002F7E19 /* TestArray.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestArray.json; sourceTree = "<group>"; };
+		5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestParseRequest.json; sourceTree = "<group>"; };
 		5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnablesTask.swift; sourceTree = "<group>"; };
 		5D2F3EE226CBDAA000779CAC /* KeyboardHeightPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardHeightPublisher.swift; sourceTree = "<group>"; };
 		5D2F3EE326CBDAA000779CAC /* KeyboardAdaptive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardAdaptive.swift; sourceTree = "<group>"; };
@@ -687,7 +687,7 @@
 				5D4B127426D3CCE5006E173C /* Files */,
 				5D3217442684B193000C3AAF /* Personalize */,
 				5D46F15E26811D4000DC6447 /* SignHash.json */,
-				5D2BDF8526DD4869002F7E19 /* TestArray.json */,
+				5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */,
 				5D3B9F0226BD678500532CC7 /* SignHashes.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
 				5D5440892682260000F7D05B /* SetAccessCode.json */,
@@ -1422,7 +1422,7 @@
 				5D5440982682497100F7D05B /* v4.json in Resources */,
 				5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */,
 				5D3B9F0326BD678500532CC7 /* SignHashes.json in Resources */,
-				5D2BDF8626DD4869002F7E19 /* TestArray.json in Resources */,
+				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
 				5D544096268244DB00F7D05B /* PreflightRead.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,

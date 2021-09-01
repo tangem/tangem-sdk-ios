@@ -215,7 +215,9 @@ public class BackupService: ObservableObject {
             let task = FinalizeOriginCardTask(backupCards: linkableBackupCards,
                                               accessCode: accessCode,
                                               passcode: passcode,
-                                              originCardLinkingKey: originCard.linkingKey)
+                                              originCardLinkingKey: originCard.linkingKey,
+                                              attestSignature: repo.attestSignature,
+                                              onLink: { self.repo.attestSignature = $0 })
             
             sdk.startSession(with: task, cardId: originCard.cardId,
                              initialMessage: Message(header: "Scan origin card with cardId: \(originCard.cardId)")) {[weak self] result in
@@ -223,7 +225,6 @@ public class BackupService: ObservableObject {
                 
                 switch result {
                 case .success(let response):
-                    self.repo.attestSignature = response.attestSignature
                     self.repo.backupData = response.backupData
                     completion(.success(()))
                 case .failure(let error):

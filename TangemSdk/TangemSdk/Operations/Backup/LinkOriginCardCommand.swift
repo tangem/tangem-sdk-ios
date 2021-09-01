@@ -59,6 +59,9 @@ final class LinkOriginCardCommand: Command {
             switch result {
             case .success(let response):
                 session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
+                session.environment.card?.settings.isSettingAccessCodeAllowed = true
+                session.environment.card?.settings.isSettingPasscodeAllowed = true
+                session.environment.card?.settings.isRemovingAccessCodeAllowed = false
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))

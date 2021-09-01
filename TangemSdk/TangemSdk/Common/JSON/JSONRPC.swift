@@ -56,7 +56,6 @@ public final class JSONRPCConverter {
 @available(iOS 13.0, *)
 public protocol JSONRPCHandler {
     var method: String { get }
-    var requiresCardId: Bool { get }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable
 }
@@ -112,17 +111,34 @@ public struct JSONRPCRequest {
 
 @available(iOS 13.0, *)
 struct JSONRPCRequestParser {
-    func parse(jsonString: String) throws -> [JSONRPCRequest] {
+    func parse(jsonString: String) throws -> ParseResult {
         guard let data = jsonString.data(using: .utf8) else {
             throw JSONRPCError(.parseError)
         }
         
         if let requestArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
             let requests = try requestArray.map { try JSONRPCRequest(json: $0 )}
-            return requests
+            if requests.isEmpty {
+                throw JSONRPCError(.invalidRequest)
+            }
+            return .array(requests)
         } else {
             let request = try JSONRPCRequest(data: data)
-            return [request]
+            return .single(request)
+        }
+    }
+    
+    enum ParseResult {
+        case array([JSONRPCRequest])
+        case single(JSONRPCRequest)
+        
+        var requests: [JSONRPCRequest] {
+            switch self {
+            case .array(let requests):
+                return requests
+            case .single(let request):
+                return [request]
+            }
         }
     }
 }

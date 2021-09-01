@@ -15,7 +15,7 @@ protocol StringCodable: Codable & RawRepresentable where RawValue == String {}
 extension StringCodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
-        let stringValue = try values.decode(String.self).lowercased()
+        let stringValue = try values.decode(String.self).lowercasingFirst()
         
         if let value = Self(rawValue: stringValue) {
             self = value

@@ -117,6 +117,8 @@ extension Command {
                         switch mappedError {
                         case .accessCodeRequired:
                             self.requestPin(.accessCode, session, completion: completion) //only read command
+                        case .passcodeRequired:
+                            self.requestPin(.passcode, session, completion: completion)
                         case .invalidParams:
                             if self.requiresPasscode {
                                 //Addition check for COS v4 and newer to prevent false-positive pin2 request

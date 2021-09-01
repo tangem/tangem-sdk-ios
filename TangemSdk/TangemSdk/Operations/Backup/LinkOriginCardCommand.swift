@@ -76,7 +76,6 @@ final class LinkOriginCardCommand: Command {
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)
-            .append(.settingsMask, value: environment.card?.settings.mask)
         
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()

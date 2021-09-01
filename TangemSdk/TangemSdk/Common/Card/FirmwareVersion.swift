@@ -124,8 +124,8 @@ public extension FirmwareVersion {
 
 @available(iOS 13.0, *)
 public extension FirmwareVersion {
-    enum FirmwareType: String, Codable, CaseIterable, JSONStringConvertible {
-        case sdk = "d SDK"
+    enum FirmwareType: String, StringCodable, CaseIterable, JSONStringConvertible {
+        case sdk = "d SDK" //todo fix
         case release = "r"
         case special
         

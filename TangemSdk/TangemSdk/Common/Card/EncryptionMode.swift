@@ -9,7 +9,7 @@
 import Foundation
 
 /// All available encryption modes
-public enum EncryptionMode: String, Codable {
+public enum EncryptionMode: String, StringCodable {
     case none
     case fast
     case strong

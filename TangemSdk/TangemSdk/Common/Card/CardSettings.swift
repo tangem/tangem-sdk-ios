@@ -17,11 +17,11 @@ public extension Card {
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Is allowed to change access code
-        public let isSettingAccessCodeAllowed: Bool
+        public internal(set) var isSettingAccessCodeAllowed: Bool
         /// Is  allowed to change passcode
-        public let isSettingPasscodeAllowed: Bool
+        public internal(set) var isSettingPasscodeAllowed: Bool
         /// Is allowed to remove access code
-        public let isRemovingAccessCodeAllowed: Bool
+        public internal(set) var isRemovingAccessCodeAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card

@@ -57,7 +57,7 @@ public struct Attestation: JSONStringConvertible, Equatable {
 
 @available(iOS 13.0, *)
 public extension Attestation {
-    enum Status: String, Codable {
+    enum Status: String, StringCodable {
         case failed, warning, skipped, verifiedOffline, verified
     }
 }

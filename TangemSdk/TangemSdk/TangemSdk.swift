@@ -600,32 +600,30 @@ extension TangemSdk {
         
         
         do {
-            let requests = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
-            let runnables = try requests.map { try jsonConverter.convert(request: $0) }
-            
-            if requests.count == 1 {
-                try assertCardId(cardId, for: requests[0])
-            }
+            let parseResult = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
+            let runnables = try parseResult.requests.map { try jsonConverter.convert(request: $0) }
             
             try checkSession()
             configure()
+            cardSession = makeSession(with: cardId,
+                                      initialMessage: initialMessage.flatMap { Message($0) })
             
-            let initialMessage = initialMessage.flatMap { Message($0) }
-            cardSession = makeSession(with: cardId, initialMessage: initialMessage)
-            
-            if runnables.count == 1 {
-                let singleRunnable = runnables[0]
-                cardSession!.start(with: singleRunnable) { completion($0.toJsonResponse(id: singleRunnable.id).json) }
-            } else {
-                let task = RunnablesTask(runnables: runnables)
-                cardSession!.start(with: task) { result in
-                    switch result {
-                    case .success(let response):
+            let task = RunnablesTask(runnables: runnables)
+            cardSession!.start(with: task) { result in
+                switch result {
+                case .success(let response):
+                    switch parseResult {
+                    case .array:
                         completion(response.json)
-                    case .failure(let error):
-                        //Is this a possible scenario?
-                        completion(error.toJsonResponse().json)
+                    case .single:
+                        if response.count == 1 {
+                            completion(response[0].json)
+                        } else {
+                            completion(TangemSdkError.unknownError.toJsonResponse().json)
+                        }
                     }
+                case .failure(let error):
+                    completion(error.toJsonResponse().json)
                 }
             }
         } catch {
@@ -656,13 +654,5 @@ private extension TangemSdk {
                     cardReader: reader,
                     viewDelegate: viewDelegate,
                     jsonConverter: jsonConverter)
-    }
-    
-    func assertCardId(_ cardId: String?, for request: JSONRPCRequest) throws {
-        let handler = try jsonConverter.getHandler(from: request)
-        if handler.requiresCardId && cardId == nil {
-            let data = "Method: \(request.method). CardId is required" //TODO: Localize
-            throw JSONRPCError(.invalidParams, data: data)
-        }
     }
 }

@@ -158,29 +158,50 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
-    func testParseArrayOfRequests() {
-        let name = "TestArray"
+    func testParseRequest() {
+        let name = "TestParseRequest"
         let fileText = readFile(name: name)
         let jsonData = fileText.data(using: .utf8)!
         
         do {
             guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
-                  let requests = json["requests"] else {
+                  let array = json["array"],
+                  let singleItem = json["singleItem"],
+                  let request = json["singleRequest"] else {
                 XCTAssert(false, "Failed to parse test json \(name)")
                 return
             }
             
-            let requestsData = try JSONSerialization.data(withJSONObject: requests, options: .prettyPrinted)
+            let arrayData = try JSONSerialization.data(withJSONObject: array, options: .prettyPrinted)
+            let singleItemData = try JSONSerialization.data(withJSONObject: singleItem, options: .prettyPrinted)
+            let requestData = try JSONSerialization.data(withJSONObject: request, options: .prettyPrinted)
             
-            guard let requestsValue = String(data: requestsData, encoding: .utf8) else {
+            guard let arrayValue = String(data: arrayData, encoding: .utf8),
+                  let singleItemValue = String(data: singleItemData, encoding: .utf8),
+                  let requestValue = String(data: requestData, encoding: .utf8) else {
                 XCTAssert(false, "Failed to parse test json \(name)")
                 return
             }
             
             
-           let parser = JSONRPCRequestParser()
-           let parsedRequests = try parser.parse(jsonString: requestsValue)
-           print(parsedRequests)
+            let parser = JSONRPCRequestParser()
+            let parsedArray = try parser.parse(jsonString: arrayValue)
+            guard case .array = parsedArray else {
+                XCTAssert(false, "Parsed result is not array")
+                return
+            }
+            
+            let parsedSingleItem = try parser.parse(jsonString: singleItemValue)
+            guard case .array = parsedSingleItem else {
+                XCTAssert(false, "Parsed result is not array")
+                return
+            }
+            
+            let parsedRequest = try parser.parse(jsonString: requestValue)
+            guard case .single = parsedRequest else {
+                XCTAssert(false, "Parsed result is not single request")
+                return
+            }
         
         } catch {
             print(error)

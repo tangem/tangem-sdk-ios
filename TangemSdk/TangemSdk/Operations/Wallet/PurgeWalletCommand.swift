@@ -44,6 +44,7 @@ public final class PurgeWalletCommand: Command {
 			switch result {
 			case .success(let response):
                 session.environment.card?.wallets[self.walletPublicKey] = nil
+                //TODO: handle backup reset
 				completion(.success(response))
 			case .failure(let error):
 				completion(.failure(error))

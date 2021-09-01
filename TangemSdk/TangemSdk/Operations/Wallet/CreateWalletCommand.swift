@@ -142,7 +142,8 @@ public final class CreateWalletCommand: Command {
                                  settings: Card.Wallet.Settings(isPermanent: card.settings.isPermanentWallet),
                                  totalSignedHashes: 0,
                                  remainingSignatures: card.remainingSignatures,
-                                 index: index)
+                                 index: index,
+                                 hasBackup: false)
         
         return CreateWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
     }

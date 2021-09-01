@@ -23,7 +23,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     private let onLink: (Data) -> Void
     
     private var backupData: [String:EncryptedBackupData] = [:]
-  
+    
     init(backupCards: [LinkableBackupCard],
          accessCode: Data,
          passcode: Data,
@@ -55,30 +55,18 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         
         let linkAction = getLinkAction(with: backupStatus)
         
-    
-        var accessCodeCopy: UserCode? = nil
-        var passcodeCopy: UserCode? = nil
-        
         if case .retry = linkAction { //User codes already changed. We should swap codes
-            accessCodeCopy = session.environment.accessCode
-            passcodeCopy = session.environment.accessCode
-        
             session.environment.accessCode = UserCode(.accessCode, value: accessCode)
             session.environment.passcode = UserCode(.passcode, value: passcode)
         }
         
         if linkAction != .skip {
             let command = LinkBackupCardsCommand(backupCards: backupCards,
-                         accessCode: accessCode,
-                         passcode: passcode,
-                         originCardLinkingKey: originCardLinkingKey)
+                                                 accessCode: accessCode,
+                                                 passcode: passcode,
+                                                 originCardLinkingKey: originCardLinkingKey)
             
             command.run(in: session) { linkResult in
-                if case .retry = linkAction { // Swap codes back
-                    session.environment.accessCode = accessCodeCopy!
-                    session.environment.passcode = passcodeCopy!
-                }
-            
                 switch linkResult {
                 case .success(let linkResponse):
                     self.onLink(linkResponse.attestSignature)
@@ -91,7 +79,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
             self.readBackupData(session: session, index: 0, completion: completion)
         }
     }
-
+    
     private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<FinalizeOriginCardResponse>) {
         if index >= backupCards.count {
             completion(.success(FinalizeOriginCardResponse(backupData: backupData)))

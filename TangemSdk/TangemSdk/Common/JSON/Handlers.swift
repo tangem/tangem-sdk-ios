@@ -22,7 +22,6 @@ class ScanHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SignHashesHandler: JSONRPCHandler {
     var method: String { "SIGN_HASHES" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
@@ -41,7 +40,6 @@ class SignHashesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SignHashHandler: JSONRPCHandler {
     var method: String { "SIGN_HASH" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
@@ -60,7 +58,6 @@ class SignHashHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class CreateWalletHandler: JSONRPCHandler {
     var method: String { "CREATE_WALLET" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
@@ -72,7 +69,6 @@ class CreateWalletHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class PurgeWalletHandler: JSONRPCHandler {
     var method: String { "PURGE_WALLET" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
@@ -84,7 +80,6 @@ class PurgeWalletHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class PersonalizeHandler: JSONRPCHandler {
     var method: String { "PERSONALIZE" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let config: CardConfig = try parameters.value(for: "config")
@@ -103,7 +98,6 @@ class PersonalizeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class DepersonalizeHandler: JSONRPCHandler {
     var method: String { "DEPERSONALIZE" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let command = DepersonalizeCommand()
@@ -114,7 +108,6 @@ class DepersonalizeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SetAccessCodeHandler: JSONRPCHandler {
     var method: String { "SET_ACCESSCODE" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let accessCode: String? = try parameters.value(for: "accessCode")
@@ -126,7 +119,6 @@ class SetAccessCodeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class SetPasscodeHandler: JSONRPCHandler {
     var method: String { "SET_PASSCODE" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let passcode: String? = try parameters.value(for: "passcode")
@@ -138,7 +130,6 @@ class SetPasscodeHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class ResetUserCodesHandler: JSONRPCHandler {
     var method: String { "RESET_USERCODES" }
-    var requiresCardId: Bool { true }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         return SetUserCodeCommand.resetUserCodes.eraseToAnyRunnable()
@@ -148,7 +139,6 @@ class ResetUserCodesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class PreflightReadHandler: JSONRPCHandler {
     var method: String { "PREFLIGHT_READ" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let cardId: String? = try parameters.value(for: "cardId")
@@ -161,7 +151,6 @@ class PreflightReadHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class ReadFilesHandler: JSONRPCHandler {
     var method: String { "READ_FILES" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let readPrivateFiles: Bool? = try parameters.value(for: "readPrivateFiles")
@@ -176,7 +165,6 @@ class ReadFilesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class WriteFilesHandler: JSONRPCHandler {
     var method: String { "WRITE_FILES" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         var files: [DataToWrite] = []
@@ -207,7 +195,6 @@ class WriteFilesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class DeleteFilesHandler: JSONRPCHandler {
     var method: String { "DELETE_FILES" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let indices: [Int]? = try parameters.value(for: "filesToDelete")
@@ -219,7 +206,6 @@ class DeleteFilesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class ChangeFileSettingsHandler: JSONRPCHandler {
     var method: String { "CHANGE_FILE_SETTINGS" }
-    var requiresCardId: Bool { false }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let changes: [FileSettingsChange] = try parameters.value(for: "changes")

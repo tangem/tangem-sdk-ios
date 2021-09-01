@@ -21,7 +21,9 @@
     ],
     "isPermanentWallet" : true,
     "isSelectBlockchainAllowed" : true,
-    "isIssuerDataProtectedAgainstReplay" : true
+    "isIssuerDataProtectedAgainstReplay" : true,
+    "isHDWalletsAllowed" : true,
+    "isBackupAllowed" : true
   },
   "issuer" : {
     "name" : "TANGEM AG",
@@ -76,5 +78,8 @@
       "index" : 2
     }
   ],
-  "isPin2Default" : true
+  "isPin2Default" : true,
+  "backupStatus" : {
+      "status" : "noBackup"
+  }
 }

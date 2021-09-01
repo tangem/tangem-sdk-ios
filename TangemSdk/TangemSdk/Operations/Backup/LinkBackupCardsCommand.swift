@@ -68,7 +68,6 @@ final class LinkBackupCardsCommand: Command {
                     dataAttest += self.backupCards.map { $0.linkingKey }.joined()
                     dataAttest += self.accessCode
                     dataAttest += self.passcode
-                    dataAttest += card.settings.mask.rawValue.bytes4 //todo: remove
                     
                     let verified = try CryptoUtils.verify(curve: .secp256k1,
                                                           publicKey: card.cardPublicKey,

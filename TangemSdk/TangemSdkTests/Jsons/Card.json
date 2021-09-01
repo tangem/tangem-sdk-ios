@@ -81,7 +81,7 @@
       "hasBackup" : false
     }
   ],
-  "isPin2Default" : true,
+  "isPasscodeSet" : true,
   "backupStatus" : {
       "status" : "noBackup"
   }

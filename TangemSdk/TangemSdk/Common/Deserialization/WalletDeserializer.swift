@@ -46,10 +46,10 @@ class WalletDeserializer {
             throw TangemSdkError.walletIsNotCreated
         }
         
-        return try deserialize(from: decoder)
+        return try deserialize(from: decoder, status: status)
     }
     
-    private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
+    private func deserialize(from decoder: TlvDecoder, status: Card.Wallet.Status) throws -> Card.Wallet {
         let mask: WalletSettingsMask? = try decoder.decode(.settingsMask)
         let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
             ?? .init(isPermanent: isDefaultPermanentWallet)
@@ -59,6 +59,7 @@ class WalletDeserializer {
                            curve: try decoder.decode(.curveId),
                            settings: settings,
                            totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                           index: try decoder.decode(.walletIndex))
+                           index: try decoder.decode(.walletIndex),
+                           hasBackup: status == .backuped)
     }
 }

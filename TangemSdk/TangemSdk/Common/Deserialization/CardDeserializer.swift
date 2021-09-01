@@ -49,7 +49,8 @@ struct CardDeserializer {
                                      settings: walletSettings,
                                      totalSignedHashes: try decoder.decode(.walletSignedHashes),
                                      remainingSignatures: remainingSignatures,
-                                     index: 0)
+                                     index: 0,
+                                     hasBackup: false)
             
             wallets.append(wallet)
         }

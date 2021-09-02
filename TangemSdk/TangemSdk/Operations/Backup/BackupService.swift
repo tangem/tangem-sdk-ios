@@ -11,140 +11,92 @@ import Combine
 
 @available(iOS 13.0, *)
 public class BackupService: ObservableObject {
+    public static let maxBackupCardsCount = 2
+    
+    @Published public private(set) var currentState: State = .preparing
+    
+    public var canAddBackupCards: Bool {
+        addedBackupCardsCount < BackupService.maxBackupCardsCount
+        &&  repo.originCard?.linkingKey != nil
+    }
+    
+    public var addedBackupCardsCount: Int { repo.backupCards.count }
+    public var canProceed: Bool { currentState != .preparing && currentState != .finished }
+    public var accessCodeIsSet: Bool { repo.accessCode != nil }
+    public var originCardIsSet: Bool { repo.originCard != nil }
+    
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
     
-    @Published public private(set) var currentState: BackupServiceState = .needBackupCardsCount
-    
-    public init(sdk: TangemSdk, backupCardsCount: Int? = nil, accessCode: String? = nil) throws {
+    public init(sdk: TangemSdk) {
         self.sdk = sdk
-        
-        if let backupCardsCount = backupCardsCount {
-            try self.handleBackupCount(.backupCardsCount(backupCardsCount))
-            nextState()
-        }
-        
-        if let accessCode = accessCode {
-            try self.handleAccessCode(.accessCode(accessCode))
-            nextState()
-        }
     }
     
     deinit {
         Log.debug("BackupService deinit")
     }
     
-    public func continueProcess(with params: StateParams = .empty, completion: @escaping CompletionResult<BackupServiceState>) {
-        do {
-            switch currentState {
-            case .needBackupCardsCount:
-                try handleBackupCount(params)
-                completion(.success(nextState()))
-            case .needAccessCode:
-                try handleAccessCode(params)
-                completion(.success(nextState()))
-            case .needScanOriginCard:
-                handleReadOriginCard() {
-                    self.handleCompletion($0, completion: completion)
-                }
-            case .needScanBackupCard(let index):
-                handleReadBackupCard(index: index) {
-                    self.handleCompletion($0, completion: completion)
-                }
-            case .needWriteOriginCard:
-                handleWriteOriginCard() {
-                    self.handleCompletion($0, completion: completion)
-                }
-            case .needWriteBackupCard(let index):
-                handleWriteBackupCard(index: index) {
-                    self.handleCompletion($0, completion: completion)
-                }
-            case .finished:
-                completion(.success(.finished))
-            }
-        }
-        catch {
-            completion(.failure(error.toTangemSdkError()))
-        }
-    }
-    
-    private func handleCompletion(_ result: Result<Void, TangemSdkError>, completion: @escaping CompletionResult<BackupServiceState>) -> Void {
-        switch result {
-        case .success:
-            completion(.success(nextState()))
-        case .failure(let error):
-            completion(.failure(error.toTangemSdkError()))
-        }
-    }
-    
-    @discardableResult
-    private func nextState() -> BackupServiceState {
-        switch currentState {
-        case .needBackupCardsCount:
-            currentState = .needAccessCode //todo check if access code already exists
-        case .needAccessCode:
-            currentState = .needScanOriginCard
-        case .needScanOriginCard:
-            currentState = .needScanBackupCard(index: 1)
-        case .needScanBackupCard(let index):
-            if index == repo.backupCardsCount {
-                currentState = .needWriteOriginCard
-            } else {
-                currentState = .needScanBackupCard(index: index + 1)
-            }
-        case .needWriteOriginCard:
-            currentState = .needWriteBackupCard(index: 1)
-        case .needWriteBackupCard(let index):
-            if index == repo.backupCardsCount {
-                currentState = .finished
-            } else {
-                currentState = .needWriteBackupCard(index: index + 1)
-            }
-        case .finished:
-            break
+    public func addBackupCard(completion: @escaping CompletionResult<Void>) {
+        guard let originCardLinkingKey = repo.originCard?.linkingKey else {
+            completion(.failure(.missingOriginCard))
+            return
         }
         
-        return currentState
+        if !canAddBackupCards {
+            completion(.failure(.tooMuchBackupCards))
+            return
+        }
+        
+        readBackupCard(originCardLinkingKey, completion: completion)
     }
     
-    private func handleBackupCount(_ params: StateParams) throws {
-        guard case let .backupCardsCount(count) = params else {
-            throw TangemSdkError.invalidParams
-        }
-        
-        guard count > 0 && count < 3 else {
-            throw TangemSdkError.invalidParams
-        }
-        
-        repo.backupCardsCount = count
-    }
-    
-    private func handleAccessCode(_ params: StateParams) throws {
-        guard case let .accessCode(code) = params else {
-            throw TangemSdkError.invalidParams
-        }
-        
+    public func setAccessCode(_ code: String) throws {
         guard !code.isEmpty else {
             throw TangemSdkError.invalidParams
         }
         
+        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+            throw TangemSdkError.accessCodeCannotBeChanged
+        }
+        
         repo.accessCode = code.sha256()
+        updateState()
     }
     
-    private func handleReadOriginCard(completion: @escaping CompletionResult<Void>) {
+    public func proceedBackup(completion: @escaping CompletionResult<State>) {
+        switch currentState {
+        case .needWriteOriginCard:
+            handleWriteOriginCard() {
+                self.handleCompletion($0, completion: completion)
+            }
+        case .needWriteBackupCard(let index):
+            handleWriteBackupCard(index: index) {
+                self.handleCompletion($0, completion: completion)
+            }
+        case .finished:
+            completion(.success(.finished))
+        case .preparing:
+            completion(.failure(TangemSdkError.backupInvalidCommandSequence))
+        }
+    }
+    
+    public func setOriginCard(_ originCard: OriginCard) {
+        repo.originCard = originCard
+        updateState()
+        
+        DispatchQueue.global().async {
+            self.fetchCertificate(for: originCard.cardId, cardPublicKey: originCard.cardPublicKey)
+        }
+    }
+    
+    public func readOriginCard(completion: @escaping CompletionResult<Void>) {
         sdk.startSession(with: StartOriginCardLinkingCommand(),
                          initialMessage: Message(header: "Scan origin card")
         ) {[weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.repo.originCard = OriginCard(cardId: response.cardId,
-                                                  cardPublicKey: response.cardPublicKey,
-                                                  linkingKey: response.linkingKey)
-                DispatchQueue.global().async {
-                    self.fetchCertificate(for: response.cardId, cardPublicKey: response.cardPublicKey)
-                }
-                
+                self.setOriginCard(response)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
@@ -152,29 +104,50 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func handleReadBackupCard(index: Int, completion: @escaping CompletionResult<Void>) {
-        guard let originCardLinkingKey = repo.originCard?.linkingKey else {
-            completion(.failure(.missingOriginCard))
-            return
+    private func handleCompletion(_ result: Result<Void, TangemSdkError>, completion: @escaping CompletionResult<State>) -> Void {
+        switch result {
+        case .success:
+            completion(.success(updateState()))
+        case .failure(let error):
+            completion(.failure(error.toTangemSdkError()))
+        }
+    }
+    
+    @discardableResult
+    private func updateState() -> State {
+        if repo.accessCode == nil
+            || repo.originCard == nil
+            || repo.backupCards.isEmpty {
+            currentState = .preparing
+        } else if repo.attestSignature == nil || repo.backupData.isEmpty {
+            currentState = .needWriteOriginCard
+        } else if repo.finalizedBackupCardsCount < repo.backupCards.count {
+            currentState = .needWriteBackupCard(index: repo.finalizedBackupCardsCount + 1)
+        } else {
+            currentState = .finished
         }
         
+        return currentState
+    }
+    
+    private func addBackupCard(_ backupCard: BackupCard) {
+        repo.backupCards.append(backupCard)
+        addedBackupCardsCount = repo.backupCards.count
+        updateState()
+        
+        DispatchQueue.global().async {
+            self.fetchCertificate(for: backupCard.cardId, cardPublicKey: backupCard.cardPublicKey)
+        }
+    }
+    
+    private func readBackupCard(_ originCardLinkingKey: Data, completion: @escaping CompletionResult<Void>) {
         sdk.startSession(with: StartBackupCardLinkingCommand(originCardLinkingKey: originCardLinkingKey),
-                         initialMessage: Message(header: "Scan backup card with index: \(index)")) {[weak self] result in
+                         initialMessage: Message(header: "Scan backup card with index: \(repo.backupCards.count + 1)")) {[weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                let backupCard = BackupCard(cardId: response.cardId,
-                                            cardPublicKey: response.cardPublicKey,
-                                            linkingKey: response.linkingKey,
-                                            attestSignature: response.attestSignature)
-                
-                self.repo.backupCards.append(backupCard)
-                
-                DispatchQueue.global().async {
-                    self.fetchCertificate(for: response.cardId, cardPublicKey: response.cardPublicKey)
-                }
-                
+                self.addBackupCard(response)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
@@ -290,6 +263,7 @@ public class BackupService: ObservableObject {
                              initialMessage: Message(header: "Scan backup card with cardId: \(originCard.cardId)")) { result in
                 switch result {
                 case .success:
+                    self.repo.finalizedBackupCardsCount += 1
                     completion(.success(()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -310,14 +284,13 @@ public class BackupService: ObservableObject {
             .append(.cardPublicKey, value: cardPublicKey)
             .append(.issuerDataSignature, value: signature)
             .serialize()
-      
+        
         repo.certificates[cardId] = certificate
     }
 }
 
 @available(iOS 13.0, *)
 class BackupRepo {
-    var backupCardsCount: Int? = nil
     var accessCode: Data? = nil
     var passcode: Data? = UserCodeType.passcode.defaultValue.sha256()
     var originCard: OriginCard? = nil
@@ -325,12 +298,13 @@ class BackupRepo {
     var backupCards: [BackupCard] = []
     var certificates: [String:Data] = [:]
     var backupData: [String:EncryptedBackupData] = [:]
+    var finalizedBackupCardsCount: Int = 0
 }
 
-struct OriginCard {
-    let cardId: String
-    let cardPublicKey: Data
-    let linkingKey: Data
+public struct OriginCard {
+    public let cardId: String
+    public let cardPublicKey: Data
+    public let linkingKey: Data
     
     func makeLinkable(with certificate: Data) -> LinkableOriginCard {
         LinkableOriginCard(cardId: cardId,
@@ -375,18 +349,12 @@ struct LinkableBackupCard {
     let certificate: Data
 }
 
-public enum StateParams {
-    case empty
-    case accessCode(String)
-    case backupCardsCount(Int)
-}
-
-public enum BackupServiceState {
-    case needBackupCardsCount
-    case needAccessCode
-    case needScanOriginCard
-    case needScanBackupCard(index: Int)
-    case needWriteOriginCard
-    case needWriteBackupCard(index: Int)
-    case finished
+@available(iOS 13.0, *)
+extension BackupService {
+    public enum State: Equatable {
+        case preparing
+        case needWriteOriginCard
+        case needWriteBackupCard(index: Int)
+        case finished
+    }
 }

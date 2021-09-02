@@ -30,7 +30,7 @@ class AppModel: ObservableObject {
     @Published var showWalletSelection: Bool = false
     
     lazy var backupService: BackupService = {
-        return try! BackupService(sdk: tangemSdk)
+        return BackupService(sdk: tangemSdk)
     }()
     
     private lazy var tangemSdk: TangemSdk = {

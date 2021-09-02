@@ -8,18 +8,6 @@
 
 import Foundation
 
-/// Response from the Tangem card after `StartBackupCardLinkingCommand`.
-@available(iOS 13.0, *)
-struct StartBackupCardLinkingResponse {
-    /// Unique Tangem card ID number
-    let cardId: String
-    /// Card public key
-    let cardPublicKey: Data
-    /// Linking key
-    let linkingKey: Data
-    /// Attest signature
-    let attestSignature: Data
-}
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingCommand: Command {
@@ -56,7 +44,7 @@ final class StartBackupCardLinkingCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<StartBackupCardLinkingResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
@@ -90,7 +78,7 @@ final class StartBackupCardLinkingCommand: Command {
         return CommandApdu(.startBackupCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> StartBackupCardLinkingResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> BackupCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -101,9 +89,9 @@ final class StartBackupCardLinkingCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        return StartBackupCardLinkingResponse(cardId: try decoder.decode(.cardId),
-                                              cardPublicKey: cardKey,
-                                              linkingKey: try decoder.decode(.backupCardLinkingKey),
-                                              attestSignature: try decoder.decode(.cardSignature))
+        return BackupCard(cardId: try decoder.decode(.cardId),
+                          cardPublicKey: cardKey,
+                          linkingKey: try decoder.decode(.backupCardLinkingKey),
+                          attestSignature: try decoder.decode(.cardSignature))
     }
 }

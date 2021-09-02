@@ -80,7 +80,7 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showBackupView, content: {
             BackupView()
-                .environmentObject(model)
+                .environmentObject(model.backupService)
         })
     }
     

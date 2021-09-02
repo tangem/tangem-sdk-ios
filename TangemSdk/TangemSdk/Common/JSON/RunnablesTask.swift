@@ -24,8 +24,30 @@ final class RunnablesTask: CardSessionRunnable {
         Log.debug("RunnablesTask deinit")
     }
     
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+        prepare(session, with: 0, completion: completion)
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<RunnablesTaskResponse>) {
         run(in: session, with: 0, completion: completion)
+    }
+    
+    private func prepare(_ session: CardSession, with index: Int, completion: @escaping CompletionResult<Void>) {
+        if index >= runnables.count {
+            completion(.success(()))
+            return
+        }
+        
+        let runnable = runnables[index]
+        runnable.prepare(session) { result in
+            switch result {
+            case .success:
+                self.prepare(session, with: index + 1, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+           
+        }
     }
     
     private func run(in session: CardSession, with index: Int, completion: @escaping CompletionResult<RunnablesTaskResponse>) {

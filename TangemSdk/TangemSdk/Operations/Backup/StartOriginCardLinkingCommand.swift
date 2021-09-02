@@ -8,19 +8,8 @@
 
 import Foundation
 
-/// Response from the Tangem card after `StartOriginCardLinkingCommand`.
 @available(iOS 13.0, *)
-struct StartOriginCardLinkingResponse {
-    /// Unique Tangem card ID number
-    let cardId: String
-    /// Card public key
-    let cardPublicKey: Data
-    /// Linking key
-    let linkingKey: Data
-}
-
-@available(iOS 13.0, *)
-final class StartOriginCardLinkingCommand: Command {
+public final class StartOriginCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
     deinit {
@@ -43,24 +32,6 @@ final class StartOriginCardLinkingCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<StartOriginCardLinkingResponse>) {
-        transceive(in: session) { result in
-            switch result {
-            case .success(let response):
-                guard let cardPublicKey = session.environment.card?.cardPublicKey else {
-                    completion(.failure(.missingPreflightRead))
-                    return
-                }
-                
-                completion(.success(.init(cardId: response.cardId,
-                                          cardPublicKey: cardPublicKey,
-                                          linkingKey: response.linkingKey)))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
@@ -69,7 +40,7 @@ final class StartOriginCardLinkingCommand: Command {
         return CommandApdu(.startOriginCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> StartOriginCardLinkingResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> OriginCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -80,8 +51,10 @@ final class StartOriginCardLinkingCommand: Command {
             throw TangemSdkError.unknownError
         }
         
-        return StartOriginCardLinkingResponse(cardId: try decoder.decode(.cardId),
-                                              cardPublicKey: cardPublicKey,
-                                              linkingKey: try decoder.decode(.originCardLinkingKey))
+        let card = OriginCard(cardId: try decoder.decode(.cardId),
+                              cardPublicKey: cardPublicKey,
+                              linkingKey: try decoder.decode(.originCardLinkingKey))
+        
+        return card
     }
 }

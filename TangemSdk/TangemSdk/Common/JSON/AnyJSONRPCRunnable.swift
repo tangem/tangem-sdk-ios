@@ -16,9 +16,14 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
     public var id: Int? = nil
     
     private let runClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<AnyJSONRPCResponse>) -> Void
+    private let prepareClosure: (_ session: CardSession, _ completion: @escaping CompletionResult<Void>) -> Void
 
     init<T: CardSessionRunnable>(_ runnable: T) where T.Response : JSONStringConvertible {
         preflightReadMode = runnable.preflightReadMode
+        
+        prepareClosure = { session, completion in
+            runnable.prepare(session, completion: completion)
+        }
         
         runClosure = { session, completion in
             runnable.run(in: session) { res in
@@ -31,9 +36,12 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
             }
         }
     }
-    
     deinit {
         Log.debug("AnyJSONRPCRunnable deinit")
+    }
+    
+    public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+        prepareClosure(session, completion)
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<AnyJSONRPCResponse>) {

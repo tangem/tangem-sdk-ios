@@ -24,7 +24,7 @@ extension AppModel {
         "PIN2": "000",
         "CVC": "000",
         "walletsCount": 6,
-        "pauseBeforePIN2": 1500,
+        "pauseBeforePIN2": 5000,
         "smartSecurityDelay": true,
         "curveID": "secp256k1",
         "SigningMethod": 0,

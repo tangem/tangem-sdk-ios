@@ -90,21 +90,19 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     
     func tagLost() {
         Log.view("Tag lost")
-        pinnedMessage = reader.alertMessage
+        if pinnedMessage == nil {
+            pinnedMessage = reader.alertMessage
+        }
         showAlertMessage(Localization.nfcAlertDefault)
     }
     
-    func wrongCard(message: String?) {
+    func wrongCard(message: String) {
         Log.view("Wrong card detected")
         engine.playError()
-        
-        if let message = message {
-            let oldMessage = reader.alertMessage
-            showAlertMessage(message)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.showAlertMessage(oldMessage)
-            }
+        if pinnedMessage == nil {
+            pinnedMessage = reader.alertMessage
         }
+        showAlertMessage(message)
     }
     
     func sessionStarted() {

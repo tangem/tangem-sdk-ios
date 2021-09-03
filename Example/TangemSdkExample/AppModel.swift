@@ -33,6 +33,10 @@ class AppModel: ObservableObject {
         return BackupService(sdk: tangemSdk)
     }()
     
+    lazy var resetPinService: ResetPinService = {
+        return ResetPinService(sdk: tangemSdk)
+    }()
+    
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
         config.logСonfig = .custom(logLevel: [.apdu, .command, .debug, .error, .nfc, .session, .view, .warning, .tlv])

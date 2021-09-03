@@ -52,6 +52,14 @@
 		5D3B9F0326BD678500532CC7 /* SignHashes.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B9F0226BD678500532CC7 /* SignHashes.json */; };
 		5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* Attestation.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
+		5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */; };
+		5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */; };
+		5D445B7426E2988500F6F0FE /* GetResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */; };
+		5D445B7626E298C400F6F0FE /* ResetPinService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7526E298C400F6F0FE /* ResetPinService.swift */; };
+		5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */; };
+		5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */; };
+		5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */; };
+		5D445B7E26E2A1F300F6F0FE /* CaseIterable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */; };
 		5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1542681032B00DC6447 /* SignHashCommand.swift */; };
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
@@ -328,6 +336,14 @@
 		5D3B9F0226BD678500532CC7 /* SignHashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHashes.json; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* Attestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attestation.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
+		5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizeMode.swift; sourceTree = "<group>"; };
+		5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizeResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7526E298C400F6F0FE /* ResetPinService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinService.swift; sourceTree = "<group>"; };
+		5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinCommand.swift; sourceTree = "<group>"; };
+		5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinTask.swift; sourceTree = "<group>"; };
+		5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+.swift"; sourceTree = "<group>"; };
 		5D46F1542681032B00DC6447 /* SignHashCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignHashCommand.swift; sourceTree = "<group>"; };
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
@@ -725,6 +741,20 @@
 			path = Attestation;
 			sourceTree = "<group>";
 		};
+		5D445B6E26E2944300F6F0FE /* ResetCode */ = {
+			isa = PBXGroup;
+			children = (
+				5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */,
+				5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */,
+				5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */,
+				5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */,
+				5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */,
+				5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */,
+				5D445B7526E298C400F6F0FE /* ResetPinService.swift */,
+			);
+			path = ResetCode;
+			sourceTree = "<group>";
+		};
 		5D46F156268105A500DC6447 /* Sign */ = {
 			isa = PBXGroup;
 			children = (
@@ -818,6 +848,7 @@
 		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				5D445B6E26E2944300F6F0FE /* ResetCode */,
 				5D4B128126D40C67006E173C /* Backup */,
 				5D46F156268105A500DC6447 /* Sign */,
 				5D38D076267A44BF0052F67C /* Pins */,
@@ -1164,6 +1195,7 @@
 				5DD6762B26CD621500D8C909 /* UIScreen+.swift */,
 				5D23C42526CEDDD000A1A280 /* Array+.swift */,
 				5DAAF39F26E2668500187AA9 /* UIApplication+.swift */,
+				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1474,6 +1506,7 @@
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */,
 				5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
@@ -1488,6 +1521,7 @@
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
+				5D445B7E26E2A1F300F6F0FE /* CaseIterable+.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
@@ -1506,6 +1540,7 @@
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
 				5D908C5D26A74BD800270FA3 /* PhoneView.swift in Sources */,
+				5D445B7626E298C400F6F0FE /* ResetPinService.swift in Sources */,
 				5D14947D2686453C00C0D923 /* KeyStoreError.swift in Sources */,
 				5D6508232672755600A8D45B /* Wallet.swift in Sources */,
 				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
@@ -1534,6 +1569,7 @@
 				5DE43A5E26D4F45800ECA36A /* LinkOriginCardCommand.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */,
 				5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */,
+				5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */,
 				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
 				5D379C2B268FA4D200C7F473 /* CompletionResult.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
@@ -1560,6 +1596,7 @@
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
+				5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DAAF3A226E268F600187AA9 /* MainViewModel.swift in Sources */,
@@ -1571,6 +1608,7 @@
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
 				B0A944812565470900A7958E /* CardData.swift in Sources */,
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
+				5D445B7426E2988500F6F0FE /* GetResetPinToken.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
@@ -1616,8 +1654,10 @@
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
+				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
+				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 			);

@@ -1,0 +1,47 @@
+//
+//  GetResetPinToken.swift
+//  TangemSdk
+//
+//  Created by Alexander Osokin on 03.09.2021.
+//  Copyright © 2021 Tangem AG. All rights reserved.
+//
+
+import Foundation
+
+@available(iOS 13.0, *)
+final class GetResetPinTokenCommand: Command {
+    var requiresPasscode: Bool { return false }
+    var preflightReadMode: PreflightReadMode { .readCardOnly }
+    
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        guard let backupStatus = card.backupStatus,
+              backupStatus.isActive else {
+            return TangemSdkError.invalidState
+        }
+        
+        return nil
+    }
+    
+    func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+            .append(.cardId, value: environment.card?.cardId)
+            .append(.interactionMode, value: AuthorizeMode.tokenGet)
+        
+        return CommandApdu(.authorize, tlv: tlvBuilder.serialize())
+    }
+    
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ResetPinCard {
+        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
+            throw TangemSdkError.deserializeApduFailed
+        }
+        
+        let decoder = TlvDecoder(tlv: tlv)
+        
+        let card = ResetPinCard(cardId: try decoder.decode(.cardId),
+                                backupKey: try decoder.decode(.originCardLinkingKey),
+                                attestSignature: try decoder.decode(.backupAttestSignature),
+                                token: try decoder.decode(.challenge))
+        
+        return card
+    }
+}

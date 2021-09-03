@@ -181,10 +181,12 @@ public final class TlvDecoder {
             } else if let mode = FileDataMode(rawValue: byte) {
                 try typeCheck(FileDataMode.self, T.self, for: tag)
                 return mode as! T
+            } else if let mode = AuthorizeMode(rawValue: byte) {
+                try typeCheck(AuthorizeMode.self, T.self, for: tag)
+                return mode as! T
             } else {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
             }
-            
         case .fileSettings:
             try typeCheck(FileSettings.self, T.self, for: tag)
             let intValue = tagValue.toInt()

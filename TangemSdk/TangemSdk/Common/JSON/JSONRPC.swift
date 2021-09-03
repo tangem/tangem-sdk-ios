@@ -97,7 +97,7 @@ public struct JSONRPCRequest {
     }
     
     public init(json: [String: Any]) throws {
-        jsonrpc = json["jsonrpc"] as? String ?? "2.0"
+        jsonrpc = json["jsonrpc"] as? String ?? "2.0" //todo make it mandatory
         id = json["id"] as? Int
         params = json["params"] as? [String:Any] ?? [:]
         

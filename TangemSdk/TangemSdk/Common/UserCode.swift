@@ -69,6 +69,14 @@ extension UserCodeType {
             return String(format: "pin_enter".localized, name.lowercasingFirst())
         }
     }
+    var enterNewCodeTitle: String {
+        switch self {
+        case .accessCode:
+            return String(format: "pin_change_new_code_format".localized, name.lowercasingFirst())
+        case .passcode:
+            return String(format: "pin_change_new_code_format".localized, name.lowercasingFirst())
+        }
+    }
     
     var changeCodeTitle: String {
         switch self {

@@ -12,18 +12,22 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 final class DefaultSessionViewDelegate {
-    public var config: Config
-    
     private let reader: CardReader
     private let engine: HapticsEngine
     private var pinnedMessage: String?
-    private var infoScreen: MainViewController
+    private var infoScreen: UIViewController
+    private let viewModel: MainViewModel = .init(viewState: .scan)
     
-    init(reader: CardReader, config: Config) {
+    init(reader: CardReader, style: TangemSdkStyle) {
         self.reader = reader
-        self.config = config
         self.engine = HapticsEngine()
-        self.infoScreen = MainViewController(config: config)
+        let view = MainView()
+            .environmentObject(viewModel)
+            .environmentObject(style)
+        
+        self.infoScreen = UIHostingController(rootView: view)
+        self.infoScreen.modalPresentationStyle = .overFullScreen
+        self.infoScreen.modalTransitionStyle = .crossDissolve
         engine.create()
     }
     
@@ -69,8 +73,9 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         if state.shouldPlayHaptics {
             engine.playTick()
         }
-
-        runInMainThread(self.infoScreen.setState(state))
+        
+        let setStateAction = { self.viewModel.viewState = state }
+        runInMainThread (setStateAction())
         runInMainThread(self.presentInfoScreenIfNeeded())
     }
     
@@ -116,11 +121,6 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         pinnedMessage = nil
         engine.stop()
         runInMainThread(self.dismissInfoScreen(completion: completion))
-    }
-    
-    func setConfig(_ config: Config) {
-        self.config = config
-        self.infoScreen = MainViewController(config: config)
     }
     
     //TODO: Refactor UI

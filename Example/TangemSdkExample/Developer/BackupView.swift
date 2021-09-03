@@ -96,6 +96,7 @@ struct BackupView: View {
                     do {
                         try backupService.setAccessCode(accessCode)
                         self.errorText = ""
+                        UIApplication.shared.endEditing()
                     } catch {
                         self.errorText = "Error occured: \(error)"
                     }
@@ -107,6 +108,7 @@ struct BackupView: View {
             separatorView
             
             Text(errorText)
+                .foregroundColor(.red)
             
             VStack(spacing: 8) {
                 Text("Current state is: \(stateTitle)")

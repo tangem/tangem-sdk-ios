@@ -59,6 +59,7 @@ struct EnterUserCodeView: View {
     
     private func onDone() {
         if !isContinueDisabled {
+            UIApplication.shared.endEditing()
             isLoading = true
             completion(code.trim())
         }

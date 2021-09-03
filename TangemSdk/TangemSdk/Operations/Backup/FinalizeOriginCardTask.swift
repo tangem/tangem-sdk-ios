@@ -9,11 +9,6 @@
 import Foundation
 
 @available(iOS 13.0, *)
-struct FinalizeOriginCardResponse {
-    let backupData: [String:EncryptedBackupData]
-}
-
-@available(iOS 13.0, *)
 class FinalizeOriginCardTask: CardSessionRunnable {
     private let backupCards: [LinkableBackupCard]
     private let accessCode: Data
@@ -21,28 +16,32 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     private let originCardLinkingKey: Data //only for verification
     private var attestSignature: Data? //We already have attestSignature
     private let onLink: (Data) -> Void
-    
-    private var backupData: [String:EncryptedBackupData] = [:]
+    private let onRead: ((String, EncryptedBackupData)) -> Void
+    private let readBackupStartIndex: Int
     
     init(backupCards: [LinkableBackupCard],
          accessCode: Data,
          passcode: Data,
-         originCardLinkingKey: Data,
+         originCardLinkingKey: Data, //for restore
+         readBackupStartIndex: Int, // for restore
          attestSignature: Data?,
-         onLink: @escaping (Data) -> Void) {
+         onLink: @escaping (Data) -> Void,
+         onRead: @escaping ((String, EncryptedBackupData)) -> Void) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
         self.originCardLinkingKey = originCardLinkingKey
         self.attestSignature = attestSignature
         self.onLink = onLink
+        self.onRead = onRead
+        self.readBackupStartIndex = readBackupStartIndex
     }
     
     deinit {
         Log.debug("FinalizeOriginCardTask deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<FinalizeOriginCardResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Void>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
@@ -76,13 +75,13 @@ class FinalizeOriginCardTask: CardSessionRunnable {
                 }
             }
         } else {
-            self.readBackupData(session: session, index: 0, completion: completion)
+            self.readBackupData(session: session, index: readBackupStartIndex, completion: completion)
         }
     }
     
-    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<FinalizeOriginCardResponse>) {
+    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Void>) {
         if index >= backupCards.count {
-            completion(.success(FinalizeOriginCardResponse(backupData: backupData)))
+            completion(.success(()))
             return
         }
         //todo: save concrete read to restore
@@ -91,7 +90,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success(let response):
-                self.backupData[currentBackupCard.cardId] = response.data
+                self.onRead((currentBackupCard.cardId, response.data))
                 self.readBackupData(session: session, index: index + 1, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

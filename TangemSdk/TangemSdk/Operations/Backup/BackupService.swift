@@ -132,7 +132,6 @@ public class BackupService: ObservableObject {
     
     private func addBackupCard(_ backupCard: BackupCard) {
         repo.backupCards.append(backupCard)
-        addedBackupCardsCount = repo.backupCards.count
         updateState()
         
         DispatchQueue.global().async {
@@ -189,21 +188,14 @@ public class BackupService: ObservableObject {
                                               accessCode: accessCode,
                                               passcode: passcode,
                                               originCardLinkingKey: originCard.linkingKey,
+                                              readBackupStartIndex: repo.backupData.count,
                                               attestSignature: repo.attestSignature,
-                                              onLink: { self.repo.attestSignature = $0 })
+                                              onLink: { self.repo.attestSignature = $0 },
+                                              onRead: { self.repo.backupData[$0.0] = $0.1 })
             
             sdk.startSession(with: task, cardId: originCard.cardId,
-                             initialMessage: Message(header: "Scan origin card with cardId: \(originCard.cardId)")) {[weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    self.repo.backupData = response.backupData
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+                             initialMessage: Message(header: "Scan origin card with cardId: \(originCard.cardId)"),
+                             completion: completion)
             
         } catch {
             completion(.failure(error.toTangemSdkError()))

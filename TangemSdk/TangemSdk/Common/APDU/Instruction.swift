@@ -37,4 +37,6 @@ public enum Instruction: Byte {
     case readBackupData = 0xEB
     case linkOriginCard = 0xEC
     case writeBackupData = 0xED
+    case manageFileOwners = 0xD2
+    case authorize = 0xD3
 }

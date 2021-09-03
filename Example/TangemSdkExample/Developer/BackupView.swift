@@ -15,7 +15,6 @@ struct BackupView: View {
     @State private var count: Int = 2
     @State private var accessCode: String = ""
     @State private var errorText: String = ""
-    @State private var isAccessCodeSet: Bool = false
     
     @ViewBuilder
     var separatorView: some View {
@@ -24,7 +23,7 @@ struct BackupView: View {
         Spacer()
     }
     
-    var proceedButtonTitle: String {
+    var stateTitle: String {
         switch backupService.currentState {
         case .preparing:
             return "Preparing"
@@ -42,20 +41,24 @@ struct BackupView: View {
             
             Spacer()
             
-            Button("Read origin card") {
-                backupService.readOriginCard { result in
-                    switch result {
-                    case .success(let newState):
-                        self.errorText = ""
-                        print("New state is: \(newState)")
-                    case .failure(let error):
-                        self.errorText = "Error occured: \(error)"
+            VStack(spacing: 8) {
+                let msg = "Has origin card: \(backupService.originCardIsSet)"
+                Text(msg)
+                
+                Button("Read origin card") {
+                    backupService.readOriginCard { result in
+                        switch result {
+                        case .success(let newState):
+                            self.errorText = ""
+                            print("New state is: \(newState)")
+                        case .failure(let error):
+                            self.errorText = "Error occured: \(error)"
+                        }
                     }
                 }
+                .buttonStyle(ExampleButton(isLoading: false))
+                .frame(width: 200)
             }
-            .buttonStyle(ExampleButton(isLoading: false))
-            .frame(width: 200)
-            
             separatorView
             
             VStack(spacing: 8) {
@@ -82,7 +85,9 @@ struct BackupView: View {
             separatorView
             
             VStack(spacing: 8) {
-                Text("Current access code status: \(isAccessCodeSet ? "set" : "not set")")
+                let msg = "Has access code: \(backupService.accessCodeIsSet)"
+                Text(msg)
+
                 
                 TextField("Access code for all cards", text: $accessCode)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -91,7 +96,6 @@ struct BackupView: View {
                     do {
                         try backupService.setAccessCode(accessCode)
                         self.errorText = ""
-                        self.isAccessCodeSet = true
                     } catch {
                         self.errorText = "Error occured: \(error)"
                     }
@@ -104,20 +108,24 @@ struct BackupView: View {
             
             Text(errorText)
             
-            Button(proceedButtonTitle) {
-                backupService.proceedBackup() { result in
-                    switch result {
-                    case .success(let newState):
-                        self.errorText = ""
-                        print("New state is: \(newState)")
-                    case .failure(let error):
-                        self.errorText = "Error occured: \(error)"
+            VStack(spacing: 8) {
+                Text("Current state is: \(stateTitle)")
+                
+                Button("Proceed") {
+                    backupService.proceedBackup() { result in
+                        switch result {
+                        case .success(let newState):
+                            self.errorText = ""
+                            print("New state is: \(newState)")
+                        case .failure(let error):
+                            self.errorText = "Error occured: \(error)"
+                        }
                     }
                 }
+                .buttonStyle(ExampleButton(isDisabled: !backupService.canProceed,
+                                           isLoading: false))
+                .frame(width: 200)
             }
-            .buttonStyle(ExampleButton(isDisabled: !backupService.canProceed,
-                                       isLoading: false))
-            .frame(width: 200)
         }
         .padding([.horizontal, .bottom], 16)
     }

@@ -23,6 +23,7 @@ struct ChangeUserCodeView: View {
     @State private var validationTimer: Timer? = nil
     
     @EnvironmentObject var style: TangemSdkStyle
+    @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -58,7 +59,18 @@ struct ChangeUserCodeView: View {
             .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
-        
+        .onReceive(viewModel.objectWillChange, perform: { _ in
+            clear()
+        })
+    }
+    
+    private func clear() {
+        code = ""
+        confirmation = ""
+        error = ""
+        isContinueDisabled = true
+        validationTimer?.invalidate()
+        validationTimer = nil
     }
     
     private func onCancel() {
@@ -67,6 +79,7 @@ struct ChangeUserCodeView: View {
     
     private func onDone() {
         if !isContinueDisabled {
+            UIApplication.shared.endEditing()
             completion(code.trim())
         }
     }
@@ -115,5 +128,6 @@ struct ChangeUserCodeView_Previews: PreviewProvider {
                 .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())
+        .environmentObject(MainViewModel(viewState: .default))
     }
 }

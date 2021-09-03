@@ -10,20 +10,21 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct MainView: View {
-    var style: TangemSdkStyle = .default
-    var viewState: SessionViewState = .scan
-    
+    @EnvironmentObject var viewModel: MainViewModel
+    @EnvironmentObject var style: TangemSdkStyle
+
     var body: some View {
         mainView
             .transition(AnyTransition
                             .identity
                             .combined(with: .opacity))
             .environmentObject(style)
+            .environmentObject(viewModel)
     }
     
     @ViewBuilder
     private var mainView: some View {
-        switch viewState {
+        switch viewModel.viewState {
         case .scan:
             ReadView()
             
@@ -41,7 +42,7 @@ struct MainView: View {
                                completion: completion)
             
         default:
-            indicatorView(self.viewState.indicatorState!)
+            indicatorView(self.viewModel.viewState.indicatorState!)
         }
     }
     
@@ -80,8 +81,9 @@ private extension MainView {
 @available(iOS 13.0, *)
 struct MainView_Preview: PreviewProvider {
     static var previews: some View {
-        MainView(viewState: .default)
-        MainView(viewState: .scan)
+        MainView()
+            .environmentObject(MainViewModel(viewState: .scan))
+            .environmentObject(TangemSdkStyle())
     }
 }
 

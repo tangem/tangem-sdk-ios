@@ -282,15 +282,24 @@ public class BackupService: ObservableObject {
 }
 
 @available(iOS 13.0, *)
-class BackupRepo {
-    var accessCode: Data? = nil
-    var passcode: Data? = UserCodeType.passcode.defaultValue.sha256()
-    var originCard: OriginCard? = nil
-    var attestSignature: Data? = nil
-    var backupCards: [BackupCard] = []
-    var certificates: [String:Data] = [:]
-    var backupData: [String:EncryptedBackupData] = [:]
-    var finalizedBackupCardsCount: Int = 0
+extension BackupService {
+    class BackupRepo {
+        var accessCode: Data? = nil
+        var passcode: Data? = UserCodeType.passcode.defaultValue.sha256()
+        var originCard: OriginCard? = nil
+        var attestSignature: Data? = nil
+        var backupCards: [BackupCard] = []
+        var certificates: [String:Data] = [:]
+        var backupData: [String:EncryptedBackupData] = [:]
+        var finalizedBackupCardsCount: Int = 0
+    }
+    
+    public enum State: Equatable {
+        case preparing
+        case needWriteOriginCard
+        case needWriteBackupCard(index: Int)
+        case finished
+    }
 }
 
 public struct OriginCard {
@@ -339,14 +348,4 @@ struct LinkableBackupCard {
     let linkingKey: Data
     let attestSignature: Data
     let certificate: Data
-}
-
-@available(iOS 13.0, *)
-extension BackupService {
-    public enum State: Equatable {
-        case preparing
-        case needWriteOriginCard
-        case needWriteBackupCard(index: Int)
-        case finished
-    }
 }

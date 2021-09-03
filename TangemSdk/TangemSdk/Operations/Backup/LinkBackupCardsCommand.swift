@@ -88,7 +88,15 @@ final class LinkBackupCardsCommand: Command {
                     completion(.failure(error.toTangemSdkError()))
                 }
             case .failure(let error):
-                completion(.failure(error))
+                switch error {
+                case .accessCodeRequired,
+                     .passcodeRequired:
+                    session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
+                    session.environment.passcode = UserCode(.passcode, value: self.passcode)
+                    self.run(in: session, completion: completion)
+                default:
+                    completion(.failure(error))
+                }
             }
         }
     }

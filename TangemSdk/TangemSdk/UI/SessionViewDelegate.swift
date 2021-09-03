@@ -21,7 +21,7 @@ public protocol SessionViewDelegate: AnyObject {
     /// It is called when tag was lost
     func tagLost()
     
-    func wrongCard(message: String?)
+    func wrongCard(message: String)
     
     func sessionStarted()
     

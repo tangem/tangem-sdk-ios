@@ -27,6 +27,9 @@ struct CardDeserializer {
         let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
         
+        let isAccessCodeSet: Bool? = firmware >= .isAccessCodeStatusAvailable ?
+            !(try decoder.decode(.pinIsDefault)) : nil
+        
         let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)
         let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? defaultCurve.map { [$0] } ?? []
             : EllipticCurve.allCases
@@ -85,6 +88,7 @@ struct CardDeserializer {
                         issuer: issuer,
                         settings: settings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
+                        isAccessCodeSet: isAccessCodeSet,
                         isPasscodeSet: isPasscodeSet,
                         supportedCurves: supportedCurves,
                         backupStatus: backupStatus,

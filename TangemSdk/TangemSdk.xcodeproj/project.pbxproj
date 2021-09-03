@@ -182,6 +182,8 @@
 		5DA80CA4231D247A00A50A10 /* TangemSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DA80C9A231D247A00A50A10 /* TangemSdk.framework */; };
 		5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */; };
 		5DA80CAB231D247A00A50A10 /* TangemSdk.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DA80C9D231D247A00A50A10 /* TangemSdk.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5DAAF3A026E2668500187AA9 /* UIApplication+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAAF39F26E2668500187AA9 /* UIApplication+.swift */; };
+		5DAAF3A226E268F600187AA9 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAAF3A126E268F600187AA9 /* MainViewModel.swift */; };
 		5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */; };
 		5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406C234B740B00AC39F1 /* Data+.swift */; };
 		5DB4406F234B750200AC39F1 /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DB4406E234B750200AC39F1 /* String+.swift */; };
@@ -196,7 +198,6 @@
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
 		5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6762B26CD621500D8C909 /* UIScreen+.swift */; };
 		5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */; };
-		5DDAF04E26AB1BCB00673D44 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */; };
 		5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */; };
 		5DDD6C5A25D2DFA700E48D7B /* JSONStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */; };
 		5DDD6C5E25D2E01800E48D7B /* Codable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5D25D2E01800E48D7B /* Codable+.swift */; };
@@ -450,6 +451,8 @@
 		5DA80CA3231D247A00A50A10 /* TangemSdkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemSdkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtilsTests.swift; sourceTree = "<group>"; };
 		5DA80CAA231D247A00A50A10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5DAAF39F26E2668500187AA9 /* UIApplication+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+.swift"; sourceTree = "<group>"; };
+		5DAAF3A126E268F600187AA9 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensionTests.swift; sourceTree = "<group>"; };
 		5DB4406C234B740B00AC39F1 /* Data+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+.swift"; sourceTree = "<group>"; };
 		5DB4406E234B750200AC39F1 /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
@@ -465,7 +468,6 @@
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
 		5DD6762B26CD621500D8C909 /* UIScreen+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+.swift"; sourceTree = "<group>"; };
 		5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionViewDelegate.swift; sourceTree = "<group>"; };
-		5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvLogging.swift; sourceTree = "<group>"; };
 		5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONStringConvertible.swift; sourceTree = "<group>"; };
 		5DDD6C5D25D2E01800E48D7B /* Codable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codable+.swift"; sourceTree = "<group>"; };
@@ -804,11 +806,11 @@
 			children = (
 				5D908C5926A7467B00270FA3 /* Views */,
 				5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */,
-				5DDAF04D26AB1BCB00673D44 /* MainViewController.swift */,
 				5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */,
 				5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */,
 				5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */,
 				5DCAB0FD26C43D2100ADEE7D /* Message.swift */,
+				5DAAF3A126E268F600187AA9 /* MainViewModel.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1126,6 +1128,7 @@
 				5DCAB0FB26C434E800ADEE7D /* Color+.swift */,
 				5DD6762B26CD621500D8C909 /* UIScreen+.swift */,
 				5D23C42526CEDDD000A1A280 /* Array+.swift */,
+				5DAAF39F26E2668500187AA9 /* UIApplication+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1473,7 +1476,6 @@
 				5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */,
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
 				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
-				5DDAF04E26AB1BCB00673D44 /* MainViewController.swift in Sources */,
 				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
 				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
@@ -1519,6 +1521,7 @@
 				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
+				5DAAF3A226E268F600187AA9 /* MainViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
@@ -1533,6 +1536,7 @@
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D2B798626BC3DBF002A78D4 /* DerivePublicKeyCommand.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
+				5DAAF3A026E2668500187AA9 /* UIApplication+.swift in Sources */,
 				5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */,
 				5D2F3EE426CBDAA100779CAC /* KeyboardHeightPublisher.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,

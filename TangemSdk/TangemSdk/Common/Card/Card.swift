@@ -90,6 +90,14 @@ public extension Card {
         case cardLinked(cardsCount: Int)
         case active(cardsCount: Int)
         
+        public var isActive: Bool {
+            if case .active = self {
+                return true
+            }
+            
+            return false
+        }
+        
         public init(from decoder: Decoder) throws {
             let codableStruct = try BackupStatusCodable(from: decoder)
             try self.init(from: codableStruct.status, cardsCount: codableStruct.cardsCount )

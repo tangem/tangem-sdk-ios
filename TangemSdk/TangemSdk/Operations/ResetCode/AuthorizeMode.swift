@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum AuthorizeMode: Int {
+enum AuthorizeMode: Byte, InteractionMode {
     case fileOwnerGetChallenge = 0x01
     case fileOwnerAuthenticate = 0x02
     case tokenGet = 0x03

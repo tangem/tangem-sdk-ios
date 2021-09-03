@@ -27,8 +27,6 @@ public protocol SessionViewDelegate: AnyObject {
     
     func sessionStopped(completion: (() -> Void)?)
     
-    func setConfig(_ config: Config)
-    
     func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
     
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void)

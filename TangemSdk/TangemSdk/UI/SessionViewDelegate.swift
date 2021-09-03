@@ -21,13 +21,11 @@ public protocol SessionViewDelegate: AnyObject {
     /// It is called when tag was lost
     func tagLost()
     
-    func wrongCard(message: String?)
+    func wrongCard(message: String)
     
     func sessionStarted()
     
     func sessionStopped(completion: (() -> Void)?)
-    
-    func setConfig(_ config: Config)
     
     func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void)
     

@@ -58,16 +58,33 @@ final class LinkOriginCardCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
-                session.environment.card?.settings.isSettingAccessCodeAllowed = true
-                session.environment.card?.settings.isSettingPasscodeAllowed = true
-                session.environment.card?.settings.isRemovingAccessCodeAllowed = false
-                completion(.success(response))
+                self.complete(response: response, session: session, completion: completion)
             case .failure(let error):
-                completion(.failure(error))
+                switch error {
+                case .accessCodeRequired, .passcodeRequired:
+                    if let cardId = session.environment.card?.cardId {
+                        self.complete(response: LinkOriginCardResponse(cardId: cardId,
+                                                                       backupStatus: .cardLinked),
+                                      session: session,
+                                      completion: completion)
+                        return
+                    }
+                    completion(.failure(error))
+                default:
+                    completion(.failure(error))
+                }
             }
         }
     }
+    
+    private func complete(response: LinkOriginCardResponse, session: CardSession, completion: @escaping CompletionResult<LinkOriginCardResponse>) {
+        session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
+        session.environment.card?.settings.isSettingAccessCodeAllowed = true
+        session.environment.card?.settings.isSettingPasscodeAllowed = true
+        session.environment.card?.settings.isRemovingAccessCodeAllowed = false
+        completion(.success(response))
+    }
+    
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)

@@ -99,7 +99,7 @@ extension AppModel {
         "disableIssuerData": true,
         "disableUserData": false,
         "disableFiles": false,
-        "allowHDWallets": true,
+        "allowHDWallets": false,
         "allowBackup": true,
         "NDEF": [],
         "cardData": {

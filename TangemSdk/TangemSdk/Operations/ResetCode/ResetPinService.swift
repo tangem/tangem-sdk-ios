@@ -77,6 +77,7 @@ public class ResetPinService: ObservableObject {
             switch result {
             case .success(let response):
                 self.repo.resetPinCard = response
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -95,6 +96,7 @@ public class ResetPinService: ObservableObject {
             switch result {
             case .success(let response):
                 self.repo.confirmationCard = response
+                completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }

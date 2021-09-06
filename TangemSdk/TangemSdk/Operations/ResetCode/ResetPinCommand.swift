@@ -33,10 +33,12 @@ final class ResetPinCommand: Command {
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: environment.card?.cardId)
-            .append(.newPin2, value: environment.card?.cardId)
-            .append(.cvc, value: environment.cvc)
-
+            .append(.newPin, value: accessCode)
+            .append(.newPin2, value: passcode)
+        
+        if let cvc = environment.cvc {
+            try tlvBuilder.append(.cvc, value: cvc)
+        }
         
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())
     }

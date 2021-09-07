@@ -9,6 +9,7 @@
 import Foundation
 import CoreHaptics
 import UIKit
+import AVFoundation
 
 @available(iOS 13.0, *)
 class HapticsEngine {
@@ -31,6 +32,8 @@ class HapticsEngine {
             } catch let error {
                 Log.error("Error creating a haptic transient pattern: \(error)")
             }
+        } else {
+            AudioServicesPlaySystemSound(SystemSoundID(1520))
         }
     }
     
@@ -46,8 +49,7 @@ class HapticsEngine {
                 Log.error("Error creating a haptic transient pattern: \(error)")
             }
         } else {
-            let notificationGenerator = UINotificationFeedbackGenerator()
-            notificationGenerator.notificationOccurred(.error)
+            AudioServicesPlaySystemSound(SystemSoundID(1102))
         }
     }
     
@@ -76,8 +78,7 @@ class HapticsEngine {
                 Log.error("Error creating a haptic transient pattern: \(error)")
             }
         } else {
-            let generator = UIImpactFeedbackGenerator(style: UIImpactFeedbackGenerator.FeedbackStyle.light)
-            generator.impactOccurred()
+            AudioServicesPlaySystemSound(SystemSoundID(1519))
         }
     }
     

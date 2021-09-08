@@ -275,16 +275,16 @@ extension NFCReader: CardReader {
         return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)
-            .map{ rapdu, _ -> ResponseApdu in
-                return rapdu
-            }
-            .tryCatch{[weak self] error -> AnyPublisher<ResponseApdu, TangemSdkError> in
+            .map { return $0.0 }
+            .tryCatch{[weak self] error -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> in
                 guard let self = self else {
                     return Empty(completeImmediately: true).eraseToAnyPublisher()
                 }
                 
                 if case .userCancelled = error {
-                    throw error
+                    return Just(.failure(error))
+                        .setFailureType(to: TangemSdkError.self)
+                        .eraseToAnyPublisher()
                 }
                 
                 let distance = requestTimestamp.distance(to: Date())
@@ -295,16 +295,19 @@ extension NFCReader: CardReader {
                 } else {
                     self.sendRetryCount -= 1
                     Log.nfc("Retry send. distance: \(distance)")
-                    return self.sendPublisher(apdu: apdu)
+                   throw error
                 }
             }
+            .retry(Constants.retryCount)
             .handleEvents (receiveOutput: {[weak self] rApdu in
                 guard let self = self else { return }
+                
                 Log.nfc("Success response from card received")
                 Log.apdu(rApdu)
                 self.sendRetryCount = Constants.retryCount
                 self.startIdleTimer()
             })
+            .tryMap { try $0.getResponse() }
             .mapError { $0.toTangemSdkError() }
             .eraseToAnyPublisher()
     }
@@ -439,7 +442,7 @@ extension NFCReader {
         static let idleTimeout = 2.0
         static let sessionTimeout = 60.0
         static let nfcStuckTimeout = 1.0
-        static let retryCount = 10
+        static let retryCount = 20
         static let startRetryCount = 10
         static let timestampTolerance = 1.0
         static let searchTagTimeout = 1.0

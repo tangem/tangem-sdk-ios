@@ -42,6 +42,7 @@ class AppModel: ObservableObject {
         config.logСonfig = .custom(logLevel: [.apdu, .command, .debug, .error, .nfc, .session, .view, .warning, .tlv])
         config.linkedTerminal = false
         config.allowUntrustedCards = true
+        config.handleErrors = false
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()

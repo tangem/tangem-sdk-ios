@@ -28,6 +28,8 @@ public class BackupService: ObservableObject {
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
     
+    private var handleErrors: Bool { sdk.config.handleErrors }
+    
     public init(sdk: TangemSdk) {
         self.sdk = sdk
     }
@@ -42,17 +44,21 @@ public class BackupService: ObservableObject {
             return
         }
         
-        if !canAddBackupCards {
-            completion(.failure(.tooMuchBackupCards))
-            return
+        if handleErrors {
+            guard addedBackupCardsCount < BackupService.maxBackupCardsCount else {
+                completion(.failure(.tooMuchBackupCards))
+                return
+            }
         }
         
         readBackupCard(originCardLinkingKey, completion: completion)
     }
     
     public func setAccessCode(_ code: String) throws {
-        guard !code.isEmpty else {
-            throw TangemSdkError.invalidParams
+        if handleErrors {
+            guard !code.isEmpty else {
+                throw TangemSdkError.invalidParams
+            }
         }
         
         guard currentState == .preparing || currentState == .needWriteOriginCard else {
@@ -176,12 +182,14 @@ public class BackupService: ObservableObject {
                 return card.makeLinkable(with: certificate)
             }
             
-            guard !linkableBackupCards.isEmpty else {
-                throw TangemSdkError.backupCardRequired
-            }
-            
-            guard linkableBackupCards.count < 3 else {
-                throw TangemSdkError.tooMuchBackupCards
+            if handleErrors {
+                guard !linkableBackupCards.isEmpty else {
+                    throw TangemSdkError.backupCardRequired
+                }
+                
+                guard linkableBackupCards.count < 3 else {
+                    throw TangemSdkError.tooMuchBackupCards
+                }
             }
             
             let task = FinalizeOriginCardTask(backupCards: linkableBackupCards,
@@ -234,8 +242,10 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.backupCardRequired
             }
             
-            guard repo.backupCards.count < 3 else {
-                throw TangemSdkError.tooMuchBackupCards
+            if handleErrors {
+                guard repo.backupCards.count < 3 else {
+                    throw TangemSdkError.tooMuchBackupCards
+                }
             }
             
             let backupCard = repo.backupCards[cardIndex]

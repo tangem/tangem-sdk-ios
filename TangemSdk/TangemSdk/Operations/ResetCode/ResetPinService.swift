@@ -15,6 +15,7 @@ public class ResetPinService: ObservableObject {
     
     private let sdk: TangemSdk
     private var repo: ResetPinRepo = .init()
+    private var handleErrors: Bool { sdk.config.handleErrors }
     
     public init(sdk: TangemSdk) {
         self.sdk = sdk
@@ -25,26 +26,29 @@ public class ResetPinService: ObservableObject {
     }
     
     public func setAccessCode(_ code: String) throws {
-        guard !code.isEmpty else {
-            throw TangemSdkError.invalidParams
-        }
-    
-        if code == UserCodeType.accessCode.defaultValue {
-            throw TangemSdkError.invalidParams
+        if handleErrors {
+            guard !code.isEmpty else {
+                throw TangemSdkError.invalidParams
+            }
+            
+            if code == UserCodeType.accessCode.defaultValue {
+                throw TangemSdkError.invalidParams
+            }
         }
         
         repo.accessCode = code.sha256()
     }
     
     public func setPasscode(_ code: String) throws {
-        guard !code.isEmpty else {
-            throw TangemSdkError.invalidParams
+        if handleErrors {
+            guard !code.isEmpty else {
+                throw TangemSdkError.invalidParams
+            }
+            
+            if code == UserCodeType.passcode.defaultValue {
+                throw TangemSdkError.invalidParams
+            }
         }
-    
-        if code == UserCodeType.passcode.defaultValue {
-            throw TangemSdkError.invalidParams
-        }
-        
         repo.passcode = code.sha256()
     }
     

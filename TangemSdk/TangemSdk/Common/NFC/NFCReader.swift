@@ -134,15 +134,13 @@ extension NFCReader: CardReader {
             }
             .assign (to: \.cancelled, on: self)
             .store(in: &bag)
-
+        
         $cancelled //speed up cancellation if no tag interaction
             .dropFirst()
             .filter { $0 }
             .filter {[unowned self] _ in self.idleTimerCancellable == nil }
-            .sink {[unowned self] _ in
-                Log.nfc("Cancelled event received")
-                self.invalidatedWithError = .userCancelled
-            }
+            .map { _ in return TangemSdkError.userCancelled }
+            .assign(to: \.invalidatedWithError, on: self)
             .store(in: &bag)
         
         $invalidatedWithError //speed up cancellation if no tag interaction
@@ -187,13 +185,14 @@ extension NFCReader: CardReader {
             .dropFirst()
             .sink { _ in  }
                 receiveValue: {[unowned self] tag in
-                    Log.nfc("Received tag: \(String(describing: tag))")
                     if tag != .none {
+                        Log.nfc("Received tag: \(String(describing: tag))")
                         self.startTagTimer()
                         if case .tag = tag {
                             self.startIdleTimer()
                         }
                     } else {
+                        Log.nfc("Handle tag lost, cleaning resources: \(String(describing: tag))")
                         self.tagTimerCancellable = nil
                         self.idleTimerCancellable = nil
                         self.searchTimerCancellable = nil
@@ -263,13 +262,17 @@ extension NFCReader: CardReader {
         Log.nfc("Send publisher invoked")
         idleTimerCancellable = nil
         
-        guard case let .iso7816(tag) = connectedTag else {
+        guard let connectedTag = self.connectedTag else {
+            return Empty(completeImmediately: false).eraseToAnyPublisher() //wait for tag
+        }
+        
+        guard case let .iso7816(iso7816tag) = connectedTag else {
             return Fail(error: TangemSdkError.unsupportedCommand).eraseToAnyPublisher()
         }
         
         let requestTimestamp = Date()
         Log.apdu(apdu)
-        return tag
+        return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)
             .map{ rapdu, _ -> ResponseApdu in
@@ -413,7 +416,7 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         sessionConnectCancellable = session.connectPublisher(tag: nfcTag)
             .sink {[weak self] completion in
                 switch completion {
-                case .failure(_):
+                case .failure:
                     self?.restartPolling(silent: false)
                 case .finished:
                     break

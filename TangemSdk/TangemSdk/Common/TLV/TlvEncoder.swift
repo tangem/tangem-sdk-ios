@@ -80,22 +80,22 @@ public final class TlvEncoder {
             let mask = value as! ProductMask
             return Data([mask.rawValue])
         case .settingsMask:
-			do {
+            do {
                 try typeCheck(value, CardSettingsMask.self, for: tag)
                 let mask = value as! CardSettingsMask
-				let rawValue = mask.rawValue
-				if 0xFFFF0000 & rawValue != 0 {
-					 return rawValue.bytes4
-				} else {
-					 return rawValue.bytes2
-				}
-			} catch {
+                let rawValue = mask.rawValue
+                if 0xFFFF0000 & rawValue != 0 {
+                    return rawValue.bytes4
+                } else {
+                    return rawValue.bytes2
+                }
+            } catch {
                 Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
-			}
-			
+            }
+            
             try typeCheck(value, WalletSettingsMask.self, for: tag)
             let mask = value as! WalletSettingsMask
-			return mask.rawValue.bytes4
+            return mask.rawValue.bytes4
         case .status:
             guard let statusType = value as? StatusType else {
                 throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
@@ -110,10 +110,10 @@ public final class TlvEncoder {
                 throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
             }
             return Data([mode.rawValue])
-		case .fileSettings:
-			try typeCheck(value, FileSettings.self, for: tag)
-			let settings = value as! FileSettings
-			return settings.intValue.bytes2
+        case .fileSettings:
+            try typeCheck(value, FileSettings.self, for: tag)
+            let settings = value as! FileSettings
+            return settings.intValue.bytes2
         case .derivationPath:
             try typeCheck(value, DerivationPath.self, for: tag)
             let path = value as! DerivationPath

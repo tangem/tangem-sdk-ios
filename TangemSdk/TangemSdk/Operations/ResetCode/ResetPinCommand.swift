@@ -35,6 +35,7 @@ final class ResetPinCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)
+            .append(.codeHash, value: (accessCode + passcode).getSha256())
         
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)

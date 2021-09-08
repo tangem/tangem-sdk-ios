@@ -12,14 +12,14 @@ import Foundation
 @available(iOS 13.0, *)
 struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
     let rawValue: Byte
-	
+    
     init(rawValue: Byte) {
-		if rawValue & 0x80 != 0 {
-			self.rawValue = rawValue
-		} else {
-			self.rawValue = 0b10000000|(1 << rawValue)
-		}
-	}
+        if rawValue & 0x80 != 0 {
+            self.rawValue = rawValue
+        } else {
+            self.rawValue = 0b10000000|(1 << rawValue)
+        }
+    }
 }
 
 //MARK: - Constants

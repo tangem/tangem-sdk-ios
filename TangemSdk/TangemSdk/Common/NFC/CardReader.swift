@@ -17,7 +17,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
     public var description: String {
         switch self {
         case .tag(let uid):
-            return "iso7816 Tag with uid: \(uid)"
+            return "iso7816 Tag with uid: \(uid.hexString)"
         case .unknown:
             return "Unknown NFC Tag type"
         case .none:

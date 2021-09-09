@@ -259,9 +259,9 @@ public extension TangemSdk {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`
     func changeFileSettings(changes: [FileSettingsChange],
-                             cardId: String? = nil,
-                             initialMessage: Message? = nil,
-                             completion: @escaping CompletionResult<SuccessResponse>) {
+                            cardId: String? = nil,
+                            initialMessage: Message? = nil,
+                            completion: @escaping CompletionResult<SuccessResponse>) {
         let task = ChangeFileSettingsTask(changes: changes)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }

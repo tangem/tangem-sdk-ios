@@ -85,8 +85,8 @@ struct CardDeserializer {
                         remainingSignatures: remainingSignatures)
         
         
-		return card
-	}
+        return card
+    }
     
     static func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
@@ -99,7 +99,7 @@ struct CardDeserializer {
     static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder? {
         guard let cardDataValue = tlv.value(for: .cardData),
               let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-           return nil
+            return nil
         }
         
         return TlvDecoder(tlv: cardDataTlv)

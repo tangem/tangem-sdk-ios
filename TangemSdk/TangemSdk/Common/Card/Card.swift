@@ -11,13 +11,13 @@ import Foundation
 ///Response for `ReadCommand`. Contains detailed card information.
 @available(iOS 13.0, *)
 public struct Card: Codable, JSONStringConvertible {
-	/// Unique Tangem card ID number.
-	public let cardId: String
+    /// Unique Tangem card ID number.
+    public let cardId: String
     /// Tangem internal manufacturing batch ID.
     public let batchId: String
-	/// Public key that is used to authenticate the card against manufacturer’s database.
-	/// It is generated one time during card manufacturing.
-	public let cardPublicKey: Data
+    /// Public key that is used to authenticate the card against manufacturer’s database.
+    /// It is generated one time during card manufacturing.
+    public let cardPublicKey: Data
     /// Version of Tangem Card Operation System.
     public let firmwareVersion: FirmwareVersion
     /// Information about manufacturer

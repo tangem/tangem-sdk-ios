@@ -78,6 +78,15 @@ extension Card.Settings {
         
         self.supportedEncryptionModes = encryptionModes
     }
+    
+    func updated(with mask: CardSettingsMask) -> Card.Settings {
+        return .init(securityDelay: self.securityDelay,
+                     maxWalletsCount: self.maxWalletsCount,
+                     mask: mask,
+                     defaultSigningMethods: self.defaultSigningMethods,
+                     defaultCurve: self.defaultCurve)
+    }
+    
 }
 
 //MARK:- CardSettingsMask

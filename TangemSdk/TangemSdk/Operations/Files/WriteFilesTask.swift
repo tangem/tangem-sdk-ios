@@ -14,8 +14,8 @@ import Foundation
 ///   - fileIndices: Indicies of created files
 @available (iOS 13.0, *)
 public struct WriteFilesResponse: JSONStringConvertible {
-	public let cardId: String
-	public let filesIndices: [Int]
+    public let cardId: String
+    public let filesIndices: [Int]
 }
 
 /// This task allows to write multiple files to a card.
@@ -24,62 +24,62 @@ public struct WriteFilesResponse: JSONStringConvertible {
 /// 2. Data can be protected by Passcode (PIN2). `FileDataProtectedByPasscode` In this case,  Passcode (PIN2) is required for the command.
 @available (iOS 13.0, *)
 public final class WriteFilesTask: CardSessionRunnable {
-	private let files: [DataToWrite]
+    private let files: [DataToWrite]
     private let overwriteAllFiles: Bool
-		
-	private var currentFileIndex: Int = 0
-	private var savedFilesIndices: [Int] = []
-	
+    
+    private var currentFileIndex: Int = 0
+    private var savedFilesIndices: [Int] = []
+    
     public init(files: [DataToWrite], overwriteAllFiles: Bool = false) {
-		self.files = files
+        self.files = files
         self.overwriteAllFiles = overwriteAllFiles
-	}
-	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		guard files.count > 0 else {
-			completion(.success(WriteFilesResponse(cardId: "", filesIndices: [])))
-			return
-		}
-		if overwriteAllFiles {
-			deleteFiles(session: session, completion: completion)
-			return
-		}
-		writeFile(session: session, completion: completion)
-	}
-	
-	private func deleteFiles(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		let task = DeleteFilesTask(filesToDelete: nil)
-		task.run(in: session) { (result) in
-			switch result {
-			case .success:
-				self.writeFile(session: session, completion: completion)
-			case .failure(let error):
-				completion(.failure(error))
-			}
-		}
-	}
-	
-	private func writeFile(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
-		guard let card = session.environment.card else {
-			completion(.failure(.cardError))
-			return
-		}
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
+        guard files.count > 0 else {
+            completion(.success(WriteFilesResponse(cardId: "", filesIndices: [])))
+            return
+        }
+        if overwriteAllFiles {
+            deleteFiles(session: session, completion: completion)
+            return
+        }
+        writeFile(session: session, completion: completion)
+    }
+    
+    private func deleteFiles(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
+        let task = DeleteFilesTask(filesToDelete: nil)
+        task.run(in: session) { (result) in
+            switch result {
+            case .success:
+                self.writeFile(session: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func writeFile(session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.cardError))
+            return
+        }
         
-		guard currentFileIndex < files.count else {
-			completion(.success(.init(cardId: card.cardId, filesIndices: savedFilesIndices)))
-			return
-		}
-		WriteFileCommand(dataToWrite: files[currentFileIndex])
-			.run(in: session) { (result) in
-				switch result {
-				case .success(let response):
-					self.currentFileIndex += 1
-					self.savedFilesIndices.append(response.fileIndex ?? 0)
-					self.writeFile(session: session, completion: completion)
-				case .failure(let error):
-					completion(.failure(error))
-				}
-			}
-	}
-	
+        guard currentFileIndex < files.count else {
+            completion(.success(.init(cardId: card.cardId, filesIndices: savedFilesIndices)))
+            return
+        }
+        WriteFileCommand(dataToWrite: files[currentFileIndex])
+            .run(in: session) { (result) in
+                switch result {
+                case .success(let response):
+                    self.currentFileIndex += 1
+                    self.savedFilesIndices.append(response.fileIndex ?? 0)
+                    self.writeFile(session: session, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+    }
+    
 }

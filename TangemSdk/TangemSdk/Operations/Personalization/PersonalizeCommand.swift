@@ -105,7 +105,7 @@ public class PersonalizeCommand: Command {
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: try serializeCardData(environment: environment, cardData: cardData))
-			
+        
         if let walletsCount = config.walletsCount {
             try tlvBuilder.append(.walletsCount, value: walletsCount)
         }
@@ -117,7 +117,7 @@ public class PersonalizeCommand: Command {
         if let acquirer = acquirer {
             try tlvBuilder.append(.acquirerPublicKey, value: acquirer.keyPair.publicKey)
         }
-
+        
         return tlvBuilder.serialize()
     }
     

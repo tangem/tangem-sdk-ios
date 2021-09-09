@@ -26,10 +26,10 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 @available(iOS 13.0, *)
 public final class AttestWalletKeyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-
+    
     private var challenge: Data?
     private let walletPublicKey: Data
-
+    
     /// Default initializer
     /// - Parameters:
     ///   - publicKey: Public key of the wallet to check
@@ -42,7 +42,7 @@ public final class AttestWalletKeyCommand: Command {
     deinit {
         Log.debug("CheckWalletCommand deinit")
     }
-
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<AttestWalletKeyResponse>) {
         if challenge == nil {
             do {
@@ -82,7 +82,7 @@ public final class AttestWalletKeyCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
             .append(.walletPublicKey, value: walletPublicKey)
-		
+        
         return CommandApdu(.attestWalletKey, tlv: tlvBuilder.serialize())
     }
     

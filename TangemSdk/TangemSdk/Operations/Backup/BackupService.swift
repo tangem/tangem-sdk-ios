@@ -23,6 +23,7 @@ public class BackupService: ObservableObject {
     public var addedBackupCardsCount: Int { repo.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.accessCode != nil }
+    public var passcodeIsSet: Bool { repo.passcode != nil }
     public var originCardIsSet: Bool { repo.originCard != nil }
     
     private let sdk: TangemSdk
@@ -59,6 +60,10 @@ public class BackupService: ObservableObject {
             guard !code.isEmpty else {
                 throw TangemSdkError.invalidParams
             }
+            
+            if code == UserCodeType.accessCode.defaultValue {
+                throw TangemSdkError.accessCodeCannotBeChanged
+            }
         }
         
         guard currentState == .preparing || currentState == .needWriteOriginCard else {
@@ -66,6 +71,25 @@ public class BackupService: ObservableObject {
         }
         
         repo.accessCode = code.sha256()
+        updateState()
+    }
+    
+    public func setPasscode(_ code: String) throws {
+        if handleErrors {
+            guard !code.isEmpty else {
+                throw TangemSdkError.invalidParams
+            }
+            
+            if code == UserCodeType.passcode.defaultValue {
+                throw TangemSdkError.passcodeCannotBeChanged
+            }
+        }
+        
+        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+            throw TangemSdkError.passcodeCannotBeChanged
+        }
+        
+        repo.passcode = code.sha256()
         updateState()
     }
     
@@ -162,13 +186,14 @@ public class BackupService: ObservableObject {
     
     private func handleWriteOriginCard(completion: @escaping CompletionResult<Void>) {
         do {
-            guard let accessCode = repo.accessCode else {
-                throw TangemSdkError.accessCodeRequired
+            if handleErrors {
+                if repo.accessCode == nil && repo.passcode == nil {
+                    throw TangemSdkError.accessCodeOrPasscodeRequired
+                }
             }
             
-            guard let passcode = repo.passcode else {
-                throw TangemSdkError.passcodeRequired
-            }
+            let accessCode = repo.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
+            let passcode = repo.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
             guard let originCard = repo.originCard else {
                 throw TangemSdkError.missingOriginCard
@@ -212,13 +237,14 @@ public class BackupService: ObservableObject {
     
     private func handleWriteBackupCard(index: Int, completion: @escaping CompletionResult<Void>) {
         do {
-            guard let accessCode = repo.accessCode else {
-                throw TangemSdkError.accessCodeRequired
+            if handleErrors {
+                if repo.accessCode == nil && repo.passcode == nil {
+                    throw TangemSdkError.accessCodeOrPasscodeRequired
+                }
             }
             
-            guard let passcode = repo.passcode else {
-                throw TangemSdkError.passcodeRequired
-            }
+            let accessCode = repo.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
+            let passcode = repo.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
             guard let attestSignature = repo.attestSignature else {
                 throw TangemSdkError.originCardRequired
@@ -295,7 +321,7 @@ public class BackupService: ObservableObject {
 extension BackupService {
     class BackupRepo {
         var accessCode: Data? = nil
-        var passcode: Data? = UserCodeType.passcode.defaultValue.sha256()
+        var passcode: Data? = nil
         var originCard: OriginCard? = nil
         var attestSignature: Data? = nil
         var backupCards: [BackupCard] = []

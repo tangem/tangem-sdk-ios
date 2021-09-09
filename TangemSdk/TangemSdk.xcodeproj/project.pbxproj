@@ -207,6 +207,7 @@
 		5DD5368B2476B3FB00F5DE88 /* Success.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD536892476B3FA00F5DE88 /* Success.ahap */; };
 		5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */ = {isa = PBXBuildFile; fileRef = 5DD5368A2476B3FB00F5DE88 /* Error.ahap */; };
 		5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DD6762B26CD621500D8C909 /* UIScreen+.swift */; };
+		5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */; };
 		5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */; };
 		5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */; };
 		5DDD6C5A25D2DFA700E48D7B /* JSONStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */; };
@@ -495,6 +496,7 @@
 		5DD536892476B3FA00F5DE88 /* Success.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Success.ahap; sourceTree = "<group>"; };
 		5DD5368A2476B3FB00F5DE88 /* Error.ahap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Error.ahap; sourceTree = "<group>"; };
 		5DD6762B26CD621500D8C909 /* UIScreen+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+.swift"; sourceTree = "<group>"; };
+		5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+RAPDU.swift"; sourceTree = "<group>"; };
 		5DDAF04B26AB195F00673D44 /* DefaultSessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSessionViewDelegate.swift; sourceTree = "<group>"; };
 		5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvLogging.swift; sourceTree = "<group>"; };
 		5DDD6C5925D2DFA700E48D7B /* JSONStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONStringConvertible.swift; sourceTree = "<group>"; };
@@ -1199,6 +1201,7 @@
 				5D23C42526CEDDD000A1A280 /* Array+.swift */,
 				5DAAF39F26E2668500187AA9 /* UIApplication+.swift */,
 				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
+				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1602,6 +1605,7 @@
 				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
 				5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
+				5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DAAF3A226E268F600187AA9 /* MainViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,

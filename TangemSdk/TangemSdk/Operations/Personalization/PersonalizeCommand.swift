@@ -12,6 +12,8 @@ import Foundation
 /// Personalization is an initialization procedure, required before starting using a card.
 /// During this procedure a card setting is set up.
 /// During this procedure all data exchange is encrypted.
+/// - Warning: Command available only for cards with COS 3.34 and higher. Legacy devices not supported.
+   
 @available(iOS 13.0, *)
 public class PersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
@@ -103,7 +105,7 @@ public class PersonalizeCommand: Command {
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: try serializeCardData(environment: environment, cardData: cardData))
-			
+        
         if let walletsCount = config.walletsCount {
             try tlvBuilder.append(.walletsCount, value: walletsCount)
         }
@@ -115,7 +117,7 @@ public class PersonalizeCommand: Command {
         if let acquirer = acquirer {
             try tlvBuilder.append(.acquirerPublicKey, value: acquirer.keyPair.publicKey)
         }
-
+        
         return tlvBuilder.serialize()
     }
     

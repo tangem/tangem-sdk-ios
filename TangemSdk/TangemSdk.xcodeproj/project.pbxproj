@@ -64,6 +64,7 @@
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
+		5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */; };
 		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
@@ -350,6 +351,7 @@
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
+		5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartBackupCardLinkingTask.swift; sourceTree = "<group>"; };
 		5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReadFilesByIndex.json; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
@@ -794,6 +796,7 @@
 				5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */,
 				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
+				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -1523,6 +1526,7 @@
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
 				5DE43A6426D5158300ECA36A /* WriteBackupDataCommand.swift in Sources */,
+				5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,

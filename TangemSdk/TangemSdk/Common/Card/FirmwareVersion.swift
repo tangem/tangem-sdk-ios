@@ -118,7 +118,7 @@ public extension FirmwareVersion {
     /// HD Wallet
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 28)
     /// Backup availavle
-    static let backupAvailable = FirmwareVersion(major: 4, minor: 33)
+    static let backupAvailable = FirmwareVersion(major: 4, minor: 34)
     
     static let min = FirmwareVersion(major: 0, minor: 0)
     static let max = FirmwareVersion(major: Int.max, minor: 0)

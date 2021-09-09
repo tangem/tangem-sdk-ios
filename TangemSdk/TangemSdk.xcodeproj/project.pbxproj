@@ -171,6 +171,7 @@
 		5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE024A113C900FB5BA7 /* CardConfig.swift */; };
 		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
 		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
+		5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */; };
 		5D908C5B26A7469100270FA3 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5A26A7469100270FA3 /* CardView.swift */; };
 		5D908C5D26A74BD800270FA3 /* PhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5C26A74BD800270FA3 /* PhoneView.swift */; };
 		5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5E26A7519500270FA3 /* NFCFieldView.swift */; };
@@ -455,6 +456,7 @@
 		5D86CBE024A113C900FB5BA7 /* CardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConfig.swift; sourceTree = "<group>"; };
 		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
 		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
+		5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetBackupCommand.swift; sourceTree = "<group>"; };
 		5D908C5A26A7469100270FA3 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		5D908C5C26A74BD800270FA3 /* PhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneView.swift; sourceTree = "<group>"; };
 		5D908C5E26A7519500270FA3 /* NFCFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCFieldView.swift; sourceTree = "<group>"; };
@@ -789,6 +791,7 @@
 				5DE43A6326D5158300ECA36A /* WriteBackupDataCommand.swift */,
 				5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */,
 				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
+				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -1594,6 +1597,7 @@
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
+				5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
 				5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */,

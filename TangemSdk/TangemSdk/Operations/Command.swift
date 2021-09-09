@@ -112,25 +112,23 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
-                    if session.environment.config.handleErrors {
-                        let mappedError = self.mapError(session.environment.card, error)
-                        switch mappedError {
-                        case .accessCodeRequired:
-                            self.requestPin(.accessCode, session, completion: completion) //only read command
-                        case .invalidParams:
-                            if self.requiresPasscode {
-                                //Addition check for COS v4 and newer to prevent false-positive pin2 request
-                                if session.environment.card?.isPasscodeSet == false,
-                                   !session.environment.isUserCodeSet(.passcode) {
-                                    fallthrough
-                                }
-                                
-                                self.requestPin(.passcode, session, completion: completion)
-                            } else { fallthrough }
-                        default:
-                            completion(.failure(mappedError))
-                        }
-                    } else {
+                    let error = session.environment.config.handleErrors ? self.mapError(session.environment.card, error) : error
+                    switch error {
+                    case .accessCodeRequired:
+                        self.requestPin(.accessCode, session, completion: completion) //only read command
+                    case .passcodeRequired:
+                        self.requestPin(.passcode, session, completion: completion)
+                    case .invalidParams:
+                        if self.requiresPasscode {
+                            //Addition check for COS v4 and newer to prevent false-positive pin2 request
+                            if session.environment.card?.isPasscodeSet == false,
+                               !session.environment.isUserCodeSet(.passcode) {
+                                fallthrough
+                            }
+                            
+                            self.requestPin(.passcode, session, completion: completion)
+                        } else { fallthrough }
+                    default:
                         completion(.failure(error))
                     }
                 }
@@ -168,7 +166,7 @@ extension Command {
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
                             session.restartPolling(silent: true)
                         }
-                        self.transceive(apdu: apdu, in: session, completion: completion)                        
+                        self.transceive(apdu: apdu, in: session, completion: completion)
                     }
                 case .needEcryption:
                     switch session.environment.encryptionMode {

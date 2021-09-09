@@ -14,6 +14,7 @@ struct BackupView: View {
     
     @State private var count: Int = 2
     @State private var accessCode: String = ""
+    @State private var passcode: String = ""
     @State private var errorText: String = ""
     
     @ViewBuilder
@@ -77,7 +78,7 @@ struct BackupView: View {
                         }
                     }
                 }
-                .buttonStyle(ExampleButton(isDisabled: !backupService.canAddBackupCards,
+                .buttonStyle(ExampleButton(/*isDisabled: !backupService.canAddBackupCards,*/
                                            isLoading: false))
                 .frame(width: 200)
             }
@@ -85,8 +86,8 @@ struct BackupView: View {
             separatorView
             
             VStack(spacing: 8) {
-                let msg = "Has access code: \(backupService.accessCodeIsSet)"
-                Text(msg)
+                let msg1 = "Has access code: \(backupService.accessCodeIsSet)"
+                Text(msg1)
 
                 
                 TextField("Access code for all cards", text: $accessCode)
@@ -95,6 +96,25 @@ struct BackupView: View {
                 Button("Set access code") {
                     do {
                         try backupService.setAccessCode(accessCode)
+                        self.errorText = ""
+                        UIApplication.shared.endEditing()
+                    } catch {
+                        self.errorText = "Error occured: \(error)"
+                    }
+                }
+                .buttonStyle(ExampleButton(isLoading: false))
+                .frame(width: 200)
+                
+                let msg2 = "Has passcode: \(backupService.passcodeIsSet)"
+                Text(msg2)
+
+                
+                TextField("Passcode for all cards", text: $passcode)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                
+                Button("Set passcode") {
+                    do {
+                        try backupService.setPasscode(passcode)
                         self.errorText = ""
                         UIApplication.shared.endEditing()
                     } catch {
@@ -124,7 +144,7 @@ struct BackupView: View {
                         }
                     }
                 }
-                .buttonStyle(ExampleButton(isDisabled: !backupService.canProceed,
+                .buttonStyle(ExampleButton(/*isDisabled: !backupService.canProceed,*/
                                            isLoading: false))
                 .frame(width: 200)
             }

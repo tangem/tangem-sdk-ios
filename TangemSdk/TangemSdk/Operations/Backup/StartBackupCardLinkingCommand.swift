@@ -35,12 +35,7 @@ final class StartBackupCardLinkingCommand: Command {
         if !card.wallets.isEmpty {
             return .backupCannotBeCreatedNotEmptyWallets
         }
-        
-        //todo: TBD
-        //        if backupSession.slaves.keys.contains(card.cardId) {
-        //            return .backupCardAlreadyInList
-        //        }
-        
+
         return nil
     }
     

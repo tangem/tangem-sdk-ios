@@ -20,8 +20,8 @@ public final class PurgeWalletCommand: Command {
     /// Default initializer
     /// - Parameter publicKey: Public key of the wallet to delete
     public init(publicKey: Data) {
-		self.walletPublicKey = publicKey
-	}
+        self.walletPublicKey = publicKey
+    }
     
     deinit {
         Log.debug("PurgeWalletCommand deinit")
@@ -38,18 +38,18 @@ public final class PurgeWalletCommand: Command {
         
         return nil
     }
-	
-	public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-		transceive(in: session) { (result) in
-			switch result {
-			case .success(let response):
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
+        transceive(in: session) { (result) in
+            switch result {
+            case .success(let response):
                 session.environment.card?.wallets[self.walletPublicKey] = nil
-				completion(.success(response))
-			case .failure(let error):
-				completion(.failure(error))
-			}
-		}
-	}
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
@@ -57,7 +57,7 @@ public final class PurgeWalletCommand: Command {
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.walletPublicKey, value: walletPublicKey)
-		
+        
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
     

@@ -102,7 +102,7 @@ public final class ReadIssuerExtraDataCommand: Command {
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
-		
+        
         return nil
     }
     
@@ -139,7 +139,7 @@ public final class ReadIssuerExtraDataCommand: Command {
                                                                     issuerDataCounter: response.issuerDataCounter)
                     self.viewDelegate?.setState(.default)
                     if let result = finalResponse.verify(with: self.issuerPublicKey!),
-                        result == true {
+                       result == true {
                         self.completion?(.success(finalResponse))
                     } else {
                         self.completion?(.failure(.verificationFailed))

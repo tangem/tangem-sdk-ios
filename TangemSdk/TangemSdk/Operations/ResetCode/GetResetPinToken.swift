@@ -41,10 +41,17 @@ final class GetResetPinTokenCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
+        guard let isAccessCodeSet = environment.card?.isAccessCodeSet,
+              let isPasscodeSet = environment.card?.isPasscodeSet else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
         let card = ResetPinCard(cardId: try decoder.decode(.cardId),
                                 backupKey: try decoder.decode(.originCardLinkingKey),
                                 attestSignature: try decoder.decode(.backupAttestSignature),
-                                token: try decoder.decode(.challenge))
+                                token: try decoder.decode(.challenge),
+                                isAccessCodeSet: isAccessCodeSet,
+                                isPasscodeSet: isPasscodeSet)
         
         return card
     }

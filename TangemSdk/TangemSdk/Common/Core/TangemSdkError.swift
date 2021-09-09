@@ -254,7 +254,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
         
-    // MARK: BAckup errors
+    // MARK: Backup errors
     case backupCannotBeCreated
     case backupCardAlreadyInList
     case missingOriginCard
@@ -266,6 +266,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupCannotBeCreatedEmptyWallets
     case backupCannotBeCreatedNotEmptyWallets
     case certificateRequired
+    case accessCodeOrPasscodeRequired
     case backupNotActive
     case backupCannotBeResettedHasBackupedWallets
     
@@ -368,6 +369,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupCannotBeCreatedEmptyWallets: return 41209
         case .backupCannotBeCreatedNotEmptyWallets: return 41210
         case .certificateRequired: return 41211
+        case .accessCodeOrPasscodeRequired: return 41212
         case .backupNotActive: return 41220
         case .backupCannotBeResettedHasBackupedWallets: return 41221
             

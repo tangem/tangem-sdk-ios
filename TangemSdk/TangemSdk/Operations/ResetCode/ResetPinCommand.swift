@@ -24,7 +24,7 @@ final class ResetPinCommand: Command {
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
-            return TangemSdkError.invalidState
+            return TangemSdkError.backupNotActive
         }
         
         return nil

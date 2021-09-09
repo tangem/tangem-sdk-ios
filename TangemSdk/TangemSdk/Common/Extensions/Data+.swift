@@ -106,9 +106,9 @@ extension Data {
     }
     
     public func pbkdf2(hash: CCPBKDFAlgorithm,
-                salt: Data,
-                keyByteCount: Int,
-                rounds: Int) -> Data? {
+                       salt: Data,
+                       keyByteCount: Int,
+                       rounds: Int) -> Data? {
         var derivedKeyData = Data(repeating: 0, count: keyByteCount)
         let derivedCount = derivedKeyData.count
         
@@ -136,7 +136,7 @@ extension Data {
     }
     
     public func pbkdf2sha256(salt: Data, rounds: Int) -> Data? {
-       return pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
+        return pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
     }
     
     //SO14443A
@@ -180,15 +180,15 @@ extension Data {
                                      dataIn: self)
         
     }
-	
+    
     @available(iOS 13.0, *)
-	public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
-		switch curve {
-		case .secp256k1:
-			return Secp256k1Utils.sign(self, with: privateKey)
-		default:
-			// TODO: Create sign for ED25519 and secp256r1 curve
-			fatalError("Sign not implemented for this curve")
-		}
-	}
+    public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+        switch curve {
+        case .secp256k1:
+            return Secp256k1Utils.sign(self, with: privateKey)
+        default:
+            // TODO: Create sign for ED25519 and secp256r1 curve
+            fatalError("Sign not implemented for this curve")
+        }
+    }
 }

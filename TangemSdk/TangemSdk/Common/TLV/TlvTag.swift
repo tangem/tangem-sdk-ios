@@ -24,7 +24,7 @@ public enum TlvValueType: String {
     case byte
     case uint16
     case interactionMode
-	case fileSettings
+    case fileSettings
     case derivationPath
     case backupStatus //TODO: make all these type more generic
 }
@@ -113,24 +113,23 @@ public enum TlvTag: Byte {
     case offset = 0x24
     case size = 0x25
     case acquirerPublicKey = 0x37
-	case pin2IsDefault = 0x59
+    case pin2IsDefault = 0x59
     case pinIsDefault = 0x5A
-	
-	// MARK: - Multi-wallet
-	case walletIndex = 0x65
-	case walletsCount = 0x66
-	case walletData = 0x67
-	case cardWallet = 0x68
-	
-	// MARK: - Tlv tags for files
-	case fileIndex = 0x26
-	case fileSettings = 0x27
-	
-	case fileTypeName = 0x70
-	case fileData = 0x71
     
-	case fileOwnerIndex = 0x75
+    // MARK: - Multi-wallet
+    case walletIndex = 0x65
+    case walletsCount = 0x66
+    case walletData = 0x67
+    case cardWallet = 0x68
     
+    // MARK: - Tlv tags for files
+    case fileIndex = 0x26
+    case fileSettings = 0x27
+    
+    case fileTypeName = 0x70
+    case fileData = 0x71
+    case fileOwnerIndex = 0x75
+
     // MARK: - HDWallet
     case walletHDPath = 0x6A
     case walletHDChain = 0x6B
@@ -144,7 +143,7 @@ public enum TlvTag: Byte {
     case backupCardLink = 0xD4
     case backupAttestSignature = 0xD5
     
-	// MARK: - Ttl value types
+    // MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
@@ -174,10 +173,10 @@ public enum TlvTag: Byte {
             return .byte
         case .interactionMode:
             return .interactionMode
-		case .offset, .size, .pauseBeforePin2:
+        case .offset, .size, .pauseBeforePin2:
             return .uint16
-		case .fileSettings:
-			return .fileSettings
+        case .fileSettings:
+            return .fileSettings
         case .walletHDPath:
             return .derivationPath
         case .backupStatus:

@@ -32,7 +32,7 @@ public class ResetPinService: ObservableObject {
             }
             
             if code == UserCodeType.accessCode.defaultValue {
-                throw TangemSdkError.invalidParams
+                throw TangemSdkError.accessCodeCannotBeChanged
             }
         }
         
@@ -46,7 +46,7 @@ public class ResetPinService: ObservableObject {
             }
             
             if code == UserCodeType.passcode.defaultValue {
-                throw TangemSdkError.invalidParams
+                throw TangemSdkError.passcodeCannotBeChanged
             }
         }
         repo.passcode = code.sha256()
@@ -118,12 +118,15 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        guard let accessCode = repo.accessCode else {
+        
+        guard let accessCode = resetPinCard.isAccessCodeSet ? repo.accessCode
+                : UserCodeType.accessCode.defaultValue.sha256() else {
             completion(.failure(.accessCodeRequired))
             return
         }
         
-        guard let passcode = repo.passcode else {
+        guard let passcode = resetPinCard.isPasscodeSet ? repo.passcode
+                : UserCodeType.passcode.defaultValue.sha256() else {
             completion(.failure(.passcodeRequired))
             return
         }
@@ -165,6 +168,8 @@ struct ResetPinCard {
     let backupKey: Data
     let attestSignature: Data
     let token: Data
+    let isAccessCodeSet: Bool
+    let isPasscodeSet: Bool
 }
 
 struct ConfirmationCard {

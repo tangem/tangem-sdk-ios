@@ -14,6 +14,10 @@ final class GetResetPinTokenCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .backupAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
             return TangemSdkError.invalidState

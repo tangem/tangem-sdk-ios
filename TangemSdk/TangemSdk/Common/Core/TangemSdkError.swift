@@ -36,7 +36,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case nfcTimeout
     
     case nfcReaderError
-
+    
     
     //MARK: Apdu processing errrors
     
@@ -232,28 +232,28 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorZeroLengthMessage
     case readerErrorRadioDisabled
     case readerTransceiveErrorPacketTooLong
-	
-	// MARK: Files errors
-	
-	/// Returned when there is no files on card or when successfully read all files
-	case fileNotFound
-	
-	/// Returned when file on card has unwknown file settings
-	case notSupportedFileSettings
-	
-	/// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
-	case wrongInteractionMode
-	
-	/// Returned when command  is not met firmware version requirements (ex. for file writing COD must be 3.29 or greater)
-	case notSupportedFirmwareVersion
-	
-	// MARK: Wallet errors
-	case maxNumberOfWalletsCreated
-	case walletNotFound
-	case cardReadWrongWallet
+    
+    // MARK: Files errors
+    
+    /// Returned when there is no files on card or when successfully read all files
+    case fileNotFound
+    
+    /// Returned when file on card has unwknown file settings
+    case notSupportedFileSettings
+    
+    /// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
+    case wrongInteractionMode
+    
+    /// Returned when command  is not met firmware version requirements (ex. for file writing COD must be 3.29 or greater)
+    case notSupportedFirmwareVersion
+    
+    // MARK: Wallet errors
+    case maxNumberOfWalletsCreated
+    case walletNotFound
+    case cardReadWrongWallet
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
-        
+    
     public var code: Int {
         switch self {
         // MARK: 1xxxx Errors
@@ -266,7 +266,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .nfcStuck: return 10006
         case .nfcTimeout: return 10007
         case .nfcReaderError: return 10008
-        
+            
             
         // MARK: 2xxxx Errors
         // Errors occured during the mapping or parsing data.
@@ -318,7 +318,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cardReadWrongWallet: return 40402
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
-
+            
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502
         case .maxNumberOfWalletsCreated: return 40503
@@ -329,7 +329,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeCannotBeChanged: return 40801
         case .passcodeCannotBeChanged: return 40802
         case .accessCodeCannotBeDefault: return 40803
-        
+            
         case .noRemainingSignatures: return 40901
         case .emptyHashes: return 40902
         case .hashSizeMustBeEqual: return 40903
@@ -424,11 +424,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeRequired: return "error_pin1_required".localized
         case .passcodeRequired: return "error_pin2_required".localized
         case .underlying(let error): return error.localizedDescription
-		case .fileNotFound: return "error_file_not_found".localized
-		case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
-		case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
-		case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
-		case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
+        case .fileNotFound: return "error_file_not_found".localized
+        case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
+        case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
+        case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
+        case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin1".localized
         case .wrongPasscode: return "error_wrong_pin2".localized

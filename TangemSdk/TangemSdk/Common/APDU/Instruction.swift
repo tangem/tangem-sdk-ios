@@ -39,4 +39,5 @@ public enum Instruction: Byte {
     case writeBackupData = 0xED
     case manageFileOwners = 0xD2
     case authorize = 0xD3
+    case backupReset = 0xEE
 }

@@ -40,7 +40,7 @@ extension CommandApdu {
 
 @available(iOS 13.0, *)
 extension NFCISO7816Tag {
-    func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+    func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> {
         return Deferred { Future() {[unowned self] promise in
             let requestDate = Date()
             
@@ -53,7 +53,7 @@ extension NFCISO7816Tag {
                     Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
                     
                     let rApdu = ResponseApdu(data, sw1, sw2)
-                    promise(.success(rApdu))
+                    promise(.success(.success(rApdu)))
                 }
             }
         }}.eraseToAnyPublisher()

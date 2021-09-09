@@ -75,7 +75,7 @@ struct CardDeserializer {
                                      defaultCurve: defaultCurve)
         
         let terminalIsLinked: Bool = try decoder.decode(.isLinked)
-
+        
         let backupRawStatus: Card.BackupRawStatus? = try decoder.decode(.backupStatus)
         let backupCardsCount: Int? = try decoder.decode(.backupCount)
         let backupStatus: Card.BackupStatus? = try backupRawStatus.map { try Card.BackupStatus(from: $0, cardsCount: backupCardsCount) }
@@ -96,8 +96,8 @@ struct CardDeserializer {
                         health: try decoder.decode(.health),
                         remainingSignatures: remainingSignatures)
         
-		return card
-	}
+        return card
+    }
     
     static func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
@@ -110,7 +110,7 @@ struct CardDeserializer {
     static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder? {
         guard let cardDataValue = tlv.value(for: .cardData),
               let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-           return nil
+            return nil
         }
         
         return TlvDecoder(tlv: cardDataTlv)

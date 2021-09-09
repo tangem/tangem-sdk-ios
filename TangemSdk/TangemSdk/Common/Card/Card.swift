@@ -33,10 +33,10 @@ public struct Card: Codable, JSONStringConvertible {
     public let linkedTerminalStatus: LinkedTerminalStatus
     /// Access code (aka PIN1) is set.
     /// Available only for cards with COS v.4.33 and higher.
-    public let isAccessCodeSet: Bool?
+    public internal(set) var isAccessCodeSet: Bool?
     /// Passcode (aka PIN2) is set.
     /// Available only for cards with COS v.4.0 and higher.
-    public let isPasscodeSet: Bool?
+    public internal(set) var isPasscodeSet: Bool?
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
     /// Status of card's backup

@@ -11,7 +11,7 @@ import Foundation
 /// Available settings for files
 @available(iOS 13.0, *)
 public enum FileSettings: String, StringCodable, JSONStringConvertible {
-	case `public`
+    case `public`
     case `private`
     
     var intValue: Int {

@@ -11,18 +11,18 @@ import Foundation
 /// Settings that will be used while writing files on card
 @available (iOS 13.0, *)
 public enum FileWriteSettings: Hashable, FirmwareRestrictable {
-	case none, verifiedWithPasscode
-	
-	public var minFirmwareVersion: FirmwareVersion {
-		switch self {
-		case .none: return FirmwareVersion(major: 3, minor: 29)
-		case .verifiedWithPasscode: return FirmwareVersion(major: 3, minor: 34)
-		}
-	}
-	
-	public var maxFirmwareVersion: FirmwareVersion {
-		switch self {
-		case .none, .verifiedWithPasscode: return .max
-		}
-	}
+    case none, verifiedWithPasscode
+    
+    public var minFirmwareVersion: FirmwareVersion {
+        switch self {
+        case .none: return FirmwareVersion(major: 3, minor: 29)
+        case .verifiedWithPasscode: return FirmwareVersion(major: 3, minor: 34)
+        }
+    }
+    
+    public var maxFirmwareVersion: FirmwareVersion {
+        switch self {
+        case .none, .verifiedWithPasscode: return .max
+        }
+    }
 }

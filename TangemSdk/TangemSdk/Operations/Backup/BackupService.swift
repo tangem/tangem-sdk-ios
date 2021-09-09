@@ -288,7 +288,7 @@ public class BackupService: ObservableObject {
                                                  passcode: passcode)
             
             sdk.startSession(with: command, cardId: backupCard.cardId,
-                             initialMessage: Message(header: "Scan backup card with cardId: \(originCard.cardId)")) { result in
+                             initialMessage: Message(header: "Scan backup card with cardId: \(backupCard.cardId)")) { result in
                 switch result {
                 case .success:
                     self.repo.finalizedBackupCardsCount += 1

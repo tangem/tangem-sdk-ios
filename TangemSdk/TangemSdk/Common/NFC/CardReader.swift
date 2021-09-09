@@ -13,7 +13,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
     case unknown
     case none
-
+    
     public var description: String {
         switch self {
         case .tag(let uid):
@@ -30,7 +30,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
 /// Its default implementation, `NfcReader`, is in our module.
 @available(iOS 13.0, *)
 public protocol CardReader: AnyObject {
-	/// For setting alertMessage into NFC popup
+    /// For setting alertMessage into NFC popup
     var isPaused: Bool { get }
     var isReady: Bool { get }
     var alertMessage: String { get set }

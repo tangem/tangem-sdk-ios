@@ -19,7 +19,7 @@ public struct WalletData: Equatable, Hashable {
         self.token = token
     }
 }
-
+    
 public struct Token: Equatable, Hashable {
     /// Display name of the token.
     public let name: String

@@ -15,12 +15,8 @@ struct CardData {
     let batchId: String
     /// Timestamp of manufacturing.
     let manufactureDateTime: Date
-    /// Name of the issuer.
-    let issuerName: String?
     /// Name of the blockchain.
     let blockchainName: String
-    /// Signature of CardId with manufacturer’s private key. COS 1.21+
-    let manufacturerSignature: Data?
     /// Mask of products enabled on card. COS 2.30+
     let productMask: ProductMask?
     /// Name of the token.

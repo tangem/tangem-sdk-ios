@@ -205,7 +205,7 @@ public final class AttestationTask: CardSessionRunnable {
 
 @available(iOS 13.0, *)
 public extension AttestationTask {
-    enum Mode: String, CaseIterable, Comparable {
+    enum Mode: String, StringCodable, CaseIterable, Comparable {
         case normal, full
         
         public static func < (lhs: AttestationTask.Mode, rhs: AttestationTask.Mode) -> Bool {

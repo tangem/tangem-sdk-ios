@@ -38,19 +38,18 @@ public final class CryptoUtils {
      *  - Parameter message: The data that was signed
      *  - Parameter signature: Signed data
      */
-    public static func verify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) -> Bool? {
+    public static func verify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) throws -> Bool {
         switch curve {
         case .secp256k1:
-            return Secp256k1Utils.verify(publicKey: publicKey, message: message, signature: signature)
+            return try Secp256k1Utils.verify(publicKey: publicKey, message: message, signature: signature)
         case .ed25519:
             let hash = message.getSha512()
-            let pubKey = try? Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
-            return pubKey?.isValidSignature(signature, for: hash)
+            let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
+            return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
-            let pubKey = try? P256.Signing.PublicKey(x963Representation: publicKey)
-            guard let sig = try? P256.Signing.ECDSASignature(rawRepresentation: signature) else { return nil }
-            
-            return pubKey?.isValidSignature(sig, for: message)
+            let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
+            let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
+            return pubKey.isValidSignature(sig, for: message)
         }
     }
     

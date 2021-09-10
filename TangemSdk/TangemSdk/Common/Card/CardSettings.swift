@@ -27,7 +27,8 @@ public extension Card {
         /// All  encryption modes supported by the card
         public let supportedEncryptionModes: [EncryptionMode]
         /// Is allowed to delete wallet. COS before v4
-        public let isPermanentWallet: Bool
+        @SkipEncoding
+        var isPermanentWallet: Bool
         /// Is overwriting issuer extra data resctricted
         @SkipEncoding
         var isOverwritingIssuerExtraDataRestricted: Bool

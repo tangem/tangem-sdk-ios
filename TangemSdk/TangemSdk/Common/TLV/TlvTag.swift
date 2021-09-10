@@ -122,6 +122,7 @@ public enum TlvTag: Byte {
     case trustedAddress = 0xD6
     
     case pin2IsDefault = 0x59
+    case pinIsDefault = 0x5A
     
     // MARK: - Multi-wallet
     case walletIndex = 0x65
@@ -156,7 +157,7 @@ public enum TlvTag: Byte {
         case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter,
              .userCounter, .tokenDecimal, .issuerDataCounter, .checkWalletCounter:
             return .intValue
-        case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault:
+        case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault, .pinIsDefault:
             return .boolValue
         case .manufactureDateTime:
             return .dateTime

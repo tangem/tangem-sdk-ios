@@ -243,6 +243,8 @@ public class CardSession {
             completion(.failure(.sessionInactive))
             return
         }
+
+        Log.apdu("Serialized apdu: \(apdu)")
         
         reader.tag
             .filter { $0 != .none }
@@ -339,7 +341,7 @@ public class CardSession {
         }
         Log.session("Try establish encryption")
         guard let encryptionHelper = EncryptionHelperFactory.make(for: self.environment.encryptionMode) else {
-            return Fail(error: .cryptoUtilsError).eraseToAnyPublisher()
+            return Fail(error: .cryptoUtilsError("Failed to establish encryption")).eraseToAnyPublisher()
         }
         
         let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
@@ -362,7 +364,7 @@ public class CardSession {
                 
                 guard let protocolKey = self.environment.accessCode.value?.pbkdf2sha256(salt: uid, rounds: 50),
                       let secret = encryptionHelper.generateSecret(keyB: response.sessionKeyB) else {
-                    return Fail(error: .cryptoUtilsError).eraseToAnyPublisher()
+                    return Fail(error: .cryptoUtilsError("Failed to establish encryption")).eraseToAnyPublisher()
                 }
                 
                 let sessionKey = (secret + protocolKey).getSha256()

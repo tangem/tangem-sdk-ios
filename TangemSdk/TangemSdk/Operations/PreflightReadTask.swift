@@ -61,10 +61,12 @@ public final class PreflightReadTask: CardSessionRunnable {
         ReadCommand().run(in: session) { result in
             switch result {
             case .success(let readResponse):
-                if let expectedCardId = self.cardId?.uppercased(),
-                   expectedCardId != readResponse.cardId.uppercased() {
-                    completion(.failure(.wrongCardNumber))
-                    return
+                if session.environment.config.handleErrors {
+                    if let expectedCardId = self.cardId?.uppercased(),
+                       expectedCardId != readResponse.cardId.uppercased() {
+                        completion(.failure(.wrongCardNumber))
+                        return
+                    }
                 }
                 
                 if !session.environment.config.filter.isCardAllowed(readResponse) {

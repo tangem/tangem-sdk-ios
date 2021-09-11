@@ -17,20 +17,20 @@ public final class Secp256k1Utils {
         secp256k1_context_destroy(Secp256k1Utils.context)
     }
     
-    public static func verify(publicKey: Data, message: Data, signature: Data) -> Bool? {
-        return verify(publicKey: publicKey, hash: message.getSha256(), signature: signature)
+    public static func verify(publicKey: Data, message: Data, signature: Data) throws -> Bool {
+        return try verify(publicKey: publicKey, hash: message.getSha256(), signature: signature)
     }
     
-    public static func verify(publicKey: Data, hash: Data, signature: Data) -> Bool? {
-        guard let ctx = context else { return nil }
+    public static func verify(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
+        guard let ctx = context else { throw TangemSdkError.cryptoUtilsError("Failed to create context") }
         
         var sig = secp256k1_ecdsa_signature()
         var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature.toBytes) == 1 else { return nil }
+        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature.toBytes) == 1 else { throw TangemSdkError.cryptoUtilsError("Failed to parse signature") }
         
         _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
         var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { throw TangemSdkError.cryptoUtilsError("Failed to parse key") }
         
         let result = secp256k1_ecdsa_verify(ctx, &normalized, hash.toBytes, &pubkey) == 1
         return result

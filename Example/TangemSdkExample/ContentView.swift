@@ -16,12 +16,15 @@ struct ContentView: View {
         GeometryReader { geo in
             VStack {
                 ScrollView {
+                    HStack {
                     Text(model.logText)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 32)
                         .font(.caption)
-                        .frame(maxWidth: .infinity) //Fix iOS 13 issue
+
+                        Spacer()
+                    }
                 }
+                .padding(.vertical, 2)
+                .padding(.horizontal, 14)
                 .clipped()
                 .frame(width: geo.size.width)
                 .overlay(RoundedRectangle(cornerRadius: 8)
@@ -48,12 +51,13 @@ struct ContentView: View {
                         .buttonStyle(ExampleButton(isLoading: model.isScanning))
                         .frame(width: 100)
                         .padding()
+
                 }
                 .padding(.horizontal, 8)
                 .frame(width: geo.size.width)
             }
-            .padding(.bottom, 8)
         }
+        .padding(.bottom, 8)
         .actionSheet(isPresented: $model.showWalletSelection) {
             let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
                 let publicKey = wallet.publicKey.hexString

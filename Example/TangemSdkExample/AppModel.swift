@@ -28,18 +28,15 @@ class AppModel: ObservableObject {
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
+    @Published var showBackupView: Bool = false
+    @Published var showResetPin: Bool = false
     
-    lazy var backupService: BackupService = {
-        return BackupService(sdk: tangemSdk)
-    }()
-    
-    lazy var resetPinService: ResetPinService = {
-        return ResetPinService(sdk: tangemSdk)
-    }()
+    var backupService: BackupService? = nil
+    var resetPinService: ResetPinService? = nil
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .custom(logLevel: [.apdu, .command, .debug, .error, .nfc, .session, .view, .warning, .tlv])
+        config.logСonfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
@@ -117,6 +114,17 @@ class AppModel: ObservableObject {
         } else {
             showWalletSelection.toggle()
         }
+    }
+    
+    
+    func onBackup() {
+        backupService = BackupService(sdk: tangemSdk)
+        showBackupView = true
+    }
+    
+    func onResetService() {
+        resetPinService = ResetPinService(sdk: tangemSdk)
+        showResetPin = true
     }
 }
 

@@ -253,7 +253,7 @@ extension AppModel {
     }
     
     func depersonalize() {
-        tangemSdk.depersonalize(completion: handleCompletion)
+        tangemSdk.startSession(with: DepersonalizeCommand(), completion: handleCompletion)
     }
     
     func setAccessCode() {

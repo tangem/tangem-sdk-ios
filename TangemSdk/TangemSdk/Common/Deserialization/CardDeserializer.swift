@@ -10,6 +10,8 @@ import Foundation
 
 @available(iOS 13.0, *)
 struct CardDeserializer {
+    var allowNotPersonalized: Bool = false
+    
     func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
@@ -24,6 +26,9 @@ struct CardDeserializer {
         
         let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
+        
+        let isAccessCodeSet: Bool? = firmware >= .isAccessCodeStatusAvailable ?
+            !(try decoder.decode(.pinIsDefault)) : nil
         
         let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)
         let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? defaultCurve.map { [$0] } ?? []
@@ -78,6 +83,7 @@ struct CardDeserializer {
                         issuer: issuer,
                         settings: settings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
+                        isAccessCodeSet: isAccessCodeSet,
                         isPasscodeSet: isPasscodeSet,
                         supportedCurves: supportedCurves,
                         wallets: wallets,
@@ -112,7 +118,7 @@ struct CardDeserializer {
     }
     
     private func assertStatus(_ status: Card.Status) throws {
-        if status == .notPersonalized {
+        if status == .notPersonalized && !allowNotPersonalized {
             throw TangemSdkError.notPersonalized
         }
         

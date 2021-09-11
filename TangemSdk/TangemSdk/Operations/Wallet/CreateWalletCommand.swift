@@ -61,16 +61,6 @@ public final class CreateWalletCommand: Command {
             }
         }
         
-        let maxIndex = card.settings.maxWalletsCount
-        let occupiedIndexes = card.wallets.map { $0.index }
-        let allIndexes = 0..<maxIndex
-        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
-            self.walletIndex = firstAvailableIndex
-        } else {
-            //already created for old cards mostly
-           return maxIndex == 1 ? .alreadyCreated : .maxNumberOfWalletsCreated
-        }
-        
         return nil
     }
     
@@ -106,19 +96,39 @@ public final class CreateWalletCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.walletIndex, value: walletIndex)
         
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
         }
         
-        if environment.card?.firmwareVersion >= .multiwalletAvailable {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
+        
+        if card.firmwareVersion >= .multiwalletAvailable {
             let maskBuilder = MaskBuilder<WalletSettingsMask>()
             maskBuilder.add(.isReusable)
             
             try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
                 .append(.curveId, value: curve)
                 .append(.signingMethod, value: signingMethod)
+            
+            let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck. Run fires only before precheck. And precheck will not fire if error handling disabled
+            let occupiedIndexes = card.wallets.map { $0.index }
+            let allIndexes = 0..<maxIndex
+            if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
+                self.walletIndex = firstAvailableIndex
+            } else {
+                if maxIndex == 1 {
+                    //already created for old cards mostly
+                    throw TangemSdkError.alreadyCreated
+                } else {
+                    throw TangemSdkError.maxNumberOfWalletsCreated
+                }
+            }
+            
+            try tlvBuilder.append(.walletIndex, value: walletIndex)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

@@ -111,6 +111,8 @@ public extension FirmwareVersion {
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
     /// Field on card that describes is passcode is default value or not
     static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Field on card that describes is passcode is default value or not
+    static let isAccessCodeStatusAvailable = FirmwareVersion(major: 4, minor: 33)
     /// Read-write files
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
@@ -122,8 +124,8 @@ public extension FirmwareVersion {
 
 @available(iOS 13.0, *)
 public extension FirmwareVersion {
-    enum FirmwareType: String, Codable, CaseIterable, JSONStringConvertible {
-        case sdk = "d SDK"
+    enum FirmwareType: String, StringCodable, CaseIterable, JSONStringConvertible {
+        case sdk = "d SDK" //todo fix
         case release = "r"
         case special
         

@@ -218,7 +218,7 @@ class SignCommand: Command {
            environment.config.canonizeSecp256k1Signatures {
             let normalizedSignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
             if normalizedSignatures.count != signatures.count {
-                throw TangemSdkError.cryptoUtilsError
+                throw TangemSdkError.cryptoUtilsError("Normalization error")
             }
             
             return normalizedSignatures

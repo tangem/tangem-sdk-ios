@@ -11,8 +11,6 @@ import TangemSdk
 
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
-    @State private var showBackupView: Bool = false
-    @State private var showResetPin: Bool = false
     
     var body: some View {
         GeometryReader { geo in
@@ -37,15 +35,15 @@ struct ContentView: View {
                     HStack {
                         Button("Clear", action: model.clear)
                         Button("Copy", action: model.copy)
-                        Button("Backup") { showBackupView = true }
-                            .sheet(isPresented: $showBackupView, content: {
+                        Button("Backup") { model.onBackup() }
+                            .sheet(isPresented: $model.showBackupView, content: {
                                 BackupView()
-                                    .environmentObject(model.backupService)
+                                    .environmentObject(model.backupService!)
                             })
-                        Button("Reset pin") { showResetPin = true }
-                            .sheet(isPresented: $showResetPin, content: {
+                        Button("Reset pin") { model.onResetService() }
+                            .sheet(isPresented: $model.showResetPin, content: {
                                 ResetPinView()
-                                    .environmentObject(model.resetPinService)
+                                    .environmentObject(model.resetPinService!)
                             })
                     }
                     

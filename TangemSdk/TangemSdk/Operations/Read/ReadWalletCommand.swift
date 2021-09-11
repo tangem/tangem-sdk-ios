@@ -68,9 +68,13 @@ class ReadWalletCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         
+        guard let card = environment.card else {
+            throw TangemSdkError.unknownError
+        }
+        
         let decoder = TlvDecoder(tlv: tlv)
         
-        guard let wallet = try? WalletDeserializer().deserializeWallet(from: decoder) else {
+        guard let wallet = try? WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallet(from: decoder) else {
             throw TangemSdkError.walletNotFound
         }
         

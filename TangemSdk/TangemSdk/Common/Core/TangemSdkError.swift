@@ -206,7 +206,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletError
     
     /// This error is returned when SDK fails to perform some low-level crypto algorithm
-    case cryptoUtilsError
+    case cryptoUtilsError(_ message: String)
     
     /// This error is returned when the error occurs inside third-party crypto libraries code
     case failedToGenerateRandomSequence

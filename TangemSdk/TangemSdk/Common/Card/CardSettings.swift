@@ -29,6 +29,8 @@ public extension Card {
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
+        /// Is allowed to use hd wallets
+        public let isHDWalletsAllowed: Bool
         /// Is overwriting issuer extra data resctricted
         @SkipEncoding
         var isOverwritingIssuerExtraDataRestricted: Bool
@@ -62,6 +64,7 @@ extension Card.Settings {
         self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
         self.isPermanentWallet = mask.contains(.permanentWallet)
         self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
+        self.isHDWalletsAllowed = mask.contains(.allowHDWallets)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {
@@ -125,6 +128,7 @@ extension CardSettingsMask {
     static let disableFiles = CardSettingsMask(rawValue: 0x04000000)
     static let permanentWallet = CardSettingsMask(rawValue: 0x0004)
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
+    static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
 }
 
 //MARK:- CardSettingsMask OptionSetCodable conformance

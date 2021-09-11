@@ -187,37 +187,6 @@ public extension TangemSdk {
             })
     }
     
-    /// Command available on SDK cards only
-    ///  Personalization is an initialization procedure, required before starting using a card.
-    /// During this procedure a card setting is set up. During this procedure all data exchange is encrypted.
-    /// - Warning: Command available only for cards with COS 3.34 and higher
-    /// - Parameters:
-    ///   - config: is a configuration file with all the card settings that are written on the card during personalization.
-    ///   - issuer: Issuer is a third-party team or company wishing to use Tangem cards.
-    ///   - manufacturer: Tangem Card Manufacturer.
-    ///   - acquirer: Acquirer is a trusted third-party company that operates proprietary
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   (non-EMV) POS terminal infrastructure and transaction processing back-end.
-    ///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
-    func personalize(config: CardConfig,
-                     issuer: Issuer,
-                     manufacturer: Manufacturer,
-                     acquirer: Acquirer? = nil,
-                     initialMessage: Message? = nil,
-                     completion: @escaping CompletionResult<Card>) {
-        let command = PersonalizeCommand(config: config, issuer: issuer, manufacturer: manufacturer, acquirer: acquirer)
-        startSession(with: command, initialMessage: initialMessage, completion: completion)
-    }
-    
-    /// Command available on SDK cards only
-    /// This command resets card to initial state, erasing all data written during personalization and usage.
-    /// - Parameters:
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<DepersonalizeResponse,TangemSdkError>`
-    func depersonalize(initialMessage: Message? = nil, completion: @escaping CompletionResult<DepersonalizeResponse>) {
-        startSession(with: DepersonalizeCommand(), cardId: nil, initialMessage: initialMessage, completion: completion)
-    }
-    
     /// Set or change card's access code
     /// - Parameters:
     ///   - accessCode: Access code to set. If nil, the user will be prompted to enter code before operation

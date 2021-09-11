@@ -33,7 +33,7 @@ public final class CreateWalletCommand: Command {
     private let curve: EllipticCurve
     private let signingMethod = SigningMethod.signHash
     
-    private var walletIndex: Int? = nil
+    private var walletIndex: Int = 0
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     public init(curve: EllipticCurve) {
@@ -144,7 +144,7 @@ public final class CreateWalletCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let index = try decoder.decode(.walletIndex) ?? walletIndex!
+        let index = try decoder.decode(.walletIndex) ?? walletIndex
         
         let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                  chainCode: try decoder.decode(.walletHDChain),

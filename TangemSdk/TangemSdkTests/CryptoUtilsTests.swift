@@ -35,9 +35,9 @@ class CryptoUtilsTests: XCTestCase {
         let signature = Secp256k1Utils.sign(dummyData, with: privateKey)
         XCTAssertNotNil(signature)
         
-        let verify = CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
+        let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
         XCTAssertNotNil(verify)
-        XCTAssertEqual(verify!, true)
+        XCTAssertEqual(verify, true)
     }
     
     func testEd25519Verify() {
@@ -48,7 +48,7 @@ class CryptoUtilsTests: XCTestCase {
         var verify: Bool? = nil
         
         measure {
-            verify = CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
+            verify = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
         }
         
         XCTAssertNotNil(verify)
@@ -65,7 +65,7 @@ class CryptoUtilsTests: XCTestCase {
         var verify: Bool? = nil
         
         measure {
-            verify = CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
+            verify = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
         }
         
         XCTAssertNotNil(verify)
@@ -85,9 +85,6 @@ class CryptoUtilsTests: XCTestCase {
         let sig = Data(hexString: "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4ED65093BB5EC5291EC7CC95B4278D0E9EF59719DE985EEB764779F511E453EDDD")
         let normalized = Secp256k1Utils.normalize(secp256k1Signature: sig)
         XCTAssertEqual(normalized!.hexString, "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4E29AF6C44A13AD6E138336A4BD872F15FC517C30816E9B4C57858697AEBE25364")
-        let sig2 = Data(hexString: "5BAB8D9C77D6B03E68D58B1AED44586BA1776231B9A44986B92D6E14FD834288A08D39BB1BA1940EE49069B6D6E5F2299A8380DB39ECFBA078380154CAAABB00")
-        let normalized2 = Secp256k1Utils.normalize(secp256k1Signature: sig2)
-        XCTAssertEqual(normalized2!.hexString, "5BAB8D9C77D6B03E68D58B1AED44586BA1776231B9A44986B92D6E14FD8342885F72C644E45E6BF11B6F9649291A0DD5202B5C0B755BA49B479A5D38058B8641")
     }
 }
 

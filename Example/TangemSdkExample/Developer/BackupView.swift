@@ -158,6 +158,6 @@ struct BackupView_Previews: PreviewProvider {
     
     static var previews: some View {
         BackupView()
-            .environmentObject(model.backupService)
+            .environmentObject(BackupService(sdk: TangemSdk()))
     }
 }

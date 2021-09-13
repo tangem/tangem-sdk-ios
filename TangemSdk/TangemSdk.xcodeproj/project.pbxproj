@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
+		5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04F9E126EF731B00D15F75 /* Publisher+.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
@@ -294,6 +295,7 @@
 /* Begin PBXFileReference section */
 		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0243BD26CACACD00B76F37 /* IndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorView.swift; sourceTree = "<group>"; };
+		5D04F9E126EF731B00D15F75 /* Publisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+.swift"; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
@@ -1205,6 +1207,7 @@
 				5DAAF39F26E2668500187AA9 /* UIApplication+.swift */,
 				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
+				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1590,6 +1593,7 @@
 				5D379C2F268FA57500C7F473 /* UserCode.swift in Sources */,
 				B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */,
 				5DBD7325249122C9000DF4BD /* SetUserCodeCommand.swift in Sources */,
+				5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */,
 				5D23C42626CEDDD000A1A280 /* Array+.swift in Sources */,
 				5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */,
 				5D6931D423D9AC440088C6C0 /* TlvBuilder.swift in Sources */,

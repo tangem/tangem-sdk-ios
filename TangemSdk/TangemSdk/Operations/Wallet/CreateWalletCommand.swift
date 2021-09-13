@@ -106,6 +106,20 @@ public final class CreateWalletCommand: Command {
         }
         
         
+        let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck. Run fires only before precheck. And precheck will not fire if error handling disabled
+        let occupiedIndexes = card.wallets.map { $0.index }
+        let allIndexes = 0..<maxIndex
+        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
+            self.walletIndex = firstAvailableIndex
+        } else {
+            if maxIndex == 1 {
+                //already created for old cards mostly
+                throw TangemSdkError.alreadyCreated
+            } else {
+                throw TangemSdkError.maxNumberOfWalletsCreated
+            }
+        }
+        
         if card.firmwareVersion >= .multiwalletAvailable {
             let maskBuilder = MaskBuilder<WalletSettingsMask>()
             maskBuilder.add(.isReusable)
@@ -113,22 +127,7 @@ public final class CreateWalletCommand: Command {
             try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
                 .append(.curveId, value: curve)
                 .append(.signingMethod, value: signingMethod)
-            
-            let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck. Run fires only before precheck. And precheck will not fire if error handling disabled
-            let occupiedIndexes = card.wallets.map { $0.index }
-            let allIndexes = 0..<maxIndex
-            if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
-                self.walletIndex = firstAvailableIndex
-            } else {
-                if maxIndex == 1 {
-                    //already created for old cards mostly
-                    throw TangemSdkError.alreadyCreated
-                } else {
-                    throw TangemSdkError.maxNumberOfWalletsCreated
-                }
-            }
-            
-            try tlvBuilder.append(.walletIndex, value: walletIndex)
+                .append(.walletIndex, value: walletIndex)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

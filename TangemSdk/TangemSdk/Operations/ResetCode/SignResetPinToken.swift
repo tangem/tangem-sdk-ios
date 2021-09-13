@@ -26,7 +26,7 @@ final class SignResetPinTokenCommand: Command {
         
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
-            return TangemSdkError.invalidState
+            return TangemSdkError.backupNotActive
         }
         
         return nil

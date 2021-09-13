@@ -33,6 +33,10 @@ public final class JSONRPCConverter {
     
     private init() {}
     
+    deinit {
+        Log.debug("JSONRPCConverter deinit")
+    }
+    
     public func register(_ object: JSONRPCHandler) {
         handlers[object.method.lowercased()] = object
     }

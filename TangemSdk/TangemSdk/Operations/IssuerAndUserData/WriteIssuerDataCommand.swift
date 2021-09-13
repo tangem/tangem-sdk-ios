@@ -54,10 +54,6 @@ public final class WriteIssuerDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if issuerPublicKey == nil {
-            issuerPublicKey = card.issuer.publicKey
-        }
-        
         if issuerData.count > WriteIssuerDataCommand.maxSize {
             return .dataSizeTooLarge
         }
@@ -72,6 +68,19 @@ public final class WriteIssuerDataCommand: Command {
         }
         
         return nil
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if issuerPublicKey == nil {
+            issuerPublicKey = card.issuer.publicKey
+        }
+
+        transceive(in: session, completion: completion)
     }
         
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {

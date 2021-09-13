@@ -56,10 +56,6 @@ public final class WriteIssuerExtraDataCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if issuerPublicKey == nil {
-            issuerPublicKey = card.issuer.publicKey
-        }
-        
         if issuerData.count > WriteIssuerExtraDataCommand.maxSize {
             return .extendedDataSizeTooLarge
         }
@@ -77,6 +73,15 @@ public final class WriteIssuerExtraDataCommand: Command {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if issuerPublicKey == nil {
+            issuerPublicKey = card.issuer.publicKey
+        }
+        
         self.completion = completion
         self.viewDelegate = session.viewDelegate
         writeData(session)

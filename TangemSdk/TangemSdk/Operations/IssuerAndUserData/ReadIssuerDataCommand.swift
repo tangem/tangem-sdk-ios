@@ -56,16 +56,17 @@ public final class ReadIssuerDataCommand: Command {
         Log.debug("ReadIssuerDataCommand deinit")
     }
     
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
         
-        return nil
-    }
-
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):

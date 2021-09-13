@@ -98,15 +98,20 @@ public final class ReadIssuerExtraDataCommand: Command {
         if card.firmwareVersion >= .multiwalletAvailable {
             return .notSupportedFirmwareVersion
         }
+
+        return nil
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
         
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
         
-        return nil
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
         self.completion = completion
         self.viewDelegate = session.viewDelegate
         readData(session)

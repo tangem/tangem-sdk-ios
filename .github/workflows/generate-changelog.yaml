@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Prepare variables
-        run: |
+      run: |
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
           

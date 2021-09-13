@@ -31,6 +31,10 @@ final class DefaultSessionViewDelegate {
         engine.create()
     }
     
+    deinit {
+        Log.debug("DefaultSessionViewDelegate deinit")
+    }
+    
     private func presentInfoScreenIfNeeded() {
         guard !self.infoScreen.isBeingPresented, self.infoScreen.presentingViewController == nil,
               let topmostViewController = UIApplication.shared.topMostViewController
@@ -40,7 +44,7 @@ final class DefaultSessionViewDelegate {
     }
     
     private func dismissInfoScreen(completion: (() -> Void)?) {
-        if self.infoScreen.isBeingDismissed {
+        if infoScreen.isBeingDismissed || infoScreen.presentingViewController == nil {
             completion?()
             return
         }
@@ -52,7 +56,7 @@ final class DefaultSessionViewDelegate {
             return
         }
         
-        self.infoScreen.dismiss(animated: true, completion: completion)
+        self.infoScreen.presentingViewController?.dismiss(animated: true, completion: completion)
     }
     
     private func runInMainThread(_ block: @autoclosure @escaping () -> Void) {
@@ -125,11 +129,17 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     
     //TODO: Refactor UI
     func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+        guard let topmostViewController = UIApplication.shared.topMostViewController,
+              !topmostViewController.isBeingPresented else {
+            onCancel()
+            return
+        }
+        
         let title = TangemSdkError.cardVerificationFailed.localizedDescription
         let message = isDevelopmentCard ? "This is a development card. You can continue at your own risk"
             : "This card may be production sample or conterfeit. You can continue at your own risk"
         
-        runInMainThread(UIAlertController.showShouldContinue(from: self.infoScreen,
+        runInMainThread(UIAlertController.showShouldContinue(from: topmostViewController,
                                                              title: title,
                                                              message: message,
                                                              onContinue: onContinue,
@@ -138,10 +148,16 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     
     //TODO: Refactor UI
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+        guard let topmostViewController = UIApplication.shared.topMostViewController,
+              !topmostViewController.isBeingPresented else {
+            onCancel()
+            return
+        }
+        
         let title =  "Online attestation failed"
         let message = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation"
         
-        runInMainThread(UIAlertController.showShouldContinue(from: self.infoScreen,
+        runInMainThread(UIAlertController.showShouldContinue(from: topmostViewController,
                                                              title: title,
                                                              message: message,
                                                              onContinue: onContinue,
@@ -151,9 +167,15 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     
     //TODO: Refactor UI
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
+        guard let topmostViewController = UIApplication.shared.topMostViewController,
+              !topmostViewController.isBeingPresented else {
+            onContinue()
+            return
+        }
+        
         let title = "Warning"
         let message = "Too large runs count of Attest Wallet or Sign looks suspicious."
-        runInMainThread(UIAlertController.showAlert(from: self.infoScreen,
+        runInMainThread(UIAlertController.showAlert(from: topmostViewController,
                                                     title: title,
                                                     message: message,
                                                     onContinue: onContinue))

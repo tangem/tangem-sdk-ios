@@ -12,16 +12,18 @@ import CoreNFC
 import UIKit
 
 /// Provides NFC communication between an application and Tangem card.
+@available(iOS 13.0, *)
 final class NFCReader: NSObject {
-    private(set) var tag = CurrentValueSubject<NFCTagType?, TangemSdkError>(nil)
-    private(set) var isSessionReady = CurrentValueSubject<Bool, Never>(false)
+    var viewEventsPublisher = CurrentValueSubject<CardReaderViewEvent, Never>(.none)
+    private(set) var tag = CurrentValueSubject<NFCTagType, TangemSdkError>(.none)
+    
+    var isReady: Bool { isSessionReady }
     
     /// Session paused indicator for pins UI
-    
-    private var isPaused = false
-    
+    private(set) var isPaused = false
     /// Current connected tag
     private var connectedTag: NFCTag? = nil
+    private var isSilentRestartPolling: Bool = false
     /// Active nfc session
     private var readerSession: NFCTagReaderSession?
     
@@ -30,6 +32,8 @@ final class NFCReader: NSObject {
     
     /// Session invalidation flag
     @Published private var invalidatedWithError: TangemSdkError? = nil
+    
+    @Published private var isSessionReady: Bool = false
     
     /// Session cancellation publisher. Transforms cancellation to error
     private var cancellationPublisher: AnyPublisher<Void, TangemSdkError> {
@@ -45,7 +49,7 @@ final class NFCReader: NSObject {
             .eraseToAnyPublisher()
     }
     /// Session restart polling publisher
-    private var restartPollingPublisher: CurrentValueSubject<Void, Never> = .init(())
+    private var restartPollingPublisher: CurrentValueSubject<Bool, Never> = .init(false)
     
     /// Workaround for session timeout error (60 sec)
     private var sessionTimerCancellable: AnyCancellable? = nil
@@ -59,6 +63,9 @@ final class NFCReader: NSObject {
     // Idle timer
     private var idleTimerCancellable: AnyCancellable? = nil
     
+    // Tag search timer. Sends tagLost event after timeout, if restartPolling called with silent mode
+    private var searchTimerCancellable: AnyCancellable? = nil
+    
     /// Keep alert message for restore after pause
     private var _alertMessage: String? = nil
     
@@ -69,6 +76,7 @@ final class NFCReader: NSObject {
     private var sendRetryCount = Constants.retryCount
     private var startRetryCount = Constants.startRetryCount
     private let pollingOption: NFCTagReaderSession.PollingOption
+    private var sessionDidBecomeActiveTimestamp: Date = .init()
     
     init(pollingOption: NFCTagReaderSession.PollingOption = [.iso14443]) {
         self.pollingOption = pollingOption
@@ -82,6 +90,7 @@ final class NFCReader: NSObject {
 }
 
 //MARK: CardReader
+@available(iOS 13.0, *)
 extension NFCReader: CardReader {
     var alertMessage: String {
         get { return _alertMessage ?? "" }
@@ -97,6 +106,7 @@ extension NFCReader: CardReader {
         queue = DispatchQueue(label: "tangem_sdk_reader_queue")
         bag = Set<AnyCancellable>()
         isPaused = false
+        isSilentRestartPolling = false
         invalidatedWithError = nil
         cancelled = false
         connectedTag = nil
@@ -114,6 +124,14 @@ extension NFCReader: CardReader {
             .default
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .map { _ in return true }
+            .filter{[unowned self] _ in
+                let distanceToSessionActive = self.sessionDidBecomeActiveTimestamp.distance(to: Date())
+                if !self.isSessionReady || distanceToSessionActive < 1 {
+                    Log.nfc("Filter out сancelled event")
+                    return false
+                }
+                return true
+            }
             .assign (to: \.cancelled, on: self)
             .store(in: &bag)
         
@@ -121,32 +139,30 @@ extension NFCReader: CardReader {
             .dropFirst()
             .filter { $0 }
             .filter {[unowned self] _ in self.idleTimerCancellable == nil }
-            .sink {[unowned self] _ in
-                Log.nfc("Cancelled event received")
-                self.invalidatedWithError = .userCancelled
-            }
+            .map { _ in return TangemSdkError.userCancelled }
+            .assign(to: \.invalidatedWithError, on: self)
             .store(in: &bag)
         
         $invalidatedWithError //speed up cancellation if no tag interaction
             .dropFirst()
             .compactMap { $0 }
-            .filter {[unowned self] _ in self.isSessionReady.value }
+            .filter {[unowned self] _ in self.isSessionReady }
             .sink {[unowned self] error in
                 Log.nfc("Invalidated event received")
                 if !self.isPaused { //skip completion event for paused session.
                     //Actually we need this stuff for immediate cancel(or error) handling only,
                     //before the session detect any tags or if restart polling in action
                     self.tag.send(completion: .failure(error))
-                    self.tag = .init(nil)
+                    self.tag = .init(.none)
                 } else {
-                    self.tag.send(nil)
+                    self.tag.send(.none)
                 }
                 
-                isSessionReady.send(false)
+                isSessionReady = false
             }
             .store(in: &bag)
         
-        isSessionReady //Handle session state
+        $isSessionReady //Handle session state
             .dropFirst()
             .removeDuplicates()
             .sink {[unowned self] isReady in
@@ -157,6 +173,10 @@ extension NFCReader: CardReader {
                 } else { //clenup resources
                     self.stopTimers()
                 }
+                
+                if !isPaused {
+                    viewEventsPublisher.send(isReady ? .sessionStarted : .sessionStopped)
+                }
             }
             .store(in: &bag)
         
@@ -165,31 +185,46 @@ extension NFCReader: CardReader {
             .dropFirst()
             .sink { _ in  }
                 receiveValue: {[unowned self] tag in
-                    Log.nfc("Received tag: \(String(describing: tag))")
-                    if tag != nil {
+                    if tag != .none {
+                        Log.nfc("Received tag: \(String(describing: tag))")
                         self.startTagTimer()
                         if case .tag = tag {
                             self.startIdleTimer()
                         }
                     } else {
+                        Log.nfc("Handle tag lost, cleaning resources: \(String(describing: tag))")
                         self.tagTimerCancellable = nil
                         self.idleTimerCancellable = nil
+                        self.searchTimerCancellable = nil
                         connectedTag = nil
+                    }
+                    
+                    if !isPaused && !isSilentRestartPolling {
+                        viewEventsPublisher.send(tag == .none ? .tagLost : .tagConnected)
+                    }
+                    
+                    if isSilentRestartPolling && tag != .none { //reset silent mode
+                        isSilentRestartPolling = false
                     }
                 }
             .store(in: &bag)
         
         restartPollingPublisher //handle restart polling events
             .dropFirst()
-            .sink {[unowned self] _ in
+            .sink {[unowned self] isSilent in
                 guard let session = self.readerSession,
                       session.isReady else {
                     return
                 }
                 
+                self.isSilentRestartPolling = isSilent
                 Log.nfc("Restart polling invoked")
-                self.tag.send(nil)
+                self.tag.send(.none)
                 session.restartPolling()
+                
+                if isSilent {
+                    self.startSearchTimer()
+                }
             }
             .store(in: &bag)
     }
@@ -216,8 +251,8 @@ extension NFCReader: CardReader {
         }
     }
     
-    func restartPolling() {
-        restartPollingPublisher.send(())
+    func restartPolling(silent: Bool) {
+        restartPollingPublisher.send(silent)
     }
     
     /// Send apdu command to connected tag
@@ -227,45 +262,52 @@ extension NFCReader: CardReader {
         Log.nfc("Send publisher invoked")
         idleTimerCancellable = nil
         
-        guard case let .iso7816(tag) = connectedTag else {
+        guard let connectedTag = self.connectedTag else {
+            return Empty(completeImmediately: false).eraseToAnyPublisher() //wait for tag
+        }
+        
+        guard case let .iso7816(iso7816tag) = connectedTag else {
             return Fail(error: TangemSdkError.unsupportedCommand).eraseToAnyPublisher()
         }
         
         let requestTimestamp = Date()
         Log.apdu(apdu)
-        return tag
+        return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)
-            .map{ rapdu, _ -> ResponseApdu in
-                return rapdu
-            }
-            .tryCatch{[weak self] error -> AnyPublisher<ResponseApdu, TangemSdkError> in
+            .map { return $0.0 }
+            .tryCatch{[weak self] error -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> in
                 guard let self = self else {
                     return Empty(completeImmediately: true).eraseToAnyPublisher()
                 }
                 
                 if case .userCancelled = error {
-                    throw error
+                    return Just(.failure(error))
+                        .setFailureType(to: TangemSdkError.self)
+                        .eraseToAnyPublisher()
                 }
                 
                 let distance = requestTimestamp.distance(to: Date())
                 if distance > Constants.timestampTolerance || self.sendRetryCount <= 0 { //retry to fix old device issues
                     Log.nfc("Invoke restart polling on error")
-                    self.restartPolling()
+                    self.restartPolling(silent: true)
                     return Empty(completeImmediately: false).eraseToAnyPublisher()
                 } else {
                     self.sendRetryCount -= 1
                     Log.nfc("Retry send. distance: \(distance)")
-                    return self.sendPublisher(apdu: apdu)
+                   throw error
                 }
             }
+            .retry(Constants.retryCount)
             .handleEvents (receiveOutput: {[weak self] rApdu in
                 guard let self = self else { return }
+                
                 Log.nfc("Success response from card received")
                 Log.apdu(rApdu)
                 self.sendRetryCount = Constants.retryCount
                 self.startIdleTimer()
             })
+            .tryMap { try $0.getResponse() }
             .mapError { $0.toTangemSdkError() }
             .eraseToAnyPublisher()
     }
@@ -328,8 +370,22 @@ extension NFCReader: CardReader {
             .receive(on: queue!)
             .sink {[unowned self] _ in
                 Log.nfc("Restart by idle timer")
-                self.restartPolling()
+                self.restartPolling(silent: true)
                 self.idleTimerCancellable = nil
+            }
+    }
+    
+    private func startSearchTimer() {
+        searchTimerCancellable = Timer
+            .TimerPublisher(interval: Constants.searchTagTimeout, tolerance: 0, runLoop: RunLoop.main, mode: .common)
+            .autoconnect()
+            .receive(on: queue!)
+            .filter {[unowned self] _ in self.connectedTag == nil }
+            .sink {[unowned self] _ in
+                Log.nfc("Send tag lost view event due timeout")
+                self.isSilentRestartPolling = false
+                self.viewEventsPublisher.send(.tagLost)
+                self.searchTimerCancellable = nil
             }
     }
     
@@ -342,9 +398,11 @@ extension NFCReader: CardReader {
 }
 
 //MARK: NFCTagReaderSessionDelegate
+@available(iOS 13.0, *)
 extension NFCReader: NFCTagReaderSessionDelegate {
     func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {
-        isSessionReady.send(true)
+        sessionDidBecomeActiveTimestamp = Date()
+        isSessionReady = true
     }
     
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
@@ -361,8 +419,8 @@ extension NFCReader: NFCTagReaderSessionDelegate {
         sessionConnectCancellable = session.connectPublisher(tag: nfcTag)
             .sink {[weak self] completion in
                 switch completion {
-                case .failure(_):
-                    self?.restartPolling()
+                case .failure:
+                    self?.restartPolling(silent: false)
                 case .finished:
                     break
                 }
@@ -377,14 +435,16 @@ extension NFCReader: NFCTagReaderSessionDelegate {
 }
 
 //MARK: Constants
+@available(iOS 13.0, *)
 extension NFCReader {
     enum Constants {
         static let tagTimeout = 20.0
         static let idleTimeout = 2.0
         static let sessionTimeout = 60.0
         static let nfcStuckTimeout = 1.0
-        static let retryCount = 10
+        static let retryCount = 20
         static let startRetryCount = 10
         static let timestampTolerance = 1.0
+        static let searchTagTimeout = 1.0
     }
 }

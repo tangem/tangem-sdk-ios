@@ -10,6 +10,7 @@ import Foundation
 import Combine
 import CoreNFC
 
+@available(iOS 13.0, *)
 extension ResponseApdu {
     func decryptPublisher(encryptionKey: Data?) -> AnyPublisher<ResponseApdu, TangemSdkError> {
         return Deferred {Future() { promise in
@@ -23,6 +24,7 @@ extension ResponseApdu {
     }
 }
 
+@available(iOS 13.0, *)
 extension CommandApdu {
     func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
         return Deferred {Future() { promise in
@@ -36,8 +38,9 @@ extension CommandApdu {
     }
 }
 
+@available(iOS 13.0, *)
 extension NFCISO7816Tag {
-    func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+    func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> {
         return Deferred { Future() {[unowned self] promise in
             let requestDate = Date()
             
@@ -50,13 +53,14 @@ extension NFCISO7816Tag {
                     Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
                     
                     let rApdu = ResponseApdu(data, sw1, sw2)
-                    promise(.success(rApdu))
+                    promise(.success(.success(rApdu)))
                 }
             }
         }}.eraseToAnyPublisher()
     }
 }
 
+@available(iOS 13.0, *)
 extension NFCTagReaderSession {
     func connectPublisher(tag: NFCTag) -> AnyPublisher<Void, TangemSdkError> {
         return Deferred { Future() {[unowned self] promise in

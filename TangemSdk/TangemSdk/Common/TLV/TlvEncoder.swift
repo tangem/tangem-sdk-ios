@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 public final class TlvEncoder {
     public func encode<T>(_ tag: TlvTag, value: T?) throws -> Tlv {
         do {
@@ -79,22 +80,22 @@ public final class TlvEncoder {
             let mask = value as! ProductMask
             return Data([mask.rawValue])
         case .settingsMask:
-			do {
-				try typeCheck(value, SettingsMask.self, for: tag)
-				let mask = value as! SettingsMask
-				let rawValue = mask.rawValue
-				if 0xFFFF0000 & rawValue != 0 {
-					 return rawValue.bytes4
-				} else {
-					 return rawValue.bytes2
-				}
-			} catch {
+            do {
+                try typeCheck(value, CardSettingsMask.self, for: tag)
+                let mask = value as! CardSettingsMask
+                let rawValue = mask.rawValue
+                if 0xFFFF0000 & rawValue != 0 {
+                    return rawValue.bytes4
+                } else {
+                    return rawValue.bytes2
+                }
+            } catch {
                 Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
-			}
-			
-			try typeCheck(value, WalletSettingsMask.self, for: tag)
-			let mask = value as! WalletSettingsMask
-			return mask.rawValue.bytes4
+            }
+            
+            try typeCheck(value, WalletSettingsMask.self, for: tag)
+            let mask = value as! WalletSettingsMask
+            return mask.rawValue.bytes4
         case .status:
             guard let statusType = value as? StatusType else {
                 throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
@@ -109,10 +110,14 @@ public final class TlvEncoder {
                 throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
             }
             return Data([mode.rawValue])
-		case .fileSettings:
-			try typeCheck(value, FileSettings.self, for: tag)
-			let settings = value as! FileSettings
-			return settings.rawValue.bytes2
+        case .fileSettings:
+            try typeCheck(value, FileSettings.self, for: tag)
+            let settings = value as! FileSettings
+            return settings.intValue.bytes2
+        case .derivationPath:
+            try typeCheck(value, DerivationPath.self, for: tag)
+            let path = value as! DerivationPath
+            return path.encodeTlv(with: tag).value
         }
     }
     
@@ -123,4 +128,5 @@ public final class TlvEncoder {
     }
 }
 
+@available(iOS 13.0, *)
 extension TlvEncoder: TlvLogging {}

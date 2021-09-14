@@ -135,7 +135,7 @@ public extension Log {
         case debug
         case verbose
         case custom(logLevel: [Log.Level],
-                    loggers: [TangemSdkLogger])
+                    loggers: [TangemSdkLogger] = [ConsoleLogger()])
         
         internal var logLevel: [Log.Level] {
             switch self {
@@ -158,5 +158,16 @@ public extension Log {
                 return [ConsoleLogger()]
             }
         }
+    }
+}
+// MARK:- Log formatter helpers
+@available(iOS 13.0, *)
+extension Log {
+    static func sendCommand(_ commandObject: AnyObject) {
+        let commandName = "\(commandObject)".remove("TangemSdk.").remove("Command")
+        let separator = Array(repeating: "=", count: 64).joined()
+        logger.logInternal(separator, level: .command)
+        command("Send command: \(commandName)".titleFormatted)
+        logger.logInternal(separator, level: .command)
     }
 }

@@ -43,7 +43,7 @@
 "pin2" = "Passcode";
 "pin_enter" = "Enter %@";
 "pin_confirm_error_format" = "Codes do not match";
-"pin_change_code_format" = "Change %@";
+"pin_change_code_format" = "Set %@";
 "pin_change_new_code_format" = "New %@";
 "pin_change_current_code_format" = "Current %@";
 "pin_set_code_confirm_format" = "Confirm %@";
@@ -99,6 +99,9 @@
 
 "error_wrong_pin1" = "Wrong Access Сode";
 "error_wrong_pin2" = "Wrong Passcode";
+
+"error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
+
 //Android only
 
 // Label. Need NFC to be switched on.

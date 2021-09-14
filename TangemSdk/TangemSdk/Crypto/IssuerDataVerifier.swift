@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(iOS 13.0, *)
 class IssuerDataVerifier {
     static func verify(cardId: String,
                        issuerData: Data,
@@ -15,7 +16,7 @@ class IssuerDataVerifier {
                        publicKey: Data,
                        signature: Data) -> Bool {
         
-        if let verifyResult = verify(cardId: cardId,
+        if let verifyResult = try? verify(cardId: cardId,
                                      issuerData: issuerData,
                                      issuerDataSize: nil,
                                      issuerDataCounter: issuerDataCounter,
@@ -31,7 +32,7 @@ class IssuerDataVerifier {
                        publicKey: Data,
                        signature: Data) -> Bool {
         
-        if let verifyResult = verify(cardId: cardId,
+        if let verifyResult = try? verify(cardId: cardId,
                                      issuerData: nil,
                                      issuerDataSize: issuerDataSize,
                                      issuerDataCounter: issuerDataCounter,
@@ -46,7 +47,7 @@ class IssuerDataVerifier {
                                issuerDataSize: Int?,
                                issuerDataCounter: Int?,
                                publicKey: Data,
-                               signature: Data) -> Bool? {
+                               signature: Data) throws -> Bool? {
         
         let encoder = TlvEncoder()
         var data = Data()
@@ -63,7 +64,7 @@ class IssuerDataVerifier {
             }
         } catch { return nil }
         
-        return CryptoUtils.verify(curve: .secp256k1,
+        return try CryptoUtils.verify(curve: .secp256k1,
                                   publicKey: publicKey,
                                   message: data,
                                   signature: signature)

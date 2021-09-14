@@ -50,7 +50,7 @@ public final class JSONRPCConverter {
     
     public func getHandler(from request: JSONRPCRequest) throws -> JSONRPCHandler {
         guard let handler = handlers[request.method.lowercased()] else {
-            throw JSONRPCError(.methodNotFound, data: request.method)
+            throw JSONRPCError(.methodNotFound, data: JSONRPCErrorData(.methodNotFound, message: request.method))
         }
         
         return handler
@@ -96,7 +96,7 @@ public struct JSONRPCRequest {
                 throw JSONRPCError(.parseError)
             }
         } catch {
-            throw JSONRPCError(.parseError, data: error.localizedDescription)
+            throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: error.localizedDescription))
         }
     }
     
@@ -108,7 +108,7 @@ public struct JSONRPCRequest {
         if let methodValue = json["method"] as? String {
             method = methodValue
         } else {
-            throw JSONRPCError(.invalidRequest, data: "method")
+            throw JSONRPCError(.invalidRequest, data: JSONRPCErrorData(.invalidRequest, message: "Failed to parse method"))
         }
     }
 }
@@ -169,18 +169,32 @@ extension Array: JSONStringConvertible where Element: JSONStringConvertible {}
 public struct JSONRPCError: Error, JSONStringConvertible, Equatable {
     public let code: Int
     public let message: String
-    public let data: String?
+    public let data: JSONRPCErrorData?
     
-    public init(code: Int, message: String, data: String?) {
+    public init(code: Int, message: String, data: JSONRPCErrorData?) {
         self.code = code
         self.message = message
         self.data = data
     }
     
-    public init(_ code: JSONRPCError.Code, data: String? = nil) {
+    public init(_ code: JSONRPCError.Code, data: JSONRPCErrorData? = nil) {
         self.code = code.rawValue
         self.message = code.message
         self.data = data
+    }
+}
+
+@available(iOS 13.0, *)
+public struct JSONRPCErrorData: Encodable, Equatable, JSONStringConvertible {
+    public let code: Int
+    public let message: String
+}
+
+@available(iOS 13.0, *)
+extension JSONRPCErrorData {
+    public init(_ code: JSONRPCError.Code, message: String) {
+        self.code = code.rawValue
+        self.message = message
     }
 }
 
@@ -237,7 +251,8 @@ extension Error {
             return jsonError
         } else {
             let sdkError = toTangemSdkError()
-            return JSONRPCError(.serverError, data: sdkError.localizedDescription)
+            let data = JSONRPCErrorData(code: sdkError.code, message: "\(sdkError)".capitalizingFirst())
+            return JSONRPCError(.serverError, data: data)
         }
     }
 }
@@ -256,7 +271,7 @@ extension Dictionary where Key == String, Value == Any {
     func value<T: Decodable>(for key: String) throws -> T {
         let value = self[key]
         if value == nil || String(describing: value) == "<null>" {
-            throw JSONRPCError(.invalidParams, data: key)
+            throw JSONRPCError(.invalidParams, data: JSONRPCErrorData(.invalidParams, message: key))
         }
         
         return try decode(value!, for: key)
@@ -267,7 +282,7 @@ extension Dictionary where Key == String, Value == Any {
             if let hex = value as? String {
                 return (Data(hexString: hex) as! T)
             } else {
-                throw JSONRPCError(.parseError, data: key)
+                throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
             }
         }
         
@@ -275,7 +290,7 @@ extension Dictionary where Key == String, Value == Any {
             if let hex = value as? [String] {
                 return hex.compactMap { Data(hexString: $0) } as! T
             } else {
-                throw JSONRPCError(.parseError, data: key)
+                throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
             }
         }
         
@@ -300,6 +315,6 @@ extension Dictionary where Key == String, Value == Any {
             someError = error
         }
         
-        throw someError ?? JSONRPCError(.parseError, data: key)
+        throw someError ?? JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
     }
 }

@@ -18,9 +18,18 @@ class StringUtilsTest: XCTestCase {
     }
     
     func testSha256() {
-        let testSrting = "test string"
-        let testSha = Data(hexString: "d5579c46dfcc7f18207013e65b44e4cb4e2c2298f4ac457ba8f82743f31e930b")
+        let testSrting = "abc"
+        let testSha = Data(hexString: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+        
+        let testSrting1 = ""
+        let testSha1 = Data(hexString: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
         XCTAssertEqual(testSrting.sha256(), testSha)
+        
+        XCTAssertEqual(testSrting1.sha256(), testSha1)
+    }
+    
+    func testSha256Empty() {
+       
     }
     
     func testSha512() {

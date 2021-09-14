@@ -9,12 +9,34 @@
 import Foundation
 
 /// Available settings for files
-public enum FileSettings: Int, Codable {
-	case `public` = 0x0001, `private` = 0x0000
+@available(iOS 13.0, *)
+public enum FileSettings: String, StringCodable, JSONStringConvertible {
+    case `public`
+    case `private`
+    
+    var intValue: Int {
+        switch self {
+        case .public:
+            return 0x0001
+        case .private:
+            return 0x0000
+        }
+    }
+    
+    static func make(from intValue: Int) -> FileSettings? {
+        if intValue == 0 {
+            return .private
+        } else if intValue == 1 {
+            return .public
+        }
+        
+        return nil
+    }
 }
 
 /// Describes the new settings for the file by the specified index
-public struct FileSettingsChange {
+@available(iOS 13.0, *)
+public struct FileSettingsChange: Decodable {
     /// Index of file that will be updated
     let fileIndex: Int
     /// New settings for file

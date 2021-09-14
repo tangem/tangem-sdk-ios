@@ -9,6 +9,7 @@
 import Foundation
 
 /// Part of a response from the card, shows the status of the operation   (combined sw1 and sw2)
+@available(iOS 13.0, *)
 public enum StatusWord: UInt16 {
     case unknown = 0x0000
     case processCompleted = 0x9000
@@ -25,8 +26,10 @@ public enum StatusWord: UInt16 {
     case pins13Changed = 0x9005
     case pins23Changed = 0x9006
     case pins123Changed = 0x9007
-	case fileNotFound = 0x6A82
-	case walletNotFound = 0x6A88
+    case fileNotFound = 0x6A82
+    case walletNotFound = 0x6A88
+    case invalidAccessCode = 0x6AF1
+    case invalidPascode = 0x6AF2
     //case pinsNotChanged = 0x9000 //equal to processCompleted
     
     func toTangemSdkError() -> TangemSdkError? {
@@ -43,13 +46,16 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.invalidState
         case .insNotSupported:
             return TangemSdkError.insNotSupported
-		case .fileNotFound:
-			return TangemSdkError.fileNotFound
-		case .walletNotFound:
-			return TangemSdkError.walletNotFound
+        case .fileNotFound:
+            return TangemSdkError.fileNotFound
+        case .walletNotFound:
+            return TangemSdkError.walletNotFound
+        case .invalidAccessCode:
+            return TangemSdkError.accessCodeRequired
+        case .invalidPascode:
+            return TangemSdkError.passcodeRequired
         default:
             return nil
         }
     }
 }
-

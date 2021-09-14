@@ -25,6 +25,7 @@ jobs:
       if: failure()
       uses: adamkdean/simple-slack-notify@master
       with:
+        xcode-version: latest-stable
         channel: '#development-ios'
         text: 'Card SDK tests #${{ github.run_number }} failed'
         color: 'danger'

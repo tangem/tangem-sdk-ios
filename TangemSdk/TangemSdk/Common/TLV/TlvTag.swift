@@ -24,7 +24,8 @@ public enum TlvValueType: String {
     case byte
     case uint16
     case interactionMode
-	case fileSettings
+    case fileSettings
+    case derivationPath
 }
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
@@ -96,6 +97,7 @@ public enum TlvTag: Byte {
     case tokenSymbol = 0xA0
     case tokenContractAddress = 0xA1
     case tokenDecimal = 0xA2
+    case tokenName = 0xA3
     case denomination = 0xC0
     case validatedBalance = 0xC1
     case lastSignDate = 0xC2
@@ -118,37 +120,44 @@ public enum TlvTag: Byte {
     case issueDate = 0xD4
     case expireDate = 0xD5
     case trustedAddress = 0xD6
-	
-	case pin2IsDefault = 0x59
-	
-	// MARK: - Multi-wallet
-	case walletIndex = 0x65
-	case walletsCount = 0x66
-	case walletData = 0x67
-	case cardWallet = 0x68
-	
-	// MARK: - Tlv tags for files
-	case fileIndex = 0x26
-	case fileSettings = 0x27
-	
-	case fileTypeName = 0x70
-	case fileData = 0x71
-	case fileOwnerIndex = 0x75
-	
-	// MARK: - Ttl value types
+    
+    case pin2IsDefault = 0x59
+    case pinIsDefault = 0x5A
+    
+    // MARK: - Multi-wallet
+    case walletIndex = 0x65
+    case walletsCount = 0x66
+    case walletData = 0x67
+    case cardWallet = 0x68
+    
+    // MARK: - Tlv tags for files
+    case fileIndex = 0x26
+    case fileSettings = 0x27
+    
+    case fileTypeName = 0x70
+    case fileData = 0x71
+    
+    case fileOwnerIndex = 0x75
+    
+    // MARK: - HDWallet
+    case walletHDPath = 0x6A
+    case walletHDChain = 0x6B
+    
+    // MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId, .crExKey, .pin2IsDefault:
+        case .cardId, .batchId, .crExKey:
             return .hexString
-        case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenContractAddress,
-			 .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:
+        case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenName, .tokenContractAddress,
+             .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:
             return .utf8String
         case .curveId:
             return .ellipticCurve
-        case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter, .userCounter, .tokenDecimal, .issuerDataCounter:
+        case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter,
+             .userCounter, .tokenDecimal, .issuerDataCounter, .checkWalletCounter:
             return .intValue
-        case .isActivated, .isLinked, .createWalletAtPersonalize:
+        case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault, .pinIsDefault:
             return .boolValue
         case .manufactureDateTime:
             return .dateTime
@@ -160,14 +169,16 @@ public enum TlvTag: Byte {
             return .status
         case .signingMethod:
             return .signingMethod
-		case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex:
+        case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex:
             return .byte
         case .interactionMode:
             return .interactionMode
-		case .offset, .size, .pauseBeforePin2:
+        case .offset, .size, .pauseBeforePin2:
             return .uint16
-		case .fileSettings:
-			return .fileSettings
+        case .fileSettings:
+            return .fileSettings
+        case .walletHDPath:
+            return .derivationPath
         default:
             return .data
         }

@@ -170,7 +170,7 @@ class WriteFilesHandler: JSONRPCHandler {
         var files: [DataToWrite] = []
         
         guard let filesArray = parameters["files"] as? [Any] else {
-            throw JSONRPCError(.parseError, data: "files")
+            throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: "Failed to parse files array"))
         }
         
         let overwriteAllFiles: Bool? = try parameters.value(for: "overwriteAllFiles")
@@ -183,7 +183,7 @@ class WriteFilesHandler: JSONRPCHandler {
             } else if let decoded = try? JSONDecoder.tangemSdkDecoder.decode(FileDataProtectedByPasscode.self, from: jsonData) {
                 files.append(decoded)
             } else {
-                throw JSONRPCError(.parseError, data: "files")
+                throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: "Failed to parse files array"))
             }
         }
 

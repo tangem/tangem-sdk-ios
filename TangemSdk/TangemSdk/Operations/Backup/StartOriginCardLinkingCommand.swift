@@ -12,6 +12,8 @@ import Foundation
 public final class StartOriginCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
+    public init() {}
+    
     deinit {
         Log.debug("StartOriginCardLinkingCommand deinit")
     }

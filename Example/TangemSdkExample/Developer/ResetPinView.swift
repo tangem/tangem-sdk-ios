@@ -79,10 +79,10 @@ struct ResetPinView: View {
 }
 
 struct ResetPinView_Previews: PreviewProvider {
-    static var model = AppModel()
+    static let sdk = TangemSdk()
     
     static var previews: some View {
         ResetPinView()
-            .environmentObject(ResetPinService(sdk: TangemSdk()))
+            .environmentObject(ResetPinService(sdk: sdk))
     }
 }

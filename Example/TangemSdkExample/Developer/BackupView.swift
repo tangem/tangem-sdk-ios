@@ -60,6 +60,7 @@ struct BackupView: View {
                 .buttonStyle(ExampleButton(isLoading: false))
                 .frame(width: 200)
             }
+            
             separatorView
             
             VStack(spacing: 8) {
@@ -154,10 +155,10 @@ struct BackupView: View {
 }
 
 struct BackupView_Previews: PreviewProvider {
-    static var model = AppModel()
+    static let sdk = TangemSdk()
     
     static var previews: some View {
         BackupView()
-            .environmentObject(BackupService(sdk: TangemSdk()))
+            .environmentObject(BackupService(sdk: sdk))
     }
 }

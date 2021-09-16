@@ -57,6 +57,7 @@ public struct CardConfig: Decodable {
     let ndefRecords: [NdefRecord]
     /// Number of wallets supported by card, by default - 1
     let walletsCount: Byte?
+    let isReusable: Bool?
     
     private static let Alf = "ABCDEF0123456789"
     
@@ -99,8 +100,9 @@ public struct CardConfig: Decodable {
             builder.add(.useCvc)
         }
         
-        //Now we can personalize only reusable wallets
-        builder.add(.isReusable)
+        if isReusable ?? true {
+            builder.add(.isReusable)
+        }
         
         if useOneCommandAtTime ?? false {
             builder.add(.useOneCommandAtTime)

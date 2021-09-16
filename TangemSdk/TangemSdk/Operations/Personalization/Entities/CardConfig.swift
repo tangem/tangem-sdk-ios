@@ -67,7 +67,7 @@ public struct CardConfig: Decodable {
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
-             disablePrecomputedNDEF, allowHDWallets
+             disablePrecomputedNDEF, allowHDWallets, isReusable
         case pin = "PIN"
         case pin2 = "PIN2"
         case pin3 = "PIN3"

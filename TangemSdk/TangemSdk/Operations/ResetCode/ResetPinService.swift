@@ -118,15 +118,25 @@ public class ResetPinService: ObservableObject {
             return
         }
         
+        var accessCode = repo.accessCode
+        var passcode = repo.passcode
         
-        guard let accessCode = resetPinCard.isAccessCodeSet ? repo.accessCode
-                : UserCodeType.accessCode.defaultValue.sha256() else {
+        if handleErrors {
+            if !resetPinCard.isAccessCodeSet {
+                accessCode = UserCodeType.accessCode.defaultValue.sha256()
+            }
+            
+            if !resetPinCard.isPasscodeSet {
+                passcode = UserCodeType.passcode.defaultValue.sha256()
+            }
+        }
+        
+        guard let accessCode = accessCode else {
             completion(.failure(.accessCodeRequired))
             return
         }
         
-        guard let passcode = resetPinCard.isPasscodeSet ? repo.passcode
-                : UserCodeType.passcode.defaultValue.sha256() else {
+        guard let passcode = passcode else {
             completion(.failure(.passcodeRequired))
             return
         }

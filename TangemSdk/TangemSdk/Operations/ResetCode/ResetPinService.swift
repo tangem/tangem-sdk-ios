@@ -135,17 +135,17 @@ public class ResetPinService: ObservableObject {
             }
         }
         
-        guard let accessCode = accessCode else {
+        guard let accessCodeUnwrapped = accessCode else {
             completion(.failure(.accessCodeRequired))
             return
         }
         
-        guard let passcode = passcode else {
+        guard let passcodeUnwrapped = passcode else {
             completion(.failure(.passcodeRequired))
             return
         }
         
-        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCode, passcode: passcode)
+        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
         
         sdk.startSession(with: task,
                          cardId: resetPinCard.cardId,

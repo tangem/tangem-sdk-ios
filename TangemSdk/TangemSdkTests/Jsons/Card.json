@@ -10,7 +10,7 @@
     "isSettingPasscodeAllowed" : true,
     "maxWalletsCount" : 36,
     "isOverwritingIssuerExtraDataRestricted" : false,
-    "isRemovingAccessCodeAllowed" : false,
+    "isResettingUserCodesAllowed" : true,
     "isLinkedTerminalEnabled" : true,
     "securityDelay" : 3000,
     "isSettingAccessCodeAllowed" : false,

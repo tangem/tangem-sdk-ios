@@ -271,6 +271,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupCannotBeResettedHasBackupedWallets
     
     case resetPinNoCardToReset
+    case resetPinWrongCard
     
     public var code: Int {
         switch self {
@@ -374,6 +375,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupCannotBeResettedHasBackupedWallets: return 41221
             
         case .resetPinNoCardToReset: return 41300
+        case .resetPinWrongCard: return 41301
             
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.

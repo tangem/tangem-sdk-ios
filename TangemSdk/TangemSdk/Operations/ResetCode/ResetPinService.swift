@@ -26,6 +26,8 @@ public class ResetPinService: ObservableObject {
     }
     
     public func setAccessCode(_ code: String) throws {
+        repo.accessCode = nil
+        
         if handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.invalidParams
@@ -40,6 +42,8 @@ public class ResetPinService: ObservableObject {
     }
     
     public func setPasscode(_ code: String) throws {
+        repo.passcode = nil
+        
         if handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.invalidParams

@@ -32,6 +32,16 @@ final class SignResetPinTokenCommand: Command {
         return nil
     }
     
+    func run(in session: CardSession, completion: @escaping CompletionResult<ConfirmationCard>) {
+        transceive(in: session) { result in
+            if case .failure(.invalidParams) = result {
+                completion(.failure(.resetPinWrongCard))
+            } else {
+                completion(result)
+            }
+        }
+    }
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

@@ -94,6 +94,11 @@ public final class WriteFileCommand: Command {
         case .initiateWritingFile:
             try dataToWrite.addStartingTlvData(tlvBuilder, withEnvironment: environment)
                 .append(.size, value: dataToWrite.data.count)
+            
+            if let walletIndex = self.walletIndex {
+                try tlvBuilder.append(.walletIndex, value: walletIndex)
+            }
+            
         case .writeFile:
             try tlvBuilder.append(.issuerData, value: getDataToWrite())
                 .append(.offset, value: offset)
@@ -103,10 +108,6 @@ public final class WriteFileCommand: Command {
                 .append(.fileIndex, value: fileIndex)
         default:
             break
-        }
-        
-        if let walletIndex = self.walletIndex {
-            try tlvBuilder.append(.walletIndex, value: walletIndex) //todo check it!
         }
         
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())

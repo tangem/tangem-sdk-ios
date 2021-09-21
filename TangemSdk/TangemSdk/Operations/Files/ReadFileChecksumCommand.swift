@@ -21,15 +21,27 @@ public struct ReadFileChecksumResponse: JSONStringConvertible {
 public final class ReadFileChecksumCommand: Command {
     public var requiresPasscode: Bool { readPrivateFiles }
     
-    private let fileIndex: Int
+    private let filename: String?
+    private let walletPublicKey: Data?
+    private var walletIndex: Int?
     private let readPrivateFiles: Bool
     
-    public init(fileIndex: Int, readPrivateFiles: Bool) {
-        self.fileIndex = fileIndex
+    public init(filename: String? = nil, walletPublicKey: Data? = nil, readPrivateFiles: Bool = false) {
+        self.filename = filename
+        self.walletPublicKey = walletPublicKey
         self.readPrivateFiles = readPrivateFiles
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if let walletPublicKey = self.walletPublicKey { //optimization
+            self.walletIndex = card.wallets[walletPublicKey]?.index
+        }
+        
         readFileData(session: session, completion: completion)
     }
     
@@ -56,11 +68,20 @@ public final class ReadFileChecksumCommand: Command {
         var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.fileIndex, value: fileIndex)
             .append(.interactionMode, value: FileDataMode.readFileHash)
+        
+        if let filename = self.filename {
+            try tlvBuilder.append(.fileTypeName, value: filename)
+        }
+        
+        if let walletIndex = self.walletIndex {
+            try tlvBuilder.append(.walletIndex, value: walletIndex) //todo check it!
+        }
+        
         if readPrivateFiles {
             tlvBuilder = try tlvBuilder.append(.pin2, value: environment.passcode.value)
         }
+        
         return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
     }
     

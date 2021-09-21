@@ -136,7 +136,8 @@ public enum TlvTag: Byte {
     
     case fileTypeName = 0x70
     case fileData = 0x71
-    
+    case fileSignature = 0x73
+    case fileCounter = 0x74
     case fileOwnerIndex = 0x75
     
     // MARK: - HDWallet

@@ -148,19 +148,19 @@ class PreflightReadHandler: JSONRPCHandler {
     }
 }
 
-@available(iOS 13.0, *)
-class ReadFilesHandler: JSONRPCHandler {
-    var method: String { "READ_FILES" }
-    
-    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let readPrivateFiles: Bool? = try parameters.value(for: "readPrivateFiles")
-        let indices: [Int]? = try parameters.value(for: "indices")
-        
-        let command = ReadFilesTask(readPrivateFiles: readPrivateFiles ?? false,
-                                    indices: indices)
-        return command.eraseToAnyRunnable()
-    }
-}
+//@available(iOS 13.0, *)
+//class ReadFilesHandler: JSONRPCHandler {
+//    var method: String { "READ_FILES" }
+//    
+//    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+//        let readPrivateFiles: Bool? = try parameters.value(for: "readPrivateFiles")
+//        let indices: [Int]? = try parameters.value(for: "indices")
+//        
+//        let command = ReadFilesTask(readPrivateFiles: readPrivateFiles ?? false,
+//                                    indices: indices)
+//        return command.eraseToAnyRunnable()
+//    }
+//}
 
 @available(iOS 13.0, *)
 class WriteFilesHandler: JSONRPCHandler {

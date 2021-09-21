@@ -187,10 +187,11 @@ public final class TlvDecoder {
             
         case .fileSettings:
             try typeCheck(FileSettings.self, T.self, for: tag)
-            let intValue = tagValue.toInt()
-            guard let fileSettings = FileSettings.make(from: intValue) else {
-                throw TangemSdkError.notSupportedFileSettings
+            guard let byte = tagValue.toBytes.last else { //last byte is important for backward compatibility with v3
+                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to FileSettings")
             }
+            
+            let fileSettings = FileSettings(rawValue: byte)            
             return fileSettings as! T
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)

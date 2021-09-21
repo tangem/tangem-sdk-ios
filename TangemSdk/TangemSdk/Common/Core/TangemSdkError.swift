@@ -238,9 +238,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// Returned when there is no files on card or when successfully read all files
     case fileNotFound
     
-    /// Returned when file on card has unwknown file settings
-    case notSupportedFileSettings
-    
     /// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
     case wrongInteractionMode
     
@@ -355,8 +352,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
             
-        case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
-        
         case .wrongInteractionMode: return 50027
             
         // MARK: 9xxxx Errors

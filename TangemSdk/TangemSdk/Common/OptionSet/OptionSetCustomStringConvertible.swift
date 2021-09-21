@@ -9,11 +9,11 @@
 import Foundation
 
 @available(iOS 13.0, *)
-protocol OptionSetCustomStringConvertible: CustomStringConvertible {}
+public protocol OptionSetCustomStringConvertible: CustomStringConvertible {}
 
 @available(iOS 13.0, *)
 extension OptionSetCustomStringConvertible where Self: OptionSetCodable {
-    var description: String {
+    public var description: String {
         if let data = try? JSONEncoder().encode(self),
            let string = String(data: data, encoding: .utf8) {
             return string.replacingOccurrences(of: "{[", with: "")

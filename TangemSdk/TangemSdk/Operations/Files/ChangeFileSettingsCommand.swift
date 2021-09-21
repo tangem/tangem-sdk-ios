@@ -20,7 +20,7 @@ public final class ChangeFileSettingsCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion < .filesAvailable {
+        if card.firmwareVersion < .multiwalletAvailable { //drop v3 support
             return .notSupportedFirmwareVersion
         }
         

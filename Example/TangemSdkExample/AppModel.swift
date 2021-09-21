@@ -254,17 +254,28 @@ extension AppModel {
         tangemSdk.startSession(cardId: nil) { session, error in
             if let error = error {
                 DispatchQueue.main.async {
-                    print(error)
+                    self.complete(with: error)
                 }
                 return
             }
             
-            let verifyCommand = AttestCardKeyCommand()
-            verifyCommand.run(in: session) { result in
-                DispatchQueue.main.async {
-                    print(result)
+            let scan = PreflightReadTask(readMode: .fullCardRead, cardId: nil)
+            scan.run(in: session) { result in
+                switch result {
+                case .success:
+                    let verifyCommand = AttestCardKeyCommand()
+                    verifyCommand.run(in: session) { result in
+                        DispatchQueue.main.async {
+                            self.handleCompletion(result)
+                        }
+                        session.stop()
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.complete(with: error)
+                    }
+                    session.stop()
                 }
-                session.stop()
             }
         }
     }
@@ -312,8 +323,8 @@ extension AppModel {
         tangemSdk.readFiles(readPrivateFiles: true, cardId: card?.cardId) { result in
             switch result {
             case .success(let response):
-                self.log(response)
                 self.savedFiles = response.files
+                self.complete(with: response)
             case .failure(let error):
                 self.complete(with: error)
             }
@@ -325,7 +336,7 @@ extension AppModel {
             switch result {
             case .success(let response):
                 self.savedFiles = response.files
-                self.log(response)
+                self.complete(with: response)
             case .failure(let error):
                 self.complete(with: error)
             }
@@ -349,8 +360,7 @@ extension AppModel {
         let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
-            let finalSignature = fileHash.finalizingSignature
-        else {
+            let finalSignature = fileHash.finalizingSignature  else {
             self.complete(with: "Failed to sign data with issuer signature")
             return
         }

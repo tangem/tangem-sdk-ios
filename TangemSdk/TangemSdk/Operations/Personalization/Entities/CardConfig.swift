@@ -58,6 +58,7 @@ public struct CardConfig: Decodable {
     let ndefRecords: [NdefRecord]
     /// Number of wallets supported by card, by default - 1
     let walletsCount: Byte?
+    let isReusable: Bool?
     
     private static let Alf = "ABCDEF0123456789"
     
@@ -67,7 +68,7 @@ public struct CardConfig: Decodable {
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
-             disablePrecomputedNDEF, allowHDWallets, allowBackup
+             disablePrecomputedNDEF, allowHDWallets, allowBackup, isReusable
         case pin = "PIN"
         case pin2 = "PIN2"
         case pin3 = "PIN3"
@@ -100,8 +101,9 @@ public struct CardConfig: Decodable {
             builder.add(.useCvc)
         }
         
-        //Now we can personalize only reusable wallets
-        builder.add(.isReusable)
+        if isReusable ?? true {
+            builder.add(.isReusable)
+        }
         
         if useOneCommandAtTime ?? false {
             builder.add(.useOneCommandAtTime)

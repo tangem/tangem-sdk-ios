@@ -303,10 +303,23 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
-        tangemSdk.readFiles(readPrivateFiles: true, cardId: card?.cardId) { result in
+        let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        let command = ReadFileChecksumCommand(filename: "linked", walletPublicKey: nil, readPrivateFiles: true)
+       // let command = ReadFileCommand(filename: nil, walletPublicKey: nil, readPrivateFiles: true)
+        tangemSdk.startSession(with: command) { result in
             switch result {
             case .success(let response):
-                self.savedFiles = response.files
+//                if let firstFileData = response.first?.fileData,
+//                   let namedFile = try? NamedFile(tlvData: firstFileData) {
+//                    let payload = namedFile.payload
+//                    if let tlv = Tlv.deserialize(payload) {
+//                        let decoder = TlvDecoder(tlv: tlv)
+//                        let deserializer = WalletDataDeserializer()
+//                        if let walletData = try? deserializer.deserialize(decoder: decoder) {
+//                            self.log(walletData)
+//                        }
+//                    }
+//                }
                 self.complete(with: response)
             case .failure(let error):
                 self.complete(with: error)
@@ -315,21 +328,25 @@ extension AppModel {
     }
     
     func readPublicFiles() {
-        tangemSdk.readFiles(readPrivateFiles: false, cardId: card?.cardId) { (result) in
-            switch result {
-            case .success(let response):
-                self.savedFiles = response.files
-                self.complete(with: response)
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
+//        tangemSdk.readFiles(readPrivateFiles: false, cardId: card?.cardId) { (result) in
+//            switch result {
+//            case .success(let response):
+//                self.savedFiles = response.files
+//                self.complete(with: response)
+//            case .failure(let error):
+//                self.complete(with: error)
+//            }
+//        }
     }
     
     func writeSingleFile() {
-        let demoData = Data(repeating: UInt8(1), count: 2000)
+        let demoData1 = Data(repeating: UInt8(3), count: 10)
+        let demoData = try! NamedFile(name: "linked2", payload: demoData1).serialize()
+        let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let data = FileDataProtectedByPasscode(data: demoData)
-        tangemSdk.writeFiles(files: [data], completion: handleCompletion)
+        let command = WriteFileCommand(dataToWrite: data, walletPublicKey: wallet)
+        tangemSdk.startSession(with: command, completion: handleCompletion)
+       //tangemSdk.writeFiles(files: [data], completion: handleCompletion)
     }
     
     func writeSingleSignedFile() {
@@ -338,9 +355,11 @@ extension AppModel {
             return
         }
         
-        let demoData = Data(repeating: UInt8(1), count: 2500)
-        let counter = 1
-        let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
+        let demoData = Data(repeating: UInt8(2), count: 10)
+        let namedFile = try! NamedFile(name: "test", payload: demoData).serialize()
+        
+        let counter = 2
+        let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: namedFile, fileCounter: counter, privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature  else {
@@ -348,7 +367,7 @@ extension AppModel {
             return
         }
         tangemSdk.writeFiles(files: [
-            FileDataProtectedBySignature(data: demoData,
+            FileDataProtectedBySignature(data: namedFile,
                                          startingSignature: startSignature,
                                          finalizingSignature: finalSignature,
                                          counter: counter)
@@ -410,27 +429,27 @@ extension AppModel {
     }
     
     func updateFirstFileSettings() {
-        guard let savedFiles = self.savedFiles else {
-            self.complete(with: "Please, read files before")
-            return
-        }
-        
-        guard savedFiles.count > 0 else {
-            self.complete(with: "No saved files on card")
-            return
-        }
-        
-        let file = savedFiles[0]
-        let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
-        tangemSdk.changeFileSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
-            switch result {
-            case .success:
-                self.savedFiles = nil
-                self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
+//        guard let savedFiles = self.savedFiles else {
+//            self.complete(with: "Please, read files before")
+//            return
+//        }
+//
+//        guard savedFiles.count > 0 else {
+//            self.complete(with: "No saved files on card")
+//            return
+//        }
+//
+//        let file = savedFiles[0]
+//        let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
+//        tangemSdk.changeFileSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
+//            switch result {
+//            case .success:
+//                self.savedFiles = nil
+//                self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
+//            case .failure(let error):
+//                self.complete(with: error)
+//            }
+//        }
     }
 }
 

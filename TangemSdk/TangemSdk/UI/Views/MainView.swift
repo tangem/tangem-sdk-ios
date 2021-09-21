@@ -40,7 +40,8 @@ struct MainView: View {
                                placeholder: type.enterNewCodeTitle,
                                confirmationPlaceholder: type.confirmCodeTitle,
                                completion: completion)
-            
+        case .empty:
+            EmptyView()
         default:
             indicatorView(self.viewModel.viewState.indicatorState!)
         }

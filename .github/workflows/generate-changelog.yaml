@@ -1,0 +1,37 @@
+name: Create version for pull request tasks
+
+on:
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  set-version:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Prepare variables
+      run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+          
+    - name: Jira action
+      uses: tangem/jira-action@master
+      with:
+        github-token: ${{ github.token }}
+        github-email: mobile@tangem.com
+        github-user: mobile-tangem
+        jira-token: ${{secrets.JIRA_TOKEN}}
+        jira-user: ${{secrets.JIRA_USER}}
+        jira-domain: 'tangem'        
+        project-name: 'IOS'
+        release-version: ${{ env.VERSION }}
+        release-file-path: 'releases'
+        release-file-prefix: 'version_'
+    
+    
+    
+    
+    
+    
+    

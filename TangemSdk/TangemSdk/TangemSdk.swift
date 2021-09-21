@@ -239,14 +239,14 @@ public extension TangemSdk {
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ReadFilesResponse,TangemSdkError>`
-    func readFiles(readPrivateFiles: Bool = false,
-                   indices: [Int]? = nil,
-                   cardId: String? = nil,
-                   initialMessage: Message? = nil,
-                   completion: @escaping CompletionResult<ReadFilesResponse>) {
-        let task = ReadFilesTask(readPrivateFiles: readPrivateFiles, indices: indices)
-        startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
-    }
+//    func readFiles(readPrivateFiles: Bool = false,
+//                   indices: [Int]? = nil,
+//                   cardId: String? = nil,
+//                   initialMessage: Message? = nil,
+//                   completion: @escaping CompletionResult<ReadFilesResponse>) {
+//        let task = ReadFilesTask(readPrivateFiles: readPrivateFiles, indices: indices)
+//        startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
+//    }
     
     /// Updates selected file settings provided within `File`.
     ///

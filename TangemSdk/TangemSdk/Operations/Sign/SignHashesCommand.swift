@@ -22,7 +22,7 @@ public final class SignHashesCommand: CardSessionRunnable {
     ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
     ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    init(hashes: [Data], walletPublicKey: Data, hdPath: DerivationPath? = nil) {
+    public init(hashes: [Data], walletPublicKey: Data, hdPath: DerivationPath? = nil) {
         self.hashes = hashes
         self.walletPublicKey = walletPublicKey
         self.hdPath = hdPath

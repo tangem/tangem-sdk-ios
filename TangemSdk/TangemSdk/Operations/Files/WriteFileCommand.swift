@@ -24,16 +24,28 @@ public final class WriteFileCommand: Command {
     private static let maxSize = 48 * 1024
     
     private let dataToWrite: DataToWrite
+    private let walletPublicKey: Data?
+    private var walletIndex: Int? = nil
     
     private var mode: FileDataMode = .initiateWritingFile
     private var offset: Int = 0
     private var fileIndex: Int = 0
     
-    public init(dataToWrite: DataToWrite) {
+    public init(dataToWrite: DataToWrite, walletPublicKey: Data? = nil) {
         self.dataToWrite = dataToWrite
+        self.walletPublicKey = walletPublicKey
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if let walletPublicKey = self.walletPublicKey { //optimization
+            self.walletIndex = card.wallets[walletPublicKey]?.index
+        }
+        
         writeFileData(session: session, completion: completion)
     }
     
@@ -91,6 +103,10 @@ public final class WriteFileCommand: Command {
                 .append(.fileIndex, value: fileIndex)
         default:
             break
+        }
+        
+        if let walletIndex = self.walletIndex {
+            try tlvBuilder.append(.walletIndex, value: walletIndex) //todo check it!
         }
         
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())

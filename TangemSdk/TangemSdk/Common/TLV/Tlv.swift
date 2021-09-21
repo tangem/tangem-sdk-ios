@@ -52,7 +52,7 @@ public struct Tlv: Equatable {
     
     /// Try to deserialize raw data to array of tlv items
     /// - Parameter data: raw TLV-array
-    public static func deserialize(_ data: Data) -> [Tlv]? {
+    public static func deserialize(_ data: Data) -> [Tlv]? { //todo: throws
         let dataStream = InputStream(data: data)
         dataStream.open()
         defer { dataStream.close() }

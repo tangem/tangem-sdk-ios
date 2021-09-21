@@ -59,7 +59,7 @@ final class ReadCommand: Command {
         let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
         let card = try CardDeserializer().deserialize(decoder: decoder, cardDataDecoder: cardDataDecoder)
-        let walletData = try cardDataDecoder.flatMap { try WalletDataDeserializer().deserialize(cardDataDecoder: $0) }
+        let walletData = try cardDataDecoder.flatMap { try WalletDataDeserializer().deserialize(decoder: $0) }
         return (card, walletData)
     }
 }

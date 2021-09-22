@@ -305,22 +305,25 @@ extension AppModel {
     func readFiles() {
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         //let command = ReadFileChecksumCommand(filename: "linked", walletPublicKey: nil, readPrivateFiles: true)
-        let command = ReadFileCommand(filename: "blockchainInfo", walletPublicKey: nil, readPrivateFiles: true)
+        let command = ReadFileCommand(filename: "regina", walletPublicKey: nil, readPrivateFiles: true)
         tangemSdk.startSession(with: command) { result in
             switch result {
-            case .success(let response):
-                if let firstFileData = response.first?.fileData,
-                   let namedFile = try? NamedFile(tlvData: firstFileData) {
-                    let payload = namedFile.payload
-                    if let tlv = Tlv.deserialize(payload) {
-                        let decoder = TlvDecoder(tlv: tlv)
-                        let deserializer = WalletDataDeserializer()
-                        if let walletData = try? deserializer.deserialize(decoder: decoder) {
-                            self.log(walletData)
+            case .success(let files):
+                for file in files {
+                    if let namedFile = try? NamedFile(tlvData: file.fileData) {
+                        self.log("Name: \(namedFile.name)")
+                        self.log("File data: \(namedFile.payload)")
+                        
+                        if let tlv = Tlv.deserialize(namedFile.payload) {
+                            let decoder = TlvDecoder(tlv: tlv)
+                            let deserializer = WalletDataDeserializer()
+                            if let walletData = try? deserializer.deserialize(decoder: decoder) {
+                                self.log(walletData)
+                            }
                         }
                     }
                 }
-                self.complete(with: response)
+                self.complete(with: files)
             case .failure(let error):
                 self.complete(with: error)
             }
@@ -340,11 +343,13 @@ extension AppModel {
     }
     
     func writeSingleFile() {
-        let demoData1 = Data(repeating: UInt8(3), count: 10)
-        let demoData = try! NamedFile(name: "linked2", payload: demoData1).serialize()
-        let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        let settings: FileSettings = [.readAccessCode, .writeOwner, .readOwner, .writePasscode]
+        
+        let demoData1 = Data(repeating: UInt8(1), count: 10)
+        let demoData = try! NamedFile(name: "regina", payload: demoData1).serialize()
+        //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let data = FileDataProtectedByPasscode(data: demoData)
-        let command = WriteFileCommand(dataToWrite: data, walletPublicKey: wallet)
+        let command = WriteFileCommand(dataToWrite: data, walletPublicKey: nil)
         tangemSdk.startSession(with: command, completion: handleCompletion)
        //tangemSdk.writeFiles(files: [data], completion: handleCompletion)
     }
@@ -358,7 +363,7 @@ extension AppModel {
         let demoData = Data(repeating: UInt8(2), count: 10)
         let namedFile = try! NamedFile(name: "test", payload: demoData).serialize()
         
-        let counter = 2
+        let counter = 1
         let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: namedFile, fileCounter: counter, privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,

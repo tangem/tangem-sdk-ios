@@ -44,7 +44,7 @@ public final class ScanTask: CardSessionRunnable {
         switch report.status {
         case .failed, .skipped:
             let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
-            
+            session.viewDelegate.setState(.empty)
             //Possible production sample or development card
             if isDevelopmentCard || session.environment.config.allowUntrustedCards {
                 session.viewDelegate.attestationDidFail(isDevelopmentCard: isDevelopmentCard) {
@@ -62,11 +62,14 @@ public final class ScanTask: CardSessionRunnable {
             completion(.success(session.environment.card!))
             
         case .verifiedOffline:
+            session.viewDelegate.setState(.empty)
             session.viewDelegate.attestationCompletedOffline() {
                 completion(.success(session.environment.card!))
             } onCancel: {
                 completion(.failure(.userCancelled))
             } onRetry: {
+                session.viewDelegate.setState(.default)
+                
                 attestationTask.retryOnline(session) { result in
                     switch result {
                     case .success(let report):
@@ -78,6 +81,7 @@ public final class ScanTask: CardSessionRunnable {
             }
             
         case .warning:
+            session.viewDelegate.setState(.empty)
             session.viewDelegate.attestationCompletedWithWarnings {
                 completion(.success(session.environment.card!))
             }

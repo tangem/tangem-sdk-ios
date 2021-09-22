@@ -55,11 +55,7 @@ public struct FileSettings: OptionSet, OptionSetCustomStringConvertible {
     public let rawValue: Byte
     
     public init(rawValue: Byte) {
-        if rawValue == 0 { //3.34 private by PIN2
-            self.rawValue = 0x02
-        } else {
-            self.rawValue = rawValue
-        }
+        self.rawValue = rawValue
     }
 }
 

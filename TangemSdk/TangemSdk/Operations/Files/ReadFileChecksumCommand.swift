@@ -19,30 +19,21 @@ public struct ReadFileChecksumResponse: JSONStringConvertible {
 /// The command that prompts the card to create a file checksum. This checksum is used to check the integrity of the file on the card
 @available (iOS 13.0, *)
 public final class ReadFileChecksumCommand: Command {
-    public var requiresPasscode: Bool { readPrivateFiles }
+    public var shouldReadPrivateFiles = false
+    
+    public var requiresPasscode: Bool { shouldReadPrivateFiles }
     
     private let filename: String?
-    private let walletPublicKey: Data?
-    private var walletIndex: Int?
-    private let readPrivateFiles: Bool
+    private let fileIndex: Int?
     
-    public init(filename: String? = nil, walletPublicKey: Data? = nil, readPrivateFiles: Bool = false) {
+    public init(filename: String) {
         self.filename = filename
-        self.walletPublicKey = walletPublicKey
-        self.readPrivateFiles = readPrivateFiles
+        self.fileIndex = nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        if let walletPublicKey = self.walletPublicKey { //optimization
-            self.walletIndex = card.wallets[walletPublicKey]?.index
-        }
-        
-        readFileData(session: session, completion: completion)
+    public init(fileIndex: Int) {
+        self.fileIndex = fileIndex
+        self.filename = nil
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -53,19 +44,8 @@ public final class ReadFileChecksumCommand: Command {
         return nil
     }
     
-    private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
-        transceive(in: session) { (result) in
-            switch result {
-            case .success(let response):
-                completion(.success(response))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.interactionMode, value: FileDataMode.readFileHash)
@@ -74,12 +54,12 @@ public final class ReadFileChecksumCommand: Command {
             try tlvBuilder.append(.fileTypeName, value: filename)
         }
         
-        if let walletIndex = self.walletIndex {
-            try tlvBuilder.append(.walletIndex, value: walletIndex) //todo check it!
+        if let fileIndex = self.fileIndex {
+            try tlvBuilder.append(.fileIndex, value: fileIndex)
         }
         
-        if readPrivateFiles {
-            tlvBuilder = try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        if shouldReadPrivateFiles {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
         }
         
         return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())

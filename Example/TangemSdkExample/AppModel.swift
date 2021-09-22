@@ -370,6 +370,15 @@ extension AppModel {
             return
         }
         
+        let settings: FileSettings = [.readPublic,
+                                      .readAccessCode,
+                                      .readPasscode,
+                                      .readOwner,
+                                      .readLinkedTerminal,
+                                      .writeOwner,
+                                      .writePasscode,
+                                      .writeLinkedTerminal]
+        
         let demoData = Data(repeating: UInt8(2), count: 10)
         let namedFile = try! NamedFile(name: "test", payload: demoData).serialize()
         
@@ -381,12 +390,24 @@ extension AppModel {
             self.complete(with: "Failed to sign data with issuer signature")
             return
         }
-        tangemSdk.writeFiles(files: [
-            FileDataProtectedBySignature(data: namedFile,
-                                         startingSignature: startSignature,
-                                         finalizingSignature: finalSignature,
-                                         counter: counter)
-        ], completion: handleCompletion)
+        
+        let data =  FileDataProtectedBySignature(data: namedFile,
+                                                 startingSignature: startSignature,
+                                                 finalizingSignature: finalSignature,
+                                                 counter: counter)
+        
+        let command = WriteFileCommand(dataToWrite: data,
+                                       fileSettings: settings,
+                                       walletPublicKey: nil)
+        
+        tangemSdk.startSession(with: command, completion: handleCompletion)
+        
+//        tangemSdk.writeFiles(files: [
+//            FileDataProtectedBySignature(data: namedFile,
+//                                         startingSignature: startSignature,
+//                                         finalizingSignature: finalSignature,
+//                                         counter: counter)
+//        ], completion: handleCompletion)
     }
     
     func writeMultipleFiles() {

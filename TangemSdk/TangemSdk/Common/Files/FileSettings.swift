@@ -34,20 +34,20 @@ import Foundation
 //    }
 //}
 
-/// Describes the new settings for the file by the specified index
 @available(iOS 13.0, *)
-public struct FileSettingsChange: Decodable {
-    /// Index of file that will be updated
-    let fileIndex: Int
-    /// New settings for file
-    let settings: FileSettings
+struct FileSettingsV3 {
+    let value: Data
     
-    public init(fileIndex: Int, settings: FileSettings) {
-        self.fileIndex = fileIndex
-        self.settings = settings
+    init? (_ fileSettings: FileSettings) {
+        if fileSettings == .readPasscode {
+            value = Data(hexString: "0000")
+        } else if fileSettings == .readAccessCode {
+            value = Data(hexString: "0001")
+        } else {
+            return nil
+        }
     }
 }
-
 
 /// Determines which type of data is required for signing.
 @available(iOS 13.0, *)

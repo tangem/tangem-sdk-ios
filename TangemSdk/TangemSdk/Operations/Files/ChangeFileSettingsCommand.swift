@@ -13,18 +13,13 @@ import Foundation
 public final class ChangeFileSettingsCommand: Command {
     public var requiresPasscode: Bool { true }
     
-    private let data: FileSettingsChange
+    private let fileIndex: Int
+    /// New settings for file
+    private let settings: FileSettings
     
-    public init(data: FileSettingsChange) {
-        self.data = data
-    }
-    
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion < .multiwalletAvailable { //drop v3 support
-            return .notSupportedFirmwareVersion
-        }
-        
-        return nil
+    public init(fileIndex: Int, settings: FileSettings) {
+        self.fileIndex = fileIndex
+        self.settings = settings
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
@@ -33,8 +28,22 @@ public final class ChangeFileSettingsCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.interactionMode, value: FileDataMode.changeFileSettings)
-            .append(.fileIndex, value: data.fileIndex)
-            .append(.fileSettings, value: data.settings)
+            .append(.fileIndex, value: fileIndex)
+        
+        guard let card = environment.card else {
+           throw TangemSdkError.missingPreflightRead
+        }
+        
+        if card.firmwareVersion.doubleValue < 4 {
+            guard let v3Settings = FileSettingsV3(settings) else {
+                throw TangemSdkError.unsupportedFileSettings
+            }
+            
+            try tlvBuilder.append(.fileSettings, value: v3Settings)
+        } else {
+            try tlvBuilder.append(.fileSettings, value: settings)
+        }
+        
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
     }
     

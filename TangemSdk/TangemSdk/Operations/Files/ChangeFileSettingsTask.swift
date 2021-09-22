@@ -11,10 +11,10 @@ import Foundation
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsTask: CardSessionRunnable {
-    private var changes: [FileSettingsChange]
+    private var changes: [(Int, FileSettings)]
     
-    public init(changes: [FileSettingsChange]) {
-        self.changes = changes
+    public init(changes: [Int: FileSettings]) {
+        self.changes = changes.map { ($0.key, $0.value) }
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
@@ -26,7 +26,8 @@ public final class ChangeFileSettingsTask: CardSessionRunnable {
             completion(.success(SuccessResponse(cardId: session.environment.card?.cardId ?? "")))
             return
         }
-        let command = ChangeFileSettingsCommand(data: changes)
+        
+        let command = ChangeFileSettingsCommand(fileIndex: changes.0, settings: changes.1)
         command.run(in: session) { (result) in
             switch result {
             case .success:

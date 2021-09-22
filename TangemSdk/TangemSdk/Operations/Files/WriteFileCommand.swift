@@ -25,7 +25,7 @@ public final class WriteFileCommand: Command {
     
     private let dataToWrite: DataToWrite
     private let walletPublicKey: Data?
-    private let fileSettings: FileSettings?
+    private var fileSettings: FileSettings?
     
     private var walletIndex: Int? = nil
     private var mode: FileDataMode = .initiateWritingFile
@@ -57,9 +57,14 @@ public final class WriteFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
+        if fileSettings != nil && card.firmwareVersion.doubleValue < 4 {
+            return .unsupportedFileSettings
+        }
+        
         if dataToWrite.data.count > WriteFileCommand.maxSize {
             return .dataSizeTooLarge
         }
+        
         if let dataToWrite = dataToWrite as? FileDataProtectedBySignature {
             if !isCounterValid(issuerDataCounter: dataToWrite.counter, card: card) {
                 return .missingCounter

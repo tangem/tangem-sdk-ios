@@ -81,7 +81,7 @@ final class LinkBackupCardsCommand: Command {
                     session.environment.card?.backupStatus = .cardLinked(cardsCount: self.backupCards.count)
                     session.environment.card?.settings.isSettingAccessCodeAllowed = true
                     session.environment.card?.settings.isSettingPasscodeAllowed = true
-                    session.environment.card?.settings.isRemovingAccessCodeAllowed = false
+                    session.environment.card?.settings.isResettingUserCodesAllowed = false
                     
                     completion(.success(response))
                 } catch {

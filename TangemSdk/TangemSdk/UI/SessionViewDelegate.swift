@@ -41,6 +41,7 @@ public enum SessionViewState {
     case delay(remaining: Float, total: Float) //seconds
     case progress(percent: Int)
     case `default`
+    case empty
     case scan
     case requestCode(_ type: UserCodeType, cardId: String?, completion: ((_ code: String?) -> Void))
     case requestCodeChange(_ type: UserCodeType, cardId: String?, completion: ((_ code: String?) -> Void))

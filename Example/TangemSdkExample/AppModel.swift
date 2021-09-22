@@ -346,14 +346,7 @@ extension AppModel {
     }
     
     func writeSingleFile() {
-        let settings: FileSettings = [.readPublic,
-                                      .readAccessCode,
-                                      .readPasscode,
-                                      .readOwner,
-                                      .readLinkedTerminal,
-                                      .writeOwner,
-                                      .writePasscode,
-                                      .writeLinkedTerminal]
+        let settings: FileSettings = [.readPasscode]
         
         let demoData1 = Data(repeating: UInt8(1), count: 10)
         let demoData = try! NamedFile(name: "regina", payload: demoData1).serialize()
@@ -476,16 +469,19 @@ extension AppModel {
 //        }
 //
 //        let file = savedFiles[0]
-//        let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
-//        tangemSdk.changeFileSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
-//            switch result {
-//            case .success:
-//                self.savedFiles = nil
-//                self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
-//            case .failure(let error):
-//                self.complete(with: error)
-//            }
-//        }
+//       let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
+        
+        let changeCommand = ChangeFileSettingsCommand(fileIndex: 0, settings: .readPasscode)
+        tangemSdk.startSession(with: changeCommand) { (result) in
+            switch result {
+            case .success:
+                self.savedFiles = nil
+              //  self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
+                self.complete(with: "done")
+            case .failure(let error):
+                self.complete(with: error)
+            }
+        }
     }
 }
 

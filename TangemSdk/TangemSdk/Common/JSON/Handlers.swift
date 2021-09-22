@@ -203,13 +203,13 @@ class DeleteFilesHandler: JSONRPCHandler {
     }
 }
 
-@available(iOS 13.0, *)
-class ChangeFileSettingsHandler: JSONRPCHandler {
-    var method: String { "CHANGE_FILE_SETTINGS" }
-    
-    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let changes: [FileSettingsChange] = try parameters.value(for: "changes")
-        let command = ChangeFileSettingsTask(changes: changes)
-        return command.eraseToAnyRunnable()
-    }
-}
+//@available(iOS 13.0, *)
+//class ChangeFileSettingsHandler: JSONRPCHandler {
+//    var method: String { "CHANGE_FILE_SETTINGS" }
+//
+//    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+//        let changes: [FileSettingsChange] = try parameters.value(for: "changes")
+//        let command = ChangeFileSettingsTask(changes: changes)
+//        return command.eraseToAnyRunnable()
+//    }
+//}

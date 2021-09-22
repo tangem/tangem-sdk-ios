@@ -81,7 +81,7 @@ final class LinkOriginCardCommand: Command {
         session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
         session.environment.card?.settings.isSettingAccessCodeAllowed = true
         session.environment.card?.settings.isSettingPasscodeAllowed = true
-        session.environment.card?.settings.isRemovingAccessCodeAllowed = false
+        session.environment.card?.settings.isResettingUserCodesAllowed = false
         completion(.success(response))
     }
     

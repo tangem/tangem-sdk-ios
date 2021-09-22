@@ -164,8 +164,12 @@ public final class TlvDecoder {
             }
         case .signingMethod:
             try typeCheck(SigningMethod.self, T.self, for: tag)
-            guard let byte = tagValue.toBytes.first else {
+            guard var byte = tagValue.toBytes.first else {
                 throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to SigningMethod")
+            }
+            
+            if byte & 0x80 == 0 {
+                byte = 0b10000000|(1 << byte)
             }
             
             let signingMethod = SigningMethod(rawValue: byte)
@@ -191,7 +195,7 @@ public final class TlvDecoder {
                 throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to FileSettings")
             }
             
-            let fileSettings = FileSettings(rawValue: byte)            
+            let fileSettings = byte == 0 ? .readPasscode : FileSettings(rawValue: byte)            
             return fileSettings as! T
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)

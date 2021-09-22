@@ -81,7 +81,6 @@ public final class ReadFileCommand: Command {
                 self.readAllFiles(session: session, completion: completion)
             case .failure(let error):
                 if case TangemSdkError.fileNotFound = error {
-                    Log.debug("Receive files not found error. Files: \(self.files)")
                     completion(.success(self.files))
                 } else {
                     completion(.failure(error))

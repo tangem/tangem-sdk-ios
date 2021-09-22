@@ -305,25 +305,28 @@ extension AppModel {
     func readFiles() {
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         //let command = ReadFileChecksumCommand(filename: "linked", walletPublicKey: nil, readPrivateFiles: true)
-        let command = ReadFileCommand(filename: "regina", walletPublicKey: nil, readPrivateFiles: true)
+        let command = ReadFileCommand(filename: nil, walletPublicKey: nil, readPrivateFiles: true)
         tangemSdk.startSession(with: command) { result in
             switch result {
             case .success(let files):
+                var text = ""
                 for file in files {
+                    text += file.json + "\n\n"
+                    
                     if let namedFile = try? NamedFile(tlvData: file.fileData) {
-                        self.log("Name: \(namedFile.name)")
-                        self.log("File data: \(namedFile.payload)")
-                        
+                        text += "Name: \(namedFile.name)" + "\n"
+                        text += "File data: \(namedFile.payload.hexString)" + "\n\n"
+                      
                         if let tlv = Tlv.deserialize(namedFile.payload) {
                             let decoder = TlvDecoder(tlv: tlv)
                             let deserializer = WalletDataDeserializer()
                             if let walletData = try? deserializer.deserialize(decoder: decoder) {
-                                self.log(walletData)
+                                text += "WalletData: \(walletData.json)" + "\n\n"
                             }
                         }
                     }
                 }
-                self.complete(with: files)
+                self.complete(with: text)
             case .failure(let error):
                 self.complete(with: error)
             }
@@ -343,13 +346,20 @@ extension AppModel {
     }
     
     func writeSingleFile() {
-        let settings: FileSettings = [.readAccessCode, .writeOwner, .readOwner, .writePasscode]
+        let settings: FileSettings = [.readPublic,
+                                      .readAccessCode,
+                                      .readPasscode,
+                                      .readOwner,
+                                      .readLinkedTerminal,
+                                      .writeOwner,
+                                      .writePasscode,
+                                      .writeLinkedTerminal]
         
         let demoData1 = Data(repeating: UInt8(1), count: 10)
         let demoData = try! NamedFile(name: "regina", payload: demoData1).serialize()
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let data = FileDataProtectedByPasscode(data: demoData)
-        let command = WriteFileCommand(dataToWrite: data, walletPublicKey: nil)
+        let command = WriteFileCommand(dataToWrite: data, fileSettings: settings, walletPublicKey: nil)
         tangemSdk.startSession(with: command, completion: handleCompletion)
        //tangemSdk.writeFiles(files: [data], completion: handleCompletion)
     }

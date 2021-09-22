@@ -25,15 +25,17 @@ public final class WriteFileCommand: Command {
     
     private let dataToWrite: DataToWrite
     private let walletPublicKey: Data?
-    private var walletIndex: Int? = nil
+    private let fileSettings: FileSettings?
     
+    private var walletIndex: Int? = nil
     private var mode: FileDataMode = .initiateWritingFile
     private var offset: Int = 0
     private var fileIndex: Int = 0
     
-    public init(dataToWrite: DataToWrite, walletPublicKey: Data? = nil) {
+    public init(dataToWrite: DataToWrite, fileSettings: FileSettings? = nil, walletPublicKey: Data? = nil) {
         self.dataToWrite = dataToWrite
         self.walletPublicKey = walletPublicKey
+        self.fileSettings = fileSettings
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
@@ -97,6 +99,10 @@ public final class WriteFileCommand: Command {
             
             if let walletIndex = self.walletIndex {
                 try tlvBuilder.append(.walletIndex, value: walletIndex)
+            }
+            
+            if let fileSettings = self.fileSettings {
+                try tlvBuilder.append(.fileSettings, value: fileSettings)
             }
             
         case .writeFile:

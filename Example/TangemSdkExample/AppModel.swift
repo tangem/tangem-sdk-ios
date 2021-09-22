@@ -303,23 +303,23 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
-        let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
-        let command = ReadFileChecksumCommand(filename: "linked", walletPublicKey: nil, readPrivateFiles: true)
-       // let command = ReadFileCommand(filename: nil, walletPublicKey: nil, readPrivateFiles: true)
+        //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        //let command = ReadFileChecksumCommand(filename: "linked", walletPublicKey: nil, readPrivateFiles: true)
+        let command = ReadFileCommand(filename: "blockchainInfo", walletPublicKey: nil, readPrivateFiles: true)
         tangemSdk.startSession(with: command) { result in
             switch result {
             case .success(let response):
-//                if let firstFileData = response.first?.fileData,
-//                   let namedFile = try? NamedFile(tlvData: firstFileData) {
-//                    let payload = namedFile.payload
-//                    if let tlv = Tlv.deserialize(payload) {
-//                        let decoder = TlvDecoder(tlv: tlv)
-//                        let deserializer = WalletDataDeserializer()
-//                        if let walletData = try? deserializer.deserialize(decoder: decoder) {
-//                            self.log(walletData)
-//                        }
-//                    }
-//                }
+                if let firstFileData = response.first?.fileData,
+                   let namedFile = try? NamedFile(tlvData: firstFileData) {
+                    let payload = namedFile.payload
+                    if let tlv = Tlv.deserialize(payload) {
+                        let decoder = TlvDecoder(tlv: tlv)
+                        let deserializer = WalletDataDeserializer()
+                        if let walletData = try? deserializer.deserialize(decoder: decoder) {
+                            self.log(walletData)
+                        }
+                    }
+                }
                 self.complete(with: response)
             case .failure(let error):
                 self.complete(with: error)

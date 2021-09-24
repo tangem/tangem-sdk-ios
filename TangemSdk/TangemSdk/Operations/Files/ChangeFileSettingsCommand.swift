@@ -14,35 +14,25 @@ public final class ChangeFileSettingsCommand: Command {
     public var requiresPasscode: Bool { true }
     
     private let fileIndex: Int
-    /// New settings for file
-    private let settings: FileSettings
+    private let newPermissions: FilePermissions
     
-    public init(fileIndex: Int, settings: FileSettings) {
+    public init(fileIndex: Int, newPermissions: FilePermissions) {
         self.fileIndex = fileIndex
-        self.settings = settings
+        self.newPermissions = newPermissions
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+           throw TangemSdkError.missingPreflightRead
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.interactionMode, value: FileDataMode.changeFileSettings)
             .append(.fileIndex, value: fileIndex)
-        
-        guard let card = environment.card else {
-           throw TangemSdkError.missingPreflightRead
-        }
-        
-        if card.firmwareVersion.doubleValue < 4 {
-            guard let v3Settings = FileSettingsV3(settings) else {
-                throw TangemSdkError.unsupportedFileSettings
-            }
-            
-            try tlvBuilder.append(.fileSettings, value: v3Settings)
-        } else {
-            try tlvBuilder.append(.fileSettings, value: settings)
-        }
+            .append(.fileSettings, value: newPermissions.serializeValue(for: card.firmwareVersion))
         
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
     }
@@ -51,8 +41,8 @@ public final class ChangeFileSettingsCommand: Command {
         guard let tlv = apdu.getTlvData() else {
             throw TangemSdkError.deserializeApduFailed
         }
+        
         let decoder = TlvDecoder(tlv: tlv)
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
-    
 }

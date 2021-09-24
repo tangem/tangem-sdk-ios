@@ -188,15 +188,6 @@ public final class TlvDecoder {
             } else {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
             }
-            
-        case .fileSettings:
-            try typeCheck(FileSettings.self, T.self, for: tag)
-            guard let byte = tagValue.toBytes.last else { //last byte is important for backward compatibility with v3
-                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to FileSettings")
-            }
-            
-            let fileSettings = byte == 0 ? .readPasscode : FileSettings(rawValue: byte)            
-            return fileSettings as! T
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)
             return try DerivationPath(from: tagValue) as! T

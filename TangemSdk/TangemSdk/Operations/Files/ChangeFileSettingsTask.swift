@@ -11,9 +11,9 @@ import Foundation
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsTask: CardSessionRunnable {
-    private var changes: [(Int, FileSettings)]
+    private var changes: [(Int, FilePermissions)]
     
-    public init(changes: [Int: FileSettings]) {
+    public init(changes: [Int: FilePermissions]) {
         self.changes = changes.map { ($0.key, $0.value) }
     }
     
@@ -27,8 +27,8 @@ public final class ChangeFileSettingsTask: CardSessionRunnable {
             return
         }
         
-        let command = ChangeFileSettingsCommand(fileIndex: changes.0, settings: changes.1)
-        command.run(in: session) { (result) in
+        let command = ChangeFileSettingsCommand(fileIndex: changes.0, newPermissions: changes.1)
+        command.run(in: session) { result in
             switch result {
             case .success:
                 self.changeFileSettings(session: session, completion: completion)

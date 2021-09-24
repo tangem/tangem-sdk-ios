@@ -1,0 +1,64 @@
+//
+//  FileSettings.swift
+//  TangemSdk
+//
+//  Created by Andrew Son on 10/6/20.
+//  Copyright © 2020 Tangem AG. All rights reserved.
+//
+
+import Foundation
+
+@available(iOS 13.0, *)
+public struct FileSettings: Codable {
+    public let isPermanent: Bool
+    public let permissions: FilePermissions
+    
+    init(_ data: Data) throws {
+        guard let significantByte = data.last else {
+            throw TangemSdkError.decodingFailed("Failed to decode FileSettings")
+        }
+        
+        if data.count == 1 { //v3 version
+            self.isPermanent = false
+            self.permissions = significantByte == 1 ? .public : .private
+        } else {
+            let settings = FileRawSettings(rawValue: significantByte)
+            self.isPermanent = settings.contains(.isPermanent)
+            self.permissions = settings.contains(.isPublic) ? .public : .private
+        }
+    }
+}
+
+@available(iOS 13.0, *)
+public enum FilePermissions: String, StringCodable {
+    case `public`
+    case `private`
+    
+    fileprivate var permissionsRawValue: Byte {
+        switch self {
+        case .public:
+            return FileRawSettings.isPublic.rawValue
+        case .private:
+            return Byte(0)
+        }
+    }
+    
+    func serializeValue(for fwVersion: FirmwareVersion) -> Data {
+        if fwVersion.doubleValue < 4 {
+            return Data([Byte(0), permissionsRawValue])
+        } else {
+            return Data(permissionsRawValue)
+        }
+    }
+}
+
+fileprivate struct FileRawSettings: OptionSet {
+    static let isPublic: FileRawSettings = .init(rawValue: 0x01)
+    static let isPermanent: FileRawSettings = .init(rawValue: 0x10)
+    
+    let rawValue: Byte
+    
+    init(rawValue: Byte) {
+        self.rawValue = rawValue
+    }
+}

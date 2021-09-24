@@ -23,17 +23,17 @@ public final class ReadFileChecksumCommand: Command {
     
     public var requiresPasscode: Bool { shouldReadPrivateFiles }
     
-    private let filename: String?
+    private let fileName: String?
     private let fileIndex: Int?
     
-    public init(filename: String) {
-        self.filename = filename
+    public init(fileName: String) {
+        self.fileName = fileName
         self.fileIndex = nil
     }
     
     public init(fileIndex: Int) {
         self.fileIndex = fileIndex
-        self.filename = nil
+        self.fileName = nil
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -50,8 +50,8 @@ public final class ReadFileChecksumCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.interactionMode, value: FileDataMode.readFileHash)
         
-        if let filename = self.filename {
-            try tlvBuilder.append(.fileTypeName, value: filename)
+        if let fileName = self.fileName {
+            try tlvBuilder.append(.fileTypeName, value: fileName)
         }
         
         if let fileIndex = self.fileIndex {

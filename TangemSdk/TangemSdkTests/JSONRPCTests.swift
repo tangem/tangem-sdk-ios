@@ -135,14 +135,16 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "SignHash", result: result)
     }
     
-//    func testFiles() {
-//        testMethod(name: "ReadFiles", result: ReadFilesTask.Response(files: [File(fileIndex: 0, fileSettings: .public, fileData: Data(hexString: "00AABBCCDD"))]))
-//        testMethod(name: "ReadFilesByIndex", result: ReadFilesTask.Response(files: [File(fileIndex: 1, fileSettings: .private, fileData: Data(hexString: "00AABBCCDD")),
-//                                                                            File(fileIndex: 2, fileSettings: .public, fileData: Data(hexString: "00AABBCCDD"))]))
-//        testMethod(name: "DeleteFiles", result: DeleteFilesTask.Response(cardId: "c000111122223333"))
-//        testMethod(name: "WriteFiles", result: WriteFilesTask.Response(cardId: "c000111122223333", filesIndices: [0,1]))
-//        testMethod(name: "ChangeFileSettings", result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
-//    }
+    func testFiles() {
+        testMethod(name: "ReadFiles", result: [File(fileData: Data(hexString: "00AABBCCDD"),
+                                                    fileIndex: 0,
+                                                    fileSettings: FileSettings(isPermanent: false,
+                                                                               permissions: .public))])
+
+        testMethod(name: "DeleteFiles", result: DeleteFilesTask.Response(cardId: "c000111122223333"))
+        testMethod(name: "WriteFiles", result: WriteFilesTask.Response(cardId: "c000111122223333", filesIndices: [0,1]))
+        testMethod(name: "ChangeFileSettings", result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
+    }
     
     func testMethodNotFound() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_task\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"

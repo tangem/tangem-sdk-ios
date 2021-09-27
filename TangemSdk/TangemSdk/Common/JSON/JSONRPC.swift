@@ -22,10 +22,10 @@ public final class JSONRPCConverter {
         converter.register(SetAccessCodeHandler())
         converter.register(SetPasscodeHandler())
         converter.register(PreflightReadHandler())
-       // converter.register(ReadFilesHandler())
+        converter.register(ReadFilesHandler())
         converter.register(WriteFilesHandler())
         converter.register(DeleteFilesHandler())
-      //  converter.register(ChangeFileSettingsHandler())
+        converter.register(ChangeFileSettingsHandler())
         return converter
     }()
     

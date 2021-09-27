@@ -50,3 +50,42 @@ public struct NamedFile {
         return tlvBuilder.serialize()
     }
 }
+
+@available (iOS 13.0, *)
+public enum FileToWrite: Decodable {
+    case byUser(data: Data, filePermissions: FilePermissions?, walletPublicKey: Data?)
+    case byFileOwner(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
+                     filePermissions: FilePermissions?, walletPublicKey: Data?)
+    
+    public init(from decoder: Decoder) throws {
+        do {
+            let file = try UserFile(from: decoder)
+            self = .byUser(data: file.data,
+                           filePermissions: file.filePermissions,
+                           walletPublicKey: file.walletPublicKey)
+        } catch {
+            let file = try OwnerFile(from: decoder)
+            self = .byFileOwner(data: file.data,
+                                startingSignature: file.startingSignature,
+                                finalizingSignature: file.finalizingSignature,
+                                counter: file.counter,
+                                filePermissions: file.filePermissions,
+                                walletPublicKey: file.walletPublicKey)
+        }
+    }
+    
+    private struct UserFile: Decodable {
+        let data: Data
+        let filePermissions: FilePermissions?
+        let walletPublicKey: Data?
+    }
+    
+    private struct OwnerFile: Decodable {
+        let data: Data
+        let startingSignature: Data
+        let finalizingSignature: Data
+        let counter: Int
+        let filePermissions: FilePermissions?
+        let walletPublicKey: Data?
+    }
+}

@@ -58,6 +58,17 @@ public final class WriteFileCommand: Command {
         self.counter = nil
     }
     
+    public convenience init(_ file: FileToWrite) {
+        switch file {
+        case .byUser(let data, let filePermissions, let walletPublicKey):
+            self.init(data: data, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+        case .byFileOwner(let data, let startingSignature, let finalizingSignature,
+                          let counter, let filePermissions, let walletPublicKey):
+            self.init(data: data, startingSignature: startingSignature, finalizingSignature: finalizingSignature,
+                      counter: counter, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+        }
+    }
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
@@ -86,7 +97,7 @@ public final class WriteFileCommand: Command {
         }
         
         if filePermissions != nil && card.firmwareVersion.doubleValue < 4 {
-            return .unsupportedFileSettings
+            return .fileSettingsUnsupported
         }
         
         if data.count > WriteFileCommand.maxSize {

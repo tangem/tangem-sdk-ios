@@ -237,9 +237,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// Returned when there is no files on card or when successfully read all files
     case fileNotFound
-    
-    /// Returned when file on card has unwknown file settings
-    case notSupportedFileSettings
+    case fileSettingsUnsupported
+    case filesIsEmpty
     
     /// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
     case wrongInteractionMode
@@ -377,6 +376,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard: return 41301
             
+        case .fileSettingsUnsupported: return 42000
+        case .filesIsEmpty: return 42001
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001
@@ -392,8 +393,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
             
-        case .notSupportedFileSettings: return 50017  // TODO: Change to correct code error code
-        
         case .wrongInteractionMode: return 50027
             
         // MARK: 9xxxx Errors

@@ -164,8 +164,12 @@ public final class TlvDecoder {
             }
         case .signingMethod:
             try typeCheck(SigningMethod.self, T.self, for: tag)
-            guard let byte = tagValue.toBytes.first else {
+            guard var byte = tagValue.toBytes.first else {
                 throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to SigningMethod")
+            }
+            
+            if byte & 0x80 == 0 {
+                byte = 0b10000000|(1 << byte)
             }
             
             let signingMethod = SigningMethod(rawValue: byte)
@@ -187,13 +191,6 @@ public final class TlvDecoder {
             } else {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
             }
-        case .fileSettings:
-            try typeCheck(FileSettings.self, T.self, for: tag)
-            let intValue = tagValue.toInt()
-            guard let fileSettings = FileSettings.make(from: intValue) else {
-                throw TangemSdkError.notSupportedFileSettings
-            }
-            return fileSettings as! T
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)
             return try DerivationPath(from: tagValue) as! T

@@ -11,49 +11,101 @@ import Foundation
 /// Deserialized response for `WriteFileCommand`
 @available (iOS 13.0, *)
 public struct WriteFileResponse: JSONStringConvertible {
-    public let cardId: String
-    public let fileIndex: Int?
+    let cardId: String
+    let fileIndex: Int?
 }
 
 /// Command for writing file on card
 @available (iOS 13.0, *)
 public final class WriteFileCommand: Command {
-    public var requiresPasscode: Bool { dataToWrite.requiredPasscode }
+    var requiresPasscode: Bool { isWritingByUserCodes }
     
-    private static let singleWriteSize = 900
-    private static let maxSize = 48 * 1024
+    private let data: Data
+    private let startingSignature: Data?
+    private let finalizingSignature: Data?
+    private let counter: Int?
+    private let walletPublicKey: Data?
+    private let filePermissions: FilePermissions?
+    private let isWritingByUserCodes: Bool
     
-    private let dataToWrite: DataToWrite
-    
+    private var walletIndex: Int? = nil
     private var mode: FileDataMode = .initiateWritingFile
     private var offset: Int = 0
     private var fileIndex: Int = 0
     
-    public init(dataToWrite: DataToWrite) {
-        self.dataToWrite = dataToWrite
+    private static let singleWriteSize = 900
+    private static let maxSize = 48 * 1024
+    
+    public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
+         filePermissions: FilePermissions? = nil, walletPublicKey: Data? = nil) {
+        self.data = data
+        self.startingSignature = startingSignature
+        self.finalizingSignature = finalizingSignature
+        self.counter = counter
+        self.walletPublicKey = walletPublicKey
+        self.filePermissions = filePermissions
+        self.isWritingByUserCodes = false
+    }
+    
+    public init(data: Data, filePermissions: FilePermissions? = nil, walletPublicKey: Data? = nil) {
+        self.data = data
+        self.walletPublicKey = walletPublicKey
+        self.filePermissions = filePermissions
+        self.isWritingByUserCodes = true
+        
+        self.startingSignature = nil
+        self.finalizingSignature = nil
+        self.counter = nil
+    }
+    
+    public convenience init(_ file: FileToWrite) {
+        switch file {
+        case .byUser(let data, let filePermissions, let walletPublicKey):
+            self.init(data: data, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+        case .byFileOwner(let data, let startingSignature, let finalizingSignature,
+                          let counter, let filePermissions, let walletPublicKey):
+            self.init(data: data, startingSignature: startingSignature, finalizingSignature: finalizingSignature,
+                      counter: counter, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+        }
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if let walletPublicKey = self.walletPublicKey { //optimization
+            self.walletIndex = card.wallets[walletPublicKey]?.index
+            
+            if self.walletIndex == nil {
+                completion(.failure(.walletNotFound))
+                return
+            }
+        }
+        
         writeFileData(session: session, completion: completion)
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion < .filesAvailable,
-           card.firmwareVersion < dataToWrite.minFirmwareVersion {
+        if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion
         }
         
-        if dataToWrite.data.count > WriteFileCommand.maxSize {
+        if isWritingByUserCodes, card.firmwareVersion.doubleValue < 3.34 {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if filePermissions != nil && card.firmwareVersion.doubleValue < 4 {
+            return .fileSettingsUnsupported
+        }
+        
+        if data.count > WriteFileCommand.maxSize {
             return .dataSizeTooLarge
         }
-        if let dataToWrite = dataToWrite as? FileDataProtectedBySignature {
-            if !isCounterValid(issuerDataCounter: dataToWrite.counter, card: card) {
-                return .missingCounter
-            }
-            
-            guard verifySignatures(publicKey: card.issuer.publicKey, cardId: card.cardId) else {
-                return .verificationFailed
-            }
+        
+        if !verifySignatures(publicKey: card.issuer.publicKey, cardId: card.cardId) {
+            return .verificationFailed
         }
         
         return nil
@@ -78,17 +130,47 @@ public final class WriteFileCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.interactionMode, value: mode)
+        
         switch mode {
         case .initiateWritingFile:
-            try dataToWrite.addStartingTlvData(tlvBuilder, withEnvironment: environment)
-                .append(.size, value: dataToWrite.data.count)
+            try tlvBuilder.append(.size, value: data.count)
+            
+            if let startingSignature = self.startingSignature, let counter = self.counter {
+                try tlvBuilder.append(.issuerDataSignature, value: startingSignature)
+                    .append(.issuerDataCounter, value: counter)
+            } else {
+                try tlvBuilder.append(.pin2, value: environment.passcode.value)
+            }
+            
+            if let walletIndex = self.walletIndex {
+                try tlvBuilder.append(.walletIndex, value: walletIndex)
+            }
+            
+            if let filePermissions = self.filePermissions {
+                guard let card = environment.card else {
+                   throw TangemSdkError.missingPreflightRead
+                }
+                
+                try tlvBuilder.append(.fileSettings, value: filePermissions.serializeValue(for: card.firmwareVersion))
+            }
+            
         case .writeFile:
-            try tlvBuilder.append(.issuerData, value: getDataToWrite())
+            let partSize = min(WriteFileCommand.singleWriteSize, data.count - offset)
+            let dataChunk = data[offset..<offset+partSize]
+            
+            try tlvBuilder.append(.issuerData, value: dataChunk)
                 .append(.offset, value: offset)
                 .append(.fileIndex, value: fileIndex)
+            
         case .confirmWritingFile:
-            try dataToWrite.addFinalizingTlvData(tlvBuilder, withEnvironment: environment)
-                .append(.fileIndex, value: fileIndex)
+            try tlvBuilder.append(.fileIndex, value: fileIndex)
+            
+            if let finalizingSignature = self.finalizingSignature {
+                try tlvBuilder.append(.issuerDataSignature, value: finalizingSignature)
+            } else {
+                try tlvBuilder.append(.codeHash, value: data.getSha256())
+                    .append(.pin2, value: environment.passcode.value)
+            }
         default:
             break
         }
@@ -119,7 +201,7 @@ public final class WriteFileCommand: Command {
                     self.writeFileData(session: session, completion: completion)
                 case .writeFile:
                     self.offset += WriteFileCommand.singleWriteSize
-                    if self.offset >= self.dataToWrite.data.count {
+                    if self.offset >= self.data.count {
                         self.mode = .confirmWritingFile
                     }
                     self.writeFileData(session: session, completion: completion)
@@ -134,40 +216,33 @@ public final class WriteFileCommand: Command {
         }
     }
     
-    private func getDataToWrite() -> Data {
-        dataToWrite.data[offset..<offset+calculatePartSize()]
-    }
-    
-    private func calculatePartSize() -> Int {
-        let bytesLeft = dataToWrite.data.count - offset
-        return min(WriteFileCommand.singleWriteSize, bytesLeft)
-    }
-    
-    private func isCounterValid(issuerDataCounter: Int?, card: Card) -> Bool {
-        isCounterRequired(card: card) ?
-            issuerDataCounter != nil :
-            true
-    }
-    
     private func isCounterRequired(card: Card) -> Bool {
-        if dataToWrite.requiredPasscode { return false }
+        if isWritingByUserCodes {
+            return false
+        }
         return card.settings.isIssuerDataProtectedAgainstReplay
     }
     
     private func verifySignatures(publicKey: Data, cardId: String) -> Bool {
-        guard let dataToWrite = dataToWrite as? FileDataProtectedBySignature else {
-            return true
+        if isWritingByUserCodes { return true }
+        
+        guard let counter = self.counter,
+              let startingSignature = self.startingSignature,
+              let finalizingSignature = self.finalizingSignature else {
+            return false
         }
+        
         let startingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId,
-                                                                 issuerDataSize: dataToWrite.data.count,
-                                                                 issuerDataCounter: dataToWrite.counter,
+                                                                 issuerDataSize: data.count,
+                                                                 issuerDataCounter: counter,
                                                                  publicKey: publicKey,
-                                                                 signature: dataToWrite.startingSignature)
+                                                                 signature: startingSignature)
         let finalizingSignatureIsValid = IssuerDataVerifier.verify(cardId: cardId,
-                                                                   issuerData: dataToWrite.data,
-                                                                   issuerDataCounter: dataToWrite.counter,
+                                                                   issuerData: data,
+                                                                   issuerDataCounter: counter,
                                                                    publicKey: publicKey,
-                                                                   signature: dataToWrite.finalizingSignature)
+                                                                   signature: finalizingSignature)
+        
         return startingSignatureIsValid && finalizingSignatureIsValid
     }
     

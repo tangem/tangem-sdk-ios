@@ -223,4 +223,11 @@ class TlvTests: XCTestCase {
         XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value:9).serialize(), Data(hexString: "510109"))
         XCTAssertEqual(try! TlvBuilder().append(.pin, value: "12345".sha256()).serialize(), Data(hexString: "10205994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"))
     }
+    
+    func testFileSettings() {
+        let byte = UInt8(0x11)
+        let settings = try! FileSettings(Data(byte))
+        XCTAssertTrue(settings.isPermanent)
+        XCTAssertTrue(settings.permissions == .public)
+    }
 }

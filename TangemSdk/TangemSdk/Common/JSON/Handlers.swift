@@ -169,28 +169,7 @@ class WriteFilesHandler: JSONRPCHandler {
     var method: String { "WRITE_FILES" }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        guard let filesArray = parameters["files"] as? [Any] else {
-            throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: "Failed to parse files array"))
-        }
-        
-        let files = try filesArray.map { data -> FileToWrite in
-            let jsonData = try JSONSerialization.data(withJSONObject: data)
-            let decoded = try JSONDecoder.tangemSdkDecoder.decode(FileToWrite.self, from: jsonData)
-            return decoded
-        }
-        
-//        for file in filesArray {
-//            let jsonData = try JSONSerialization.data(withJSONObject: file)
-//
-//            if let decoded = try? JSONDecoder.tangemSdkDecoder.decode(FileDataProtectedBySignature.self, from: jsonData) {
-//                files.append(decoded)
-//            } else if let decoded = try? JSONDecoder.tangemSdkDecoder.decode(FileDataProtectedByPasscode.self, from: jsonData) {
-//                files.append(decoded)
-//            } else {
-//                throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: "Failed to parse files array"))
-//            }
-//        }
-
+        let files: [FileToWrite] = try parameters.value(for: "files")
         let command = WriteFilesTask(files: files)
         return command.eraseToAnyRunnable()
     }

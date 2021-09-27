@@ -110,10 +110,6 @@ public final class TlvEncoder {
                 throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag)")
             }
             return Data([mode.rawValue])
-        case .fileSettings:
-            try typeCheck(value, FileSettings.self, for: tag)
-            let settings = value as! FileSettings
-            return settings.intValue.bytes2
         case .derivationPath:
             try typeCheck(value, DerivationPath.self, for: tag)
             let path = value as! DerivationPath

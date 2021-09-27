@@ -24,7 +24,6 @@ public enum TlvValueType: String {
     case byte
     case uint16
     case interactionMode
-    case fileSettings
     case derivationPath
     case backupStatus //TODO: make all these type more generic
 }
@@ -128,6 +127,8 @@ public enum TlvTag: Byte {
     
     case fileTypeName = 0x70
     case fileData = 0x71
+    case fileSignature = 0x73
+    case fileCounter = 0x74
     case fileOwnerIndex = 0x75
 
     // MARK: - HDWallet
@@ -175,8 +176,6 @@ public enum TlvTag: Byte {
             return .interactionMode
         case .offset, .size, .pauseBeforePin2:
             return .uint16
-        case .fileSettings:
-            return .fileSettings
         case .walletHDPath:
             return .derivationPath
         case .backupStatus:

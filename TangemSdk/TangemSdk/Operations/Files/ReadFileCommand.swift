@@ -10,36 +10,38 @@ import Foundation
 
 /// Deserialized response for `ReadFileCommand`
 @available (iOS 13.0, *)
-public struct ReadFileResponse: JSONStringConvertible {
-    public let cardId: String
-    public let size: Int?
-    public let fileData: Data
-    public let fileIndex: Int
-    public let fileSettings: FileSettings
-    public let fileDataSignature: Data?
-    public let fileDataCounter: Int?
+struct ReadFileResponse: JSONStringConvertible {
+    let cardId: String
+    let size: Int?
+    let fileData: Data
+    let fileIndex: Int
+    let fileSettings: FileSettings
+    let fileDataSignature: Data?
+    let fileDataCounter: Int?
+    let walletIndex: Int?
 }
 
 /// Command that read single file at specified index. Reading private file will prompt user to input a passcode.
 @available (iOS 13.0, *)
-public final class ReadFileCommand: Command {
-    public var requiresPasscode: Bool { readPrivateFiles }
+final class ReadFileCommand: Command {
+    var shouldReadPrivateFiles = false
+    
+    var requiresPasscode: Bool { shouldReadPrivateFiles }
     
     private let fileIndex: Int
-    private let readPrivateFiles: Bool
+    private let fileName: String?
+    private let walletPublicKey: Data?
+    private var walletIndex: Int?
     
     private var fileData: Data = Data()
     private var offset: Int = 0
     private var dataSize: Int = 0
     private var fileSettings: FileSettings? = nil
     
-    public init(fileIndex: Int, readPrivateFiles: Bool) {
+    init(fileIndex: Int, fileName: String? = nil, walletPublicKey: Data? = nil) {
         self.fileIndex = fileIndex
-        self.readPrivateFiles = readPrivateFiles
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
-        readFileData(session: session, completion: completion)
+        self.fileName = fileName
+        self.walletPublicKey = walletPublicKey
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -48,6 +50,24 @@ public final class ReadFileCommand: Command {
         }
         
         return nil
+    }
+    
+    func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if let walletPublicKey = self.walletPublicKey { //optimization
+            self.walletIndex = card.wallets[walletPublicKey]?.index
+            
+            if self.walletIndex == nil {
+                completion(.failure(.walletNotFound))
+                return
+            }
+        }
+        
+        readFileData(session: session, completion: completion)
     }
     
     private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
@@ -62,11 +82,13 @@ public final class ReadFileCommand: Command {
                     self.dataSize = size
                     self.fileSettings = response.fileSettings
                 }
+                
                 self.fileData += response.fileData
                 guard self.fileData.count < self.dataSize else {
                     self.completeTask(response, completion: completion)
                     return
                 }
+                
                 self.offset = self.fileData.count
                 self.readFileData(session: session, completion: completion)
             case .failure(let error):
@@ -82,19 +104,38 @@ public final class ReadFileCommand: Command {
                                         fileIndex: data.fileIndex,
                                         fileSettings: fileSettings ?? data.fileSettings,
                                         fileDataSignature: data.fileDataSignature,
-                                        fileDataCounter: data.fileDataCounter)
+                                        fileDataCounter: data.fileDataCounter,
+                                        walletIndex: data.walletIndex)
         completion(.success(response))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.fileIndex, value: fileIndex)
             .append(.offset, value: offset)
-        if readPrivateFiles {
-            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        
+        if let fileName = self.fileName {
+            try tlvBuilder.append(.fileTypeName, value: fileName)
         }
+        
+        if let walletIndex = self.walletIndex {
+            try tlvBuilder.append(.walletIndex, value: walletIndex)
+        }
+        
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
+        if shouldReadPrivateFiles {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+                .append(.pin2, value: environment.passcode.value)
+        } else {
+            if card.firmwareVersion.doubleValue < 4 {
+                try tlvBuilder.append(.pin, value: environment.accessCode.value)
+            }
+        }
+        
         return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
     }
     
@@ -107,8 +148,9 @@ public final class ReadFileCommand: Command {
                                 size: try decoder.decode(.size),
                                 fileData: try decoder.decode(.issuerData) ?? Data(),
                                 fileIndex: try decoder.decode(.fileIndex) ?? 0,
-                                fileSettings: try decoder.decode(.fileSettings) ?? .public,
+                                fileSettings: try FileSettings(decoder.decode(.fileSettings)),
                                 fileDataSignature: try decoder.decode(.issuerDataSignature),
-                                fileDataCounter: try decoder.decode(.issuerDataCounter))
+                                fileDataCounter: try decoder.decode(.issuerDataCounter),
+                                walletIndex: try decoder.decode(.walletIndex))
     }
 }

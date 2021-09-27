@@ -12,7 +12,10 @@ import Foundation
 public struct FileSettings: Codable {
     public let isPermanent: Bool
     public let permissions: FilePermissions
-    
+}
+
+@available(iOS 13.0, *)
+extension FileSettings {
     init(_ data: Data) throws {
         guard let significantByte = data.last else {
             throw TangemSdkError.decodingFailed("Failed to decode FileSettings")
@@ -30,7 +33,7 @@ public struct FileSettings: Codable {
 }
 
 @available(iOS 13.0, *)
-public enum FilePermissions: String, StringCodable {
+public enum FilePermissions: String, Codable {
     case `public`
     case `private`
     

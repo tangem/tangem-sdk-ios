@@ -13,7 +13,10 @@ public struct File: JSONStringConvertible {
     public let fileData: Data
     public let fileIndex: Int
     public let fileSettings: FileSettings?
-    
+}
+
+@available (iOS 13, *)
+extension File {
     init(response: ReadFileResponse) {
         fileIndex = response.fileIndex
         fileSettings = response.fileSettings
@@ -59,11 +62,6 @@ public enum FileToWrite: Decodable {
     
     public init(from decoder: Decoder) throws {
         do {
-            let file = try UserFile(from: decoder)
-            self = .byUser(data: file.data,
-                           filePermissions: file.filePermissions,
-                           walletPublicKey: file.walletPublicKey)
-        } catch {
             let file = try OwnerFile(from: decoder)
             self = .byFileOwner(data: file.data,
                                 startingSignature: file.startingSignature,
@@ -71,6 +69,11 @@ public enum FileToWrite: Decodable {
                                 counter: file.counter,
                                 filePermissions: file.filePermissions,
                                 walletPublicKey: file.walletPublicKey)
+        } catch {
+            let file = try UserFile(from: decoder)
+            self = .byUser(data: file.data,
+                           filePermissions: file.filePermissions,
+                           walletPublicKey: file.walletPublicKey)
         }
     }
     

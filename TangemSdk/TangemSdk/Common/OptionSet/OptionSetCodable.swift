@@ -9,21 +9,21 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public protocol OptionKey: CaseIterable, RawRepresentable where RawValue == String {
+protocol OptionKey: CaseIterable, RawRepresentable where RawValue == String {
     associatedtype SomeOptionSet: OptionSet
     
     var value: SomeOptionSet { get }
 }
 
 @available(iOS 13.0, *)
-public protocol OptionSetCodable: Codable where Self: OptionSet {
+protocol OptionSetCodable: Codable where Self: OptionSet {
     associatedtype OptionKeys: OptionKey
 }
 
 @available(iOS 13.0, *)
 extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
                                  Self.RawValue: Decodable {
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         var values = [String]()
         
@@ -36,7 +36,7 @@ extension OptionSetCodable where OptionKeys.SomeOptionSet == Element,
         try container.encode(values)
     }
     
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         
         //try decode from raw value. (e.g. from CardConfig)

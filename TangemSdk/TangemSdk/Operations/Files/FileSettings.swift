@@ -21,7 +21,7 @@ extension FileSettings {
             throw TangemSdkError.decodingFailed("Failed to decode FileSettings")
         }
         
-        if data.count == 1 { //v3 version
+        if data.count == 2 { //v3 version
             self.isPermanent = false
             self.permissions = significantByte == 1 ? .public : .private
         } else {

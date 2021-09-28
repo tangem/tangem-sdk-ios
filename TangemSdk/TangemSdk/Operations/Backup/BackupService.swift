@@ -232,7 +232,7 @@ public class BackupService: ObservableObject {
                                               onRead: { self.repo.backupData[$0.0] = $0.1 })
             
             sdk.startSession(with: task, cardId: originCard.cardId,
-                             initialMessage: Message(header: "Scan origin card with cardId: \(originCard.cardId)"),
+                             initialMessage: Message(header: "Scan origin card with cardId: \(CardIdFormatter().string(from: originCard.cardId))"),
                              completion: completion)
             
         } catch {
@@ -294,7 +294,7 @@ public class BackupService: ObservableObject {
                                                  passcode: passcode)
             
             sdk.startSession(with: command, cardId: backupCard.cardId,
-                             initialMessage: Message(header: "Scan backup card with cardId: \(backupCard.cardId)")) { result in
+                             initialMessage: Message(header: "Scan backup card with cardId: \(CardIdFormatter().string(from: backupCard.cardId))")) { result in
                 switch result {
                 case .success:
                     self.repo.finalizedBackupCardsCount += 1

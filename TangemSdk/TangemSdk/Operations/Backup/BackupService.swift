@@ -165,7 +165,11 @@ public class BackupService: ObservableObject {
     }
     
     private func addBackupCard(_ backupCard: BackupCard) {
-        repo.backupCards[backupCard.cardId] = backupCard
+        if repo.backupCards.contains(where: { $0.cardId == backupCard.cardId }) {
+            return
+        }
+        
+        repo.backupCards.append(backupCard)
         updateState()
         
         DispatchQueue.global().async {
@@ -175,7 +179,7 @@ public class BackupService: ObservableObject {
     
     private func readBackupCard(_ originCardLinkingKey: Data, completion: @escaping CompletionResult<Void>) {
         sdk.startSession(with: StartBackupCardLinkingTask(originCardLinkingKey: originCardLinkingKey,
-                                                          addedBackupCards: Array(repo.backupCards.keys)),
+                                                          addedBackupCards: repo.backupCards.map { $0.cardId }),
                          initialMessage: Message(header: "Scan backup card with index: \(repo.backupCards.count + 1)")) {[weak self] result in
             guard let self = self else { return }
             
@@ -204,7 +208,7 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.missingOriginCard
             }
             
-            let linkableBackupCards: [LinkableBackupCard] = try repo.backupCards.values.map { card -> LinkableBackupCard in
+            let linkableBackupCards: [LinkableBackupCard] = try repo.backupCards.map { card -> LinkableBackupCard in
                 guard let certificate = repo.certificates[card.cardId] else {
                     throw TangemSdkError.certificateRequired
                 }
@@ -279,15 +283,14 @@ public class BackupService: ObservableObject {
                 }
             }
             
-            let backupCardsArray = Array(repo.backupCards.values)
-            let backupCard = backupCardsArray[cardIndex]
+            let backupCard = repo.backupCards[cardIndex]
             
             guard let backupData = repo.backupData[backupCard.cardId] else {
                 throw TangemSdkError.backupInvalidCommandSequence
             }
             
             let command = FinalizeBackupCardTask(originCard: originCard.makeLinkable(with: originCardCertificate),
-                                                 backupCards: backupCardsArray,
+                                                 backupCards: repo.backupCards,
                                                  backupData: backupData,
                                                  attestSignature: attestSignature,
                                                  accessCode: accessCode,
@@ -330,7 +333,7 @@ extension BackupService {
         var passcode: Data? = nil
         var originCard: OriginCard? = nil
         var attestSignature: Data? = nil
-        var backupCards: [String:BackupCard] = [:]
+        var backupCards: [BackupCard] = []
         var certificates: [String:Data] = [:]
         var backupData: [String:EncryptedBackupData] = [:]
         var finalizedBackupCardsCount: Int = 0

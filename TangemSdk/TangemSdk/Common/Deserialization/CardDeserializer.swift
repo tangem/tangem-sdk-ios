@@ -10,6 +10,8 @@ import Foundation
 
 @available(iOS 13.0, *)
 struct CardDeserializer {
+    var allowNotPersonalized: Bool = false
+    
     func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
@@ -25,9 +27,10 @@ struct CardDeserializer {
         let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
         
-        let defaultCurve: EllipticCurve = try decoder.decode(.curveId)
-        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? [defaultCurve] : EllipticCurve.allCases
-        let defaultSigningMethods: SigningMethod = try decoder.decode(.signingMethod)
+        let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)
+        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? defaultCurve.map { [$0] } ?? []
+            : EllipticCurve.allCases
+        
         var wallets: [Card.Wallet] = []
         var remainingSignatures: Int? = nil
         
@@ -36,11 +39,15 @@ struct CardDeserializer {
             
             let walletSettings = Card.Wallet.Settings(mask: cardSettingsMask.toWalletSettingsMask())
             
+            guard let defaultCurve = defaultCurve else {
+                throw TangemSdkError.decodingFailed("Missing curve id")
+            }
+            
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                      curve: defaultCurve,
                                      settings: walletSettings,
                                      totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                                     remainingSignatures: remainingSignatures!,
+                                     remainingSignatures: remainingSignatures,
                                      index: 0)
             
             wallets.append(wallet)
@@ -59,7 +66,7 @@ struct CardDeserializer {
         let settings = Card.Settings(securityDelay: securityDelayMs,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      mask: cardSettingsMask,
-                                     defaultSigningMethods: defaultSigningMethods,
+                                     defaultSigningMethods: try decoder.decode(.signingMethod),
                                      defaultCurve: defaultCurve)
         
         let terminalIsLinked: Bool = try decoder.decode(.isLinked)
@@ -78,9 +85,8 @@ struct CardDeserializer {
                         health: try decoder.decode(.health),
                         remainingSignatures: remainingSignatures)
         
-        
-		return card
-	}
+        return card
+    }
     
     static func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
@@ -93,7 +99,7 @@ struct CardDeserializer {
     static func getCardDataDecoder(with environment: SessionEnvironment, from tlv: [Tlv]) throws -> TlvDecoder? {
         guard let cardDataValue = tlv.value(for: .cardData),
               let cardDataTlv = Tlv.deserialize(cardDataValue) else {
-           return nil
+            return nil
         }
         
         return TlvDecoder(tlv: cardDataTlv)
@@ -106,7 +112,7 @@ struct CardDeserializer {
     }
     
     private func assertStatus(_ status: Card.Status) throws {
-        if status == .notPersonalized {
+        if status == .notPersonalized && !allowNotPersonalized {
             throw TangemSdkError.notPersonalized
         }
         

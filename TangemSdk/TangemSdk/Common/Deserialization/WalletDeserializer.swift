@@ -10,6 +10,12 @@ import Foundation
 
 @available(iOS 13.0, *)
 class WalletDeserializer {
+    private let isDefaultPermanentWallet: Bool
+    
+    internal init(isDefaultPermanentWallet: Bool) {
+        self.isDefaultPermanentWallet = isDefaultPermanentWallet
+    }
+    
     func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
@@ -44,12 +50,14 @@ class WalletDeserializer {
     }
     
     private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
-        let settings = Card.Wallet.Settings(mask: try decoder.decode(.settingsMask))
+        let mask: WalletSettingsMask? = try decoder.decode(.settingsMask)
+        let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
+            ?? .init(isPermanent: isDefaultPermanentWallet)
         
         return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                   curve: try decoder.decode(.curveId),
-                   settings: settings,
-                   totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                   index: try decoder.decode(.walletIndex))
+                           curve: try decoder.decode(.curveId),
+                           settings: settings,
+                           totalSignedHashes: try decoder.decode(.walletSignedHashes),
+                           index: try decoder.decode(.walletIndex))
     }
 }

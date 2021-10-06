@@ -20,14 +20,16 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        if addedBackupCards.contains(card.cardId) {
-            completion(.failure(.backupCardAlreadyInList))
-            return
+        if session.environment.config.handleErrors {
+            guard let card = session.environment.card else {
+                completion(.failure(.missingPreflightRead))
+                return
+            }
+            
+            if addedBackupCards.contains(card.cardId) {
+                completion(.failure(.backupCardAlreadyInList))
+                return
+            }
         }
         
         self.command = StartBackupCardLinkingCommand(originCardLinkingKey: originCardLinkingKey)

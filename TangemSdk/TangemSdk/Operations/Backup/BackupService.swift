@@ -165,8 +165,8 @@ public class BackupService: ObservableObject {
     }
     
     private func addBackupCard(_ backupCard: BackupCard) {
-        if repo.backupCards.contains(where: { $0.cardId == backupCard.cardId }) {
-            return
+        if let existingIndex = repo.backupCards.firstIndex(where: { $0.cardId == backupCard.cardId }) {
+            repo.backupCards.remove(at: existingIndex)
         }
         
         repo.backupCards.append(backupCard)

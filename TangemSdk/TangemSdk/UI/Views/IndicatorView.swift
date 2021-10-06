@@ -88,9 +88,9 @@ struct IndicatorView: View {
                 .trim(from: 0, to: trimValue)
                 .stroke(style.colors.tint,
                         lineWidth: CGFloat(style.indicatorWidth))
-                .animation(trimAnimation)
+                .animation(trimAnimation, value: trimValue)
                 .rotationEffect(rotationAngle)
-                .animation(rotateAnimation)
+                .animation(rotateAnimation, value: rotationAngle)
             
             if let text = labelText {
                 Text(text)

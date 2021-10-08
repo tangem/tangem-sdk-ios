@@ -171,7 +171,9 @@ extension CardSettingsMask: OptionSetCodable {
         case disableUserData
         case disableFiles
         case isReusable
-        case prohibitPurgeWallet
+        case isPermanentWallet
+        case allowHDWallets
+        case allowBackup
         
         var value: CardSettingsMask {
             switch self {
@@ -221,8 +223,12 @@ extension CardSettingsMask: OptionSetCodable {
                 return .disableFiles
             case .isReusable:
                 return .isReusable
-            case .prohibitPurgeWallet:
+            case .isPermanentWallet:
                 return .permanentWallet
+            case .allowHDWallets:
+                return .allowHDWallets
+            case .allowBackup:
+                return .allowBackup
             }
         }
     }

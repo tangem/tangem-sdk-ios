@@ -132,6 +132,10 @@ struct BackupView: View {
                 .foregroundColor(.red)
             
             VStack(spacing: 8) {
+                Button("Discard saved") {
+                    backupService.discardSavedBackup()
+                }
+                
                 Text("Current state is: \(stateTitle)")
                 
                 Button("Proceed") {

@@ -271,7 +271,7 @@ extension NFCReader: CardReader {
         } //todo: handle tag lost
         
         let requestTimestamp = Date()
-        Log.apdu(apdu)
+        Log.apdu("SEND --> \(apdu)")
         return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)

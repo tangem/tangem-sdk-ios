@@ -17,14 +17,14 @@ public class BackupService: ObservableObject {
     
     public var canAddBackupCards: Bool {
         addedBackupCardsCount < BackupService.maxBackupCardsCount
-        &&  repo.originCard?.linkingKey != nil
+        &&  repo.data.originCard?.linkingKey != nil
     }
     
-    public var addedBackupCardsCount: Int { repo.backupCards.count }
+    public var addedBackupCardsCount: Int { repo.data.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
-    public var accessCodeIsSet: Bool { repo.accessCode != nil }
-    public var passcodeIsSet: Bool { repo.passcode != nil }
-    public var originCardIsSet: Bool { repo.originCard != nil }
+    public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
+    public var passcodeIsSet: Bool { repo.data.passcode != nil }
+    public var originCardIsSet: Bool { repo.data.originCard != nil }
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
@@ -33,10 +33,28 @@ public class BackupService: ObservableObject {
     
     public init(sdk: TangemSdk) {
         self.sdk = sdk
+        self.updateState()
     }
     
     deinit {
         Log.debug("BackupService deinit")
+    }
+    
+    public func discardSavedBackup() {
+        repo.reset()
+        updateState()
+    }
+    
+    public func fetchInvolvedCards() -> [String] {
+        var involvedCards: [String] = .init()
+
+        if let originCardId = repo.data.originCard?.cardId {
+            involvedCards.append(originCardId)
+        }
+        
+        involvedCards.append(contentsOf: repo.data.backupCards.map { $0.cardId })
+        
+        return involvedCards
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
@@ -56,7 +74,7 @@ public class BackupService: ObservableObject {
     }
     
     public func setAccessCode(_ code: String) throws {
-        repo.accessCode = nil
+        repo.data.accessCode = nil
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -72,12 +90,12 @@ public class BackupService: ObservableObject {
             throw TangemSdkError.accessCodeCannotBeChanged
         }
         
-        repo.accessCode = code.sha256()
+        repo.data.accessCode = code.sha256()
         updateState()
     }
     
     public func setPasscode(_ code: String) throws {
-        repo.passcode = nil
+        repo.data.passcode = nil
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -93,7 +111,7 @@ public class BackupService: ObservableObject {
             throw TangemSdkError.passcodeCannotBeChanged
         }
         
-        repo.passcode = code.sha256()
+        repo.data.passcode = code.sha256()
         updateState()
     }
     
@@ -115,7 +133,7 @@ public class BackupService: ObservableObject {
     }
     
     public func setOriginCard(_ originCard: OriginCard) {
-        repo.originCard = originCard
+        repo.data.originCard = originCard
         updateState()
         
         DispatchQueue.global().async {
@@ -149,27 +167,33 @@ public class BackupService: ObservableObject {
     
     @discardableResult
     private func updateState() -> State {
-        if repo.accessCode == nil
-            || repo.originCard == nil
-            || repo.backupCards.isEmpty {
-            currentState = .preparing
-        } else if repo.attestSignature == nil || repo.backupData.isEmpty {
-            currentState = .needWriteOriginCard
-        } else if repo.finalizedBackupCardsCount < repo.backupCards.count {
-            currentState = .needWriteBackupCard(index: repo.finalizedBackupCardsCount + 1)
+        var newState = currentState
+        
+        if repo.data.accessCode == nil
+            || repo.data.originCard == nil
+            || repo.data.backupCards.isEmpty {
+            newState = .preparing
+        } else if repo.data.attestSignature == nil || repo.data.backupData.isEmpty {
+            newState = .needWriteOriginCard
+        } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
+            newState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
         } else {
-            currentState = .finished
+            newState = .finished
+        }
+        
+        if newState != currentState {
+            currentState = newState
         }
         
         return currentState
     }
     
     private func addBackupCard(_ backupCard: BackupCard) {
-        if let existingIndex = repo.backupCards.firstIndex(where: { $0.cardId == backupCard.cardId }) {
-            repo.backupCards.remove(at: existingIndex)
+        if let existingIndex = repo.data.backupCards.firstIndex(where: { $0.cardId == backupCard.cardId }) {
+            repo.data.backupCards.remove(at: existingIndex)
         }
         
-        repo.backupCards.append(backupCard)
+        repo.data.backupCards.append(backupCard)
         updateState()
         
         DispatchQueue.global().async {
@@ -196,20 +220,20 @@ public class BackupService: ObservableObject {
     private func handleWriteOriginCard(completion: @escaping CompletionResult<Void>) {
         do {
             if handleErrors {
-                if repo.accessCode == nil && repo.passcode == nil {
+                if repo.data.accessCode == nil && repo.data.passcode == nil {
                     throw TangemSdkError.accessCodeOrPasscodeRequired
                 }
             }
             
-            let accessCode = repo.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
-            let passcode = repo.passcode ?? UserCodeType.passcode.defaultValue.sha256()
+            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
+            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
-            guard let originCard = repo.originCard else {
+            guard let originCard = repo.data.originCard else {
                 throw TangemSdkError.missingOriginCard
             }
             
-            let linkableBackupCards: [LinkableBackupCard] = try repo.backupCards.map { card -> LinkableBackupCard in
-                guard let certificate = repo.certificates[card.cardId] else {
+            let linkableBackupCards: [LinkableBackupCard] = try repo.data.backupCards.map { card -> LinkableBackupCard in
+                guard let certificate = repo.data.certificates[card.cardId] else {
                     throw TangemSdkError.certificateRequired
                 }
                 
@@ -230,10 +254,10 @@ public class BackupService: ObservableObject {
                                               accessCode: accessCode,
                                               passcode: passcode,
                                               originCardLinkingKey: originCard.linkingKey,
-                                              readBackupStartIndex: repo.backupData.count,
-                                              attestSignature: repo.attestSignature,
-                                              onLink: { self.repo.attestSignature = $0 },
-                                              onRead: { self.repo.backupData[$0.0] = $0.1 })
+                                              readBackupStartIndex: repo.data.backupData.count,
+                                              attestSignature: repo.data.attestSignature,
+                                              onLink: { self.repo.data.attestSignature = $0 },
+                                              onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
             sdk.startSession(with: task, cardId: originCard.cardId,
                              initialMessage: Message(header: "Scan origin card with cardId: \(CardIdFormatter().string(from: originCard.cardId))"),
@@ -247,50 +271,50 @@ public class BackupService: ObservableObject {
     private func handleWriteBackupCard(index: Int, completion: @escaping CompletionResult<Void>) {
         do {
             if handleErrors {
-                if repo.accessCode == nil && repo.passcode == nil {
+                if repo.data.accessCode == nil && repo.data.passcode == nil {
                     throw TangemSdkError.accessCodeOrPasscodeRequired
                 }
             }
             
-            let accessCode = repo.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
-            let passcode = repo.passcode ?? UserCodeType.passcode.defaultValue.sha256()
+            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
+            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
-            guard let attestSignature = repo.attestSignature else {
+            guard let attestSignature = repo.data.attestSignature else {
                 throw TangemSdkError.originCardRequired
             }
             
-            guard let originCard = repo.originCard else {
+            guard let originCard = repo.data.originCard else {
                 throw TangemSdkError.missingOriginCard
             }
             
-            guard let originCardCertificate = repo.certificates[originCard.cardId] else {
+            guard let originCardCertificate = repo.data.certificates[originCard.cardId] else {
                 throw TangemSdkError.certificateRequired
             }
             
             let cardIndex = index - 1
             
-            guard cardIndex < repo.backupCards.count else {
+            guard cardIndex < repo.data.backupCards.count else {
                 throw TangemSdkError.backupCardRequired
             }
             
-            guard !repo.backupCards.isEmpty else {
+            guard !repo.data.backupCards.isEmpty else {
                 throw TangemSdkError.backupCardRequired
             }
             
             if handleErrors {
-                guard repo.backupCards.count < 3 else {
+                guard repo.data.backupCards.count < 3 else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }
             
-            let backupCard = repo.backupCards[cardIndex]
+            let backupCard = repo.data.backupCards[cardIndex]
             
-            guard let backupData = repo.backupData[backupCard.cardId] else {
+            guard let backupData = repo.data.backupData[backupCard.cardId] else {
                 throw TangemSdkError.backupInvalidCommandSequence
             }
             
             let command = FinalizeBackupCardTask(originCard: originCard.makeLinkable(with: originCardCertificate),
-                                                 backupCards: repo.backupCards,
+                                                 backupCards: repo.data.backupCards,
                                                  backupData: backupData,
                                                  attestSignature: attestSignature,
                                                  accessCode: accessCode,
@@ -300,7 +324,7 @@ public class BackupService: ObservableObject {
                              initialMessage: Message(header: "Scan backup card with cardId: \(CardIdFormatter().string(from: backupCard.cardId))")) { result in
                 switch result {
                 case .success:
-                    self.repo.finalizedBackupCardsCount += 1
+                    self.repo.data.finalizedBackupCardsCount += 1
                     completion(.success(()))
                 case .failure(let error):
                     completion(.failure(error))
@@ -322,23 +346,12 @@ public class BackupService: ObservableObject {
             .append(.issuerDataSignature, value: signature)
             .serialize()
         
-        repo.certificates[cardId] = certificate
+        repo.data.certificates[cardId] = certificate
     }
 }
 
 @available(iOS 13.0, *)
 extension BackupService {
-    class BackupRepo {
-        var accessCode: Data? = nil
-        var passcode: Data? = nil
-        var originCard: OriginCard? = nil
-        var attestSignature: Data? = nil
-        var backupCards: [BackupCard] = []
-        var certificates: [String:Data] = [:]
-        var backupData: [String:EncryptedBackupData] = [:]
-        var finalizedBackupCardsCount: Int = 0
-    }
-    
     public enum State: Equatable {
         case preparing
         case needWriteOriginCard
@@ -347,7 +360,7 @@ extension BackupService {
     }
 }
 
-public struct OriginCard {
+public struct OriginCard: Codable {
     public let cardId: String
     public let cardPublicKey: Data
     public let linkingKey: Data
@@ -367,7 +380,7 @@ struct LinkableOriginCard {
     let certificate: Data
 }
 
-struct BackupCard {
+struct BackupCard: Codable {
     let cardId: String
     let cardPublicKey: Data
     let linkingKey: Data
@@ -382,7 +395,7 @@ struct BackupCard {
     }
 }
 
-struct EncryptedBackupData {
+struct EncryptedBackupData: Codable {
     let data: Data
     let salt: Data
 }
@@ -393,4 +406,60 @@ struct LinkableBackupCard {
     let linkingKey: Data
     let attestSignature: Data
     let certificate: Data
+}
+
+struct BackupServiceData: Codable {
+    var accessCode: Data? = nil
+    var passcode: Data? = nil
+    var originCard: OriginCard? = nil
+    var attestSignature: Data? = nil
+    var backupCards: [BackupCard] = []
+    var certificates: [String:Data] = [:]
+    var backupData: [String:EncryptedBackupData] = [:]
+    var finalizedBackupCardsCount: Int = 0
+}
+
+
+@available(iOS 13.0, *)
+class BackupRepo {
+    private let storage = SecureStorage()
+    private var isFetching: Bool = false
+    
+    var data: BackupServiceData = .init() {
+        didSet {
+            try? save()
+        }
+    }
+   
+    init () {
+        try? fetch()
+    }
+    
+    func reset() {
+        data = .init()
+    }
+    
+    private func save() throws {
+        guard !isFetching else { return }
+        
+        let encoded = try JSONEncoder.tangemSdkEncoder.encode(data)
+        try storage.store(object: encoded, account: StorageKey.backupData.rawValue)
+    }
+    
+    private func fetch() throws {
+        self.isFetching = true
+        
+        if let savedData = try storage.get(account: StorageKey.backupData.rawValue) {
+            self.data = try JSONDecoder.tangemSdkDecoder.decode(BackupServiceData.self, from: savedData)
+        }
+        self.isFetching = false
+    }
+}
+
+@available(iOS 13.0, *)
+private extension BackupRepo {
+    /// Keys used for store data in Keychain
+    enum StorageKey: String {
+        case backupData
+    }
 }

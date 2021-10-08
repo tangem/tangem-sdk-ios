@@ -58,7 +58,8 @@ public class BackupService: ObservableObject {
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
-        guard let originCardLinkingKey = repo.originCard?.linkingKey else {
+        guard let originCardLinkingKey = repo.data.originCard?.linkingKey,
+              let origincCardId = repo.data.originCard?.cardId else {
             completion(.failure(.missingOriginCard))
             return
         }
@@ -70,7 +71,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        readBackupCard(originCardLinkingKey, completion: completion)
+        readBackupCard(originCardLinkingKey, originCardId: origincCardId, completion: completion)
     }
     
     public func setAccessCode(_ code: String) throws {
@@ -201,10 +202,11 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func readBackupCard(_ originCardLinkingKey: Data, completion: @escaping CompletionResult<Void>) {
-        sdk.startSession(with: StartBackupCardLinkingTask(originCardLinkingKey: originCardLinkingKey,
-                                                          addedBackupCards: repo.backupCards.map { $0.cardId }),
-                         initialMessage: Message(header: "Scan backup card with index: \(repo.backupCards.count + 1)")) {[weak self] result in
+    private func readBackupCard(_ originCardLinkingKey: Data, originCardId: String, completion: @escaping CompletionResult<Void>) {
+        sdk.startSession(with: StartBackupCardLinkingTask(originCardId: originCardId,
+                                                          originCardLinkingKey: originCardLinkingKey,
+                                                          addedBackupCards: repo.data.backupCards.map { $0.cardId }),
+                         initialMessage: Message(header: "Scan backup card with index: \(repo.data.backupCards.count + 1)")) {[weak self] result in
             guard let self = self else { return }
             
             switch result {

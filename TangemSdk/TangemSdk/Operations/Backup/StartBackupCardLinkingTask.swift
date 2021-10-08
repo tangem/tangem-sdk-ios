@@ -10,11 +10,13 @@ import Foundation
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
+    private let originCardId: String
     private let originCardLinkingKey: Data
     private let addedBackupCards: [String]
     private var command: StartBackupCardLinkingCommand? = nil
     
-    init(originCardLinkingKey: Data, addedBackupCards: [String]) {
+    init(originCardId: String, originCardLinkingKey: Data, addedBackupCards: [String]) {
+        self.originCardId = originCardId
         self.originCardLinkingKey = originCardLinkingKey
         self.addedBackupCards = addedBackupCards
     }
@@ -23,6 +25,11 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
         if session.environment.config.handleErrors {
             guard let card = session.environment.card else {
                 completion(.failure(.missingPreflightRead))
+                return
+            }
+            
+            if card.cardId.lowercased() == originCardId.lowercased() {
+                completion(.failure(.backupCardRequired))
                 return
             }
             

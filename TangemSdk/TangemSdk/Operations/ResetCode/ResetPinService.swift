@@ -30,7 +30,7 @@ public class ResetPinService: ObservableObject {
         
         if handleErrors {
             guard !code.isEmpty else {
-                throw TangemSdkError.invalidParams
+                throw TangemSdkError.accessCodeRequired
             }
             
             if code == UserCodeType.accessCode.defaultValue {
@@ -46,7 +46,7 @@ public class ResetPinService: ObservableObject {
         
         if handleErrors {
             guard !code.isEmpty else {
-                throw TangemSdkError.invalidParams
+                throw TangemSdkError.passcodeRequired
             }
             
             if code == UserCodeType.passcode.defaultValue {

@@ -77,7 +77,7 @@ extension CommandApdu: CustomStringConvertible {
     public var description: String {
         let instruction = Instruction(rawValue: ins) ?? .unknown
         let lc = data.count.byte
-        return "SEND --> \(instruction) [\(data.count + 4) bytes]: \(cla) \(ins) \(p1) \(p2) \(lc) \(data)"
+        return "\(instruction) [\(data.count + 4) bytes]: \(cla) \(ins) \(p1) \(p2) \(lc) \(data)"
     }
 }
 

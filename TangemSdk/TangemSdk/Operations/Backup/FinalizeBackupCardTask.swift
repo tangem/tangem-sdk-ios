@@ -72,7 +72,11 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         writeCommand.run(in: session) { writeResult in
             switch writeResult {
             case .success(let writeResponse):
-                completion(.success(SuccessResponse(cardId: writeResponse.cardId)))
+                if writeResponse.backupStatus == .active {
+                    completion(.success(SuccessResponse(cardId: writeResponse.cardId)))
+                } else {
+                    completion(.failure(TangemSdkError.unknownError))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }

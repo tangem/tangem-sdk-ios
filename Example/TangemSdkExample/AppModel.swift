@@ -354,10 +354,10 @@ extension AppModel {
     func writeUserFile() {
         let demoPayload = Data(repeating: UInt8(1), count: 10)
         let demoData = try! NamedFile(name: "User file", payload: demoPayload).serialize()
-        let permissions: FilePermissions = .private
+        let visibility: FileVisibility = .private
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let file: FileToWrite = .byUser(data: demoData,
-                                        filePermissions: permissions,
+                                        fileVisibility: visibility,
                                         walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
@@ -372,7 +372,7 @@ extension AppModel {
         
         let demoPayload = Data(repeating: UInt8(2), count: 10)
         let demoData = try! NamedFile(name: "Ownerfile", payload: demoPayload).serialize()
-        let permissions: FilePermissions = .private
+        let visibility: FileVisibility = .private
         let counter = 1
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         
@@ -391,11 +391,10 @@ extension AppModel {
                                              startingSignature: startSignature,
                                              finalizingSignature: finalSignature,
                                              counter: counter,
-                                             filePermissions: permissions,
+                                             fileVisibility: visibility,
                                              walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
-
     }
     
     func deleteFile() {
@@ -403,7 +402,7 @@ extension AppModel {
     }
     
     func updateFilePermissions() {
-        var changes: [Int:FilePermissions] = .init()
+        var changes: [Int:FileVisibility] = .init()
         changes[0] = .public
         
         let changeTask = ChangeFileSettingsTask(changes: changes)

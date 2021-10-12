@@ -11,7 +11,7 @@ import Foundation
 @available(iOS 13.0, *)
 public struct FileSettings: Codable {
     public let isPermanent: Bool
-    public let permissions: FilePermissions
+    public let visibility: FileVisibility
 }
 
 @available(iOS 13.0, *)
@@ -23,19 +23,30 @@ extension FileSettings {
         
         if data.count == 2 { //v3 version
             self.isPermanent = false
-            self.permissions = significantByte == 1 ? .public : .private
+            self.visibility = significantByte == 1 ? .public : .private
         } else {
             let settings = FileRawSettings(rawValue: significantByte)
             self.isPermanent = settings.contains(.isPermanent)
-            self.permissions = settings.contains(.isPublic) ? .public : .private
+            self.visibility = settings.contains(.isPublic) ? .public : .private
         }
     }
 }
 
+///File visibility. Private files can be read only with security delay or user code if set
 @available(iOS 13.0, *)
-public enum FilePermissions: String, Codable {
+public enum FileVisibility: String, Codable {
+    /// User can read public files without any codes
     case `public`
+    /// User can read private files only with security delay or user code if set
     case `private`
+    
+    func serializeValue(for fwVersion: FirmwareVersion) -> Data {
+        if fwVersion.doubleValue < 4 {
+            return Data([Byte(0), permissionsRawValue])
+        } else {
+            return Data(permissionsRawValue)
+        }
+    }
     
     fileprivate var permissionsRawValue: Byte {
         switch self {
@@ -43,14 +54,6 @@ public enum FilePermissions: String, Codable {
             return FileRawSettings.isPublic.rawValue
         case .private:
             return Byte(0)
-        }
-    }
-    
-    func serializeValue(for fwVersion: FirmwareVersion) -> Data {
-        if fwVersion.doubleValue < 4 {
-            return Data([Byte(0), permissionsRawValue])
-        } else {
-            return Data(permissionsRawValue)
         }
     }
 }

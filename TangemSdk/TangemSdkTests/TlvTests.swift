@@ -228,6 +228,6 @@ class TlvTests: XCTestCase {
         let byte = UInt8(0x11)
         let settings = try! FileSettings(Data(byte))
         XCTAssertTrue(settings.isPermanent)
-        XCTAssertTrue(settings.permissions == .public)
+        XCTAssertTrue(settings.visibility == .public)
     }
 }

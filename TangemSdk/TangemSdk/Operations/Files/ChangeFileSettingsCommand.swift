@@ -14,9 +14,9 @@ public final class ChangeFileSettingsCommand: Command {
     public var requiresPasscode: Bool { true }
     
     private let fileIndex: Int
-    private let newPermissions: FilePermissions
+    private let newPermissions: FileVisibility
     
-    public init(fileIndex: Int, newPermissions: FilePermissions) {
+    public init(fileIndex: Int, newPermissions: FileVisibility) {
         self.fileIndex = fileIndex
         self.newPermissions = newPermissions
     }

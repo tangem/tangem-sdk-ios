@@ -303,134 +303,93 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
-        tangemSdk.readFiles(readPrivateFiles: true, cardId: card?.cardId) { result in
+        //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        tangemSdk.readFiles(readPrivateFiles: true,
+                            fileName: nil,
+                            walletPublicKey: nil) { result in
             switch result {
-            case .success(let response):
-                self.savedFiles = response.files
-                self.complete(with: response)
+            case .success(let files):
+                var text = ""
+                for file in files {
+                    text += file.json + "\n\n"
+                    
+                    if let namedFile = try? NamedFile(tlvData: file.fileData) {
+                        text += "Name: \(namedFile.name)" + "\n"
+                        text += "File data: \(namedFile.payload.hexString)" + "\n\n"
+                        
+                        if let tlv = Tlv.deserialize(namedFile.payload) {
+                            let decoder = TlvDecoder(tlv: tlv)
+                            let deserializer = WalletDataDeserializer()
+                            if let walletData = try? deserializer.deserialize(decoder: decoder) {
+                                text += "WalletData: \(walletData.json)" + "\n\n"
+                            }
+                        }
+                    }
+                }
+                self.complete(with: text)
             case .failure(let error):
                 self.complete(with: error)
             }
         }
     }
     
-    func readPublicFiles() {
-        tangemSdk.readFiles(readPrivateFiles: false, cardId: card?.cardId) { (result) in
-            switch result {
-            case .success(let response):
-                self.savedFiles = response.files
-                self.complete(with: response)
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
+    
+    func writeUserFile() {
+        let demoPayload = Data(repeating: UInt8(1), count: 10)
+        let demoData = try! NamedFile(name: "User file", payload: demoPayload).serialize()
+        let visibility: FileVisibility = .private
+        //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        let file: FileToWrite = .byUser(data: demoData,
+                                        fileVisibility: visibility,
+                                        walletPublicKey: nil)
+        
+        tangemSdk.writeFiles(files: [file], completion: handleCompletion)
     }
     
-    func writeSingleFile() {
-        let demoData = Data(repeating: UInt8(1), count: 2000)
-        let data = FileDataProtectedByPasscode(data: demoData)
-        tangemSdk.writeFiles(files: [data], completion: handleCompletion)
-    }
-    
-    func writeSingleSignedFile() {
+    func writeOwnerFile() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        let demoData = Data(repeating: UInt8(1), count: 2500)
+        
+        let demoPayload = Data(repeating: UInt8(2), count: 10)
+        let demoData = try! NamedFile(name: "Ownerfile", payload: demoPayload).serialize()
+        let visibility: FileVisibility = .private
         let counter = 1
-        let fileHash = FileHashHelper.prepareHash(for: cardId, fileData: demoData, fileCounter: counter, privateKey: Utils.issuer.privateKey)
+        //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
+        
+        let fileHash = FileHashHelper.prepareHash(for: cardId,
+                                                  fileData: demoData,
+                                                  fileCounter: counter,
+                                                  privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
-            let finalSignature = fileHash.finalizingSignature  else {
+            let finalSignature = fileHash.finalizingSignature else {
             self.complete(with: "Failed to sign data with issuer signature")
             return
         }
-        tangemSdk.writeFiles(files: [
-            FileDataProtectedBySignature(data: demoData,
-                                         startingSignature: startSignature,
-                                         finalizingSignature: finalSignature,
-                                         counter: counter)
-        ], completion: handleCompletion)
+        
+        let file: FileToWrite = .byFileOwner(data: demoData,
+                                             startingSignature: startSignature,
+                                             finalizingSignature: finalSignature,
+                                             counter: counter,
+                                             fileVisibility: visibility,
+                                             walletPublicKey: nil)
+        
+        tangemSdk.writeFiles(files: [file], completion: handleCompletion)
     }
     
-    func writeMultipleFiles() {
-        let demoData = Data(repeating: UInt8(1), count: 1000)
-        let data = FileDataProtectedByPasscode(data: demoData)
-        let secondDemoData = Data(repeating: UInt8(1), count: 5)
-        let secondData = FileDataProtectedByPasscode(data: secondDemoData)
-        
-        tangemSdk.writeFiles(files: [data, secondData],
-                             completion: handleCompletion)
+    func deleteFile() {
+        tangemSdk.deleteFiles(indices: [0], completion: handleCompletion)
     }
     
-    func deleteFirstFile() {
-        guard let savedFiles = self.savedFiles else {
-            self.complete(with: "Please, read files before")
-            return
-        }
+    func updateFilePermissions() {
+        var changes: [Int:FileVisibility] = .init()
+        changes[0] = .public
         
-        guard savedFiles.count > 0 else {
-            self.complete(with: "No saved files on card")
-            return
-        }
-        
-        tangemSdk.deleteFiles(indicesToDelete: [savedFiles[0].fileIndex], cardId: card?.cardId) { (result) in
-            switch result {
-            case .success:
-                self.savedFiles = nil
-                self.complete(with: "First file deleted from card. Please, perform read files command")
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
-    }
-    
-    func deleteAllFiles() {
-        guard let savedFiles = self.savedFiles else {
-            self.complete(with: "Please, read files before")
-            return
-        }
-        
-        guard savedFiles.count > 0 else {
-            self.complete(with: "No saved files on card")
-            return
-        }
-        
-        tangemSdk.deleteFiles(indicesToDelete: nil, cardId: card?.cardId) { (result) in
-            switch result {
-            case .success:
-                self.savedFiles = nil
-                self.complete(with: "All files where deleted from card. Please, perform read files command")
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
-    }
-    
-    func updateFirstFileSettings() {
-        guard let savedFiles = self.savedFiles else {
-            self.complete(with: "Please, read files before")
-            return
-        }
-        
-        guard savedFiles.count > 0 else {
-            self.complete(with: "No saved files on card")
-            return
-        }
-        
-        let file = savedFiles[0]
-        let newSettings: FileSettings = file.fileSettings == .public ? .private : .public
-        tangemSdk.changeFileSettings(changes: [FileSettingsChange(fileIndex: file.fileIndex, settings: newSettings)], cardId: card?.cardId) { (result) in
-            switch result {
-            case .success:
-                self.savedFiles = nil
-                self.complete(with: "File settings updated to \(newSettings.json). Please, perform read files command")
-            case .failure(let error):
-                self.complete(with: error)
-            }
-        }
+        let changeTask = ChangeFileSettingsTask(changes: changes)
+        tangemSdk.startSession(with: changeTask, completion: handleCompletion)
     }
 }
 
@@ -588,13 +547,10 @@ extension AppModel {
         case purgeWallet
         //files
         case readFiles
-        case readPublicFiles
-        case writeSingleFile
-        case writeSingleSignedFile
-        case writeMultipleFiles
-        case deleteFirstFile
-        case deleteAllFiles
-        case updateFirstFileSettings
+        case writeUserFile
+        case writeOnwerFile
+        case deleteFile
+        case updateFilePermissions
         //case json-rpc
         case jsonrpc
         //deprecated
@@ -621,13 +577,10 @@ extension AppModel {
         case .createWallet: createWallet()
         case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
         case .readFiles: readFiles()
-        case .readPublicFiles: readPublicFiles()
-        case .writeSingleFile: writeSingleFile()
-        case .writeSingleSignedFile: writeSingleSignedFile()
-        case .writeMultipleFiles: writeMultipleFiles()
-        case .deleteFirstFile: deleteFirstFile()
-        case .deleteAllFiles: deleteAllFiles()
-        case .updateFirstFileSettings: updateFirstFileSettings()
+        case .writeUserFile: writeUserFile()
+        case .writeOnwerFile: writeOwnerFile()
+        case .deleteFile: deleteFile()
+        case .updateFilePermissions: updateFilePermissions()
         case .readIssuerData: readIssuerData()
         case .writeIssuerData: writeIssuerData()
         case .readIssuerExtraData: readIssuerExtraData()

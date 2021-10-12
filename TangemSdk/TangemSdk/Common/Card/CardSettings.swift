@@ -21,7 +21,7 @@ public extension Card {
         /// Is  allowed to change passcode
         public let isSettingPasscodeAllowed: Bool
         /// Is allowed to remove access code
-        public let isRemovingAccessCodeAllowed: Bool
+        public let isResettingUserCodesAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card
@@ -58,7 +58,7 @@ extension Card.Settings {
         
         self.isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
         self.isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
-        self.isRemovingAccessCodeAllowed = mask.contains(.prohibitDefaultPIN1)
+        self.isResettingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
         self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
         self.isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
         self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)

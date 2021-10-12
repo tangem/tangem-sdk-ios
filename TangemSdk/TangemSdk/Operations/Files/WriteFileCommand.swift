@@ -36,6 +36,14 @@ public final class WriteFileCommand: Command {
     private static let singleWriteSize = 900
     private static let maxSize = 48 * 1024
     
+    /// Initializer for writing the file by the file owner
+    /// - Parameters:
+    ///   - data: Data to write
+    ///   - startingSignature: Starting signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
+    ///   - finalizingSignature: Finalizing signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
+    ///   - counter: File counter to prevent replay attack
+    ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
+    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
     public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
          fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
         self.data = data
@@ -47,6 +55,11 @@ public final class WriteFileCommand: Command {
         self.isWritingByUserCodes = false
     }
     
+    /// Initializer for writing the file by the user
+    /// - Parameters:
+    ///   - data: Data to write
+    ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
+    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
     public init(data: Data, fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
         self.data = data
         self.walletPublicKey = walletPublicKey
@@ -58,6 +71,8 @@ public final class WriteFileCommand: Command {
         self.counter = nil
     }
     
+    /// Convenience initializer
+    /// - Parameter file: File to write
     public convenience init(_ file: FileToWrite) {
         switch file {
         case .byUser(let data, let fileVisibility, let walletPublicKey):
@@ -97,6 +112,10 @@ public final class WriteFileCommand: Command {
         }
         
         if fileVisibility != nil && card.firmwareVersion.doubleValue < 4 {
+            return .fileSettingsUnsupported
+        }
+        
+        if walletPublicKey != nil && card.firmwareVersion.doubleValue < 4 {
             return .fileSettingsUnsupported
         }
         

@@ -32,9 +32,12 @@ extension FileSettings {
     }
 }
 
+///File visibility. Private files can be read only with security delay or user code if set
 @available(iOS 13.0, *)
 public enum FileVisibility: String, Codable {
+    /// User can read public files without any codes
     case `public`
+    /// User can read private files only with security delay or user code if set
     case `private`
     
     func serializeValue(for fwVersion: FirmwareVersion) -> Data {

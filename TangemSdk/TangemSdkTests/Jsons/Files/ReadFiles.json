@@ -13,7 +13,7 @@
                 "fileData": "00AABBCCDD",
                 "fileSettings": {
                     "isPermanent": false,
-                    "permissions": "public"
+                    "visibility": "public"
                 }
             }
         ],

@@ -61,7 +61,7 @@ final class ReadCommand: Command {
         let card = try CardDeserializer().deserialize(isAccessCodeSetLegacy: environment.isUserCodeSet(.accessCode),
                                                       decoder: decoder,
                                                       cardDataDecoder: cardDataDecoder)
-        let walletData = try cardDataDecoder.flatMap { try WalletDataDeserializer().deserialize(cardDataDecoder: $0) }
+        let walletData = try cardDataDecoder.flatMap { try WalletDataDeserializer().deserialize(decoder: $0) }
         return (card, walletData)
     }
 }

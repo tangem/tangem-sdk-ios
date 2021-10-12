@@ -66,7 +66,11 @@ public class PersonalizeCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
         let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
-        return try CardDeserializer(allowNotPersonalized: true).deserialize(decoder: decoder, cardDataDecoder: cardDataDecoder)
+        
+        let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
+        return try CardDeserializer(allowNotPersonalized: true).deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
+                                                                            decoder: decoder,
+                                                                            cardDataDecoder: cardDataDecoder)
     }
     
     private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {

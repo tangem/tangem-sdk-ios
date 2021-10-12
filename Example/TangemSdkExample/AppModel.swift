@@ -378,7 +378,6 @@ extension AppModel {
                                              walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
-
     }
     
     func deleteFile() {

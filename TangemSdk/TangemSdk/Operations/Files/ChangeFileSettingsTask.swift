@@ -11,9 +11,9 @@ import Foundation
 /// Task for updating settings for files saved on card
 @available (iOS 13.0, *)
 public final class ChangeFileSettingsTask: CardSessionRunnable {
-    private var changes: [(Int, FilePermissions)]
+    private var changes: [(Int, FileVisibility)]
     
-    public init(changes: [Int: FilePermissions]) {
+    public init(changes: [Int: FileVisibility]) {
         self.changes = changes.map { ($0.key, $0.value) }
     }
     

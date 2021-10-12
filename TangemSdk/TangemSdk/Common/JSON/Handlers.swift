@@ -191,7 +191,7 @@ class ChangeFileSettingsHandler: JSONRPCHandler {
     var method: String { "CHANGE_FILE_SETTINGS" }
 
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let changes: [Int: FilePermissions] = try parameters.value(for: "changes")
+        let changes: [Int: FileVisibility] = try parameters.value(for: "changes")
         let command = ChangeFileSettingsTask(changes: changes)
         return command.eraseToAnyRunnable()
     }

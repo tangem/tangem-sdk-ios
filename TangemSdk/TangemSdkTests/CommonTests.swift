@@ -21,6 +21,13 @@ class CommonTests: XCTestCase {
         XCTAssertTrue(AttestationTask.Mode.full == AttestationTask.Mode.full)
         XCTAssertTrue(AttestationTask.Mode.normal == AttestationTask.Mode.normal)
         XCTAssertFalse(AttestationTask.Mode.full == AttestationTask.Mode.normal)
+        XCTAssertFalse(AttestationTask.Mode.offline == AttestationTask.Mode.normal)
+        XCTAssertFalse(AttestationTask.Mode.offline == AttestationTask.Mode.full)
+        XCTAssertTrue(AttestationTask.Mode.full >= AttestationTask.Mode.offline)
+        XCTAssertTrue(AttestationTask.Mode.normal >= AttestationTask.Mode.offline)
+        XCTAssertTrue(AttestationTask.Mode.offline < AttestationTask.Mode.normal)
+        XCTAssertTrue(AttestationTask.Mode.offline < AttestationTask.Mode.full)
+        XCTAssertTrue(AttestationTask.Mode.full > AttestationTask.Mode.offline)
     }
     
     func testAttestationRawRepresentation() {

@@ -12,7 +12,14 @@ import Foundation
 struct CardDeserializer {
     var allowNotPersonalized: Bool = false
     
-    func deserialize(decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
+    /// Card deserializaton helper
+    /// - Parameters:
+    ///   - isAccessCodeSetLegacy: isAccessCodeSet information for cards with COS before 4.33
+    ///   - decoder: Common TlvDecoder
+    ///   - cardDataDecoder: TlvDecoder for cardData
+    /// - Throws: Deserialization errors
+    /// - Returns: Card
+    func deserialize(isAccessCodeSetLegacy: Bool, decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
         try assertStatus(cardStatus)
         try assertActivation(try decoder.decode(.isActivated))
@@ -88,7 +95,7 @@ struct CardDeserializer {
                         issuer: issuer,
                         settings: settings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
-                        isAccessCodeSet: isAccessCodeSet,
+                        isAccessCodeSet: isAccessCodeSet ?? isAccessCodeSetLegacy,
                         isPasscodeSet: isPasscodeSet,
                         supportedCurves: supportedCurves,
                         backupStatus: backupStatus,

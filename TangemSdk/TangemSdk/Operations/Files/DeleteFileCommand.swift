@@ -15,8 +15,8 @@ public final class DeleteFileCommand: Command {
     
     private let fileIndex: Int
     
-    public init(fileAt index: Int) {
-        fileIndex = index
+    public init(fileIndex: Int) {
+        self.fileIndex = fileIndex
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -34,6 +34,7 @@ public final class DeleteFileCommand: Command {
             .append(.pin2, value: environment.passcode.value)
             .append(.interactionMode, value: FileDataMode.deleteFile)
             .append(.fileIndex, value: fileIndex)
+        
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
     }
     
@@ -41,6 +42,7 @@ public final class DeleteFileCommand: Command {
         guard let tlv = apdu.getTlvData() else {
             throw TangemSdkError.deserializeApduFailed
         }
+        
         let decoder = TlvDecoder(tlv: tlv)
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }

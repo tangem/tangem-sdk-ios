@@ -82,6 +82,7 @@
     }
   ],
   "isPasscodeSet" : true,
+  "isAccessCodeSet" : true
   "backupStatus" : {
       "status" : "noBackup"
   }

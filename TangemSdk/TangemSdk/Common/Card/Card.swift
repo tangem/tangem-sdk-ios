@@ -32,10 +32,9 @@ public struct Card: Codable, JSONStringConvertible {
     /// to be signed made with `TlvTag.TerminalPublicKey`.
     public let linkedTerminalStatus: LinkedTerminalStatus
     /// Access code (aka PIN1) is set.
-    /// Available only for cards with COS v.4.33 and higher.
-    public internal(set) var isAccessCodeSet: Bool?
+    public internal(set) var isAccessCodeSet: Bool
     /// Passcode (aka PIN2) is set.
-    /// Available only for cards with COS v.4.0 and higher.
+    /// Available only for cards with COS v.1.19 and higher.
     public internal(set) var isPasscodeSet: Bool?
     //TODO: isAccessCodeSet
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.

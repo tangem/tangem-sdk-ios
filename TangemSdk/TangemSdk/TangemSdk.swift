@@ -234,7 +234,7 @@ public extension TangemSdk {
     /// - Note: When performing reading private files command, you must  provide `passcode`
     /// - Warning: Command available only for cards with COS 3.29 and higher
     /// - Parameters:
-    ///   - readPrivateFiles: If true - all files saved on card will be read otherwise
+    ///   - readPrivateFiles: If true - all files saved on card will be read.  User code or security delay will be requested
     ///   - fileName: Read files by the given name.
     ///   - walletPublicKey: Read files by the given wallet.
     ///   - cardId: CID, Unique Tangem card ID number.
@@ -261,7 +261,7 @@ public extension TangemSdk {
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`
-    func changeFileSettings(changes: [Int: FilePermissions],
+    func changeFileSettings(changes: [Int: FileVisibility],
                             cardId: String? = nil,
                             initialMessage: Message? = nil,
                             completion: @escaping CompletionResult<SuccessResponse>) {

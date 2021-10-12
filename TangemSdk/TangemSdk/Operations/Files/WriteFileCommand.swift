@@ -25,7 +25,7 @@ public final class WriteFileCommand: Command {
     private let finalizingSignature: Data?
     private let counter: Int?
     private let walletPublicKey: Data?
-    private let filePermissions: FilePermissions?
+    private let fileVisibility: FileVisibility?
     private let isWritingByUserCodes: Bool
     
     private var walletIndex: Int? = nil
@@ -37,20 +37,20 @@ public final class WriteFileCommand: Command {
     private static let maxSize = 48 * 1024
     
     public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
-         filePermissions: FilePermissions? = nil, walletPublicKey: Data? = nil) {
+         fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
         self.data = data
         self.startingSignature = startingSignature
         self.finalizingSignature = finalizingSignature
         self.counter = counter
         self.walletPublicKey = walletPublicKey
-        self.filePermissions = filePermissions
+        self.fileVisibility = fileVisibility
         self.isWritingByUserCodes = false
     }
     
-    public init(data: Data, filePermissions: FilePermissions? = nil, walletPublicKey: Data? = nil) {
+    public init(data: Data, fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
         self.data = data
         self.walletPublicKey = walletPublicKey
-        self.filePermissions = filePermissions
+        self.fileVisibility = fileVisibility
         self.isWritingByUserCodes = true
         
         self.startingSignature = nil
@@ -60,12 +60,12 @@ public final class WriteFileCommand: Command {
     
     public convenience init(_ file: FileToWrite) {
         switch file {
-        case .byUser(let data, let filePermissions, let walletPublicKey):
-            self.init(data: data, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+        case .byUser(let data, let fileVisibility, let walletPublicKey):
+            self.init(data: data, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
         case .byFileOwner(let data, let startingSignature, let finalizingSignature,
-                          let counter, let filePermissions, let walletPublicKey):
+                          let counter, let fileVisibility, let walletPublicKey):
             self.init(data: data, startingSignature: startingSignature, finalizingSignature: finalizingSignature,
-                      counter: counter, filePermissions: filePermissions, walletPublicKey: walletPublicKey)
+                      counter: counter, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
         }
     }
     
@@ -96,7 +96,7 @@ public final class WriteFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if filePermissions != nil && card.firmwareVersion.doubleValue < 4 {
+        if fileVisibility != nil && card.firmwareVersion.doubleValue < 4 {
             return .fileSettingsUnsupported
         }
         
@@ -146,12 +146,12 @@ public final class WriteFileCommand: Command {
                 try tlvBuilder.append(.walletIndex, value: walletIndex)
             }
             
-            if let filePermissions = self.filePermissions {
+            if let fileVisibility = self.fileVisibility {
                 guard let card = environment.card else {
                    throw TangemSdkError.missingPreflightRead
                 }
                 
-                try tlvBuilder.append(.fileSettings, value: filePermissions.serializeValue(for: card.firmwareVersion))
+                try tlvBuilder.append(.fileSettings, value: fileVisibility.serializeValue(for: card.firmwareVersion))
             }
             
         case .writeFile:

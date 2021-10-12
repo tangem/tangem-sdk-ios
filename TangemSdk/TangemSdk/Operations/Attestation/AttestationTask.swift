@@ -81,14 +81,15 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func continueAttestaton(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        let card = session.environment.card!
-        runOnlineAttestation(card)
-        
         switch self.mode {
+        case .offline:
+            complete(session, completion)
         case .normal:
-            self.waitForOnlineAndComplete(session, completion)
+            runOnlineAttestation(session.environment.card!)
+            waitForOnlineAndComplete(session, completion)
         case .full:
-            self.runWalletsAttestation(session, completion)
+            runOnlineAttestation(session.environment.card!)
+            runWalletsAttestation(session, completion)
         }
     }
     
@@ -206,11 +207,15 @@ public final class AttestationTask: CardSessionRunnable {
 @available(iOS 13.0, *)
 public extension AttestationTask {
     enum Mode: String, StringCodable, CaseIterable, Comparable {
-        case normal, full
+        case offline, normal, full
         
         public static func < (lhs: AttestationTask.Mode, rhs: AttestationTask.Mode) -> Bool {
             switch (lhs, rhs) {
             case (normal, full):
+                return true
+            case (offline, normal):
+                return true
+            case (offline, full):
                 return true
             default:
                 return false

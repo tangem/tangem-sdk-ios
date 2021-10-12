@@ -54,11 +54,23 @@ public struct NamedFile {
     }
 }
 
+/// File data to write by the user or file  owner.
 @available (iOS 13.0, *)
 public enum FileToWrite: Decodable {
-    case byUser(data: Data, filePermissions: FilePermissions?, walletPublicKey: Data?)
+    /// Write file protected by the user with security delay or user code if set
+    ///   - data: Data to write
+    ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
+    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
+    case byUser(data: Data, fileVisibility: FileVisibility?, walletPublicKey: Data?)
+    /// Write file protected by the file owner with two signatures and counter
+    ///   - data: Data to write
+    ///   - startingSignature: Starting signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
+    ///   - finalizingSignature: Finalizing signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
+    ///   - counter: File counter to prevent replay attack
+    ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
+    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
     case byFileOwner(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
-                     filePermissions: FilePermissions?, walletPublicKey: Data?)
+                     fileVisibility: FileVisibility?, walletPublicKey: Data?)
     
     public init(from decoder: Decoder) throws {
         do {
@@ -67,19 +79,19 @@ public enum FileToWrite: Decodable {
                                 startingSignature: file.startingSignature,
                                 finalizingSignature: file.finalizingSignature,
                                 counter: file.counter,
-                                filePermissions: file.filePermissions,
+                                fileVisibility: file.fileVisibility,
                                 walletPublicKey: file.walletPublicKey)
         } catch {
             let file = try UserFile(from: decoder)
             self = .byUser(data: file.data,
-                           filePermissions: file.filePermissions,
+                           fileVisibility: file.fileVisibility,
                            walletPublicKey: file.walletPublicKey)
         }
     }
     
     private struct UserFile: Decodable {
         let data: Data
-        let filePermissions: FilePermissions?
+        let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }
     
@@ -88,7 +100,7 @@ public enum FileToWrite: Decodable {
         let startingSignature: Data
         let finalizingSignature: Data
         let counter: Int
-        let filePermissions: FilePermissions?
+        let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }
 }

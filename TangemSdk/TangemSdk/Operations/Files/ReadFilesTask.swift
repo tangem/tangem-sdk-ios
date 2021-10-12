@@ -11,8 +11,10 @@ import Foundation
 /// This task requesting information about files saved on card. Task can read private files
 @available (iOS 13.0, *)
 public class ReadFilesTask: CardSessionRunnable {
+    /// If true, user code or security delay will be requested
     public var shouldReadPrivateFiles = false
     
+    //Read filters
     private let fileName: String?
     private let walletPublicKey: Data?
     

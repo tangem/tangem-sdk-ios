@@ -77,5 +77,6 @@
       "index" : 2
     }
   ],
-  "isPasscodeSet" : true
+  "isPasscodeSet" : true,
+  "isAccessCodeSet" : true
 }

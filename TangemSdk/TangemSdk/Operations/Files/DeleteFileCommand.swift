@@ -24,6 +24,10 @@ public final class DeleteFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
+        if !card.settings.isFilesAllowed {
+            return .filesDisabled
+        }
+        
         return nil
     }
     

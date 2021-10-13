@@ -22,7 +22,8 @@
     "isPermanentWallet" : true,
     "isSelectBlockchainAllowed" : true,
     "isIssuerDataProtectedAgainstReplay" : true,
-    "isHDWalletsAllowed" : true,
+    "isHDWalletAllowed" : true,
+    "isFilesAllowed" : true,
     "isBackupAllowed" : true
   },
   "issuer" : {

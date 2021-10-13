@@ -19,18 +19,21 @@ public struct ReadFileChecksumResponse: JSONStringConvertible {
 /// The command that prompts the card to create a file checksum. This checksum is used to check the integrity of the file on the card
 @available (iOS 13.0, *)
 public final class ReadFileChecksumCommand: Command {
-    public var requiresPasscode: Bool { readPrivateFiles }
+    public var shouldReadPrivateFiles = false
     
-    private let fileIndex: Int
-    private let readPrivateFiles: Bool
+    public var requiresPasscode: Bool { shouldReadPrivateFiles }
     
-    public init(fileIndex: Int, readPrivateFiles: Bool) {
-        self.fileIndex = fileIndex
-        self.readPrivateFiles = readPrivateFiles
+    private let fileName: String?
+    private let fileIndex: Int?
+    
+    public init(fileName: String) {
+        self.fileName = fileName
+        self.fileIndex = nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
-        readFileData(session: session, completion: completion)
+    public init(fileIndex: Int) {
+        self.fileIndex = fileIndex
+        self.fileName = nil
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -41,26 +44,24 @@ public final class ReadFileChecksumCommand: Command {
         return nil
     }
     
-    private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileChecksumResponse>) {
-        transceive(in: session) { (result) in
-            switch result {
-            case .success(let response):
-                completion(.success(response))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.fileIndex, value: fileIndex)
             .append(.interactionMode, value: FileDataMode.readFileHash)
-        if readPrivateFiles {
-            tlvBuilder = try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        
+        if let fileName = self.fileName {
+            try tlvBuilder.append(.fileTypeName, value: fileName)
         }
+        
+        if let fileIndex = self.fileIndex {
+            try tlvBuilder.append(.fileIndex, value: fileIndex)
+        }
+        
+        if shouldReadPrivateFiles {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+        
         return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
     }
     

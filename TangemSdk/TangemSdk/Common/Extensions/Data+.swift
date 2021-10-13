@@ -79,6 +79,10 @@ extension Data {
         }
     }
     
+    public init(_ byte: Byte) {
+        self = Data([byte])
+    }
+    
     @available(iOS 13.0, *)
     public func getSha256() -> Data {
         let digest = SHA256.hash(data: self)

@@ -26,11 +26,13 @@ public extension Card {
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card
         public let supportedEncryptionModes: [EncryptionMode]
+        /// Is allowed to write files
+        public let isFilesAllowed: Bool
+        /// Is allowed to use hd wallets
+        public let isHDWalletsAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
-        /// Is allowed to use hd wallets
-        public let isHDWalletsAllowed: Bool
         /// Is overwriting issuer extra data resctricted
         @SkipEncoding
         var isOverwritingIssuerExtraDataRestricted: Bool
@@ -65,6 +67,7 @@ extension Card.Settings {
         self.isPermanentWallet = mask.contains(.permanentWallet)
         self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
         self.isHDWalletsAllowed = mask.contains(.allowHDWallets)
+        self.isFilesAllowed = !mask.contains(.disableFiles)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {

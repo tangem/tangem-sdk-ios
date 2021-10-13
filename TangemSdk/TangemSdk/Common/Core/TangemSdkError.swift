@@ -239,6 +239,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case fileNotFound
     case fileSettingsUnsupported
     case filesIsEmpty
+    case filesDisabled
     
     /// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
     case wrongInteractionMode
@@ -341,6 +342,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .fileSettingsUnsupported: return 42000
         case .filesIsEmpty: return 42001
+        case .filesDisabled: return 42002
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001

@@ -69,6 +69,10 @@ public final class WriteUserDataCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
+        if !card.settings.isUserDataAllowed {
+            return .userDataDisabled
+        }
+        
         if let userData = userData, userData.count > WriteUserDataCommand.maxSize {
             return .dataSizeTooLarge
         }

@@ -21,6 +21,18 @@ public final class ChangeFileSettingsCommand: Command {
         self.newPermissions = newPermissions
     }
     
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .filesAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if !card.settings.isFilesAllowed {
+            return .filesDisabled
+        }
+        
+        return nil
+    }
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
            throw TangemSdkError.missingPreflightRead

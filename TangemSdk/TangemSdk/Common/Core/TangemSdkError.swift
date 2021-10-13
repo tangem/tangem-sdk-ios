@@ -256,8 +256,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     //MARK: Settings
     case filesDisabled
     case hdWalletDisabled
-    case issuerDataDisabled
-    case userDataDisabled
     
     public var code: Int {
         switch self {
@@ -350,8 +348,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .filesDisabled: return 42002
         case .hdWalletDisabled: return 42003
-        case .issuerDataDisabled: return 42004
-        case .userDataDisabled: return 42005
         
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.

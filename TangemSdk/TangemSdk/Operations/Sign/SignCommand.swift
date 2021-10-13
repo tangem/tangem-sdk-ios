@@ -71,7 +71,7 @@ class SignCommand: Command {
                 return .unsupportedCurve
             }
             
-            if !card.settings.isHDWalletsAllowed {
+            if !card.settings.isHDWalletAllowed {
                 return .hdWalletDisabled
             }
         }

@@ -51,6 +51,10 @@ final class ReadFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
+        if !card.settings.isFilesAllowed {
+            return .filesDisabled
+        }
+        
         return nil
     }
     

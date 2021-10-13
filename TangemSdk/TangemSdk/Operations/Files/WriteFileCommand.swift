@@ -107,6 +107,10 @@ public final class WriteFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
+        if !card.settings.isFilesAllowed {
+            return .filesDisabled
+        }
+        
         if isWritingByUserCodes, card.firmwareVersion.doubleValue < 3.34 {
             return .notSupportedFirmwareVersion
         }

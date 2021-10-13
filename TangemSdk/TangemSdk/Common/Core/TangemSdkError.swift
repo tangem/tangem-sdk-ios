@@ -253,6 +253,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cardReadWrongWallet
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
+    case HDWalletDisabled
     
     public var code: Int {
         switch self {
@@ -343,6 +344,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .fileSettingsUnsupported: return 42000
         case .filesIsEmpty: return 42001
         case .filesDisabled: return 42002
+            
+        case .HDWalletDisabled: return 42003
         // MARK: 5xxxx Errors
         // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001

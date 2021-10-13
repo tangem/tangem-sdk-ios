@@ -37,7 +37,7 @@ class ReadWalletCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if !card.settings.isHDWalletsAllowed {
+        if !card.settings.isHDWalletAllowed {
             return .hdWalletDisabled
         }
         

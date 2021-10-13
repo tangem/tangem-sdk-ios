@@ -70,6 +70,10 @@ class SignCommand: Command {
             if wallet.curve != .secp256k1 {
                 return .unsupportedCurve
             }
+            
+            if !card.settings.isHDWalletsAllowed {
+                return .HDWalletDisabled
+            }
         }
         
         //Before v4

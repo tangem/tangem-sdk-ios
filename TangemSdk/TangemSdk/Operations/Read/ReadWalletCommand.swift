@@ -38,7 +38,7 @@ class ReadWalletCommand: Command {
         }
         
         if !card.settings.isHDWalletsAllowed {
-            return .HDWalletDisabled
+            return .hdWalletDisabled
         }
         
         return nil

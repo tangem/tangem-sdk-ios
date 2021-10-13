@@ -43,7 +43,7 @@ class AppModel: ObservableObject {
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
-  
+    
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
@@ -170,23 +170,33 @@ extension AppModel {
             switch result {
             case .success(let response):
                 self.handleCompletion(.success(response))
-            
-                //Test verification
-                if let derivationPath = path,
-                   let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
-                   let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
-                    
-                    let verified = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
-                                                              hash: hash,
-                                                              signature: response.signature)) ?? false
-                    
-                    self.log("HD Signature verified status: \(verified ? "verified" : "not verified")")
-                }
-              
+                self.verifySignature(response, walletPublicKey: walletPublicKey, hash: hash, hdPath: path)
             case .failure(let error):
                 self.complete(with: error.localizedDescription)
             }
         }
+    }
+    
+    private func verifySignature(_ response: SignHashResponse, walletPublicKey: Data, hash: Data, hdPath: DerivationPath?) {
+        //Test signature verification
+        var verifiedStatus: Bool = false
+        if let derivationPath = hdPath {
+            if let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
+               let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
+                verifiedStatus = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
+                                                             hash: hash,
+                                                             signature: response.signature)) ?? false
+            }
+        } else {
+            if let curve = self.card?.wallets[walletPublicKey]?.curve {
+                verifiedStatus = (try? CryptoUtils.verify(curve: curve,
+                                                          publicKey: walletPublicKey,
+                                                          hash: hash,
+                                                          signature: response.signature)) ?? false
+            }
+        }
+        
+        self.log("Signature verification status: \(verifiedStatus ? "verified" : "not verified")")
     }
     
     func signHashes(walletPublicKey: Data) {
@@ -213,7 +223,7 @@ extension AppModel {
                        completion: handleCompletion)
     }
     
-
+    
     func derivePublicKey() {
         guard let card = card else {
             self.complete(with: "Scan card before")
@@ -272,7 +282,7 @@ extension AppModel {
                               cardId: cardId,
                               completion: handleCompletion)
     }
-
+    
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
             if let error = error {
@@ -506,7 +516,7 @@ extension AppModel {
             }
         }
     }
-
+    
     func writeIssuerExtraData() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Please, scan card before")
@@ -575,7 +585,7 @@ extension AppModel {
 //MARK:- Json RPC
 extension AppModel {
     var jsonRpcTemplate: String {
-    """
+        """
     {
         "jsonrpc": "2.0",
         "id": 2,

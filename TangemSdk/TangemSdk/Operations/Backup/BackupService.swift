@@ -57,6 +57,10 @@ public class BackupService: ObservableObject {
         return involvedCards
     }
     
+    public func fetchBackupCards() -> [String] {
+        return repo.data.backupCards.map { $0.cardId }
+    }
+    
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
         guard let originCardLinkingKey = repo.data.originCard?.linkingKey,
               let origincCardId = repo.data.originCard?.cardId else {

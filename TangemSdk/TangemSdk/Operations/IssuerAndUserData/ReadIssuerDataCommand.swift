@@ -56,6 +56,13 @@ public final class ReadIssuerDataCommand: Command {
         Log.debug("ReadIssuerDataCommand deinit")
     }
     
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if !card.settings.isIssuerDataAllowed {
+            return .issuerDataDisabled
+        }
+        
+        return nil
+    }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
         guard let card = session.environment.card else {

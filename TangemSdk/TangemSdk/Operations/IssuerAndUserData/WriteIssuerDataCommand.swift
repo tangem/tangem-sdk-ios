@@ -54,10 +54,6 @@ public final class WriteIssuerDataCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if !card.settings.isIssuerDataAllowed {
-            return .issuerDataDisabled
-        }
-        
         if issuerData.count > WriteIssuerDataCommand.maxSize {
             return .dataSizeTooLarge
         }

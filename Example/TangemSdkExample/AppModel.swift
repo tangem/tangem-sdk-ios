@@ -160,13 +160,33 @@ extension AppModel {
         }
         
         UIApplication.shared.endEditing()
+        let hash = getRandomHash()
         
-        tangemSdk.sign(hash: getRandomHash(),
+        tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
                        hdPath: path,
-                       initialMessage: Message(header: "Signing hash"),
-                       completion: handleCompletion)
+                       initialMessage: Message(header: "Signing hash")) { result in
+            switch result {
+            case .success(let response):
+                self.handleCompletion(.success(response))
+            
+                //Test verification
+                if let derivationPath = path,
+                   let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
+                   let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
+                    
+                    let verified = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
+                                                              hash: hash,
+                                                              signature: response.signature)) ?? false
+                    
+                    self.log("HD Signature verified status: \(verified ? "verified" : "not verified")")
+                }
+              
+            case .failure(let error):
+                self.complete(with: error.localizedDescription)
+            }
+        }
     }
     
     func signHashes(walletPublicKey: Data) {
@@ -193,6 +213,7 @@ extension AppModel {
                        completion: handleCompletion)
     }
     
+
     func derivePublicKey() {
         guard let card = card else {
             self.complete(with: "Scan card before")
@@ -217,15 +238,17 @@ extension AppModel {
         
         UIApplication.shared.endEditing()
         
-        let masterKey = ExtendedPublicKey(compressedPublicKey: wallet.publicKey,
-                                          chainCode: chainCode)
-        
         do {
-            let childKey = try masterKey.derivePublicKey(path: path)
+            let childKey = try derivePublicKey(path: path, walletPublicKey: wallet.publicKey, chainCode: chainCode)
             handleCompletion(.success(childKey))
         } catch {
             self.complete(with: error.localizedDescription)
         }
+    }
+    
+    private func derivePublicKey(path: DerivationPath, walletPublicKey: Data, chainCode: Data) throws -> ExtendedPublicKey {
+        let masterKey = ExtendedPublicKey(compressedPublicKey: walletPublicKey, chainCode: chainCode)
+        return try masterKey.derivePublicKey(path: path)
     }
     
     func createWallet() {

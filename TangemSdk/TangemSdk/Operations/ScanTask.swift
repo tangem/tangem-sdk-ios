@@ -83,6 +83,11 @@ public final class ScanTask: CardSessionRunnable {
             completion(.success(session.environment.card!))
             
         case .verifiedOffline:
+            if session.environment.config.attestationMode == .offline {
+                completion(.success(session.environment.card!))
+                return
+            }
+            
             session.viewDelegate.setState(.empty)
             session.viewDelegate.attestationCompletedOffline() {
                 completion(.success(session.environment.card!))

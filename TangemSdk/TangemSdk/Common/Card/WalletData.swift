@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct WalletData: Equatable, Hashable {
+public struct WalletData: Equatable, Hashable, JSONStringConvertible {
     /// Name of the blockchain.
     public let blockchain: String
     /// Token of the specified blockchain.
@@ -20,7 +20,7 @@ public struct WalletData: Equatable, Hashable {
     }
 }
     
-public struct Token: Equatable, Hashable {
+public struct Token: Equatable, Hashable, JSONStringConvertible {
     /// Display name of the token.
     public let name: String
     /// Token symbol

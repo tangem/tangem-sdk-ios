@@ -23,6 +23,7 @@
     "isSelectBlockchainAllowed" : true,
     "isIssuerDataProtectedAgainstReplay" : true,
     "isHDWalletsAllowed" : true,
+    "isFilesAllowed" : true
   },
   "issuer" : {
     "name" : "TANGEM AG",

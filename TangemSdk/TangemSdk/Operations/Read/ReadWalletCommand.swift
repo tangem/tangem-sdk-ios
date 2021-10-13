@@ -32,6 +32,18 @@ class ReadWalletCommand: Command {
         Log.debug("ReadWalletCommand deinit")
     }
     
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .hdWalletAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        if !card.settings.isHDWalletsAllowed {
+            return .HDWalletDisabled
+        }
+        
+        return nil
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletResponse>) {
         Log.debug("Attempt to read wallet with key: \(walletPublicKey)")
         transceive(in: session) { result in

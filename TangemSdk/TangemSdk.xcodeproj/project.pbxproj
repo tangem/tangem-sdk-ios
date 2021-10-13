@@ -61,7 +61,6 @@
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
 		5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127C26D3D351006E173C /* WriteFiles.json */; };
-		5D4B128026D3F176006E173C /* ReadFilesByIndex.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetAccessCode.json */; };
 		5D54408C2682269400F7D05B /* SetPasscode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408B2682269400F7D05B /* SetPasscode.json */; };
@@ -228,15 +227,10 @@
 		B006971825FFABA10040D203 /* InteractionMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B006971725FFABA10040D203 /* InteractionMode.swift */; };
 		B00B3265252DC33500A9FE96 /* ReadFileChecksumCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */; };
 		B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */; };
-		B00B3331252E0B5A00A9FE96 /* FileWriteSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */; };
-		B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */; };
 		B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00B333A252EED5000A9FE96 /* FileDataMode.swift */; };
 		B00BC5C4260B80E600F0647D /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C3260B80E600F0647D /* Track.swift */; };
 		B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00BC5C7260B82A700F0647D /* ReadMode.swift */; };
-		B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */; };
 		B01B9A572530871800ECB6BF /* FileHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A562530871800ECB6BF /* FileHashHelper.swift */; };
-		B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */; };
-		B01B9A7F2530B69900ECB6BF /* FirmwareRestrictable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01B9A7E2530B69900ECB6BF /* FirmwareRestrictable.swift */; };
 		B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F7A25658EEE0061E5ED /* CardSettings.swift */; };
 		B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8225658F3B0061E5ED /* ProductMask.swift */; };
 		B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0390F8625658F620061E5ED /* SigningMethod.swift */; };
@@ -326,7 +320,6 @@
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
-		5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReadFilesByIndex.json; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
 		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
@@ -501,15 +494,10 @@
 		B006971725FFABA10040D203 /* InteractionMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionMode.swift; sourceTree = "<group>"; };
 		B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadFileChecksumCommand.swift; sourceTree = "<group>"; };
 		B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteFileCommand.swift; sourceTree = "<group>"; };
-		B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileWriteSettings.swift; sourceTree = "<group>"; };
-		B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataToWrite.swift; sourceTree = "<group>"; };
 		B00B333A252EED5000A9FE96 /* FileDataMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDataMode.swift; sourceTree = "<group>"; };
 		B00BC5C3260B80E600F0647D /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		B00BC5C7260B82A700F0647D /* ReadMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadMode.swift; sourceTree = "<group>"; };
-		B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadFileCommandSettings.swift; sourceTree = "<group>"; };
 		B01B9A562530871800ECB6BF /* FileHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHashHelper.swift; sourceTree = "<group>"; };
-		B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Set+FirmwareRestrictible.swift"; sourceTree = "<group>"; };
-		B01B9A7E2530B69900ECB6BF /* FirmwareRestrictable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirmwareRestrictable.swift; sourceTree = "<group>"; };
 		B0390F7A25658EEE0061E5ED /* CardSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardSettings.swift; sourceTree = "<group>"; };
 		B0390F8225658F3B0061E5ED /* ProductMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMask.swift; sourceTree = "<group>"; };
 		B0390F8625658F620061E5ED /* SigningMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningMethod.swift; sourceTree = "<group>"; };
@@ -724,7 +712,6 @@
 		5D4B127426D3CCE5006E173C /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */,
 				5D4B127626D3CEE7006E173C /* ReadFiles.json */,
 				5D4B127826D3CF4F006E173C /* DeleteFiles.json */,
 				5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */,
@@ -1075,7 +1062,6 @@
 				5DFFC49D233B9D4C004964E8 /* NFC */,
 				5DFFC4A0233BA5D2004964E8 /* Extensions */,
 				5D6A92D52344E2B400158457 /* Localization */,
-				B0800F94252C6859007E04EE /* Files */,
 				B0EC64FE260110440088F03D /* Deserialization */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 				5D379C2A268FA4D200C7F473 /* CompletionResult.swift */,
@@ -1124,7 +1110,6 @@
 				5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */,
 				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
 				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
-				B01B9A792530B5C200ECB6BF /* Set+FirmwareRestrictible.swift */,
 				5DDD6D4725D57F0900E48D7B /* SLIX+.swift */,
 				5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */,
 				B0D3C48A26088ECD0038A5C9 /* Array+Tlv.swift */,
@@ -1139,43 +1124,24 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		B01B9A7D2530B65300ECB6BF /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				B00B3330252E0B5A00A9FE96 /* FileWriteSettings.swift */,
-				B01B99F1253039AB00ECB6BF /* ReadFileCommandSettings.swift */,
-				B01B9A7E2530B69900ECB6BF /* FirmwareRestrictable.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		B0800F87252C4508007E04EE /* Files */ = {
-			isa = PBXGroup;
-			children = (
-				B01B9A7D2530B65300ECB6BF /* Settings */,
-				B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */,
-				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
-				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
-				B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */,
-				B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */,
-				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
-				B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */,
-				B06947BA253442AD0056A887 /* DeleteFileCommand.swift */,
-				B06EBBC425347B7800B0FEEA /* ChangeFileSettingsTask.swift */,
-				B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */,
-			);
-			path = Files;
-			sourceTree = "<group>";
-		};
-		B0800F94252C6859007E04EE /* Files */ = {
 			isa = PBXGroup;
 			children = (
 				B0800F95252C6867007E04EE /* File.swift */,
 				B0800F8C252C46B1007E04EE /* FileSettings.swift */,
-				B00B3334252E0D1F00A9FE96 /* DataToWrite.swift */,
 				B00B333A252EED5000A9FE96 /* FileDataMode.swift */,
 				B01B9A562530871800ECB6BF /* FileHashHelper.swift */,
 				B091C0F7253EF3EE003D57E7 /* FileHashData.swift */,
+				B00B3264252DC33500A9FE96 /* ReadFileChecksumCommand.swift */,
+				B0800F81252C3CAA007E04EE /* ReadFilesTask.swift */,
+				B0800F88252C4514007E04EE /* ReadFileCommand.swift */,
+				B0918FA525341ADB001E8B34 /* WriteFilesTask.swift */,
+				B00B32C9252DC77600A9FE96 /* WriteFileCommand.swift */,
+				B06947BE2534570B0056A887 /* DeleteFilesTask.swift */,
+				B0B398152539DC4700573220 /* DeleteAllFilesTask.swift */,
+				B06947BA253442AD0056A887 /* DeleteFileCommand.swift */,
+				B06EBBC425347B7800B0FEEA /* ChangeFileSettingsTask.swift */,
+				B06EBBC02534794100B0FEEA /* ChangeFileSettingsCommand.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -1389,7 +1355,6 @@
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
-				5D4B128026D3F176006E173C /* ReadFilesByIndex.json in Resources */,
 				5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */,
 				5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */,
 				5D544094268243F700F7D05B /* Card.json in Resources */,
@@ -1418,7 +1383,6 @@
 				5D379C27268FA47600C7F473 /* EncryptionMode.swift in Sources */,
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
-				B00B3331252E0B5A00A9FE96 /* FileWriteSettings.swift in Sources */,
 				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
 				5D379C29268FA4AC00C7F473 /* CardSessionRunnable.swift in Sources */,
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
@@ -1468,7 +1432,6 @@
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
-				B01B9A7F2530B69900ECB6BF /* FirmwareRestrictable.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
@@ -1482,8 +1445,6 @@
 				5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */,
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
 				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
-				B00B3335252E0D1F00A9FE96 /* DataToWrite.swift in Sources */,
-				B01B9A7A2530B5C200ECB6BF /* Set+FirmwareRestrictible.swift in Sources */,
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
@@ -1562,7 +1523,6 @@
 				5DCAB0FC26C434E800ADEE7D /* Color+.swift in Sources */,
 				5D0F8D0426C6AD52002E84A4 /* ChangeUserCodeView.swift in Sources */,
 				5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */,
-				B01B99F2253039AB00ECB6BF /* ReadFileCommandSettings.swift in Sources */,
 				5D379C23268CC2FC00C7F473 /* SkipEncoding.swift in Sources */,
 				5D7D5FB423449F2300058D69 /* Command.swift in Sources */,
 				5DDD6C5E25D2E01800E48D7B /* Codable+.swift in Sources */,

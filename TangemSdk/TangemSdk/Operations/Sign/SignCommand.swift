@@ -72,7 +72,7 @@ class SignCommand: Command {
             }
             
             if !card.settings.isHDWalletsAllowed {
-                return .HDWalletDisabled
+                return .hdWalletDisabled
             }
         }
         

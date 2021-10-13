@@ -254,6 +254,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
     case HDWalletDisabled
+    case hdWalletDisabled
     
     public var code: Int {
         switch self {
@@ -344,6 +345,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .fileSettingsUnsupported: return 42000
         case .filesIsEmpty: return 42001
         case .filesDisabled: return 42002
+        case .hdWalletDisabled: return 42003
             
         case .HDWalletDisabled: return 42003
         // MARK: 5xxxx Errors

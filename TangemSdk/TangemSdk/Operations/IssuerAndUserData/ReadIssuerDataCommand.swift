@@ -56,7 +56,6 @@ public final class ReadIssuerDataCommand: Command {
         Log.debug("ReadIssuerDataCommand deinit")
     }
     
-    
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))

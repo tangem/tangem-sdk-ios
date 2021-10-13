@@ -10,14 +10,20 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class TrustedCardsRepo {
-    private let storage = SecureStorage()
+    private let storage = Storage()
+    private let secureStorage = SecureStorage()
     private let secureEnclave = SecureEnclaveService()
     
     //Key is Hash of card's public key
     private var data: [Data: Attestation] = [:]
     
     init() {
-        try? fetch()
+        if storage.bool(forKey: .refreshedTrustedCardsRepo) {
+            try? fetch()
+        } else {
+            try? clean()
+            storage.set(boolValue: true, forKey: .refreshedTrustedCardsRepo)
+        }
     }
     
     func append(cardPublicKey: Data, attestation: Attestation) {
@@ -44,18 +50,22 @@ public class TrustedCardsRepo {
         let convertedData = data.mapValues { $0.rawRepresentation }
         let encoded = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
         let signature = try secureEnclave.sign(data: encoded)
-        try storage.store(object: encoded, account: StorageKey.attestedCards.rawValue)
-        try storage.store(object: signature, account: StorageKey.signatureOfAttestedCards.rawValue)
+        try secureStorage.store(object: encoded, account: StorageKey.attestedCards.rawValue)
+        try secureStorage.store(object: signature, account: StorageKey.signatureOfAttestedCards.rawValue)
     }
     
     private func fetch() throws {
-        if let data = try storage.get(account: StorageKey.attestedCards.rawValue),
-           let signature = try storage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
+        if let data = try secureStorage.get(account: StorageKey.attestedCards.rawValue),
+           let signature = try secureStorage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
            try secureEnclave.verify(signature: signature, message: data) {
             let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
             let converted = decoded.compactMapValues { Attestation(rawRepresentation: $0) }
             self.data = converted
         }
+    }
+    
+    private func clean() throws {
+        try secureStorage.delete(account: StorageKey.attestedCards.rawValue)
     }
 }
 

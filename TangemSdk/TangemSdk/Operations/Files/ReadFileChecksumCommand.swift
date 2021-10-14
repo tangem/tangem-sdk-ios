@@ -41,10 +41,6 @@ public final class ReadFileChecksumCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if !card.settings.isFilesAllowed {
-            return .filesDisabled
-        }
-        
         return nil
     }
     

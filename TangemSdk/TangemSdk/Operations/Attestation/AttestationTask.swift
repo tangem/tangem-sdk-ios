@@ -66,12 +66,12 @@ public final class AttestationTask: CardSessionRunnable {
                 
                 //Continue attestation
                 self.currentAttestationStatus.cardKeyAttestation = .verifiedOffline
-                self.continueAttestaton(session, completion)
+                self.continueAttestation(session, completion)
             case .failure(let error):
                 //Card attestation failed. Update status and continue attestation
                 if case TangemSdkError.cardVerificationFailed = error {
                     self.currentAttestationStatus.cardKeyAttestation = .failed
-                    self.continueAttestaton(session, completion)
+                    self.continueAttestation(session, completion)
                     return
                 }
                 
@@ -80,7 +80,7 @@ public final class AttestationTask: CardSessionRunnable {
         }
     }
     
-    private func continueAttestaton(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+    private func continueAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         switch self.mode {
         case .offline:
             complete(session, completion)

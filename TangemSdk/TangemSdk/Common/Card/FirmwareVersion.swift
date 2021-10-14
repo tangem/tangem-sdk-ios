@@ -111,7 +111,7 @@ public extension FirmwareVersion {
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
     /// Field on card that describes is passcode is default value or not
     static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
-    /// Field on card that describes is passcode is default value or not
+    /// Field on card that describes is accessCode is default value or not
     static let isAccessCodeStatusAvailable = FirmwareVersion(major: 4, minor: 33)
     /// Read-write files
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)

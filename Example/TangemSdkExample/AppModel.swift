@@ -180,22 +180,23 @@ extension AppModel {
     private func verifySignature(_ response: SignHashResponse, walletPublicKey: Data, hash: Data, hdPath: DerivationPath?) {
         //Test signature verification
         var verifiedStatus: Bool = false
-        if let derivationPath = hdPath {
-            if let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
-               let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
-                verifiedStatus = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
-                                                             hash: hash,
-                                                             signature: response.signature)) ?? false
-            }
-        } else {
-            if let curve = self.card?.wallets[walletPublicKey]?.curve {
+        
+        if let curve = self.card?.wallets[walletPublicKey]?.curve {
+            if let derivationPath = hdPath, curve == .secp256k1 {
+                if let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
+                   let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
+                    verifiedStatus = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
+                                                                 hash: hash,
+                                                                 signature: response.signature)) ?? false
+                }
+            } else {
                 verifiedStatus = (try? CryptoUtils.verify(curve: curve,
                                                           publicKey: walletPublicKey,
                                                           hash: hash,
                                                           signature: response.signature)) ?? false
             }
         }
-        
+
         self.log("Signature verification status: \(verifiedStatus ? "verified" : "not verified")")
     }
     

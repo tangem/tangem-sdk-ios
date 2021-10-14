@@ -152,7 +152,6 @@ extension AppModel {
             return
         }
         
-        
         let path = try? DerivationPath(rawPath: hdPath)
         if !hdPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -160,7 +159,14 @@ extension AppModel {
         }
         
         UIApplication.shared.endEditing()
-        let hash = getRandomHash()
+        
+        guard let wallet = self.card?.wallets[walletPublicKey] else {
+            self.complete(with: "Scan card before")
+            return
+        }
+        
+        let hashSize = wallet.curve == .ed25519 ? 64 : 32
+        let hash = getRandomHash(size: hashSize)
         
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,

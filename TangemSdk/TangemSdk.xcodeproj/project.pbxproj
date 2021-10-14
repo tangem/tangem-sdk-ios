@@ -219,7 +219,7 @@
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
 		5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */; };
-		5DFCE40524B30589007B95AF /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* StorageService.swift */; };
+		5DFCE40524B30589007B95AF /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFCE40424B30589007B95AF /* Storage.swift */; };
 		5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */; };
 		5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC49E233B9D69004964E8 /* NFCReader.swift */; };
 		5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFFC4A1233BA5E0004964E8 /* Byte+.swift */; };
@@ -486,7 +486,7 @@
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
 		5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardIdFormatter.swift; sourceTree = "<group>"; };
-		5DFCE40424B30589007B95AF /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		5DFCE40424B30589007B95AF /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoUtils.swift; sourceTree = "<group>"; };
 		5DFFC49E233B9D69004964E8 /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
 		5DFFC4A1233BA5E0004964E8 /* Byte+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Byte+.swift"; sourceTree = "<group>"; };
@@ -1039,7 +1039,7 @@
 			isa = PBXGroup;
 			children = (
 				5D14947B2686450F00C0D923 /* Secure */,
-				5DFCE40424B30589007B95AF /* StorageService.swift */,
+				5DFCE40424B30589007B95AF /* Storage.swift */,
 				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
 			);
@@ -1393,7 +1393,7 @@
 				5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
-				5DFCE40524B30589007B95AF /* StorageService.swift in Sources */,
+				5DFCE40524B30589007B95AF /* Storage.swift in Sources */,
 				5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */,
 				5D81348426D62F8900494A71 /* StringCodable.swift in Sources */,
 				B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */,

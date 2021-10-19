@@ -37,7 +37,7 @@ class AppModel: ObservableObject {
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
-  
+    
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
@@ -232,7 +232,7 @@ extension AppModel {
                               cardId: cardId,
                               completion: handleCompletion)
     }
-
+    
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
             if let error = error {
@@ -304,7 +304,7 @@ extension AppModel {
 extension AppModel {
     func readFiles() {
         guard let card = self.card else {
-            self.complete(with: "Scan card to retrieve cardId")
+            self.complete(with: "Scan card to retrieve card")
             return
         }
         
@@ -326,8 +326,8 @@ extension AppModel {
                             let dataToVerify = Data(hexString: card.cardId) + namedFile.payload + fileCounter.bytes4
                             let isVerified: Bool = (try? CryptoUtils.verify(curve: .secp256k1,
                                                                             publicKey: card.issuer.publicKey,
-                                                                             message: dataToVerify,
-                                                                             signature: fileSignature)) ?? false
+                                                                            message: dataToVerify,
+                                                                            signature: fileSignature)) ?? false
                             
                             text += "File verification status: \(isVerified ? "verified" : "not verified")" + "\n\n"
                         }
@@ -485,7 +485,7 @@ extension AppModel {
             }
         }
     }
-
+    
     func writeIssuerExtraData() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Please, scan card before")
@@ -517,7 +517,7 @@ extension AppModel {
 //MARK:- Json RPC
 extension AppModel {
     var jsonRpcTemplate: String {
-    """
+        """
     {
         "jsonrpc": "2.0",
         "id": 2,

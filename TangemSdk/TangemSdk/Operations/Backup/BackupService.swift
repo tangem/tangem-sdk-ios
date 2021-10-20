@@ -172,22 +172,16 @@ public class BackupService: ObservableObject {
     
     @discardableResult
     private func updateState() -> State {
-        var newState = currentState
-        
         if repo.data.accessCode == nil
             || repo.data.originCard == nil
             || repo.data.backupCards.isEmpty {
-            newState = .preparing
+            currentState = .preparing
         } else if repo.data.attestSignature == nil || repo.data.backupData.isEmpty {
-            newState = .needWriteOriginCard
+            currentState = .needWriteOriginCard
         } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
-            newState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
+            currentState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
         } else {
-            newState = .finished
-        }
-        
-        if newState != currentState {
-            currentState = newState
+            currentState = .finished
         }
         
         return currentState

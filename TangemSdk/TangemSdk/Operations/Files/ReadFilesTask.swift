@@ -35,13 +35,13 @@ public class ReadFilesTask: CardSessionRunnable {
         
         command.run(in: session) { (result) in
             switch result {
-            case .success(let response):
-                if !response.fileData.isEmpty {
-                    let file = File(response: response)
+            case .success(let responseFile):
+                if let file = responseFile {
                     self.files.append(file)
+                    self.readAllFiles(fileIndex: file.index + 1, session: session, completion: completion)
+                } else {
+                    completion(.success(self.files))
                 }
-                
-                self.readAllFiles(fileIndex: response.fileIndex + 1, session: session, completion: completion)
             case .failure(let error):
                 if case TangemSdkError.fileNotFound = error {
                     completion(.success(self.files))

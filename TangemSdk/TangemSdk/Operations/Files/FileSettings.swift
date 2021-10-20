@@ -16,7 +16,9 @@ public struct FileSettings: Codable {
 
 @available(iOS 13.0, *)
 extension FileSettings {
-    init(_ data: Data) throws {
+    init?(_ data: Data?) throws {
+        guard let data = data else { return nil }
+        
         guard let significantByte = data.last else {
             throw TangemSdkError.decodingFailed("Failed to decode FileSettings")
         }

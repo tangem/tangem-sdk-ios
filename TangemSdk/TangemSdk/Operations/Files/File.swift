@@ -10,17 +10,21 @@ import Foundation
 
 @available (iOS 13, *)
 public struct File: JSONStringConvertible {
-    public let fileData: Data
-    public let fileIndex: Int
-    public let fileSettings: FileSettings?
+    public let data: Data
+    public let index: Int
+    public let settings: FileSettings
 }
 
 @available (iOS 13, *)
 extension File {
-    init(response: ReadFileResponse) {
-        fileIndex = response.fileIndex
-        fileSettings = response.fileSettings
-        fileData = response.fileData
+    init?(response: ReadFileResponse) {
+        guard response.size != nil, let settings = response.settings else {
+            return nil //empty read file response. No files on the card
+        }
+        
+        self.data = response.fileData
+        self.index = response.fileIndex
+        self.settings = settings
     }
 }
 
@@ -28,10 +32,14 @@ extension File {
 public struct NamedFile {
     public let name: String
     public let payload: Data
+    public let counter: Int?
+    public let signature: Data?
     
-    public init(name: String, payload: Data) {
+    public init(name: String, payload: Data, counter: Int? = nil, signature: Data? = nil) {
         self.name = name
         self.payload = payload
+        self.counter = counter
+        self.signature = signature
     }
     
     public init? (tlvData: Data) throws {
@@ -43,12 +51,22 @@ public struct NamedFile {
         
         name = try decoder.decode(.fileTypeName)
         payload = try decoder.decode(.fileData)
+        counter = try decoder.decode(.fileCounter)
+        signature = try decoder.decode(.fileSignature)
     }
     
     public func serialize() throws -> Data {
         let tlvBuilder = try TlvBuilder()
             .append(.fileTypeName, value: name)
             .append(.fileData, value: payload)
+            
+        if let counter = self.counter {
+            try tlvBuilder.append(.fileCounter, value: counter)
+        }
+        
+        if let signature = self.signature {
+            try tlvBuilder.append(.fileSignature, value: signature)
+        }
         
         return tlvBuilder.serialize()
     }

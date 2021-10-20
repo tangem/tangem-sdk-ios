@@ -11,14 +11,47 @@ import Foundation
 /// Deserialized response for `ReadFileCommand`
 @available (iOS 13.0, *)
 struct ReadFileResponse: JSONStringConvertible {
-    let cardId: String
-    let size: Int?
-    let fileData: Data
-    let fileIndex: Int
-    let fileSettings: FileSettings
-    let fileDataSignature: Data?
-    let fileDataCounter: Int?
-    let walletIndex: Int?
+    var cardId: String
+    var size: Int?
+    var offset: Int?
+    var fileData: Data
+    var fileIndex: Int
+    var settings: FileSettings?
+    var ownerIndex: Int?
+    var ownerPublicKey: Data?
+    var walletIndex: Int?
+    
+    fileprivate var isReadComplete: Bool {
+        guard let size = self.size else { return true }
+        
+        return fileData.count == size
+    }
+    
+    fileprivate static var empty: ReadFileResponse {
+        return ReadFileResponse(cardId: "",
+                                size: nil,
+                                offset: nil,
+                                fileData: Data(),
+                                fileIndex: 0,
+                                settings: nil,
+                                ownerIndex: nil,
+                                ownerPublicKey: nil,
+                                walletIndex: nil)
+    }
+    
+    fileprivate mutating func update(with response: ReadFileResponse) {
+        self.cardId = response.cardId
+        self.fileIndex = response.fileIndex
+        
+        response.size.map { self.size = $0 }
+        response.settings.map { self.settings = $0 }
+        response.ownerIndex.map { self.ownerIndex = $0 }
+        response.ownerPublicKey.map { self.ownerPublicKey = $0 }
+        response.walletIndex.map { self.walletIndex = $0 }
+        response.offset.map { self.offset = $0 }
+        
+        self.fileData += response.fileData
+    }
 }
 
 /// Command that read single file at specified index. Reading private file will prompt user to input a passcode.
@@ -34,11 +67,8 @@ final class ReadFileCommand: Command {
     private let fileName: String?
     private let walletPublicKey: Data?
     private var walletIndex: Int?
-    
-    private var fileData: Data = Data()
-    private var offset: Int = 0
-    private var dataSize: Int = 0
-    private var fileSettings: FileSettings? = nil
+
+    private var aggregatedResponse: ReadFileResponse = .empty
     
     init(fileIndex: Int, fileName: String? = nil, walletPublicKey: Data? = nil) {
         self.fileIndex = fileIndex
@@ -54,7 +84,7 @@ final class ReadFileCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<File?>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
@@ -69,53 +99,39 @@ final class ReadFileCommand: Command {
             }
         }
         
-        readFileData(session: session, completion: completion)
-    }
-    
-    private func readFileData(session: CardSession, completion: @escaping CompletionResult<ReadFileResponse>) {
-        transceive(in: session) { (result) in
+        readFileData(session: session) { result in
             switch result {
-            case .success(let response):
-                if let size = response.size {
-                    if size == 0 {
-                        completion(.success(response))
-                        return
-                    }
-                    self.dataSize = size
-                    self.fileSettings = response.fileSettings
-                }
-                
-                self.fileData += response.fileData
-                guard self.fileData.count < self.dataSize else {
-                    self.completeTask(response, completion: completion)
-                    return
-                }
-                
-                self.offset = self.fileData.count
-                self.readFileData(session: session, completion: completion)
+            case .success:
+                completion(.success(File(response: self.aggregatedResponse)))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func completeTask(_ data: ReadFileResponse, completion: @escaping CompletionResult<ReadFileResponse>) {
-        let response = ReadFileResponse(cardId: data.cardId,
-                                        size: dataSize,
-                                        fileData: fileData,
-                                        fileIndex: data.fileIndex,
-                                        fileSettings: fileSettings ?? data.fileSettings,
-                                        fileDataSignature: data.fileDataSignature,
-                                        fileDataCounter: data.fileDataCounter,
-                                        walletIndex: data.walletIndex)
-        completion(.success(response))
+    private func readFileData(session: CardSession, completion: @escaping CompletionResult<Void>) {
+        transceive(in: session) { (result) in
+            switch result {
+            case .success(let response):
+                self.aggregatedResponse.update(with: response)
+                
+                if self.aggregatedResponse.isReadComplete {
+                    completion(.success(()))
+                    return
+                }
+
+                self.readFileData(session: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.fileIndex, value: fileIndex)
-            .append(.offset, value: offset)
+            .append(.offset, value: self.aggregatedResponse.fileData.count)
         
         if let fileName = self.fileName {
             try tlvBuilder.append(.fileTypeName, value: fileName)
@@ -146,13 +162,15 @@ final class ReadFileCommand: Command {
             throw TangemSdkError.deserializeApduFailed
         }
         let decoder = TlvDecoder(tlv: tlv)
+        
         return ReadFileResponse(cardId: try decoder.decode(.cardId),
                                 size: try decoder.decode(.size),
+                                offset: try decoder.decode(.offset),
                                 fileData: try decoder.decode(.issuerData) ?? Data(),
                                 fileIndex: try decoder.decode(.fileIndex) ?? 0,
-                                fileSettings: try FileSettings(decoder.decode(.fileSettings)),
-                                fileDataSignature: try decoder.decode(.issuerDataSignature),
-                                fileDataCounter: try decoder.decode(.issuerDataCounter),
+                                settings: try FileSettings(try decoder.decode(.fileSettings)),
+                                ownerIndex: try decoder.decode(.fileOwnerIndex),
+                                ownerPublicKey: try decoder.decode(.issuerPublicKey),
                                 walletIndex: try decoder.decode(.walletIndex))
     }
 }

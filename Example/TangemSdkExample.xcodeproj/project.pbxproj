@@ -28,6 +28,7 @@
 		5D78C1BA234F435B008D7478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* AppDelegate.swift */; };
 		5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
 		5D78C1C6234F435C008D7478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */; };
+		5DAC0EA82720A16A00B84609 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DAC0EA72720A16900B84609 /* Assets.xcassets */; };
 		5DBC25BA235F053F005F0C79 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* AppDelegate.swift */; };
 		5DBC25BF235F053F005F0C79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */; };
 		5DBC25C0235F053F005F0C79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
@@ -76,6 +77,7 @@
 		5D78C1C2234F435C008D7478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D78C1C5234F435C008D7478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TangemSdkExample.entitlements; sourceTree = "<group>"; };
+		5DAC0EA72720A16900B84609 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5DBC25C6235F053F005F0C79 /* TangemSdkExampleDevelopment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExampleDevelopment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TangemSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DDCEC7425C957930002090D /* UI+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UI+.swift"; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 			children = (
 				E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */,
 				E53EB3EE23F2CD860079CC11 /* RobotApi.swift */,
+				5DAC0EA72720A16900B84609 /* Assets.xcassets */,
 			);
 			path = TangemSdkExampleDevelopmentUITests;
 			sourceTree = "<group>";
@@ -319,6 +322,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DAC0EA82720A16A00B84609 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,7 +608,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -623,7 +627,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

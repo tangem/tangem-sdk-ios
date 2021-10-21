@@ -62,8 +62,7 @@ public class BackupService: ObservableObject {
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
-        guard let originCardLinkingKey = repo.data.originCard?.linkingKey,
-              let origincCardId = repo.data.originCard?.cardId else {
+        guard let originCard = repo.data.originCard else {
             completion(.failure(.missingOriginCard))
             return
         }
@@ -75,7 +74,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        readBackupCard(originCardLinkingKey, originCardId: origincCardId, completion: completion)
+        readBackupCard(originCard, completion: completion)
     }
     
     public func setAccessCode(_ code: String) throws {
@@ -200,9 +199,8 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func readBackupCard(_ originCardLinkingKey: Data, originCardId: String, completion: @escaping CompletionResult<Void>) {
-        sdk.startSession(with: StartBackupCardLinkingTask(originCardId: originCardId,
-                                                          originCardLinkingKey: originCardLinkingKey,
+    private func readBackupCard(_ originCard: OriginCard, completion: @escaping CompletionResult<Void>) {
+        sdk.startSession(with: StartBackupCardLinkingTask(originCard: originCard,
                                                           addedBackupCards: repo.data.backupCards.map { $0.cardId }),
                          initialMessage: Message(header: "Scan backup card with index: \(repo.data.backupCards.count + 1)")) {[weak self] result in
             guard let self = self else { return }
@@ -360,10 +358,16 @@ extension BackupService {
     }
 }
 
+@available(iOS 13.0, *)
 public struct OriginCard: Codable {
     public let cardId: String
     public let cardPublicKey: Data
     public let linkingKey: Data
+    
+    //For compatibility check with backup card
+    public let settings: Card.Settings
+    public let issuer: Card.Issuer
+    public let walletCurves: [EllipticCurve]
     
     func makeLinkable(with certificate: Data) -> LinkableOriginCard {
         LinkableOriginCard(cardId: cardId,
@@ -408,6 +412,7 @@ struct LinkableBackupCard {
     let certificate: Data
 }
 
+@available(iOS 13.0, *)
 struct BackupServiceData: Codable {
     var accessCode: Data? = nil
     var passcode: Data? = nil

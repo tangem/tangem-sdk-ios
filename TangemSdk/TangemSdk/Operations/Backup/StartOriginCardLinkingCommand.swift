@@ -53,10 +53,16 @@ public final class StartOriginCardLinkingCommand: Command {
             throw TangemSdkError.unknownError
         }
         
-        let card = OriginCard(cardId: try decoder.decode(.cardId),
-                              cardPublicKey: cardPublicKey,
-                              linkingKey: try decoder.decode(.originCardLinkingKey))
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
         
-        return card
+        let originCard = OriginCard(cardId: try decoder.decode(.cardId),
+                                    cardPublicKey: cardPublicKey,
+                                    linkingKey: try decoder.decode(.originCardLinkingKey),
+                                    settings: card.settings,
+                                    issuer: card.issuer,
+                                    walletCurves: card.wallets.map { $0.curve })
+        return originCard
     }
 }

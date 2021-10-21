@@ -19,6 +19,8 @@
 		5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
 		5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
 		5D032010266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
+		5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
+		5D1C6C7327214F3100E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
 		5D2BDF8226DCE5A2002F7E19 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
 		5D2BDF8326DCE5A6002F7E19 /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
 		5D3ABA3D26D02C5C0087EF4A /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
@@ -68,6 +70,7 @@
 		5D032000266A6A15008472EC /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		5D032008266A8523008472EC /* ExampleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleButton.swift; sourceTree = "<group>"; };
 		5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
+		5D1C6C7127214EA900E04A8B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationData.swift; sourceTree = "<group>"; };
 		5D3C2BCE26D93E7200722E33 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
 		5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinView.swift; sourceTree = "<group>"; };
@@ -168,6 +171,7 @@
 				5D031FFC266A6960008472EC /* ContentView.swift */,
 				5D03200C266A8548008472EC /* Common */,
 				5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */,
+				5D1C6C7127214EA900E04A8B /* SettingsView.swift */,
 			);
 			path = TangemSdkExample;
 			sourceTree = "<group>";
@@ -379,6 +383,7 @@
 				5DDCEC7525C957930002090D /* UI+.swift in Sources */,
 				5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */,
 				5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
+				5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +401,7 @@
 				5DDCEC7A25C958220002090D /* UI+.swift in Sources */,
 				5D2BDF8226DCE5A2002F7E19 /* BackupView.swift in Sources */,
 				5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
+				5D1C6C7327214F3100E04A8B /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,7 +601,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				INFOPLIST_FILE = "TangemSdkExample copy-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -615,7 +621,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				INFOPLIST_FILE = "TangemSdkExample copy-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (

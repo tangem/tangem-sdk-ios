@@ -28,21 +28,28 @@ class AppModel: ObservableObject {
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
+    //MARK:-  Navigation
     @Published var showBackupView: Bool = false
     @Published var showResetPin: Bool = false
+    @Published var showSettings: Bool = false
+    //MARK:-  Config
+    @Published var handleErrors: Bool = true
     
     var backupService: BackupService? = nil
     var resetPinService: ResetPinService? = nil
     
-    private lazy var tangemSdk: TangemSdk = {
+    private lazy var _tangemSdk: TangemSdk = { .init() }()
+    
+    private var tangemSdk: TangemSdk {
         var config = Config()
         config.logСonfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
-        config.handleErrors = false
+        config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
-        return TangemSdk(config: config)
-    }()
+        _tangemSdk.config = config
+        return _tangemSdk
+    }
     
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
@@ -115,17 +122,6 @@ class AppModel: ObservableObject {
         } else {
             showWalletSelection.toggle()
         }
-    }
-    
-    
-    func onBackup() {
-        backupService = BackupService(sdk: tangemSdk)
-        showBackupView = true
-    }
-    
-    func onResetService() {
-        resetPinService = ResetPinService(sdk: tangemSdk)
-        showResetPin = true
     }
 }
 
@@ -712,6 +708,46 @@ extension AppModel {
         case .personalizeB1: personalizeBackup1()
         case .personalizeB2: personalizeBackup2()
         case .resetBackup: resetBackup()
+        }
+    }
+}
+
+//MARK: - Routing
+extension AppModel {
+    func onBackup() {
+        backupService = BackupService(sdk: tangemSdk)
+        showBackupView = true
+    }
+    
+    func onResetService() {
+        resetPinService = ResetPinService(sdk: tangemSdk)
+        showResetPin = true
+    }
+    
+    func onSettings() {
+        showSettings = true
+    }
+    
+    @ViewBuilder
+    func makeSettingsDestination() -> some View {
+        SettingsView().environmentObject(self)
+    }
+    
+    @ViewBuilder
+    func makePinResetDestination() -> some View {
+        if let service = self.resetPinService {
+            ResetPinView().environmentObject(service)
+        } else {
+            ResetPinView()
+        }
+    }
+    
+    @ViewBuilder
+    func makeBackupDestination() -> some View {
+        if let service = self.backupService {
+            BackupView().environmentObject(service)
+        } else {
+            BackupView()
         }
     }
 }

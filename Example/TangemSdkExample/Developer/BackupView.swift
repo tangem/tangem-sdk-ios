@@ -154,6 +154,7 @@ struct BackupView: View {
                 .frame(width: 200)
             }
         }
+        .navigationBarTitle("Backup", displayMode: .inline)
         .padding([.horizontal, .bottom], 16)
     }
 }

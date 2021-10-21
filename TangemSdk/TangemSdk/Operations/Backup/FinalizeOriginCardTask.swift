@@ -54,9 +54,14 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         
         let linkAction = getLinkAction(with: backupStatus)
         
-        if case .retry = linkAction { //User codes already changed. We should swap codes
-            session.environment.accessCode = UserCode(.accessCode, value: accessCode)
-            session.environment.passcode = UserCode(.passcode, value: passcode)
+        if case .retry = linkAction { //We should swap codes only if they were set on the card.
+            if card.isAccessCodeSet {
+                session.environment.accessCode = UserCode(.accessCode, value: accessCode)
+            }
+            
+            if card.isPasscodeSet! { //It's safe to force unwrap here
+                session.environment.passcode = UserCode(.passcode, value: passcode)
+            }
         }
         
         if linkAction != .skip {
@@ -105,7 +110,8 @@ class FinalizeOriginCardTask: CardSessionRunnable {
                 //We already have attest signature and card already linked. Can skip linking
                 return .skip
             } else {
-                //We don't have attest signature, but card already linked. Force retry with new user codes
+                //We don't have attest signature, but card already linked. Force retry
+                // Is this a real case?
                 return .retry
             }
         case .noBackup:

@@ -72,6 +72,7 @@ struct ResetPinView: View {
                 .frame(width: 200)
         }
         .padding(.horizontal, 16)
+        .navigationBarTitle("Reset user codes", displayMode: .inline)
         .alert(isPresented: $showOkAlert, content: {
             Alert(title: Text("Success"), message: Text("Code accepted"))
         })

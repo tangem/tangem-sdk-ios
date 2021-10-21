@@ -10,14 +10,12 @@ import Foundation
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
-    private let originCardId: String
-    private let originCardLinkingKey: Data
+    private let originCard: OriginCard
     private let addedBackupCards: [String]
     private var command: StartBackupCardLinkingCommand? = nil
     
-    init(originCardId: String, originCardLinkingKey: Data, addedBackupCards: [String]) {
-        self.originCardId = originCardId
-        self.originCardLinkingKey = originCardLinkingKey
+    init(originCard: OriginCard, addedBackupCards: [String]) {
+        self.originCard = originCard
         self.addedBackupCards = addedBackupCards
     }
     
@@ -28,7 +26,17 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                 return
             }
             
-            if card.cardId.lowercased() == originCardId.lowercased() {
+            let originWalletCurves = Set(originCard.walletCurves)
+            let backupCardSupportedCurves = Set(card.supportedCurves)
+            
+            if card.issuer.publicKey != originCard.issuer.publicKey
+                || card.settings.isHDWalletAllowed != originCard.settings.isHDWalletAllowed
+                || !originWalletCurves.isSubset(of: backupCardSupportedCurves) {
+                completion(.failure(.backupCannotBeCreated))
+                return
+            }
+            
+            if card.cardId.lowercased() == originCard.cardId.lowercased() {
                 completion(.failure(.backupCardRequired))
                 return
             }
@@ -39,7 +47,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             }
         }
         
-        self.command = StartBackupCardLinkingCommand(originCardLinkingKey: originCardLinkingKey)
+        self.command = StartBackupCardLinkingCommand(originCardLinkingKey: originCard.linkingKey)
         command?.run(in: session, completion: completion)
     }
     

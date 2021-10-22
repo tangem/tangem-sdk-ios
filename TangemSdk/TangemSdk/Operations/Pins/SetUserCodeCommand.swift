@@ -94,12 +94,18 @@ public class SetUserCodeCommand: Command {
     
     private func runCommand(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         //Restrict default codes except reset command
-        if self.shouldRestrictDefaultCodes,
-           !self.isCodeAllowed(.accessCode) || !self.isCodeAllowed(.passcode) {
-            completion(.failure(TangemSdkError.passcodeCannotBeChanged))
-            return
+        if shouldRestrictDefaultCodes {
+            if !isCodeAllowed(.accessCode) {
+                completion(.failure(TangemSdkError.accessCodeCannotBeChanged))
+                return
+            }
+            
+            if !isCodeAllowed(.passcode) {
+                completion(.failure(TangemSdkError.passcodeCannotBeChanged))
+                return
+            }
         }
-        
+
         self.transceive(in: session, completion: completion )
     }
     

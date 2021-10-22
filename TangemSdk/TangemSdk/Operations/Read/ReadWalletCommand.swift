@@ -33,11 +33,11 @@ class ReadWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion < .hdWalletAvailable {
+        if card.firmwareVersion < .multiwalletAvailable {
             return .notSupportedFirmwareVersion
         }
         
-        if !card.settings.isHDWalletAllowed {
+        if hdPath != nil  && !card.settings.isHDWalletAllowed {
             return .hdWalletDisabled
         }
         

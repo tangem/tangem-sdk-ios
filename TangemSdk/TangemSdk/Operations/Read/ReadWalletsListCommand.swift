@@ -28,6 +28,14 @@ class ReadWalletsListCommand: Command {
         Log.debug("ReadWalletsListCommand deinit")
     }
     
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .multiwalletAvailable {
+            return .notSupportedFirmwareVersion
+        }
+        
+        return nil
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
         transceive(in: session) { result in
             switch result {

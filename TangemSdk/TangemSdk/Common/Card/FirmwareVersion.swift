@@ -117,7 +117,7 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 28)
-    /// Read-write files
+    /// Is create wallet command answers with the whole wallet
     static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
     
     static let min = FirmwareVersion(major: 0, minor: 0)

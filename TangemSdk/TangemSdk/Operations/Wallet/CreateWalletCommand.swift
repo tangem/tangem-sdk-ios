@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Response from the Tangem card after `CreateWalletCommand`.
+/// Response from the Tangem card after `CreateWalletCommand` or `CreateWalletTask`.
 @available(iOS 13.0, *)
 public struct CreateWalletResponse: JSONStringConvertible {
     /// Unique Tangem card ID number
@@ -18,25 +18,25 @@ public struct CreateWalletResponse: JSONStringConvertible {
 }
 
 /**
- * This command will create a new wallet on the card having ‘Empty’ state.
+ * This task will create a new wallet on the card
  * A key pair WalletPublicKey / WalletPrivateKey is generated and securely stored in the card.
- * App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand`or `ReadCommand`
+ * App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand`or `ScanTask`
  * and then transform it into an address of corresponding blockchain wallet
  * according to a specific blockchain algorithm.
- * WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyCommand`.
+ * WalletPrivateKey is never revealed by the card and will be used by `SignHash` or `SignHashes` and `AttestWalletKeyCommand`.
  * RemainingSignature is set to MaxSignatures.
  */
 @available(iOS 13.0, *)
-public final class CreateWalletCommand: Command {
+final class CreateWalletCommand: Command {
     var requiresPasscode: Bool { return true }
+    var walletIndex: Int = 0
     
     private let curve: EllipticCurve
     private let signingMethod = SigningMethod.signHash
     
-    private var walletIndex: Int = 0
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    public init(curve: EllipticCurve) {
+    init(curve: EllipticCurve) {
         self.curve = curve
     }
     
@@ -64,7 +64,7 @@ public final class CreateWalletCommand: Command {
         return nil
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
@@ -105,20 +105,7 @@ public final class CreateWalletCommand: Command {
             throw TangemSdkError.missingPreflightRead
         }
         
-        
-        let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck. Run fires only before precheck. And precheck will not fire if error handling disabled
-        let occupiedIndexes = card.wallets.map { $0.index }
-        let allIndexes = 0..<maxIndex
-        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
-            self.walletIndex = firstAvailableIndex
-        } else {
-            if maxIndex == 1 {
-                //already created for old cards mostly
-                throw TangemSdkError.alreadyCreated
-            } else {
-                throw TangemSdkError.maxNumberOfWalletsCreated
-            }
-        }
+        self.walletIndex = try calculateWalletIndex(for: card)
         
         if card.firmwareVersion >= .multiwalletAvailable {
             let maskBuilder = MaskBuilder<WalletSettingsMask>()
@@ -173,5 +160,21 @@ public final class CreateWalletCommand: Command {
                            totalSignedHashes: 0,
                            remainingSignatures: remainingSignatures,
                            index: index)
+    }
+    
+    private func calculateWalletIndex(for card: Card) throws -> Int {
+        let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck because of correct error mapping. Run fires only before precheck. And precheck will not fire if error handling disabled
+        let occupiedIndexes = card.wallets.map { $0.index }
+        let allIndexes = 0..<maxIndex
+        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
+            return firstAvailableIndex
+        } else {
+            if maxIndex == 1 {
+                //already created for old cards mostly
+                throw TangemSdkError.alreadyCreated
+            } else {
+                throw TangemSdkError.maxNumberOfWalletsCreated
+            }
+        }
     }
 }

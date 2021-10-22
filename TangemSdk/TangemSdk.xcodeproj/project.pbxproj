@@ -26,6 +26,7 @@
 		5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1494802686488600C0D923 /* SecureEnclaveService.swift */; };
 		5D170AF126B42CA3000D4F36 /* ExtendedPublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */; };
 		5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */; };
+		5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1D945B2722FD7400FD6DAB /* CreateWalletTask.swift */; };
 		5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C42326CE749F00A1A280 /* FloatingTextField.swift */; };
 		5D23C42626CEDDD000A1A280 /* Array+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C42526CEDDD000A1A280 /* Array+.swift */; };
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
@@ -289,6 +290,7 @@
 		5D1494802686488600C0D923 /* SecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveService.swift; sourceTree = "<group>"; };
 		5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPublicKey.swift; sourceTree = "<group>"; };
 		5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletTests.swift; sourceTree = "<group>"; };
+		5D1D945B2722FD7400FD6DAB /* CreateWalletTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateWalletTask.swift; sourceTree = "<group>"; };
 		5D23C42326CE749F00A1A280 /* FloatingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingTextField.swift; sourceTree = "<group>"; };
 		5D23C42526CEDDD000A1A280 /* Array+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+.swift"; sourceTree = "<group>"; };
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
@@ -1178,6 +1180,7 @@
 			children = (
 				5D6831D123DB2EA30095BB1D /* CreateWalletCommand.swift */,
 				5D6831D323DB31AB0095BB1D /* PurgeWalletCommand.swift */,
+				5D1D945B2722FD7400FD6DAB /* CreateWalletTask.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -1407,6 +1410,7 @@
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
+				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,

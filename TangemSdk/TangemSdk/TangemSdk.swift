@@ -145,7 +145,7 @@ public extension TangemSdk {
                       cardId: String,
                       initialMessage: Message? = nil,
                       completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let command = CreateWalletCommand(curve: curve)
+        let command = CreateWalletTask(curve: curve)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

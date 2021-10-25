@@ -30,7 +30,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             let backupCardSupportedCurves = Set(card.supportedCurves)
             
             if card.issuer.publicKey != originCard.issuer.publicKey
-                || card.settings.isHDWalletAllowed != originCard.settings.isHDWalletAllowed
+                || card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed
                 || !originWalletCurves.isSubset(of: backupCardSupportedCurves) {
                 completion(.failure(.backupCannotBeCreated))
                 return

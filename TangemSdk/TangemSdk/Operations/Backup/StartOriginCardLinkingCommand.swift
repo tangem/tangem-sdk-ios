@@ -60,7 +60,7 @@ public final class StartOriginCardLinkingCommand: Command {
         let originCard = OriginCard(cardId: try decoder.decode(.cardId),
                                     cardPublicKey: cardPublicKey,
                                     linkingKey: try decoder.decode(.originCardLinkingKey),
-                                    settings: card.settings,
+                                    isHDWalletAllowed: card.settings.isHDWalletAllowed,
                                     issuer: card.issuer,
                                     walletCurves: card.wallets.map { $0.curve })
         return originCard

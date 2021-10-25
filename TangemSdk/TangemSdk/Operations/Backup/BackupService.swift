@@ -365,7 +365,7 @@ public struct OriginCard: Codable {
     public let linkingKey: Data
     
     //For compatibility check with backup card
-    public let settings: Card.Settings
+    public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
     
@@ -447,17 +447,17 @@ class BackupRepo {
     private func save() throws {
         guard !isFetching else { return }
         
-        let encoded = try JSONEncoder.tangemSdkEncoder.encode(data)
+        let encoded = try JSONEncoder().encode(data)
         try storage.store(object: encoded, account: StorageKey.backupData.rawValue)
     }
     
     private func fetch() throws {
         self.isFetching = true
+        defer { self.isFetching = false }
         
         if let savedData = try storage.get(account: StorageKey.backupData.rawValue) {
-            self.data = try JSONDecoder.tangemSdkDecoder.decode(BackupServiceData.self, from: savedData)
+            self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-        self.isFetching = false
     }
 }
 

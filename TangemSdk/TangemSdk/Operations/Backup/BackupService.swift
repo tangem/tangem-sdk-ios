@@ -422,6 +422,10 @@ struct BackupServiceData: Codable {
     var certificates: [String:Data] = [:]
     var backupData: [String:EncryptedBackupData] = [:]
     var finalizedBackupCardsCount: Int = 0
+    
+    var shouldSave: Bool {
+         attestSignature != nil || !backupData.isEmpty
+    }
 }
 
 
@@ -445,7 +449,7 @@ class BackupRepo {
     }
     
     private func save() throws {
-        guard !isFetching else { return }
+        guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
         try storage.store(object: encoded, account: StorageKey.backupData.rawValue)

@@ -45,6 +45,10 @@ final class ReadBackupDataCommand: Command {
             return .backupCannotBeCreated
         }
         
+        if card.wallets.isEmpty {
+            return .backupCannotBeCreatedEmptyWallets
+        }
+        
         return nil
     }
     

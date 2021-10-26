@@ -10,6 +10,8 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct ReadView: View {
+    @EnvironmentObject var style: TangemSdkStyle
+    
     @State private var cardOffset: CGSize = .init(width: -220, height: -160)
     
     var body: some View {
@@ -19,7 +21,8 @@ struct ReadView: View {
                     .frame(width: 240, height: 240)
                     .offset(y: -160)
                 
-                CardView()
+                CardView(cardColor: style.colors.cardColor,
+                         starsColor: style.colors.starsColor)
                     .frame(width: 210, height: 130)
                     .offset(cardOffset)
                     .animation(Animation

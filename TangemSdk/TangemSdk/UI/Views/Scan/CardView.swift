@@ -10,24 +10,45 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct CardView: View {
-    @EnvironmentObject var style: TangemSdkStyle
+    let cardColor: Color
+    let starsColor: Color
     
     var body: some View {
         RoundedRectangle(cornerRadius: 18)
-            .fill(style.colors.cardColor)
+            .fill(cardColor)
+            .overlay(overlay)
+    }
+    
+    @ViewBuilder
+    private var overlay: some View {
+        GeometryReader { geo in
+            VStack {
+                Spacer()
+                
+                Text("**** **** **** ****")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.4)
+                    .font(.system(size: 30))
+                    .foregroundColor(starsColor)
+                    .frame(width: 0.72 * geo.size.width)
+                    .padding(.bottom, 0.1 * geo.size.height)
+                    .padding(.leading, 0.1 * geo.size.width)
+            }
+        }
     }
 }
 
 @available(iOS 13.0, *)
 struct CardView_Previews: PreviewProvider {
+    static var cardColor = TangemSdkStyle().colors.cardColor
+    
     static var previews: some View {
         Group {
-            CardView()
+            CardView(cardColor: cardColor, starsColor: .gray)
                 .frame(width: 300, height: 200)
-            CardView()
+            CardView(cardColor: cardColor, starsColor: .gray)
                 .preferredColorScheme(.dark)
                 .frame(width: 300, height: 200)
         }
-        .environmentObject(TangemSdkStyle())
     }
 }

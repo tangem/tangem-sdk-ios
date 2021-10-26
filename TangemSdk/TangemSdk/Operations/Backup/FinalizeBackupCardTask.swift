@@ -65,8 +65,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
     
     private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         let writeCommand = WriteBackupDataCommand(backupData: self.backupData,
-                                                  accessCode: self.accessCode,
-                                                  passcode: self.passcode)
+                                                  accessCode: self.accessCode)
         self.commandsBag.append(writeCommand)
         
         writeCommand.run(in: session) { writeResult in

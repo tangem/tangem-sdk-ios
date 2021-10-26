@@ -20,6 +20,7 @@ struct ResetUserCodeView: View {
     @EnvironmentObject var style: TangemSdkStyle
     
     @State private var isLoading: Bool = false
+    @State private var cardPosition: CardPosition = .top
     
     var body: some View {
         GeometryReader { geo in
@@ -67,20 +68,23 @@ struct ResetUserCodeView: View {
         let bottomCardWidth = 0.88 * topCardWidth
         let bottomCardHeight = 0.88 * topCardHeight
         
+        let cards: [BadgedCardView] = [ .init(cardColor: Color(UIColor.systemGray5),
+                                              starsColor: .gray,
+                                              name: "Linked card",
+                                              badgeBackground: .gray.opacity(0.25),
+                                              badgeForeground: .gray),
+                                        
+                                        .init(cardColor: style.colors.tint,
+                                              starsColor: .white,
+                                              name: "Current card",
+                                              badgeBackground: .white.opacity(0.25),
+                                              badgeForeground: .white)]
         ZStack {
-            BadgedCardView(cardColor: Color(UIColor.systemGray5),
-                           starsColor: .gray,
-                           name: "Linked card",
-                           badgeBackground: .gray.opacity(0.25),
-                           badgeForeground: .gray)
+            cards[cardPosition.topIndex]
                 .frame(width: bottomCardWidth, height: bottomCardHeight)
                 .offset(y: 0.16 * bottomCardHeight)
             
-            BadgedCardView(cardColor: style.colors.tint,
-                           starsColor: .white,
-                           name: "Current card",
-                           badgeBackground: .white.opacity(0.25),
-                           badgeForeground: .white)
+            cards[cardPosition.bottomIndex]
                 .frame(width: topCardWidth, height: topCardHeight)
         }
     }
@@ -90,7 +94,37 @@ struct ResetUserCodeView: View {
     }
     
     private func onDone() {
+        withAnimation {
+            cardPosition.toggle()
+        }
         completion(true)
+    }
+}
+
+fileprivate enum CardPosition {
+    case top
+    case bottom
+    
+    mutating func toggle() {
+        self = self == .top ? .bottom : .top
+    }
+    
+    var topIndex: Int {
+        switch self {
+        case .top:
+            return 0
+        case .bottom:
+            return 1
+        }
+    }
+    
+    var bottomIndex: Int {
+        switch self {
+        case .top:
+            return 1
+        case .bottom:
+            return 0
+        }
     }
 }
 
@@ -99,14 +133,14 @@ struct ResetUserCodeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             
-            ResetUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
+            ResetUserCodeView(title: "Reset access code",
+                              cardId: "Card 0000 1111 2222 3333 444",
                               messageTitle: "Tap the card you want to restore",
                               messageBody: "First, prepare the card for restore process.",
                               completion: {_ in})
             
-            ResetUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
+            ResetUserCodeView(title: "Reset access code",
+                              cardId: "Card 0000 1111 2222 3333 444",
                               messageTitle: "Tap the card you want to restore",
                               messageBody: "First, prepare the card for restore process.",
                               completion: {_ in})

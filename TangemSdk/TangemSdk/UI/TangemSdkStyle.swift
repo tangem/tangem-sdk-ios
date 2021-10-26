@@ -39,6 +39,8 @@ public extension TangemSdkStyle {
         
         public var cardColor: Color = .adaptiveColor(dark: UIColor.DarkPalette.cardColor, light: UIColor.LightPalette.cardColor)
         
+        public var starsColor: Color = Color(UIColor.systemGray5) //Card's stars
+        
         public static var `default`: Colors = .init()
     }
 }

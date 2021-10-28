@@ -20,6 +20,15 @@ public class BackupService: ObservableObject {
         &&  repo.data.originCard?.linkingKey != nil
     }
     
+    public var hasIncompletedBackup: Bool {
+        switch currentState {
+        case .needWriteOriginCard, .needWriteBackupCard:
+            return true
+        default:
+            return false
+        }
+    }
+    
     public var addedBackupCardsCount: Int { repo.data.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }

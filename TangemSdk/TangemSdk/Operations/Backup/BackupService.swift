@@ -34,6 +34,8 @@ public class BackupService: ObservableObject {
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
     public var originCardIsSet: Bool { repo.data.originCard != nil }
+    public var originCardId: String? { repo.data.originCard?.cardId }
+    public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
@@ -52,22 +54,6 @@ public class BackupService: ObservableObject {
     public func discardSavedBackup() {
         repo.reset()
         updateState()
-    }
-    
-    public func fetchInvolvedCards() -> [String] {
-        var involvedCards: [String] = .init()
-
-        if let originCardId = repo.data.originCard?.cardId {
-            involvedCards.append(originCardId)
-        }
-        
-        involvedCards.append(contentsOf: repo.data.backupCards.map { $0.cardId })
-        
-        return involvedCards
-    }
-    
-    public func fetchBackupCards() -> [String] {
-        return repo.data.backupCards.map { $0.cardId }
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
@@ -454,6 +440,7 @@ class BackupRepo {
     }
     
     func reset() {
+        try? storage.delete(account: StorageKey.backupData.rawValue)
         data = .init()
     }
     

@@ -32,14 +32,12 @@ final class SignResetPinTokenCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<ConfirmationCard>) {
-        transceive(in: session) { result in
-            if case .failure(.invalidParams) = result {
-                completion(.failure(.resetPinWrongCard))
-            } else {
-                completion(result)
-            }
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
+        if case .invalidParams = error {
+            return .resetPinWrongCard
         }
+        
+        return error
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

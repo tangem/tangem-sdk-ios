@@ -37,7 +37,7 @@ class AppModel: ObservableObject {
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         return TangemSdk(config: config)
     }()
-  
+    
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
@@ -232,7 +232,7 @@ extension AppModel {
                               cardId: cardId,
                               completion: handleCompletion)
     }
-
+    
     func chainingExample() {
         tangemSdk.startSession(cardId: nil) { session, error in
             if let error = error {
@@ -303,6 +303,11 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
+        guard let card = self.card else {
+            self.complete(with: "Scan card to retrieve card")
+            return
+        }
+        
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         tangemSdk.readFiles(readPrivateFiles: true,
                             fileName: nil,
@@ -313,9 +318,19 @@ extension AppModel {
                 for file in files {
                     text += file.json + "\n\n"
                     
-                    if let namedFile = try? NamedFile(tlvData: file.fileData) {
+                    if let namedFile = try? NamedFile(tlvData: file.data) {
                         text += "Name: \(namedFile.name)" + "\n"
                         text += "File data: \(namedFile.payload.hexString)" + "\n\n"
+                        
+                        if let fileSignature = namedFile.signature, let fileCounter = namedFile.counter {
+                            let dataToVerify = Data(hexString: card.cardId) + namedFile.payload + fileCounter.bytes4
+                            let isVerified: Bool = (try? CryptoUtils.verify(curve: .secp256k1,
+                                                                            publicKey: card.issuer.publicKey,
+                                                                            message: dataToVerify,
+                                                                            signature: fileSignature)) ?? false
+                            
+                            text += "File verification status: \(isVerified ? "verified" : "not verified")" + "\n\n"
+                        }
                         
                         if let tlv = Tlv.deserialize(namedFile.payload) {
                             let decoder = TlvDecoder(tlv: tlv)
@@ -325,6 +340,10 @@ extension AppModel {
                             }
                         }
                     }
+                }
+                
+                if files.isEmpty {
+                    text = "No files on the card"
                 }
                 self.complete(with: text)
             case .failure(let error):
@@ -466,7 +485,7 @@ extension AppModel {
             }
         }
     }
-
+    
     func writeIssuerExtraData() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Please, scan card before")
@@ -498,7 +517,7 @@ extension AppModel {
 //MARK:- Json RPC
 extension AppModel {
     var jsonRpcTemplate: String {
-    """
+        """
     {
         "jsonrpc": "2.0",
         "id": 2,

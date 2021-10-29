@@ -22,12 +22,10 @@ final class WriteBackupDataCommand: Command {
     
     private let backupData: EncryptedBackupData
     private let accessCode: Data
-    private let passcode: Data
     
-    init(backupData: EncryptedBackupData, accessCode: Data, passcode: Data) {
+    init(backupData: EncryptedBackupData, accessCode: Data) {
         self.backupData = backupData
         self.accessCode = accessCode
-        self.passcode = passcode
     }
     
     deinit {
@@ -47,6 +45,10 @@ final class WriteBackupDataCommand: Command {
             return .backupCannotBeCreated
         }
         
+        if !card.wallets.isEmpty {
+            return .backupCannotBeCreatedNotEmptyWallets
+        }
+
         return nil
     }
     
@@ -68,7 +70,6 @@ final class WriteBackupDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: accessCode)
-            .append(.pin2, value: passcode)
             .append(.salt, value: backupData.salt)
             .append(.issuerData, value: backupData.data)
         

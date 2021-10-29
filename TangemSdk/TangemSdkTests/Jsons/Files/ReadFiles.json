@@ -9,9 +9,9 @@
         "jsonrpc" : "2.0",
         "result" : [
             {
-                "fileIndex": 0,
-                "fileData": "00AABBCCDD",
-                "fileSettings": {
+                "index": 0,
+                "data": "00AABBCCDD",
+                "settings": {
                     "isPermanent": false,
                     "visibility": "public"
                 }

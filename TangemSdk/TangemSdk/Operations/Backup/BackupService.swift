@@ -20,11 +20,22 @@ public class BackupService: ObservableObject {
         &&  repo.data.originCard?.linkingKey != nil
     }
     
+    public var hasIncompletedBackup: Bool {
+        switch currentState {
+        case .needWriteOriginCard, .needWriteBackupCard:
+            return true
+        default:
+            return false
+        }
+    }
+    
     public var addedBackupCardsCount: Int { repo.data.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
     public var originCardIsSet: Bool { repo.data.originCard != nil }
+    public var originCardId: String? { repo.data.originCard?.cardId }
+    public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
@@ -43,22 +54,6 @@ public class BackupService: ObservableObject {
     public func discardSavedBackup() {
         repo.reset()
         updateState()
-    }
-    
-    public func fetchInvolvedCards() -> [String] {
-        var involvedCards: [String] = .init()
-
-        if let originCardId = repo.data.originCard?.cardId {
-            involvedCards.append(originCardId)
-        }
-        
-        involvedCards.append(contentsOf: repo.data.backupCards.map { $0.cardId })
-        
-        return involvedCards
-    }
-    
-    public func fetchBackupCards() -> [String] {
-        return repo.data.backupCards.map { $0.cardId }
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
@@ -422,6 +417,10 @@ struct BackupServiceData: Codable {
     var certificates: [String:Data] = [:]
     var backupData: [String:EncryptedBackupData] = [:]
     var finalizedBackupCardsCount: Int = 0
+    
+    var shouldSave: Bool {
+         attestSignature != nil || !backupData.isEmpty
+    }
 }
 
 
@@ -441,11 +440,12 @@ class BackupRepo {
     }
     
     func reset() {
+        try? storage.delete(account: StorageKey.backupData.rawValue)
         data = .init()
     }
     
     private func save() throws {
-        guard !isFetching else { return }
+        guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
         try storage.store(object: encoded, account: StorageKey.backupData.rawValue)

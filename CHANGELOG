@@ -1,29 +1,24 @@
-*   843925a - (HEAD -> release/3.1.3, tag: develop-91, origin/develop, develop) Merge pull request #104 from tangem/CSS-264_fix_prechecks_read_files
+*   83d98d7 - (HEAD -> release/3.1.4, tag: develop-97, origin/develop, develop) Merge pull request #111 from tangem/IOS-993_create_wallet_invalid_state
 |\  
-| * 11f7afc - CSS-264 Remove prechecks from read files
+| * eec08a8 - IOS-993 Create wallet task
 |/  
-*   5033cb5 - (tag: develop-90) Merge pull request #100 from tangem/CSS_254_clean_keychain
+*   7c8a4a3 - (tag: develop-96) Merge pull request #110 from tangem/CSS_263_create_wallet_response
 |\  
-| *   d18d253 - Merge branch 'develop' into CSS_254_clean_keychain
-| |\  
-| |/  
-|/|   
-* |   fb188a2 - (tag: develop-89) Merge pull request #99 from tangem/CSS-264_update_prechecks
-|\ \  
-| * \   8d781b9 - Merge branch 'develop' into CSS-264_update_prechecks
-| |\ \  
-| |/ /  
-|/| |   
-* | | 4daeb05 - (tag: develop-88) Merge pull request #103 from tangem/master
- / /  
-* | b819a1d - CSS-264 Update test card json
-* | a4c8d83 - CSS-264  Clean code
-* | 42b1c71 - CSS-264 Update test json
-* | 267ffdc - CSS-264 Issuer/User data prechecks
-* | f4b0a12 - CSS-264 Rename hdwallet setting
-* | 68d117d - CSS-264 hdwallet prechecks
-* | 55aeb34 - CSS-264 Update json
-* | 8912df7 - CSS-264 fix typos
-* | 6d081f2 - CSS-264 Precheck for files
- /  
-* adf1b54 - CSS-254 Refresh trusted cards repo
+| * 5c652df - CSS-263 Fix comment
+| * 50f084c - CSS-263 Handle wallet response in create wallet command
+| * a5ce7d7 - CSS-263 Fix read wallet command
+|/  
+*   e5b2de8 - (tag: develop-95) Merge pull request #109 from tangem/CSS-268_fix_pin_error_message
+|\  
+| * ef6c704 - CSS-268 Fix pin error message
+|/  
+*   ad1905b - (tag: develop-94) Merge pull request #108 from tangem/CSS_267_change_text
+|\  
+| * b47cb31 - CSS-267 Change error text for en
+|/  
+*   4f99758 - (tag: develop-93) Merge pull request #107 from tangem/CSS-266_read_files_fix
+|\  
+| * 352b1f7 - CSS-266 Re-indent app model
+| * c0a5649 - CSS-266 Fix read files
+|/  
+* 32ffff5 - (tag: develop-92) Merge pull request #106 from tangem/master

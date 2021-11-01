@@ -176,6 +176,7 @@ public class BackupService: ObservableObject {
             currentState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
         } else {
             currentState = .finished
+            onBackupCompleted()
         }
         
         return currentState
@@ -327,6 +328,10 @@ public class BackupService: ObservableObject {
         } catch {
             completion(.failure(error.toTangemSdkError()))
         }
+    }
+    
+    private func onBackupCompleted() {
+        repo.reset()
     }
     
     private func fetchCertificate(for cardId: String, cardPublicKey: Data) {

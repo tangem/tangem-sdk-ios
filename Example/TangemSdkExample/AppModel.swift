@@ -37,6 +37,7 @@ class AppModel: ObservableObject {
     
     var backupService: BackupService? = nil
     var resetPinService: ResetPinService? = nil
+    var reserCodesController: ResetCodesController? = nil
     
     private lazy var _tangemSdk: TangemSdk = { .init() }()
     
@@ -719,9 +720,14 @@ extension AppModel {
         showBackupView = true
     }
     
-    func onResetService() {
+    func onResetUserCodes() {
+        reserCodesController = tangemSdk.makeResetUserCodesController()
+        reserCodesController?.start(codeType: .accessCode)
+    }
+    
+    
+    func onResetUserCodesDebug() {
         resetPinService = ResetPinService(sdk: tangemSdk)
-        showResetPin = true
     }
     
     func onSettings() {

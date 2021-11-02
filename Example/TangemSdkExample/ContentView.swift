@@ -53,7 +53,8 @@ struct ContentView: View {
                                 Button("Clear", action: model.clear)
                                 Button("Copy", action: model.copy)
                                 Button("Backup", action: model.onBackup)
-                                Button("Reset pin", action: model.onResetService)
+                                Button("Reset pin", action: model.onResetUserCodes)
+                                Button("Test reset pin", action: model.onResetUserCodesDebug)
                             }
                             
                             additionalView

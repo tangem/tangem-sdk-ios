@@ -1,5 +1,5 @@
 //
-//  ResetUserCodeView.swift
+//  ResetUserCodesView.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 26.10.2021.
@@ -10,17 +10,17 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, *)
-struct ResetUserCodeView: View {
+struct ResetUserCodesView: View {
     let title: String
     let cardId: String
+    let card: CardType
     let messageTitle: String
     let messageBody: String
-    let completion: ((Bool) -> Void)
+    let completion: ((_ shouldContinue: Bool) -> Void)
     
     @EnvironmentObject var style: TangemSdkStyle
     
     @State private var isLoading: Bool = false
-    @State private var cardPosition: CardPosition = .top
     
     var body: some View {
         GeometryReader { geo in
@@ -47,7 +47,7 @@ struct ResetUserCodeView: View {
                 
                 Spacer()
                 
-                Button("common_continue".localized, action: onDone)
+                Button("common_continue".localized, action: onContinue)
                     .buttonStyle(RoundedButton(style: style,
                                                isLoading: isLoading))
             }
@@ -80,11 +80,11 @@ struct ResetUserCodeView: View {
                                               badgeBackground: .white.opacity(0.25),
                                               badgeForeground: .white)]
         ZStack {
-            cards[cardPosition.topIndex]
+            cards[card.topIndex]
                 .frame(width: bottomCardWidth, height: bottomCardHeight)
                 .offset(y: 0.16 * bottomCardHeight)
             
-            cards[cardPosition.bottomIndex]
+            cards[card.bottomIndex]
                 .frame(width: topCardWidth, height: topCardHeight)
         }
     }
@@ -93,57 +93,28 @@ struct ResetUserCodeView: View {
         completion(false)
     }
     
-    private func onDone() {
-        withAnimation {
-            cardPosition.toggle()
-        }
+    private func onContinue() {
         completion(true)
     }
 }
 
-fileprivate enum CardPosition {
-    case top
-    case bottom
-    
-    mutating func toggle() {
-        self = self == .top ? .bottom : .top
-    }
-    
-    var topIndex: Int {
-        switch self {
-        case .top:
-            return 0
-        case .bottom:
-            return 1
-        }
-    }
-    
-    var bottomIndex: Int {
-        switch self {
-        case .top:
-            return 1
-        case .bottom:
-            return 0
-        }
-    }
-}
-
 @available(iOS 13.0, *)
-struct ResetUserCodeView_Previews: PreviewProvider {
+struct ResetUserCodesView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            ResetUserCodesView(title: "Reset access code",
+                               cardId: "Card 0000 1111 2222 3333 444",
+                               card: .origin,
+                               messageTitle: "Tap the card you want to restore",
+                               messageBody: "First, prepare the card for restore process.",
+                               completion: { _ in })
             
-            ResetUserCodeView(title: "Reset access code",
-                              cardId: "Card 0000 1111 2222 3333 444",
-                              messageTitle: "Tap the card you want to restore",
-                              messageBody: "First, prepare the card for restore process.",
-                              completion: {_ in})
-            
-            ResetUserCodeView(title: "Reset access code",
-                              cardId: "Card 0000 1111 2222 3333 444",
-                              messageTitle: "Tap the card you want to restore",
-                              messageBody: "First, prepare the card for restore process.",
-                              completion: {_ in})
+            ResetUserCodesView(title: "Reset access code",
+                               cardId: "Card 0000 1111 2222 3333 444",
+                               card: .backup,
+                               messageTitle: "Tap the card you want to restore",
+                               messageBody: "First, prepare the card for restore process.",
+                               completion: { _ in })
                 .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())

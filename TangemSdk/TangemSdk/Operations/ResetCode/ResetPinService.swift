@@ -10,8 +10,10 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class ResetPinService: ObservableObject {
-    @Published public private(set) var currentState: State = .needScanResetCard
+    @Published public private(set) var currentState: State = .needCode
     @Published public private(set) var error: TangemSdkError? = nil
+    
+    public var resetPinCardId: String? { repo.resetPinCard?.cardId }
     
     private let sdk: TangemSdk
     private var repo: ResetPinRepo = .init()
@@ -39,6 +41,7 @@ public class ResetPinService: ObservableObject {
         }
         
         repo.accessCode = code.sha256()
+        currentState = currentState.next()
     }
     
     public func setPasscode(_ code: String) throws {
@@ -54,6 +57,7 @@ public class ResetPinService: ObservableObject {
             }
         }
         repo.passcode = code.sha256()
+        currentState = currentState.next()
     }
     
     public func proceed() {
@@ -64,7 +68,7 @@ public class ResetPinService: ObservableObject {
             scanConfirmationCard(handleCompletion)
         case .needWriteResetCard:
             writeResetPinCard(handleCompletion)
-        case .finished:
+        case .finished, .needCode:
             break
         }
     }
@@ -170,10 +174,69 @@ extension ResetPinService {
     }
     
     public enum State: Equatable, CaseIterable {
+        case needCode
         case needScanResetCard
         case needScanConfirmationCard
         case needWriteResetCard
         case finished
+        
+        var messageTitle: String {
+            switch self {
+            case .finished: return "common_success".localized
+            case .needScanConfirmationCard:
+                return "reset_codes_message_title_backup".localized
+            case .needScanResetCard, .needWriteResetCard:
+                return "reset_codes_message_title_restore".localized
+            case .needCode:
+                return ""
+            }
+        }
+        
+        var messageBody: String {
+            switch self {
+            case .finished: return "reset_codes_success_message".localized
+            case .needScanConfirmationCard:
+                return "reset_codes_message_body_backup".localized
+            case .needScanResetCard:
+                return "reset_codes_message_body_restore".localized
+            case .needWriteResetCard:
+                return "reset_codes_message_body_restore_final".localized
+            case .needCode:
+                return ""
+            }
+        }
+        
+        var cardType: CardType {
+            switch self {
+            case .needCode, .needScanResetCard, .needWriteResetCard, .finished:
+                return .origin
+            case .needScanConfirmationCard:
+                return .backup
+            }
+        }
+    }
+}
+
+enum CardType {
+    case origin
+    case backup
+    
+    var topIndex: Int {
+        switch self {
+        case .origin:
+            return 0
+        case .backup:
+            return 1
+        }
+    }
+    
+    var bottomIndex: Int {
+        switch self {
+        case .origin:
+            return 1
+        case .backup:
+            return 0
+        }
     }
 }
 

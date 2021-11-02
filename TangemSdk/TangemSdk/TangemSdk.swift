@@ -601,6 +601,16 @@ extension TangemSdk {
     }
 }
 
+//MARK: - Fabric
+@available(iOS 13.0, *)
+public extension TangemSdk {
+    func makeResetUserCodesController() -> ResetCodesController {
+        let resetService = ResetPinService(sdk: self)
+        let viewDelegate = ResetCodesViewDelegate(style: config.style)
+        return ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
+    }
+}
+
 //MARK: - Private
 @available(iOS 13.0, *)
 private extension TangemSdk {
@@ -624,3 +634,4 @@ private extension TangemSdk {
                     jsonConverter: jsonConverter)
     }
 }
+

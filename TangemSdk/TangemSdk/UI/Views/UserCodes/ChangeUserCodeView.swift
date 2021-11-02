@@ -115,6 +115,5 @@ struct ChangeUserCodeView_Previews: PreviewProvider {
                 .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())
-        .environmentObject(MainViewModel(viewState: .default))
     }
 }

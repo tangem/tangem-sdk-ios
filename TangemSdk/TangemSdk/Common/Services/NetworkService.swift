@@ -14,6 +14,7 @@ public protocol NetworkEndpoint {
     var method: String {get}
     var body: Data? {get}
     var headers: [String:String] {get}
+    var configuration: URLSessionConfiguration? { get }
 }
 
 public enum NetworkServiceError: Error, LocalizedError {
@@ -44,24 +45,24 @@ public enum NetworkServiceError: Error, LocalizedError {
 
 @available(iOS 13.0, *)
 public class NetworkService {
-    private lazy var session: URLSession = {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 10
-        configuration.timeoutIntervalForResource = 30
-        return URLSession(configuration: configuration)
-    }()
+    private let configuration: URLSessionConfiguration?
     
-    public init () {}
+    /// Pass configuration to override default configuration
+    public init (configuration: URLSessionConfiguration? = nil) {
+        self.configuration = configuration
+    }
     
     public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
         let request = prepareRequest(from: endpoint)
-        return requestDataPublisher(request: request)
+        let configuration: URLSessionConfiguration = self.configuration ?? endpoint.configuration ?? .default
+        return requestDataPublisher(request: request, configuration: configuration)
     }
     
-    private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
+    private func requestDataPublisher(request: URLRequest, configuration: URLSessionConfiguration) -> AnyPublisher<Data, NetworkServiceError> {
         Log.network("request to: \(request.url!)")
         
-        return session.dataTaskPublisher(for: request)
+        return URLSession(configuration: configuration)
+            .dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
             .tryMap { data, response -> Data in
                 guard let response = response as? HTTPURLResponse else {

@@ -58,6 +58,11 @@ final class ReadBackupDataCommand: Command {
             case .success(let response):
                 if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
                     session.environment.card?.backupStatus = .active(cardsCount: cardsCount)
+                    
+                    let walletsCount = session.environment.card?.wallets.count ?? 0
+                    for index in 0..<walletsCount {
+                        session.environment.card?.wallets[index].hasBackup = true
+                    }
                 }
                 completion(.success(response))
             case .failure(let error):

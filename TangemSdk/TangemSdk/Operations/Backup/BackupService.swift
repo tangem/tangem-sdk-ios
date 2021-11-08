@@ -114,7 +114,7 @@ public class BackupService: ObservableObject {
         updateState()
     }
     
-    public func proceedBackup(completion: @escaping CompletionResult<State>) {
+    public func proceedBackup(completion: @escaping CompletionResult<Card>) {
         switch currentState {
         case .needWriteOriginCard:
             handleWriteOriginCard() {
@@ -124,9 +124,7 @@ public class BackupService: ObservableObject {
             handleWriteBackupCard(index: index) {
                 self.handleCompletion($0, completion: completion)
             }
-        case .finished:
-            completion(.success(.finished))
-        case .preparing:
+        case .preparing, .finished:
             completion(.failure(TangemSdkError.backupInvalidCommandSequence))
         }
     }
@@ -140,9 +138,16 @@ public class BackupService: ObservableObject {
         }
     }
     
-    public func readOriginCard(completion: @escaping CompletionResult<Void>) {
+    public func readOriginCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
+        let initialMessage = cardId.map {
+            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: $0)
+            return  Message(header: nil,
+                            body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
+        ?? Message(header: "backup_prepare_primary_card_message")
+        
         sdk.startSession(with: StartOriginCardLinkingCommand(),
-                         initialMessage: Message(header: "Scan origin card")
+                         cardId: cardId,
+                         initialMessage: initialMessage
         ) {[weak self] result in
             guard let self = self else { return }
             switch result {
@@ -155,10 +160,11 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func handleCompletion(_ result: Result<Void, TangemSdkError>, completion: @escaping CompletionResult<State>) -> Void {
+    private func handleCompletion(_ result: Result<Card, TangemSdkError>, completion: @escaping CompletionResult<Card>) -> Void {
         switch result {
-        case .success:
-            completion(.success(updateState()))
+        case .success(let card):
+            updateState()
+            completion(.success(card))
         case .failure(let error):
             completion(.failure(error.toTangemSdkError()))
         }
@@ -198,7 +204,8 @@ public class BackupService: ObservableObject {
     private func readBackupCard(_ originCard: OriginCard, completion: @escaping CompletionResult<Void>) {
         sdk.startSession(with: StartBackupCardLinkingTask(originCard: originCard,
                                                           addedBackupCards: repo.data.backupCards.map { $0.cardId }),
-                         initialMessage: Message(header: "Scan backup card with index: \(repo.data.backupCards.count + 1)")) {[weak self] result in
+                         initialMessage: Message(header: nil,
+                                                 body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -211,7 +218,7 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func handleWriteOriginCard(completion: @escaping CompletionResult<Void>) {
+    private func handleWriteOriginCard(completion: @escaping CompletionResult<Card>) {
         do {
             if handleErrors {
                 if repo.data.accessCode == nil && repo.data.passcode == nil {
@@ -253,8 +260,12 @@ public class BackupService: ObservableObject {
                                               onLink: { self.repo.data.attestSignature = $0 },
                                               onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
-            sdk.startSession(with: task, cardId: originCard.cardId,
-                             initialMessage: Message(header: "Scan origin card with cardId: \(CardIdFormatter().string(from: originCard.cardId))"),
+            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: originCard.cardId)
+            
+            sdk.startSession(with: task,
+                             cardId: originCard.cardId,
+                             initialMessage: Message(header: nil,
+                                                     body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
                              completion: completion)
             
         } catch {
@@ -262,7 +273,7 @@ public class BackupService: ObservableObject {
         }
     }
     
-    private func handleWriteBackupCard(index: Int, completion: @escaping CompletionResult<Void>) {
+    private func handleWriteBackupCard(index: Int, completion: @escaping CompletionResult<Card>) {
         do {
             if handleErrors {
                 if repo.data.accessCode == nil && repo.data.passcode == nil {
@@ -314,12 +325,16 @@ public class BackupService: ObservableObject {
                                                  accessCode: accessCode,
                                                  passcode: passcode)
             
-            sdk.startSession(with: command, cardId: backupCard.cardId,
-                             initialMessage: Message(header: "Scan backup card with cardId: \(CardIdFormatter().string(from: backupCard.cardId))")) { result in
+            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: backupCard.cardId)
+            
+            sdk.startSession(with: command,
+                             cardId: backupCard.cardId,
+                             initialMessage: Message(header: nil,
+                                                     body: "backup_finalize_backup_card_message_format".localized(formattedCardId))) { result in
                 switch result {
-                case .success:
+                case .success(let card):
                     self.repo.data.finalizedBackupCardsCount += 1
-                    completion(.success(()))
+                    completion(.success(card))
                 case .failure(let error):
                     completion(.failure(error))
                 }

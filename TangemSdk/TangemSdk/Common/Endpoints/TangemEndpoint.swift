@@ -55,5 +55,12 @@ public enum TangemEndpoint: NetworkEndpoint {
     public var headers: [String : String] {
         return ["application/json" : "Content-Type"]
     }
+    
+    public var configuration: URLSessionConfiguration? {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 30
+        return configuration
+    }
 }
 

@@ -37,7 +37,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         Log.debug("FinalizeBackupCardTask deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
@@ -63,7 +63,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         }
     }
     
-    private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
+    private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         let writeCommand = WriteBackupDataCommand(backupData: self.backupData,
                                                   accessCode: self.accessCode)
         self.commandsBag.append(writeCommand)
@@ -72,10 +72,21 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             switch writeResult {
             case .success(let writeResponse):
                 if writeResponse.backupStatus == .active {
-                    completion(.success(SuccessResponse(cardId: writeResponse.cardId)))
+                    self.readWallets(in: session, completion: completion)
                 } else {
                     completion(.failure(TangemSdkError.unknownError))
                 }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func readWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        ReadWalletsListCommand().run(in: session) { result in
+            switch result {
+            case .success:
+                completion(.success(session.environment.card!))
             case .failure(let error):
                 completion(.failure(error))
             }

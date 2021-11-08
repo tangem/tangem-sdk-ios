@@ -9,15 +9,6 @@
 import Foundation
 
 public extension String {
-    var titleFormatted: String {
-        let separator = Array(repeating: "-", count: 16).joined()
-        return "\(separator) \(self) \(separator)"
-    }
-    
-    func remove(_ substring: String) -> String {
-        return self.replacingOccurrences(of: substring, with: "")
-    }
-    
     @available(iOS 13.0, *)
     func sha256() -> Data {
         let data = Data(Array(utf8))
@@ -28,6 +19,15 @@ public extension String {
     func sha512() -> Data {
         let data = Data(Array(utf8))
         return data.getSha512()
+    }
+    
+    internal var titleFormatted: String {
+        let separator = Array(repeating: "-", count: 16).joined()
+        return "\(separator) \(self) \(separator)"
+    }
+    
+    func remove(_ substring: String) -> String {
+        return self.replacingOccurrences(of: substring, with: "")
     }
     
     internal func capitalizingFirst() -> String {
@@ -41,6 +41,12 @@ public extension String {
     @available(iOS 13.0, *)
     internal var localized: String {
         Localization.getFormat(for: self)
+    }
+    
+    @available(iOS 13.0, *)
+    internal func localized(_ arguments: CVarArg) -> String {
+        let format = Localization.getFormat(for: self)
+        return String(format: format, arguments)
     }
     
     internal func trim() -> String {

@@ -31,7 +31,8 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             
             if card.issuer.publicKey != originCard.issuer.publicKey
                 || card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed
-                || !originWalletCurves.isSubset(of: backupCardSupportedCurves) {
+                || !originWalletCurves.isSubset(of: backupCardSupportedCurves)
+                || originCard.existingWalletsCount > card.settings.maxWalletsCount {
                 completion(.failure(.backupCannotBeCreated))
                 return
             }

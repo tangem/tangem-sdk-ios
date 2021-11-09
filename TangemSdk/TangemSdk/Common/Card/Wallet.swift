@@ -29,7 +29,7 @@ public extension Card {
         /// Index of the wallet in the card storage
         public let index: Int
         /// Does this wallet has a backup
-        public let hasBackup: Bool
+        public internal(set) var hasBackup: Bool
     }
 }
 

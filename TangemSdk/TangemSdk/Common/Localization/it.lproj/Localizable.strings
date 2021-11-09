@@ -160,3 +160,20 @@
 "backup_add_backup_card_message" = "Scan the card you want to use as a backup";
 "backup_finalize_primary_card_message_format" = "Scan the primary card with number %@";
 "backup_finalize_backup_card_message_format" = "Scan the backup card with number %@";
+
+"attestation_failed_dev_card" = "This is a development card. You can continue at your own risk";
+"attestation_failed_card" = "This card may be production sample or conterfeit. You can continue at your own risk";
+"attestation_online_failed_title" = "Online attestation failed";
+"attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
+"common_warning" = "Warning";
+"common_retry" = "Retry";
+"common_understand" = "I understand";
+"attestation_warning_attest_wallets" = "Too large runs count of Attest Wallet or Sign looks suspicious.";
+
+"reset_codes_message_title_restore" = "Tap the card you want to restore";
+"reset_codes_message_body_restore" = "First, prepare the card for restore process.";
+"reset_codes_message_title_backup" = "Tap a backup card";
+"reset_codes_message_body_backup" = "Tap the linked card.";
+"reset_codes_message_body_restore_final" = "Tap the restore card again.";
+"reset_codes_success_message" = "Code was reset successfully";
+"pin_reset_code_format" = "Reset %@";

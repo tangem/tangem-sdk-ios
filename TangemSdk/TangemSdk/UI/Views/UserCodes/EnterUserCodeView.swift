@@ -21,8 +21,7 @@ struct EnterUserCodeView: View {
     @State private var code: String = ""
     
     private var isContinueDisabled: Bool {
-        return false
-       // code.trim().isEmpty
+        code.trim().isEmpty
     }
     
     var body: some View {

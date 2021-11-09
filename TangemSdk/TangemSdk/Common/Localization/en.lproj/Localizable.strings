@@ -109,7 +109,7 @@
 "dialog_nfc_enable_text" = "This app needs NFC to be switched on. Hit OK to go to Settings, where you can enable NFC.";
 
 // Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
-"view_delegate_security_delay_description" = "This card has enforced security delay. Please hold the card firmly until the operation is completed.";
+"view_delegate_security_delay_description" = "Hold the card firmly until the operation is finished";
 
 // Label. Something is happening.
 "view_delegate_delay" = "Operation is in progress";
@@ -150,6 +150,12 @@
 "pin_set_code_format" = "Set %@";
 
 "cid_format" = "Card #%@";
+
+"backup_prepare_primary_card_message" = "Scan the primary card";
+"backup_prepare_primary_card_message_format" = "Scan the primary card with number %@";
+"backup_add_backup_card_message" = "Scan the card you want to use as a backup";
+"backup_finalize_primary_card_message_format" = "Scan the primary card with number %@";
+"backup_finalize_backup_card_message_format" = "Scan the backup card with number %@";
 
 "attestation_failed_dev_card" = "This is a development card. You can continue at your own risk";
 "attestation_failed_card" = "This card may be production sample or conterfeit. You can continue at your own risk";

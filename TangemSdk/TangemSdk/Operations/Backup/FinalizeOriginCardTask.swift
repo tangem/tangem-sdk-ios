@@ -16,7 +16,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     private let originCardLinkingKey: Data //only for verification
     private var attestSignature: Data? //We already have attestSignature
     private let onLink: (Data) -> Void
-    private let onRead: ((String, EncryptedBackupData)) -> Void
+    private let onRead: ((String, [EncryptedBackupData])) -> Void
     private let readBackupStartIndex: Int
     
     init(backupCards: [LinkableBackupCard],
@@ -26,7 +26,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
          readBackupStartIndex: Int, // for restore
          attestSignature: Data?,
          onLink: @escaping (Data) -> Void,
-         onRead: @escaping ((String, EncryptedBackupData)) -> Void) {
+         onRead: @escaping ((String,[EncryptedBackupData])) -> Void) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
@@ -41,7 +41,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         Log.debug("FinalizeOriginCardTask deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<Void>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
@@ -84,9 +84,9 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         }
     }
     
-    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Void>) {
+    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Card>) {
         if index >= backupCards.count {
-            completion(.success(()))
+            completion(.success(session.environment.card!))
             return
         }
         //todo: save concrete read to restore

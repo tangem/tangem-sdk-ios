@@ -20,10 +20,12 @@ struct WriteBackupDataResponse {
 final class WriteBackupDataCommand: Command {
     var requiresPasscode: Bool { return false }
     
-    private let backupData: EncryptedBackupData
+    private let backupData: [EncryptedBackupData]
     private let accessCode: Data
     
-    init(backupData: EncryptedBackupData, accessCode: Data) {
+    private var index = 0
+    
+    init(backupData: [EncryptedBackupData], accessCode: Data) {
         self.backupData = backupData
         self.accessCode = accessCode
     }
@@ -53,13 +55,24 @@ final class WriteBackupDataCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<WriteBackupDataResponse>) {
+        writeData(in: session, completion: completion)
+    }
+    
+    private func writeData(in session: CardSession, completion: @escaping CompletionResult<WriteBackupDataResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
-                    session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: cardsCount)
+                if self.index == self.backupData.count - 1 {
+                    if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
+                        session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: cardsCount)
+                    }
+                    
+                    completion(.success(response))
+                    return
                 }
-                completion(.success(response))
+                
+                self.index += 1
+                self.writeData(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -70,8 +83,8 @@ final class WriteBackupDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: accessCode)
-            .append(.salt, value: backupData.salt)
-            .append(.issuerData, value: backupData.data)
+            .append(.salt, value: backupData[index].salt)
+            .append(.issuerData, value: backupData[index].data)
         
         return CommandApdu(.writeBackupData, tlv: tlvBuilder.serialize())
     }

@@ -141,9 +141,8 @@ struct BackupView: View {
                 Button("Proceed") {
                     backupService.proceedBackup() { result in
                         switch result {
-                        case .success(let newState):
+                        case .success:
                             self.errorText = ""
-                            print("New state is: \(newState)")
                         case .failure(let error):
                             self.errorText = "Error occured: \(error)"
                         }

@@ -16,7 +16,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     private let originCardLinkingKey: Data //only for verification
     private var attestSignature: Data? //We already have attestSignature
     private let onLink: (Data) -> Void
-    private let onRead: ((String, EncryptedBackupData)) -> Void
+    private let onRead: ((String, [EncryptedBackupData])) -> Void
     private let readBackupStartIndex: Int
     
     init(backupCards: [LinkableBackupCard],
@@ -26,7 +26,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
          readBackupStartIndex: Int, // for restore
          attestSignature: Data?,
          onLink: @escaping (Data) -> Void,
-         onRead: @escaping ((String, EncryptedBackupData)) -> Void) {
+         onRead: @escaping ((String,[EncryptedBackupData])) -> Void) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode

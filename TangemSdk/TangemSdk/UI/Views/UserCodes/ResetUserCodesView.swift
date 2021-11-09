@@ -29,8 +29,7 @@ struct ResetUserCodesView: View {
                                    cardId: cardId,
                                    onCancel: onCancel)
                     .padding(.top, 8)
-                
-                Spacer()
+                    .padding(.bottom, 50)
                 
                 cardsStack(geo.size)
                 
@@ -50,6 +49,7 @@ struct ResetUserCodesView: View {
                 Button("common_continue".localized, action: onContinue)
                     .buttonStyle(RoundedButton(style: style,
                                                isLoading: isLoading))
+                
             }
         }
         .padding([.horizontal, .bottom])

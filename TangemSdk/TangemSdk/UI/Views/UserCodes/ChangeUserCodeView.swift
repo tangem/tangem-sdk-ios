@@ -73,7 +73,7 @@ struct ChangeUserCodeView: View {
     
     private func scheduleValidation() {
         validationTimer?.invalidate()
-        validationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: validateInput)
+        validationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: validateInput)
     }
     
     private func validateInput(_ timer: Timer? = nil) {

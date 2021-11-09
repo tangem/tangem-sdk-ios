@@ -58,6 +58,9 @@ final class LinkOriginCardCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
+                session.environment.accessCode = UserCode(.accessCode, value: self.accessCode) 
+                session.environment.passcode = UserCode(.passcode, value: self.passcode)  
+                
                 self.complete(response: response, session: session, completion: completion)
             case .failure(let error):
                 switch error {

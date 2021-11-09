@@ -83,6 +83,9 @@ final class LinkBackupCardsCommand: Command {
                     session.environment.card?.settings.isSettingPasscodeAllowed = true
                     session.environment.card?.settings.isResettingUserCodesAllowed = false
                     
+                    session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
+                    session.environment.passcode = UserCode(.passcode, value: self.passcode)
+                    
                     completion(.success(response))
                 } catch {
                     completion(.failure(error.toTangemSdkError()))

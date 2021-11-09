@@ -12,7 +12,21 @@ import Foundation
 @available(iOS 13.0, *)
 struct ReadBackupDataResponse {
     /// Unique Tangem card ID number
+    fileprivate(set) var cardId: String = ""
+    fileprivate(set) var data: [EncryptedBackupData] = []
+    
+    fileprivate mutating func update(with response: PartialReadBackupDataResponse) {
+        cardId = response.cardId
+        data.append(response.data)
+    }
+}
+
+// Response from the Tangem card after `ReadBackupDataCommand`.
+@available(iOS 13.0, *)
+struct PartialReadBackupDataResponse {
+    /// Unique Tangem card ID number
     let cardId: String
+    let index: Int
     let data: EncryptedBackupData
 }
 
@@ -22,6 +36,9 @@ final class ReadBackupDataCommand: Command {
     
     private let backupCardLinkingKey: Data
     private let accessCode: Data
+    
+    private var aggregatedResponse: ReadBackupDataResponse = .init()
+    private var readIndex: Int = 0
     
     init(backupCardLinkingKey: Data, accessCode: Data) {
         self.backupCardLinkingKey = backupCardLinkingKey
@@ -53,13 +70,41 @@ final class ReadBackupDataCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadBackupDataResponse>) {
-        transceive(in: session) { result in
+        readData(in: session) { result in
             switch result {
-            case .success(let response):
+            case .success:
                 if case let .cardLinked(cardsCount: cardsCount) = session.environment.card?.backupStatus {
                     session.environment.card?.backupStatus = .active(cardsCount: cardsCount)
+
+                    let walletsCount = session.environment.card?.wallets.count ?? 0
+                    for index in 0..<walletsCount {
+                        session.environment.card?.wallets[index].hasBackup = true
+                    }
                 }
-                completion(.success(response))
+                completion(.success(self.aggregatedResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func readData(in session: CardSession, completion: @escaping CompletionResult<Void>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        transceive(in: session) { result in
+            switch result {
+            case .success(let partialResponse):
+                self.aggregatedResponse.update(with: partialResponse)
+                
+                if partialResponse.index == card.settings.maxWalletsCount - 1 {
+                    completion(.success(()))
+                } else {
+                    self.readIndex = partialResponse.index + 1
+                    self.readData(in: session, completion: completion)
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -71,20 +116,22 @@ final class ReadBackupDataCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: accessCode)
             .append(.backupCardLinkingKey, value: backupCardLinkingKey)
+            .append(.walletIndex, value: readIndex)
         
         return CommandApdu(.readBackupData, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadBackupDataResponse {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PartialReadBackupDataResponse {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        return ReadBackupDataResponse(cardId: try decoder.decode(.cardId),
-                                      data: EncryptedBackupData (data: try decoder.decode(.issuerData),
-                                                                 salt: try decoder.decode(.salt)))
+        return PartialReadBackupDataResponse(cardId: try decoder.decode(.cardId),
+                                             index: try decoder.decode(.walletIndex),
+                                             data: EncryptedBackupData (data: try decoder.decode(.issuerData),
+                                                                        salt: try decoder.decode(.salt)))
     }
 }
 

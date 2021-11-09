@@ -13,7 +13,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
     
     private let originCard: LinkableOriginCard
     private let backupCards: [BackupCard]
-    private let backupData: EncryptedBackupData
+    private let backupData: [EncryptedBackupData]
     private let attestSignature: Data
     private let accessCode: Data
     private let passcode: Data
@@ -21,7 +21,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
     
     init(originCard: LinkableOriginCard,
          backupCards: [BackupCard],
-         backupData: EncryptedBackupData,
+         backupData: [EncryptedBackupData],
          attestSignature: Data,
          accessCode: Data,
          passcode: Data) {

@@ -380,6 +380,7 @@ public struct OriginCard: Codable {
     public let linkingKey: Data
     
     //For compatibility check with backup card
+    public let existingWalletsCount: Int
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
@@ -435,7 +436,7 @@ struct BackupServiceData: Codable {
     var attestSignature: Data? = nil
     var backupCards: [BackupCard] = []
     var certificates: [String:Data] = [:]
-    var backupData: [String:EncryptedBackupData] = [:]
+    var backupData: [String:[EncryptedBackupData]] = [:]
     var finalizedBackupCardsCount: Int = 0
     
     var shouldSave: Bool {

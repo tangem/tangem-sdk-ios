@@ -23,7 +23,7 @@ public extension TangemSdkStyle {
     struct Colors {
         public var tint: Color = .blue
         
-        public var disabledButtonBackground: Color = Color(UIColor.systemGray6)
+        public var disabledButtonBackground: Color = Color(UIColor.systemGray5)
         
         public var buttonForeground: Color = .white
         

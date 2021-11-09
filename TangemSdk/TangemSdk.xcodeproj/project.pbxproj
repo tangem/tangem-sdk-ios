@@ -71,7 +71,6 @@
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
 		5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127C26D3D351006E173C /* WriteFiles.json */; };
-		5D4B128026D3F176006E173C /* ReadFilesByIndex.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */; };
 		5D4B128326D40C77006E173C /* StartOriginCardLinkingCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4B128226D40C77006E173C /* StartOriginCardLinkingCommand.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetAccessCode.json */; };
@@ -351,7 +350,6 @@
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
 		5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartBackupCardLinkingTask.swift; sourceTree = "<group>"; };
-		5D4B127526D3CD03006E173C /* ReadFilesByIndex.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ReadFilesByIndex.json; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
 		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
@@ -1375,7 +1373,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1310;
 				ORGANIZATIONNAME = "Tangem AG";
 				TargetAttributes = {
 					5DA80C99231D247A00A50A10 = {
@@ -1741,7 +1739,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1812,7 +1810,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1849,7 +1847,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1890,7 +1888,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -143,7 +143,7 @@ public class BackupService: ObservableObject {
             let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: $0)
             return  Message(header: nil,
                             body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
-        ?? Message(header: "backup_prepare_primary_card_message")
+        ?? Message(header: "backup_prepare_primary_card_message".localized)
         
         sdk.startSession(with: StartOriginCardLinkingCommand(),
                          cardId: cardId,

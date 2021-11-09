@@ -14,7 +14,7 @@ struct CardView: View {
     let starsColor: Color
     
     var body: some View {
-        RoundedRectangle(cornerRadius: 18)
+        RoundedRectangle(cornerRadius: 10)
             .fill(cardColor)
             .overlay(overlay)
     }

@@ -22,14 +22,12 @@ public enum TangemEndpoint: NetworkEndpoint {
         case .verifyAndGetInfo:
             return URL(string: baseURL + "card/verify-and-get-info")!
         case .artwork(let cid, let cardPublicKey, let artworkId):
-            let parameters = ["CID" : cid,
-                              "publicKey" : cardPublicKey.hexString,
-                              "artworkId" : artworkId]
-            
             var components = URLComponents(string: baseURL + "card/artwork")!
-            components.queryItems = parameters.map { (key, value) in
-                URLQueryItem(name: key, value: value)
-            }
+            
+            components.queryItems = [.init(name: "CID", value: cid),
+                                     .init(name: "publicKey", value: cardPublicKey.hexString),
+                                     .init(name: "artworkId", value: artworkId)]
+
             return components.url!
         }
     }

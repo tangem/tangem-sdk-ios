@@ -69,7 +69,7 @@ public final class ReadIssuerDataCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                guard response.issuerData.count > 0 else {
+                guard !response.issuerData.isEmpty else {
                     completion(.success(response))
                     return
                 }

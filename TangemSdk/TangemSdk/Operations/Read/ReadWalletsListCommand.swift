@@ -42,7 +42,7 @@ class ReadWalletsListCommand: Command {
             case .success(let response):
                 self.loadedWallets.append(contentsOf: response.wallets)
                 
-                if self.receivedWalletsCount == 0 && response.wallets.count == 0 {
+                if self.receivedWalletsCount == 0 && response.wallets.isEmpty {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }

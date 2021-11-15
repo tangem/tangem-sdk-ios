@@ -64,7 +64,7 @@ public final class TlvDecoder {
     
     public func decodeArray<T>(_ tag: TlvTag) throws -> [T] {
         let tlvs = tlv.items(for: tag)
-        guard tlvs.count > 0 else {
+        guard !tlvs.isEmpty else {
             return []
         }
         

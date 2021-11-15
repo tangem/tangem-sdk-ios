@@ -22,7 +22,7 @@ class WalletDeserializer {
     func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
         let cardWalletsData: [Data] = try decoder.decodeArray(.cardWallet)
         
-        guard cardWalletsData.count > 0 else {
+        guard !cardWalletsData.isEmpty else {
             throw TangemSdkError.deserializeApduFailed
         }
         

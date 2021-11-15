@@ -96,7 +96,7 @@ class SignCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
-        if hashes.count == 0 {
+        if hashes.isEmpty {
             completion(.failure(.emptyHashes))
             return
         }

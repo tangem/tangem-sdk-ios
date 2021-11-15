@@ -63,7 +63,7 @@ public struct Tlv: Equatable {
                 let dataLength = readTagLength(dataStream),
                 let data = dataLength > 0 ? dataStream.readBytes(count: dataLength) : Data()  else {
                 Log.warning("Failed to read tag from stream")
-                    return tags.count > 0 ? tags : nil
+                    return tags.isEmpty ? nil : tags
             }
             
             let tlvItem = Tlv(tagRaw: tagCode, value: data)

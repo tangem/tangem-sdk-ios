@@ -191,7 +191,7 @@ public final class Secp256k1Utils {
             v -= 35
         }
         let result = serializedSignature.withUnsafeBytes { (serRawBufferPtr: UnsafeRawBufferPointer) -> Int32? in
-            if let serRawPtr = serRawBufferPtr.baseAddress, serRawBufferPtr.count > 0 {
+            if let serRawPtr = serRawBufferPtr.baseAddress, !serRawBufferPtr.isEmpty {
                 let serPtr = serRawPtr.assumingMemoryBound(to: UInt8.self)
                 return withUnsafeMutablePointer(to: &recoverableSignature, { (signaturePointer:UnsafeMutablePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
                     let res = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, signaturePointer, serPtr, v)
@@ -290,7 +290,7 @@ public final class Secp256k1Utils {
         guard hash.count == 32 else {return nil}
         var publicKey: secp256k1_pubkey = secp256k1_pubkey()
         let result = hash.withUnsafeBytes({ (hashRawBufferPointer: UnsafeRawBufferPointer) -> Int32? in
-            if let hashRawPointer = hashRawBufferPointer.baseAddress, hashRawBufferPointer.count > 0 {
+            if let hashRawPointer = hashRawBufferPointer.baseAddress, !hashRawBufferPointer.isEmpty {
                 let hashPointer = hashRawPointer.assumingMemoryBound(to: UInt8.self)
                 return withUnsafePointer(to: &recoverableSignature, { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
                     withUnsafeMutablePointer(to: &publicKey, { (pubKeyPtr: UnsafeMutablePointer<secp256k1_pubkey>) -> Int32 in
@@ -329,7 +329,7 @@ public final class Secp256k1Utils {
         var serializedSignature = Data(repeating: 0x00, count: 64)
         var v: Int32 = 0
         let result = serializedSignature.withUnsafeMutableBytes { (serSignatureRawBufferPointer: UnsafeMutableRawBufferPointer) -> Int32? in
-            if let serSignatureRawPointer = serSignatureRawBufferPointer.baseAddress, serSignatureRawBufferPointer.count > 0 {
+            if let serSignatureRawPointer = serSignatureRawBufferPointer.baseAddress, !serSignatureRawBufferPointer.isEmpty {
                 let serSignaturePointer = serSignatureRawPointer.assumingMemoryBound(to: UInt8.self)
                 return withUnsafePointer(to: &recoverableSignature) { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
                     withUnsafeMutablePointer(to: &v, { (vPtr: UnsafeMutablePointer<Int32>) -> Int32 in

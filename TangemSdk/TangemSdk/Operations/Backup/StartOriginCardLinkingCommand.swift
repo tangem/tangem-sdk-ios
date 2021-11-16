@@ -9,7 +9,7 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public final class StartOriginCardLinkingCommand: Command {
+public final class StartOriginCardLinkingCommand: Command { //todo: rename -> primary
     var requiresPasscode: Bool { return false }
     
     public init() {}

@@ -56,5 +56,4 @@ extension DerivationNode {
     }
 }
 
-@available(iOS 13.0, *)
 extension DerivationNode: Codable {}

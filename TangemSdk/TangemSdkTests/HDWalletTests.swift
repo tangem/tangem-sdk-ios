@@ -181,4 +181,11 @@ class HDWalletTests: XCTestCase {
             XCTAssertEqual(HDWalletError.hardenedNotSupported, hdError)
         }
     }
+    
+    func testCodableDerivationPath() {
+        let derivationPath = try! DerivationPath(rawPath: "m/44'/0'/0'/1/0")
+        let encodedData = try! JSONEncoder().encode(derivationPath)
+        let decodedDerivationPath = try! JSONDecoder().decode(DerivationPath.self, from: encodedData)
+        XCTAssertEqual(derivationPath, decodedDerivationPath)
+    }
 }

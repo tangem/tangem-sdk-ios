@@ -55,5 +55,3 @@ extension DerivationNode {
         return .notHardened(index)
     }
 }
-
-extension DerivationNode: Codable {}

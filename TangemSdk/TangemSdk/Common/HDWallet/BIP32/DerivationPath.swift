@@ -81,3 +81,6 @@ extension DerivationPath {
         return Tlv(tag, value: Data(serialized))
     }
 }
+
+@available(iOS 13.0, *)
+extension DerivationPath: Codable {}

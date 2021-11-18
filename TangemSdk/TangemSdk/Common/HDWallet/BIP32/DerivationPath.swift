@@ -82,7 +82,6 @@ extension DerivationPath {
     }
 }
 
-@available(iOS 13.0, *)
 extension DerivationPath: Codable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()

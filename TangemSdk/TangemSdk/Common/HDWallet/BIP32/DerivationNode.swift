@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum DerivationNode: Equatable {
+public enum DerivationNode: Equatable, Hashable {
     case hardened(UInt32)
     case notHardened(UInt32)
     

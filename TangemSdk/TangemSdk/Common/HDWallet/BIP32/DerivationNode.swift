@@ -55,3 +55,6 @@ extension DerivationNode {
         return .notHardened(index)
     }
 }
+
+@available(iOS 13.0, *)
+extension DerivationNode: Codable {}

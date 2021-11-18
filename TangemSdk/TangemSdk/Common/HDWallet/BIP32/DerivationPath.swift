@@ -9,7 +9,7 @@
 import Foundation
 
 /// BIP32 derivation Path
-public struct DerivationPath {
+public struct DerivationPath: Equatable, Hashable {
     public let rawPath: String
     public let nodes: [DerivationNode]
     
@@ -94,5 +94,3 @@ extension DerivationPath: Codable {
         try container.encode(rawPath)
     }
 }
-
-extension DerivationPath: Equatable {}

@@ -62,7 +62,7 @@ final class LinkBackupCardsCommand: Command {
             switch result {
             case .success(let response):
                 do {
-                    let prefix = "BACKUP".data(using: .utf8)!
+                    let prefix = "BACKUP".data(using: .utf8)! //todo: remove
                     var dataAttest = prefix + self.backupCards.count.byte
                     dataAttest += self.originCardLinkingKey
                     dataAttest += self.backupCards.map { $0.linkingKey }.joined()

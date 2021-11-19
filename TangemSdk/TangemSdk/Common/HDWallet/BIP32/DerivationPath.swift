@@ -9,7 +9,7 @@
 import Foundation
 
 /// BIP32 derivation Path
-public struct DerivationPath {
+public struct DerivationPath: Equatable, Hashable {
     public let rawPath: String
     public let nodes: [DerivationNode]
     
@@ -79,5 +79,18 @@ extension DerivationPath {
     func encodeTlv(with tag: TlvTag) -> Tlv {
         let serialized = nodes.map { $0.serialize() }.joined()
         return Tlv(tag, value: Data(serialized))
+    }
+}
+
+extension DerivationPath: Codable {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.singleValueContainer()
+        let rawPath = try values.decode(String.self)
+        self = try .init(rawPath: rawPath)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawPath)
     }
 }

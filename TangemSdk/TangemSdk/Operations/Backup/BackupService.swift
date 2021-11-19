@@ -20,7 +20,7 @@ public class BackupService: ObservableObject {
         &&  repo.data.originCard?.linkingKey != nil
     }
     
-    public var hasIncompletedBackup: Bool {
+    public var hasIncompletedBackup: Bool { //todo: incompeted and saved
         switch currentState {
         case .needWriteOriginCard, .needWriteBackupCard:
             return true
@@ -367,7 +367,7 @@ public class BackupService: ObservableObject {
 extension BackupService {
     public enum State: Equatable {
         case preparing
-        case needWriteOriginCard
+        case needWriteOriginCard //todo: rename finalizingO...
         case needWriteBackupCard(index: Int)
         case finished
     }
@@ -380,7 +380,7 @@ public struct OriginCard: Codable {
     public let linkingKey: Data
     
     //For compatibility check with backup card
-    public let existingWalletsCount: Int
+    public let existingWalletsCount: Int //TODO: detalize errors
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]

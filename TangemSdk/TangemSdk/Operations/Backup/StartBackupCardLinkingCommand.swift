@@ -44,7 +44,7 @@ final class StartBackupCardLinkingCommand: Command {
             switch result {
             case .success(let response):
                 do {
-                    let prefix = "BACKUP_SLAVE".data(using: .utf8)!
+                    let prefix = "BACKUP_SLAVE".data(using: .utf8)! //todo: -> remove
                     let dataAttest = prefix + self.originCardLinkingKey + response.linkingKey
                     let verified = try CryptoUtils.verify(curve: .secp256k1,
                                                           publicKey: response.cardPublicKey,

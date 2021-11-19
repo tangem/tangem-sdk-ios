@@ -9,7 +9,7 @@
 "nfc_session_timeout" = "Die Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.";
 
 // Label. When session is started and we ask user to hold the card near the phone
-"nfc_alert_default" = "Halten Sie Ihr iPhone an der Karte";
+"nfc_alert_default" = "Connect your phone and the card exactly as it shown above";
 
 // Label. When transaction has been signed
 "nfc_alert_sign_completed" = "Die Transaktion wurde erfolgreich signiert";

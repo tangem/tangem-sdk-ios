@@ -20,7 +20,7 @@ final class GetResetPinTokenCommand: Command {
         
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
-            return TangemSdkError.backupNotActive
+            return TangemSdkError.noActiveBackup
         }
         
         return nil

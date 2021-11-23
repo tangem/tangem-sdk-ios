@@ -29,11 +29,11 @@ final class StartBackupCardLinkingCommand: Command {
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if !card.wallets.isEmpty {
-            return .backupCannotBeCreatedNotEmptyWallets
+            return .backupFailedNotEmptyWallets
         }
 
         return nil

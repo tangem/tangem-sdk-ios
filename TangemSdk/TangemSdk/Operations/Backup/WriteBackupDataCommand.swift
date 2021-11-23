@@ -40,15 +40,15 @@ final class WriteBackupDataCommand: Command {
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.backupStatus == .noBackup {
-            return .backupCannotBeCreated
+            return .backupFailedCardNotLinked
         }
         
         if !card.wallets.isEmpty {
-            return .backupCannotBeCreatedNotEmptyWallets
+            return .backupFailedNotEmptyWallets
         }
 
         return nil

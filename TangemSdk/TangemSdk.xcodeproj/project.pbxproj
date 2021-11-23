@@ -58,6 +58,7 @@
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
+		5D46F537274D68010004681F /* DerivePublicKey.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F536274D68010004681F /* DerivePublicKey.json */; };
 		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
@@ -322,6 +323,7 @@
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
+		5D46F536274D68010004681F /* DerivePublicKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DerivePublicKey.json; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
 		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
@@ -669,6 +671,7 @@
 				5D3B9F0226BD678500532CC7 /* SignHashes.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
 				5D5440892682260000F7D05B /* SetAccessCode.json */,
+				5D46F536274D68010004681F /* DerivePublicKey.json */,
 				5D54408B2682269400F7D05B /* SetPasscode.json */,
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
@@ -1353,6 +1356,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */,
+				5D46F537274D68010004681F /* DerivePublicKey.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
 				5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */,
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,

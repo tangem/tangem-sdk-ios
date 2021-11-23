@@ -125,7 +125,7 @@ public class BackupService: ObservableObject {
                 self.handleCompletion($0, completion: completion)
             }
         case .preparing, .finished:
-            completion(.failure(TangemSdkError.backupInvalidCommandSequence))
+            completion(.failure(TangemSdkError.backupServiceInvalidState))
         }
     }
     
@@ -243,7 +243,7 @@ public class BackupService: ObservableObject {
             
             if handleErrors {
                 guard !linkableBackupCards.isEmpty else {
-                    throw TangemSdkError.backupCardRequired
+                    throw TangemSdkError.emptyBackupCards
                 }
                 
                 guard linkableBackupCards.count < 3 else {
@@ -285,7 +285,7 @@ public class BackupService: ObservableObject {
             let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
             guard let attestSignature = repo.data.attestSignature else {
-                throw TangemSdkError.originCardRequired
+                throw TangemSdkError.missingPrimaryAttestSignature
             }
             
             guard let originCard = repo.data.originCard else {
@@ -299,11 +299,7 @@ public class BackupService: ObservableObject {
             let cardIndex = index - 1
             
             guard cardIndex < repo.data.backupCards.count else {
-                throw TangemSdkError.backupCardRequired
-            }
-            
-            guard !repo.data.backupCards.isEmpty else {
-                throw TangemSdkError.backupCardRequired
+                throw TangemSdkError.noBackupCardForIndex
             }
             
             if handleErrors {
@@ -315,7 +311,7 @@ public class BackupService: ObservableObject {
             let backupCard = repo.data.backupCards[cardIndex]
             
             guard let backupData = repo.data.backupData[backupCard.cardId] else {
-                throw TangemSdkError.backupInvalidCommandSequence
+                throw TangemSdkError.noBackupDataForCard
             }
             
             let command = FinalizeBackupCardTask(originCard: originCard.makeLinkable(with: originCardCertificate),

@@ -20,7 +20,7 @@ public class BackupService: ObservableObject {
         &&  repo.data.originCard?.linkingKey != nil
     }
     
-    public var hasIncompletedBackup: Bool { //todo: incompeted and saved
+    public var hasIncompletedBackup: Bool {
         switch currentState {
         case .needWriteOriginCard, .needWriteBackupCard:
             return true
@@ -51,7 +51,7 @@ public class BackupService: ObservableObject {
         Log.debug("BackupService deinit")
     }
     
-    public func discardSavedBackup() {
+    public func discardIncompletedBackup() {
         repo.reset()
         updateState()
     }

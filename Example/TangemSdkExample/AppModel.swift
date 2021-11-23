@@ -22,6 +22,8 @@ class AppModel: ObservableObject {
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
     @Published var json: String =  ""
+    //Personalization
+    @Published var personalizationConfig: String =  ""
     
     //MARK:-  Outputs
     @Published var logText: String = AppModel.logPlaceholder
@@ -67,6 +69,16 @@ class AppModel: ObservableObject {
     func start(walletPublicKey: Data? = nil) {
         isScanning = true
         chooseMethod(walletPublicKey: walletPublicKey)
+    }
+    
+    func onAppear() {
+        if json.isEmpty {
+            json = AppModel.jsonRpcTemplate
+        }
+
+        if personalizationConfig.isEmpty {
+            personalizationConfig = AppModel.personalizeConfigTemplate
+        }
     }
     
     private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
@@ -122,6 +134,52 @@ class AppModel: ObservableObject {
         } else {
             showWalletSelection.toggle()
         }
+    }
+}
+
+// MARK:- Editor
+extension AppModel {
+    var editorData: String {
+        get {
+            switch method {
+            case .jsonrpc:
+                return json
+            case .personalize:
+                return personalizationConfig
+            default: return ""
+            }
+        }
+        
+        set {
+            switch method {
+            case .jsonrpc:
+                json = newValue
+            case .personalize:
+                personalizationConfig = newValue
+            default: break
+            }
+        }
+    }
+    
+    func printEditor() {
+        switch method {
+        case .jsonrpc:
+            printJson()
+        case .personalize:
+            printPersonalizationConfig()
+        default: break
+        }
+    }
+    
+    func pasteEditor() {
+        switch method {
+        case .jsonrpc:
+            pasteJson()
+        case .personalize:
+            pastePersonalizationConfig()
+        default: break
+        }
+
     }
 }
 
@@ -565,77 +623,66 @@ extension AppModel {
                                        completion: handleCompletion)
     }
     
-    func personalizeBackup2() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup2.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
-    func personalizeBackup1() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup1.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
-    func personalizeOrigin() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonOrigin.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
     func resetBackup() {
         tangemSdk.startSession(with: ResetBackupCommand(), completion: handleCompletion)
     }
 }
 
 //MARK:- Json RPC
-extension AppModel {
-    var jsonRpcTemplate: String {
-        """
-    {
-        "jsonrpc": "2.0",
-        "id": 2,
-        "method": "",
-        "params": {
-            
-        }
-    }
-    """
-    }
-    
+extension AppModel {    
     func runJsonRpc() {
         UIApplication.shared.endEditing()
         tangemSdk.startSession(with: json) { self.complete(with: $0) }
     }
     
-    func pasteJson() {
+    private func pasteJson() {
         if let string = UIPasteboard.general.string {
             json = string
             
             if #available(iOS 14.0, *) {} else {
-                log(json)
+                printJson()
             }
         }
     }
     
-    func printJson() {
+    private func printJson() {
         log(json)
+    }
+}
+
+//personalization
+extension AppModel {
+    private func pastePersonalizationConfig() {
+        if let string = UIPasteboard.general.string {
+            personalizationConfig = string
+            
+            if #available(iOS 14.0, *) {} else {
+                printPersonalizationConfig()
+            }
+        }
+    }
+    
+    private func printPersonalizationConfig() {
+        log(personalizationConfig)
+    }
+    
+    func personalize() {
+        do {
+            guard let configData = personalizationConfig.data(using: .utf8) else {
+                throw TangemSdkError.decodingFailed("Failed to convert congif to data")
+            }
+            
+            let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: configData)
+            let issuer = try JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+            let manufacturer = try JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+            let personalizeCommand = PersonalizeCommand(config: config,
+                                                        issuer: issuer,
+                                                        manufacturer: manufacturer)
+            
+            tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
+        } catch {
+            log(error)
+        }
     }
 }
 
@@ -671,9 +718,7 @@ extension AppModel {
         case writeUserProtectedData
         //developer
         case depersonalize
-        case personalizeO
-        case personalizeB1
-        case personalizeB2
+        case personalize
         case resetBackup
     }
     
@@ -704,9 +749,7 @@ extension AppModel {
         case .writeUserProtectedData: writeUserProtectedData()
         case .derivePublicKey: derivePublicKey()
         case .jsonrpc: runJsonRpc()
-        case .personalizeO: personalizeOrigin()
-        case .personalizeB1: personalizeBackup1()
-        case .personalizeB2: personalizeBackup2()
+        case .personalize: personalize()
         case .resetBackup: resetBackup()
         }
     }

@@ -11,119 +11,13 @@ import Foundation
 //MARK:- Personalization jsons
 
 extension AppModel {
-    static var configJsonOrigin =
+    static var personalizeConfigTemplate =
         """
      {
         "releaseVersion": true,
         "issuerName": "TANGEM AG",
         "series": "CB",
         "startNumber": 7900000000000,
-        "count": 2500,
-        "numberFormat": "",
-        "PIN": "000000",
-        "PIN2": "000",
-        "CVC": "000",
-        "walletsCount": 20,
-        "pauseBeforePIN2": 5000,
-        "smartSecurityDelay": true,
-        "curveID": "secp256k1",
-        "SigningMethod": 0,
-        "isReusable": false,
-        "allowSwapPIN": false,
-        "allowSwapPIN2": true,
-        "useActivation": false,
-        "useCVC": false,
-        "useNDEF": true,
-        "useBlock": false,
-        "allowSelectBlockchain": true,
-        "forbidPurgeWallet": false,
-        "protocolAllowUnencrypted": true,
-        "protocolAllowStaticEncryption": true,
-        "forbidDefaultPIN": false,
-        "skipSecurityDelayIfValidatedByIssuer": false,
-        "skipCheckPIN2andCVCIfValidatedByIssuer": false,
-        "skipSecurityDelayIfValidatedByLinkedTerminal": true,
-        "disableIssuerData": true,
-        "disableUserData": false,
-        "disableFiles": false,
-        "allowHDWallets": true,
-        "allowBackup": true,
-        "NDEF": [],
-        "cardData": {
-            "date": "2021-03-15",
-            "batch": "CB79",
-            "blockchain": "ANY",
-            "product_note": true,
-            "product_tag": false,
-            "product_id_card": false,
-            "product_id_issuer": false,
-            "product_authentication": false,
-            "product_twin": false
-        },
-        "createWallet": 0
-    }
-    """
-    
-    static var configJsonBackup1 =
-        """
-     {
-        "releaseVersion": true,
-        "issuerName": "TANGEM AG",
-        "series": "CB",
-        "startNumber": 7900000000001,
-        "count": 2500,
-        "numberFormat": "",
-        "PIN": "000000",
-        "PIN2": "000",
-        "CVC": "000",
-        "walletsCount": 20,
-        "pauseBeforePIN2": 5000,
-        "smartSecurityDelay": true,
-        "curveID": "secp256k1",
-        "SigningMethod": 0,
-        "isReusable": false,
-        "allowSwapPIN": false,
-        "allowSwapPIN2": true,
-        "useActivation": false,
-        "useCVC": false,
-        "useNDEF": true,
-        "useBlock": false,
-        "allowSelectBlockchain": true,
-        "forbidPurgeWallet": false,
-        "protocolAllowUnencrypted": true,
-        "protocolAllowStaticEncryption": true,
-        "forbidDefaultPIN": false,
-        "skipSecurityDelayIfValidatedByIssuer": false,
-        "skipCheckPIN2andCVCIfValidatedByIssuer": false,
-        "skipSecurityDelayIfValidatedByLinkedTerminal": true,
-        "disableIssuerData": true,
-        "disableUserData": false,
-        "disableFiles": false,
-        "allowHDWallets": true,
-        "allowBackup": true,
-        "NDEF": [],
-        "cardData": {
-            "date": "2021-03-15",
-            "batch": "CB79",
-            "blockchain": "ANY",
-            "product_note": true,
-            "product_tag": false,
-            "product_id_card": false,
-            "product_id_issuer": false,
-            "product_authentication": false,
-            "product_twin": false
-        },
-        "createWallet": 0
-    }
-    """
-    
-    static var configJsonBackup2 =
-        """
-     {
-        "releaseVersion": true,
-        "issuerName": "TANGEM AG",
-        "series": "CB",
-        "startNumber": 7900000000002,
         "count": 2500,
         "numberFormat": "",
         "PIN": "000000",
@@ -181,7 +75,6 @@ extension AppModel {
                 }
     """
     
-    
     static var issuerJson =
         """
             {
@@ -209,4 +102,18 @@ extension AppModel {
                     "id": "Smart Cash"
                 }
     """
+    
+    static var jsonRpcTemplate: String {
+        """
+    {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "",
+        "params": {
+            
+        }
+    }
+    """
+    }
 }
+

@@ -257,7 +257,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupFailedCardNotLinked
     case backupNotAllowed
     case backupCardAlreadyAdded
-    case missingOriginCard
+    case missingPrimaryCard
     case missingPrimaryAttestSignature
     case tooMuchBackupCards
     case backupCardRequired
@@ -371,7 +371,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         
         case .backupFailedCardNotLinked: return 41201
         case .backupCardAlreadyAdded: return 41202
-        case .missingOriginCard: return 41203
+        case .missingPrimaryCard: return 41203
         case .backupNotAllowed: return 41204
         case .missingPrimaryAttestSignature: return 41205
         case .tooMuchBackupCards: return 41206

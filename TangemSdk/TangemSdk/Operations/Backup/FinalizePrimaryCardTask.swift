@@ -1,5 +1,5 @@
 //
-//  ReadFullBackupData.swift
+//  FinalizePrimaryCardTask.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 24.08.2021.
@@ -9,11 +9,10 @@
 import Foundation
 
 @available(iOS 13.0, *)
-class FinalizeOriginCardTask: CardSessionRunnable {
+class FinalizePrimaryCardTask: CardSessionRunnable {
     private let backupCards: [LinkableBackupCard]
     private let accessCode: Data
     private let passcode: Data
-    private let originCardLinkingKey: Data //only for verification
     private var attestSignature: Data? //We already have attestSignature
     private let onLink: (Data) -> Void
     private let onRead: ((String, [EncryptedBackupData])) -> Void
@@ -22,15 +21,13 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     init(backupCards: [LinkableBackupCard],
          accessCode: Data,
          passcode: Data,
-         originCardLinkingKey: Data, //for restore
-         readBackupStartIndex: Int, // for restore
+         readBackupStartIndex: Int, //for restore
          attestSignature: Data?,
          onLink: @escaping (Data) -> Void,
          onRead: @escaping ((String,[EncryptedBackupData])) -> Void) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
-        self.originCardLinkingKey = originCardLinkingKey
         self.attestSignature = attestSignature
         self.onLink = onLink
         self.onRead = onRead
@@ -38,7 +35,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
     }
     
     deinit {
-        Log.debug("FinalizeOriginCardTask deinit")
+        Log.debug("FinalizePrimaryCardTask deinit")
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
@@ -67,8 +64,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
         if linkAction != .skip {
             let command = LinkBackupCardsCommand(backupCards: backupCards,
                                                  accessCode: accessCode,
-                                                 passcode: passcode,
-                                                 originCardLinkingKey: originCardLinkingKey)
+                                                 passcode: passcode)
             
             command.run(in: session) { linkResult in
                 switch linkResult {
@@ -121,7 +117,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
 }
 
 @available(iOS 13.0, *)
-private extension FinalizeOriginCardTask {
+private extension FinalizePrimaryCardTask {
     enum LinkAction {
         case link
         case skip

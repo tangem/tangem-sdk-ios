@@ -10,12 +10,12 @@ import Foundation
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
-    private let originCard: OriginCard
+    private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
     private var command: StartBackupCardLinkingCommand? = nil
     
-    init(originCard: OriginCard, addedBackupCards: [String]) {
-        self.originCard = originCard
+    init(primaryCard: PrimaryCard, addedBackupCards: [String]) {
+        self.primaryCard = primaryCard
         self.addedBackupCards = addedBackupCards
     }
     
@@ -26,30 +26,30 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                 return
             }
             
-            let originWalletCurves = Set(originCard.walletCurves)
+            let primaryWalletCurves = Set(primaryCard.walletCurves)
             let backupCardSupportedCurves = Set(card.supportedCurves)
             
-            if card.issuer.publicKey != originCard.issuer.publicKey {
+            if card.issuer.publicKey != primaryCard.issuer.publicKey {
                 completion(.failure(.backupFailedWrongIssuer))
                 return
             }
             
-            if card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed {
+            if card.settings.isHDWalletAllowed != primaryCard.isHDWalletAllowed {
                 completion(.failure(.backupFailedHDWalletSettings))
                 return
             }
             
-            if !originWalletCurves.isSubset(of: backupCardSupportedCurves) {
+            if !primaryWalletCurves.isSubset(of: backupCardSupportedCurves) {
                 completion(.failure(.backupFailedNotEnoughCurves))
                 return
             }
             
-            if originCard.existingWalletsCount > card.settings.maxWalletsCount {
+            if primaryCard.existingWalletsCount > card.settings.maxWalletsCount {
                 completion(.failure(.backupFailedNotEnoughWallets))
                 return
             }
             
-            if card.cardId.lowercased() == originCard.cardId.lowercased() {
+            if card.cardId.lowercased() == primaryCard.cardId.lowercased() {
                 completion(.failure(.backupCardRequired))
                 return
             }
@@ -60,7 +60,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             }
         }
         
-        self.command = StartBackupCardLinkingCommand(originCardLinkingKey: originCard.linkingKey)
+        self.command = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
         command?.run(in: session, completion: completion)
     }
     

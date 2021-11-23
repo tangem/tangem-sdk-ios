@@ -176,20 +176,9 @@ extension AppModel {
                        completion: handleCompletion)
     }
     
-    func derivePublicKey() {
+    func derivePublicKey(walletPublicKey: Data) {
         guard let card = card else {
             self.complete(with: "Scan card before")
-            return
-        }
-        
-        guard card.firmwareVersion >= .hdWalletAvailable else {
-            self.complete(with: "Not supported firmware verison.")
-            return
-        }
-        
-        guard let wallet = card.wallets.first(where: { $0.curve == .secp256k1 }),
-              let chainCode = wallet.chainCode else {
-            self.complete(with: "The wallet with the secp256k1 curve not found")
             return
         }
         
@@ -200,15 +189,10 @@ extension AppModel {
         
         UIApplication.shared.endEditing()
         
-        let masterKey = ExtendedPublicKey(compressedPublicKey: wallet.publicKey,
-                                          chainCode: chainCode)
-        
-        do {
-            let childKey = try masterKey.derivePublicKey(path: path)
-            handleCompletion(.success(childKey))
-        } catch {
-            self.complete(with: error.localizedDescription)
-        }
+        tangemSdk.derivePublicKey(cardId: card.cardId,
+                                  walletPublicKey: walletPublicKey,
+                                  hdPath: path,
+                                  completion: handleCompletion)
     }
     
     func createWallet() {
@@ -607,7 +591,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: derivePublicKey()
+        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
         }
     }

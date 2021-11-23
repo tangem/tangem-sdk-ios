@@ -49,14 +49,6 @@ public struct DerivationPath: Equatable, Hashable {
         self.rawPath =  "\(BIP32.Constants.masterKeySymbol)\(BIP32.Constants.separatorSymbol)\(description)"
     }
     
-    /// Convert path to non-hardened nodes only
-    /// We can use non-hardened derivation only without tapping the Tangem card.
-    /// - Returns: Non-hardened path according BIP32
-    public func toNonHardened() -> DerivationPath {
-        let nonHardenedNodes = nodes.map { $0.toNonHardened() }
-        return DerivationPath(nodes: nonHardenedNodes)
-    }
-    
     private init(rawPath: String, nodes: [DerivationNode]) {
         self.rawPath = rawPath
         self.nodes = nodes

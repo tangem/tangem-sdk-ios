@@ -43,11 +43,11 @@ struct BackupView: View {
             Spacer()
             
             VStack(spacing: 8) {
-                let msg = "Has origin card: \(backupService.originCardIsSet)"
+                let msg = "Has origin card: \(backupService.primaryCardIsSet)"
                 Text(msg)
                 
                 Button("Read origin card") {
-                    backupService.readOriginCard { result in
+                    backupService.readPrimaryCard { result in
                         switch result {
                         case .success(let newState):
                             self.errorText = ""

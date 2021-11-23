@@ -22,8 +22,8 @@
 		5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
 		5D1C6C7327214F3100E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
 		5D2BDF8226DCE5A2002F7E19 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
-		5D2BDF8326DCE5A6002F7E19 /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
-		5D3ABA3D26D02C5C0087EF4A /* PersonalizationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */; };
+		5D2BDF8326DCE5A6002F7E19 /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */; };
+		5D3ABA3D26D02C5C0087EF4A /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */; };
 		5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
 		5D445B8026E2A8CF00F6F0FE /* ResetPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */; };
 		5D445B8126E2A97300F6F0FE /* ResetPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */; };
@@ -71,7 +71,7 @@
 		5D032008266A8523008472EC /* ExampleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleButton.swift; sourceTree = "<group>"; };
 		5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		5D1C6C7127214EA900E04A8B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationData.swift; sourceTree = "<group>"; };
+		5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticData.swift; sourceTree = "<group>"; };
 		5D3C2BCE26D93E7200722E33 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
 		5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinView.swift; sourceTree = "<group>"; };
 		5D78C1B6234F435B008D7478 /* TangemSdkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,7 +135,7 @@
 		5D2BDF7E26DCE000002F7E19 /* Developer */ = {
 			isa = PBXGroup;
 			children = (
-				5D3ABA3C26D02C5C0087EF4A /* PersonalizationData.swift */,
+				5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */,
 				5D3C2BCE26D93E7200722E33 /* BackupView.swift */,
 				5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */,
 			);
@@ -375,7 +375,7 @@
 			files = (
 				5D031FFD266A6960008472EC /* ContentView.swift in Sources */,
 				5D78C1BA234F435B008D7478 /* AppDelegate.swift in Sources */,
-				5D3ABA3D26D02C5C0087EF4A /* PersonalizationData.swift in Sources */,
+				5D3ABA3D26D02C5C0087EF4A /* StaticData.swift in Sources */,
 				5D032001266A6A15008472EC /* AppModel.swift in Sources */,
 				5D032009266A8523008472EC /* ExampleButton.swift in Sources */,
 				B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */,
@@ -391,7 +391,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D2BDF8326DCE5A6002F7E19 /* PersonalizationData.swift in Sources */,
+				5D2BDF8326DCE5A6002F7E19 /* StaticData.swift in Sources */,
 				5D031FFE266A6960008472EC /* ContentView.swift in Sources */,
 				5DBC25BA235F053F005F0C79 /* AppDelegate.swift in Sources */,
 				5D032002266A6A15008472EC /* AppModel.swift in Sources */,

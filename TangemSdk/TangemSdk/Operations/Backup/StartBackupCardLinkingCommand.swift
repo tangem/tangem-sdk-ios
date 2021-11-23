@@ -39,31 +39,6 @@ final class StartBackupCardLinkingCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
-        transceive(in: session) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let prefix = "BACKUP_SLAVE".data(using: .utf8)! //todo: -> remove
-                    let dataAttest = prefix + self.originCardLinkingKey + response.linkingKey
-                    let verified = try CryptoUtils.verify(curve: .secp256k1,
-                                                          publicKey: response.cardPublicKey,
-                                                          message: dataAttest,
-                                                          signature: response.attestSignature)
-                    if !verified {
-                        throw TangemSdkError.invalidLinkingSignature
-                    }
-                    
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)

@@ -28,9 +28,9 @@ struct BackupView: View {
         switch backupService.currentState {
         case .preparing:
             return "Preparing"
-        case .needWriteOriginCard:
+        case .finalizingPrimaryCard:
             return "Scan origin card again"
-        case .needWriteBackupCard(let index):
+        case .finalizingBackupCard(let index):
             return "Scan backup card again with index: \(index)"
         case .finished:
             return "Backup succeded"

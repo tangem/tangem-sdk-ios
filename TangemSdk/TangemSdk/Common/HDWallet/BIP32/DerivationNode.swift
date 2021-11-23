@@ -30,15 +30,6 @@ public enum DerivationNode: Equatable, Hashable {
             return index
         }
     }
-    
-    public func toNonHardened() -> DerivationNode {
-        switch self {
-        case .hardened(let index):
-            return .notHardened(index)
-        case .notHardened:
-            return self
-        }
-    }
 }
 
 extension DerivationNode {

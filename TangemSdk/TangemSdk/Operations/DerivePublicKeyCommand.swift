@@ -9,14 +9,19 @@
 import Foundation
 
 @available(iOS 13.0, *)
+/// Derive public key according to BIP32 (Private parent key → public child key)
 public class DerivePublicKeyCommand: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode = .readCardOnly
     
     private let walletPublicKey: Data
     private let hdPath: DerivationPath
     
-    init(publicKey: Data, hdPath: DerivationPath) {
-        self.walletPublicKey = publicKey
+    /// Default initializer
+    /// - Parameters:
+    ///   - walletPublicKey: Public key of wallet that should derive the key.
+    ///   - hdPath: Derivation path
+    public init(walletPublicKey: Data, hdPath: DerivationPath) {
+        self.walletPublicKey = walletPublicKey
         self.hdPath = hdPath
     }
     

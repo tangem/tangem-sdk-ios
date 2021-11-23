@@ -13,10 +13,10 @@ import Foundation
 final class StartBackupCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
-    private let originCardLinkingKey: Data
+    private let primaryCardLinkingKey: Data
     
-    init(originCardLinkingKey: Data) {
-        self.originCardLinkingKey = originCardLinkingKey
+    init(primaryCardLinkingKey: Data) {
+        self.primaryCardLinkingKey = primaryCardLinkingKey
     }
     
     deinit {
@@ -43,7 +43,7 @@ final class StartBackupCardLinkingCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.originCardLinkingKey, value: originCardLinkingKey)
+            .append(.primaryCardLinkingKey, value: primaryCardLinkingKey)
         
         return CommandApdu(.startBackupCardLinking, tlv: tlvBuilder.serialize())
     }

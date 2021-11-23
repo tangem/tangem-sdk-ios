@@ -89,7 +89,7 @@ class FinalizeOriginCardTask: CardSessionRunnable {
             completion(.success(session.environment.card!))
             return
         }
-        //todo: save concrete read to restore
+
         let currentBackupCard = backupCards[index]
         let command = ReadBackupDataCommand(backupCardLinkingKey: currentBackupCard.linkingKey, accessCode: accessCode)
         command.run(in: session) { result in

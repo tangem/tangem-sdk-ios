@@ -47,7 +47,7 @@ final class GetResetPinTokenCommand: Command {
         }
         
         let card = ResetPinCard(cardId: try decoder.decode(.cardId),
-                                backupKey: try decoder.decode(.originCardLinkingKey),
+                                backupKey: try decoder.decode(.primaryCardLinkingKey),
                                 attestSignature: try decoder.decode(.backupAttestSignature),
                                 token: try decoder.decode(.challenge),
                                 isAccessCodeSet: isAccessCodeSet,

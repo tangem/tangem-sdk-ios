@@ -24,11 +24,11 @@ public final class StartOriginCardLinkingCommand: Command { //todo: rename -> pr
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.wallets.isEmpty {
-            return .backupCannotBeCreatedEmptyWallets
+            return .backupFailedEmptyWallets
         }
         
         return nil

@@ -22,7 +22,7 @@ public class BackupService: ObservableObject {
     
     public var hasIncompletedBackup: Bool {
         switch currentState {
-        case .needWriteOriginCard, .needWriteBackupCard:
+        case .finalizingPrimaryCard, .finalizingBackupCard:
             return true
         default:
             return false
@@ -85,7 +85,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+        guard currentState == .preparing || currentState == .finalizingPrimaryCard else {
             throw TangemSdkError.accessCodeCannotBeChanged
         }
         
@@ -106,7 +106,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+        guard currentState == .preparing || currentState == .finalizingPrimaryCard else {
             throw TangemSdkError.passcodeCannotBeChanged
         }
         
@@ -116,11 +116,11 @@ public class BackupService: ObservableObject {
     
     public func proceedBackup(completion: @escaping CompletionResult<Card>) {
         switch currentState {
-        case .needWriteOriginCard:
+        case .finalizingPrimaryCard:
             handleWriteOriginCard() {
                 self.handleCompletion($0, completion: completion)
             }
-        case .needWriteBackupCard(let index):
+        case .finalizingBackupCard(let index):
             handleWriteBackupCard(index: index) {
                 self.handleCompletion($0, completion: completion)
             }
@@ -177,9 +177,9 @@ public class BackupService: ObservableObject {
             || repo.data.backupCards.isEmpty {
             currentState = .preparing
         } else if repo.data.attestSignature == nil || repo.data.backupData.isEmpty {
-            currentState = .needWriteOriginCard
+            currentState = .finalizingPrimaryCard
         } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
-            currentState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
+            currentState = .finalizingBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
         } else {
             currentState = .finished
             onBackupCompleted()
@@ -363,8 +363,8 @@ public class BackupService: ObservableObject {
 extension BackupService {
     public enum State: Equatable {
         case preparing
-        case needWriteOriginCard //todo: rename finalizingO...
-        case needWriteBackupCard(index: Int)
+        case finalizingPrimaryCard
+        case finalizingBackupCard(index: Int)
         case finished
     }
 }
@@ -376,7 +376,7 @@ public struct OriginCard: Codable {
     public let linkingKey: Data
     
     //For compatibility check with backup card
-    public let existingWalletsCount: Int //TODO: detalize errors
+    public let existingWalletsCount: Int
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]

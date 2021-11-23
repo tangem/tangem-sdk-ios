@@ -23,13 +23,11 @@ final class LinkBackupCardsCommand: Command {
     private let backupCards: [LinkableBackupCard]
     private let accessCode: Data
     private let passcode: Data
-    private let originCardLinkingKey: Data //only for verification
-    
-    init(backupCards: [LinkableBackupCard], accessCode: Data, passcode: Data, originCardLinkingKey: Data) {
+
+    init(backupCards: [LinkableBackupCard], accessCode: Data, passcode: Data) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
-        self.originCardLinkingKey = originCardLinkingKey
     }
     
     deinit {

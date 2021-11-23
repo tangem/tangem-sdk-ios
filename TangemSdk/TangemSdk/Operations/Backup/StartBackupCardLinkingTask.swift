@@ -29,11 +29,23 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             let originWalletCurves = Set(originCard.walletCurves)
             let backupCardSupportedCurves = Set(card.supportedCurves)
             
-            if card.issuer.publicKey != originCard.issuer.publicKey
-                || card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed
-                || !originWalletCurves.isSubset(of: backupCardSupportedCurves)
-                || originCard.existingWalletsCount > card.settings.maxWalletsCount {
-                completion(.failure(.backupCannotBeCreated))
+            if card.issuer.publicKey != originCard.issuer.publicKey {
+                completion(.failure(.backupFailedWrongIssuer))
+                return
+            }
+            
+            if card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed {
+                completion(.failure(.backupFailedHDWalletSettings))
+                return
+            }
+            
+            if !originWalletCurves.isSubset(of: backupCardSupportedCurves) {
+                completion(.failure(.backupFailedNotEnoughCurves))
+                return
+            }
+            
+            if originCard.existingWalletsCount > card.settings.maxWalletsCount {
+                completion(.failure(.backupFailedNotEnoughWallets))
                 return
             }
             
@@ -43,7 +55,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             }
             
             if addedBackupCards.contains(card.cardId) {
-                completion(.failure(.backupCardAlreadyInList))
+                completion(.failure(.backupCardAlreadyAdded))
                 return
             }
         }

@@ -226,6 +226,22 @@ public extension TangemSdk {
         startSession(with: SetUserCodeCommand.resetUserCodes, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
+    /// Derive public key according to BIP32 (Private parent key → public child key)
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - walletPublicKey: Public key of wallet that should derive the key.
+    ///   - hdPath: Derivation path
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    func derivePublicKey(cardId: String,
+                         walletPublicKey: Data,
+                         hdPath: DerivationPath,
+                         initialMessage: Message? = nil,
+                         completion: @escaping CompletionResult<ExtendedPublicKey>) {
+        let command = DerivePublicKeyCommand(walletPublicKey: walletPublicKey, hdPath: hdPath)
+        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+    
     //MARK: - Files
     
     /// This command reads all files stored on card.

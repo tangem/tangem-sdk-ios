@@ -96,16 +96,6 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(path, "m/44'/0'/0'/0/0")
     }
     
-    func testBitcoinBip44ForTangem() {
-        let buidler = BIP44(coinType: 0,
-                            account: 0,
-                            change: .external,
-                            addressIndex: 0)
-        
-        let path = buidler.buildPath().toNonHardened().rawPath
-        XCTAssertEqual(path, "m/44/0/0/0/0")
-    }
-    
     func testPathDerivation() {
         let path = try! DerivationPath(rawPath: "m/0")
         
@@ -130,39 +120,6 @@ class HDWalletTests: XCTestCase {
                        "8d5e25bfe038e4ef37e2c5ec963b7a7c7a745b4319bff873fc40f1a52c7d6fd1")
         XCTAssertEqual(childKey?.compressedPublicKey.hexString.lowercased(),
                        "02d27a781fd1b3ec5ba5017ca55b9b900fde598459a0204597b37e6c66a0e35c98")
-    }
-    
-    func testEthDerivation() {
-        //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
-        let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
-        let ethPath = BIP44.buildPath(for: 60)
-        let childKey = try! masterKey.derivePublicKey(path: ethPath)
-        let childKey1 = try! masterKey.derivePublicKey(path: try! DerivationPath(rawPath: "m/44/60"))
-        
-        XCTAssertEqual(childKey, childKey1)
-        
-        XCTAssertEqual(childKey.chainCode.hexString.lowercased(),
-                       "8bef790efd848a775aef08bbfd702dc8fe7fabaab2fcce473ddd8a9bd113aef1")
-        XCTAssertEqual(childKey.compressedPublicKey.hexString.lowercased(),
-                       "02c2fd0dc466bc05b0aadd14d933bf7ece3705af0846c471eaf16cf98c1341013d")
-    }
-    
-    func testPathDerivationBip44() {
-        let buidler = BIP44(coinType: 0,
-                            account: 0,
-                            change: .internal,
-                            addressIndex: 0)
-        
-        let path = buidler.buildPath().toNonHardened()
-        
-        let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
-        
-        let childKey = try? masterKey.derivePublicKey(path: path)
-        XCTAssertEqual(childKey?.chainCode.hexString.lowercased(),
-                       "70009e1a12a32e3c106af696222dbdbd678278495fe3cd12eb4611965821f368")
-        XCTAssertEqual(childKey?.compressedPublicKey.hexString.lowercased(), "02c2c9e694b2862b061acbe77bb926ac3e766cde72c7b4ac814b862c83fe80d239")
     }
     
     func testPathDerivationFailed() {

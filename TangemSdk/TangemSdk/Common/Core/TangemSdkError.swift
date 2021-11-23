@@ -254,21 +254,28 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletCannotBeCreated
         
     // MARK: Backup errors
-    case backupCannotBeCreated
-    case backupCardAlreadyInList
+    case backupFailedCardNotLinked
+    case backupNotAllowed
+    case backupCardAlreadyAdded
     case missingOriginCard
-    case invalidLinkingSignature
-    case originCardRequired
+    case missingPrimaryAttestSignature
     case tooMuchBackupCards
     case backupCardRequired
-    case backupInvalidCommandSequence
-    case backupCannotBeCreatedEmptyWallets
-    case backupCannotBeCreatedNotEmptyWallets
+    case noBackupDataForCard
+    case backupFailedEmptyWallets
+    case backupFailedNotEmptyWallets
     case certificateRequired
     case accessCodeOrPasscodeRequired
-    case backupNotActive
-    case backupCannotBeResettedHasBackupedWallets
-   
+    case noActiveBackup
+    case resetBackupFailedHasBackupedWallets
+    case backupServiceInvalidState
+    case noBackupCardForIndex
+    case emptyBackupCards
+    case backupFailedWrongIssuer
+    case backupFailedHDWalletSettings
+    case backupFailedNotEnoughCurves
+    case backupFailedNotEnoughWallets
+
     //MARK: Settings
     case filesDisabled
     case hdWalletDisabled
@@ -362,20 +369,27 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .extendedDataSizeTooLarge: return 41101
         
-        case .backupCannotBeCreated: return 41201
-        case .backupCardAlreadyInList: return 41202
+        case .backupFailedCardNotLinked: return 41201
+        case .backupCardAlreadyAdded: return 41202
         case .missingOriginCard: return 41203
-        case .invalidLinkingSignature: return 41204
-        case .originCardRequired: return 41205
+        case .backupNotAllowed: return 41204
+        case .missingPrimaryAttestSignature: return 41205
         case .tooMuchBackupCards: return 41206
         case .backupCardRequired: return 41207
-        case .backupInvalidCommandSequence: return 41208
-        case .backupCannotBeCreatedEmptyWallets: return 41209
-        case .backupCannotBeCreatedNotEmptyWallets: return 41210
+        case .noBackupDataForCard: return 41208
+        case .backupFailedEmptyWallets: return 41209
+        case .backupFailedNotEmptyWallets: return 41210
         case .certificateRequired: return 41211
         case .accessCodeOrPasscodeRequired: return 41212
-        case .backupNotActive: return 41220
-        case .backupCannotBeResettedHasBackupedWallets: return 41221
+        case .noActiveBackup: return 41220
+        case .resetBackupFailedHasBackupedWallets: return 41221
+        case .backupServiceInvalidState: return 41222
+        case .noBackupCardForIndex: return 41223
+        case .emptyBackupCards: return 41224
+        case .backupFailedWrongIssuer: return 41225
+        case .backupFailedHDWalletSettings: return 41226
+        case .backupFailedNotEnoughCurves: return 41227
+        case .backupFailedNotEnoughWallets: return 41228
             
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard: return 41301

@@ -42,11 +42,11 @@ final class LinkBackupCardsCommand: Command {
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.wallets.isEmpty {
-            return .backupCannotBeCreatedEmptyWallets
+            return .backupFailedEmptyWallets
         }
         
         return nil

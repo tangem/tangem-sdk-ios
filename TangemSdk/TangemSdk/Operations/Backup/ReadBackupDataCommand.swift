@@ -55,15 +55,15 @@ final class ReadBackupDataCommand: Command {
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.backupStatus == .noBackup {
-            return .backupCannotBeCreated
+            return .backupFailedCardNotLinked
         }
         
         if card.wallets.isEmpty {
-            return .backupCannotBeCreatedEmptyWallets
+            return .backupFailedEmptyWallets
         }
         
         return nil

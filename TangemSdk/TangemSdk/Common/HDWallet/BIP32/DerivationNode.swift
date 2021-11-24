@@ -10,13 +10,13 @@ import Foundation
 
 public enum DerivationNode: Equatable, Hashable {
     case hardened(UInt32)
-    case notHardened(UInt32)
+    case nonHardened(UInt32)
     
     public var pathDescription: String {
         switch self {
         case .hardened(let index):
             return "\(index)\(BIP32.Constants.hardenedSymbol)"
-        case .notHardened(let index):
+        case .nonHardened(let index):
             return "\(index)"
         }
     }
@@ -26,8 +26,25 @@ public enum DerivationNode: Equatable, Hashable {
         case .hardened(let index):
             let hardenedIndex = index + BIP32.Constants.hardenedOffset
             return hardenedIndex
-        case .notHardened(let index):
+        case .nonHardened(let index):
             return index
+        }
+    }
+    
+    public var isHardened: Bool {
+        switch self {
+        case .hardened:
+            return true
+        case .nonHardened:
+            return false
+        }
+    }
+    
+    public static func fromIndex(_ index: UInt32) -> DerivationNode {
+        if index < BIP32.Constants.hardenedOffset {
+            return .nonHardened(index)
+        } else {
+            return .hardened(index - BIP32.Constants.hardenedOffset)
         }
     }
 }
@@ -43,6 +60,6 @@ extension DerivationNode {
             return .hardened(index - BIP32.Constants.hardenedOffset)
         }
         
-        return .notHardened(index)
+        return .nonHardened(index)
     }
 }

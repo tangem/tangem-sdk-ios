@@ -26,7 +26,8 @@ public final class JSONRPCConverter {
         converter.register(WriteFilesHandler())
         converter.register(DeleteFilesHandler())
         converter.register(ChangeFileSettingsHandler())
-        converter.register(DerivePublicKeyHandler())
+        converter.register(DeriveWalletPublicKeyHandler())
+        converter.register(DeriveWalletPublicKeysHandler())
         return converter
     }()
     

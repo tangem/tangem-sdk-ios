@@ -29,8 +29,8 @@ public struct BIP44 {
         let nodes: [DerivationNode] = [.hardened(BIP44.purpose),
                                        .hardened(coinType),
                                        .hardened(account),
-                                       .notHardened(change.index),
-                                       .notHardened(addressIndex)]
+                                       .nonHardened(change.index),
+                                       .nonHardened(addressIndex)]
         return DerivationPath(nodes: nodes)
     }
 }

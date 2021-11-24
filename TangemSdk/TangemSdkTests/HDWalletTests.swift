@@ -14,9 +14,10 @@ import XCTest
 class HDWalletTests: XCTestCase {
     func testDerivation1() {
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"),
-                                          chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"))
+                                          chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"),
+                                          derivationPath: .init())
         
-        let derived = try? masterKey.derivePublicKey(index: 1)
+        let derived = try? masterKey.derivePublicKey(node: .nonHardened(1))
         XCTAssertNotNil(derived)
         
         let key = derived!.compressedPublicKey.hexString.lowercased()
@@ -27,9 +28,10 @@ class HDWalletTests: XCTestCase {
     
     func testDerivation0() {
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"),
+                                          derivationPath: .init())
         
-        let derived = try? masterKey.derivePublicKey(index: 0)
+        let derived = try? masterKey.derivePublicKey(node: .nonHardened(0))
         XCTAssertNotNil(derived)
         
         let key = derived!.compressedPublicKey.hexString.lowercased()
@@ -42,7 +44,7 @@ class HDWalletTests: XCTestCase {
         let derivationPath = try? DerivationPath(rawPath: "m / 44' / 0' / 0' / 1 / 0")
         let derivationPath1 = try? DerivationPath(rawPath: "m/44'/0'/0'/1/0")
         let derivationPath2 = try? DerivationPath(rawPath: "M/44'/0'/0'/1/0")
-        let derivationPath3 = DerivationPath(nodes: [.hardened(44), .hardened(0), .hardened(0), .notHardened(1), .notHardened(0)])
+        let derivationPath3 = DerivationPath(nodes: [.hardened(44), .hardened(0), .hardened(0), .nonHardened(1), .nonHardened(0)])
         XCTAssertNotNil(derivationPath)
         XCTAssertNotNil(derivationPath1)
         XCTAssertNotNil(derivationPath2)
@@ -53,8 +55,8 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(derivationPath?.nodes[0], DerivationNode.hardened(44))
         XCTAssertEqual(derivationPath?.nodes[1], DerivationNode.hardened(0))
         XCTAssertEqual(derivationPath?.nodes[2], DerivationNode.hardened(0))
-        XCTAssertEqual(derivationPath?.nodes[3], DerivationNode.notHardened(1))
-        XCTAssertEqual(derivationPath?.nodes[4], DerivationNode.notHardened(0))
+        XCTAssertEqual(derivationPath?.nodes[3], DerivationNode.nonHardened(1))
+        XCTAssertEqual(derivationPath?.nodes[4], DerivationNode.nonHardened(0))
         
         let derivationPathWrong = try? DerivationPath(rawPath: "44'/m'/0'/1/0")
         XCTAssertNil(derivationPathWrong)
@@ -100,7 +102,8 @@ class HDWalletTests: XCTestCase {
         let path = try! DerivationPath(rawPath: "m/0")
         
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"),
+                                          derivationPath: .init())
         
         let childKey = try? masterKey.derivePublicKey(path: path)
         XCTAssertEqual(childKey?.chainCode.hexString.lowercased(),
@@ -112,7 +115,8 @@ class HDWalletTests: XCTestCase {
         let path = try! DerivationPath(rawPath: "m/0/1")
         //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8doc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"),
+                                          derivationPath: .init())
         
         let childKey = try? masterKey.derivePublicKey(path: path)
         
@@ -131,7 +135,8 @@ class HDWalletTests: XCTestCase {
         let path = buidler.buildPath()
         
         let masterKey = ExtendedPublicKey(compressedPublicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
-                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
+                                          chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"),
+                                          derivationPath: .init())
         
         XCTAssertThrowsError(try masterKey.derivePublicKey(path: path)) { error in
             let hdError = error as? HDWalletError
@@ -144,5 +149,11 @@ class HDWalletTests: XCTestCase {
         let encodedData = try! JSONEncoder().encode(derivationPath)
         let decodedDerivationPath = try! JSONDecoder().decode(DerivationPath.self, from: encodedData)
         XCTAssertEqual(derivationPath, decodedDerivationPath)
+    }
+    
+    func testPathExtension() {
+        let derivationPath = try! DerivationPath(rawPath: "m/44'/0'/0'/1")
+        let extendedPath = derivationPath.extendedPath(with: .nonHardened(0))
+        XCTAssertEqual(extendedPath.rawPath, "m/44'/0'/0'/1/0")
     }
 }

@@ -12,6 +12,7 @@ enum HDWalletError: String, Error, LocalizedError {
     case hardenedNotSupported
     case derivationFailed
     case wrongPath
+    case wrongIndex
     
     var errorDescription: String? {
         return rawValue

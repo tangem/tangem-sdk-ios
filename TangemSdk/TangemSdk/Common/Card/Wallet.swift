@@ -28,6 +28,16 @@ public extension Card {
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
+        
+        public var extendedPublicKey: ExtendedPublicKey? {
+            guard let chainCode = self.chainCode else {
+                return nil
+            }
+            
+            return ExtendedPublicKey(compressedPublicKey: publicKey,
+                                     chainCode: chainCode,
+                                     derivationPath: .init())
+        }
     }
 }
 

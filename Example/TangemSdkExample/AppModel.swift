@@ -17,7 +17,7 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
     //Sign
-    @Published var hdPath: String = ""
+    @Published var derivationPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
@@ -136,8 +136,8 @@ extension AppModel {
         }
         
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -147,7 +147,7 @@ extension AppModel {
         tangemSdk.sign(hash: getRandomHash(),
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
@@ -158,7 +158,7 @@ extension AppModel {
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
+        let path = try? DerivationPath(rawPath: derivationPath)
         if !hdPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
@@ -171,7 +171,7 @@ extension AppModel {
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
@@ -191,7 +191,7 @@ extension AppModel {
         
         tangemSdk.derivePublicKey(cardId: card.cardId,
                                   walletPublicKey: walletPublicKey,
-                                  hdPath: path,
+                                  derivationPath: path,
                                   completion: handleCompletion)
     }
     

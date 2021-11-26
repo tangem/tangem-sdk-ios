@@ -30,7 +30,7 @@
 "unknownStatus" = "Status inconnu de la carte";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "Une erreur s'est produite lors de l'opération. Code : %@";
+"generic_error_code" = "Une erreur s'est produite lors de l'opération. Code : %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Lecture des données : %@%%";

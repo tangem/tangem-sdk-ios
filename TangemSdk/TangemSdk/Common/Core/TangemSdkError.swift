@@ -502,8 +502,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return Localization.genericErrorCode("\(self.code). \(message)")
         case .oldCard: return "error_old_card".localized
         default:
-            let description = "\(self)".capitalizingFirst()
-            return Localization.genericErrorCode("\(self.code). \(description)")
+            //let description = "\(self)".capitalizingFirst()
+            return Localization.genericErrorCode("\(self.code)")
         }
     }
     

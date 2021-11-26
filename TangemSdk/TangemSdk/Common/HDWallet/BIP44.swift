@@ -29,16 +29,8 @@ public struct BIP44 {
         let nodes: [DerivationNode] = [.hardened(BIP44.purpose),
                                        .hardened(coinType),
                                        .hardened(account),
-                                       .notHardened(change.index),
-                                       .notHardened(addressIndex)]
-        return DerivationPath(nodes: nodes)
-    }
-    
-    /// Build path m/44/coinType
-    /// - Parameter coinType: UInt32 index of the coin
-    /// - Returns: DerivationPath m/44/coinType
-    public static func buildPath(for coinType: UInt32) -> DerivationPath {
-        let nodes: [DerivationNode] = [.notHardened(BIP44.purpose), .notHardened(coinType)]
+                                       .nonHardened(change.index),
+                                       .nonHardened(addressIndex)]
         return DerivationPath(nodes: nodes)
     }
 }

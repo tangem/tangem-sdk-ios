@@ -32,7 +32,7 @@
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
 		5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2426A0199100D2EDC1 /* WalletData.swift */; };
 		5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */; };
-		5D2B798626BC3DBF002A78D4 /* DerivePublicKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B798526BC3DBF002A78D4 /* DerivePublicKeyCommand.swift */; };
+		5D2B798626BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */; };
 		5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */; };
 		5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */; };
 		5D2F3EE426CBDAA100779CAC /* KeyboardHeightPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2F3EE226CBDAA000779CAC /* KeyboardHeightPublisher.swift */; };
@@ -58,6 +58,9 @@
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
+		5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F536274D68010004681F /* DeriveWalletPublicKey.json */; };
+		5D46F53A274E29660004681F /* DeriveWalletPublicKeysTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */; };
+		5D46F53C274E41100004681F /* DeriveWalletPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */; };
 		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
@@ -296,7 +299,7 @@
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
 		5D270F2426A0199100D2EDC1 /* WalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletData.swift; sourceTree = "<group>"; };
 		5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataDeserializer.swift; sourceTree = "<group>"; };
-		5D2B798526BC3DBF002A78D4 /* DerivePublicKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivePublicKeyCommand.swift; sourceTree = "<group>"; };
+		5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeriveWalletPublicKeyTask.swift; sourceTree = "<group>"; };
 		5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestParseRequest.json; sourceTree = "<group>"; };
 		5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnablesTask.swift; sourceTree = "<group>"; };
 		5D2F3EE226CBDAA000779CAC /* KeyboardHeightPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardHeightPublisher.swift; sourceTree = "<group>"; };
@@ -322,6 +325,9 @@
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
 		5D46F15E26811D4000DC6447 /* SignHash.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHash.json; sourceTree = "<group>"; };
+		5D46F536274D68010004681F /* DeriveWalletPublicKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeriveWalletPublicKey.json; sourceTree = "<group>"; };
+		5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeriveWalletPublicKeysTask.swift; sourceTree = "<group>"; };
+		5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeriveWalletPublicKeys.json; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
 		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
@@ -669,6 +675,8 @@
 				5D3B9F0226BD678500532CC7 /* SignHashes.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
 				5D5440892682260000F7D05B /* SetAccessCode.json */,
+				5D46F536274D68010004681F /* DeriveWalletPublicKey.json */,
+				5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */,
 				5D54408B2682269400F7D05B /* SetPasscode.json */,
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
@@ -709,6 +717,15 @@
 				5D46F157268105BF00DC6447 /* SignHashesCommand.swift */,
 			);
 			path = Sign;
+			sourceTree = "<group>";
+		};
+		5D46F538274E29490004681F /* Derivation */ = {
+			isa = PBXGroup;
+			children = (
+				5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */,
+				5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */,
+			);
+			path = Derivation;
 			sourceTree = "<group>";
 		};
 		5D4B127426D3CCE5006E173C /* Files */ = {
@@ -777,6 +794,7 @@
 		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				5D46F538274E29490004681F /* Derivation */,
 				5D46F156268105A500DC6447 /* Sign */,
 				5D38D076267A44BF0052F67C /* Pins */,
 				5D2E7CBC2678F4C200FBFC53 /* IssuerAndUserData */,
@@ -789,7 +807,6 @@
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				B006971325FFA4420040D203 /* PreflightReadTask.swift */,
 				5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */,
-				5D2B798526BC3DBF002A78D4 /* DerivePublicKeyCommand.swift */,
 			);
 			path = Operations;
 			sourceTree = "<group>";
@@ -1353,9 +1370,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */,
+				5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
 				5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */,
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
+				5D46F53C274E41100004681F /* DeriveWalletPublicKeys.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
 				5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */,
@@ -1383,6 +1402,7 @@
 				5D14091E26B9886800B811A1 /* HDWalletError.swift in Sources */,
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
+				5D46F53A274E29660004681F /* DeriveWalletPublicKeysTask.swift in Sources */,
 				5D379C27268FA47600C7F473 /* EncryptionMode.swift in Sources */,
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
@@ -1507,7 +1527,7 @@
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
-				5D2B798626BC3DBF002A78D4 /* DerivePublicKeyCommand.swift in Sources */,
+				5D2B798626BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
 				5DAAF3A026E2668500187AA9 /* UIApplication+.swift in Sources */,
 				5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */,

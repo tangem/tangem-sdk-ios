@@ -17,7 +17,7 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
     //Sign
-    @Published var hdPath: String = ""
+    @Published var derivationPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
@@ -206,8 +206,9 @@ extension AppModel {
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -225,49 +226,19 @@ extension AppModel {
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
-                       initialMessage: Message(header: "Signing hash")) { result in
-            switch result {
-            case .success(let response):
-                self.handleCompletion(.success(response))
-                self.verifySignature(response, walletPublicKey: walletPublicKey, hash: hash, hdPath: path)
-            case .failure(let error):
-                self.complete(with: error.localizedDescription)
-            }
-        }
+                       derivationPath: path,
+                       initialMessage: Message(header: "Signing hash"),
+                       completion: handleCompletion)
     }
-    
-    private func verifySignature(_ response: SignHashResponse, walletPublicKey: Data, hash: Data, hdPath: DerivationPath?) {
-        //Test signature verification
-        var verifiedStatus: Bool = false
-        
-        if let curve = self.card?.wallets[walletPublicKey]?.curve {
-            if let derivationPath = hdPath, curve == .secp256k1 {
-                if let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
-                   let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
-                    verifiedStatus = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
-                                                                 hash: hash,
-                                                                 signature: response.signature)) ?? false
-                }
-            } else {
-                verifiedStatus = (try? CryptoUtils.verify(curve: curve,
-                                                          publicKey: walletPublicKey,
-                                                          hash: hash,
-                                                          signature: response.signature)) ?? false
-            }
-        }
 
-        self.log("Signature verification status: \(verifiedStatus ? "verified" : "not verified")")
-    }
-    
     func signHashes(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -279,47 +250,28 @@ extension AppModel {
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
     
-    
-    func derivePublicKey() {
+    func derivePublicKey(walletPublicKey: Data) {
         guard let card = card else {
             self.complete(with: "Scan card before")
             return
         }
         
-        guard card.firmwareVersion >= .hdWalletAvailable else {
-            self.complete(with: "Not supported firmware verison.")
-            return
-        }
-        
-        guard let wallet = card.wallets.first(where: { $0.curve == .secp256k1 }),
-              let chainCode = wallet.chainCode else {
-            self.complete(with: "The wallet with the secp256k1 curve not found")
-            return
-        }
-        
-        guard let path = try? DerivationPath(rawPath: hdPath) else {
+        guard let path = try? DerivationPath(rawPath: derivationPath) else {
             self.complete(with: "Failed to parse hd path")
             return
         }
         
         UIApplication.shared.endEditing()
         
-        do {
-            let childKey = try derivePublicKey(path: path, walletPublicKey: wallet.publicKey, chainCode: chainCode)
-            handleCompletion(.success(childKey))
-        } catch {
-            self.complete(with: error.localizedDescription)
-        }
-    }
-    
-    private func derivePublicKey(path: DerivationPath, walletPublicKey: Data, chainCode: Data) throws -> ExtendedPublicKey {
-        let masterKey = ExtendedPublicKey(compressedPublicKey: walletPublicKey, chainCode: chainCode)
-        return try masterKey.derivePublicKey(path: path)
+        tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
+                                        walletPublicKey: walletPublicKey,
+                                        derivationPath: path,
+                                        completion: handleCompletion)
     }
     
     func createWallet() {
@@ -747,7 +699,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: derivePublicKey()
+        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
         case .resetBackup: resetBackup()

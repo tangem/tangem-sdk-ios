@@ -17,7 +17,7 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
     //Sign
-    @Published var hdPath: String = ""
+    @Published var derivationPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
@@ -136,8 +136,8 @@ extension AppModel {
         }
         
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -147,7 +147,7 @@ extension AppModel {
         tangemSdk.sign(hash: getRandomHash(),
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
@@ -158,7 +158,7 @@ extension AppModel {
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
+        let path = try? DerivationPath(rawPath: derivationPath)
         if !hdPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
@@ -171,25 +171,14 @@ extension AppModel {
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
     
-    func derivePublicKey() {
+    func derivePublicKey(walletPublicKey: Data) {
         guard let card = card else {
             self.complete(with: "Scan card before")
-            return
-        }
-        
-        guard card.firmwareVersion >= .hdWalletAvailable else {
-            self.complete(with: "Not supported firmware verison.")
-            return
-        }
-        
-        guard let wallet = card.wallets.first(where: { $0.curve == .secp256k1 }),
-              let chainCode = wallet.chainCode else {
-            self.complete(with: "The wallet with the secp256k1 curve not found")
             return
         }
         
@@ -200,15 +189,10 @@ extension AppModel {
         
         UIApplication.shared.endEditing()
         
-        let masterKey = ExtendedPublicKey(compressedPublicKey: wallet.publicKey,
-                                          chainCode: chainCode)
-        
-        do {
-            let childKey = try masterKey.derivePublicKey(path: path)
-            handleCompletion(.success(childKey))
-        } catch {
-            self.complete(with: error.localizedDescription)
-        }
+        tangemSdk.derivePublicKey(cardId: card.cardId,
+                                  walletPublicKey: walletPublicKey,
+                                  derivationPath: path,
+                                  completion: handleCompletion)
     }
     
     func createWallet() {
@@ -607,7 +591,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: derivePublicKey()
+        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
         }
     }

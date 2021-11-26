@@ -31,7 +31,7 @@
 "unknownStatus" = "Unknown card status";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "An error occurred during the operation. Code: %@";
+"generic_error_code" = "An error occurred during the operation. Code: %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Reading data: %@%%";

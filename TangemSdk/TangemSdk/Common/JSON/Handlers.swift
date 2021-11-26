@@ -27,12 +27,12 @@ class SignHashesHandler: JSONRPCHandler {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         let hashes: [Data] = try parameters.value(for: "hashes")
         
-        let hdRawPath: String? = try parameters.value(for: "hdPath")
-        let hdPath: DerivationPath? = try hdRawPath.map{ try DerivationPath(rawPath: $0) }
+        let derivationRawPath: String? = try parameters.value(for: "derivationPath")
+        let derivationPath: DerivationPath? = try derivationRawPath.map{ try DerivationPath(rawPath: $0) }
         
         let command = SignHashesCommand(hashes: hashes,
                                         walletPublicKey: walletPublicKey,
-                                        hdPath: hdPath)
+                                        derivationPath: derivationPath)
         return command.eraseToAnyRunnable()
     }
 }
@@ -45,12 +45,12 @@ class SignHashHandler: JSONRPCHandler {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         let hash: Data = try parameters.value(for: "hash")
         
-        let hdRawPath: String? = try parameters.value(for: "hdPath")
-        let hdPath: DerivationPath? = try hdRawPath.map{ try DerivationPath(rawPath: $0) }
+        let derivationRawPath: String? = try parameters.value(for: "derivationPath")
+        let derivationPath: DerivationPath? = try derivationRawPath.map{ try DerivationPath(rawPath: $0) }
         
         let command = SignHashCommand(hash: hash,
                                       walletPublicKey: walletPublicKey,
-                                      hdPath: hdPath)
+                                      derivationPath: derivationPath)
         return command.eraseToAnyRunnable()
     }
 }
@@ -156,10 +156,10 @@ class ReadFilesHandler: JSONRPCHandler {
         let readPrivateFiles: Bool? = try parameters.value(for: "readPrivateFiles")
         let fileName: String? = try parameters.value(for: "fileName")
         let walletPublicKey: Data? = try parameters.value(for: "walletPublicKey")
-
+        
         let task = ReadFilesTask(fileName: fileName, walletPublicKey: walletPublicKey)
         readPrivateFiles.map { task.shouldReadPrivateFiles = $0 }
-
+        
         return task.eraseToAnyRunnable()
     }
 }
@@ -189,10 +189,40 @@ class DeleteFilesHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class ChangeFileSettingsHandler: JSONRPCHandler {
     var method: String { "CHANGE_FILE_SETTINGS" }
-
+    
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let changes: [Int: FileVisibility] = try parameters.value(for: "changes")
         let command = ChangeFileSettingsTask(changes: changes)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class DeriveWalletPublicKeyHandler: JSONRPCHandler {
+    var method: String { "DERIVE_WALLET_PUBLIC_KEY" }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
+        let rawDerivationPath: String = try parameters.value(for: "derivationPath")
+        let derivationPath: DerivationPath = try DerivationPath(rawPath: rawDerivationPath)
+        
+        let command = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey,
+                                                derivationPath: derivationPath)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class DeriveWalletPublicKeysHandler: JSONRPCHandler {
+    var method: String { "DERIVE_WALLET_PUBLIC_KEYS" }
+    
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
+        let rawDerivationPathes: [String] = try parameters.value(for: "derivationPathes")
+        let derivationPathes: [DerivationPath] = try rawDerivationPathes.map { try DerivationPath(rawPath: $0) }
+        
+        let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey,
+                                                 derivationPathes: derivationPathes)
         return command.eraseToAnyRunnable()
     }
 }

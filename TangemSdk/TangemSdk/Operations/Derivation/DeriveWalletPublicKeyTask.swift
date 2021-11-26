@@ -1,5 +1,5 @@
 //
-//  DerivePublicKeyCommand.swift
+//  DeriveWalletPublicKeyTask.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 05.08.2021.
@@ -9,19 +9,24 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public class DerivePublicKeyCommand: CardSessionRunnable {
+/// Derive wallet  public key according to BIP32 (Private parent key → public child key)
+public class DeriveWalletPublicKeyTask: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode = .readCardOnly
     
     private let walletPublicKey: Data
-    private let hdPath: DerivationPath
+    private let derivationPath: DerivationPath
     
-    init(publicKey: Data, hdPath: DerivationPath) {
-        self.walletPublicKey = publicKey
-        self.hdPath = hdPath
+    /// Default initializer
+    /// - Parameters:
+    ///   - walletPublicKey: Seed public key.
+    ///   - derivationPath: Derivation path
+    public init(walletPublicKey: Data, derivationPath: DerivationPath) {
+        self.walletPublicKey = walletPublicKey
+        self.derivationPath = derivationPath
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        let readWallet = ReadWalletCommand(publicKey: walletPublicKey, hdPath: hdPath)
+        let readWallet = ReadWalletCommand(publicKey: walletPublicKey, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
             case .success(let response):
@@ -31,7 +36,8 @@ public class DerivePublicKeyCommand: CardSessionRunnable {
                 }
                 
                 let childKey = ExtendedPublicKey(compressedPublicKey: response.wallet.publicKey,
-                                                 chainCode: chainCode)
+                                                 chainCode: chainCode,
+                                                 derivationPath: self.derivationPath)
                 
                 completion(.success(childKey))
             case .failure(let error):

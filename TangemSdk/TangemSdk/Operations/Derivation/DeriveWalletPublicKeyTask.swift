@@ -18,7 +18,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
     
     /// Default initializer
     /// - Parameters:
-    ///   - walletPublicKey: Public key of wallet that should derive the key.
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPath: Derivation path
     public init(walletPublicKey: Data, derivationPath: DerivationPath) {
         self.walletPublicKey = walletPublicKey

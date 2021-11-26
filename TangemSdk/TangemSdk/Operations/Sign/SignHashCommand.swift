@@ -24,17 +24,17 @@ public final class SignHashCommand: CardSessionRunnable {
     
     private let walletPublicKey: Data
     private let hash: Data
-    private let hdPath: DerivationPath?
+    private let derivationPath: DerivationPath?
     
     /// Default initializer
     /// - Parameters:
     ///   - hash: Transaction hash for sign by card.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    public init(hash: Data, walletPublicKey: Data, hdPath: DerivationPath? = nil) {
+    ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
+    public init(hash: Data, walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
         self.hash = hash
         self.walletPublicKey = walletPublicKey
-        self.hdPath = hdPath
+        self.derivationPath = derivationPath
     }
     
     deinit {
@@ -42,7 +42,7 @@ public final class SignHashCommand: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashResponse>) {
-        let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey, hdPath: hdPath)
+        let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         signCommand.run(in: session) { result in
             switch result {
             case .success(let signResponse):

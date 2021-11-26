@@ -30,7 +30,7 @@
 "unknownStatus" = "Unbekannter Kartenstatus";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "Während des Vorgangs ist ein Fehler aufgetreten. Code: %@";
+"generic_error_code" = "Während des Vorgangs ist ein Fehler aufgetreten. Code: %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Die Daten werden abgelesen: %@%%";

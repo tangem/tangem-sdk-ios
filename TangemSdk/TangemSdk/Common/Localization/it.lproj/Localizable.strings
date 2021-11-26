@@ -31,7 +31,7 @@
 "unknownStatus" = "Stato sconosciuto della carta";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "Si è verificato un errore durante l'operazione. Codice: %@";
+"generic_error_code" = "Si è verificato un errore durante l'operazione. Codice: %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Lettura dati %@%%";

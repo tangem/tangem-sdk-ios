@@ -27,7 +27,7 @@ class SignCommand: Command {
     var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
-    private let hdPath: DerivationPath?
+    private let derivationPath: DerivationPath?
     private let hashes: [Data]
     
     private var signatures: [Data] = []
@@ -46,11 +46,11 @@ class SignCommand: Command {
     /// - Parameters:
     ///   - hashes: Array of transaction hashes.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    init(hashes: [Data], walletPublicKey: Data, hdPath: DerivationPath? = nil) {
+    ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
+    init(hashes: [Data], walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
         self.hashes = hashes
         self.walletPublicKey = walletPublicKey
-        self.hdPath = hdPath
+        self.derivationPath = derivationPath
     }
     
     deinit {
@@ -62,7 +62,7 @@ class SignCommand: Command {
             return .walletNotFound
         }
         
-        if hdPath != nil {
+        if derivationPath != nil {
             if card.firmwareVersion < .hdWalletAvailable {
                 return .notSupportedFirmwareVersion
             }
@@ -197,8 +197,8 @@ class SignCommand: Command {
                 .append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        if let hdPath = self.hdPath {
-            try tlvBuilder.append(.walletHDPath, value: hdPath)
+        if let derivationPath = self.derivationPath {
+            try tlvBuilder.append(.walletHDPath, value: derivationPath)
         }
         
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())

@@ -21,11 +21,11 @@ class ReadWalletCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
     private let walletPublicKey: Data
-    private let hdPath: DerivationPath?
+    private let derivationPath: DerivationPath?
     
-    init(publicKey: Data, hdPath: DerivationPath? = nil) {
+    init(publicKey: Data, derivationPath: DerivationPath? = nil) {
         self.walletPublicKey = publicKey
-        self.hdPath = hdPath
+        self.derivationPath = derivationPath
     }
     
     deinit {
@@ -37,7 +37,7 @@ class ReadWalletCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if hdPath != nil  && !card.settings.isHDWalletAllowed {
+        if derivationPath != nil  && !card.settings.isHDWalletAllowed {
             return .hdWalletDisabled
         }
         
@@ -68,8 +68,8 @@ class ReadWalletCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        if let hdPath = hdPath {
-            try tlvBuilder.append(.walletHDPath, value:  hdPath)
+        if let derivationPath = derivationPath {
+            try tlvBuilder.append(.walletHDPath, value:  derivationPath)
         }
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())

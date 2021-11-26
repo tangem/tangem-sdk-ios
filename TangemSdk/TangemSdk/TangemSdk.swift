@@ -229,7 +229,7 @@ public extension TangemSdk {
     /// Derive public key according to BIP32 (Private parent key → public child key)
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - walletPublicKey: Public key of wallet that should derive the key.
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPath: Derivation path
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
@@ -245,7 +245,7 @@ public extension TangemSdk {
     /// Derive multiple wallet public keys according to BIP32 (Private parent key → public child key)
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - walletPublicKey: Public key of wallet that should derive the key.
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPathes: Derivation pathes
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`

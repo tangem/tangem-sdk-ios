@@ -159,7 +159,7 @@ extension AppModel {
         }
         
         let path = try? DerivationPath(rawPath: derivationPath)
-        if !hdPath.isEmpty && path == nil {
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -182,17 +182,17 @@ extension AppModel {
             return
         }
         
-        guard let path = try? DerivationPath(rawPath: hdPath) else {
+        guard let path = try? DerivationPath(rawPath: derivationPath) else {
             self.complete(with: "Failed to parse hd path")
             return
         }
-        
+
         UIApplication.shared.endEditing()
         
-        tangemSdk.derivePublicKey(cardId: card.cardId,
-                                  walletPublicKey: walletPublicKey,
-                                  derivationPath: path,
-                                  completion: handleCompletion)
+        tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
+                                         walletPublicKey: walletPublicKey,
+                                         derivationPath: path,
+                                         completion: handleCompletion)
     }
     
     func createWallet() {

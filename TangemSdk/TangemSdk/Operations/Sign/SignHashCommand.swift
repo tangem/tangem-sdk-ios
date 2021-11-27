@@ -20,8 +20,6 @@ public struct SignHashResponse: JSONStringConvertible {
 
 @available(iOS 13.0, *)
 public final class SignHashCommand: CardSessionRunnable {
-    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-    
     private let walletPublicKey: Data
     private let hash: Data
     private let derivationPath: DerivationPath?

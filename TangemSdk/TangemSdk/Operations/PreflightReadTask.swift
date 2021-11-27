@@ -16,8 +16,6 @@ public enum PreflightReadMode: Decodable, Equatable {
     case none
     /// Read only card info without wallet info. COS 4+. Older card will always read card and wallet info
     case readCardOnly
-    /// Read card info and single wallet associated with the specified publicKey. COS 4+. Older card will always read card and wallet info
-    case readWallet(publicKey: Data)
     /// Read card info and all wallets. Used by default
     case fullCardRead
     
@@ -33,11 +31,7 @@ public enum PreflightReadMode: Decodable, Equatable {
         case "fullcardread":
             self = .fullCardRead
         default:
-            if stringValue.count == 64 {
-                self = .readWallet(publicKey: Data(hexString: stringValue))
-            } else {
-                throw TangemSdkError.decodingFailed("Failed to decode PreflightReadMode")
-            }
+            throw TangemSdkError.decodingFailed("Failed to decode PreflightReadMode")
         }
     }
 }
@@ -88,23 +82,10 @@ public final class PreflightReadTask: CardSessionRunnable {
         }
         
         switch readMode {
-        case .readWallet(let publicKey):
-            readWallet(with: publicKey, in: session, with: card, completion: completion)
         case .fullCardRead:
             readWalletsList(in: session, with: card, completion: completion)
         case .readCardOnly, .none:
             completion(.success(card))
-        }
-    }
-    
-    private func readWallet(with publicKey: Data, in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
-        ReadWalletCommand(publicKey: publicKey).run(in: session) { (result) in
-            switch result {
-            case .success:
-                completion(.success(card))
-            case .failure(let error):
-                completion(.failure(error))
-            }
         }
     }
     

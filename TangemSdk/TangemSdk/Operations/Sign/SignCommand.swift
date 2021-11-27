@@ -21,9 +21,6 @@ public struct SignResponse: JSONStringConvertible {
 /// Signs transaction hashes using a wallet private key, stored on the card.
 @available(iOS 13.0, *)
 class SignCommand: Command {
-    
-    var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-    
     var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
@@ -167,6 +164,10 @@ class SignCommand: Command {
     
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
+            throw TangemSdkError.walletNotFound
+        }
+        
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
@@ -175,7 +176,7 @@ class SignCommand: Command {
             .append(.transactionOutHashSize, value: hashes.first!.count)
             .append(.transactionOutHash, value: flattenHashes)
             //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
-            .append(.walletPublicKey, value: walletPublicKey)
+            .append(.walletIndex, value: walletIndex)
         
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)

@@ -12,8 +12,6 @@ import Foundation
 @available(iOS 13.0, *)
 /// Derive wallet public keys according to BIP32 (Private parent key → public child key)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
-    public var preflightReadMode: PreflightReadMode = .readCardOnly
-    
     private let walletPublicKey: Data
     private let derivationPathes: [DerivationPath]
     
@@ -31,7 +29,6 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
     }
     
     private func runDerivation(at index: Int, keys: [ExtendedPublicKey], in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
-  
         guard index < derivationPathes.count else {
             completion(.success(keys))
             return

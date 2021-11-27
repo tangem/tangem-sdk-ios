@@ -11,8 +11,6 @@ import Foundation
 @available(iOS 13.0, *)
 /// Derive wallet  public key according to BIP32 (Private parent key → public child key)
 public class DeriveWalletPublicKeyTask: CardSessionRunnable {
-    public var preflightReadMode: PreflightReadMode = .readCardOnly
-    
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath
     
@@ -26,7 +24,12 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        let readWallet = ReadWalletCommand(publicKey: walletPublicKey, derivationPath: derivationPath)
+        guard let walletIndex = session.environment.card?.wallets[walletPublicKey]?.index else {
+            completion(.failure(.walletNotFound))
+            return
+        }
+        
+        let readWallet = ReadWalletCommand(walletIndex: walletIndex, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
             case .success(let response):

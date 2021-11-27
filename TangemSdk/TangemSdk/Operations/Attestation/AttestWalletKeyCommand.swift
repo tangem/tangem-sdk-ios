@@ -25,8 +25,6 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 /// This command proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
 @available(iOS 13.0, *)
 public final class AttestWalletKeyCommand: Command {
-    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-    
     private var challenge: Data?
     private let walletPublicKey: Data
     
@@ -77,11 +75,15 @@ public final class AttestWalletKeyCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
+            throw TangemSdkError.walletNotFound
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
-            .append(.walletPublicKey, value: walletPublicKey)
+            .append(.walletIndex, value: walletIndex)
         
         return CommandApdu(.attestWalletKey, tlv: tlvBuilder.serialize())
     }

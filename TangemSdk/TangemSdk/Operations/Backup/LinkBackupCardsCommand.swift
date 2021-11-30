@@ -20,11 +20,11 @@ struct LinkBackupCardsResponse {
 final class LinkBackupCardsCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let backupCards: [LinkableBackupCard]
+    private let backupCards: [BackupCard]
     private let accessCode: Data
     private let passcode: Data
 
-    init(backupCards: [LinkableBackupCard], accessCode: Data, passcode: Data) {
+    init(backupCards: [BackupCard], accessCode: Data, passcode: Data) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
@@ -90,7 +90,7 @@ final class LinkBackupCardsCommand: Command {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
                 .append(.backupCardLinkingKey, value: card.linkingKey)
-                .append(.certificate, value: card.certificate)
+                .append(.certificate, value: try card.generateCertificate())
                 .append(.cardSignature, value: card.attestSignature)
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())

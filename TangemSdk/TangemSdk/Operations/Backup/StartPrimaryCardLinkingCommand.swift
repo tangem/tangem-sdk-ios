@@ -42,7 +42,7 @@ public final class StartPrimaryCardLinkingCommand: Command {
         return CommandApdu(.startPrimaryCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PrimaryCard {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> RawPrimaryCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -57,12 +57,12 @@ public final class StartPrimaryCardLinkingCommand: Command {
             throw TangemSdkError.missingPreflightRead
         }
         
-        return PrimaryCard(cardId: try decoder.decode(.cardId),
-                                    cardPublicKey: cardPublicKey,
-                                    linkingKey: try decoder.decode(.primaryCardLinkingKey),
-                                    existingWalletsCount: card.wallets.count,
-                                    isHDWalletAllowed: card.settings.isHDWalletAllowed,
-                                    issuer: card.issuer,
-                                    walletCurves: card.wallets.map { $0.curve })
+        return RawPrimaryCard(cardId: try decoder.decode(.cardId),
+                              cardPublicKey: cardPublicKey,
+                              linkingKey: try decoder.decode(.primaryCardLinkingKey),
+                              existingWalletsCount: card.wallets.count,
+                              isHDWalletAllowed: card.settings.isHDWalletAllowed,
+                              issuer: card.issuer,
+                              walletCurves: card.wallets.map { $0.curve })
     }
 }

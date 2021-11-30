@@ -10,6 +10,7 @@
 		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
 		5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04F9E126EF731B00D15F75 /* Publisher+.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
+		5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
 		5D0F8CFE26C6A255002E84A4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */; };
@@ -66,10 +67,10 @@
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
 		5D46F15F26811D4000DC6447 /* SignHash.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F15E26811D4000DC6447 /* SignHash.json */; };
-		5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */; };
 		5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F536274D68010004681F /* DeriveWalletPublicKey.json */; };
 		5D46F53A274E29660004681F /* DeriveWalletPublicKeysTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */; };
 		5D46F53C274E41100004681F /* DeriveWalletPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */; };
+		5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */; };
 		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
@@ -296,6 +297,7 @@
 		5D04F9E126EF731B00D15F75 /* Publisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+.swift"; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPrimaryCardLinkingTask.swift; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
@@ -589,6 +591,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D06F6AE2756676C006A15B9 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		5D0BAAEA25CD87DF00E6A2B6 /* Log */ = {
 			isa = PBXGroup;
 			children = (
@@ -794,6 +803,7 @@
 		5D4B128126D40C67006E173C /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				5D06F6AE2756676C006A15B9 /* Entities */,
 				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
 				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
 				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
@@ -805,6 +815,7 @@
 				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
+				5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -1556,6 +1567,7 @@
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
+				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,

@@ -12,11 +12,15 @@ import Foundation
 final class StartBackupCardLinkingTask: CardSessionRunnable {
     private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
-    private var command: StartBackupCardLinkingCommand? = nil
+    private var attestationTask: AttestationTask? = nil
     
     init(primaryCard: PrimaryCard, addedBackupCards: [String]) {
         self.primaryCard = primaryCard
         self.addedBackupCards = addedBackupCards
+    }
+    
+    deinit {
+        Log.debug("StartBackupCardLinkingTask deinit")
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
@@ -60,8 +64,32 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             }
         }
         
-        self.command = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
-        command?.run(in: session, completion: completion)
+        let linkingCommand = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
+        linkingCommand.run(in: session) { result in
+            switch result {
+            case .success(let rawCard):
+                self.runAttestation(rawCard, session, completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
+    private func runAttestation(_ rawCard: RawBackupCard, _ session: CardSession, _ completion: @escaping CompletionResult<BackupCard>) {
+        attestationTask = AttestationTask(mode: .full)
+        attestationTask!.run(in: session) { result in
+            switch result {
+            case .success:
+                guard let signature = session.environment.card?.issuerSignature else {
+                    completion(.failure(.certificateSignatureRequired))
+                    return
+                }
+                
+                let backupCard = BackupCard(rawCard, issuerSignature: signature)
+                completion(.success(backupCard))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 }

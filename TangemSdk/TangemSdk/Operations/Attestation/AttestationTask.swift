@@ -16,7 +16,7 @@ public final class AttestationTask: CardSessionRunnable {
     private let onlineCardVerifier = OnlineCardVerifier()
     
     private var currentAttestationStatus: Attestation = .empty
-    private var onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
+    private var onlinePublisher = CurrentValueSubject<CardVerifyAndGetInfoResponse.Item?, TangemSdkError>(nil)
     private var bag = Set<AnyCancellable>()
     
     
@@ -38,18 +38,6 @@ public final class AttestationTask: CardSessionRunnable {
         }
         
         attestCard(session, completion)
-    }
-    
-    public func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
-        
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        runOnlineAttestation(card)
-        waitForOnlineAndComplete(session, completion)
     }
     
     private func attestCard(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
@@ -168,8 +156,8 @@ public final class AttestationTask: CardSessionRunnable {
                 if case let .failure(error) = receivedCompletion {
                     self.onlinePublisher.send(completion: .failure(error.toTangemSdkError()))
                 }
-            }, receiveValue: { _ in
-                self.onlinePublisher.send(())
+            }, receiveValue: { value in
+                self.onlinePublisher.send((value))
             }).store(in: &bag)
     }
     
@@ -184,18 +172,83 @@ public final class AttestationTask: CardSessionRunnable {
                 //We interest only in cardVerificationFailed error, ignore network errors
                 if case let .failure(error) = receivedCompletion,
                    case TangemSdkError.cardVerificationFailed = error {
-                        self.currentAttestationStatus.cardKeyAttestation = .failed
+                    self.currentAttestationStatus.cardKeyAttestation = .failed
+                    
+                    if session.environment.card?.firmwareVersion.type == .sdk  {
+                        //TODO: remove or not?
+                        let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
+                        let signature = session.environment.card!.cardPublicKey.sign(privateKey: issuerPrivateKey)!
+                        session.environment.card?.issuerSignature = signature
+                    }
                 }
                 
-                self.complete(session, completion)
+                self.processAttestationReport(session, completion)
                 
-            }, receiveValue: {[unowned self] _ in
+            }, receiveValue: {[unowned self] data in
+                //session.environment.card?.issuerSignature = data.issuerSignature //TODO: load from backend
                 //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
                 self.currentAttestationStatus.cardKeyAttestation = .verified
                 self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
-                self.complete(session, completion)
+                self.processAttestationReport(session, completion)
             })
             .store(in: &bag)
+    }
+    
+    private func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+        onlinePublisher = CurrentValueSubject<CardVerifyAndGetInfoResponse.Item?, TangemSdkError>(nil)
+        
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        runOnlineAttestation(card)
+        waitForOnlineAndComplete(session, completion)
+    }
+    
+    private func processAttestationReport(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+        switch currentAttestationStatus.status {
+        case .failed, .skipped:
+            let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
+            session.viewDelegate.setState(.empty)
+            //Possible production sample or development card
+            if isDevelopmentCard || session.environment.config.allowUntrustedCards {
+                session.viewDelegate.attestationDidFail(isDevelopmentCard: isDevelopmentCard) {
+                    self.complete(session, completion)
+                } onCancel: {
+                    completion(.failure(.userCancelled))
+                }
+                
+                return
+            }
+            
+            completion(.failure(.cardVerificationFailed))
+            
+        case .verified:
+            self.complete(session, completion)
+            
+        case .verifiedOffline:
+            if session.environment.config.attestationMode == .offline {
+                self.complete(session, completion)
+                return
+            }
+            
+            session.viewDelegate.setState(.empty)
+            session.viewDelegate.attestationCompletedOffline() {
+                self.complete(session, completion)
+            } onCancel: {
+                completion(.failure(.userCancelled))
+            } onRetry: {
+                session.viewDelegate.setState(.default)
+                self.retryOnline(session, completion)
+            }
+            
+        case .warning:
+            session.viewDelegate.setState(.empty)
+            session.viewDelegate.attestationCompletedWithWarnings {
+                self.complete(session, completion)
+            }
+        }
     }
     
     private func complete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {

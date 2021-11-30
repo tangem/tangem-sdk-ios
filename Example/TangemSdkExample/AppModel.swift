@@ -31,7 +31,7 @@ class AppModel: ObservableObject {
     
     private lazy var tangemSdk: TangemSdk = {
         var config = Config()
-        config.logСonfig = .verbose
+        config.logConfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases

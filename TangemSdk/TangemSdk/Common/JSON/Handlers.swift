@@ -218,11 +218,11 @@ class DeriveWalletPublicKeysHandler: JSONRPCHandler {
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
-        let rawDerivationPathes: [String] = try parameters.value(for: "derivationPathes")
-        let derivationPathes: [DerivationPath] = try rawDerivationPathes.map { try DerivationPath(rawPath: $0) }
+        let rawDerivationPaths: [String] = try parameters.value(for: "derivationPaths")
+        let derivationPaths: [DerivationPath] = try rawDerivationPaths.map { try DerivationPath(rawPath: $0) }
         
         let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey,
-                                                 derivationPathes: derivationPathes)
+                                                 derivationPaths: derivationPaths)
         return command.eraseToAnyRunnable()
     }
 }

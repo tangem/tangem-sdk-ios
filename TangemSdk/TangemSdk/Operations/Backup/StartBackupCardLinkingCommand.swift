@@ -35,7 +35,7 @@ final class StartBackupCardLinkingCommand: Command {
         if !card.wallets.isEmpty {
             return .backupFailedNotEmptyWallets
         }
-
+        
         return nil
     }
     
@@ -48,7 +48,7 @@ final class StartBackupCardLinkingCommand: Command {
         return CommandApdu(.startBackupCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> BackupCard {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> RawBackupCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -59,9 +59,9 @@ final class StartBackupCardLinkingCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        return BackupCard(cardId: try decoder.decode(.cardId),
-                          cardPublicKey: cardKey,
-                          linkingKey: try decoder.decode(.backupCardLinkingKey),
-                          attestSignature: try decoder.decode(.cardSignature))
+        return RawBackupCard(cardId: try decoder.decode(.cardId),
+                             cardPublicKey: cardKey,
+                             linkingKey: try decoder.decode(.backupCardLinkingKey),
+                             attestSignature: try decoder.decode(.cardSignature))
     }
 }

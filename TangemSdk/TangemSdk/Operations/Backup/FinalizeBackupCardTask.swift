@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 class FinalizeBackupCardTask: CardSessionRunnable {
-    private let primaryCard: LinkablePrimaryCard
+    private let primaryCard: PrimaryCard
     private let backupCards: [BackupCard]
     private let backupData: [EncryptedBackupData]
     private let attestSignature: Data
@@ -18,7 +18,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
     private let passcode: Data
     private var commandsBag: [Any]  = .init()
     
-    init(primaryCard: LinkablePrimaryCard,
+    init(primaryCard: PrimaryCard,
          backupCards: [BackupCard],
          backupData: [EncryptedBackupData],
          attestSignature: Data,
@@ -44,10 +44,10 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         
         if case .noBackup = card.backupStatus {
             let command = LinkPrimaryCardCommand(primaryCard: primaryCard,
-                                                backupCards: backupCards,
-                                                attestSignature: attestSignature,
-                                                accessCode: accessCode,
-                                                passcode: passcode)
+                                                 backupCards: backupCards,
+                                                 attestSignature: attestSignature,
+                                                 accessCode: accessCode,
+                                                 passcode: passcode)
             
             command.run(in: session) { linkResult in
                 switch linkResult {

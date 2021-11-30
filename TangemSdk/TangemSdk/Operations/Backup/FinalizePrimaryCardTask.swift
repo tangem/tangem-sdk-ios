@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 class FinalizePrimaryCardTask: CardSessionRunnable {
-    private let backupCards: [LinkableBackupCard]
+    private let backupCards: [BackupCard]
     private let accessCode: Data
     private let passcode: Data
     private var attestSignature: Data? //We already have attestSignature
@@ -18,7 +18,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
     private let onRead: ((String, [EncryptedBackupData])) -> Void
     private let readBackupStartIndex: Int
     
-    init(backupCards: [LinkableBackupCard],
+    init(backupCards: [BackupCard],
          accessCode: Data,
          passcode: Data,
          readBackupStartIndex: Int, //for restore
@@ -85,7 +85,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
             completion(.success(session.environment.card!))
             return
         }
-
+        
         let currentBackupCard = backupCards[index]
         let command = ReadBackupDataCommand(backupCardLinkingKey: currentBackupCard.linkingKey, accessCode: accessCode)
         command.run(in: session) { result in

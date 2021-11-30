@@ -46,7 +46,7 @@ public struct Config {
     public var cardIdDisplayFormat: CardIdDisplayFormat = .full
     
     /// Logger configuration
-    public var logСonfig: Log.Config = .debug
+    public var logConfig: Log.Config = .debug
     
     /// ScanTask or scanCard method in TangemSdk class will use this mode to attest the card
     public var attestationMode: AttestationTask.Mode = .normal

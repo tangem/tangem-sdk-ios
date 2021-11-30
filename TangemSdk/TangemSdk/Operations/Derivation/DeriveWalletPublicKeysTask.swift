@@ -13,15 +13,15 @@ import Foundation
 /// Derive wallet public keys according to BIP32 (Private parent key → public child key)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
     private let walletPublicKey: Data
-    private let derivationPathes: [DerivationPath]
+    private let derivationPaths: [DerivationPath]
     
     /// Default initializer
     /// - Parameters:
     ///   - walletPublicKey: Seed public key.
-    ///   - derivationPathes: Multiple derivation pathes
-    public init(walletPublicKey: Data, derivationPathes: [DerivationPath]) {
+    ///   - derivationPaths: Multiple derivation pathes
+    public init(walletPublicKey: Data, derivationPaths: [DerivationPath]) {
         self.walletPublicKey = walletPublicKey
-        self.derivationPathes = derivationPathes
+        self.derivationPaths = derivationPaths
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
@@ -29,12 +29,12 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
     }
     
     private func runDerivation(at index: Int, keys: [ExtendedPublicKey], in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
-        guard index < derivationPathes.count else {
+        guard index < derivationPaths.count else {
             completion(.success(keys))
             return
         }
         
-        let task = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPathes[index])
+        let task = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPaths[index])
         task.run(in: session) { result in
             switch result {
             case .success(let key):

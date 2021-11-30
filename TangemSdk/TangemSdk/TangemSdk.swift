@@ -643,7 +643,7 @@ private extension TangemSdk {
     }
     
     func configure() {
-        Log.config = config.logСonfig
+        Log.config = config.logConfig
     }
     
     func makeSession(with cardId: String?,

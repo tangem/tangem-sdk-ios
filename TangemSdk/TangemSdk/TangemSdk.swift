@@ -246,15 +246,15 @@ public extension TangemSdk {
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletPublicKey: Seed public key.
-    ///   - derivationPathes: Derivation pathes
+    ///   - derivationPaths: Derivation pathes
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
     func deriveWalletPublicKeys(cardId: String,
                                 walletPublicKey: Data,
-                                derivationPathes: [DerivationPath],
+                                derivationPaths: [DerivationPath],
                                 initialMessage: Message? = nil,
                                 completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
-        let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPathes: derivationPathes)
+        let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPaths: derivationPaths)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

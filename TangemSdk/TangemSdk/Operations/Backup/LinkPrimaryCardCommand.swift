@@ -20,13 +20,13 @@ struct LinkPrimaryCardResponse {
 final class LinkPrimaryCardCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let primaryCard: LinkablePrimaryCard
+    private let primaryCard: PrimaryCard
     private let backupCards: [BackupCard]
     private let attestSignature: Data
     private let accessCode: Data
     private let passcode: Data
     
-    init(primaryCard: LinkablePrimaryCard, backupCards: [BackupCard], attestSignature: Data, accessCode: Data, passcode: Data) {
+    init(primaryCard: PrimaryCard, backupCards: [BackupCard], attestSignature: Data, accessCode: Data, passcode: Data) {
         self.primaryCard = primaryCard
         self.backupCards = backupCards
         self.attestSignature = attestSignature
@@ -58,8 +58,8 @@ final class LinkPrimaryCardCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                session.environment.accessCode = UserCode(.accessCode, value: self.accessCode) 
-                session.environment.passcode = UserCode(.passcode, value: self.passcode)  
+                session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
+                session.environment.passcode = UserCode(.passcode, value: self.passcode)
                 
                 self.complete(response: response, session: session, completion: completion)
             case .failure(let error):
@@ -67,7 +67,7 @@ final class LinkPrimaryCardCommand: Command {
                 case .accessCodeRequired, .passcodeRequired:
                     if let cardId = session.environment.card?.cardId {
                         self.complete(response: LinkPrimaryCardResponse(cardId: cardId,
-                                                                       backupStatus: .cardLinked),
+                                                                        backupStatus: .cardLinked),
                                       session: session,
                                       completion: completion)
                         return
@@ -95,7 +95,7 @@ final class LinkPrimaryCardCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
-            .append(.certificate, value: primaryCard.certificate)
+            .append(.certificate, value: try primaryCard.generateCertificate())
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)
@@ -115,10 +115,10 @@ final class LinkPrimaryCardCommand: Command {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
-      
+        
         let decoder = TlvDecoder(tlv: tlv)
-
-       return LinkPrimaryCardResponse(cardId: try decoder.decode(.cardId),
-                                     backupStatus: try decoder.decode(.backupStatus))
+        
+        return LinkPrimaryCardResponse(cardId: try decoder.decode(.cardId),
+                                       backupStatus: try decoder.decode(.backupStatus))
     }
 }

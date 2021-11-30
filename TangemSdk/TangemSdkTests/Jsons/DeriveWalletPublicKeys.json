@@ -4,7 +4,7 @@
         "method": "derive_wallet_public_keys",
         "params": {
             "walletPublicKey": "033FF179FAD6EACF88B7C100D23A06FF2B2F9D361EA09A686870E04371EEDEFDDC",
-            "derivationPathes" : ["m/44'/0'", "m/44'/1'"]
+            "derivationPaths" : ["m/44'/0'", "m/44'/1'"]
         },
         "id": 1
     },

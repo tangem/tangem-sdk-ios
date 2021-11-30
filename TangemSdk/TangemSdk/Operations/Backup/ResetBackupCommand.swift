@@ -24,6 +24,10 @@ public final class ResetBackupCommand: Command {
     
     public init() {}
     
+    deinit {
+        Log.debug("ResetBackupCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion
@@ -31,8 +35,8 @@ public final class ResetBackupCommand: Command {
         
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
-            return TangemSdkError.noActiveBackup
-        }
+                  return TangemSdkError.noActiveBackup
+              }
         
         guard !card.wallets.contains(where: { $0.hasBackup } ) else {
             return TangemSdkError.resetBackupFailedHasBackupedWallets
@@ -70,7 +74,7 @@ public final class ResetBackupCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
-
+        
         return CommandApdu(.backupReset, tlv: tlvBuilder.serialize())
     }
     

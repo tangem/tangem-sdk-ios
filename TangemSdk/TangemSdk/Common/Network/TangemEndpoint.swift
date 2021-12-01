@@ -12,23 +12,25 @@ import Foundation
 public enum TangemEndpoint: NetworkEndpoint {
     case verifyAndGetInfo(request: CardVerifyAndGetInfoRequest)
     case artwork(cid: String, cardPublicKey: Data, artworkId: String)
+    case cardData(cid: String, cardPublicKey: Data)
     
-    private var baseURL: String {
-        return "https://verify.tangem.com/"
+    public var baseUrl: String {
+        switch self {
+        case .cardData:
+            return "https://api.tangem-tech.com/"
+        default:
+            return "https://verify.tangem.com/"
+        }
     }
     
-    public var url: URL {
+    public var path: String {
         switch self {
         case .verifyAndGetInfo:
-            return URL(string: baseURL + "card/verify-and-get-info")!
-        case .artwork(let cid, let cardPublicKey, let artworkId):
-            var components = URLComponents(string: baseURL + "card/artwork")!
-            
-            components.queryItems = [.init(name: "CID", value: cid),
-                                     .init(name: "publicKey", value: cardPublicKey.hexString),
-                                     .init(name: "artworkId", value: artworkId)]
-
-            return components.url!
+            return "card/verify-and-get-info"
+        case .artwork:
+            return "card/artwork"
+        case .cardData:
+            return "card"
         }
     }
     
@@ -36,8 +38,22 @@ public enum TangemEndpoint: NetworkEndpoint {
         switch self {
         case .verifyAndGetInfo:
             return "POST"
-        case .artwork:
+        case .artwork, .cardData:
             return "GET"
+        }
+    }
+    
+    public var queryItems: [URLQueryItem]? {
+        switch self {
+        case .verifyAndGetInfo:
+            return nil
+        case .artwork(let cid, let cardPublicKey, let artworkId):
+            return [.init(name: "CID", value: cid),
+                    .init(name: "publicKey", value: cardPublicKey.hexString),
+                    .init(name: "artworkId", value: artworkId)]
+        case .cardData(let cid, let cardPublicKey):
+            return [.init(name: "card_id", value: cid),
+                    .init(name: "card_public_key", value: cardPublicKey.hexString)]
         }
     }
     
@@ -45,7 +61,7 @@ public enum TangemEndpoint: NetworkEndpoint {
         switch self {
         case .verifyAndGetInfo(let request):
             return try? JSONEncoder().encode(request)
-        case .artwork:
+        case .artwork, .cardData:
             return nil
         }
     }

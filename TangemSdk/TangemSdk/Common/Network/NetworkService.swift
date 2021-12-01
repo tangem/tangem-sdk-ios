@@ -10,7 +10,9 @@ import Foundation
 import Combine
 
 public protocol NetworkEndpoint {
-    var url: URL {get}
+    var baseUrl: String {get}
+    var path: String {get}
+    var queryItems: [URLQueryItem]? {get}
     var method: String {get}
     var body: Data? {get}
     var headers: [String:String] {get}
@@ -24,6 +26,7 @@ public enum NetworkServiceError: Error, LocalizedError {
     case emptyResponseData
     case mappingError(Error)
     case underliying(Error)
+    case failedToMakeRequest
     
     public var errorDescription: String? {
         switch self {
@@ -53,7 +56,10 @@ public class NetworkService {
     }
     
     public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
-        let request = prepareRequest(from: endpoint)
+        guard let request = prepareRequest(from: endpoint) else {
+            return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
+        }
+        
         let configuration: URLSessionConfiguration = self.configuration ?? endpoint.configuration ?? .default
         return requestDataPublisher(request: request, configuration: configuration)
     }
@@ -90,8 +96,18 @@ public class NetworkService {
             .eraseToAnyPublisher()
     }
     
-    private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest {
-        var urlRequest = URLRequest(url: endpoint.url)
+    private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest? {
+        guard var urlComponents = URLComponents(string: endpoint.baseUrl + endpoint.path) else {
+            return nil
+        }
+        
+        urlComponents.queryItems = endpoint.queryItems
+        
+        guard let url = urlComponents.url else {
+            return nil
+        }
+        
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = endpoint.method
         urlRequest.httpBody = endpoint.body
         

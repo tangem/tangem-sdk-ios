@@ -49,4 +49,21 @@ public class OnlineCardVerifier {
             }
             .eraseToAnyPublisher()
     }
+    
+    public func getCardData(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardDataResponse?, Never> {
+        let endpoint = TangemEndpoint.cardData(cid: cardId, cardPublicKey: cardPublicKey)
+
+        return networkService
+            .requestPublisher(endpoint)
+            .tryMap { data -> CardDataResponse in
+                do {
+                    return try JSONDecoder.tangemSdkDecoder.decode(CardDataResponse.self, from: data)
+                }
+                catch {
+                    throw NetworkServiceError.mappingError(error)
+                }
+            }
+            .replaceError(with: nil)
+            .eraseToAnyPublisher()
+    }
 }

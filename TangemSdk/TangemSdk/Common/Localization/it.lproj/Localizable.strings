@@ -160,3 +160,5 @@
 "backup_add_backup_card_message" = "Scan the card you want to use as a backup";
 "backup_finalize_primary_card_message_format" = "Scan the primary card with number %@";
 "backup_finalize_backup_card_message_format" = "Scan the backup card with number %@";
+
+"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please, try again later.";

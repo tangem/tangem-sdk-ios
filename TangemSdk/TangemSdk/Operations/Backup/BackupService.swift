@@ -39,7 +39,7 @@ public class BackupService: ObservableObject {
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
-    
+    private var currentCommand: AnyObject? = nil
     private var handleErrors: Bool { sdk.config.handleErrors }
     
     public init(sdk: TangemSdk) {
@@ -140,8 +140,10 @@ public class BackupService: ObservableObject {
             return  Message(header: nil,
                             body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
-        
-        sdk.startSession(with: StartPrimaryCardLinkingTask(),
+         
+        let command = StartPrimaryCardLinkingTask()
+        currentCommand = command
+        sdk.startSession(with: command,
                          cardId: cardId,
                          initialMessage: initialMessage
         ) {[weak self] result in
@@ -153,6 +155,7 @@ public class BackupService: ObservableObject {
             case .failure(let error):
                 completion(.failure(error))
             }
+            self.currentCommand = nil
         }
     }
     
@@ -194,8 +197,11 @@ public class BackupService: ObservableObject {
     }
     
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
-        sdk.startSession(with: StartBackupCardLinkingTask(primaryCard: primaryCard,
-                                                          addedBackupCards: repo.data.backupCards.map { $0.cardId }),
+        let command = StartBackupCardLinkingTask(primaryCard: primaryCard,
+                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId })
+        currentCommand = command
+        
+        sdk.startSession(with: command,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
@@ -207,6 +213,7 @@ public class BackupService: ObservableObject {
             case .failure(let error):
                 completion(.failure(error))
             }
+            self.currentCommand = nil
         }
     }
     

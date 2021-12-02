@@ -13,9 +13,9 @@ import Combine
 final class StartBackupCardLinkingTask: CardSessionRunnable {
     private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
-    private var attestationTask: AttestationTask? = nil
     private let onlineCardVerifier = OnlineCardVerifier()
     private var cancellable: AnyCancellable? = nil
+    private var linkingCommand: StartBackupCardLinkingCommand? = nil
     
     init(primaryCard: PrimaryCard, addedBackupCards: [String]) {
         self.primaryCard = primaryCard
@@ -67,8 +67,8 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
             }
         }
         
-        let linkingCommand = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
-        linkingCommand.run(in: session) { result in
+        linkingCommand = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
+        linkingCommand!.run(in: session) { result in
             switch result {
             case .success(let rawCard):
                 self.loadIssuerSignature(rawCard, session, completion)

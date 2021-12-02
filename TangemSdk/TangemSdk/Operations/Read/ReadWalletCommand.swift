@@ -62,10 +62,6 @@ class ReadWalletCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.walletIndex, value: walletIndex)
         
-        if let keys = environment.terminalKeys {
-            try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
-        }
-        
         if let derivationPath = derivationPath {
             try tlvBuilder.append(.walletHDPath, value:  derivationPath)
         }

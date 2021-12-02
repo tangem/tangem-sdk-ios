@@ -12,7 +12,7 @@ import Foundation
 public enum TangemEndpoint: NetworkEndpoint {
     case verifyAndGetInfo(request: CardVerifyAndGetInfoRequest)
     case artwork(cid: String, cardPublicKey: Data, artworkId: String)
-    case cardData(cid: String, cardPublicKey: Data)
+    case cardData(cardId: String, cardPublicKey: Data)
     
     public var baseUrl: String {
         switch self {
@@ -45,15 +45,12 @@ public enum TangemEndpoint: NetworkEndpoint {
     
     public var queryItems: [URLQueryItem]? {
         switch self {
-        case .verifyAndGetInfo:
+        case .verifyAndGetInfo, .cardData:
             return nil
         case .artwork(let cid, let cardPublicKey, let artworkId):
             return [.init(name: "CID", value: cid),
                     .init(name: "publicKey", value: cardPublicKey.hexString),
                     .init(name: "artworkId", value: artworkId)]
-        case .cardData(let cid, let cardPublicKey):
-            return [.init(name: "card_id", value: cid),
-                    .init(name: "card_public_key", value: cardPublicKey.hexString)]
         }
     }
     
@@ -67,7 +64,17 @@ public enum TangemEndpoint: NetworkEndpoint {
     }
     
     public var headers: [String : String] {
-        return ["application/json" : "Content-Type"]
+        var headers = ["Content-Type" : "application/json"]
+        
+        switch self {
+        case .cardData(let cardId, let cardPublicKey):
+            headers["card_id"] = cardId
+            headers["card_public_key"] = cardPublicKey.hexString
+        default:
+            break
+        }
+        
+        return headers
     }
     
     public var configuration: URLSessionConfiguration? {

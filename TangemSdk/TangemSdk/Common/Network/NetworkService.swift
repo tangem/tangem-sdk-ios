@@ -65,12 +65,14 @@ public class NetworkService {
     }
     
     private func requestDataPublisher(request: URLRequest, configuration: URLSessionConfiguration) -> AnyPublisher<Data, NetworkServiceError> {
-        Log.network("request to: \(request.url!)")
+        Log.network("request to: \(request)")
+        Log.network("request to: \(String(describing: request.allHTTPHeaderFields))")
         
         return URLSession(configuration: configuration)
             .dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
             .tryMap { data, response -> Data in
+                Log.network("response: \(response)")
                 guard let response = response as? HTTPURLResponse else {
                     let error = NetworkServiceError.emptyResponse
                     Log.network(error.localizedDescription)
@@ -102,7 +104,7 @@ public class NetworkService {
         }
         
         urlComponents.queryItems = endpoint.queryItems
-        
+
         guard let url = urlComponents.url else {
             return nil
         }
@@ -112,7 +114,7 @@ public class NetworkService {
         urlRequest.httpBody = endpoint.body
         
         for header in endpoint.headers {
-            urlRequest.addValue(header.key, forHTTPHeaderField: header.value)
+            urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
         }
         
         return urlRequest

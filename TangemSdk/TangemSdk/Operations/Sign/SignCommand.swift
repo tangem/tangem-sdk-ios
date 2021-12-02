@@ -26,15 +26,17 @@ class SignCommand: Command {
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath?
     private let hashes: [Data]
-    
     private var signatures: [Data] = []
+    private var terminalKeys: KeyPair? = nil
     
     private var currentChunkNumber: Int {
         signatures.count / chunkSize
     }
+    
     private lazy var chunkSize: Int = {
         return NFCUtils.isPoorNfcQualityDevice ? 2 : 10
     }()
+    
     private lazy var numberOfChunks: Int = {
         return stride(from: 0, to: hashes.count, by: chunkSize).underestimatedCount
     }()
@@ -108,9 +110,10 @@ class SignCommand: Command {
             return
         }
         
-        let hasTerminalKeys = session.environment.terminalKeys != nil
+        terminalKeys = retrieveTerminalKeys(from: session.environment)
+        
         let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
-        guard hashes.count <= chunkSize || (card.settings.isLinkedTerminalEnabled && hasTerminalKeys) || hasEnoughDelay else {
+        guard hashes.count <= chunkSize || terminalKeys != nil || hasEnoughDelay else {
             completion(.failure(.tooManyHashesInOneTransaction))
             return
         }
@@ -190,12 +193,11 @@ class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        let isLinkedTerminalSupported = environment.card?.settings.isLinkedTerminalEnabled  ?? false
-        if let keys = environment.terminalKeys, isLinkedTerminalSupported,
-           let signedData = Secp256k1Utils.sign(flattenHashes, with: keys.privateKey) {
+        if let terminalKeys = self.terminalKeys,
+           let signedData = Secp256k1Utils.sign(flattenHashes, with: terminalKeys.privateKey) {
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)
-                .append(.terminalPublicKey, value: keys.publicKey)
+                .append(.terminalPublicKey, value: terminalKeys.publicKey)
         }
         
         if let derivationPath = self.derivationPath {
@@ -250,5 +252,15 @@ class SignCommand: Command {
         }
         
         return signatures
+    }
+    
+    private func retrieveTerminalKeys(from environment: SessionEnvironment) -> KeyPair? {
+        guard let card = environment.card,
+              card.settings.isLinkedTerminalEnabled,
+              card.firmwareVersion < .hdWalletAvailable else {
+                  return nil
+              }
+        
+        return environment.terminalKeys
     }
 }

@@ -16,7 +16,7 @@ public final class AttestationTask: CardSessionRunnable {
     private let onlineCardVerifier = OnlineCardVerifier()
     
     private var currentAttestationStatus: Attestation = .empty
-    private var onlinePublisher = CurrentValueSubject<CardDataResponse?, TangemSdkError>(nil)
+    private var onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
     private var bag = Set<AnyCancellable>()
     
     
@@ -152,15 +152,12 @@ public final class AttestationTask: CardSessionRunnable {
         
         onlineCardVerifier
             .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
-            .combineLatest(onlineCardVerifier
-                            .getCardData(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
-                            .setFailureType(to: Error.self))
-            .sink(receiveCompletion: { receivedCompletion in
+            .sink(receiveCompletion: {[unowned self] receivedCompletion in
                 if case let .failure(error) = receivedCompletion {
                     self.onlinePublisher.send(completion: .failure(error.toTangemSdkError()))
                 }
-            }, receiveValue: { _, value in
-                self.onlinePublisher.send(value)
+            }, receiveValue: {[unowned self] value in
+                self.onlinePublisher.send(())
             }).store(in: &bag)
     }
     
@@ -175,19 +172,11 @@ public final class AttestationTask: CardSessionRunnable {
                 if case let .failure(error) = receivedCompletion,
                    case TangemSdkError.cardVerificationFailed = error {
                     self.currentAttestationStatus.cardKeyAttestation = .failed
-                    
-                    if session.environment.card?.firmwareVersion.type == .sdk  {
-                        //TODO: remove or not?
-                        let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
-                        let signature = session.environment.card!.cardPublicKey.sign(privateKey: issuerPrivateKey)!
-                        session.environment.card?.issuerSignature = signature
-                    }
                 }
                 
                 self.processAttestationReport(session, completion)
                 
-            }, receiveValue: {[unowned self] cardDataResponse in
-                session.environment.card?.issuerSignature = cardDataResponse?.issuerSignature
+            }, receiveValue: {[unowned self] _ in
                 //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
                 self.currentAttestationStatus.cardKeyAttestation = .verified
                 self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
@@ -197,7 +186,7 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        onlinePublisher = CurrentValueSubject<CardDataResponse?, TangemSdkError>(nil)
+        onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
         
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))

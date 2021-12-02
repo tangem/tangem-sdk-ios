@@ -7,11 +7,13 @@
 //
 
 import Foundation
-
+import Combine
 
 @available(iOS 13.0, *)
 public class StartPrimaryCardLinkingTask: CardSessionRunnable {
     private var attestationTask: AttestationTask? = nil
+    private let onlineCardVerifier = OnlineCardVerifier()
+    private var cancellable: AnyCancellable? = nil
     
     public init() {}
     
@@ -24,28 +26,28 @@ public class StartPrimaryCardLinkingTask: CardSessionRunnable {
         linkingCommand.run(in: session) { result in
             switch result {
             case .success(let rawCard):
-                self.runAttestation(rawCard, session, completion)
+                self.loadIssuerSignature(rawCard, session, completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func runAttestation(_ rawCard: RawPrimaryCard, _ session: CardSession, _ completion: @escaping CompletionResult<PrimaryCard>) {
-        attestationTask = AttestationTask(mode: .full)
-        attestationTask!.run(in: session) { result in
-            switch result {
-            case .success:
-                guard let signature = session.environment.card?.issuerSignature else {
-                    completion(.failure(.certificateSignatureRequired))
+    private func loadIssuerSignature(_ rawCard: RawPrimaryCard, _ session: CardSession, _ completion: @escaping CompletionResult<PrimaryCard>) {
+        cancellable = onlineCardVerifier
+            .getCardData(cardId: rawCard.cardId, cardPublicKey: rawCard.cardPublicKey)
+            .sink(receiveCompletion: { receivedCompletion in
+                if case .failure = receivedCompletion {
+                    completion(.failure(.issuerSignatureLoadingFailed))
+                }
+            }, receiveValue: { response in
+                guard let signature = response.issuerSignature else {
+                    completion(.failure(.issuerSignatureLoadingFailed))
                     return
                 }
                 
-                let backupCard = PrimaryCard(rawCard, issuerSignature: signature)
-                completion(.success(backupCard))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+                let primaryCard = PrimaryCard(rawCard, issuerSignature: signature)
+                completion(.success(primaryCard))
+            })
     }
 }

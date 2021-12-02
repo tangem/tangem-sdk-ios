@@ -9,6 +9,6 @@
 import Foundation
 
 public struct CardDataResponse: Codable {
-    let manufacturerSignature: Data
-    let issuerSignature: Data
+    public let manufacturerSignature: Data?
+    public let issuerSignature: Data?
 }

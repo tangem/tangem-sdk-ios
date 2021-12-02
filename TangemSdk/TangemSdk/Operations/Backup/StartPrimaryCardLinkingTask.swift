@@ -14,6 +14,7 @@ public class StartPrimaryCardLinkingTask: CardSessionRunnable {
     private var attestationTask: AttestationTask? = nil
     private let onlineCardVerifier = OnlineCardVerifier()
     private var cancellable: AnyCancellable? = nil
+    private var linkingCommand: StartPrimaryCardLinkingCommand? = nil
     
     public init() {}
     
@@ -22,8 +23,8 @@ public class StartPrimaryCardLinkingTask: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<PrimaryCard>) {
-        let linkingCommand = StartPrimaryCardLinkingCommand()
-        linkingCommand.run(in: session) { result in
+        linkingCommand = StartPrimaryCardLinkingCommand()
+        linkingCommand!.run(in: session) { result in
             switch result {
             case .success(let rawCard):
                 self.loadIssuerSignature(rawCard, session, completion)

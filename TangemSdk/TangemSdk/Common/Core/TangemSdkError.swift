@@ -265,6 +265,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupFailedEmptyWallets
     case backupFailedNotEmptyWallets
     case certificateSignatureRequired
+    case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
     case noActiveBackup
     case resetBackupFailedHasBackupedWallets
@@ -390,6 +391,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedHDWalletSettings: return 41226
         case .backupFailedNotEnoughCurves: return 41227
         case .backupFailedNotEnoughWallets: return 41228
+        case .issuerSignatureLoadingFailed: return 41229
             
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard: return 41301
@@ -440,7 +442,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
-            
         }
     }
     
@@ -490,6 +491,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin1".localized
         case .wrongPasscode: return "error_wrong_pin2".localized
+        case .issuerSignatureLoadingFailed: return "issuer_signature_loading_failed".localized
         case .encodingFailed(let message):
             return Localization.genericErrorCode("\(self.code). \(message)")
         case .encodingFailedTypeMismatch(let message):

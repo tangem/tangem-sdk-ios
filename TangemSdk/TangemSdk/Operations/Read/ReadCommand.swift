@@ -51,7 +51,6 @@ final class ReadCommand: Command {
             try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
         }
         
-        
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
     

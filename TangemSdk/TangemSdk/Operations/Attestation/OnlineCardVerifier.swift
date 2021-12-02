@@ -50,8 +50,8 @@ public class OnlineCardVerifier {
             .eraseToAnyPublisher()
     }
     
-    public func getCardData(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardDataResponse?, Never> {
-        let endpoint = TangemEndpoint.cardData(cid: cardId, cardPublicKey: cardPublicKey)
+    public func getCardData(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardDataResponse, Error> {
+        let endpoint = TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey)
 
         return networkService
             .requestPublisher(endpoint)
@@ -63,7 +63,6 @@ public class OnlineCardVerifier {
                     throw NetworkServiceError.mappingError(error)
                 }
             }
-            .replaceError(with: nil)
             .eraseToAnyPublisher()
     }
 }

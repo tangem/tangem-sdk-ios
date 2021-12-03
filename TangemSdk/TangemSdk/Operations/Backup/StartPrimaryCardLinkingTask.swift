@@ -35,6 +35,13 @@ public class StartPrimaryCardLinkingTask: CardSessionRunnable {
     }
     
     private func loadIssuerSignature(_ rawCard: RawPrimaryCard, _ session: CardSession, _ completion: @escaping CompletionResult<PrimaryCard>) {
+        if session.environment.card?.firmwareVersion.type == .sdk {
+            let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
+            let issuerSignature = rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)!
+            completion(.success(PrimaryCard(rawCard, issuerSignature: issuerSignature)))
+            return
+        }
+        
         cancellable = onlineCardVerifier
             .getCardData(cardId: rawCard.cardId, cardPublicKey: rawCard.cardPublicKey)
             .sink(receiveCompletion: { receivedCompletion in

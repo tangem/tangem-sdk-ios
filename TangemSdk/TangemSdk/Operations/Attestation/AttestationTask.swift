@@ -180,7 +180,7 @@ public final class AttestationTask: CardSessionRunnable {
         
         onlinePublisher
             .compactMap { $0 }
-            .sink(receiveCompletion: {[unowned self] receivedCompletion in
+            .sink(receiveCompletion: { receivedCompletion in
                 //We interest only in cardVerificationFailed error, ignore network errors
                 if case let .failure(error) = receivedCompletion,
                    case TangemSdkError.cardVerificationFailed = error {
@@ -189,7 +189,7 @@ public final class AttestationTask: CardSessionRunnable {
                 
                 self.complete(session, completion)
                 
-            }, receiveValue: {[unowned self] _ in
+            }, receiveValue: { _ in
                 //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
                 self.currentAttestationStatus.cardKeyAttestation = .verified
                 self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)

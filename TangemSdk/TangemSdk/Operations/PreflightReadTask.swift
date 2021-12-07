@@ -37,11 +37,11 @@ public enum PreflightReadMode: Decodable, Equatable {
 }
 
 @available(iOS 13.0, *)
-public final class PreflightReadTask: CardSessionRunnable {
+final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
     private let cardId: String?
     
-    public init(readMode: PreflightReadMode, cardId: String?) {
+    init(readMode: PreflightReadMode, cardId: String?) {
         self.readMode = readMode
         self.cardId = cardId
     }
@@ -50,7 +50,7 @@ public final class PreflightReadTask: CardSessionRunnable {
         Log.debug("PreflightReadTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         Log.debug("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
             switch result {
@@ -68,14 +68,19 @@ public final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                self.finalizeRead(in: session, with: readResponse, completion: completion)
+                self.finalizeRead(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    private func finalizeRead(in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
+    private func finalizeRead(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
         if card.firmwareVersion < .multiwalletAvailable {
             completion(.success(card))
             return
@@ -83,16 +88,21 @@ public final class PreflightReadTask: CardSessionRunnable {
         
         switch readMode {
         case .fullCardRead:
-            readWalletsList(in: session, with: card, completion: completion)
+            readWalletsList(in: session, completion: completion)
         case .readCardOnly, .none:
             completion(.success(card))
         }
     }
     
-    private func readWalletsList(in session: CardSession, with card: Card, completion: @escaping CompletionResult<Card>) {
-        ReadWalletsListCommand().run(in: session) { (result) in
+    private func readWalletsList(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        ReadWalletsListCommand().run(in: session) { result in
             switch result {
             case .success:
+                guard let card = session.environment.card else {
+                    completion(.failure(.missingPreflightRead))
+                    return
+                }
+                
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))

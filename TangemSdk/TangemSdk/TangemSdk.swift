@@ -82,16 +82,16 @@ public extension TangemSdk {
     ///   - hash: Transaction hash for sign by card.
     ///   - walletPublicKey: Public key of wallet that should sign hash.
     ///   - cardId: CID, Unique Tangem card ID number
-    ///   - hdPath: Derivation path of the wallet. Optional
+    ///   - derivationPath: Derivation path of the wallet. Optional
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignHashResponse,TangemSdkError>`
     func sign(hash: Data,
               walletPublicKey: Data,
               cardId: String,
-              hdPath: DerivationPath? = nil,
+              derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashResponse>) {
-        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey, hdPath: hdPath)
+        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,
@@ -111,16 +111,16 @@ public extension TangemSdk {
     ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
     ///   - walletPublicKey: Public key of wallet that should sign hashes.
     ///   - cardId: CID, Unique Tangem card ID number
-    ///   - hdPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
+    ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignHashesResponse,TangemSdkError>`
     func sign(hashes: [Data],
               walletPublicKey: Data,
               cardId: String,
-              hdPath: DerivationPath? = nil,
+              derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashesResponse>) {
-        let command = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey, hdPath: hdPath)
+        let command = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,
@@ -224,6 +224,38 @@ public extension TangemSdk {
                         initialMessage: Message? = nil,
                         completion: @escaping CompletionResult<SuccessResponse>) {
         startSession(with: SetUserCodeCommand.resetUserCodes, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+    
+    /// Derive public key according to BIP32 (Private parent key → public child key)
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - walletPublicKey: Seed public key.
+    ///   - derivationPath: Derivation path
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    func deriveWalletPublicKey(cardId: String,
+                               walletPublicKey: Data,
+                               derivationPath: DerivationPath,
+                               initialMessage: Message? = nil,
+                               completion: @escaping CompletionResult<ExtendedPublicKey>) {
+        let command = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPath)
+        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+    
+    /// Derive multiple wallet public keys according to BIP32 (Private parent key → public child key)
+    /// - Parameters:
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - walletPublicKey: Seed public key.
+    ///   - derivationPaths: Derivation pathes
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    func deriveWalletPublicKeys(cardId: String,
+                                walletPublicKey: Data,
+                                derivationPaths: [DerivationPath],
+                                initialMessage: Message? = nil,
+                                completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
+        let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPaths: derivationPaths)
+        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     //MARK: - Files

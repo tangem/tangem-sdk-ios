@@ -42,7 +42,7 @@ class ReadWalletsListCommand: Command {
             case .success(let response):
                 self.loadedWallets.append(contentsOf: response.wallets)
                 
-                if self.receivedWalletsCount == 0 && response.wallets.count == 0 {
+                if self.receivedWalletsCount == 0 && response.wallets.isEmpty {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }
@@ -68,10 +68,6 @@ class ReadWalletsListCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.interactionMode, value: ReadMode.walletsList)
             .append(.cardId, value: environment.card?.cardId)
-        
-        if let keys = environment.terminalKeys {
-            try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
-        }
         
         if receivedWalletsCount > 0 {
             try tlvBuilder.append(.walletIndex, value: receivedWalletsCount)

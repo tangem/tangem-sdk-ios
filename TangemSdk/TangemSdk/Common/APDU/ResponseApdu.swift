@@ -42,7 +42,7 @@ public struct ResponseApdu {
             return self
         }
         
-        if data.count == 0 { //error response. nothing to decrypt
+        if data.isEmpty { //error response. nothing to decrypt
             return self
         }
         

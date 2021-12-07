@@ -125,7 +125,7 @@ struct ContentView: View {
                     .font(.headline)
                     .bold()
                 
-                TextField("\"m/0/1\"", text: $model.hdPath)
+                TextField("\"m/0/1\"", text: $model.derivationPath)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)

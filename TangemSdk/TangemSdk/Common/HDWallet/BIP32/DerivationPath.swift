@@ -9,9 +9,14 @@
 import Foundation
 
 /// BIP32 derivation Path
-public struct DerivationPath {
+public struct DerivationPath: Equatable, Hashable {
     public let rawPath: String
     public let nodes: [DerivationNode]
+    
+    /// Init with master node
+    public init() {
+        self.init(nodes: [])
+    }
     
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
@@ -35,31 +40,32 @@ public struct DerivationPath {
                 throw HDWalletError.wrongPath
             }
             
-            let node = isHardened ? DerivationNode.hardened(index) : DerivationNode.notHardened(index)
+            let node = isHardened ? DerivationNode.hardened(index) : DerivationNode.nonHardened(index)
             derivationPath.append(node)
         }
         
         self.init(rawPath: rawPath, nodes: derivationPath)
     }
     
+    /// Init with nodes
     public init(nodes: [DerivationNode]) {
-        self.nodes = nodes
+        var path = "\(BIP32.Constants.masterKeySymbol)"
+       
+        let nodesPath = nodes.map { $0.pathDescription }.joined(separator: String(BIP32.Constants.separatorSymbol))
+        if !nodesPath.isEmpty {
+            path += "\(BIP32.Constants.separatorSymbol)\(nodesPath)"
+        }
         
-        let description = nodes.map { $0.pathDescription }.joined(separator: String(BIP32.Constants.separatorSymbol))
-        self.rawPath =  "\(BIP32.Constants.masterKeySymbol)\(BIP32.Constants.separatorSymbol)\(description)"
-    }
-    
-    /// Convert path to non-hardened nodes only
-    /// We can use non-hardened derivation only without tapping the Tangem card.
-    /// - Returns: Non-hardened path according BIP32
-    public func toNonHardened() -> DerivationPath {
-        let nonHardenedNodes = nodes.map { $0.toNonHardened() }
-        return DerivationPath(nodes: nonHardenedNodes)
+        self.init(rawPath: path, nodes: nodes)
     }
     
     private init(rawPath: String, nodes: [DerivationNode]) {
         self.rawPath = rawPath
         self.nodes = nodes
+    }
+    
+    public func extendedPath(with node: DerivationNode) -> DerivationPath {
+        DerivationPath(nodes: self.nodes + [node])
     }
 }
 
@@ -79,5 +85,18 @@ extension DerivationPath {
     func encodeTlv(with tag: TlvTag) -> Tlv {
         let serialized = nodes.map { $0.serialize() }.joined()
         return Tlv(tag, value: Data(serialized))
+    }
+}
+
+extension DerivationPath: Codable {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.singleValueContainer()
+        let rawPath = try values.decode(String.self)
+        self = try .init(rawPath: rawPath)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawPath)
     }
 }

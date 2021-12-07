@@ -114,10 +114,6 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "SetPasscode", result: result)
     }
     
-    func testPreflightRead() {
-        testMethod(name: "PreflightRead", result: testCard)
-    }
-    
     func testSignHashes() {
         let result = SignHashesResponse(cardId: "c000111122223333",
                                         signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
@@ -133,6 +129,25 @@ class JSONRPCTests: XCTestCase {
                                       totalSignedHashes: 2)
         
         testMethod(name: "SignHash", result: result)
+    }
+    
+    func testDerivePublicKey() {
+        let result = ExtendedPublicKey(compressedPublicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+                                       chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"),
+                                       derivationPath: try! DerivationPath(rawPath: "m/44'/0'"))
+        
+        testMethod(name: "DeriveWalletPublicKey", result: result)
+    }
+    
+    func testDerivePublicKeys() {
+        let result = [ExtendedPublicKey(compressedPublicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+                                       chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"),
+                                       derivationPath: try! DerivationPath(rawPath: "m/44'/0'")),
+                      ExtendedPublicKey(compressedPublicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+                                                     chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"),
+                                                     derivationPath: try! DerivationPath(rawPath: "m/44'/1'"))]
+        
+        testMethod(name: "DeriveWalletPublicKeys", result: result)
     }
     
     func testFiles() {

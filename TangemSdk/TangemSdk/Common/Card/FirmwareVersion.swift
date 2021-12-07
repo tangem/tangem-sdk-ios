@@ -106,7 +106,7 @@ extension FirmwareVersion: Comparable {
 }
 //MARK: - Constants
 @available(iOS 13.0, *)
-public extension FirmwareVersion { //todo: move all doubleValue checks to constants
+public extension FirmwareVersion { //todo: move all doubleValue checks to constants, group production cos
     /// Multi-wallet
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
     /// Field on card that describes is passcode is default value or not
@@ -116,12 +116,9 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     /// Read-write files
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
-    static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 28)
+    static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 39)
     /// Is create wallet command answers with the whole wallet
     static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
-    
-    static let min = FirmwareVersion(major: 0, minor: 0)
-    static let max = FirmwareVersion(major: Int.max, minor: 0)
 }
 
 @available(iOS 13.0, *)

@@ -114,10 +114,6 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "SetPasscode", result: result)
     }
     
-    func testPreflightRead() {
-        testMethod(name: "PreflightRead", result: testCard)
-    }
-    
     func testSignHashes() {
         let result = SignHashesResponse(cardId: "c000111122223333",
                                         signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),

@@ -11,8 +11,6 @@ import Foundation
 /// This command deletes all wallet data and its private and public keys
 @available(iOS 13.0, *)
 public final class PurgeWalletCommand: Command {
-    public var preflightReadMode: PreflightReadMode { .readWallet(publicKey: walletPublicKey) }
-    
     var requiresPasscode: Bool { return true }
     
     private let walletPublicKey: Data
@@ -52,11 +50,15 @@ public final class PurgeWalletCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
+            throw TangemSdkError.walletNotFound
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.walletPublicKey, value: walletPublicKey)
+            .append(.walletIndex, value: walletIndex)
         
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }

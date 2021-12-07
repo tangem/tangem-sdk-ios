@@ -22,14 +22,12 @@ public enum TangemEndpoint: NetworkEndpoint {
         case .verifyAndGetInfo:
             return URL(string: baseURL + "card/verify-and-get-info")!
         case .artwork(let cid, let cardPublicKey, let artworkId):
-            let parameters = ["CID" : cid,
-                              "publicKey" : cardPublicKey.hexString,
-                              "artworkId" : artworkId]
-            
             var components = URLComponents(string: baseURL + "card/artwork")!
-            components.queryItems = parameters.map { (key, value) in
-                URLQueryItem(name: key, value: value)
-            }
+            
+            components.queryItems = [.init(name: "CID", value: cid),
+                                     .init(name: "publicKey", value: cardPublicKey.hexString),
+                                     .init(name: "artworkId", value: artworkId)]
+
             return components.url!
         }
     }
@@ -54,6 +52,13 @@ public enum TangemEndpoint: NetworkEndpoint {
     
     public var headers: [String : String] {
         return ["application/json" : "Content-Type"]
+    }
+    
+    public var configuration: URLSessionConfiguration? {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 30
+        return configuration
     }
 }
 

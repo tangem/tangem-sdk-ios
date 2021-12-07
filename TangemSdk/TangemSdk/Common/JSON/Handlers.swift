@@ -137,18 +137,6 @@ class ResetUserCodesHandler: JSONRPCHandler {
 }
 
 @available(iOS 13.0, *)
-class PreflightReadHandler: JSONRPCHandler {
-    var method: String { "PREFLIGHT_READ" }
-    
-    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let cardId: String? = try parameters.value(for: "cardId")
-        let mode: PreflightReadMode = try parameters.value(for: "readMode")
-        let command = PreflightReadTask(readMode: mode, cardId: cardId)
-        return command.eraseToAnyRunnable()
-    }
-}
-
-@available(iOS 13.0, *)
 class ReadFilesHandler: JSONRPCHandler {
     var method: String { "READ_FILES" }
     

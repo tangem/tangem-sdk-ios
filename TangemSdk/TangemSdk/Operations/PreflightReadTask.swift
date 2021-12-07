@@ -37,11 +37,11 @@ public enum PreflightReadMode: Decodable, Equatable {
 }
 
 @available(iOS 13.0, *)
-public final class PreflightReadTask: CardSessionRunnable {
+final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
     private let cardId: String?
     
-    public init(readMode: PreflightReadMode, cardId: String?) {
+    init(readMode: PreflightReadMode, cardId: String?) {
         self.readMode = readMode
         self.cardId = cardId
     }
@@ -50,7 +50,7 @@ public final class PreflightReadTask: CardSessionRunnable {
         Log.debug("PreflightReadTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         Log.debug("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
             switch result {

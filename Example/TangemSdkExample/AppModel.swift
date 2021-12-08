@@ -44,6 +44,7 @@ class AppModel: ObservableObject {
     
     private var tangemSdk: TangemSdk {
         var config = Config()
+        config.attestationMode = .full
         config.logСonfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
@@ -305,7 +306,7 @@ extension AppModel {
                 return
             }
             
-            let scan = PreflightReadTask(readMode: .fullCardRead, cardId: nil)
+            let scan = ScanTask()
             scan.run(in: session) { result in
                 switch result {
                 case .success:

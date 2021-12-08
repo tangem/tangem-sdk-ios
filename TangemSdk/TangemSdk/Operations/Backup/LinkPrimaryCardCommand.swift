@@ -61,6 +61,8 @@ final class LinkPrimaryCardCommand: Command {
                 session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
                 session.environment.passcode = UserCode(.passcode, value: self.passcode)
                 
+                session.environment.card?.isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
+                session.environment.card?.isPasscodeSet = session.environment.isUserCodeSet(.passcode)
                 self.complete(response: response, session: session, completion: completion)
             case .failure(let error):
                 switch error {

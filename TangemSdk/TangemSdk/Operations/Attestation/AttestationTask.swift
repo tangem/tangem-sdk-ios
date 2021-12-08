@@ -16,9 +16,8 @@ public final class AttestationTask: CardSessionRunnable {
     private let onlineCardVerifier = OnlineCardVerifier()
     
     private var currentAttestationStatus: Attestation = .empty
-    private var onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
+    private var onlineAttestationPublisher = CurrentValueSubject<Attestation.Status?, Never>(nil)
     private var bag = Set<AnyCancellable>()
-    
     
     /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
     public var shouldKeepSessionOpened = false
@@ -73,10 +72,10 @@ public final class AttestationTask: CardSessionRunnable {
         case .offline:
             complete(session, completion)
         case .normal:
-            runOnlineAttestation(session.environment.card!)
+            runOnlineAttestation(session, completion)
             waitForOnlineAndComplete(session, completion)
         case .full:
-            runOnlineAttestation(session.environment.card!)
+            runOnlineAttestation(session, completion)
             runWalletsAttestation(session, completion)
         }
     }
@@ -107,94 +106,93 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            let card = session.environment.card!
-            let walletsKeys = card.wallets.map{ $0.publicKey }
-            let attestationCommands = walletsKeys.map { AttestWalletKeyCommand(publicKey: $0) }
-            let group = DispatchGroup()
-            
-            var shouldReturn = false
-            //check for hacking attempts with signs
-            var hasWarnings = card.wallets.compactMap { $0.totalSignedHashes }
-                .contains(where: { $0 > Constants.maxCounter })
-            
-            for command in attestationCommands {
-                if shouldReturn { return }
-                group.enter()
-                
-                command.run(in: session) { result in
-                    switch result {
-                    case .success(let response):
-                        //check for hacking attempts with attestWallet
-                        if let counter = response.counter, counter > Constants.maxCounter {
-                            hasWarnings = true
-                        }
-                    case .failure(let error):
-                        shouldReturn = true
-                        completion(.failure(error))
-                    }
-                    group.leave()
-                }
-                
-                group.wait()
-            }
-            completion(.success(hasWarnings))
+        let attestationCommands = session.environment.card!.wallets.map { AttestWalletKeyCommand(publicKey: $0.publicKey) }
+      
+        if attestationCommands.isEmpty {
+            completion(.success(false)) //no warnings
+            return
         }
+        
+        let hasWarnings = session.environment.card!.wallets.compactMap { $0.totalSignedHashes }
+            .contains(where: { $0 > Constants.maxCounter })
+        
+        attestWallet(attestationCommands, commandIndex: 0, hasWarnings: hasWarnings, session, completion)
     }
     
-    private func runOnlineAttestation(_ card: Card) {
+    private func attestWallet(_ attestationCommands: [AttestWalletKeyCommand],
+                              commandIndex: Int,
+                              hasWarnings: Bool,
+                              _ session: CardSession,
+                              _ completion: @escaping CompletionResult<Bool>) {
+        if commandIndex == attestationCommands.count {
+            completion(.success(hasWarnings))
+            return
+        }
+        
+        attestationCommands[commandIndex].run(in: session) { result in
+            switch result {
+            case .success(let response):
+                //check for hacking attempts with attestWallet
+                let shouldWarn = response.counter.map { $0 > Constants.maxCounter } ?? false
+                
+                self.attestWallet(attestationCommands,
+                                  commandIndex: commandIndex + 1,
+                                  hasWarnings: shouldWarn ? true : hasWarnings,
+                                  session,
+                                  completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func runOnlineAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+        let card = session.environment.card!
         //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
         //So, we can send the error to the publisher immediately
-        if card.firmwareVersion.type == .sdk || card.attestation.cardKeyAttestation == .failed {
-            onlinePublisher.send(completion: .failure(.cardVerificationFailed))
+        if card.firmwareVersion.type == .sdk || currentAttestationStatus.cardKeyAttestation == .failed {
+            onlineAttestationPublisher.send(.failed)
             return
         }
         
         onlineCardVerifier
             .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
-            .sink(receiveCompletion: { receivedCompletion in
-                if case let .failure(error) = receivedCompletion {
-                    self.onlinePublisher.send(completion: .failure(error.toTangemSdkError()))
+            .map { _ in return Attestation.Status.verified } //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
+            .catch { error -> Just<Attestation.Status> in
+                if case TangemSdkError.cardVerificationFailed = error {
+                    return Just(.failed)
                 }
-            }, receiveValue: { value in
-                self.onlinePublisher.send(())
-            }).store(in: &bag)
+
+                return Just(.verifiedOffline)
+            }
+            .sink(receiveValue: { self.onlineAttestationPublisher.send($0) })
+            .store(in: &bag)
     }
-    
-    private func waitForOnlineAndComplete( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+
+    private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         if !shouldKeepSessionOpened {
             session.pause() //Nothing to do with nfc anymore
         }
         
-        onlinePublisher
-            .sink(receiveCompletion: { receivedCompletion in
-                //We interest only in cardVerificationFailed error, ignore network errors
-                if case let .failure(error) = receivedCompletion,
-                   case TangemSdkError.cardVerificationFailed = error {
+        onlineAttestationPublisher
+            .compactMap { $0 }
+            .sink(receiveValue: {[unowned self] attestResult in
+                switch attestResult {
+                case .verified:
+                    self.currentAttestationStatus.cardKeyAttestation = .verified
+                    self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
+                case .failed:
                     self.currentAttestationStatus.cardKeyAttestation = .failed
+                default: break
                 }
                 
-                self.processAttestationReport(session, completion)
-                
-            }, receiveValue: { _ in
-                //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
-                self.currentAttestationStatus.cardKeyAttestation = .verified
-                self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
                 self.processAttestationReport(session, completion)
             })
             .store(in: &bag)
     }
     
     private func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        onlinePublisher = CurrentValueSubject<Void?, TangemSdkError>(nil)
-        
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        runOnlineAttestation(card)
-        waitForOnlineAndComplete(session, completion)
+        self.runOnlineAttestation(session, completion)
     }
     
     private func processAttestationReport(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {

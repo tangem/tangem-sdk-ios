@@ -55,6 +55,10 @@ public class NetworkService {
         self.configuration = configuration
     }
     
+    deinit {
+        Log.debug("NetworkService deinit")
+    }
+    
     public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
         guard let request = prepareRequest(from: endpoint) else {
             return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
@@ -88,13 +92,7 @@ public class NetworkService {
                 Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
                 return data
             }
-            .mapError { error in
-                if let nse = error as? NetworkServiceError {
-                    return nse
-                } else {
-                    return NetworkServiceError.urlSessionError(error)
-                }
-            }
+            .mapError { $0 as? NetworkServiceError ?? NetworkServiceError.urlSessionError($0) }
             .eraseToAnyPublisher()
     }
     

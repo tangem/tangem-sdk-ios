@@ -36,7 +36,7 @@ final class LinkBackupCardsCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .backupFailedFirmware
         }
         
         if !card.settings.isBackupAllowed {

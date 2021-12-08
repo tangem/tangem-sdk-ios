@@ -45,7 +45,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
         }
         
         guard let backupStatus = card.backupStatus else {
-            completion(.failure(.notSupportedFirmwareVersion))
+            completion(.failure(.backupFailedFirmware))
             return
         }
         

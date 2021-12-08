@@ -16,6 +16,10 @@ public class OnlineCardVerifier {
     
     public init() {}
     
+    deinit {
+        Log.debug("OnlineCardVerifier deinit")
+    }
+    
     /// Online verification and get info for Tangem cards. Do not use for developer cards
     /// - Parameters:
     ///   - cardId: cardId to verify
@@ -44,7 +48,7 @@ public class OnlineCardVerifier {
                 guard firstResult.passed else {
                     throw TangemSdkError.cardVerificationFailed
                 }
-                
+
                 return firstResult
             }
             .eraseToAnyPublisher()

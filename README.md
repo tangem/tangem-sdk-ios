@@ -95,7 +95,7 @@ let sdk = TangemSdk()
 The universal initializer allows you to create an instance of the class that you can use immediately without any additional setup. 
 
 You can also use a custom initializer, which allows you to pass your implementation of `CardReader` protocol to communicate with a card as well as the implementation of `SessionViewDelegate` protocol to create a custom user interface.
-You can read more about this in [Customization](#сustomization).
+You can read more about this in [Customization](#customization).
 
 ### Basic usage
 The easiest way to use the SDK is to call basic functions that implemented in `TangemSdk` class. Functions performs one or more commands and, after that, calls completion block with success or error result.

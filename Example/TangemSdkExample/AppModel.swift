@@ -44,8 +44,7 @@ class AppModel: ObservableObject {
     
     private var tangemSdk: TangemSdk {
         var config = Config()
-        config.attestationMode = .full
-        config.logСonfig = .verbose
+        config.logConfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors

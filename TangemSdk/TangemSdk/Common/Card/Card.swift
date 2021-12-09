@@ -92,11 +92,12 @@ public extension Card {
         case active(cardsCount: Int)
         
         public var isActive: Bool {
-            if case .active = self {
+            switch self {
+            case .active, .cardLinked:
                 return true
+            default:
+                return false
             }
-            
-            return false
         }
         
         public init(from decoder: Decoder) throws {

@@ -127,7 +127,7 @@ extension NFCReader: CardReader {
             .filter{[unowned self] _ in
                 let distanceToSessionActive = self.sessionDidBecomeActiveTimestamp.distance(to: Date())
                 if !self.isSessionReady || distanceToSessionActive < 1 {
-                    Log.nfc("Filter out сancelled event")
+                    Log.nfc("Filter out cancelled event")
                     return false
                 }
                 return true

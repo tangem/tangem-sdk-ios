@@ -153,7 +153,7 @@ public final class Secp256k1Utils {
             let testV = UInt8(v)
             let testSign = Data(serialized + [testV])
             
-            if let recoveredKey = recoverPublicKey(hash: hash, signature: testSign, compressed: false),
+            if let recoveredKey = recoverPublicKey(hash: hash, signature: testSign, compressed: publicKey.count == 33),
                 recoveredKey == publicKey {
                 recoveredSignature = testSign
             }

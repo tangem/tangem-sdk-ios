@@ -10,8 +10,10 @@
 		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
 		5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04F9E126EF731B00D15F75 /* Publisher+.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
+		5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
+		5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0E56022757C11F00D46F54 /* CardDataResponse.swift */; };
 		5D0F8CFE26C6A255002E84A4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */; };
 		5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */; };
 		5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */; };
@@ -54,6 +56,14 @@
 		5D3B9F0326BD678500532CC7 /* SignHashes.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D3B9F0226BD678500532CC7 /* SignHashes.json */; };
 		5D3F77B624B9B8F600E8695B /* Attestation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F77B524B9B8F600E8695B /* Attestation.swift */; };
 		5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D437EEA237BE980009C82A8 /* TlvTests.swift */; };
+		5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */; };
+		5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */; };
+		5D445B7426E2988500F6F0FE /* GetResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */; };
+		5D445B7626E298C400F6F0FE /* ResetPinService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7526E298C400F6F0FE /* ResetPinService.swift */; };
+		5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */; };
+		5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */; };
+		5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */; };
+		5D445B7E26E2A1F300F6F0FE /* CaseIterable+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */; };
 		5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1542681032B00DC6447 /* SignHashCommand.swift */; };
 		5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F157268105BF00DC6447 /* SignHashesCommand.swift */; };
 		5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F1592681064A00DC6447 /* Handlers.swift */; };
@@ -61,10 +71,12 @@
 		5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F536274D68010004681F /* DeriveWalletPublicKey.json */; };
 		5D46F53A274E29660004681F /* DeriveWalletPublicKeysTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */; };
 		5D46F53C274E41100004681F /* DeriveWalletPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */; };
+		5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */; };
 		5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127626D3CEE7006E173C /* ReadFiles.json */; };
 		5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127826D3CF4F006E173C /* DeleteFiles.json */; };
 		5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */; };
 		5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127C26D3D351006E173C /* WriteFiles.json */; };
+		5D4B128326D40C77006E173C /* StartPrimaryCardLinkingCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
 		5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetAccessCode.json */; };
 		5D54408C2682269400F7D05B /* SetPasscode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408B2682269400F7D05B /* SetPasscode.json */; };
@@ -165,6 +177,7 @@
 		5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE024A113C900FB5BA7 /* CardConfig.swift */; };
 		5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */; };
 		5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */; };
+		5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */; };
 		5D908C5B26A7469100270FA3 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5A26A7469100270FA3 /* CardView.swift */; };
 		5D908C5D26A74BD800270FA3 /* PhoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5C26A74BD800270FA3 /* PhoneView.swift */; };
 		5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D908C5E26A7519500270FA3 /* NFCFieldView.swift */; };
@@ -210,6 +223,12 @@
 		5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6C7825D30C2D00E48D7B /* ConsoleLogger.swift */; };
 		5DDD6D4825D57F0900E48D7B /* SLIX+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4725D57F0900E48D7B /* SLIX+.swift */; };
 		5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */; };
+		5DE43A5C26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */; };
+		5DE43A5E26D4F45800ECA36A /* LinkPrimaryCardCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A5D26D4F45800ECA36A /* LinkPrimaryCardCommand.swift */; };
+		5DE43A6026D511CE00ECA36A /* LinkBackupCardsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */; };
+		5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A6126D5157900ECA36A /* ReadBackupDataCommand.swift */; };
+		5DE43A6426D5158300ECA36A /* WriteBackupDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A6326D5158300ECA36A /* WriteBackupDataCommand.swift */; };
+		5DE43A6626D515B100ECA36A /* FinalizePrimaryCardTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE43A6526D515B100ECA36A /* FinalizePrimaryCardTask.swift */; };
 		5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */; };
 		5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */; };
 		5DE59F2B23D96F8B00312DA4 /* NFCUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2A23D96F8B00312DA4 /* NFCUtils.swift */; };
@@ -218,6 +237,8 @@
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
 		5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */; };
 		5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */; };
+		5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DED473226D6A00D003CB1E7 /* BackupService.swift */; };
+		5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */; };
 		5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */; };
 		5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */; };
 		5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF7CFCD233D058D00461F4D /* CardReader.swift */; };
@@ -276,8 +297,10 @@
 		5D04F9E126EF731B00D15F75 /* Publisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+.swift"; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPrimaryCardLinkingTask.swift; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		5D0E56022757C11F00D46F54 /* CardDataResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataResponse.swift; sourceTree = "<group>"; };
 		5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeHeaderView.swift; sourceTree = "<group>"; };
@@ -320,6 +343,14 @@
 		5D3B9F0226BD678500532CC7 /* SignHashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SignHashes.json; sourceTree = "<group>"; };
 		5D3F77B524B9B8F600E8695B /* Attestation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attestation.swift; sourceTree = "<group>"; };
 		5D437EEA237BE980009C82A8 /* TlvTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvTests.swift; sourceTree = "<group>"; };
+		5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizeMode.swift; sourceTree = "<group>"; };
+		5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizeResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7526E298C400F6F0FE /* ResetPinService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinService.swift; sourceTree = "<group>"; };
+		5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignResetPinToken.swift; sourceTree = "<group>"; };
+		5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinCommand.swift; sourceTree = "<group>"; };
+		5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinTask.swift; sourceTree = "<group>"; };
+		5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+.swift"; sourceTree = "<group>"; };
 		5D46F1542681032B00DC6447 /* SignHashCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignHashCommand.swift; sourceTree = "<group>"; };
 		5D46F157268105BF00DC6447 /* SignHashesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignHashesCommand.swift; sourceTree = "<group>"; };
 		5D46F1592681064A00DC6447 /* Handlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handlers.swift; sourceTree = "<group>"; };
@@ -327,10 +358,12 @@
 		5D46F536274D68010004681F /* DeriveWalletPublicKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeriveWalletPublicKey.json; sourceTree = "<group>"; };
 		5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeriveWalletPublicKeysTask.swift; sourceTree = "<group>"; };
 		5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeriveWalletPublicKeys.json; sourceTree = "<group>"; };
+		5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartBackupCardLinkingTask.swift; sourceTree = "<group>"; };
 		5D4B127626D3CEE7006E173C /* ReadFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ReadFiles.json; sourceTree = "<group>"; };
 		5D4B127826D3CF4F006E173C /* DeleteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeleteFiles.json; sourceTree = "<group>"; };
 		5D4B127A26D3D32E006E173C /* ChangeFileSettings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChangeFileSettings.json; sourceTree = "<group>"; };
 		5D4B127C26D3D351006E173C /* WriteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WriteFiles.json; sourceTree = "<group>"; };
+		5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPrimaryCardLinkingCommand.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		5D5440892682260000F7D05B /* SetAccessCode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetAccessCode.json; sourceTree = "<group>"; };
 		5D54408B2682269400F7D05B /* SetPasscode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetPasscode.json; sourceTree = "<group>"; };
@@ -431,6 +464,7 @@
 		5D86CBE024A113C900FB5BA7 /* CardConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardConfig.swift; sourceTree = "<group>"; };
 		5D86CBE224A2051F00FB5BA7 /* NdefEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NdefEncoder.swift; sourceTree = "<group>"; };
 		5D86CBE424A220C400FB5BA7 /* PersonalizeCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizeCommand.swift; sourceTree = "<group>"; };
+		5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetBackupCommand.swift; sourceTree = "<group>"; };
 		5D908C5A26A7469100270FA3 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		5D908C5C26A74BD800270FA3 /* PhoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneView.swift; sourceTree = "<group>"; };
 		5D908C5E26A7519500270FA3 /* NFCFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCFieldView.swift; sourceTree = "<group>"; };
@@ -480,6 +514,12 @@
 		5DDD6D4725D57F0900E48D7B /* SLIX+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SLIX+.swift"; sourceTree = "<group>"; };
 		5DDD6D4B25D5880200E48D7B /* NFCTag+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NFCTag+.swift"; sourceTree = "<group>"; };
 		5DDF4F89235F06F600E46EAB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartBackupCardLinkingCommand.swift; sourceTree = "<group>"; };
+		5DE43A5D26D4F45800ECA36A /* LinkPrimaryCardCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPrimaryCardCommand.swift; sourceTree = "<group>"; };
+		5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkBackupCardsCommand.swift; sourceTree = "<group>"; };
+		5DE43A6126D5157900ECA36A /* ReadBackupDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadBackupDataCommand.swift; sourceTree = "<group>"; };
+		5DE43A6326D5158300ECA36A /* WriteBackupDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteBackupDataCommand.swift; sourceTree = "<group>"; };
+		5DE43A6526D515B100ECA36A /* FinalizePrimaryCardTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizePrimaryCardTask.swift; sourceTree = "<group>"; };
 		5DE5550B2458408B000E1816 /* ReadUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadUserDataCommand.swift; sourceTree = "<group>"; };
 		5DE5550D2458409E000E1816 /* WriteUserDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteUserDataCommand.swift; sourceTree = "<group>"; };
 		5DE59F2A23D96F8B00312DA4 /* NFCUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCUtils.swift; sourceTree = "<group>"; };
@@ -488,6 +528,8 @@
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
 		5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkStyle.swift; sourceTree = "<group>"; };
 		5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineCardVerifier.swift; sourceTree = "<group>"; };
+		5DED473226D6A00D003CB1E7 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
+		5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizeBackupCardTask.swift; sourceTree = "<group>"; };
 		5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsEngine.swift; sourceTree = "<group>"; };
 		5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuerDataVerifier.swift; sourceTree = "<group>"; };
 		5DF7CFCD233D058D00461F4D /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
@@ -549,6 +591,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5D06F6AE2756676C006A15B9 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		5D0BAAEA25CD87DF00E6A2B6 /* Log */ = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +607,14 @@
 				5DDD6C5525D2D14000E48D7B /* TlvLogging.swift */,
 			);
 			path = Log;
+			sourceTree = "<group>";
+		};
+		5D0E56012757C0FD00D46F54 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				5D0E56022757C11F00D46F54 /* CardDataResponse.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		5D14947B2686450F00C0D923 /* Secure */ = {
@@ -646,12 +703,14 @@
 			path = UserCodes;
 			sourceTree = "<group>";
 		};
-		5D2FE06824DDA84F0086B5E8 /* Endpoints */ = {
+		5D2FE06824DDA84F0086B5E8 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				5D0E56012757C0FD00D46F54 /* Entities */,
+				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 				5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */,
 			);
-			path = Endpoints;
+			path = Network;
 			sourceTree = "<group>";
 		};
 		5D3217442684B193000C3AAF /* Personalize */ = {
@@ -706,6 +765,20 @@
 			path = Attestation;
 			sourceTree = "<group>";
 		};
+		5D445B6E26E2944300F6F0FE /* ResetCode */ = {
+			isa = PBXGroup;
+			children = (
+				5D445B6F26E2944300F6F0FE /* AuthorizeMode.swift */,
+				5D445B7126E295A700F6F0FE /* AuthorizeResetPinToken.swift */,
+				5D445B7326E2988500F6F0FE /* GetResetPinToken.swift */,
+				5D445B7726E29A2800F6F0FE /* SignResetPinToken.swift */,
+				5D445B7926E29C2300F6F0FE /* ResetPinCommand.swift */,
+				5D445B7B26E29C2D00F6F0FE /* ResetPinTask.swift */,
+				5D445B7526E298C400F6F0FE /* ResetPinService.swift */,
+			);
+			path = ResetCode;
+			sourceTree = "<group>";
+		};
 		5D46F156268105A500DC6447 /* Sign */ = {
 			isa = PBXGroup;
 			children = (
@@ -734,6 +807,26 @@
 				5D4B127C26D3D351006E173C /* WriteFiles.json */,
 			);
 			path = Files;
+			sourceTree = "<group>";
+		};
+		5D4B128126D40C67006E173C /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				5D06F6AE2756676C006A15B9 /* Entities */,
+				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
+				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
+				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
+				5DE43A6126D5157900ECA36A /* ReadBackupDataCommand.swift */,
+				5DE43A6526D515B100ECA36A /* FinalizePrimaryCardTask.swift */,
+				5DE43A5D26D4F45800ECA36A /* LinkPrimaryCardCommand.swift */,
+				5DE43A6326D5158300ECA36A /* WriteBackupDataCommand.swift */,
+				5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */,
+				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
+				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
+				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
+				5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */,
+			);
+			path = Backup;
 			sourceTree = "<group>";
 		};
 		5D53A4082369D7D10021DAF6 /* Frameworks */ = {
@@ -791,6 +884,8 @@
 		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				5D445B6E26E2944300F6F0FE /* ResetCode */,
+				5D4B128126D40C67006E173C /* Backup */,
 				5D46F538274E29490004681F /* Derivation */,
 				5D46F156268105A500DC6447 /* Sign */,
 				5D38D076267A44BF0052F67C /* Pins */,
@@ -1056,7 +1151,6 @@
 			children = (
 				5D14947B2686450F00C0D923 /* Secure */,
 				5DFCE40424B30589007B95AF /* Storage.swift */,
-				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
 			);
 			path = Services;
@@ -1071,7 +1165,7 @@
 				5D650820266E387C00A8D45B /* Core */,
 				5D65081F266E37E100A8D45B /* JSON */,
 				5D0BAAEA25CD87DF00E6A2B6 /* Log */,
-				5D2FE06824DDA84F0086B5E8 /* Endpoints */,
+				5D2FE06824DDA84F0086B5E8 /* Network */,
 				5DE59F2723D96F5C00312DA4 /* Services */,
 				5DA5B61F233E13180058C720 /* TLV */,
 				5DA5B614233E11DD0058C720 /* APDU */,
@@ -1134,6 +1228,7 @@
 				5DD6762B26CD621500D8C909 /* UIScreen+.swift */,
 				5D23C42526CEDDD000A1A280 /* Array+.swift */,
 				5DAAF39F26E2668500187AA9 /* UIApplication+.swift */,
+				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
 			);
@@ -1314,7 +1409,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1310;
 				ORGANIZATIONNAME = "Tangem AG";
 				TargetAttributes = {
 					5DA80C99231D247A00A50A10 = {
@@ -1403,6 +1498,7 @@
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
+				5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */,
 				5D379C29268FA4AC00C7F473 /* CardSessionRunnable.swift in Sources */,
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
@@ -1428,6 +1524,7 @@
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */,
 				5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
@@ -1437,10 +1534,13 @@
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
+				5DE43A6426D5158300ECA36A /* WriteBackupDataCommand.swift in Sources */,
+				5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
+				5D445B7E26E2A1F300F6F0FE /* CaseIterable+.swift in Sources */,
 				5D58B4C1233E54A400F33764 /* Int+.swift in Sources */,
 				5DF7CFCE233D058D00461F4D /* CardReader.swift in Sources */,
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
@@ -1452,11 +1552,13 @@
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
+				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
 				5D908C5D26A74BD800270FA3 /* PhoneView.swift in Sources */,
+				5D445B7626E298C400F6F0FE /* ResetPinService.swift in Sources */,
 				5D14947D2686453C00C0D923 /* KeyStoreError.swift in Sources */,
 				5D6508232672755600A8D45B /* Wallet.swift in Sources */,
 				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
@@ -1472,14 +1574,20 @@
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
+				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
+				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
+				5DE43A6026D511CE00ECA36A /* LinkBackupCardsCommand.swift in Sources */,
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
 				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */,
+				5DE43A5E26D4F45800ECA36A /* LinkPrimaryCardCommand.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */,
+				5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */,
+				5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */,
 				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
 				5D379C2B268FA4D200C7F473 /* CompletionResult.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
@@ -1505,8 +1613,10 @@
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
+				5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
 				5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */,
+				5D445B7C26E29C2D00F6F0FE /* ResetPinTask.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
@@ -1519,6 +1629,7 @@
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,
 				B0A944812565470900A7958E /* CardData.swift in Sources */,
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
+				5D445B7426E2988500F6F0FE /* GetResetPinToken.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
@@ -1528,6 +1639,7 @@
 				5DAAF3A026E2668500187AA9 /* UIApplication+.swift in Sources */,
 				5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */,
 				5D2F3EE426CBDAA100779CAC /* KeyboardHeightPublisher.swift in Sources */,
+				5DE43A5C26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift in Sources */,
 				5DE5550E2458409E000E1816 /* WriteUserDataCommand.swift in Sources */,
 				5D379C2D268FA53D00C7F473 /* KeyPair.swift in Sources */,
 				5DE59F2B23D96F8B00312DA4 /* NFCUtils.swift in Sources */,
@@ -1552,16 +1664,20 @@
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
 				5D0F8CFE26C6A255002E84A4 /* RoundedButtonStyle.swift in Sources */,
+				5DE43A6626D515B100ECA36A /* FinalizePrimaryCardTask.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */,
+				5D4B128326D40C77006E173C /* StartPrimaryCardLinkingCommand.swift in Sources */,
 				5D14092026BAABD400B811A1 /* BIP32.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
+				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
+				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 			);
@@ -1663,7 +1779,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1734,7 +1850,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1771,7 +1887,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1812,7 +1928,7 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

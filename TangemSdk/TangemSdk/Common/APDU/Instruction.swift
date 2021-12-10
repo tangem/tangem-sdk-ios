@@ -31,5 +31,13 @@ public enum Instruction: Byte {
     case depersonalize = 0xE3
     case readFileData = 0xD1
     case writeFileData = 0xD0
+    case startPrimaryCardLinking = 0xE8
+    case startBackupCardLinking = 0xE9
+    case linkBackupCards = 0xEA
+    case readBackupData = 0xEB
+    case linkPrimaryCard = 0xEC
+    case writeBackupData = 0xED
+    case manageFileOwners = 0xD2
+    case authorize = 0xD3
+    case backupReset = 0xEE
 }
-

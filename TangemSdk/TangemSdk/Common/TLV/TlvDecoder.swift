@@ -185,12 +185,22 @@ public final class TlvDecoder {
             } else if let mode = FileDataMode(rawValue: byte) {
                 try typeCheck(FileDataMode.self, T.self, for: tag)
                 return mode as! T
+            } else if let mode = AuthorizeMode(rawValue: byte) {
+                try typeCheck(AuthorizeMode.self, T.self, for: tag)
+                return mode as! T
             } else {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown interaction mode")
             }
         case .derivationPath:
             try typeCheck(DerivationPath.self, T.self, for: tag)
             return try DerivationPath(from: tagValue) as! T
+        case .backupStatus:
+            let intValue = tagValue.toInt()
+            try typeCheck(Card.BackupRawStatus.self, T.self, for: tag)
+            guard let status = Card.BackupRawStatus.make(from: intValue) else {
+                throw TangemSdkError.decodingFailed("Decoding error. Unknown iBackupStatus")
+            }
+            return status as! T
         }
     }
     

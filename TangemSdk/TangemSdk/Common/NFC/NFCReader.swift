@@ -268,10 +268,10 @@ extension NFCReader: CardReader {
         
         guard case let .iso7816(iso7816tag) = connectedTag else {
             return Fail(error: TangemSdkError.unsupportedCommand).eraseToAnyPublisher()
-        }
+        } //todo: handle tag lost
         
         let requestTimestamp = Date()
-        Log.apdu(apdu)
+        Log.apdu("SEND --> \(apdu)")
         return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)

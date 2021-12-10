@@ -25,6 +25,10 @@ public struct CardIdFormatter {
             let cropped = String(cardId.suffix(numbers))
             let splitted = split(cropped)
             return format(splitted)
+        case .lastMasked(let numbers, let mask):
+            let cropped = String(cardId.suffix(numbers))
+            let splitted = split(cropped)
+            return "\(mask)\(splitted)"
         case .lastLunh(let numbers):
             let cropped = String(cardId.dropLast().suffix(numbers))
             let splitted = split(cropped)
@@ -33,8 +37,7 @@ public struct CardIdFormatter {
     }
     
     private func format(_ string: String) -> String {
-        let format = "cid_format".localized
-        return String(format: format, string)
+        return "cid_format".localized(string)
     }
     
     private func split(_ cardId: String) -> String {

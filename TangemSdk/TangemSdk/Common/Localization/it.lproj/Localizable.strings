@@ -31,7 +31,7 @@
 "unknownStatus" = "Stato sconosciuto della carta";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "Si è verificato un errore durante l'operazione. Codice: %@";
+"generic_error_code" = "Si è verificato un errore durante l'operazione. Codice: %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Lettura dati %@%%";
@@ -45,7 +45,7 @@
 "dialog_nfc_enable_text" = "Questa app richiede l'attivazione di NFC. Fare clic su OK per accedere alle Impostazioni in cui è possibile abilitare l'NFC.";
 
 // Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
-"view_delegate_security_delay_description" = "Questa carta è dotata di un ritardo di sicurezza forzato. Mantenere la carta ben ferma fino al completamento dell'operazione.";
+"view_delegate_security_delay_description" = "Mantenere la carta ben ferma fino al completamento dell'operazione.";
 
 // Label. Something is happening.
 "view_delegate_delay" = "Operazione in corso";
@@ -154,3 +154,14 @@
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 
 "cid_format" = "Card #%@";
+
+"backup_prepare_primary_card_message" = "Connect your phone and the primary card exactly as it shown above.";
+"backup_prepare_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
+"backup_add_backup_card_message" = "Connect your phone and the card you want to use as a backup exactly as it shown above.";
+"backup_finalize_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
+"backup_finalize_backup_card_message_format" = "Connect your phone and the backup card with number %@ exactly as it shown above.";
+
+"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please, try again later.";
+
+"error_backup_card_already_added" = "This card has already been added to the list.";
+"error_backup_wrong_card" = "This card can’t be used as a backup card. Error code: %@.";

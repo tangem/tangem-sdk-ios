@@ -38,7 +38,7 @@ public final class AttestWalletKeyCommand: Command {
     }
     
     deinit {
-        Log.debug("CheckWalletCommand deinit")
+        Log.debug("AttestWalletKeyCommand deinit")
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<AttestWalletKeyResponse>) {

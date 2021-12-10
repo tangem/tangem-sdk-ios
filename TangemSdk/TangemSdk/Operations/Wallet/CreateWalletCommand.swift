@@ -159,7 +159,8 @@ final class CreateWalletCommand: Command {
                            settings: Card.Wallet.Settings(isPermanent: isPermanentWallet),
                            totalSignedHashes: 0,
                            remainingSignatures: remainingSignatures,
-                           index: index)
+                           index: index,
+                           hasBackup: false)
     }
     
     private func calculateWalletIndex(for card: Card) throws -> Int {

@@ -25,6 +25,7 @@ public enum TlvValueType: String {
     case uint16
     case interactionMode
     case derivationPath
+    case backupStatus //TODO: make all these type more generic
 }
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
@@ -111,15 +112,6 @@ public enum TlvTag: Byte {
     case offset = 0x24
     case size = 0x25
     case acquirerPublicKey = 0x37
-    
-    case fullname = 0xD0
-    case birthday = 0xD1
-    case photo = 0xD2
-    case gender = 0xD3
-    case issueDate = 0xD4
-    case expireDate = 0xD5
-    case trustedAddress = 0xD6
-    
     case pin2IsDefault = 0x59
     case pinIsDefault = 0x5A
     
@@ -138,19 +130,28 @@ public enum TlvTag: Byte {
     case fileSignature = 0x73
     case fileCounter = 0x74
     case fileOwnerIndex = 0x75
-    
+
     // MARK: - HDWallet
     case walletHDPath = 0x6A
     case walletHDChain = 0x6B
+    
+    // MARK: - Backup
+    case certificate = 0x55
+    case backupStatus = 0xD0
+    case backupCount = 0xD1
+    case primaryCardLinkingKey = 0xD2
+    case backupCardLinkingKey = 0xD3
+    case backupCardLink = 0xD4
+    case backupAttestSignature = 0xD5
     
     // MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
-        case .cardId, .batchId, .crExKey:
+        case .cardId, .batchId:
             return .hexString
-        case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName, .tokenSymbol, .tokenName, .tokenContractAddress,
-             .fullname, .birthday, .gender, .issueDate, .expireDate, .trustedAddress, .fileTypeName:
+        case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName,
+             .tokenSymbol, .tokenName, .tokenContractAddress, .fileTypeName:
             return .utf8String
         case .curveId:
             return .ellipticCurve
@@ -169,7 +170,7 @@ public enum TlvTag: Byte {
             return .status
         case .signingMethod:
             return .signingMethod
-        case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex:
+        case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex, .backupCount:
             return .byte
         case .interactionMode:
             return .interactionMode
@@ -177,6 +178,8 @@ public enum TlvTag: Byte {
             return .uint16
         case .walletHDPath:
             return .derivationPath
+        case .backupStatus:
+            return .backupStatus
         default:
             return .data
         }

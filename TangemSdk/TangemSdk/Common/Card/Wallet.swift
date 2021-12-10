@@ -28,6 +28,8 @@ public extension Card {
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
+        /// Does this wallet has a backup
+        public internal(set) var hasBackup: Bool
         
         public var extendedPublicKey: ExtendedPublicKey? {
             guard let chainCode = self.chainCode else {
@@ -59,6 +61,10 @@ extension Card.Wallet {
         case loaded = 2
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
+        /// Wallet created and can be used for signing, backup data read
+        case backuped = 0x82
+        /// Wallet was purged and can't be recreated or used for signing, but backup data read and wallet can be usable on backup card
+        case backupedAndPurged = 0x83
     }
 }
 

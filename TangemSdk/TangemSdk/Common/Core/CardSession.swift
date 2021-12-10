@@ -244,7 +244,7 @@ public class CardSession {
             return
         }
 
-        Log.apdu("Serialized apdu: \(apdu)")
+        Log.apdu("Not encrypted apdu: \(apdu)")
         
         reader.tag
             .filter { $0 != .none }

@@ -83,7 +83,8 @@ class JSONRPCTests: XCTestCase {
                                                               settings: Card.Wallet.Settings(isPermanent: true),
                                                               totalSignedHashes: 10,
                                                               remainingSignatures: 100,
-                                                              index: 1))
+                                                              index: 1,
+                                                              hasBackup: false))
         testMethod(name: "CreateWallet", result: result)
     }
     

@@ -155,12 +155,16 @@ extension Command {
                 case .needPause:
                     if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
                         if session.environment.currentSecurityDelay == nil {
-                            session.environment.currentSecurityDelay = securityDelayResponse.remainingSeconds + 1
+                            let fw = session.environment.card?.firmwareVersion
+                            let isInstantSecurityDelay = fw.map { $0 >= .backupAvailable } ?? false //false for old cards, because new read works without pin. It's okay for most cases
+                            session.environment.currentSecurityDelay = isInstantSecurityDelay ?
+                                securityDelayResponse.remainingSeconds : securityDelayResponse.remainingSeconds + 1
                         }
                         
                         let totalSd = session.environment.currentSecurityDelay!
                         if totalSd > 0 {
                             session.viewDelegate.setState(.delay(remaining: securityDelayResponse.remainingSeconds, total: totalSd))
+                            session.viewDelegate.showAlertMessage("view_delegate_security_delay_description".localized)
                         }
                         
                         if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {

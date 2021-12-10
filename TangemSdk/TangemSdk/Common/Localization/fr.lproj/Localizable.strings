@@ -30,7 +30,7 @@
 "unknownStatus" = "Status inconnu de la carte";
 
 // Error Label. Generic error with error code.
-"generic_error_code" = "Une erreur s'est produite lors de l'opération. Code : %@";
+"generic_error_code" = "Une erreur s'est produite lors de l'opération. Code : %@.";
 
 // Label. Reading data: 30%
 "reading_data_progress" = "Lecture des données : %@%%";
@@ -110,7 +110,7 @@
 "dialog_nfc_enable_text" = "NFC doit être activé pour que cette application fonctionne. Cliquez sur le bouton OK pour accéder aux Paramètres où vous pouvez activer NFC";
 
 // Label. Long Tap is the operation when we ask the user to connect the card and the phone and hold it for several seconds.
-"view_delegate_security_delay_description" = "Cette carte utilise la fonction du retard d’exécution pour assurer la sécurité. Maintenez la carte jusqu'à ce que l'opération soit terminée";
+"view_delegate_security_delay_description" = "Maintenez la carte jusqu'à ce que l'opération soit terminée";
 
 // Label. Something is happening.
 "view_delegate_delay" = "Opération est en cours";
@@ -152,3 +152,14 @@
 "pin_set_code_format" = "Saisir %@";
 
 "cid_format" = "Card #%@";
+
+"backup_prepare_primary_card_message" = "Connect your phone and the primary card exactly as it shown above.";
+"backup_prepare_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
+"backup_add_backup_card_message" = "Connect your phone and the card you want to use as a backup exactly as it shown above.";
+"backup_finalize_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
+"backup_finalize_backup_card_message_format" = "Connect your phone and the backup card with number %@ exactly as it shown above.";
+
+"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please, try again later.";
+
+"error_backup_card_already_added" = "This card has already been added to the list.";
+"error_backup_wrong_card" = "This card can’t be used as a backup card. Error code: %@.";

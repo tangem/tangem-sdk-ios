@@ -119,6 +119,8 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 39)
     /// Is create wallet command answers with the whole wallet
     static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
+    /// Backup availavle
+    static let backupAvailable = FirmwareVersion(major: 4, minor: 39)
 }
 
 @available(iOS 13.0, *)

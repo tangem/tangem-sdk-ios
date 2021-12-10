@@ -32,27 +32,34 @@ class CryptoUtilsTests: XCTestCase {
         let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
         
         let dummyData = Data(repeating: UInt8(1), count: 64)
+        let hash = dummyData.getSha256()
         let signature = Secp256k1Utils.sign(dummyData, with: privateKey)
         XCTAssertNotNil(signature)
         
         let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
+        let verifyByHash = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, hash: hash, signature: signature!)
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify, true)
+        XCTAssertNotNil(verifyByHash)
+        XCTAssertEqual(verifyByHash, true)
     }
     
     func testEd25519Verify() {
         let publicKey = Data(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
         let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
         let signature = Data(hexString: "47F4C419E28013589433DBD771D618D990F4564BDAF6135039A8DF6A0803A3E3D84C3702514512C22E928C875495CA0EAC186AF0B23663924179D41830D6BF09")
-        
+        let hash = message.getSha512()
         var verify: Bool? = nil
-        
+        var verifyByHash: Bool? = nil
         measure {
             verify = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
+            verifyByHash = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, hash: hash, signature: signature)
         }
         
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify, true)
+        XCTAssertNotNil(verify)
+        XCTAssertEqual(verifyByHash, true)
     }
     
     func testP256Verify() {
@@ -60,16 +67,21 @@ class CryptoUtilsTests: XCTestCase {
         let privateKey = try! P256.Signing.PrivateKey(rawRepresentation: privateKeyData)
         let publicKey = privateKey.publicKey.x963Representation
         let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let hash = message.getSha256()
         let signature = try! privateKey.signature(for: message).rawRepresentation
         
         var verify: Bool? = nil
-        
+        var verifyByHash: Bool? = nil
         measure {
             verify = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
+            verifyByHash = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, hash: hash, signature: signature)
         }
         
         XCTAssertNotNil(verify)
-        XCTAssertEqual(verify, true)
+        XCTAssertEqual(verifyByHash, true)
+        
+        XCTAssertNotNil(verify)
+        XCTAssertEqual(verifyByHash, true)
     }
     
     func testKeyCompression() {

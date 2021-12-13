@@ -36,19 +36,19 @@ final class WriteBackupDataCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .backupFailedFirmware
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.backupStatus == .noBackup {
-            return .backupCannotBeCreated
+            return .backupFailedCardNotLinked
         }
         
         if !card.wallets.isEmpty {
-            return .backupCannotBeCreatedNotEmptyWallets
+            return .backupFailedNotEmptyWallets
         }
 
         return nil

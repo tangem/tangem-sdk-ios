@@ -26,7 +26,7 @@ final class SignResetPinTokenCommand: Command {
         
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
-            return TangemSdkError.backupNotActive
+            return TangemSdkError.noActiveBackup
         }
         
         return nil
@@ -45,7 +45,7 @@ final class SignResetPinTokenCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.interactionMode, value: AuthorizeMode.tokenSign)
             .append(.challenge, value: resetPinCard.token)
-            .append(.originCardLinkingKey, value: resetPinCard.backupKey)
+            .append(.primaryCardLinkingKey, value: resetPinCard.backupKey)
             .append(.backupAttestSignature, value: resetPinCard.attestSignature)
         
         return CommandApdu(.authorize, tlv: tlvBuilder.serialize())

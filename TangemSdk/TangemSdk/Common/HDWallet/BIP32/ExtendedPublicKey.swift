@@ -11,20 +11,24 @@ import CryptoKit
 
 @available(iOS 13.0, *)
 /// BIP32 extended public key for `secp256k1`.
-public struct ExtendedPublicKey: Equatable, JSONStringConvertible {
+public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Codable {
     public let compressedPublicKey: Data
     public let chainCode: Data
+    public let derivationPath: DerivationPath
     
-    public init(compressedPublicKey: Data, chainCode: Data) {
+    public init(compressedPublicKey: Data, chainCode: Data, derivationPath: DerivationPath) {
         self.compressedPublicKey = compressedPublicKey
         self.chainCode = chainCode
+        self.derivationPath = derivationPath
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
     ///  It is only defined for non-hardened child keys. `secp256k1` only
-    public func derivePublicKey(index: UInt32) throws -> ExtendedPublicKey {
+    public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
+        let index = node.index
+        
         //We can derive only non-hardened keys
-        guard index >= 0 && index < BIP32.Constants.hardenedOffset else {
+        guard index < BIP32.Constants.hardenedOffset else {
             throw HDWalletError.hardenedNotSupported
         }
         
@@ -42,13 +46,9 @@ public struct ExtendedPublicKey: Equatable, JSONStringConvertible {
         }
         
         let derivedChainCode = digest[32..<64]
-        return ExtendedPublicKey(compressedPublicKey: derivedPublicKey, chainCode: derivedChainCode)
-    }
-    
-    /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
-    ///  It is only defined for non-hardened child keys.
-    public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
-        try derivePublicKey(index: node.index)
+        return ExtendedPublicKey(compressedPublicKey: derivedPublicKey,
+                                 chainCode: derivedChainCode,
+                                 derivationPath: derivationPath.extendedPath(with: node))
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.

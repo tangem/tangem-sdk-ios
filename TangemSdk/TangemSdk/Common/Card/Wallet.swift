@@ -30,6 +30,16 @@ public extension Card {
         public let index: Int
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
+        
+        public var extendedPublicKey: ExtendedPublicKey? {
+            guard let chainCode = self.chainCode else {
+                return nil
+            }
+            
+            return ExtendedPublicKey(compressedPublicKey: publicKey,
+                                     chainCode: chainCode,
+                                     derivationPath: .init())
+        }
     }
 }
 

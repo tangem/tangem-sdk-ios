@@ -139,7 +139,7 @@ public enum TlvTag: Byte {
     case certificate = 0x55
     case backupStatus = 0xD0
     case backupCount = 0xD1
-    case originCardLinkingKey = 0xD2
+    case primaryCardLinkingKey = 0xD2
     case backupCardLinkingKey = 0xD3
     case backupCardLink = 0xD4
     case backupAttestSignature = 0xD5

@@ -17,12 +17,12 @@ public class BackupService: ObservableObject {
     
     public var canAddBackupCards: Bool {
         addedBackupCardsCount < BackupService.maxBackupCardsCount
-        &&  repo.data.originCard?.linkingKey != nil
+        &&  repo.data.primaryCard?.linkingKey != nil
     }
     
-    public var hasIncompletedBackup: Bool { //todo: incompeted and saved
+    public var hasIncompletedBackup: Bool {
         switch currentState {
-        case .needWriteOriginCard, .needWriteBackupCard:
+        case .finalizingPrimaryCard, .finalizingBackupCard:
             return true
         default:
             return false
@@ -33,13 +33,13 @@ public class BackupService: ObservableObject {
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
-    public var originCardIsSet: Bool { repo.data.originCard != nil }
-    public var originCardId: String? { repo.data.originCard?.cardId }
+    public var primaryCardIsSet: Bool { repo.data.primaryCard != nil }
+    public var primaryCardId: String? { repo.data.primaryCard?.cardId }
     public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
-    
+    private var currentCommand: AnyObject? = nil
     private var handleErrors: Bool { sdk.config.handleErrors }
     
     public init(sdk: TangemSdk) {
@@ -51,14 +51,14 @@ public class BackupService: ObservableObject {
         Log.debug("BackupService deinit")
     }
     
-    public func discardSavedBackup() {
+    public func discardIncompletedBackup() {
         repo.reset()
         updateState()
     }
     
     public func addBackupCard(completion: @escaping CompletionResult<Void>) {
-        guard let originCard = repo.data.originCard else {
-            completion(.failure(.missingOriginCard))
+        guard let primaryCard = repo.data.primaryCard else {
+            completion(.failure(.missingPrimaryCard))
             return
         }
         
@@ -69,7 +69,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        readBackupCard(originCard, completion: completion)
+        readBackupCard(primaryCard, completion: completion)
     }
     
     public func setAccessCode(_ code: String) throws {
@@ -85,7 +85,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+        guard currentState == .preparing || currentState == .finalizingPrimaryCard else {
             throw TangemSdkError.accessCodeCannotBeChanged
         }
         
@@ -106,7 +106,7 @@ public class BackupService: ObservableObject {
             }
         }
         
-        guard currentState == .preparing || currentState == .needWriteOriginCard else {
+        guard currentState == .preparing || currentState == .finalizingPrimaryCard else {
             throw TangemSdkError.passcodeCannotBeChanged
         }
         
@@ -116,47 +116,46 @@ public class BackupService: ObservableObject {
     
     public func proceedBackup(completion: @escaping CompletionResult<Card>) {
         switch currentState {
-        case .needWriteOriginCard:
-            handleWriteOriginCard() {
+        case .finalizingPrimaryCard:
+            handleFinalizePrimaryCard() {
                 self.handleCompletion($0, completion: completion)
             }
-        case .needWriteBackupCard(let index):
+        case .finalizingBackupCard(let index):
             handleWriteBackupCard(index: index) {
                 self.handleCompletion($0, completion: completion)
             }
         case .preparing, .finished:
-            completion(.failure(TangemSdkError.backupInvalidCommandSequence))
+            completion(.failure(TangemSdkError.backupServiceInvalidState))
         }
     }
     
-    public func setOriginCard(_ originCard: OriginCard) {
-        repo.data.originCard = originCard
+    public func setPrimaryCard(_ primaryCard: PrimaryCard) {
+        repo.data.primaryCard = primaryCard
         updateState()
-        
-        DispatchQueue.global().async {
-            self.fetchCertificate(for: originCard.cardId, cardPublicKey: originCard.cardPublicKey)
-        }
     }
     
-    public func readOriginCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
+    public func readPrimaryCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
         let initialMessage = cardId.map {
             let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: $0)
             return  Message(header: nil,
                             body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
-        
-        sdk.startSession(with: StartOriginCardLinkingCommand(),
+         
+        let command = StartPrimaryCardLinkingTask()
+        currentCommand = command
+        sdk.startSession(with: command,
                          cardId: cardId,
                          initialMessage: initialMessage
         ) {[weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.setOriginCard(response)
+                self.setPrimaryCard(response)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
+            self.currentCommand = nil
         }
     }
     
@@ -173,13 +172,13 @@ public class BackupService: ObservableObject {
     @discardableResult
     private func updateState() -> State {
         if repo.data.accessCode == nil
-            || repo.data.originCard == nil
+            || repo.data.primaryCard == nil
             || repo.data.backupCards.isEmpty {
             currentState = .preparing
         } else if repo.data.attestSignature == nil || repo.data.backupData.isEmpty {
-            currentState = .needWriteOriginCard
+            currentState = .finalizingPrimaryCard
         } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
-            currentState = .needWriteBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
+            currentState = .finalizingBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
         } else {
             currentState = .finished
             onBackupCompleted()
@@ -195,15 +194,14 @@ public class BackupService: ObservableObject {
         
         repo.data.backupCards.append(backupCard)
         updateState()
-        
-        DispatchQueue.global().async {
-            self.fetchCertificate(for: backupCard.cardId, cardPublicKey: backupCard.cardPublicKey)
-        }
     }
     
-    private func readBackupCard(_ originCard: OriginCard, completion: @escaping CompletionResult<Void>) {
-        sdk.startSession(with: StartBackupCardLinkingTask(originCard: originCard,
-                                                          addedBackupCards: repo.data.backupCards.map { $0.cardId }),
+    private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
+        let command = StartBackupCardLinkingTask(primaryCard: primaryCard,
+                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId })
+        currentCommand = command
+        
+        sdk.startSession(with: command,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
@@ -215,10 +213,11 @@ public class BackupService: ObservableObject {
             case .failure(let error):
                 completion(.failure(error))
             }
+            self.currentCommand = nil
         }
     }
     
-    private func handleWriteOriginCard(completion: @escaping CompletionResult<Card>) {
+    private func handleFinalizePrimaryCard(completion: @escaping CompletionResult<Card>) {
         do {
             if handleErrors {
                 if repo.data.accessCode == nil && repo.data.passcode == nil {
@@ -229,41 +228,32 @@ public class BackupService: ObservableObject {
             let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
             let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
-            guard let originCard = repo.data.originCard else {
-                throw TangemSdkError.missingOriginCard
-            }
-            
-            let linkableBackupCards: [LinkableBackupCard] = try repo.data.backupCards.map { card -> LinkableBackupCard in
-                guard let certificate = repo.data.certificates[card.cardId] else {
-                    throw TangemSdkError.certificateRequired
-                }
-                
-                return card.makeLinkable(with: certificate)
+            guard let primaryCard = repo.data.primaryCard else {
+                throw TangemSdkError.missingPrimaryCard
             }
             
             if handleErrors {
-                guard !linkableBackupCards.isEmpty else {
-                    throw TangemSdkError.backupCardRequired
+                guard !repo.data.backupCards.isEmpty else {
+                    throw TangemSdkError.emptyBackupCards
                 }
                 
-                guard linkableBackupCards.count < 3 else {
+                guard repo.data.backupCards.count < 3 else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }
             
-            let task = FinalizeOriginCardTask(backupCards: linkableBackupCards,
+            let task = FinalizePrimaryCardTask(backupCards: repo.data.backupCards,
                                               accessCode: accessCode,
                                               passcode: passcode,
-                                              originCardLinkingKey: originCard.linkingKey,
                                               readBackupStartIndex: repo.data.backupData.count,
                                               attestSignature: repo.data.attestSignature,
                                               onLink: { self.repo.data.attestSignature = $0 },
                                               onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: originCard.cardId)
+            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: primaryCard.cardId)
             
             sdk.startSession(with: task,
-                             cardId: originCard.cardId,
+                             cardId: primaryCard.cardId,
                              initialMessage: Message(header: nil,
                                                      body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
                              completion: completion)
@@ -285,25 +275,17 @@ public class BackupService: ObservableObject {
             let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
             
             guard let attestSignature = repo.data.attestSignature else {
-                throw TangemSdkError.originCardRequired
+                throw TangemSdkError.missingPrimaryAttestSignature
             }
             
-            guard let originCard = repo.data.originCard else {
-                throw TangemSdkError.missingOriginCard
-            }
-            
-            guard let originCardCertificate = repo.data.certificates[originCard.cardId] else {
-                throw TangemSdkError.certificateRequired
+            guard let primaryCard = repo.data.primaryCard else {
+                throw TangemSdkError.missingPrimaryCard
             }
             
             let cardIndex = index - 1
             
             guard cardIndex < repo.data.backupCards.count else {
-                throw TangemSdkError.backupCardRequired
-            }
-            
-            guard !repo.data.backupCards.isEmpty else {
-                throw TangemSdkError.backupCardRequired
+                throw TangemSdkError.noBackupCardForIndex
             }
             
             if handleErrors {
@@ -315,10 +297,10 @@ public class BackupService: ObservableObject {
             let backupCard = repo.data.backupCards[cardIndex]
             
             guard let backupData = repo.data.backupData[backupCard.cardId] else {
-                throw TangemSdkError.backupInvalidCommandSequence
+                throw TangemSdkError.noBackupDataForCard
             }
             
-            let command = FinalizeBackupCardTask(originCard: originCard.makeLinkable(with: originCardCertificate),
+            let command = FinalizeBackupCardTask(primaryCard: primaryCard,
                                                  backupCards: repo.data.backupCards,
                                                  backupData: backupData,
                                                  attestSignature: attestSignature,
@@ -348,70 +330,78 @@ public class BackupService: ObservableObject {
     private func onBackupCompleted() {
         repo.reset()
     }
-    
-    private func fetchCertificate(for cardId: String, cardPublicKey: Data) {
-        //todo: fetch from backend
-        
-        let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
-        let signature = cardPublicKey.sign(privateKey: issuerPrivateKey)!
-        let certificate = try! TlvBuilder()
-            .append(.cardPublicKey, value: cardPublicKey)
-            .append(.issuerDataSignature, value: signature)
-            .serialize()
-        
-        repo.data.certificates[cardId] = certificate
-    }
 }
 
 @available(iOS 13.0, *)
 extension BackupService {
     public enum State: Equatable {
         case preparing
-        case needWriteOriginCard //todo: rename finalizingO...
-        case needWriteBackupCard(index: Int)
+        case finalizingPrimaryCard
+        case finalizingBackupCard(index: Int)
         case finished
     }
 }
 
 @available(iOS 13.0, *)
-public struct OriginCard: Codable {
+public struct RawPrimaryCard {
     public let cardId: String
     public let cardPublicKey: Data
     public let linkingKey: Data
     
     //For compatibility check with backup card
-    public let existingWalletsCount: Int //TODO: detalize errors
+    public let existingWalletsCount: Int
+    public let isHDWalletAllowed: Bool
+    public let issuer: Card.Issuer
+    public let walletCurves: [EllipticCurve]
+}
+
+@available(iOS 13.0, *)
+public struct PrimaryCard: Codable, CertificateProvider {
+    public let cardId: String
+    public let cardPublicKey: Data
+    public let linkingKey: Data
+    public let issuerSignature: Data
+    
+    //For compatibility check with backup card
+    public let existingWalletsCount: Int
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
     
-    func makeLinkable(with certificate: Data) -> LinkableOriginCard {
-        LinkableOriginCard(cardId: cardId,
-                           cardPublicKey: cardPublicKey,
-                           linkingKey: linkingKey,
-                           certificate: certificate)
+    public init(_ rawPrimaryCard: RawPrimaryCard, issuerSignature: Data) {
+        self.cardId = rawPrimaryCard.cardId
+        self.cardPublicKey = rawPrimaryCard.cardPublicKey
+        self.linkingKey = rawPrimaryCard.linkingKey
+        self.issuerSignature = issuerSignature
+        self.existingWalletsCount = rawPrimaryCard.existingWalletsCount
+        self.isHDWalletAllowed = rawPrimaryCard.isHDWalletAllowed
+        self.issuer = rawPrimaryCard.issuer
+        self.walletCurves = rawPrimaryCard.walletCurves
     }
 }
 
-struct LinkableOriginCard {
-    let cardId: String
-    let cardPublicKey: Data
-    let linkingKey: Data
-    let certificate: Data
-}
-
-struct BackupCard: Codable {
+@available(iOS 13.0, *)
+struct RawBackupCard {
     let cardId: String
     let cardPublicKey: Data
     let linkingKey: Data
     let attestSignature: Data
+}
+
+@available(iOS 13.0, *)
+struct BackupCard: Codable, CertificateProvider {
+    let cardId: String
+    let cardPublicKey: Data
+    let linkingKey: Data
+    let attestSignature: Data
+    let issuerSignature: Data
     
-    func makeLinkable(with certificate: Data) -> LinkableBackupCard {
-        LinkableBackupCard(cardId: cardId,
-                           cardPublicKey: cardPublicKey,
-                           linkingKey: linkingKey,
-                           attestSignature: attestSignature,
-                           certificate: certificate)
+    init(_ rawCard: RawBackupCard, issuerSignature: Data) {
+        self.cardId = rawCard.cardId
+        self.cardPublicKey = rawCard.cardPublicKey
+        self.linkingKey = rawCard.linkingKey
+        self.attestSignature = rawCard.attestSignature
+        self.issuerSignature = issuerSignature
     }
 }
 
@@ -420,22 +410,13 @@ struct EncryptedBackupData: Codable {
     let salt: Data
 }
 
-struct LinkableBackupCard {
-    let cardId: String
-    let cardPublicKey: Data
-    let linkingKey: Data
-    let attestSignature: Data
-    let certificate: Data
-}
-
 @available(iOS 13.0, *)
 struct BackupServiceData: Codable {
     var accessCode: Data? = nil
     var passcode: Data? = nil
-    var originCard: OriginCard? = nil
+    var primaryCard: PrimaryCard? = nil
     var attestSignature: Data? = nil
     var backupCards: [BackupCard] = []
-    var certificates: [String:Data] = [:]
     var backupData: [String:[EncryptedBackupData]] = [:]
     var finalizedBackupCardsCount: Int = 0
     
@@ -443,7 +424,6 @@ struct BackupServiceData: Codable {
          attestSignature != nil || !backupData.isEmpty
     }
 }
-
 
 @available(iOS 13.0, *)
 class BackupRepo {
@@ -487,5 +467,23 @@ private extension BackupRepo {
     /// Keys used for store data in Keychain
     enum StorageKey: String {
         case backupData
+    }
+}
+
+@available(iOS 13.0, *)
+protocol CertificateProvider {
+    var cardPublicKey: Data { get }
+    var issuerSignature: Data { get }
+    
+    func generateCertificate() throws -> Data
+}
+
+@available(iOS 13.0, *)
+extension CertificateProvider {
+    func generateCertificate() throws -> Data {
+        return try TlvBuilder()
+            .append(.cardPublicKey, value: cardPublicKey)
+            .append(.issuerDataSignature, value: issuerSignature)
+            .serialize()
     }
 }

@@ -13,10 +13,10 @@ import Foundation
 final class StartBackupCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
-    private let originCardLinkingKey: Data
+    private let primaryCardLinkingKey: Data
     
-    init(originCardLinkingKey: Data) {
-        self.originCardLinkingKey = originCardLinkingKey
+    init(primaryCardLinkingKey: Data) {
+        self.primaryCardLinkingKey = primaryCardLinkingKey
     }
     
     deinit {
@@ -25,55 +25,30 @@ final class StartBackupCardLinkingCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .backupFailedFirmware
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if !card.wallets.isEmpty {
-            return .backupCannotBeCreatedNotEmptyWallets
+            return .backupFailedNotEmptyWallets
         }
-
+        
         return nil
-    }
-    
-    func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
-        transceive(in: session) { result in
-            switch result {
-            case .success(let response):
-                do {
-                    let prefix = "BACKUP_SLAVE".data(using: .utf8)! //todo: -> remove
-                    let dataAttest = prefix + self.originCardLinkingKey + response.linkingKey
-                    let verified = try CryptoUtils.verify(curve: .secp256k1,
-                                                          publicKey: response.cardPublicKey,
-                                                          message: dataAttest,
-                                                          signature: response.attestSignature)
-                    if !verified {
-                        throw TangemSdkError.invalidLinkingSignature
-                    }
-                    
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.originCardLinkingKey, value: originCardLinkingKey)
+            .append(.primaryCardLinkingKey, value: primaryCardLinkingKey)
         
         return CommandApdu(.startBackupCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> BackupCard {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> RawBackupCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -84,9 +59,9 @@ final class StartBackupCardLinkingCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        return BackupCard(cardId: try decoder.decode(.cardId),
-                          cardPublicKey: cardKey,
-                          linkingKey: try decoder.decode(.backupCardLinkingKey),
-                          attestSignature: try decoder.decode(.cardSignature))
+        return RawBackupCard(cardId: try decoder.decode(.cardId),
+                             cardPublicKey: cardKey,
+                             linkingKey: try decoder.decode(.backupCardLinkingKey),
+                             attestSignature: try decoder.decode(.cardSignature))
     }
 }

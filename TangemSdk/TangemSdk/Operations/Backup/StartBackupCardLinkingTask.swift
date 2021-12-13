@@ -7,16 +7,23 @@
 //
 
 import Foundation
+import Combine
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
-    private let originCard: OriginCard
+    private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
-    private var command: StartBackupCardLinkingCommand? = nil
+    private let onlineCardVerifier = OnlineCardVerifier()
+    private var cancellable: AnyCancellable? = nil
+    private var linkingCommand: StartBackupCardLinkingCommand? = nil
     
-    init(originCard: OriginCard, addedBackupCards: [String]) {
-        self.originCard = originCard
+    init(primaryCard: PrimaryCard, addedBackupCards: [String]) {
+        self.primaryCard = primaryCard
         self.addedBackupCards = addedBackupCards
+    }
+    
+    deinit {
+        Log.debug("StartBackupCardLinkingTask deinit")
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<BackupCard>) {
@@ -26,30 +33,73 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                 return
             }
             
-            let originWalletCurves = Set(originCard.walletCurves)
+            let primaryWalletCurves = Set(primaryCard.walletCurves)
             let backupCardSupportedCurves = Set(card.supportedCurves)
             
-            if card.issuer.publicKey != originCard.issuer.publicKey
-                || card.settings.isHDWalletAllowed != originCard.isHDWalletAllowed
-                || !originWalletCurves.isSubset(of: backupCardSupportedCurves)
-                || originCard.existingWalletsCount > card.settings.maxWalletsCount {
-                completion(.failure(.backupCannotBeCreated))
+            if card.issuer.publicKey != primaryCard.issuer.publicKey {
+                completion(.failure(.backupFailedWrongIssuer))
                 return
             }
             
-            if card.cardId.lowercased() == originCard.cardId.lowercased() {
+            if card.settings.isHDWalletAllowed != primaryCard.isHDWalletAllowed {
+                completion(.failure(.backupFailedHDWalletSettings))
+                return
+            }
+            
+            if !primaryWalletCurves.isSubset(of: backupCardSupportedCurves) {
+                completion(.failure(.backupFailedNotEnoughCurves))
+                return
+            }
+            
+            if primaryCard.existingWalletsCount > card.settings.maxWalletsCount {
+                completion(.failure(.backupFailedNotEnoughWallets))
+                return
+            }
+            
+            if card.cardId.lowercased() == primaryCard.cardId.lowercased() {
                 completion(.failure(.backupCardRequired))
                 return
             }
             
             if addedBackupCards.contains(card.cardId) {
-                completion(.failure(.backupCardAlreadyInList))
+                completion(.failure(.backupCardAlreadyAdded))
                 return
             }
         }
         
-        self.command = StartBackupCardLinkingCommand(originCardLinkingKey: originCard.linkingKey)
-        command?.run(in: session, completion: completion)
+        linkingCommand = StartBackupCardLinkingCommand(primaryCardLinkingKey: primaryCard.linkingKey)
+        linkingCommand!.run(in: session) { result in
+            switch result {
+            case .success(let rawCard):
+                self.loadIssuerSignature(rawCard, session, completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
+    private func loadIssuerSignature(_ rawCard: RawBackupCard, _ session: CardSession, _ completion: @escaping CompletionResult<BackupCard>) {
+        if session.environment.card?.firmwareVersion.type == .sdk {
+            let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
+            let issuerSignature = rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)!
+            completion(.success(BackupCard(rawCard, issuerSignature: issuerSignature)))
+            return
+        }
+        
+        cancellable = onlineCardVerifier
+            .getCardData(cardId: rawCard.cardId, cardPublicKey: rawCard.cardPublicKey)
+            .sink(receiveCompletion: { receivedCompletion in
+                if case  .failure = receivedCompletion {
+                    completion(.failure(.issuerSignatureLoadingFailed))
+                }
+            }, receiveValue: { response in
+                guard let signature = response.issuerSignature else {
+                    completion(.failure(.issuerSignatureLoadingFailed))
+                    return
+                }
+                
+                let backupCard = BackupCard(rawCard, issuerSignature: signature)
+                completion(.success(backupCard))
+            })
+    }
 }

@@ -28,9 +28,9 @@ struct BackupView: View {
         switch backupService.currentState {
         case .preparing:
             return "Preparing"
-        case .needWriteOriginCard:
-            return "Scan origin card again"
-        case .needWriteBackupCard(let index):
+        case .finalizingPrimaryCard:
+            return "Scan primary card again"
+        case .finalizingBackupCard(let index):
             return "Scan backup card again with index: \(index)"
         case .finished:
             return "Backup succeded"
@@ -43,11 +43,11 @@ struct BackupView: View {
             Spacer()
             
             VStack(spacing: 8) {
-                let msg = "Has origin card: \(backupService.originCardIsSet)"
+                let msg = "Has primary card: \(backupService.primaryCardIsSet)"
                 Text(msg)
                 
-                Button("Read origin card") {
-                    backupService.readOriginCard { result in
+                Button("Read primary card") {
+                    backupService.readPrimaryCard { result in
                         switch result {
                         case .success(let newState):
                             self.errorText = ""
@@ -89,7 +89,6 @@ struct BackupView: View {
             VStack(spacing: 8) {
                 let msg1 = "Has access code: \(backupService.accessCodeIsSet)"
                 Text(msg1)
-
                 
                 TextField("Access code for all cards", text: $accessCode)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -132,8 +131,8 @@ struct BackupView: View {
                 .foregroundColor(.red)
             
             VStack(spacing: 8) {
-                Button("Discard saved") {
-                    backupService.discardSavedBackup()
+                Button("Discard incompleted") {
+                    backupService.discardIncompletedBackup()
                 }
                 
                 Text("Current state is: \(stateTitle)")

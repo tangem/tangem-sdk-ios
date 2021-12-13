@@ -21,11 +21,12 @@ public final class JSONRPCConverter {
         converter.register(DepersonalizeHandler())
         converter.register(SetAccessCodeHandler())
         converter.register(SetPasscodeHandler())
-        converter.register(PreflightReadHandler())
         converter.register(ReadFilesHandler())
         converter.register(WriteFilesHandler())
         converter.register(DeleteFilesHandler())
         converter.register(ChangeFileSettingsHandler())
+        converter.register(DeriveWalletPublicKeyHandler())
+        converter.register(DeriveWalletPublicKeysHandler())
         return converter
     }()
     

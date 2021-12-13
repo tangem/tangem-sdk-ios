@@ -20,16 +20,14 @@ struct LinkBackupCardsResponse {
 final class LinkBackupCardsCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let backupCards: [LinkableBackupCard]
+    private let backupCards: [BackupCard]
     private let accessCode: Data
     private let passcode: Data
-    private let originCardLinkingKey: Data //only for verification
-    
-    init(backupCards: [LinkableBackupCard], accessCode: Data, passcode: Data, originCardLinkingKey: Data) {
+
+    init(backupCards: [BackupCard], accessCode: Data, passcode: Data) {
         self.backupCards = backupCards
         self.accessCode = accessCode
         self.passcode = passcode
-        self.originCardLinkingKey = originCardLinkingKey
     }
     
     deinit {
@@ -38,58 +36,38 @@ final class LinkBackupCardsCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .backupFailedFirmware
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.wallets.isEmpty {
-            return .backupCannotBeCreatedEmptyWallets
+            return .backupFailedEmptyWallets
         }
         
         return nil
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<LinkBackupCardsResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                do {
-                    let prefix = "BACKUP".data(using: .utf8)! //todo: remove
-                    var dataAttest = prefix + self.backupCards.count.byte
-                    dataAttest += self.originCardLinkingKey
-                    dataAttest += self.backupCards.map { $0.linkingKey }.joined()
-                    dataAttest += self.accessCode
-                    dataAttest += self.passcode
-                    
-                    let verified = try CryptoUtils.verify(curve: .secp256k1,
-                                                          publicKey: card.cardPublicKey,
-                                                          message: dataAttest,
-                                                          signature: response.attestSignature)
-                    
-                    if !verified {
-                        throw TangemSdkError.invalidLinkingSignature
-                    }
-                    
-                    session.environment.card?.backupStatus = .cardLinked(cardsCount: self.backupCards.count)
-                    session.environment.card?.settings.isSettingAccessCodeAllowed = true
-                    session.environment.card?.settings.isSettingPasscodeAllowed = true
-                    session.environment.card?.settings.isResettingUserCodesAllowed = false
-                    
-                    session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
-                    session.environment.passcode = UserCode(.passcode, value: self.passcode)
-                    
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
+                session.environment.card?.backupStatus = .cardLinked(cardsCount: self.backupCards.count)
+                session.environment.card?.settings.isSettingAccessCodeAllowed = true
+                session.environment.card?.settings.isSettingPasscodeAllowed = true
+                session.environment.card?.settings.isResettingUserCodesAllowed = false
+                
+                session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
+                session.environment.passcode = UserCode(.passcode, value: self.passcode)
+                
+                let isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
+                let isPasscodeSet = session.environment.isUserCodeSet(.passcode)
+                
+                session.environment.card?.isAccessCodeSet = isAccessCodeSet
+                session.environment.card?.isPasscodeSet = isPasscodeSet
+                completion(.success(response))
             case .failure(let error):
                 switch error {
                 case .accessCodeRequired,
@@ -117,7 +95,7 @@ final class LinkBackupCardsCommand: Command {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
                 .append(.backupCardLinkingKey, value: card.linkingKey)
-                .append(.certificate, value: card.certificate)
+                .append(.certificate, value: try card.generateCertificate())
                 .append(.cardSignature, value: card.attestSignature)
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())

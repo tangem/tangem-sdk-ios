@@ -17,11 +17,13 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
     //Sign
-    @Published var hdPath: String = ""
+    @Published var derivationPath: String = ""
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
     @Published var json: String =  ""
+    //Personalization
+    @Published var personalizationConfig: String =  ""
     
     //MARK:-  Outputs
     @Published var logText: String = AppModel.logPlaceholder
@@ -43,7 +45,7 @@ class AppModel: ObservableObject {
     
     private var tangemSdk: TangemSdk {
         var config = Config()
-        config.logСonfig = .verbose
+        config.logConfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
@@ -68,6 +70,16 @@ class AppModel: ObservableObject {
     func start(walletPublicKey: Data? = nil) {
         isScanning = true
         chooseMethod(walletPublicKey: walletPublicKey)
+    }
+    
+    func onAppear() {
+        if json.isEmpty {
+            json = AppModel.jsonRpcTemplate
+        }
+
+        if personalizationConfig.isEmpty {
+            personalizationConfig = AppModel.personalizeConfigTemplate
+        }
     }
     
     private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
@@ -126,6 +138,52 @@ class AppModel: ObservableObject {
     }
 }
 
+// MARK:- Editor
+extension AppModel {
+    var editorData: String {
+        get {
+            switch method {
+            case .jsonrpc:
+                return json
+            case .personalize:
+                return personalizationConfig
+            default: return ""
+            }
+        }
+        
+        set {
+            switch method {
+            case .jsonrpc:
+                json = newValue
+            case .personalize:
+                personalizationConfig = newValue
+            default: break
+            }
+        }
+    }
+    
+    func printEditor() {
+        switch method {
+        case .jsonrpc:
+            printJson()
+        case .personalize:
+            printPersonalizationConfig()
+        default: break
+        }
+    }
+    
+    func pasteEditor() {
+        switch method {
+        case .jsonrpc:
+            pasteJson()
+        case .personalize:
+            pastePersonalizationConfig()
+        default: break
+        }
+
+    }
+}
+
 // MARK:- Commands
 extension AppModel {
     func scan() {
@@ -149,8 +207,9 @@ extension AppModel {
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -168,49 +227,19 @@ extension AppModel {
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
-                       initialMessage: Message(header: "Signing hash")) { result in
-            switch result {
-            case .success(let response):
-                self.handleCompletion(.success(response))
-                self.verifySignature(response, walletPublicKey: walletPublicKey, hash: hash, hdPath: path)
-            case .failure(let error):
-                self.complete(with: error.localizedDescription)
-            }
-        }
+                       derivationPath: path,
+                       initialMessage: Message(header: "Signing hash"),
+                       completion: handleCompletion)
     }
-    
-    private func verifySignature(_ response: SignHashResponse, walletPublicKey: Data, hash: Data, hdPath: DerivationPath?) {
-        //Test signature verification
-        var verifiedStatus: Bool = false
-        
-        if let curve = self.card?.wallets[walletPublicKey]?.curve {
-            if let derivationPath = hdPath, curve == .secp256k1 {
-                if let chainCode = self.card?.wallets[walletPublicKey]?.chainCode,
-                   let childPublicKey = try? self.derivePublicKey(path: derivationPath, walletPublicKey: walletPublicKey, chainCode: chainCode) {
-                    verifiedStatus = (try? Secp256k1Utils.verify(publicKey: childPublicKey.compressedPublicKey,
-                                                                 hash: hash,
-                                                                 signature: response.signature)) ?? false
-                }
-            } else {
-                verifiedStatus = (try? CryptoUtils.verify(curve: curve,
-                                                          publicKey: walletPublicKey,
-                                                          hash: hash,
-                                                          signature: response.signature)) ?? false
-            }
-        }
 
-        self.log("Signature verification status: \(verifiedStatus ? "verified" : "not verified")")
-    }
-    
     func signHashes(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        let path = try? DerivationPath(rawPath: hdPath)
-        if !hdPath.isEmpty && path == nil {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
             return
         }
@@ -222,47 +251,28 @@ extension AppModel {
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
                        cardId: cardId,
-                       hdPath: path,
+                       derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
     
-    
-    func derivePublicKey() {
+    func derivePublicKey(walletPublicKey: Data) {
         guard let card = card else {
             self.complete(with: "Scan card before")
             return
         }
         
-        guard card.firmwareVersion >= .hdWalletAvailable else {
-            self.complete(with: "Not supported firmware verison.")
-            return
-        }
-        
-        guard let wallet = card.wallets.first(where: { $0.curve == .secp256k1 }),
-              let chainCode = wallet.chainCode else {
-            self.complete(with: "The wallet with the secp256k1 curve not found")
-            return
-        }
-        
-        guard let path = try? DerivationPath(rawPath: hdPath) else {
+        guard let path = try? DerivationPath(rawPath: derivationPath) else {
             self.complete(with: "Failed to parse hd path")
             return
         }
-        
+
         UIApplication.shared.endEditing()
         
-        do {
-            let childKey = try derivePublicKey(path: path, walletPublicKey: wallet.publicKey, chainCode: chainCode)
-            handleCompletion(.success(childKey))
-        } catch {
-            self.complete(with: error.localizedDescription)
-        }
-    }
-    
-    private func derivePublicKey(path: DerivationPath, walletPublicKey: Data, chainCode: Data) throws -> ExtendedPublicKey {
-        let masterKey = ExtendedPublicKey(compressedPublicKey: walletPublicKey, chainCode: chainCode)
-        return try masterKey.derivePublicKey(path: path)
+        tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
+                                         walletPublicKey: walletPublicKey,
+                                         derivationPath: path,
+                                         completion: handleCompletion)
     }
     
     func createWallet() {
@@ -296,7 +306,7 @@ extension AppModel {
                 return
             }
             
-            let scan = PreflightReadTask(readMode: .fullCardRead, cardId: nil)
+            let scan = ScanTask()
             scan.run(in: session) { result in
                 switch result {
                 case .success:
@@ -566,77 +576,66 @@ extension AppModel {
                                        completion: handleCompletion)
     }
     
-    func personalizeBackup2() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup2.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
-    func personalizeBackup1() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonBackup1.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
-    func personalizeOrigin() {
-        let config = try! JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: AppModel.configJsonOrigin.data(using: .utf8)!)
-        let issuer = try! JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
-        let manufacturer = try! JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
-        let personalizeCommand = PersonalizeCommand(config: config,
-                                                    issuer: issuer,
-                                                    manufacturer: manufacturer)
-        
-        tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
-    }
-    
     func resetBackup() {
         tangemSdk.startSession(with: ResetBackupCommand(), completion: handleCompletion)
     }
 }
 
 //MARK:- Json RPC
-extension AppModel {
-    var jsonRpcTemplate: String {
-        """
-    {
-        "jsonrpc": "2.0",
-        "id": 2,
-        "method": "",
-        "params": {
-            
-        }
-    }
-    """
-    }
-    
+extension AppModel {    
     func runJsonRpc() {
         UIApplication.shared.endEditing()
         tangemSdk.startSession(with: json) { self.complete(with: $0) }
     }
     
-    func pasteJson() {
+    private func pasteJson() {
         if let string = UIPasteboard.general.string {
             json = string
             
             if #available(iOS 14.0, *) {} else {
-                log(json)
+                printJson()
             }
         }
     }
     
-    func printJson() {
+    private func printJson() {
         log(json)
+    }
+}
+
+//personalization
+extension AppModel {
+    private func pastePersonalizationConfig() {
+        if let string = UIPasteboard.general.string {
+            personalizationConfig = string
+            
+            if #available(iOS 14.0, *) {} else {
+                printPersonalizationConfig()
+            }
+        }
+    }
+    
+    private func printPersonalizationConfig() {
+        log(personalizationConfig)
+    }
+    
+    func personalize() {
+        do {
+            guard let configData = personalizationConfig.data(using: .utf8) else {
+                throw TangemSdkError.decodingFailed("Failed to convert congif to data")
+            }
+            
+            let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: configData)
+            let issuer = try JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+            let manufacturer = try JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+            let personalizeCommand = PersonalizeCommand(config: config,
+                                                        issuer: issuer,
+                                                        manufacturer: manufacturer)
+            
+            tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
+        } catch {
+            log(error)
+        }
     }
 }
 
@@ -672,9 +671,7 @@ extension AppModel {
         case writeUserProtectedData
         //developer
         case depersonalize
-        case personalizeO
-        case personalizeB1
-        case personalizeB2
+        case personalize
         case resetBackup
     }
     
@@ -703,11 +700,9 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: derivePublicKey()
+        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
-        case .personalizeO: personalizeOrigin()
-        case .personalizeB1: personalizeBackup1()
-        case .personalizeB2: personalizeBackup2()
+        case .personalize: personalize()
         case .resetBackup: resetBackup()
         }
     }

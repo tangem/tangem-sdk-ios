@@ -65,7 +65,9 @@ struct ContentView: View {
                                     Text(AppModel.Method.allCases[index].rawValue)
                                         .tag(AppModel.Method.allCases[index])
                                 }
-                            }.labelsHidden()
+                            }
+                            .labelsHidden()
+                            .pickerStyle(WheelPickerStyle())
                             
                             Button("Start") { model.start() }
                                 .buttonStyle(ExampleButton(isLoading: model.isScanning))
@@ -150,7 +152,7 @@ struct ContentView: View {
                     .font(.headline)
                     .bold()
                 
-                TextField("\"m/0/1\"", text: $model.hdPath)
+                TextField("\"m/0/1\"", text: $model.derivationPath)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -159,23 +161,23 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
-        case .jsonrpc:
+        case .jsonrpc, .personalize:
             VStack {
-                Text("Json request")
+                Text("JSON editor")
                     .font(.headline)
                     .bold()
                 
                 if #available(iOS 14.0, *) {
-                    TextEditor(text: $model.json)
+                    TextEditor(text: $model.editorData)
                         .frame(height: 100)
                     
-                    Button("Paste json", action: model.pasteJson)
+                    Button("Paste json", action: model.pasteEditor)
                 } else {
                     HStack {
                         Spacer()
-                        Button("Print json", action: model.printJson)
+                        Button("Print json", action: model.printEditor)
                         Spacer()
-                        Button("Paste json", action: model.pasteJson)
+                        Button("Paste json", action: model.pasteEditor)
                         Spacer()
                     }
                 }
@@ -186,11 +188,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
-            .onAppear(perform: {
-                if model.json.isEmpty {
-                    model.json = model.jsonRpcTemplate
-                }
-            })
+            .onAppear(perform: model.onAppear)
             
         default:
             EmptyView()

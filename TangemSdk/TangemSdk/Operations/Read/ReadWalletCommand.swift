@@ -20,12 +20,12 @@ class ReadWalletCommand: Command {
     
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private let walletPublicKey: Data
-    private let hdPath: DerivationPath?
+    private let walletIndex: Int
+    private let derivationPath: DerivationPath?
     
-    init(publicKey: Data, hdPath: DerivationPath? = nil) {
-        self.walletPublicKey = publicKey
-        self.hdPath = hdPath
+    init(walletIndex: Int, derivationPath: DerivationPath? = nil) {
+        self.walletIndex = walletIndex
+        self.derivationPath = derivationPath
     }
     
     deinit {
@@ -37,7 +37,7 @@ class ReadWalletCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if hdPath != nil  && !card.settings.isHDWalletAllowed {
+        if derivationPath != nil  && !card.settings.isHDWalletAllowed {
             return .hdWalletDisabled
         }
         
@@ -45,11 +45,9 @@ class ReadWalletCommand: Command {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletResponse>) {
-        Log.debug("Attempt to read wallet with key: \(walletPublicKey)")
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                session.environment.card?.wallets = [response.wallet]
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
@@ -62,14 +60,10 @@ class ReadWalletCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.interactionMode, value: ReadMode.wallet)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.walletPublicKey, value: walletPublicKey)
+            .append(.walletIndex, value: walletIndex)
         
-        if let keys = environment.terminalKeys {
-            try tlvBuilder.append(.terminalPublicKey, value: keys.publicKey)
-        }
-        
-        if let hdPath = hdPath {
-            try tlvBuilder.append(.walletHDPath, value:  hdPath)
+        if let derivationPath = derivationPath {
+            try tlvBuilder.append(.walletHDPath, value:  derivationPath)
         }
         
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
@@ -90,7 +84,6 @@ class ReadWalletCommand: Command {
             throw TangemSdkError.walletNotFound
         }
         
-        Log.debug("Read wallet: \(wallet)")
         return ReadWalletResponse(cardId: try decoder.decode(.cardId),
                                   wallet: wallet)
     }

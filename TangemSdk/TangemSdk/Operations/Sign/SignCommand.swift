@@ -66,7 +66,7 @@ class SignCommand: Command {
                 return .notSupportedFirmwareVersion
             }
             
-            if wallet.curve != .secp256k1 {
+            guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
                 return .unsupportedCurve
             }
             

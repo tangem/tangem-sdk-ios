@@ -75,7 +75,7 @@ class AppModel: ObservableObject {
         if json.isEmpty {
             json = AppModel.jsonRpcTemplate
         }
-
+        
         if personalizationConfig.isEmpty {
             personalizationConfig = AppModel.personalizeConfigTemplate
         }
@@ -179,7 +179,7 @@ extension AppModel {
             pastePersonalizationConfig()
         default: break
         }
-
+        
     }
 }
 
@@ -230,7 +230,7 @@ extension AppModel {
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
-
+    
     func signHashes(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
@@ -265,13 +265,13 @@ extension AppModel {
             self.complete(with: "Failed to parse hd path")
             return
         }
-
+        
         UIApplication.shared.endEditing()
         
         tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
-                                         walletPublicKey: walletPublicKey,
-                                         derivationPath: path,
-                                         completion: handleCompletion)
+                                        walletPublicKey: walletPublicKey,
+                                        derivationPath: path,
+                                        completion: handleCompletion)
     }
     
     func createWallet() {
@@ -442,15 +442,15 @@ extension AppModel {
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         
         let fileHash = FileHashHelper.prepareHash(for: cardId,
-                                                  fileData: demoData,
-                                                  fileCounter: counter,
-                                                  privateKey: Utils.issuer.privateKey)
+                                                     fileData: demoData,
+                                                     fileCounter: counter,
+                                                     privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature else {
-            self.complete(with: "Failed to sign data with issuer signature")
-            return
-        }
+                self.complete(with: "Failed to sign data with issuer signature")
+                return
+            }
         
         let file: FileToWrite = .byFileOwner(data: demoData,
                                              startingSignature: startSignature,

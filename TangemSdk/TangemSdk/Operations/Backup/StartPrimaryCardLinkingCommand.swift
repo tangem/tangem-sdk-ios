@@ -1,5 +1,5 @@
 //
-//  StartOriginCardLinkingCommand.swift
+//  StartPrimaryCardLinkingCommand.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 23.08.2021.
@@ -9,26 +9,26 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public final class StartOriginCardLinkingCommand: Command { //todo: rename -> primary
+public final class StartPrimaryCardLinkingCommand: Command {
     var requiresPasscode: Bool { return false }
     
     public init() {}
     
     deinit {
-        Log.debug("StartOriginCardLinkingCommand deinit")
+        Log.debug("StartPrimaryCardLinkingCommand deinit")
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .backupFailedFirmware
         }
         
         if !card.settings.isBackupAllowed {
-            return .backupCannotBeCreated
+            return .backupNotAllowed
         }
         
         if card.wallets.isEmpty {
-            return .backupCannotBeCreatedEmptyWallets
+            return .backupFailedEmptyWallets
         }
         
         return nil
@@ -39,10 +39,10 @@ public final class StartOriginCardLinkingCommand: Command { //todo: rename -> pr
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
         
-        return CommandApdu(.startOriginCardLinking, tlv: tlvBuilder.serialize())
+        return CommandApdu(.startPrimaryCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> OriginCard {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> RawPrimaryCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -57,13 +57,12 @@ public final class StartOriginCardLinkingCommand: Command { //todo: rename -> pr
             throw TangemSdkError.missingPreflightRead
         }
         
-        let originCard = OriginCard(cardId: try decoder.decode(.cardId),
-                                    cardPublicKey: cardPublicKey,
-                                    linkingKey: try decoder.decode(.originCardLinkingKey),
-                                    existingWalletsCount: card.wallets.count,
-                                    isHDWalletAllowed: card.settings.isHDWalletAllowed,
-                                    issuer: card.issuer,
-                                    walletCurves: card.wallets.map { $0.curve })
-        return originCard
+        return RawPrimaryCard(cardId: try decoder.decode(.cardId),
+                              cardPublicKey: cardPublicKey,
+                              linkingKey: try decoder.decode(.primaryCardLinkingKey),
+                              existingWalletsCount: card.wallets.count,
+                              isHDWalletAllowed: card.settings.isHDWalletAllowed,
+                              issuer: card.issuer,
+                              walletCurves: card.wallets.map { $0.curve })
     }
 }

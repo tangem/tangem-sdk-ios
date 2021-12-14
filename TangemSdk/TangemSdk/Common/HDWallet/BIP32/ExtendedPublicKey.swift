@@ -25,6 +25,10 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Cod
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
     ///  It is only defined for non-hardened child keys. `secp256k1` only
     public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
+        guard compressedPublicKey.count == 33 else { //secp256k1 only
+            throw TangemSdkError.unsupportedCurve
+        }
+        
         let index = node.index
         
         //We can derive only non-hardened keys
@@ -52,7 +56,7 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Cod
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
-    ///  It is only defined for non-hardened child keys.
+    ///  It is only defined for non-hardened child keys. `secp256k1` only
     public func derivePublicKey(path derivationPath: DerivationPath) throws -> ExtendedPublicKey {
         var key: ExtendedPublicKey = self
         

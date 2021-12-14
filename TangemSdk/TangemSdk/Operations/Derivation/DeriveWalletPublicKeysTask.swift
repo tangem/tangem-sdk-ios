@@ -8,14 +8,13 @@
 
 import Foundation
 
-
 @available(iOS 13.0, *)
-/// Derive wallet public keys according to BIP32 (Private parent key → public child key)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
     private let walletPublicKey: Data
     private let derivationPaths: [DerivationPath]
     
-    /// Default initializer
+    /// Derive multiple wallet  public keys according to BIP32 (Private parent key → public child key).
+    /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - walletPublicKey: Seed public key.
     ///   - derivationPaths: Multiple derivation pathes

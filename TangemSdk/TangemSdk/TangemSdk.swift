@@ -227,6 +227,7 @@ public extension TangemSdk {
     }
     
     /// Derive public key according to BIP32 (Private parent key → public child key)
+    /// - Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletPublicKey: Seed public key.
@@ -243,6 +244,7 @@ public extension TangemSdk {
     }
     
     /// Derive multiple wallet public keys according to BIP32 (Private parent key → public child key)
+    /// - Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletPublicKey: Seed public key.

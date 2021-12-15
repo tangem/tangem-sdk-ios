@@ -11,6 +11,6 @@ import Foundation
 @available(iOS 13.0, *)
 enum ResetCodesViewState {
     case empty
-    case requestCode(_ type: UserCodeType, cardId: String?, completion: ((_ code: String?) -> Void))
+    case requestCode(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
     case resetCodes(_ type: UserCodeType, state: ResetPinService.State, cardId: String?, completion: ((_ shouldContinue: Bool) -> Void))
 }

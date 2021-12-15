@@ -13,7 +13,7 @@ struct EnterUserCodeView: View {
     let title: String
     let cardId: String
     let placeholder: String
-    let completion: ((String?) -> Void)
+    let completion: CompletionResult<String>
     
     @EnvironmentObject var style: TangemSdkStyle
     
@@ -54,14 +54,14 @@ struct EnterUserCodeView: View {
     }
     
     private func onCancel() {
-        completion(nil)
+        completion(.failure(.userCancelled))
     }
     
     private func onDone() {
         if !isContinueDisabled {
             UIApplication.shared.endEditing()
             isLoading = true
-            completion(code.trim())
+            completion(.success(code.trim()))
         }
     }
 }

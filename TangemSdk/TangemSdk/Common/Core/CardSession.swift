@@ -393,10 +393,11 @@ public class CardSession {
         let cardId = environment.card?.cardId ?? self.cardId
         let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
-        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in
+        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] result in
             guard let self = self else { return }
-
-            if let code = code {
+            
+            switch result {
+            case .success(let code):
                 switch type {
                 case .accessCode:
                     self.environment.accessCode = UserCode(.accessCode, stringValue: code)
@@ -404,8 +405,8 @@ public class CardSession {
                     self.environment.passcode = UserCode(.passcode, stringValue: code)
                 }
                 completion(.success(()))
-            } else {
-                completion(.failure(.userCancelled))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }))
     }

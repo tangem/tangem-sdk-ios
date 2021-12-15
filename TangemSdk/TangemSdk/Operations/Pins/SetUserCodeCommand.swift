@@ -170,14 +170,14 @@ public class SetUserCodeCommand: Command {
         
         let formattedCid = session.cardId.map { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
         
-        session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { code in
-            
-            if let code = code {
+        session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { result in
+            switch result {
+            case .success(let code):
                 self.codes[type] = .stringValue(code)
                 completion(.success(()))
-            } else {
+            case .failure(let error):
                 session.viewDelegate.sessionStopped(completion: nil)
-                completion(.failure(.userCancelled))
+                completion(.failure(error))
             }
         }))
     }

@@ -47,7 +47,7 @@ struct ResetUserCodesView: View {
                 Spacer()
                 
                 Button("common_continue".localized, action: onContinue)
-                    .buttonStyle(RoundedButton(style: style,
+                    .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
                                                isLoading: isLoading))
                 
             }

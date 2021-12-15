@@ -44,7 +44,7 @@ public enum SessionViewState {
     case `default`
     case empty
     case scan
-    case requestCode(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
+    case requestCode(_ type: UserCodeType, cardId: String?, showForgotButton: Bool, completion: CompletionResult<String>)
     case requestCodeChange(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
     case resetCodes(_ type: UserCodeType, state: ResetPinService.State, cardId: String?, completion: ((_ shouldContinue: Bool) -> Void))
     

@@ -14,7 +14,7 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
-    let completion: ((String?) -> Void)
+    let completion: CompletionResult<String>
     
     @State private var code: String = ""
     @State private var confirmation: String = ""
@@ -61,13 +61,13 @@ struct ChangeUserCodeView: View {
     }
     
     private func onCancel() {
-        completion(nil)
+        completion(.failure(.userCancelled))
     }
     
     private func onDone() {
         if !isContinueDisabled {
             UIApplication.shared.endEditing()
-            completion(code.trim())
+            completion(.success(code.trim()))
         }
     }
     

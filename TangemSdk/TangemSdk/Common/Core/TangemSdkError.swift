@@ -128,7 +128,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a `SignCommand` receives hashes of different lengths for signature.
     case hashSizeMustBeEqual
     
-    case walletIsNotCreated
+    case walletIsNotCreated //todo: remove
     
     case signHashesNotAvailable
     
@@ -184,6 +184,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when a user manually closes the NFC  Dialog.
     case userCancelled
+    
+    case userForgotTheCode
     
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
@@ -418,6 +420,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
+        case .userForgotTheCode: return 50013
             
         case .wrongInteractionMode: return 50027
             
@@ -489,7 +492,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongInteractionMode: return "error_wrong_interaction_mode".localized
         case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
         case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
-        case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized
+        case .cardReadWrongWallet: return "error_card_read_wrong_wallet".localized //todo: remove
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin1".localized
         case .wrongPasscode: return "error_wrong_pin2".localized

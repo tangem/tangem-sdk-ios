@@ -51,7 +51,7 @@ struct ChangeUserCodeView: View {
                 Spacer()
                 
                 Button("common_continue".localized, action: onDone)
-                    .buttonStyle(RoundedButton(style: style,
+                    .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
                                                isDisabled: isContinueDisabled,
                                                isLoading: false))
             }

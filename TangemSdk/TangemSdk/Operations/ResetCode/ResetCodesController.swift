@@ -54,16 +54,16 @@ public class ResetCodesController {
             .store(in: &bag)
     }
     
-    private func handleCodeInput(code: String?) -> Void {
-        guard let code = code else { //user cancelled
+    private func handleCodeInput(_ result: Result<String, TangemSdkError>) {
+        switch result {
+        case .success(let code):
+            do {
+                try resetService.setAccessCode(code)
+            } catch {
+                viewDelegate.showError(error.toTangemSdkError())
+            }
+        case .failure:
             viewDelegate.hide()
-            return
-        }
-        
-        do {
-            try resetService.setAccessCode(code)
-        } catch {
-            viewDelegate.showError(error.toTangemSdkError())
         }
     }
     

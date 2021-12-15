@@ -27,10 +27,11 @@ struct MainScreen: View {
         case .scan:
             ReadView()
             
-        case .requestCode(let type, cardId: let cardId, completion: let completion):
+        case .requestCode(let type, cardId: let cardId, let showForgotButton, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
                               cardId: cardId ?? "",
                               placeholder: type.name,
+                              showForgotButton: showForgotButton,
                               completion: completion)
             
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):

@@ -182,3 +182,5 @@
 
 "error_backup_card_already_added" = "This card has already been added to the list.";
 "error_backup_wrong_card" = "This card can’t be used as a backup card. Error code: %@.";
+
+"enter_user_code_button_title_forgot" = "Forgot your code?";

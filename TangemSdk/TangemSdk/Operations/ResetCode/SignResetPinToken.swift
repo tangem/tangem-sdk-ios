@@ -19,6 +19,10 @@ final class SignResetPinTokenCommand: Command {
         self.resetPinCard = resetPinCard
     }
     
+    deinit {
+        Log.debug("SignResetPinTokenCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion

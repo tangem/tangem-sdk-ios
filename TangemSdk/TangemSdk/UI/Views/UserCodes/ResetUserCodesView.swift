@@ -16,7 +16,7 @@ struct ResetUserCodesView: View {
     let card: CardType
     let messageTitle: String
     let messageBody: String
-    let completion: ((_ shouldContinue: Bool) -> Void)
+    let completion: CompletionResult<Bool>
     
     @EnvironmentObject var style: TangemSdkStyle
     
@@ -90,11 +90,11 @@ struct ResetUserCodesView: View {
     }
     
     private func onCancel() {
-        completion(false)
+        completion(.failure(.userCancelled))
     }
     
     private func onContinue() {
-        completion(true)
+        completion(.success(true))
     }
 }
 

@@ -24,6 +24,10 @@ class ResetPinTask: CardSessionRunnable {
         self.passcode = passcode
     }
     
+    deinit {
+        Log.debug("ResetPinTask deinit")
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         let prepareCommand = AuthorizeResetPinTokenCommand(confirmationCard: confirmationCard)
         prepareCommand.run(in: session) { result in

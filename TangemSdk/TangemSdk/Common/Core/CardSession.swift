@@ -36,6 +36,7 @@ public class CardSession {
     
     private var preflightReadMode: PreflightReadMode = .fullCardRead
     private var currentTag: NFCTagType = .none
+    private var resetCodesController: ResetCodesController? = nil
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -399,17 +400,44 @@ public class CardSession {
             
             switch result {
             case .success(let code):
-                switch type {
-                case .accessCode:
-                    self.environment.accessCode = UserCode(.accessCode, stringValue: code)
-                case .passcode:
-                    self.environment.passcode = UserCode(.passcode, stringValue: code)
-                }
+                self.updateEnvironment(with: type, code: code)
                 completion(.success(()))
             case .failure(let error):
-                completion(.failure(error))
+                if case .userForgotTheCode = error {
+                    self.viewDelegate.sessionStopped {
+                        self.restoreUserCode(type, { result in
+                            switch result {
+                            case .success(let newCode):
+                                self.updateEnvironment(with: type, code: newCode)
+                                self.viewDelegate.setState(.default)
+                                completion(.success(()))
+                                self.resetCodesController = nil
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        })
+                    }
+                } else {
+                    completion(.failure(error))
+                }
             }
         }))
+    }
+    
+    private func updateEnvironment(with type: UserCodeType, code: String) {
+        switch type {
+        case .accessCode:
+            self.environment.accessCode = UserCode(.accessCode, stringValue: code)
+        case .passcode:
+            self.environment.passcode = UserCode(.passcode, stringValue: code)
+        }
+    }
+    
+    func restoreUserCode(_ type: UserCodeType, _ completion: @escaping CompletionResult<String>) {
+        let resetService = ResetPinService(sdk: TangemSdk(config: environment.config))
+        let viewDelegate = ResetCodesViewDelegate(style: environment.config.style)
+        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
+        resetCodesController!.start(codeType: type, completion: completion)
     }
 }
 //MARK: - JSON RPC

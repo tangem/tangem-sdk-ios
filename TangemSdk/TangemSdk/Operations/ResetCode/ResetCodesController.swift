@@ -16,6 +16,8 @@ public class ResetCodesController {
     
     private var bag = Set<AnyCancellable>()
     private var codeType: UserCodeType? = nil
+    private var completion: CompletionResult<String>? = nil
+    private var newCode: String = ""
     
     init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate) {
         self.resetService = resetService
@@ -27,8 +29,9 @@ public class ResetCodesController {
         Log.debug("ResetCodesController deinit")
     }
     
-    public func start(codeType: UserCodeType) {
+    public func start(codeType: UserCodeType, completion: @escaping CompletionResult<String>) {
         self.codeType = codeType
+        self.completion = completion
         viewDelegate.setState(.requestCode(codeType, cardId: nil, completion: handleCodeInput))
     }
     
@@ -41,7 +44,7 @@ public class ResetCodesController {
                 case .finished:
                     self.viewDelegate.showAlert(newState.messageTitle,
                                                 message: newState.messageBody,
-                                                onContinue: { self.handleContinue(shouldContinue: false) })
+                                                onContinue: { self.handleContinue(.success(false)) })
                 default:
                     if let codeType = self.codeType {
                         self.viewDelegate.setState(.resetCodes(codeType,
@@ -59,20 +62,31 @@ public class ResetCodesController {
         case .success(let code):
             do {
                 try resetService.setAccessCode(code)
+                self.newCode = code
             } catch {
                 viewDelegate.showError(error.toTangemSdkError())
             }
-        case .failure:
-            viewDelegate.hide()
+        case .failure(let error):
+            viewDelegate.hide {
+                self.completion?(.failure(error))
+            }
         }
     }
     
-    private func handleContinue(shouldContinue: Bool) -> Void {
-        if !shouldContinue { //user cancelled or finished
-            viewDelegate.hide()
-            return
+    private func handleContinue(_ result: Result<Bool, TangemSdkError>){
+        switch result {
+        case .success(let shouldContinue):
+            if shouldContinue {
+                resetService.proceed()
+            } else { //completed
+                self.viewDelegate.hide {
+                    self.completion?(.success(self.newCode))
+                }
+            }
+        case .failure(let error):
+            self.viewDelegate.hide {
+                self.completion?(.failure(error))
+            }
         }
-        
-        resetService.proceed()
     }
 }

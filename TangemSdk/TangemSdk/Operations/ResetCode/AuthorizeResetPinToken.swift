@@ -19,6 +19,10 @@ final class AuthorizeResetPinTokenCommand: Command {
         self.confirmationCard = confirmationCard
     }
     
+    deinit {
+        Log.debug("AuthorizeResetPinTokenCommand deinit")
+    }
+    
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion

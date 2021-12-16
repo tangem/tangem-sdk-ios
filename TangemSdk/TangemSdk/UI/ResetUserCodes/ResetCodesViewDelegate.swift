@@ -36,8 +36,8 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
         runInMainThread(self.presentScreenIfNeeded())
     }
     
-    func hide() {
-        runInMainThread(self.dismissScreen(completion: nil))
+    func hide(completion: (() -> Void)?) {
+        runInMainThread(self.dismissScreen(completion: completion))
     }
     
     func showError(_ error: TangemSdkError) {

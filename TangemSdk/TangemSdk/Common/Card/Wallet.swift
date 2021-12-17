@@ -30,6 +30,8 @@ public extension Card {
         public let index: Int
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
+        /// Derived keys according to `Config.defaultDerivationPaths`
+        public var derivedKeys: [ExtendedPublicKey] = []
         
         public var extendedPublicKey: ExtendedPublicKey? {
             guard let chainCode = self.chainCode else {

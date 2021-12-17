@@ -60,6 +60,11 @@ public struct Config {
     
     /// Convert all secp256k1 signatures, produced by the card, to a lower-S form. True by default
     public var canonizeSecp256k1Signatures: Bool = true
+    
+    /// A card with HD wallets feature enabled will derive keys automatically on "scan" and "createWallet". Repeated items will be ignored
+    /// All derived keys will be stored in `Card.Wallet.derivedKeys`.
+    /// Only `secp256k1` and `ed25519` supported
+    public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
 }
 
 public enum CardIdDisplayFormat {

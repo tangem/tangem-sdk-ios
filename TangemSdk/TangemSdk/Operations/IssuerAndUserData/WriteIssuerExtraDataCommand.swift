@@ -116,7 +116,7 @@ public final class WriteIssuerExtraDataCommand: Command {
                     }
                     self.writeData(session)
                 case .finalizeWrite:
-                    self.viewDelegate?.showAlertMessage(Localization.nfcAlertDefaultDone)
+                    self.viewDelegate?.showAlertMessage("nfc_alert_default_done".localized)
                     self.completion?(.success(response))
                 }
             case .failure(let error):
@@ -153,7 +153,6 @@ public final class WriteIssuerExtraDataCommand: Command {
         }
         let progress = Int(round(Float(offset)/Float(issuerData.count) * 100.0))
         viewDelegate?.setState(.progress(percent: progress))
-        viewDelegate?.showAlertMessage(Localization.writeProgress(String(describing: progress)))
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {

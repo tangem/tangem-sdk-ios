@@ -13,8 +13,6 @@ public class ResetPinService: ObservableObject {
     @Published public private(set) var currentState: State = .needCode
     @Published public private(set) var error: TangemSdkError? = nil
     
-    public var resetPinCardId: String? { repo.resetPinCard?.cardId }
-    
     private let sdk: TangemSdk
     private var repo: ResetPinRepo = .init()
     private var handleErrors: Bool { sdk.config.handleErrors }
@@ -60,10 +58,10 @@ public class ResetPinService: ObservableObject {
         currentState = currentState.next()
     }
     
-    public func proceed() {
+    public func proceed(with resetCardId: String? = nil) {
         switch currentState {
         case .needScanResetCard:
-            scanResetPinCard(handleCompletion)
+            scanResetPinCard(resetCardId: resetCardId, handleCompletion)
         case .needScanConfirmationCard:
             scanConfirmationCard(handleCompletion)
         case .needWriteResetCard:
@@ -82,9 +80,10 @@ public class ResetPinService: ObservableObject {
         }
     }
     
-    private func scanResetPinCard(_ completion: @escaping CompletionResult<Void>) {
+    private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
         let command = GetResetPinTokenCommand()
         sdk.startSession(with: command,
+                         cardId: resetCardId,
                          initialMessage: Message(header: "Scan the card on which you want to reset the pin")) { result in
             switch result {
             case .success(let response):

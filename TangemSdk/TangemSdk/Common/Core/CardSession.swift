@@ -102,7 +102,7 @@ public class CardSession {
                         Log.session("Runnable completed")
                         switch result {
                         case .success(let runnableResponse):
-                            self.stop(message: Localization.nfcAlertDefaultDone) {
+                            self.stop(message: "nfc_alert_default_done".localized) {
                                 completion(.success(runnableResponse))
                             }
                         case .failure(let error):

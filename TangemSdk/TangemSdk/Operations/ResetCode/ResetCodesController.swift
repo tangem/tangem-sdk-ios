@@ -11,6 +11,8 @@ import Combine
 
 @available(iOS 13.0, *)
 public class ResetCodesController {
+    public var cardIdDisplayFormat: CardIdDisplayFormat = .full
+    
     private let resetService: ResetPinService
     private let viewDelegate: ResetCodesViewDelegate
     
@@ -18,6 +20,11 @@ public class ResetCodesController {
     private var codeType: UserCodeType? = nil
     private var completion: CompletionResult<String>? = nil
     private var newCode: String = ""
+    private var cardId: String? = nil
+
+    private var formattedCardId: String? {
+        cardId.map { CardIdFormatter(style: cardIdDisplayFormat).string(from: $0) }
+    }
     
     init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate) {
         self.resetService = resetService
@@ -29,10 +36,11 @@ public class ResetCodesController {
         Log.debug("ResetCodesController deinit")
     }
     
-    public func start(codeType: UserCodeType, completion: @escaping CompletionResult<String>) {
+    public func start(codeType: UserCodeType, cardId: String?, completion: @escaping CompletionResult<String>) {
+        self.cardId = cardId
         self.codeType = codeType
         self.completion = completion
-        viewDelegate.setState(.requestCode(codeType, cardId: nil, completion: handleCodeInput))
+        viewDelegate.setState(.requestCode(codeType, cardId: formattedCardId, completion: handleCodeInput))
     }
     
     private func bind() {
@@ -49,7 +57,7 @@ public class ResetCodesController {
                     if let codeType = self.codeType {
                         self.viewDelegate.setState(.resetCodes(codeType,
                                                                state: newState,
-                                                               cardId: self.resetService.resetPinCardId,
+                                                               cardId: formattedCardId,
                                                                completion: handleContinue))
                     }
                 }
@@ -77,7 +85,7 @@ public class ResetCodesController {
         switch result {
         case .success(let shouldContinue):
             if shouldContinue {
-                resetService.proceed()
+                resetService.proceed(with: self.cardId)
             } else { //completed
                 self.viewDelegate.hide {
                     self.completion?(.success(self.newCode))

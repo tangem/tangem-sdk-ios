@@ -20,6 +20,7 @@ import Foundation
 @available(iOS 13.0, *)
 public class CreateWalletTask: CardSessionRunnable {
     private let curve: EllipticCurve
+    private var derivationTask: DeriveWalletPublicKeysTask? = nil
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     public init(curve: EllipticCurve) {
@@ -35,7 +36,7 @@ public class CreateWalletTask: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success(let response):
-                completion(.success(response))
+                self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
             case .failure(let error):
                 if case .invalidState = error { //Wallet already created but we didn't get the proper response from the card. Rescan and retrieve the wallet
                     Log.debug("Received wallet creation error. Try rescan and retrieve created wallet")
@@ -81,10 +82,38 @@ public class CreateWalletTask: CardSessionRunnable {
         }
         
         if let createdWallet = card.wallets.first(where: { $0.index == index }) {
-            completion(.success(CreateWalletResponse(cardId: card.cardId, wallet: createdWallet)))
+            let response = CreateWalletResponse(cardId: card.cardId, wallet: createdWallet)
+            self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
         } else {
             Log.debug("Wallet not found after rescan.")
             completion(.failure(TangemSdkError.unknownError))
+        }
+    }
+    
+    private func deriveKeysIfNeeded(for response: CreateWalletResponse, in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        guard card.firmwareVersion >= .hdWalletAvailable, card.settings.isHDWalletAllowed,
+              let paths = session.environment.config.defaultDerivationPaths[response.wallet.curve],
+              !paths.isEmpty else {
+                  completion(.success(response))
+                  return
+              }
+        
+        derivationTask = DeriveWalletPublicKeysTask(walletPublicKey: response.wallet.publicKey, derivationPaths: paths)
+        derivationTask!.run(in: session) { result in
+            switch result {
+            case .success(let derivedKeys):
+                var mutableWallet = response.wallet
+                mutableWallet.derivedKeys = derivedKeys
+                let updatedResponse = CreateWalletResponse(cardId: response.cardId, wallet: mutableWallet)
+                completion(.success(updatedResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
 }

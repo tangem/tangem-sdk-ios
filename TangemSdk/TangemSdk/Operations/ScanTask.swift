@@ -13,7 +13,7 @@ import Foundation
 @available(iOS 13.0, *)
 public final class ScanTask: CardSessionRunnable {
     private var attestationTask: AttestationTask? = nil
-    
+
     public init() {}
     
     deinit {
@@ -34,7 +34,7 @@ public final class ScanTask: CardSessionRunnable {
             && card.settings.isResettingUserCodesAllowed {
             checkUserCodes(session, completion)
         } else {
-            runAttestation(session, completion)
+            deriveKeysIfNeeded(session, completion)
         }
     }
 
@@ -43,6 +43,40 @@ public final class ScanTask: CardSessionRunnable {
             switch result {
             case .success(let response):
                 session.environment.card?.isPasscodeSet = response.isPasscodeSet
+                self.runAttestation(session, completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    private func deriveKeysIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        let defaultPaths = session.environment.config.defaultDerivationPaths
+        guard card.firmwareVersion >= .hdWalletAvailable, card.settings.isHDWalletAllowed, !defaultPaths.isEmpty else {
+            self.runAttestation(session, completion)
+            return
+        }
+        
+        let derivations = card.wallets.reduce(into: [Data: [DerivationPath]]()) { (result, wallet) in
+            if let paths = defaultPaths[wallet.curve], !paths.isEmpty {
+                result[wallet.publicKey] = paths
+            }
+        }
+        
+        guard !derivations.isEmpty else {
+            self.runAttestation(session, completion)
+            return
+        }
+        
+        let derivationTask = DeriveMultipleWalletPublicKeysTask(derivations)
+        derivationTask.run(in: session) { result in
+            switch result {
+            case .success:
                 self.runAttestation(session, completion)
             case .failure(let error):
                 completion(.failure(error))

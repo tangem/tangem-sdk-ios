@@ -405,7 +405,7 @@ public class CardSession {
             case .failure(let error):
                 if case .userForgotTheCode = error {
                     self.viewDelegate.sessionStopped {
-                        self.restoreUserCode(type, { result in
+                        self.restoreUserCode(type, cardId: cardId) { result in
                             switch result {
                             case .success(let newCode):
                                 self.updateEnvironment(with: type, code: newCode)
@@ -415,7 +415,7 @@ public class CardSession {
                             case .failure(let error):
                                 completion(.failure(error))
                             }
-                        })
+                        }
                     }
                 } else {
                     completion(.failure(error))
@@ -433,11 +433,12 @@ public class CardSession {
         }
     }
     
-    func restoreUserCode(_ type: UserCodeType, _ completion: @escaping CompletionResult<String>) {
+    func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
         let resetService = ResetPinService(sdk: TangemSdk(config: environment.config))
         let viewDelegate = ResetCodesViewDelegate(style: environment.config.style)
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
-        resetCodesController!.start(codeType: type, completion: completion)
+        resetCodesController!.cardIdDisplayFormat = environment.config.cardIdDisplayFormat
+        resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
     }
 }
 //MARK: - JSON RPC

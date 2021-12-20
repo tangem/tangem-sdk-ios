@@ -25,6 +25,7 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
             .environmentObject(style)
         
         let screen = UIHostingController(rootView: view)
+        screen.isModalInPresentation = true
         return screen
     }
     

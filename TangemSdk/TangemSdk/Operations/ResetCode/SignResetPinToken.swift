@@ -25,12 +25,15 @@ final class SignResetPinTokenCommand: Command {
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
-            return .notSupportedFirmwareVersion
+            return .resetPinWrongCard(internalCode: TangemSdkError.notSupportedFirmwareVersion.code)
         }
         
-        guard let backupStatus = card.backupStatus,
-              backupStatus.isActive else {
-            return TangemSdkError.noActiveBackup
+        guard let backupStatus = card.backupStatus, backupStatus.isActive else {
+            return .resetPinWrongCard(internalCode: TangemSdkError.noActiveBackup.code)
+        }
+        
+        if card.cardId == resetPinCard.cardId {
+            return .resetPinWrongCard()
         }
         
         return nil
@@ -38,7 +41,7 @@ final class SignResetPinTokenCommand: Command {
     
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
-            return .resetPinWrongCard
+            return .resetPinWrongCard()
         }
         
         return error

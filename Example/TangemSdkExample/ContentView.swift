@@ -164,7 +164,13 @@ struct ContentView: View {
                     TextEditor(text: $model.editorData)
                         .frame(height: 100)
                     
-                    Button("Paste json", action: model.pasteEditor)
+                    HStack {
+                        Spacer()
+                        Button("Paste json", action: model.pasteEditor)
+                        Spacer()
+                        Button("End editing", action: model.endEditing)
+                        Spacer()
+                    }
                 } else {
                     HStack {
                         Spacer()

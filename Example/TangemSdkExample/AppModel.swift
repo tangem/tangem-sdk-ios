@@ -178,7 +178,10 @@ extension AppModel {
             pastePersonalizationConfig()
         default: break
         }
-        
+    }
+    
+    func endEditing() {
+        UIApplication.shared.endEditing()
     }
 }
 
@@ -308,13 +311,23 @@ extension AppModel {
             scan.run(in: session) { result in
                 switch result {
                 case .success:
-                    let verifyCommand = AttestCardKeyCommand()
-                    verifyCommand.run(in: session) { result in
+                    session.resume()
+                    let createWallet = CreateWalletTask(curve: .secp256k1)
+                    createWallet.run(in: session) { result2 in
+                        switch result2 {
+                        case .success(let response):
+                            self.log(response)
+                        case .failure:
+                            break
+                        }
+                        
                         DispatchQueue.main.async {
                             self.handleCompletion(result)
                         }
+                        
                         session.stop()
                     }
+
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.complete(with: error)

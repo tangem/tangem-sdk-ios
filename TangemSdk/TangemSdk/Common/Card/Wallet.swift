@@ -9,6 +9,9 @@
 import Foundation
 
 @available(iOS 13.0, *)
+public typealias WalletIndex = Int
+
+@available(iOS 13.0, *)
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
@@ -27,7 +30,7 @@ public extension Card {
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
-        public let index: Int
+        public let index: WalletIndex
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`

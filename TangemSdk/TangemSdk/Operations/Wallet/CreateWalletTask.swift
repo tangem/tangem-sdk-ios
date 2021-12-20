@@ -103,7 +103,7 @@ public class CreateWalletTask: CardSessionRunnable {
                   return
               }
         
-        derivationTask = DeriveWalletPublicKeysTask(walletPublicKey: response.wallet.publicKey, derivationPaths: paths)
+        derivationTask = DeriveWalletPublicKeysTask(walletIndex: response.wallet.index, derivationPaths: paths)
         derivationTask!.run(in: session) { result in
             switch result {
             case .success(let derivedKeys):

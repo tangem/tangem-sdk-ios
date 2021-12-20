@@ -10,16 +10,16 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveWalletPublicKeyTask: CardSessionRunnable {
-    private let walletPublicKey: Data
+    private let walletIndex: WalletIndex
     private let derivationPath: DerivationPath
     
     /// Derive wallet  public key according to BIP32 (Private parent key → public child key).
     /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
-    ///   - walletPublicKey: Seed public key.
+    ///   - walletIndex: Index of the wallet
     ///   - derivationPath: Derivation path
-    public init(walletPublicKey: Data, derivationPath: DerivationPath) {
-        self.walletPublicKey = walletPublicKey
+    public init(walletIndex: WalletIndex, derivationPath: DerivationPath) {
+        self.walletIndex = walletIndex
         self.derivationPath = derivationPath
     }
     
@@ -27,12 +27,27 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         Log.debug("DeriveWalletPublicKeyTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        guard let walletIndex = session.environment.card?.wallets[walletPublicKey]?.index else {
-            completion(.failure(.walletNotFound))
-            return
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .hdWalletAvailable {
+            return .notSupportedFirmwareVersion
         }
         
+        if !card.settings.isHDWalletAllowed {
+            return .hdWalletDisabled
+        }
+        
+        guard let wallet = card.wallets[walletIndex] else {
+            return .walletNotFound
+        }
+        
+        guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
+            return .unsupportedCurve
+        }
+        
+        return nil
+    }
+    
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
         let readWallet = ReadWalletCommand(walletIndex: walletIndex, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
@@ -46,7 +61,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                                                  chainCode: chainCode,
                                                  derivationPath: self.derivationPath)
                 
-                session.environment.card?.wallets[self.walletPublicKey]?.derivedKeys.appendIfNotContains(childKey)
+                session.environment.card?.wallets[self.walletIndex]?.derivedKeys.appendIfNotContains(childKey)
                 
                 completion(.success(childKey))
             case .failure(let error):

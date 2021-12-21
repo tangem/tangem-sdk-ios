@@ -41,7 +41,7 @@ public final class CryptoUtils {
     public static func verify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) throws -> Bool {
         switch curve {
         case .secp256k1:
-            return try Secp256k1Utils.verify(publicKey: publicKey, message: message, signature: signature)
+            return try Secp256k1Utils.verify(signature: signature, publicKey: publicKey, message: message)
         case .ed25519:
             let hash = message.getSha512()
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
@@ -65,7 +65,7 @@ public final class CryptoUtils {
     public static func verify(curve: EllipticCurve, publicKey: Data, hash: Data, signature: Data) throws -> Bool {
         switch curve {
         case .secp256k1:
-            return try Secp256k1Utils.verify(publicKey: publicKey, hash: hash, signature: signature)
+            return try Secp256k1Utils.verify(signature: signature, publicKey: publicKey, hash: hash)
         case .ed25519:
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)

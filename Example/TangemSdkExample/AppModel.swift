@@ -441,10 +441,10 @@ extension AppModel {
         let counter = 1
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         
-        let fileHash = FileHashHelper.prepareHash(for: cardId,
-                                                     fileData: demoData,
-                                                     fileCounter: counter,
-                                                     privateKey: Utils.issuer.privateKey)
+        let fileHash = try! FileHashHelper.prepareHash(for: cardId,
+                                                          fileData: demoData,
+                                                          fileCounter: counter,
+                                                          privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature else {
@@ -527,7 +527,7 @@ extension AppModel {
         
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
         let sampleData = Data(repeating: UInt8(1), count: 100)
-        let sig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)!
+        let sig = try! Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)
         
         tangemSdk.writeIssuerData(issuerData: sampleData,
                                   issuerDataSignature: sig,
@@ -564,8 +564,8 @@ extension AppModel {
         let sampleData = Data(repeating: UInt8(1), count: 2000)
         let issuerKey = Utils.issuer.privateKey
         
-        let startSig = Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)!
-        let finalSig = Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)!
+        let startSig = try! Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)
+        let finalSig = try! Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)
         
         tangemSdk.writeIssuerExtraData(issuerData: sampleData,
                                        startingSignature: startSig,

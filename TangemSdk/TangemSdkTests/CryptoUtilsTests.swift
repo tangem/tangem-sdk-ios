@@ -33,11 +33,11 @@ class CryptoUtilsTests: XCTestCase {
         
         let dummyData = Data(repeating: UInt8(1), count: 64)
         let hash = dummyData.getSha256()
-        let signature = Secp256k1Utils.sign(dummyData, with: privateKey)
+        let signature = try! Secp256k1Utils.sign(dummyData, with: privateKey)
         XCTAssertNotNil(signature)
         
-        let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature!)
-        let verifyByHash = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, hash: hash, signature: signature!)
+        let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature)
+        let verifyByHash = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, hash: hash, signature: signature)
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify, true)
         XCTAssertNotNil(verifyByHash)
@@ -87,16 +87,16 @@ class CryptoUtilsTests: XCTestCase {
     func testKeyCompression() {
         let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
         
-        let compressedKey = Secp256k1Utils.compressPublicKey(publicKey)!
+        let compressedKey = try! Secp256k1Utils.compressPublicKey(publicKey)
         XCTAssertEqual(compressedKey.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
-        let decompressedKey = Secp256k1Utils.decompressPublicKey(compressedKey)!
+        let decompressedKey = try! Secp256k1Utils.decompressPublicKey(compressedKey)
         XCTAssertEqual(decompressedKey,publicKey)
     }
     
     func testNormalize() {
         let sig = Data(hexString: "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4ED65093BB5EC5291EC7CC95B4278D0E9EF59719DE985EEB764779F511E453EDDD")
-        let normalized = Secp256k1Utils.normalize(secp256k1Signature: sig)
-        XCTAssertEqual(normalized!.hexString, "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4E29AF6C44A13AD6E138336A4BD872F15FC517C30816E9B4C57858697AEBE25364")
+        let normalized = try! Secp256k1Utils.normalize(signature: sig)
+        XCTAssertEqual(normalized.hexString, "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4E29AF6C44A13AD6E138336A4BD872F15FC517C30816E9B4C57858697AEBE25364")
     }
 }
 

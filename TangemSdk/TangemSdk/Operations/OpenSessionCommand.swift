@@ -47,20 +47,19 @@ class OpenSessionCommand: ApduSerializable {
 
 protocol EncryptionHelper {
     var keyA: Data {get}
-    func generateSecret(keyB: Data) -> Data?
+    func generateSecret(keyB: Data) throws -> Data
 }
 
 @available(iOS 13.0, *)
 class EncryptionHelperFactory {
-    static func make(for mode: EncryptionMode) -> EncryptionHelper? {
+    static func make(for mode: EncryptionMode) throws -> EncryptionHelper {
         switch mode {
         case .fast:
-            return FastEncryptionHelper()
+            return try FastEncryptionHelper()
         case .strong:
-            return StrongEncryptionHelper()
+            return try StrongEncryptionHelper()
         case .none:
-            assertionFailure("Cannot make EncryptionHelper for EncryptionMode NONE")
-            return nil
+            fatalError("Cannot make EncryptionHelper for EncryptionMode NONE")
         }
     }
 }
@@ -69,15 +68,11 @@ class EncryptionHelperFactory {
 final class FastEncryptionHelper: EncryptionHelper {
     let keyA: Data
     
-    init?() {
-        do {
-            keyA = try CryptoUtils.generateRandomBytes(count: 16)
-        } catch {
-            return nil
-        }
+    init() throws {
+        keyA = try CryptoUtils.generateRandomBytes(count: 16)
     }
     
-    func generateSecret(keyB: Data) -> Data? {
+    func generateSecret(keyB: Data) throws -> Data {
         return keyA + keyB
     }
 }
@@ -88,16 +83,13 @@ final class StrongEncryptionHelper: EncryptionHelper {
     
     private let keyPair: KeyPair
     
-    init?() {
-        if let keyPair = Secp256k1Utils.generateKeyPair() {
-            self.keyPair = keyPair
-            self.keyA = keyPair.publicKey
-        } else {
-            return nil
-        }
+    init() throws {
+        let keyPair = try Secp256k1Utils.generateKeyPair()
+        self.keyPair = keyPair
+        self.keyA = keyPair.publicKey
     }
     
-    func generateSecret(keyB: Data) -> Data? {
-        return Secp256k1Utils.getSharedSecret(privateKey: keyPair.privateKey, publicKey: keyB)
+    func generateSecret(keyB: Data) throws -> Data {
+        return try Secp256k1Utils.getSharedSecret(privateKey: keyPair.privateKey, publicKey: keyB)
     }
 }

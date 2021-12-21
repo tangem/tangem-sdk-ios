@@ -10,6 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 struct CardDeserializer {
+    let secp256k1KeyFormat: Secp256k1KeyFormat
     var allowNotPersonalized: Bool = false
     
     /// Card deserializaton helper
@@ -53,7 +54,8 @@ struct CardDeserializer {
                 throw TangemSdkError.decodingFailed("Missing curve id")
             }
             
-            let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+            let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
+            let wallet = Card.Wallet(publicKey: try secp256k1KeyFormat.format(walletPublicKey),
                                      chainCode: nil,
                                      curve: defaultCurve,
                                      settings: walletSettings,

@@ -77,7 +77,6 @@ public enum CardIdDisplayFormat {
     case lastLunh(_ numbers: Int)
 }
 
-
 /// Format of wallet public key on secp256k1 curve.
 @available(iOS 13.0, *)
 public enum Secp256k1KeyFormat {

@@ -109,10 +109,11 @@ extension Data {
         return try? decoder.decode(tag)
     }
     
+    @available(iOS 13.0, *)
     public func pbkdf2(hash: CCPBKDFAlgorithm,
                        salt: Data,
                        keyByteCount: Int,
-                       rounds: Int) -> Data? {
+                       rounds: Int) throws -> Data {
         var derivedKeyData = Data(repeating: 0, count: keyByteCount)
         let derivedCount = derivedKeyData.count
         
@@ -136,11 +137,16 @@ extension Data {
             }
         }
         
-        return derivationStatus == kCCSuccess ? derivedKeyData : nil
+        if derivationStatus == kCCSuccess {
+            return derivedKeyData
+        }
+        
+        throw TangemSdkError.cryptoUtilsError("Failed to pbkdf2")
     }
     
-    public func pbkdf2sha256(salt: Data, rounds: Int) -> Data? {
-        return pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
+    @available(iOS 13.0, *)
+    public func pbkdf2sha256(salt: Data, rounds: Int) throws -> Data {
+        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
     }
     
     //SO14443A
@@ -186,10 +192,10 @@ extension Data {
     }
     
     @available(iOS 13.0, *)
-    public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) -> Data? {
+    public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) throws -> Data {
         switch curve {
         case .secp256k1:
-            return Secp256k1Utils.sign(self, with: privateKey)
+            return try Secp256k1Utils.sign(self, with: privateKey)
         default:
             // TODO: Create sign for ED25519 and secp256r1 curve
             fatalError("Sign not implemented for this curve")

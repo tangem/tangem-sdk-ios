@@ -91,6 +91,21 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertEqual(compressedKey.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
         let decompressedKey = try! Secp256k1Utils.decompressPublicKey(compressedKey)
         XCTAssertEqual(decompressedKey,publicKey)
+        
+        
+        let testKey = WalletPublicKey(publicKey)
+        let testKeyCompressed = try! testKey.compress()
+        let testKeyCompressed2 = try! testKeyCompressed.compress()
+        XCTAssertEqual(testKeyCompressed.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
+        XCTAssertEqual(testKeyCompressed, testKeyCompressed2)
+        let testKeyDecompressed = try! testKeyCompressed.decompress()
+        let testKeyDecompressed2 = try! testKeyDecompressed.decompress()
+        XCTAssertEqual(testKeyDecompressed, testKey)
+        XCTAssertEqual(testKeyDecompressed, testKeyDecompressed2)
+        
+        let edKey = WalletPublicKey(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
+        XCTAssertThrowsError(try edKey.compress())
+        XCTAssertThrowsError(try edKey.decompress())
     }
     
     func testNormalize() {

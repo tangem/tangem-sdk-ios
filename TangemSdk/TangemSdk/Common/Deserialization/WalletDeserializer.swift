@@ -12,11 +12,13 @@ import Foundation
 /// Deserialize v4 walelts only
 class WalletDeserializer {
     private let isDefaultPermanentWallet: Bool
-    
+    private let secp256k1KeyFormat: Secp256k1KeyFormat
     /// Default initializer
     /// - Parameter isDefaultPermanentWallet: Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
-    internal init(isDefaultPermanentWallet: Bool) {
+    /// - Parameter secp256k1KeyFormat: Format of the wallet's key
+    internal init(isDefaultPermanentWallet: Bool, secp256k1KeyFormat: Secp256k1KeyFormat) {
         self.isDefaultPermanentWallet = isDefaultPermanentWallet
+        self.secp256k1KeyFormat = secp256k1KeyFormat
     }
     
     func deserializeWallets(from decoder: TlvDecoder) throws -> (wallets: [Card.Wallet], totalReceived: Int) {
@@ -56,8 +58,9 @@ class WalletDeserializer {
         let mask: WalletSettingsMask? = try decoder.decode(.settingsMask)
         let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
             ?? .init(isPermanent: isDefaultPermanentWallet) //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
+        let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
         
-        return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
+        return Card.Wallet(publicKey: try secp256k1KeyFormat.format(walletPublicKey),
                            chainCode: try decoder.decode(.walletHDChain),
                            curve: try decoder.decode(.curveId),
                            settings: settings,

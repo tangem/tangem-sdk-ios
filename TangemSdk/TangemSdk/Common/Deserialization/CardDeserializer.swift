@@ -55,7 +55,8 @@ struct CardDeserializer {
             }
             
             let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
-            let wallet = Card.Wallet(publicKey: try secp256k1KeyFormat.format(walletPublicKey),
+            let key = defaultCurve == .secp256k1 ? try secp256k1KeyFormat.format(walletPublicKey) : walletPublicKey
+            let wallet = Card.Wallet(publicKey: key,
                                      chainCode: nil,
                                      curve: defaultCurve,
                                      settings: walletSettings,

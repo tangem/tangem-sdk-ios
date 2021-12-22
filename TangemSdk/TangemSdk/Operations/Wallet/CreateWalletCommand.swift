@@ -161,8 +161,9 @@ final class CreateWalletCommand: Command {
                                   remainingSignatures: Int?,
                                   isPermanentWallet: Bool,
                                   secp256k1KeyFormat: Secp256k1KeyFormat) throws -> Card.Wallet {
-        let rawKey: Data = try decoder.decode(.walletPublicKey)
-        return Card.Wallet(publicKey: try secp256k1KeyFormat.format(rawKey),
+        let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
+        let key = curve == .secp256k1 ? try secp256k1KeyFormat.format(walletPublicKey) : walletPublicKey
+        return Card.Wallet(publicKey: key,
                            chainCode: nil,
                            curve: curve, // It's safe to use this property because create wallet command will not execute successfully with the wrong curve
                            settings: Card.Wallet.Settings(isPermanent: isPermanentWallet),

@@ -59,10 +59,12 @@ class WalletDeserializer {
         let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
             ?? .init(isPermanent: isDefaultPermanentWallet) //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
         let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
+        let curve: EllipticCurve = try decoder.decode(.curveId)
+        let key = curve == .secp256k1 ? try secp256k1KeyFormat.format(walletPublicKey) : walletPublicKey
         
-        return Card.Wallet(publicKey: try secp256k1KeyFormat.format(walletPublicKey),
+        return Card.Wallet(publicKey: key,
                            chainCode: try decoder.decode(.walletHDChain),
-                           curve: try decoder.decode(.curveId),
+                           curve: curve,
                            settings: settings,
                            totalSignedHashes: try decoder.decode(.walletSignedHashes),
                            remainingSignatures: nil,

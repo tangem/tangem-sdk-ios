@@ -527,7 +527,7 @@ extension AppModel {
         
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
         let sampleData = Data(repeating: UInt8(1), count: 100)
-        let sig = try! Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)
+        let sig = try! Secp256k1Utils().sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)
         
         tangemSdk.writeIssuerData(issuerData: sampleData,
                                   issuerDataSignature: sig,
@@ -563,9 +563,9 @@ extension AppModel {
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
         let sampleData = Data(repeating: UInt8(1), count: 2000)
         let issuerKey = Utils.issuer.privateKey
-        
-        let startSig = try! Secp256k1Utils.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)
-        let finalSig = try! Secp256k1Utils.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)
+        let secp256k1 = Secp256k1Utils()
+        let startSig = try! secp256k1.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)
+        let finalSig = try! secp256k1.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)
         
         tangemSdk.writeIssuerExtraData(issuerData: sampleData,
                                        startingSignature: startSig,

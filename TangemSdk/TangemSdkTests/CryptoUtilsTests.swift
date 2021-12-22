@@ -33,7 +33,7 @@ class CryptoUtilsTests: XCTestCase {
         
         let dummyData = Data(repeating: UInt8(1), count: 64)
         let hash = dummyData.getSha256()
-        let signature = try! Secp256k1Utils.sign(dummyData, with: privateKey)
+        let signature = try! Secp256k1Utils().sign(dummyData, with: privateKey)
         XCTAssertNotNil(signature)
         
         let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature)
@@ -87,30 +87,31 @@ class CryptoUtilsTests: XCTestCase {
     func testKeyCompression() {
         let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
         
-        let compressedKey = try! Secp256k1Utils.compressPublicKey(publicKey)
+        let compressedKey = try! Secp256k1Key(with: publicKey).compress()
         XCTAssertEqual(compressedKey.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
-        let decompressedKey = try! Secp256k1Utils.decompressPublicKey(compressedKey)
+        let decompressedKey = try! Secp256k1Key(with: compressedKey).decompress()
         XCTAssertEqual(decompressedKey,publicKey)
         
-        
-        let testKey = WalletPublicKey(publicKey)
-        let testKeyCompressed = try! testKey.compress()
-        let testKeyCompressed2 = try! testKeyCompressed.compress()
+        let testKey = PublicKey(publicKey)
+        let testKeyCompressed = try! testKey.toSecp256k1Key().compress()
+        let testKeyCompressed2 = try! testKeyCompressed.toSecp256k1Key().compress()
         XCTAssertEqual(testKeyCompressed.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
         XCTAssertEqual(testKeyCompressed, testKeyCompressed2)
-        let testKeyDecompressed = try! testKeyCompressed.decompress()
-        let testKeyDecompressed2 = try! testKeyDecompressed.decompress()
+        let testKeyDecompressed = try! testKeyCompressed.toSecp256k1Key().decompress()
+        let testKeyDecompressed2 = try! testKeyDecompressed.toSecp256k1Key().decompress()
         XCTAssertEqual(testKeyDecompressed, testKey)
         XCTAssertEqual(testKeyDecompressed, testKeyDecompressed2)
         
-        let edKey = WalletPublicKey(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
-        XCTAssertThrowsError(try edKey.compress())
-        XCTAssertThrowsError(try edKey.decompress())
+        let edKey = PublicKey(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
+        XCTAssertThrowsError(try edKey.toSecp256k1Key().compress())
+        XCTAssertThrowsError(try edKey.toSecp256k1Key().decompress())
     }
     
     func testNormalize() {
-        let sig = Data(hexString: "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4ED65093BB5EC5291EC7CC95B4278D0E9EF59719DE985EEB764779F511E453EDDD")
-        let normalized = try! Secp256k1Utils.normalize(signature: sig)
+        let sigData = Data(hexString: "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4ED65093BB5EC5291EC7CC95B4278D0E9EF59719DE985EEB764779F511E453EDDD")
+        let sig = try! Secp256k1Signature(with: sigData)
+        
+        let normalized = try! sig.normalize()
         XCTAssertEqual(normalized.hexString, "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4E29AF6C44A13AD6E138336A4BD872F15FC517C30816E9B4C57858697AEBE25364")
     }
 }

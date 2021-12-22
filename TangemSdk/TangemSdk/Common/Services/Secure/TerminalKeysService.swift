@@ -18,7 +18,7 @@ public class TerminalKeysService {
         guard let privateKey = try? secureStorage.get(account: StorageKey.terminalPrivateKey.rawValue),
               let publicKey = try? secureStorage.get(account: StorageKey.terminalPublicKey.rawValue) else {
             
-            if let newKeys = try? Secp256k1Utils.generateKeyPair() {
+            if let newKeys = try? Secp256k1Utils().generateKeyPair() {
                 try? secureStorage.store(object: newKeys.privateKey, account: StorageKey.terminalPrivateKey.rawValue)
                 try? secureStorage.store(object: newKeys.publicKey, account: StorageKey.terminalPublicKey.rawValue)
                 return newKeys

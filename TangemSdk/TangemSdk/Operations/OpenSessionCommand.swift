@@ -82,14 +82,15 @@ final class StrongEncryptionHelper: EncryptionHelper {
     let keyA: Data
     
     private let keyPair: KeyPair
+    private let secp256k1 = Secp256k1Utils()
     
     init() throws {
-        let keyPair = try Secp256k1Utils.generateKeyPair()
+        let keyPair = try secp256k1.generateKeyPair()
         self.keyPair = keyPair
         self.keyA = keyPair.publicKey
     }
     
     func generateSecret(keyB: Data) throws -> Data {
-        return try Secp256k1Utils.getSharedSecret(privateKey: keyPair.privateKey, publicKey: keyB)
+        return try secp256k1.getSharedSecret(privateKey: keyPair.privateKey, publicKey: keyB)
     }
 }

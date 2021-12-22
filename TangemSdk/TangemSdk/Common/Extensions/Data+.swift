@@ -195,7 +195,7 @@ extension Data {
     public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) throws -> Data {
         switch curve {
         case .secp256k1:
-            return try Secp256k1Utils.sign(self, with: privateKey)
+            return try Secp256k1Utils().sign(self, with: privateKey)
         default:
             // [REDACTED_TODO_COMMENT]
             fatalError("Sign not implemented for this curve")

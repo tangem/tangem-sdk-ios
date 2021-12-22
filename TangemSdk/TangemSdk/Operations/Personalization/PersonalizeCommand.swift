@@ -141,7 +141,7 @@ public class PersonalizeCommand: Command {
     }
     
     private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
-        let signature = try Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey)
+        let signature = try Secp256k1Utils().sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey)
        
         let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)

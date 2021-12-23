@@ -16,13 +16,13 @@ public class ReadFilesTask: CardSessionRunnable {
     
     //Read filters
     private let fileName: String?
-    private let walletPublicKey: Data?
+    private let walletIndex: WalletIndex?
     
     private var files: [File] = []
     
-    public init(fileName: String? = nil, walletPublicKey: Data? = nil) {
+    public init(fileName: String? = nil, walletIndex: WalletIndex? = nil) {
         self.fileName = fileName
-        self.walletPublicKey = walletPublicKey
+        self.walletIndex = walletIndex
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<[File]>) {
@@ -30,7 +30,7 @@ public class ReadFilesTask: CardSessionRunnable {
     }
     
     private func readAllFiles(fileIndex: Int, session: CardSession, completion: @escaping CompletionResult<[File]>) {
-        let command = ReadFileCommand(fileIndex: fileIndex, fileName: fileName, walletPublicKey: walletPublicKey)
+        let command = ReadFileCommand(fileIndex: fileIndex, fileName: fileName, walletIndex: walletIndex)
         command.shouldReadPrivateFiles = self.shouldReadPrivateFiles
         
         command.run(in: session) { (result) in

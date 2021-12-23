@@ -10,12 +10,13 @@ import Foundation
 
 @available(iOS 13.0, *)
 public extension Array where Element == Card.Wallet {
-    subscript(publicKey: Data) -> Element? {
+    subscript(walletIndex: WalletIndex) -> Element? {
         get {
-            return first(where: { $0.publicKey == publicKey })
+            return first(where: { $0.index == walletIndex })
         }
+        
         set(newValue) {
-            let index = firstIndex(where: { $0.publicKey == publicKey })
+            let index = firstIndex(where: { $0.index == walletIndex })
             
             if let newValue = newValue {
                 if let index = index {

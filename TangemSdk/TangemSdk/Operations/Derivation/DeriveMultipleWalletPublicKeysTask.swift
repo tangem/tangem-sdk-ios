@@ -10,12 +10,12 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
-    public typealias Response = [Data: [ExtendedPublicKey]]
+    public typealias Response = [WalletIndex: [ExtendedPublicKey]]
     
-    private let derivations: [Data: [DerivationPath]]
+    private let derivations: [WalletIndex: [DerivationPath]]
     private var response: Response = .init()
     
-    public init(_ derivations: [Data: [DerivationPath]]) {
+    public init(_ derivations: [WalletIndex: [DerivationPath]]) {
         self.derivations = derivations
     }
     
@@ -24,10 +24,10 @@ public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Response>) {
-        self.derive(keys: [Data](derivations.keys), index: 0, in: session, completion: completion)
+        self.derive(keys: [WalletIndex](derivations.keys), index: 0, in: session, completion: completion)
     }
     
-    private func derive(keys: [Data], index: Int, in session: CardSession, completion: @escaping CompletionResult<Response>) {
+    private func derive(keys: [WalletIndex], index: Int, in session: CardSession, completion: @escaping CompletionResult<Response>) {
         if index == keys.count {
             completion(.success(response))
             return
@@ -35,7 +35,7 @@ public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
         
         let key = keys[index]
         let paths = derivations[key]!
-        let task = DeriveWalletPublicKeysTask(walletPublicKey: key, derivationPaths: paths)
+        let task = DeriveWalletPublicKeysTask(walletIndex: key, derivationPaths: paths)
         task.run(in: session) { result in
             switch result {
             case .success(let derivedKeys):

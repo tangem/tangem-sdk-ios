@@ -136,7 +136,7 @@ final class CreateWalletCommand: Command {
         switch card.firmwareVersion {
         case .createWalletResponseAvailable...:
             //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
-            wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallet(from: decoder)
+            wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallet(from: decoder)!
         case .multiwalletAvailable...: //We don't have a wallet response so we use to create it ourselves
             wallet = try makeWalletLegacy(decoder: decoder,
                                           index: try decoder.decode(.walletIndex),

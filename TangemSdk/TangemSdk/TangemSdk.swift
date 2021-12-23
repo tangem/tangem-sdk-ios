@@ -248,9 +248,9 @@ public extension TangemSdk {
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletPublicKey: Seed public key.
-    ///   - derivationPaths: Derivation pathes
+    ///   - derivationPaths: Derivation paths. Repeated items will be ignored.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<[ExtendedPublicKey],TangemSdkError>`. All derived keys are unique and will be returned in arbitrary order.
     func deriveWalletPublicKeys(cardId: String,
                                 walletPublicKey: Data,
                                 derivationPaths: [DerivationPath],

@@ -17,10 +17,14 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
     /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - walletPublicKey: Seed public key.
-    ///   - derivationPaths: Multiple derivation pathes
+    ///   - derivationPaths: Multiple derivation paths. Repeated items will be ignored.
     public init(walletPublicKey: Data, derivationPaths: [DerivationPath]) {
         self.walletPublicKey = walletPublicKey
-        self.derivationPaths = derivationPaths
+        self.derivationPaths = Array(Set(derivationPaths))
+    }
+    
+    deinit {
+        Log.debug("DeriveWalletPublicKeysTask deinit")
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {

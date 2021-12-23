@@ -92,9 +92,9 @@ public enum Secp256k1KeyFormat {
         case .default:
             return walletPublicKey
         case .compressed:
-            return try Secp256k1Key(with: walletPublicKey).compress()
+            return try Secp256k1Utils().compressKey(walletPublicKey)
         case .uncompressed:
-            return try Secp256k1Key(with: walletPublicKey).decompress()
+            return try Secp256k1Utils().decompressKey(walletPublicKey)
         }
     }
 }

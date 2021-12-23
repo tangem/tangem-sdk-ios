@@ -12,14 +12,11 @@ import Foundation
 public typealias WalletIndex = Int
 
 @available(iOS 13.0, *)
-public typealias WalletPublicKey = Data
-
-@available(iOS 13.0, *)
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
         /// Wallet's public key.
-        public let publicKey: WalletPublicKey
+        public let publicKey: Data
         /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?
         /// Elliptic curve used for all wallet key operations.
@@ -38,16 +35,6 @@ public extension Card {
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
         public var derivedKeys: [ExtendedPublicKey] = []
-        
-        public var extendedPublicKey: ExtendedPublicKey? {
-            guard let chainCode = self.chainCode else {
-                return nil
-            }
-            
-            return ExtendedPublicKey(compressedPublicKey: publicKey,
-                                     chainCode: chainCode,
-                                     derivationPath: .init())
-        }
     }
 }
 
@@ -116,16 +103,5 @@ extension WalletSettingsMask: OptionSetCodable {
                 return .isReusable
             }
         }
-    }
-}
-
-@available(iOS 13.0, *)
-public extension WalletPublicKey {
-    func compress() throws -> WalletPublicKey {
-        try Secp256k1KeyFormat.compressed.format(self)
-    }
-    
-    func decompress() throws -> WalletPublicKey {
-        try Secp256k1KeyFormat.uncompressed.format(self)
     }
 }

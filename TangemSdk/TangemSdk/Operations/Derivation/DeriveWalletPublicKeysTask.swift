@@ -10,16 +10,16 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
-    private let walletPublicKey: Data
+    private let walletIndex: WalletIndex
     private let derivationPaths: [DerivationPath]
     
     /// Derive multiple wallet  public keys according to BIP32 (Private parent key → public child key).
     /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
-    ///   - walletPublicKey: Seed public key.
+    ///   - walletIndex: Index of the wallet
     ///   - derivationPaths: Multiple derivation paths. Repeated items will be ignored.
-    public init(walletPublicKey: Data, derivationPaths: [DerivationPath]) {
-        self.walletPublicKey = walletPublicKey
+    public init(walletIndex: WalletIndex, derivationPaths: [DerivationPath]) {
+        self.walletIndex = walletIndex
         self.derivationPaths = Array(Set(derivationPaths))
     }
     
@@ -37,7 +37,7 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
             return
         }
         
-        let task = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPaths[index])
+        let task = DeriveWalletPublicKeyTask(walletIndex: walletIndex, derivationPath: derivationPaths[index])
         task.run(in: session) { result in
             switch result {
             case .success(let key):

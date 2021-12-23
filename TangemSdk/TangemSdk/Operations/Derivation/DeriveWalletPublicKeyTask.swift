@@ -23,6 +23,10 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         self.derivationPath = derivationPath
     }
     
+    deinit {
+        Log.debug("DeriveWalletPublicKeyTask deinit")
+    }
+    
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
         guard let walletIndex = session.environment.card?.wallets[walletPublicKey]?.index else {
             completion(.failure(.walletNotFound))
@@ -41,6 +45,8 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                 let childKey = ExtendedPublicKey(compressedPublicKey: response.wallet.publicKey,
                                                  chainCode: chainCode,
                                                  derivationPath: self.derivationPath)
+                
+                session.environment.card?.wallets[self.walletPublicKey]?.derivedKeys.appendIfNotContains(childKey)
                 
                 completion(.success(childKey))
             case .failure(let error):

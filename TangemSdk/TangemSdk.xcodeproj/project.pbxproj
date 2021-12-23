@@ -78,6 +78,7 @@
 		5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B127C26D3D351006E173C /* WriteFiles.json */; };
 		5D4B128326D40C77006E173C /* StartPrimaryCardLinkingCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */; };
 		5D5369D224461F62002886E0 /* module.modulemap in Resources */ = {isa = PBXBuildFile; fileRef = 5D5369D124461F62002886E0 /* module.modulemap */; };
+		5D539ECB276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D539ECA276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift */; };
 		5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D5440892682260000F7D05B /* SetAccessCode.json */; };
 		5D54408C2682269400F7D05B /* SetPasscode.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408B2682269400F7D05B /* SetPasscode.json */; };
 		5D54408E268226B600F7D05B /* Depersonalize.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D54408D268226B600F7D05B /* Depersonalize.json */; };
@@ -365,6 +366,7 @@
 		5D4B127C26D3D351006E173C /* WriteFiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WriteFiles.json; sourceTree = "<group>"; };
 		5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPrimaryCardLinkingCommand.swift; sourceTree = "<group>"; };
 		5D5369D124461F62002886E0 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		5D539ECA276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeriveMultipleWalletPublicKeysTask.swift; sourceTree = "<group>"; };
 		5D5440892682260000F7D05B /* SetAccessCode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetAccessCode.json; sourceTree = "<group>"; };
 		5D54408B2682269400F7D05B /* SetPasscode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetPasscode.json; sourceTree = "<group>"; };
 		5D54408D268226B600F7D05B /* Depersonalize.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Depersonalize.json; sourceTree = "<group>"; };
@@ -794,6 +796,7 @@
 			children = (
 				5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */,
 				5D46F539274E29660004681F /* DeriveWalletPublicKeysTask.swift */,
+				5D539ECA276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift */,
 			);
 			path = Derivation;
 			sourceTree = "<group>";
@@ -1579,6 +1582,7 @@
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
+				5D539ECB276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift in Sources */,
 				5DE43A6026D511CE00ECA36A /* LinkBackupCardsCommand.swift in Sources */,
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
 				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,

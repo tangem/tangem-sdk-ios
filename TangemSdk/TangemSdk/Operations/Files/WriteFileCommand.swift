@@ -24,11 +24,10 @@ public final class WriteFileCommand: Command {
     private let startingSignature: Data?
     private let finalizingSignature: Data?
     private let counter: Int?
-    private let walletPublicKey: Data?
+    private let walletIndex: WalletIndex?
     private let fileVisibility: FileVisibility?
     private let isWritingByUserCodes: Bool
     
-    private var walletIndex: Int? = nil
     private var mode: FileDataMode = .initiateWritingFile
     private var offset: Int = 0
     private var fileIndex: Int = 0
@@ -43,14 +42,14 @@ public final class WriteFileCommand: Command {
     ///   - finalizingSignature: Finalizing signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
     ///   - counter: File counter to prevent replay attack
     ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
-    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
+    ///   - walletIndex: Optional link to the card's wallet. COS 4.0+
     public init(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
-         fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
+         fileVisibility: FileVisibility? = nil, walletIndex: WalletIndex? = nil) {
         self.data = data
         self.startingSignature = startingSignature
         self.finalizingSignature = finalizingSignature
         self.counter = counter
-        self.walletPublicKey = walletPublicKey
+        self.walletIndex = walletIndex
         self.fileVisibility = fileVisibility
         self.isWritingByUserCodes = false
     }
@@ -59,10 +58,10 @@ public final class WriteFileCommand: Command {
     /// - Parameters:
     ///   - data: Data to write
     ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
-    ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
-    public init(data: Data, fileVisibility: FileVisibility? = nil, walletPublicKey: Data? = nil) {
+    ///   - walletIndex: Optional link to the card's wallet. COS 4.0+
+    public init(data: Data, fileVisibility: FileVisibility? = nil, walletIndex: WalletIndex? = nil) {
         self.data = data
-        self.walletPublicKey = walletPublicKey
+        self.walletIndex = walletIndex
         self.fileVisibility = fileVisibility
         self.isWritingByUserCodes = true
         
@@ -75,30 +74,16 @@ public final class WriteFileCommand: Command {
     /// - Parameter file: File to write
     public convenience init(_ file: FileToWrite) {
         switch file {
-        case .byUser(let data, let fileVisibility, let walletPublicKey):
-            self.init(data: data, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
+        case .byUser(let data, let fileVisibility, let walletIndex):
+            self.init(data: data, fileVisibility: fileVisibility, walletIndex: walletIndex)
         case .byFileOwner(let data, let startingSignature, let finalizingSignature,
-                          let counter, let fileVisibility, let walletPublicKey):
+                          let counter, let fileVisibility, let walletIndex):
             self.init(data: data, startingSignature: startingSignature, finalizingSignature: finalizingSignature,
-                      counter: counter, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
+                      counter: counter, fileVisibility: fileVisibility, walletIndex: walletIndex)
         }
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        if let walletPublicKey = self.walletPublicKey { //optimization
-            self.walletIndex = card.wallets[walletPublicKey]?.index
-            
-            if self.walletIndex == nil {
-                completion(.failure(.walletNotFound))
-                return
-            }
-        }
-        
         writeFileData(session: session, completion: completion)
     }
     
@@ -119,8 +104,14 @@ public final class WriteFileCommand: Command {
             return .fileSettingsUnsupported
         }
         
-        if walletPublicKey != nil && card.firmwareVersion.doubleValue < 4 {
+        if walletIndex != nil && card.firmwareVersion.doubleValue < 4 {
             return .fileSettingsUnsupported
+        }
+        
+        if let walletIndex = self.walletIndex {
+            if card.wallets[walletIndex] == nil {
+                return .walletNotFound
+            }
         }
         
         if data.count > WriteFileCommand.maxSize {

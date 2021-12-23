@@ -13,12 +13,12 @@ import Foundation
 public final class PurgeWalletCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let walletPublicKey: Data
+    private let walletIndex: WalletIndex
     
     /// Default initializer
-    /// - Parameter publicKey: Public key of the wallet to delete
-    public init(publicKey: Data) {
-        self.walletPublicKey = publicKey
+    /// - Parameter walletIndex: Index of the wallet to delete
+    public init(walletIndex: WalletIndex) {
+        self.walletIndex = walletIndex
     }
     
     deinit {
@@ -26,7 +26,7 @@ public final class PurgeWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        guard let wallet = card.wallets[walletPublicKey] else {
+        guard let wallet = card.wallets[walletIndex] else {
             return .walletNotFound
         }
         
@@ -41,7 +41,7 @@ public final class PurgeWalletCommand: Command {
         transceive(in: session) { (result) in
             switch result {
             case .success(let response):
-                session.environment.card?.wallets[self.walletPublicKey] = nil
+                session.environment.card?.wallets[self.walletIndex] = nil
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
@@ -50,10 +50,6 @@ public final class PurgeWalletCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
-            throw TangemSdkError.walletNotFound
-        }
-        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)

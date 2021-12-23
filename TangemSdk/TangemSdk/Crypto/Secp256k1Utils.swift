@@ -21,16 +21,6 @@ public final class Secp256k1Utils {
         secp256k1_context_destroy(context)
     }
     
-    func verifySignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> Bool {
-        var pubKey = try parsePublicKey(publicKey)
-        
-        guard secp256k1_ecdsa_verify(context, &signature, hash.toBytes, &pubKey) == 1 else {
-            return false
-        }
-        
-        return true
-    }
-    
     /**
      * Extension function to sign a byte array with the `Secp256k1` elliptic curve cryptography.
      *
@@ -62,6 +52,34 @@ public final class Secp256k1Utils {
     public func serializeDer(_ signature: Data) throws -> Data {
         var sig = try parseNormalize(signature)
         return try serializeDer(&sig)
+    }
+    
+    func compressKey(_ publicKey: Data) throws -> Data {
+        if publicKey.count == 33 {
+            return publicKey
+        }
+        
+        var secpKey = try parsePublicKey(publicKey)
+        return try serializePublicKey(&secpKey, compressed: true)
+    }
+    
+    func decompressKey(_ publicKey: Data) throws -> Data {
+        if publicKey.count == 65 {
+            return publicKey
+        }
+        
+        var secpKey = try parsePublicKey(publicKey)
+        return try serializePublicKey(&secpKey, compressed: false)
+    }
+    
+    func verifySignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> Bool {
+        var pubKey = try parsePublicKey(publicKey)
+        
+        guard secp256k1_ecdsa_verify(context, &signature, hash.toBytes, &pubKey) == 1 else {
+            return false
+        }
+        
+        return true
     }
     
     func createPublicKey(privateKey: Data, compressed: Bool) throws -> Data {

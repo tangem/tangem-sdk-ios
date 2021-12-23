@@ -23,7 +23,7 @@ public struct SignResponse: JSONStringConvertible {
 class SignCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let walletPublicKey: Data
+    private let walletIndex: WalletIndex
     private let derivationPath: DerivationPath?
     private let hashes: [Data]
     private var signatures: [Data] = []
@@ -44,11 +44,11 @@ class SignCommand: Command {
     /// Command initializer
     /// - Parameters:
     ///   - hashes: Array of transaction hashes.
-    ///   - walletPublicKey: Public key of the wallet, using for sign.
+    ///   - walletIndex: Index of the wallet, using for sign.
     ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    init(hashes: [Data], walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
+    init(hashes: [Data], walletIndex: WalletIndex, derivationPath: DerivationPath? = nil) {
         self.hashes = hashes
-        self.walletPublicKey = walletPublicKey
+        self.walletIndex = walletIndex
         self.derivationPath = derivationPath
     }
     
@@ -57,7 +57,7 @@ class SignCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        guard let wallet = card.wallets[walletPublicKey] else {
+        guard let wallet = card.wallets[walletIndex] else {
             return .walletNotFound
         }
         
@@ -139,10 +139,10 @@ class SignCommand: Command {
             case .success(let response):
                 self.signatures.append(contentsOf: response.signatures)
                 if self.signatures.count == self.hashes.count {
-                    session.environment.card?.wallets[self.walletPublicKey]?.totalSignedHashes = response.totalSignedHashes
+                    session.environment.card?.wallets[self.walletIndex]?.totalSignedHashes = response.totalSignedHashes
                     
-                    if let remainingSignatures = session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures {
-                        session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures = remainingSignatures - self.signatures.count
+                    if let remainingSignatures = session.environment.card?.wallets[self.walletIndex]?.remainingSignatures {
+                        session.environment.card?.wallets[self.walletIndex]?.remainingSignatures = remainingSignatures - self.signatures.count
                     }
                     
                     do {
@@ -167,10 +167,6 @@ class SignCommand: Command {
     
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
-            throw TangemSdkError.walletNotFound
-        }
-        
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
@@ -221,7 +217,7 @@ class SignCommand: Command {
     }
     
     private func processSignatures(with environment: SessionEnvironment) throws -> [Data] {
-        if environment.card?.wallets[self.walletPublicKey]?.curve == .secp256k1,
+        if environment.card?.wallets[self.walletIndex]?.curve == .secp256k1,
            environment.config.canonizeSecp256k1Signatures {
             let normalizedSignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
             if normalizedSignatures.count != signatures.count {

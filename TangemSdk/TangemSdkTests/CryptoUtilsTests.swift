@@ -92,19 +92,18 @@ class CryptoUtilsTests: XCTestCase {
         let decompressedKey = try! Secp256k1Key(with: compressedKey).decompress()
         XCTAssertEqual(decompressedKey,publicKey)
         
-        let testKey = PublicKey(publicKey)
-        let testKeyCompressed = try! testKey.toSecp256k1Key().compress()
-        let testKeyCompressed2 = try! testKeyCompressed.toSecp256k1Key().compress()
+        let testKeyCompressed = try! Secp256k1Key(with: publicKey).compress()
+        let testKeyCompressed2 = try! Secp256k1Key(with: testKeyCompressed).compress()
         XCTAssertEqual(testKeyCompressed.hexString.lowercased(), "0232f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd")
         XCTAssertEqual(testKeyCompressed, testKeyCompressed2)
-        let testKeyDecompressed = try! testKeyCompressed.toSecp256k1Key().decompress()
-        let testKeyDecompressed2 = try! testKeyDecompressed.toSecp256k1Key().decompress()
-        XCTAssertEqual(testKeyDecompressed, testKey)
+        let testKeyDecompressed = try! Secp256k1Key(with: testKeyCompressed).decompress()
+        let testKeyDecompressed2 = try! Secp256k1Key(with: testKeyDecompressed).decompress()
+        XCTAssertEqual(testKeyDecompressed, publicKey)
         XCTAssertEqual(testKeyDecompressed, testKeyDecompressed2)
         
-        let edKey = PublicKey(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
-        XCTAssertThrowsError(try edKey.toSecp256k1Key().compress())
-        XCTAssertThrowsError(try edKey.toSecp256k1Key().decompress())
+        let edKey = Data(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
+        XCTAssertThrowsError(try Secp256k1Key(with: edKey).compress())
+        XCTAssertThrowsError(try Secp256k1Key(with: edKey).decompress())
     }
     
     func testNormalize() {

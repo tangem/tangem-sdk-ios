@@ -111,7 +111,7 @@ extension NFCReader: CardReader {
         cancelled = false
         connectedTag = nil
         
-        let alertMessage = message ?? Localization.nfcAlertDefault
+        let alertMessage = message ?? "nfc_alert_default".localized
         _alertMessage = alertMessage
         
         let isExistingSessionActive = readerSession?.isReady ?? false
@@ -346,7 +346,7 @@ extension NFCReader: CardReader {
             .filter {[unowned self] _ in self.idleTimerCancellable != nil }
             .sink {[unowned self] _ in
                 Log.nfc("Stop by tag timer")
-                self.stopSession(with: Localization.nfcSessionTimeout)
+                self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.tagTimerCancellable = nil
             }
     }
@@ -358,7 +358,7 @@ extension NFCReader: CardReader {
             .receive(on: queue!)
             .sink {[unowned self] _ in
                 Log.nfc("Stop by session timer")
-                self.stopSession(with: Localization.nfcSessionTimeout)
+                self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.sessionTimerCancellable = nil
             }
     }

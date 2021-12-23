@@ -138,7 +138,7 @@ final class CreateWalletCommand: Command {
             //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
             wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet,
                                             secp256k1KeyFormat: environment.config.secp256k1KeyFormat)
-                .deserializeWallet(from: decoder)
+                .deserializeWallet(from: decoder)!
         case .multiwalletAvailable...: //We don't have a wallet response so we use to create it ourselves
             wallet = try makeWalletLegacy(decoder: decoder,
                                           index: try decoder.decode(.walletIndex),

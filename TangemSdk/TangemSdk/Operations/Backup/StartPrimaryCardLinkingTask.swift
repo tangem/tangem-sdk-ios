@@ -37,8 +37,12 @@ public class StartPrimaryCardLinkingTask: CardSessionRunnable {
     private func loadIssuerSignature(_ rawCard: RawPrimaryCard, _ session: CardSession, _ completion: @escaping CompletionResult<PrimaryCard>) {
         if session.environment.card?.firmwareVersion.type == .sdk {
             let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
-            let issuerSignature = rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)!
-            completion(.success(PrimaryCard(rawCard, issuerSignature: issuerSignature)))
+            do {
+                let issuerSignature = try rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)
+                completion(.success(PrimaryCard(rawCard, issuerSignature: issuerSignature)))
+            } catch {
+                completion(.failure(error.toTangemSdkError()))
+            }
             return
         }
         

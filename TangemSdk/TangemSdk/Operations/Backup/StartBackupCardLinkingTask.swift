@@ -81,8 +81,12 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
     private func loadIssuerSignature(_ rawCard: RawBackupCard, _ session: CardSession, _ completion: @escaping CompletionResult<BackupCard>) {
         if session.environment.card?.firmwareVersion.type == .sdk {
             let issuerPrivateKey = Data(hexString: "11121314151617184771ED81F2BACF57479E4735EB1405083927372D40DA9E92")
-            let issuerSignature = rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)!
-            completion(.success(BackupCard(rawCard, issuerSignature: issuerSignature)))
+            do {
+                let issuerSignature = try rawCard.cardPublicKey.sign(privateKey: issuerPrivateKey)
+                completion(.success(BackupCard(rawCard, issuerSignature: issuerSignature)))
+            } catch {
+                completion(.failure(error.toTangemSdkError()))
+            }
             return
         }
         

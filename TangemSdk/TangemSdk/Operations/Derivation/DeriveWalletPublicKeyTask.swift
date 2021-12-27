@@ -27,27 +27,17 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         Log.debug("DeriveWalletPublicKeyTask deinit")
     }
     
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion < .hdWalletAvailable {
-            return .notSupportedFirmwareVersion
-        }
-        
-        if !card.settings.isHDWalletAllowed {
-            return .hdWalletDisabled
-        }
-        
-        guard let wallet = card.wallets[walletIndex] else {
-            return .walletNotFound
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
+        guard let wallet = session.environment.card?.wallets[walletIndex] else {
+            completion(.failure(TangemSdkError.walletNotFound))
+            return
         }
         
         guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
-            return .unsupportedCurve
+            completion(.failure(TangemSdkError.unsupportedCurve))
+            return
         }
         
-        return nil
-    }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
         let readWallet = ReadWalletCommand(walletIndex: walletIndex, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {

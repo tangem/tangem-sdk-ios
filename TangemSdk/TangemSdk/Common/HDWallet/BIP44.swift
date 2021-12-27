@@ -23,6 +23,13 @@ public struct BIP44 {
         self.addressIndex = addressIndex
     }
     
+    public init(coinType: UInt32) {
+        self.coinType = coinType
+        self.account = 0
+        self.change = .external
+        self.addressIndex = 0
+    }
+    
     /// Build path
     /// - Returns: Path according BIP32
     public func buildPath() -> DerivationPath {

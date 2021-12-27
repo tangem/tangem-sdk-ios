@@ -35,16 +35,6 @@ public extension Card {
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
         public var derivedKeys: [ExtendedPublicKey] = []
-        
-        public var extendedPublicKey: ExtendedPublicKey? {
-            guard let chainCode = self.chainCode else {
-                return nil
-            }
-            
-            return ExtendedPublicKey(compressedPublicKey: publicKey,
-                                     chainCode: chainCode,
-                                     derivationPath: .init())
-        }
     }
 }
 

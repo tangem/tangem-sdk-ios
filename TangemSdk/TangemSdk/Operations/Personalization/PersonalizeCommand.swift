@@ -68,9 +68,11 @@ public class PersonalizeCommand: Command {
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
         
         let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
-        return try CardDeserializer(allowNotPersonalized: true).deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
-                                                                            decoder: decoder,
-                                                                            cardDataDecoder: cardDataDecoder)
+        return try CardDeserializer(secp256k1KeyFormat: environment.config.secp256k1KeyFormat,
+                                    allowNotPersonalized: true)
+            .deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
+                         decoder: decoder,
+                         cardDataDecoder: cardDataDecoder)
     }
     
     private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
@@ -139,10 +141,8 @@ public class PersonalizeCommand: Command {
     }
     
     private func serializeCardData(environment: SessionEnvironment, cardId: String, cardData: CardData) throws -> Data {
-        guard let signature = Secp256k1Utils.sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey) else {
-            throw TangemSdkError.cryptoUtilsError("Failed to sign data")
-        }
-        
+        let signature = try Secp256k1Utils().sign(Data(hexString: cardId), with: manufacturer.keyPair.privateKey)
+       
         let tlvBuilder = try TlvBuilder()
             .append(.batchId, value: cardData.batchId)
             .append(.productMask, value: cardData.productMask)

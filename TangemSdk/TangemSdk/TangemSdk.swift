@@ -346,8 +346,8 @@ public extension TangemSdk {
     ///     - privateKey: Optional private key that will be used for signing files hashes. If it is provided, then  `FileHashData` will contain signed file signatures.
     /// - Returns:
     /// `FileHashData` with hashes to sign and signatures if `privateKey` was provided.
-    func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) -> FileHashData {
-        return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
+    func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) throws -> FileHashData {
+        return try FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }
     
     //MARK: - Issuer/User data

@@ -35,16 +35,20 @@ class WalletDeserializer {
         }
         
         let wallets: [Card.Wallet] = try walletDecoders.compactMap {
-               try deserializeWallet(from: $0)
+            do {
+                return try deserializeWallet(from: $0)
+            } catch TangemSdkError.walletNotFound {
+                return nil
+            }
         }
         
         return (wallets, cardWalletsData.count)
     }
     
-    func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet? {
+    func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
         let status: Card.Wallet.Status = try decoder.decode(.status)
         guard status == .loaded || status == .backuped else { //We need only loaded wallets
-           return nil
+            throw TangemSdkError.walletNotFound
         }
         
         return try deserialize(from: decoder, status: status)

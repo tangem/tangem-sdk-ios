@@ -10,6 +10,8 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
+    public typealias Response = [DerivationPath:ExtendedPublicKey]
+    
     private let walletIndex: WalletIndex
     private let derivationPaths: [DerivationPath]
     
@@ -27,24 +29,29 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
         Log.debug("DeriveWalletPublicKeysTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
-        runDerivation(at: 0, keys: [], in: session, completion: completion)
+    public func run(in session: CardSession, completion: @escaping CompletionResult<Response>) {
+        runDerivation(at: 0, keys: [:], in: session, completion: completion)
     }
     
-    private func runDerivation(at index: Int, keys: [ExtendedPublicKey], in session: CardSession, completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
+    private func runDerivation(at index: Int, keys: [DerivationPath:ExtendedPublicKey], in session: CardSession, completion: @escaping CompletionResult<Response>) {
         guard index < derivationPaths.count else {
             completion(.success(keys))
             return
         }
-        
-        let task = DeriveWalletPublicKeyTask(walletIndex: walletIndex, derivationPath: derivationPaths[index])
+        let path = derivationPaths[index]
+        let task = DeriveWalletPublicKeyTask(walletIndex: walletIndex, derivationPath: path)
         task.run(in: session) { result in
             switch result {
             case .success(let key):
-                self.runDerivation(at: index + 1, keys: keys + [key], in: session, completion: completion)
+                var keys = keys
+                keys[path] = key
+                self.runDerivation(at: index + 1, keys: keys, in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
 }
+
+@available(iOS 13.0, *)
+extension DeriveWalletPublicKeysTask.Response: JSONStringConvertible {}

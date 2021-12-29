@@ -119,15 +119,25 @@ public class SetUserCodeCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let accessCodeValue = codes[.accessCode]?.value ?? environment.accessCode.value,
+              let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+            throw TangemSdkError.serializeCommandError
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: codes[.accessCode]?.value ?? environment.accessCode.value)
-            .append(.newPin2, value: codes[.passcode]?.value ?? environment.passcode.value)
+            .append(.newPin, value: accessCodeValue)
+            .append(.newPin2, value: passcodeValue)
         
         if let cvc = environment.cvc {
             try tlvBuilder.append(.cvc, value: cvc)
+        }
+        
+        if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
+            let hash = (accessCodeValue + passcodeValue).getSha256()
+            try tlvBuilder.append(.codeHash, value: hash)
         }
         
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())

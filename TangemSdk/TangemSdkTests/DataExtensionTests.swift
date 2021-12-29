@@ -46,11 +46,11 @@ class DataExtensionTests: XCTestCase {
     func testToDateString() {
         let testData = Data(hexString: "07E2071B")
         let testDate = "Jul 27, 2018"
-        XCTAssertEqual(testDate, testData.toDate()?.toString())
+        XCTAssertEqual(testDate, testData.toDate()?.toString(locale: Locale(identifier: "en_US")))
         
         let testData1 = Data(hexString: "07E2071B1E")
         let testDate1 = "Jul 27, 2018"
-        XCTAssertEqual(testDate1, testData1.toDate()?.toString())
+        XCTAssertEqual(testDate1, testData1.toDate()?.toString(locale: Locale(identifier: "en_US")))
         
         XCTAssertNil(Data(hexString: "07E207").toDate())
     }

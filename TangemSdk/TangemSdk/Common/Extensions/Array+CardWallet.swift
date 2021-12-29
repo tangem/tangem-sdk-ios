@@ -31,4 +31,3 @@ public extension Array where Element == Card.Wallet {
         }
     }
 }
-

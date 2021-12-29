@@ -41,7 +41,8 @@ public final class CryptoUtils {
     public static func verify(curve: EllipticCurve, publicKey: Data, message: Data, signature: Data) throws -> Bool {
         switch curve {
         case .secp256k1:
-            return try Secp256k1Utils.verify(publicKey: publicKey, message: message, signature: signature)
+            let signature = try Secp256k1Signature(with: signature)
+            return try signature.verify(with: publicKey, message: message)
         case .ed25519:
             let hash = message.getSha512()
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
@@ -49,10 +50,34 @@ public final class CryptoUtils {
         case .secp256r1:
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
+            
             return pubKey.isValidSignature(sig, for: message)
         }
     }
     
+    /**
+     * Helper function to verify that the data was signed with a private key that corresponds
+     * to the provided public key.
+     *  - Parameter curve: Elliptic curve used
+     *  - Parameter publicKey: Corresponding to the private key that was used to sing a message
+     *  - Parameter hash: The data  hash that was signed
+     *  - Parameter signature: Signed data
+     */
+    public static func verify(curve: EllipticCurve, publicKey: Data, hash: Data, signature: Data) throws -> Bool {
+        switch curve {
+        case .secp256k1:
+            let signature = try Secp256k1Signature(with: signature)
+            return try signature.verify(with: publicKey, hash: hash)
+        case .ed25519:
+            let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
+            return pubKey.isValidSignature(signature, for: hash)
+        case .secp256r1:
+            let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
+            let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
+            return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
+        }
+    }
+
     public static func crypt(operation: Int, algorithm: Int, options: Int, key: Data, dataIn: Data) throws -> Data {
         return try key.withUnsafeBytes { keyUnsafeRawBufferPointer in
             return try dataIn.withUnsafeBytes { dataInUnsafeRawBufferPointer in
@@ -75,3 +100,13 @@ public final class CryptoUtils {
     }
 }
 
+@available(iOS 13.0, *)
+fileprivate struct CustomSha256Digest: Digest {
+    static var byteCount: Int { 32 }
+    
+    let hash: Data
+    
+    func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
+       try hash.withUnsafeBytes(body)
+    }
+}

@@ -9,13 +9,10 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public typealias WalletIndex = Int
-
-@available(iOS 13.0, *)
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
-        /// Wallet's public key.
+        /// Wallet's public key.  For `secp256k1`, the key can be compressed or uncompressed. Use `Secp256k1Key` for any conversions.
         public let publicKey: Data
         /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?
@@ -30,11 +27,11 @@ public extension Card {
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
-        public let index: WalletIndex
+        public let index: Int
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
-        public var derivedKeys: [ExtendedPublicKey] = []
+        public var derivedKeys: [DerivationPath:ExtendedPublicKey] = [:]
     }
 }
 

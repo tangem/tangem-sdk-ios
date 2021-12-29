@@ -86,7 +86,8 @@ class ReadWalletsListCommand: Command {
         }
         
         let decoder = TlvDecoder(tlv: tlv)
-        let deserializedData = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallets(from: decoder)
+        let deserializedData = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet,
+                                                      secp256k1KeyFormat: environment.config.secp256k1KeyFormat).deserializeWallets(from: decoder)
         receivedWalletsCount += deserializedData.totalReceived
         return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
                                        wallets: deserializedData.wallets)

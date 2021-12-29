@@ -20,10 +20,10 @@ class ReadWalletCommand: Command {
     
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private let walletIndex: WalletIndex
+    private let walletIndex: Int
     private let derivationPath: DerivationPath?
     
-    init(walletIndex: WalletIndex, derivationPath: DerivationPath? = nil) {
+    init(walletIndex: Int, derivationPath: DerivationPath? = nil) {
         self.walletIndex = walletIndex
         self.derivationPath = derivationPath
     }

@@ -65,14 +65,15 @@ final class ReadFileCommand: Command {
     //Read filters
     private let fileIndex: Int
     private let fileName: String?
-    private let walletIndex: WalletIndex?
+    private let walletPublicKey: Data?
+    private var walletIndex: Int?
 
     private var aggregatedResponse: ReadFileResponse = .empty
     
-    init(fileIndex: Int, fileName: String? = nil, walletIndex: WalletIndex? = nil) {
+    init(fileIndex: Int, fileName: String? = nil, walletPublicKey: Data? = nil) {
         self.fileIndex = fileIndex
         self.fileName = fileName
-        self.walletIndex = walletIndex
+        self.walletPublicKey = walletPublicKey
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
@@ -80,16 +81,24 @@ final class ReadFileCommand: Command {
             return .notSupportedFirmwareVersion
         }
         
-        if let walletIndex = walletIndex {
-            if card.wallets[walletIndex] == nil {
-                return .walletNotFound
-            }
-        }
-        
         return nil
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<File?>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        if let walletPublicKey = self.walletPublicKey { //optimization
+            self.walletIndex = card.wallets[walletPublicKey]?.index
+            
+            if self.walletIndex == nil {
+                completion(.failure(.walletNotFound))
+                return
+            }
+        }
+        
         readFileData(session: session) { result in
             switch result {
             case .success:

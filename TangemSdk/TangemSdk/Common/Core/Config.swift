@@ -57,9 +57,6 @@ public struct Config {
     /// Convert all secp256k1 signatures, produced by the card, to a lower-S form. True by default
     public var canonizeSecp256k1Signatures: Bool = true
     
-    /// Format of wallet public key on secp256k1 curve. Depends on the card by default. Compressed for COS starting from 4.39. Uncompressed otherwise.
-    public var secp256k1KeyFormat: Secp256k1KeyFormat = .default
-    
     /// A card with HD wallets feature enabled will derive keys automatically on "scan" and "createWallet". Repeated items will be ignored
     /// All derived keys will be stored in `Card.Wallet.derivedKeys`.
     /// Only `secp256k1` and `ed25519` supported
@@ -75,26 +72,4 @@ public enum CardIdDisplayFormat {
     case lastMasked(_ numbers: Int, mask: String = "***")
     /// n numbers from the end except last
     case lastLunh(_ numbers: Int)
-}
-
-/// Format of wallet public key on secp256k1 curve.
-@available(iOS 13.0, *)
-public enum Secp256k1KeyFormat {
-    /// The key format, determined by the card. Compressed for COS starting from 4.39. Uncompressed otherwise.
-    case `default`
-    /// Compressed format. 33 bytes length
-    case compressed
-    /// Uncompressed format. 65 bytes length
-    case uncompressed
-    
-    func format(_ walletPublicKey: Data) throws -> Data {
-        switch self {
-        case .default:
-            return walletPublicKey
-        case .compressed:
-            return try Secp256k1Utils().compressKey(walletPublicKey)
-        case .uncompressed:
-            return try Secp256k1Utils().decompressKey(walletPublicKey)
-        }
-    }
 }

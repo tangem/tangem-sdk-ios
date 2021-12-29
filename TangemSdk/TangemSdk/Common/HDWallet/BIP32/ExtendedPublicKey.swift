@@ -41,14 +41,9 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Cod
         let hmac = HMAC<SHA512>.authenticationCode(for: data, using: SymmetricKey(data: chainCode))
         let digest = Data(hmac)
         
-        guard let ki = Secp256k1Utils.createPublicKey(privateKey: digest[0..<32], compressed: true) else {
-            throw HDWalletError.derivationFailed
-        }
-        
-        guard let derivedPublicKey = Secp256k1Utils.sum(compressedPubKey1: ki, compressedPubKey2: compressedPublicKey) else {
-            throw HDWalletError.derivationFailed
-        }
-        
+        let secp256k1 = Secp256k1Utils()
+        let ki = try secp256k1.createPublicKey(privateKey: digest[0..<32], compressed: true)
+        let derivedPublicKey = try secp256k1.sum(compressedPubKey1: ki, compressedPubKey2: compressedPublicKey)
         let derivedChainCode = digest[32..<64]
         return ExtendedPublicKey(compressedPublicKey: derivedPublicKey,
                                  chainCode: derivedChainCode,

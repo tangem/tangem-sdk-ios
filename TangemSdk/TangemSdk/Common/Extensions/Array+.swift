@@ -21,11 +21,3 @@ extension Array {
         }
     }
 }
-
-extension Array where Element: Equatable {
-    mutating func appendIfNotContains(_ element: Element) {
-        if !contains(element) {
-            append(element)
-        }
-    }
-}

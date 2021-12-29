@@ -66,7 +66,7 @@ class SignCommand: Command {
                 return .notSupportedFirmwareVersion
             }
             
-            if wallet.curve != .secp256k1 {
+            guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
                 return .unsupportedCurve
             }
             
@@ -193,8 +193,9 @@ class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        if let terminalKeys = self.terminalKeys,
-           let signedData = Secp256k1Utils.sign(flattenHashes, with: terminalKeys.privateKey) {
+        if let terminalKeys = self.terminalKeys {
+            let signedData = try Secp256k1Utils().sign(flattenHashes, with: terminalKeys.privateKey)
+            
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: terminalKeys.publicKey)
@@ -223,7 +224,8 @@ class SignCommand: Command {
     private func processSignatures(with environment: SessionEnvironment) throws -> [Data] {
         if environment.card?.wallets[self.walletPublicKey]?.curve == .secp256k1,
            environment.config.canonizeSecp256k1Signatures {
-            let normalizedSignatures = self.signatures.compactMap { Secp256k1Utils.normalize(secp256k1Signature: $0) }
+            let secp256k1 = Secp256k1Utils()
+            let normalizedSignatures = try self.signatures.map { try secp256k1.normalizeSignature($0) }
             if normalizedSignatures.count != signatures.count {
                 throw TangemSdkError.cryptoUtilsError("Normalization error")
             }

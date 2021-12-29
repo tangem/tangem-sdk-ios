@@ -15,7 +15,7 @@ public typealias WalletIndex = Int
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
-        /// Wallet's public key.
+        /// Wallet's public key. 
         public let publicKey: Data
         /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?

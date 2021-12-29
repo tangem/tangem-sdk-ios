@@ -10,16 +10,16 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveWalletPublicKeyTask: CardSessionRunnable {
-    private let walletIndex: WalletIndex
+    private let walletPublicKey: Data
     private let derivationPath: DerivationPath
     
     /// Derive wallet  public key according to BIP32 (Private parent key → public child key).
     /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
-    ///   - walletIndex: Index of the wallet
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPath: Derivation path
-    public init(walletIndex: WalletIndex, derivationPath: DerivationPath) {
-        self.walletIndex = walletIndex
+    public init(walletPublicKey: Data, derivationPath: DerivationPath) {
+        self.walletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
     }
     
@@ -27,8 +27,9 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         Log.debug("DeriveWalletPublicKeyTask deinit")
     }
     
+       
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        guard let wallet = session.environment.card?.wallets[walletIndex] else {
+        guard let wallet = session.environment.card?.wallets[walletPublicKey] else {
             completion(.failure(TangemSdkError.walletNotFound))
             return
         }
@@ -38,7 +39,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
             return
         }
         
-        let readWallet = ReadWalletCommand(walletIndex: walletIndex, derivationPath: derivationPath)
+        let readWallet = ReadWalletCommand(walletIndex: wallet.index, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
             case .success(let response):
@@ -48,7 +49,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                 }
                 
                 let childKey = ExtendedPublicKey(publicKey: response.wallet.publicKey, chainCode: chainCode)
-                session.environment.card?.wallets[self.walletIndex]?.derivedKeys[self.derivationPath] = childKey
+                session.environment.card?.wallets[self.walletPublicKey]?.derivedKeys[self.derivationPath] = childKey
                 completion(.success(childKey))
             case .failure(let error):
                 completion(.failure(error))

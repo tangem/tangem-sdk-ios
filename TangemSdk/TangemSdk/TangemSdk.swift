@@ -255,7 +255,7 @@ public extension TangemSdk {
                                 walletIndex: WalletIndex,
                                 derivationPaths: [DerivationPath],
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
+                                completion: @escaping CompletionResult<[DerivationPath:ExtendedPublicKey]>) {
         let command = DeriveWalletPublicKeysTask(walletIndex: walletIndex, derivationPaths: derivationPaths)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }

@@ -60,12 +60,8 @@ final class DefaultSessionViewDelegate {
     }
     
     private func runInMainThread(_ block: @autoclosure @escaping () -> Void) {
-        if Thread.isMainThread {
+        DispatchQueue.main.async {
             block()
-        } else {
-            DispatchQueue.main.async {
-                block()
-            }
         }
     }
 }

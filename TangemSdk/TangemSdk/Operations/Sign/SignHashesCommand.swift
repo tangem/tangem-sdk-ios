@@ -11,18 +11,18 @@ public typealias SignHashesResponse = SignResponse
 
 @available(iOS 13.0, *)
 public final class SignHashesCommand: CardSessionRunnable {
-    private let walletIndex: WalletIndex
+    private let walletPublicKey: Data
     private let hashes: [Data]
     private let derivationPath: DerivationPath?
 
     /// Default initializer
     /// - Parameters:
     ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
-    ///   - walletIndex: Index of the wallet, using for sign.
+    ///   - walletPublicKey: Public key of the wallet, using for sign.
     ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    public init(hashes: [Data], walletIndex: WalletIndex, derivationPath: DerivationPath? = nil) {
+    public init(hashes: [Data], walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
         self.hashes = hashes
-        self.walletIndex = walletIndex
+        self.walletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
     }
 
@@ -31,7 +31,7 @@ public final class SignHashesCommand: CardSessionRunnable {
     }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashesResponse>) {
-        let signCommand = SignCommand(hashes: hashes, walletIndex: walletIndex, derivationPath: derivationPath)
+        let signCommand = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         signCommand.run(in: session, completion: completion)
     }
 }

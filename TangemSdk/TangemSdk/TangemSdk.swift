@@ -80,18 +80,18 @@ public extension TangemSdk {
     /// - Note: `WalletIndex` available for cards with COS v.4.0 and higher
     /// - Parameters:
     ///   - hash: Transaction hash for sign by card.
-    ///   - walletIndex: Index of wallet that should sign hash.
+    ///   - walletPublicKey: Public key of wallet that should sign hash.
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - derivationPath: Derivation path of the wallet. Optional
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignHashResponse,TangemSdkError>`
     func sign(hash: Data,
-              walletIndex: WalletIndex,
+              walletPublicKey: Data,
               cardId: String,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashResponse>) {
-        let command = SignHashCommand(hash: hash, walletIndex: walletIndex, derivationPath: derivationPath)
+        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,
@@ -109,18 +109,18 @@ public extension TangemSdk {
     /// - Note: `WalletIndex` available for cards with COS v. 4.0 and higher
     /// - Parameters:
     ///   - hashes: Array of transaction hashes. It can be from one or up to ten hashes of the same length.
-    ///   - walletIndex: Index of wallet that should sign hashes.
+    ///   - walletPublicKey: Public key of wallet that should sign hashes.
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<SignHashesResponse,TangemSdkError>`
     func sign(hashes: [Data],
-              walletIndex: WalletIndex,
+              walletPublicKey: Data,
               cardId: String,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashesResponse>) {
-        let command = SignCommand(hashes: hashes, walletIndex: walletIndex, derivationPath: derivationPath)
+        let command = SignCommand(hashes: hashes, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,
@@ -156,15 +156,15 @@ public extension TangemSdk {
     ///
     /// - Note: Wallet index available for cards with COS v.4.0 or higher
     /// - Parameters:
-    ///   - walletIndex: Public key of wallet that should be purged.
+    ///   - walletPublicKey: Public key of wallet that should be purged.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
-    func purgeWallet(walletIndex: WalletIndex,
+    func purgeWallet(walletPublicKey: Data,
                      cardId: String,
                      initialMessage: Message? = nil,
                      completion: @escaping CompletionResult<SuccessResponse>) {
-        startSession(with: PurgeWalletCommand(walletIndex: walletIndex), cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: PurgeWalletCommand(publicKey: walletPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     /// Get the card info and verify with Tangem backend. Do not use for developer cards
@@ -230,16 +230,16 @@ public extension TangemSdk {
     /// - Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - walletIndex: Index of wallet that should derive.
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPath: Derivation path
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
     func deriveWalletPublicKey(cardId: String,
-                               walletIndex: WalletIndex,
+                               walletPublicKey: Data,
                                derivationPath: DerivationPath,
                                initialMessage: Message? = nil,
                                completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        let command = DeriveWalletPublicKeyTask(walletIndex: walletIndex, derivationPath: derivationPath)
+        let command = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -247,16 +247,16 @@ public extension TangemSdk {
     /// - Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - walletIndex: Index of wallet that should derive.
+    ///   - walletPublicKey: Seed public key.
     ///   - derivationPaths: Derivation paths. Repeated items will be ignored.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<[ExtendedPublicKey],TangemSdkError>`. All derived keys are unique and will be returned in arbitrary order.
     func deriveWalletPublicKeys(cardId: String,
-                                walletIndex: WalletIndex,
+                                walletPublicKey: Data,
                                 derivationPaths: [DerivationPath],
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
-        let command = DeriveWalletPublicKeysTask(walletIndex: walletIndex, derivationPaths: derivationPaths)
+                                completion: @escaping CompletionResult<[DerivationPath:ExtendedPublicKey]>) {
+        let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPaths: derivationPaths)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
@@ -270,17 +270,17 @@ public extension TangemSdk {
     /// - Parameters:
     ///   - readPrivateFiles: If true - all files saved on card will be read.  User code or security delay will be requested
     ///   - fileName: Read files by the given name.
-    ///   - walletIndex: Read files by the given wallet.
+    ///   - walletPublicKey: Read files by the given wallet.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<[File],TangemSdkError>`
     func readFiles(readPrivateFiles: Bool = false,
                    fileName: String? = nil,
-                   walletIndex: WalletIndex? = nil,
+                   walletPublicKey: Data? = nil,
                    cardId: String? = nil,
                    initialMessage: Message? = nil,
                    completion: @escaping CompletionResult<[File]>) {
-        let task = ReadFilesTask(fileName: fileName, walletIndex: walletIndex)
+        let task = ReadFilesTask(fileName: fileName, walletPublicKey: walletPublicKey)
         task.shouldReadPrivateFiles = readPrivateFiles
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }

@@ -126,10 +126,6 @@ class TlvTests: XCTestCase {
         let walletPublicKey: Data = try! decoder.decode(.walletPublicKey)
         XCTAssertEqual(walletPublicKey, Data(hexString:"04B45FF0D628E1B59F7AEFA1D5B45AB9D7C47FC090D8B29ACCB515431BDBAD2802DDB3AC5E83A06BD8F13ABB84A465CA3C0FA0B44301F80295A9B4C5E35D5FDFE5"))
         
-        //test wallet index
-        let testWalletIndex: Int = Data(hexString: "650109").decodeTlv(tag: .walletIndex)!
-        XCTAssertEqual(testWalletIndex, Int(9))
-        
         let walletPublicKeyWrong: String? = try? decoder.decode(.walletPublicKey)
         XCTAssertNil(walletPublicKeyWrong)
         
@@ -209,12 +205,6 @@ class TlvTests: XCTestCase {
         
         XCTAssertEqual(try! TlvBuilder().append(.walletPublicKey, value: Data(hexString:"04B45FF0D628E1B59F7AEFA1D5B45AB9D7C47FC090D8B29ACCB515431BDBAD2802DDB3AC5E83A06BD8F13ABB84A465CA3C0FA0B44301F80295A9B4C5E35D5FDFE5")).serialize(), Data(hexString:
             "604104B45FF0D628E1B59F7AEFA1D5B45AB9D7C47FC090D8B29ACCB515431BDBAD2802DDB3AC5E83A06BD8F13ABB84A465CA3C0FA0B44301F80295A9B4C5E35D5FDFE5"))
-        
-        XCTAssertEqual(try! TlvBuilder().append(.walletIndex, value: WalletIndex(1)).serialize(), Data(hexString:
-            "650101"))
-        
-        XCTAssertEqual(try! TlvBuilder().append(.walletIndex, value: 1).serialize(), Data(hexString:
-            "650101"))
         
         XCTAssertEqual(try! TlvBuilder().append(.curveId, value: EllipticCurve.secp256k1).serialize(), Data(hexString: "050A736563703235366B3100"))
         XCTAssertEqual(try! TlvBuilder().append(.settingsMask, value: CardSettingsMask(rawValue: 32305)).serialize(), Data(hexString: "0A027E31"))

@@ -62,9 +62,9 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
         
-        let derivations = card.wallets.reduce(into: [WalletIndex: [DerivationPath]]()) { (result, wallet) in
+        let derivations = card.wallets.reduce(into: [Data: [DerivationPath]]()) { (result, wallet) in
             if let paths = defaultPaths[wallet.curve], !paths.isEmpty {
-                result[wallet.index] = paths
+                result[wallet.publicKey] = paths
             }
         }
         

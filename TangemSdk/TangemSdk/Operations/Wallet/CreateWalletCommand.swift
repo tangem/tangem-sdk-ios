@@ -136,21 +136,18 @@ final class CreateWalletCommand: Command {
         switch card.firmwareVersion {
         case .createWalletResponseAvailable...:
             //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
-            wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet,
-                                            secp256k1KeyFormat: environment.config.secp256k1KeyFormat)
+            wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet)
                 .deserializeWallet(from: decoder)
         case .multiwalletAvailable...: //We don't have a wallet response so we use to create it ourselves
             wallet = try makeWalletLegacy(decoder: decoder,
                                           index: try decoder.decode(.walletIndex),
                                           remainingSignatures: nil, //deprecated
-                                          isPermanentWallet: false, //we restrict to create permanent wallets by sdk design
-                                          secp256k1KeyFormat: environment.config.secp256k1KeyFormat)
+                                          isPermanentWallet: false) //we restrict to create permanent wallets by sdk design
         default: //We don't have a wallet response so we use to create it ourselves
             wallet = try makeWalletLegacy(decoder: decoder,
                                           index: 0,
                                           remainingSignatures: card.remainingSignatures,
-                                          isPermanentWallet: card.settings.isPermanentWallet,
-                                          secp256k1KeyFormat: environment.config.secp256k1KeyFormat)
+                                          isPermanentWallet: card.settings.isPermanentWallet)
         }
         
         return CreateWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
@@ -159,11 +156,8 @@ final class CreateWalletCommand: Command {
     private func makeWalletLegacy(decoder: TlvDecoder,
                                   index: Int,
                                   remainingSignatures: Int?,
-                                  isPermanentWallet: Bool,
-                                  secp256k1KeyFormat: Secp256k1KeyFormat) throws -> Card.Wallet {
-        let walletPublicKey: Data = try decoder.decode(.walletPublicKey)
-        let key = curve == .secp256k1 ? try secp256k1KeyFormat.format(walletPublicKey) : walletPublicKey
-        return Card.Wallet(publicKey: key,
+                                  isPermanentWallet: Bool) throws -> Card.Wallet {
+        return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                            chainCode: nil,
                            curve: curve, // It's safe to use this property because create wallet command will not execute successfully with the wrong curve
                            settings: Card.Wallet.Settings(isPermanent: isPermanentWallet),

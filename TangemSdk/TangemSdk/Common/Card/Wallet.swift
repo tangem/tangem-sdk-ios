@@ -34,7 +34,7 @@ public extension Card {
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
-        public var derivedKeys: [ExtendedPublicKey] = []
+        public var derivedKeys: [DerivationPath:ExtendedPublicKey] = [:]
     }
 }
 

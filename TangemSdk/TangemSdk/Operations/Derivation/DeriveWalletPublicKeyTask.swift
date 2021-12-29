@@ -48,9 +48,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                 }
                 
                 let childKey = ExtendedPublicKey(publicKey: response.wallet.publicKey, chainCode: chainCode)
-                
-                session.environment.card?.wallets[self.walletIndex]?.derivedKeys.appendIfNotContains(childKey)
-                
+                session.environment.card?.wallets[self.walletIndex]?.derivedKeys[self.derivationPath] = childKey
                 completion(.success(childKey))
             case .failure(let error):
                 completion(.failure(error))

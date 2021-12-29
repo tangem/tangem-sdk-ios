@@ -34,6 +34,8 @@
 		5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */; };
 		5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2426A0199100D2EDC1 /* WalletData.swift */; };
 		5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */; };
+		5D27C8A827736F190095409C /* Secp256k1Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27C8A727736F190095409C /* Secp256k1Key.swift */; };
+		5D27C8AA27737D200095409C /* Secp256k1Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27C8A927737D200095409C /* Secp256k1Signature.swift */; };
 		5D2B798626BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */; };
 		5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */; };
 		5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */; };
@@ -112,6 +114,7 @@
 		5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */; };
 		5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */; };
 		5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */; };
+		5D78A86C2774637800F6BAA0 /* Array+ExtendedPublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78A86B2774637800F6BAA0 /* Array+ExtendedPublicKey.swift */; };
 		5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */; };
 		5D7D5FB423449F2300058D69 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7D5FB323449F2300058D69 /* Command.swift */; };
 		5D7E49CC26C5443A00F77D62 /* EnterUserCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */; };
@@ -322,6 +325,8 @@
 		5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Utils.swift; sourceTree = "<group>"; };
 		5D270F2426A0199100D2EDC1 /* WalletData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletData.swift; sourceTree = "<group>"; };
 		5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataDeserializer.swift; sourceTree = "<group>"; };
+		5D27C8A727736F190095409C /* Secp256k1Key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Key.swift; sourceTree = "<group>"; };
+		5D27C8A927737D200095409C /* Secp256k1Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256k1Signature.swift; sourceTree = "<group>"; };
 		5D2B798526BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeriveWalletPublicKeyTask.swift; sourceTree = "<group>"; };
 		5D2BDF8526DD4869002F7E19 /* TestParseRequest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestParseRequest.json; sourceTree = "<group>"; };
 		5D2BDF8726DD64DB002F7E19 /* RunnablesTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnablesTask.swift; sourceTree = "<group>"; };
@@ -400,6 +405,7 @@
 		5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteUtilsTest.swift; sourceTree = "<group>"; };
 		5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivationPath.swift; sourceTree = "<group>"; };
 		5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivationNode.swift; sourceTree = "<group>"; };
+		5D78A86B2774637800F6BAA0 /* Array+ExtendedPublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+ExtendedPublicKey.swift"; sourceTree = "<group>"; };
 		5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionEnvironment.swift; sourceTree = "<group>"; };
 		5D7D5FB323449F2300058D69 /* Command.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
 		5D7E49CB26C5443A00F77D62 /* EnterUserCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterUserCodeView.swift; sourceTree = "<group>"; };
@@ -1193,6 +1199,8 @@
 				5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */,
 				5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */,
 				5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */,
+				5D27C8A727736F190095409C /* Secp256k1Key.swift */,
+				5D27C8A927737D200095409C /* Secp256k1Signature.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1234,6 +1242,7 @@
 				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
+				5D78A86B2774637800F6BAA0 /* Array+ExtendedPublicKey.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1497,8 +1506,10 @@
 				B06947BB253442AD0056A887 /* DeleteFileCommand.swift in Sources */,
 				5DA5B611233E11950058C720 /* CommandApdu.swift in Sources */,
 				5D46F53A274E29660004681F /* DeriveWalletPublicKeysTask.swift in Sources */,
+				5D78A86C2774637800F6BAA0 /* Array+ExtendedPublicKey.swift in Sources */,
 				5D379C27268FA47600C7F473 /* EncryptionMode.swift in Sources */,
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
+				5D27C8AA27737D200095409C /* Secp256k1Signature.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
 				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
 				5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */,
@@ -1616,6 +1627,7 @@
 				B06EBBC525347B7800B0FEEA /* ChangeFileSettingsTask.swift in Sources */,
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
+				5D27C8A827736F190095409C /* Secp256k1Key.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
 				5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,

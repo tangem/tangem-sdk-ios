@@ -11,29 +11,14 @@ import TangemSdk_secp256k1
 
 @available(iOS 13.0, *)
 public final class Secp256k1Utils {
-    static let context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY))
+    private let context: OpaquePointer
+    
+    public init() {
+        context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY))
+    }
     
     deinit {
-        secp256k1_context_destroy(Secp256k1Utils.context)
-    }
-    
-    public static func verify(publicKey: Data, message: Data, signature: Data) throws -> Bool {
-        return try verify(publicKey: publicKey, hash: message.getSha256(), signature: signature)
-    }
-    
-    public static func verify(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
-        guard let ctx = context else { throw TangemSdkError.cryptoUtilsError("Failed to create context") }
-        
-        var sig = secp256k1_ecdsa_signature()
-        var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, signature.toBytes) == 1 else { throw TangemSdkError.cryptoUtilsError("Failed to parse signature") }
-        
-        _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { throw TangemSdkError.cryptoUtilsError("Failed to parse key") }
-        
-        let result = secp256k1_ecdsa_verify(ctx, &normalized, hash.toBytes, &pubkey) == 1
-        return result
+        secp256k1_context_destroy(context)
     }
     
     /**
@@ -44,62 +29,77 @@ public final class Secp256k1Utils {
      *
      * - Returns: Signed data
      */
-    public static func sign(_ data: Data, with key: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
+    public func sign(_ data: Data, with key: Data) throws -> Data {
         var signature = secp256k1_ecdsa_signature()
-        let result = secp256k1_ecdsa_sign(ctx, &signature, Array(data.getSha256()), Array(key), nil, nil)
-        guard result == 1 else {
-            return nil
+        guard secp256k1_ecdsa_sign(context, &signature, Array(data.getSha256()), Array(key), nil, nil) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to sign")
         }
         
         var signatureData = [Byte](repeating: 0, count: 64)
-        _ = secp256k1_ecdsa_signature_serialize_compact(ctx, &signatureData, &signature)
+        _ = secp256k1_ecdsa_signature_serialize_compact(context, &signatureData, &signature)
         
         return Data(signatureData)
     }
     
     /// Generate private/public keypair with secp256k1.
     /// - Returns: `KeyPair` with  32-bytes length `private key` and  65-bytes length uncompressed `public key`
-    public static func generateKeyPair() -> KeyPair? {
-        guard let ctx = context else { return nil }
-        
-        guard let privateKey = (try? CryptoUtils.generateRandomBytes(count: 32))?.toBytes else { return nil }
-        
-        guard secp256k1_ec_seckey_verify(ctx, privateKey) == 1 else { return nil }
-        
-        var publicKeySecp = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_create(ctx, &publicKeySecp, privateKey) == 1 else { return nil }
-        
-        var publicKeyLength: Int = 65
-        var publicKeyUncompressed = Array(repeating: Byte(0), count: publicKeyLength)
-        secp256k1_ec_pubkey_serialize(ctx, &publicKeyUncompressed, &publicKeyLength, &publicKeySecp, UInt32(SECP256K1_EC_UNCOMPRESSED))
-        return KeyPair(privateKey: Data(privateKey), publicKey: Data(publicKeyUncompressed))
+    public func generateKeyPair() throws -> KeyPair {
+        let privateKey = try CryptoUtils.generateRandomBytes(count: 32)
+        let publicKey = try createPublicKey(privateKey: privateKey, compressed: false)
+        return KeyPair(privateKey: privateKey, publicKey: publicKey)
     }
     
-    public static func createPublicKey(privateKey: Data, compressed: Bool) -> Data? {
-        guard let ctx = context else { return nil }
+    public func serializeDer(_ signature: Data) throws -> Data {
+        var sig = try parseNormalize(signature)
+        return try serializeDer(&sig)
+    }
+    
+    func compressKey(_ publicKey: Data) throws -> Data {
+        if publicKey.count == 33 {
+            return publicKey
+        }
         
+        var secpKey = try parsePublicKey(publicKey)
+        return try serializePublicKey(&secpKey, compressed: true)
+    }
+    
+    func decompressKey(_ publicKey: Data) throws -> Data {
+        if publicKey.count == 65 {
+            return publicKey
+        }
+        
+        var secpKey = try parsePublicKey(publicKey)
+        return try serializePublicKey(&secpKey, compressed: false)
+    }
+    
+    func verifySignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> Bool {
+        var pubKey = try parsePublicKey(publicKey)
+        
+        guard secp256k1_ecdsa_verify(context, &signature, hash.toBytes, &pubKey) == 1 else {
+            return false
+        }
+        
+        return true
+    }
+    
+    func createPublicKey(privateKey: Data, compressed: Bool) throws -> Data {
         let privateKey = privateKey.toBytes
         var publicKey = secp256k1_pubkey()
         
-        guard secp256k1_ec_seckey_verify(ctx, privateKey) == 1 else { return nil }
+        guard secp256k1_ec_seckey_verify(context, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to verify the private key")
+        }
         
-        guard secp256k1_ec_pubkey_create(ctx, &publicKey, privateKey) == 1 else { return nil }
+        guard secp256k1_ec_pubkey_create(context, &publicKey, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
         
-        guard let serializedKey = serializePublicKey(publicKey: &publicKey, compressed: compressed) else { return nil }
-        
-        return serializedKey
+        return try serializePublicKey(&publicKey, compressed: compressed)
     }
     
-    public static func sum(compressedPubKey1: Data, compressedPubKey2: Data) -> Data? {
-        guard let ctx = context else { return nil }
-
-        var pubKey1 = secp256k1_pubkey()
-        var pubKey2 = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubKey1, Array(compressedPubKey1), 33) == 1 else { return nil }
-        guard secp256k1_ec_pubkey_parse(ctx, &pubKey2, Array(compressedPubKey2), 33) == 1 else { return nil }
-        
+    func sum(compressedPubKey1: Data, compressedPubKey2: Data) throws -> Data {
+        var pubKey1 = try parsePublicKey(compressedPubKey1)
+        var pubKey2 = try parsePublicKey(compressedPubKey2)
         var publicKeySecp = secp256k1_pubkey()
         var result: Int32 = 0
         
@@ -107,215 +107,67 @@ public final class Secp256k1Utils {
             withUnsafePointer(to: &pubKey2) { pointer2 in
                 var pubkeyPointers: [UnsafePointer<secp256k1_pubkey>?] = [pointer1, pointer2]
                 
-                result = secp256k1_ec_pubkey_combine(ctx, &publicKeySecp, &pubkeyPointers, 2)
+                result = secp256k1_ec_pubkey_combine(context, &publicKeySecp, &pubkeyPointers, 2)
             }
         }
-       
-        guard result == 1 else { return nil }
-
-        guard let serializedKey = serializePublicKey(publicKey: &publicKeySecp, compressed: true) else { return nil }
         
-        return serializedKey
+        guard result == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to sum keys")
+        }
+        
+        return try serializePublicKey(&publicKeySecp, compressed: true)
     }
     
-    public static func serializeToDer(secp256k1Signature: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        var sig = secp256k1_ecdsa_signature()
-        var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, Array(secp256k1Signature)) == 1 else { return nil }
-        
-        _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
+    func serializeDer(_ signature: inout secp256k1_ecdsa_signature) throws -> Data {
         var length: Int = 128
         var der = [UInt8].init(repeating: UInt8(0x0), count: Int(length))
-        guard secp256k1_ecdsa_signature_serialize_der(ctx, &der, &length, &normalized) == 1  else { return nil }
+        guard secp256k1_ecdsa_signature_serialize_der(context, &der, &length, &signature) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to serialize the signature")
+        }
         
         return Data(der[0..<Int(length)])
     }
     
-    public static func unmarshal(secp256k1Signature: Data, hash: Data, publicKey: Data) -> (v: Data, r: Data, s: Data)? {
-        guard let ctx = context else { return nil }
+    func unmarshalSignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> (v: Data, r: Data, s: Data) {
+        guard hash.count == 32 else { throw TangemSdkError.cryptoUtilsError("Hash size must be 32 bytes length") }
         
-        var sig = secp256k1_ecdsa_signature()
-        var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, Array(secp256k1Signature)) == 1 else { return nil }
+        guard try verifySignature(&signature, publicKey: publicKey, hash: hash) else {
+            throw TangemSdkError.cryptoUtilsError("Failed to verify the signature")
+        }
         
-        _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), publicKey.count) == 1 else { return nil }
-        guard secp256k1_ecdsa_verify(ctx, &normalized, Array(hash), &pubkey) == 1 else { return nil }
+        let isCompressed = publicKey.count == 33
         
-        var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
-        secp256k1_ecdsa_signature_serialize_compact(ctx, &serialized, &normalized)
-        
+        let serializedSig = try serializeSignature(&signature)
         var recoveredSignature: Data? = nil
+        
         for v in 27..<31 {
-            let testV = UInt8(v)
-            let testSign = Data(serialized + [testV])
+            let testSignature = serializedSig + [UInt8(v)]
+            var recoverableSignature = try parseRecoverableSignature(testSignature, v: Int32(v))
+            var recoveredRawKey = try recoverPublicKey(hash: hash, recoverableSignature: &recoverableSignature)
+            let recoveredKey = try serializePublicKey(&recoveredRawKey, compressed: isCompressed)
             
-            if let recoveredKey = recoverPublicKey(hash: hash, signature: testSign, compressed: publicKey.count == 33),
-                recoveredKey == publicKey {
-                recoveredSignature = testSign
+            if recoveredKey == publicKey {
+                recoveredSignature = testSignature
+                break
             }
         }
         
-        guard let recovered =  recoveredSignature else { return nil }
+        guard let recovered = recoveredSignature, recovered.count == 65 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to recover the signature")
+        }
         
-        if (recovered.count != 65) { return nil}
         let v = Data([recovered[64]])
         let r = Data(recovered[0..<32])
         let s = Data(recovered[32..<64])
         return (v: v, r: r, s: s)
     }
     
-    public static func recoverPublicKey(hash: Data, signature: Data, compressed: Bool = false) -> Data? {
-        guard hash.count == 32, signature.count == 65 else {return nil}
-        guard var recoverableSignature = parseSignature(signature: signature) else {return nil}
-        guard var publicKey = recoverPublicKey(hash: hash, recoverableSignature: &recoverableSignature) else {return nil}
-        guard let serializedKey = serializePublicKey(publicKey: &publicKey, compressed: compressed) else {return nil}
-        return serializedKey
-    }
-    
-    public static func parseSignature(signature: Data) -> secp256k1_ecdsa_recoverable_signature? {
-        guard let ctx = context else { return nil }
-        
-        guard signature.count == 65 else {return nil}
-        var recoverableSignature: secp256k1_ecdsa_recoverable_signature = secp256k1_ecdsa_recoverable_signature()
-        let serializedSignature = Data(signature[0..<64])
-        var v = Int32(signature[64])
-        if v >= 27 && v <= 30 {
-            v -= 27
-        } else if v >= 31 && v <= 34 {
-            v -= 31
-        } else if v >= 35 && v <= 38 {
-            v -= 35
-        }
-        let result = serializedSignature.withUnsafeBytes { (serRawBufferPtr: UnsafeRawBufferPointer) -> Int32? in
-            if let serRawPtr = serRawBufferPtr.baseAddress, !serRawBufferPtr.isEmpty {
-                let serPtr = serRawPtr.assumingMemoryBound(to: UInt8.self)
-                return withUnsafeMutablePointer(to: &recoverableSignature, { (signaturePointer:UnsafeMutablePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
-                    let res = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, signaturePointer, serPtr, v)
-                    return res
-                })
-            } else {
-                return nil
-            }
-        }
-        guard let res = result, res != 0 else {
-            return nil
-        }
-        return recoverableSignature
-    }
-    
-    public static func compressPublicKey(_ walletPublicKey: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        //already compressed
-        if walletPublicKey.count == 33 {
-            return walletPublicKey
-        }
-        
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(walletPublicKey), 65) == 1 else { return nil }
-        
-        return serializePublicKey(publicKey: &pubkey, compressed: true)
-    }
-    
-    public static func decompressPublicKey(_ walletPublicKey: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        //already decompressed
-        if walletPublicKey.count == 65 {
-            return walletPublicKey
-        }
-        
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(walletPublicKey), 33) == 1 else { return nil }
-        
-        return serializePublicKey(publicKey: &pubkey, compressed: false)
-    }
-    
-    public static func normalize(secp256k1Signature: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        var sig = secp256k1_ecdsa_signature()
-        var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, Array(secp256k1Signature)) == 1 else { return nil }
-        
-        let result = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
-      
-        if result == 0 { //already normalized
-            return secp256k1Signature
-        }
-        
-        var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
-        secp256k1_ecdsa_signature_serialize_compact(ctx, &serialized, &normalized)
-        return Data(serialized)
-    }
-    
-    public static func normalizeVerify(secp256k1Signature: Data, hash: Data, publicKey: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        var sig = secp256k1_ecdsa_signature()
-        var normalized = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_signature_parse_compact(ctx, &sig, Array(secp256k1Signature)) == 1 else { return nil }
-        
-        _ = secp256k1_ecdsa_signature_normalize(ctx, &normalized, &sig)
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, Array(publicKey), publicKey.count) == 1 else { return nil }
-        guard secp256k1_ecdsa_verify(ctx, &normalized, Array(hash), &pubkey) == 1 else { return nil }
-        
-        var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
-        secp256k1_ecdsa_signature_serialize_compact(ctx, &serialized, &normalized)
-        
-        return Data(serialized)
-    }
-    
-    public static func getSharedSecret(privateKey: Data, publicKey: Data) -> Data? {
-        guard let ctx = context else { return nil }
-        
-        let privkey = privateKey.toBytes
-        var pubkey = secp256k1_pubkey()
-        guard secp256k1_ec_pubkey_parse(ctx, &pubkey, publicKey.toBytes, publicKey.count) == 1 else { return nil }
-        
-        var sharedSecret = Array(repeating: UInt8(0), count: 32)
-        guard secp256k1_ecdh(ctx, &sharedSecret, &pubkey, privkey, nil, nil) == 1 else { return nil }
-        
-        return Data(sharedSecret)
-    }
-    
-    static func recoverPublicKey(hash: Data, recoverableSignature: inout secp256k1_ecdsa_recoverable_signature) -> secp256k1_pubkey? {
-        guard let ctx = context else { return nil }
-        
-        guard hash.count == 32 else {return nil}
-        var publicKey: secp256k1_pubkey = secp256k1_pubkey()
-        let result = hash.withUnsafeBytes({ (hashRawBufferPointer: UnsafeRawBufferPointer) -> Int32? in
-            if let hashRawPointer = hashRawBufferPointer.baseAddress, !hashRawBufferPointer.isEmpty {
-                let hashPointer = hashRawPointer.assumingMemoryBound(to: UInt8.self)
-                return withUnsafePointer(to: &recoverableSignature, { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
-                    withUnsafeMutablePointer(to: &publicKey, { (pubKeyPtr: UnsafeMutablePointer<secp256k1_pubkey>) -> Int32 in
-                        let res = secp256k1_ecdsa_recover(ctx, pubKeyPtr,
-                                                          signaturePointer, hashPointer)
-                        return res
-                    })
-                })
-            } else {
-                return nil
-            }
-        })
-        guard let res = result, res != 0 else {
-            return nil
-        }
-        return publicKey
-    }
-    
-    static func serializePublicKey(publicKey: inout secp256k1_pubkey, compressed: Bool) -> Data? {
-        guard let ctx = context else { return nil }
-        
+    func serializePublicKey(_ publicKey: inout secp256k1_pubkey, compressed: Bool) throws -> Data {
         var keyLength = compressed ? 33 : 65
         var serializedPubkey = Array(repeating: UInt8(0), count: Int(keyLength))
         
-        secp256k1_ec_pubkey_serialize(ctx, &serializedPubkey,
+        secp256k1_ec_pubkey_serialize(context,
+                                      &serializedPubkey,
                                       &keyLength,
                                       &publicKey,
                                       UInt32(compressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED))
@@ -323,9 +175,58 @@ public final class Secp256k1Utils {
         return Data(serializedPubkey)
     }
     
-    static func serializeSignature(recoverableSignature: inout secp256k1_ecdsa_recoverable_signature) -> Data? {
-        guard let ctx = context else { return nil }
+    func serializeSignature(_ signature: inout secp256k1_ecdsa_signature) throws -> Data {
+        var serialized = [UInt8].init(repeating: UInt8(0x0), count: 64)
+        secp256k1_ecdsa_signature_serialize_compact(context, &serialized, &signature)
+        return Data(serialized)
+    }
+    
+    func getSharedSecret(privateKey: Data, publicKey: Data) throws -> Data {
+        let privkey = privateKey.toBytes
+        var pubkey = try parsePublicKey(publicKey)
+        var sharedSecret = Array(repeating: UInt8(0), count: 32)
+        guard secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, nil, nil) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to compute an EC Diffie-Hellman secret ")
+        }
         
+        return Data(sharedSecret)
+    }
+    
+    func parsePublicKey(_ publicKey: Data) throws -> secp256k1_pubkey {
+        var pubkey = secp256k1_pubkey()
+        
+        guard secp256k1_ec_pubkey_parse(context, &pubkey, publicKey.toBytes, publicKey.count) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to parse the key")
+        }
+        
+        return pubkey
+    }
+    
+    private func recoverPublicKey(hash: Data, recoverableSignature: inout secp256k1_ecdsa_recoverable_signature) throws -> secp256k1_pubkey {
+        guard hash.count == 32 else { throw TangemSdkError.cryptoUtilsError("Hash size must be 32 bytes length") }
+        
+        var publicKey: secp256k1_pubkey = secp256k1_pubkey()
+        let result = hash.withUnsafeBytes({ (hashRawBufferPointer: UnsafeRawBufferPointer) -> Int32? in
+            if let hashRawPointer = hashRawBufferPointer.baseAddress, !hashRawBufferPointer.isEmpty {
+                let hashPointer = hashRawPointer.assumingMemoryBound(to: UInt8.self)
+                return withUnsafePointer(to: &recoverableSignature, { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
+                    withUnsafeMutablePointer(to: &publicKey, { (pubKeyPtr: UnsafeMutablePointer<secp256k1_pubkey>) -> Int32 in
+                        return secp256k1_ecdsa_recover(context, pubKeyPtr, signaturePointer, hashPointer)
+                    })
+                })
+            } else {
+                return nil
+            }
+        })
+        
+        guard let res = result, res != 0 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to recover the public key")
+        }
+        
+        return publicKey
+    }
+    
+    private func serializeSignature(recoverableSignature: inout secp256k1_ecdsa_recoverable_signature) throws -> Data {
         var serializedSignature = Data(repeating: 0x00, count: 64)
         var v: Int32 = 0
         let result = serializedSignature.withUnsafeMutableBytes { (serSignatureRawBufferPointer: UnsafeMutableRawBufferPointer) -> Int32? in
@@ -333,7 +234,7 @@ public final class Secp256k1Utils {
                 let serSignaturePointer = serSignatureRawPointer.assumingMemoryBound(to: UInt8.self)
                 return withUnsafePointer(to: &recoverableSignature) { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
                     withUnsafeMutablePointer(to: &v, { (vPtr: UnsafeMutablePointer<Int32>) -> Int32 in
-                        let res = secp256k1_ecdsa_recoverable_signature_serialize_compact(ctx, serSignaturePointer, vPtr, signaturePointer)
+                        let res = secp256k1_ecdsa_recoverable_signature_serialize_compact(context, serSignaturePointer, vPtr, signaturePointer)
                         return res
                     })
                 }
@@ -341,16 +242,69 @@ public final class Secp256k1Utils {
                 return nil
             }
         }
+        
         guard let res = result, res != 0 else {
-            return nil
+            throw TangemSdkError.cryptoUtilsError("Failed to serialize the signature")
         }
+        
         if (v == 0 || v == 27 || v == 31 || v == 35) {
             serializedSignature.append(0x1b)
         } else if (v == 1 || v == 28 || v == 32 || v == 36) {
             serializedSignature.append(0x1c)
         } else {
-            return nil
+            throw TangemSdkError.cryptoUtilsError("Failed to serialize the signature")
         }
+        
         return Data(serializedSignature)
+    }
+    
+    func normalizeSignature(_ signature: Data) throws -> Data {
+        var parsed = try parseNormalize(signature)
+        return try serializeSignature(&parsed)
+    }
+    
+    func parseNormalize(_ signature: Data) throws -> secp256k1_ecdsa_signature {
+        var sig = secp256k1_ecdsa_signature()
+        
+        guard secp256k1_ecdsa_signature_parse_compact(context, &sig, signature.toBytes) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to parse the signature")
+        }
+        
+        var normalizedSig = secp256k1_ecdsa_signature()
+        _ = secp256k1_ecdsa_signature_normalize(context, &normalizedSig, &sig)
+        return normalizedSig
+    }
+    
+    private func parseRecoverableSignature(_ signature: Data, v: Int32) throws -> secp256k1_ecdsa_recoverable_signature {
+        guard signature.count == 64 else { throw TangemSdkError.cryptoUtilsError("Invalid signature") }
+        
+        var recoverableSignature: secp256k1_ecdsa_recoverable_signature = secp256k1_ecdsa_recoverable_signature()
+        
+        var v = v
+        if v >= 27 && v <= 30 {
+            v -= 27
+        } else if v >= 31 && v <= 34 {
+            v -= 31
+        } else if v >= 35 && v <= 38 {
+            v -= 35
+        }
+        
+        let result = signature.withUnsafeBytes { (serRawBufferPtr: UnsafeRawBufferPointer) -> Int32? in
+            if let serRawPtr = serRawBufferPtr.baseAddress, !serRawBufferPtr.isEmpty {
+                let serPtr = serRawPtr.assumingMemoryBound(to: UInt8.self)
+                return withUnsafeMutablePointer(to: &recoverableSignature, { (signaturePointer:UnsafeMutablePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
+                    let res = secp256k1_ecdsa_recoverable_signature_parse_compact(context, signaturePointer, serPtr, v)
+                    return res
+                })
+            } else {
+                return nil
+            }
+        }
+        
+        guard let res = result, res != 0 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to parse the recoverable signature")
+        }
+        
+        return recoverableSignature
     }
 }

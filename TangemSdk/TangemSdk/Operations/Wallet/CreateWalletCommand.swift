@@ -167,7 +167,7 @@ final class CreateWalletCommand: Command {
                            hasBackup: false)
     }
     
-    private func calculateWalletIndex(for card: Card) throws -> WalletIndex {
+    private func calculateWalletIndex(for card: Card) throws -> Int {
         let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck because of correct error mapping. Run fires only before precheck. And precheck will not fire if error handling disabled
         let occupiedIndexes = card.wallets.map { $0.index }
         let allIndexes = 0..<maxIndex

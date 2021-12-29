@@ -339,38 +339,44 @@ public class CardSession {
         if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
             return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
         }
-        Log.session("Try establish encryption")
-        guard let encryptionHelper = EncryptionHelperFactory.make(for: self.environment.encryptionMode) else {
-            return Fail(error: .cryptoUtilsError("Failed to establish encryption")).eraseToAnyPublisher()
-        }
         
-        let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
-        let openSesssionApdu = try! openSessionCommand.serialize(with: self.environment)
-        return reader
-            .sendPublisher(apdu: openSesssionApdu)
-            .flatMap { responseApdu -> AnyPublisher<Void, TangemSdkError> in
-                let response = try! openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-                
-                var uid: Data
-                if let uidFromResponse = response.uid {
-                    uid = uidFromResponse
-                } else {
-                    if case let .tag(tagUid) = self.reader.tag.value {
-                        uid = tagUid
+        Log.session("Try establish encryption")
+        
+        do {
+            let encryptionHelper = try EncryptionHelperFactory.make(for: self.environment.encryptionMode)
+            let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
+            let openSesssionApdu = try openSessionCommand.serialize(with: self.environment)
+            return reader
+                .sendPublisher(apdu: openSesssionApdu)
+                .tryMap { responseApdu -> Void in
+                    let response = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
+                    
+                    var uid: Data
+                    if let uidFromResponse = response.uid {
+                        uid = uidFromResponse
                     } else {
-                        return Fail(error: .failedToEstablishEncryption).eraseToAnyPublisher()
+                        if case let .tag(tagUid) = self.reader.tag.value {
+                            uid = tagUid
+                        } else {
+                            throw TangemSdkError.failedToEstablishEncryption
+                        }
                     }
+                    
+                    guard let accessCode = self.environment.accessCode.value else {
+                        throw TangemSdkError.accessCodeRequired
+                    }
+                    
+                    let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
+                    let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
+                    let sessionKey = (secret + protocolKey).getSha256()
+                    self.environment.encryptionKey = sessionKey
+                    return ()
                 }
-                
-                guard let protocolKey = self.environment.accessCode.value?.pbkdf2sha256(salt: uid, rounds: 50),
-                      let secret = encryptionHelper.generateSecret(keyB: response.sessionKeyB) else {
-                    return Fail(error: .cryptoUtilsError("Failed to establish encryption")).eraseToAnyPublisher()
-                }
-                
-                let sessionKey = (secret + protocolKey).getSha256()
-                self.environment.encryptionKey = sessionKey
-                return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
-            }.eraseToAnyPublisher()
+                .mapError{$0.toTangemSdkError()}
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
+        }
     }
     
     // MARK: - Request User code

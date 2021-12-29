@@ -12,7 +12,7 @@ import Foundation
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
-        /// Wallet's public key.
+        /// Wallet's public key.  For `secp256k1`, the key can be compressed or uncompressed. Use `Secp256k1Key` for any conversions.
         public let publicKey: Data
         /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?
@@ -28,16 +28,10 @@ public extension Card {
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
-        
-        public var extendedPublicKey: ExtendedPublicKey? {
-            guard let chainCode = self.chainCode else {
-                return nil
-            }
-            
-            return ExtendedPublicKey(compressedPublicKey: publicKey,
-                                     chainCode: chainCode,
-                                     derivationPath: .init())
-        }
+        /// Does this wallet has a backup
+        public internal(set) var hasBackup: Bool
+        /// Derived keys according to `Config.defaultDerivationPaths`
+        public var derivedKeys: [DerivationPath:ExtendedPublicKey] = [:]
     }
 }
 
@@ -59,6 +53,10 @@ extension Card.Wallet {
         case loaded = 2
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
+        /// Wallet created and can be used for signing, backup data read
+        case backuped = 0x82
+        /// Wallet was purged and can't be recreated or used for signing, but backup data read and wallet can be usable on backup card
+        case backupedAndPurged = 0x83
     }
 }
 

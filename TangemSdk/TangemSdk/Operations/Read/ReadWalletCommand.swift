@@ -80,11 +80,11 @@ class ReadWalletCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        guard let wallet = try? WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallet(from: decoder) else {
+        guard let wallet = try? WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet)
+                .deserializeWallet(from: decoder) else {
             throw TangemSdkError.walletNotFound
         }
         
-        return ReadWalletResponse(cardId: try decoder.decode(.cardId),
-                                  wallet: wallet)
+        return ReadWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
     }
 }

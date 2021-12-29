@@ -12,7 +12,6 @@ import Foundation
 /// Deserialize v4 walelts only
 class WalletDeserializer {
     private let isDefaultPermanentWallet: Bool
-    
     /// Default initializer
     /// - Parameter isDefaultPermanentWallet: Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
     internal init(isDefaultPermanentWallet: Bool) {
@@ -35,7 +34,7 @@ class WalletDeserializer {
         let wallets: [Card.Wallet] = try walletDecoders.compactMap {
             do {
                 return try deserializeWallet(from: $0)
-            } catch TangemSdkError.walletIsNotCreated {
+            } catch TangemSdkError.walletNotFound {
                 return nil
             }
         }
@@ -45,24 +44,25 @@ class WalletDeserializer {
     
     func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
         let status: Card.Wallet.Status = try decoder.decode(.status)
-        guard status == .loaded else { //We need only loaded wallets
-            throw TangemSdkError.walletIsNotCreated
+        guard status == .loaded || status == .backuped else { //We need only loaded wallets
+            throw TangemSdkError.walletNotFound
         }
         
-        return try deserialize(from: decoder)
+        return try deserialize(from: decoder, status: status)
     }
     
-    private func deserialize(from decoder: TlvDecoder) throws -> Card.Wallet {
+    private func deserialize(from decoder: TlvDecoder, status: Card.Wallet.Status) throws -> Card.Wallet {
         let mask: WalletSettingsMask? = try decoder.decode(.settingsMask)
         let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
             ?? .init(isPermanent: isDefaultPermanentWallet) //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
-        
+
         return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                            chainCode: try decoder.decode(.walletHDChain),
                            curve: try decoder.decode(.curveId),
                            settings: settings,
                            totalSignedHashes: try decoder.decode(.walletSignedHashes),
                            remainingSignatures: nil,
-                           index: try decoder.decode(.walletIndex))
+                           index: try decoder.decode(.walletIndex),
+                           hasBackup: status == .backuped)
     }
 }

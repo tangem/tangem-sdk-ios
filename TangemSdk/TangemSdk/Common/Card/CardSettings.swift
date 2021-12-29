@@ -17,11 +17,11 @@ public extension Card {
         /// Maximum number of wallets that can be created for this card
         public let maxWalletsCount: Int
         /// Is allowed to change access code
-        public let isSettingAccessCodeAllowed: Bool
+        public internal(set) var isSettingAccessCodeAllowed: Bool
         /// Is  allowed to change passcode
-        public let isSettingPasscodeAllowed: Bool
+        public internal(set) var isSettingPasscodeAllowed: Bool
         /// Is allowed to remove access code
-        public let isResettingUserCodesAllowed: Bool
+        public internal(set) var isResettingUserCodesAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card
@@ -30,6 +30,8 @@ public extension Card {
         public let isFilesAllowed: Bool
         /// Is allowed to use hd wallet
         public let isHDWalletAllowed: Bool
+        /// Is allowed to create backup
+        public let isBackupAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
@@ -68,6 +70,7 @@ extension Card.Settings {
         self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
         self.isHDWalletAllowed = mask.contains(.allowHDWallets)
         self.isFilesAllowed = !mask.contains(.disableFiles)
+        self.isBackupAllowed = mask.contains(.allowBackup)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {
@@ -79,6 +82,15 @@ extension Card.Settings {
         
         self.supportedEncryptionModes = encryptionModes
     }
+    
+    func updated(with mask: CardSettingsMask) -> Card.Settings {
+        return .init(securityDelay: self.securityDelay,
+                     maxWalletsCount: self.maxWalletsCount,
+                     mask: mask,
+                     defaultSigningMethods: self.defaultSigningMethods,
+                     defaultCurve: self.defaultCurve)
+    }
+    
 }
 
 //MARK:- CardSettingsMask
@@ -132,6 +144,7 @@ extension CardSettingsMask {
     static let permanentWallet = CardSettingsMask(rawValue: 0x0004)
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
     static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
+    static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
 }
 
 //MARK:- CardSettingsMask OptionSetCodable conformance
@@ -161,7 +174,9 @@ extension CardSettingsMask: OptionSetCodable {
         case disableUserData
         case disableFiles
         case isReusable
-        case prohibitPurgeWallet
+        case isPermanentWallet
+        case allowHDWallets
+        case allowBackup
         
         var value: CardSettingsMask {
             switch self {
@@ -211,8 +226,12 @@ extension CardSettingsMask: OptionSetCodable {
                 return .disableFiles
             case .isReusable:
                 return .isReusable
-            case .prohibitPurgeWallet:
+            case .isPermanentWallet:
                 return .permanentWallet
+            case .allowHDWallets:
+                return .allowHDWallets
+            case .allowBackup:
+                return .allowBackup
             }
         }
     }

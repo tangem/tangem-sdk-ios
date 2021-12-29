@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
-    public typealias Response = [WalletIndex: [ExtendedPublicKey]]
+    public typealias Response = [WalletIndex: [DerivationPath:ExtendedPublicKey]]
     
     private let derivations: [WalletIndex: [DerivationPath]]
     private var response: Response = .init()

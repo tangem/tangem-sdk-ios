@@ -66,9 +66,9 @@ class AppModel: ObservableObject {
         UIPasteboard.general.string = logText
     }
     
-    func start(walletIndex: WalletIndex? = nil) {
+    func start(walletPublicKey: Data? = nil) {
         isScanning = true
-        chooseMethod(walletIndex: walletIndex)
+        chooseMethod(walletPublicKey: walletPublicKey)
     }
     
     func onAppear() {
@@ -118,9 +118,9 @@ class AppModel: ObservableObject {
         return Data(array)
     }
     
-    private func runWithWallet(_ method: (_ walletIndex: WalletIndex) -> Void, _ walletIndex: WalletIndex?) {
-        if let walletIndex = walletIndex {
-            method(walletIndex)
+    private func runWithPublicKey(_ method: (_ walletPublicKey: Data) -> Void, _ walletPublicKey: Data?) {
+        if let publicKey = walletPublicKey {
+            method(publicKey)
             return
         }
         
@@ -130,7 +130,7 @@ class AppModel: ObservableObject {
         }
         
         if card.wallets.count == 1 {
-            method(card.wallets.first!.index)
+            method(card.wallets.first!.publicKey)
         } else {
             showWalletSelection.toggle()
         }
@@ -200,7 +200,7 @@ extension AppModel {
         tangemSdk.startSession(with: AttestationTask(mode: attestationMode), completion: handleCompletion)
     }
     
-    func signHash(walletIndex: WalletIndex) {
+    func signHash(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
@@ -215,7 +215,7 @@ extension AppModel {
         
         UIApplication.shared.endEditing()
         
-        guard let wallet = self.card?.wallets[walletIndex] else {
+        guard let wallet = self.card?.wallets[walletPublicKey] else {
             self.complete(with: "Scan card before")
             return
         }
@@ -224,14 +224,14 @@ extension AppModel {
         let hash = getRandomHash(size: hashSize)
         
         tangemSdk.sign(hash: hash,
-                       walletIndex: walletIndex,
+                       walletPublicKey: walletPublicKey,
                        cardId: cardId,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
     
-    func signHashes(walletIndex: WalletIndex) {
+    func signHashes(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
@@ -248,14 +248,14 @@ extension AppModel {
         let hashes = (0..<5).map {_ -> Data in getRandomHash()}
         
         tangemSdk.sign(hashes: hashes,
-                       walletIndex: walletIndex,
+                       walletPublicKey: walletPublicKey,
                        cardId: cardId,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
     }
     
-    func derivePublicKey(walletIndex: WalletIndex) {
+    func derivePublicKey(walletPublicKey: Data) {
         guard let card = card else {
             self.complete(with: "Scan card before")
             return
@@ -269,7 +269,7 @@ extension AppModel {
         UIApplication.shared.endEditing()
         
         tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
-                                        walletIndex: walletIndex,
+                                        walletPublicKey: walletPublicKey,
                                         derivationPath: path,
                                         completion: handleCompletion)
     }
@@ -285,13 +285,13 @@ extension AppModel {
                                completion: handleCompletion)
     }
     
-    func purgeWallet(walletIndex: WalletIndex) {
+    func purgeWallet(walletPublicKey: Data) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        tangemSdk.purgeWallet(walletIndex: walletIndex,
+        tangemSdk.purgeWallet(walletPublicKey: walletPublicKey,
                               cardId: cardId,
                               completion: handleCompletion)
     }
@@ -374,7 +374,7 @@ extension AppModel {
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         tangemSdk.readFiles(readPrivateFiles: true,
                             fileName: nil,
-                            walletIndex: nil) { result in
+                            walletPublicKey: nil) { result in
             switch result {
             case .success(let files):
                 var text = ""
@@ -423,7 +423,7 @@ extension AppModel {
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let file: FileToWrite = .byUser(data: demoData,
                                         fileVisibility: visibility,
-                                        walletIndex: nil)
+                                        walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
     }
@@ -457,7 +457,7 @@ extension AppModel {
                                              finalizingSignature: finalSignature,
                                              counter: counter,
                                              fileVisibility: visibility,
-                                             walletIndex: nil)
+                                             walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
     }
@@ -674,7 +674,7 @@ extension AppModel {
         case resetBackup
     }
     
-    private func chooseMethod(walletIndex: WalletIndex? = nil) {
+    private func chooseMethod(walletPublicKey: Data? = nil) {
         switch method {
         case .attest: attest()
         case .chainingExample: chainingExample()
@@ -683,10 +683,10 @@ extension AppModel {
         case .resetUserCodes: resetUserCodes()
         case .depersonalize: depersonalize()
         case .scan: scan()
-        case .signHash: runWithWallet(signHash, walletIndex)
-        case .signHashes: runWithWallet(signHashes, walletIndex)
+        case .signHash: runWithPublicKey(signHash, walletPublicKey)
+        case .signHashes: runWithPublicKey(signHashes, walletPublicKey)
         case .createWallet: createWallet()
-        case .purgeWallet: runWithWallet(purgeWallet, walletIndex)
+        case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
         case .readFiles: readFiles()
         case .writeUserFile: writeUserFile()
         case .writeOnwerFile: writeOwnerFile()
@@ -699,7 +699,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: runWithWallet(derivePublicKey, walletIndex)
+        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
         case .resetBackup: resetBackup()

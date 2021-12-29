@@ -111,7 +111,7 @@ extension NFCReader: CardReader {
         cancelled = false
         connectedTag = nil
         
-        let alertMessage = message ?? Localization.nfcAlertDefault
+        let alertMessage = message ?? "nfc_alert_default".localized
         _alertMessage = alertMessage
         
         let isExistingSessionActive = readerSession?.isReady ?? false
@@ -127,7 +127,7 @@ extension NFCReader: CardReader {
             .filter{[unowned self] _ in
                 let distanceToSessionActive = self.sessionDidBecomeActiveTimestamp.distance(to: Date())
                 if !self.isSessionReady || distanceToSessionActive < 1 {
-                    Log.nfc("Filter out сancelled event")
+                    Log.nfc("Filter out cancelled event")
                     return false
                 }
                 return true
@@ -268,10 +268,10 @@ extension NFCReader: CardReader {
         
         guard case let .iso7816(iso7816tag) = connectedTag else {
             return Fail(error: TangemSdkError.unsupportedCommand).eraseToAnyPublisher()
-        }
+        } //todo: handle tag lost
         
         let requestTimestamp = Date()
-        Log.apdu(apdu)
+        Log.apdu("SEND --> \(apdu)")
         return iso7816tag
             .sendCommandPublisher(cApdu: apdu)
             .combineLatest(cancellationPublisher)
@@ -346,7 +346,7 @@ extension NFCReader: CardReader {
             .filter {[unowned self] _ in self.idleTimerCancellable != nil }
             .sink {[unowned self] _ in
                 Log.nfc("Stop by tag timer")
-                self.stopSession(with: Localization.nfcSessionTimeout)
+                self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.tagTimerCancellable = nil
             }
     }
@@ -358,7 +358,7 @@ extension NFCReader: CardReader {
             .receive(on: queue!)
             .sink {[unowned self] _ in
                 Log.nfc("Stop by session timer")
-                self.stopSession(with: Localization.nfcSessionTimeout)
+                self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.sessionTimerCancellable = nil
             }
     }

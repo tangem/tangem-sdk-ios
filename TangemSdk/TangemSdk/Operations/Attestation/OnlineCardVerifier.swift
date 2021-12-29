@@ -16,6 +16,10 @@ public class OnlineCardVerifier {
     
     public init() {}
     
+    deinit {
+        Log.debug("OnlineCardVerifier deinit")
+    }
+    
     /// Online verification and get info for Tangem cards. Do not use for developer cards
     /// - Parameters:
     ///   - cardId: cardId to verify
@@ -44,8 +48,24 @@ public class OnlineCardVerifier {
                 guard firstResult.passed else {
                     throw TangemSdkError.cardVerificationFailed
                 }
-                
+
                 return firstResult
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    public func getCardData(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardDataResponse, Error> {
+        let endpoint = TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey)
+
+        return networkService
+            .requestPublisher(endpoint)
+            .tryMap { data -> CardDataResponse in
+                do {
+                    return try JSONDecoder.tangemSdkDecoder.decode(CardDataResponse.self, from: data)
+                }
+                catch {
+                    throw NetworkServiceError.mappingError(error)
+                }
             }
             .eraseToAnyPublisher()
     }

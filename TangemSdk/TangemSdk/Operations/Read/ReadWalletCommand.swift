@@ -20,10 +20,10 @@ class ReadWalletCommand: Command {
     
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     
-    private let walletIndex: WalletIndex
+    private let walletIndex: Int
     private let derivationPath: DerivationPath?
     
-    init(walletIndex: WalletIndex, derivationPath: DerivationPath? = nil) {
+    init(walletIndex: Int, derivationPath: DerivationPath? = nil) {
         self.walletIndex = walletIndex
         self.derivationPath = derivationPath
     }
@@ -80,13 +80,11 @@ class ReadWalletCommand: Command {
         
         let decoder = TlvDecoder(tlv: tlv)
         
-        guard let wallet = try? WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet,
-                                                   secp256k1KeyFormat: environment.config.secp256k1KeyFormat)
+        guard let wallet = try? WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet)
                 .deserializeWallet(from: decoder) else {
             throw TangemSdkError.walletNotFound
         }
         
-        return ReadWalletResponse(cardId: try decoder.decode(.cardId),
-                                  wallet: wallet)
+        return ReadWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
     }
 }

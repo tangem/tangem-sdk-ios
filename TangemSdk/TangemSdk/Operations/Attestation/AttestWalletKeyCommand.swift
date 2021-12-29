@@ -26,23 +26,15 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 @available(iOS 13.0, *)
 public final class AttestWalletKeyCommand: Command {
     private var challenge: Data?
-    private let walletIndex: WalletIndex
+    private let walletPublicKey: Data
     
     /// Default initializer
     /// - Parameters:
-    ///   - walletIndex: Index key of the wallet to check
+    ///   - publicKey: Public key of the wallet to check
     ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
-    public init(walletIndex: WalletIndex, challenge: Data? = nil) {
-        self.walletIndex = walletIndex
+    public init(publicKey: Data, challenge: Data? = nil) {
+        self.walletPublicKey = publicKey
         self.challenge = challenge
-    }
-    
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.wallets[walletIndex] == nil {
-            return .walletNotFound
-        }
-        
-        return nil
     }
     
     deinit {
@@ -61,13 +53,13 @@ public final class AttestWalletKeyCommand: Command {
         transceive(in: session) {result in
             switch result {
             case .success(let checkWalletResponse):
-                guard let wallet = session.environment.card?.wallets[self.walletIndex] else {
+                guard let curve = session.environment.card?.wallets[self.walletPublicKey]?.curve else {
                     completion(.failure(.cardError))
                     return
                 }
                 
                 do {
-                    let verifyResult = try self.verify(response: checkWalletResponse, wallet: wallet)
+                    let verifyResult = try self.verify(response: checkWalletResponse, curve: curve)
                     if verifyResult {
                         completion(.success(checkWalletResponse))
                     } else {
@@ -83,6 +75,10 @@ public final class AttestWalletKeyCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
+            throw TangemSdkError.walletNotFound
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
@@ -106,13 +102,13 @@ public final class AttestWalletKeyCommand: Command {
             counter: try decoder.decode(.checkWalletCounter))
     }
     
-    private func verify(response: AttestWalletKeyResponse, wallet: Card.Wallet) throws -> Bool {
+    private func verify(response: AttestWalletKeyResponse, curve: EllipticCurve) throws -> Bool {
         guard let signature = response.walletSignature, let salt = response.salt else {
             throw TangemSdkError.errorProcessingCommand
         }
         
-        return try CryptoUtils.verify(curve: wallet.curve,
-                                      publicKey: wallet.publicKey,
+        return try CryptoUtils.verify(curve: curve,
+                                      publicKey: walletPublicKey,
                                       message: challenge! + salt,
                                       signature: signature)
     }

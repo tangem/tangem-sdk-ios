@@ -68,8 +68,7 @@ public class PersonalizeCommand: Command {
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
         
         let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
-        return try CardDeserializer(secp256k1KeyFormat: environment.config.secp256k1KeyFormat,
-                                    allowNotPersonalized: true)
+        return try CardDeserializer(allowNotPersonalized: true)
             .deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
                          decoder: decoder,
                          cardDataDecoder: cardDataDecoder)

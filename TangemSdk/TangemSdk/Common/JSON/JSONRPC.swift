@@ -262,7 +262,7 @@ extension Error {
 extension Dictionary where Key == String, Value == Any {
     func value<T: Decodable>(for key: String) throws -> T where T: ExpressibleByNilLiteral {
         let value = self[key]
-        if value == nil || String(describing: value) == "<null>" {
+        if value == nil || String(describing: value) == "Optional(<null>)" {
             return nil
         }
         

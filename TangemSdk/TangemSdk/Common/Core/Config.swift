@@ -38,10 +38,6 @@ public struct Config {
     
     public var handleErrors: Bool = true
 
-    public var savePin1InStaticField: Bool = true
-    
-    public var savePin2InStaticField: Bool = true
-    
     /// Card id display format. Full card id will be displayed by default
     public var cardIdDisplayFormat: CardIdDisplayFormat = .full
     
@@ -60,15 +56,20 @@ public struct Config {
     
     /// Convert all secp256k1 signatures, produced by the card, to a lower-S form. True by default
     public var canonizeSecp256k1Signatures: Bool = true
+    
+    /// A card with HD wallets feature enabled will derive keys automatically on "scan" and "createWallet". Repeated items will be ignored
+    /// All derived keys will be stored in `Card.Wallet.derivedKeys`.
+    /// Only `secp256k1` and `ed25519` supported
+    public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
 }
 
 public enum CardIdDisplayFormat {
-    ///Full cardId splitted by 4 numbers
+    /// Full cardId splitted by 4 numbers
     case full
-    ///n numbers from the end
+    /// n numbers from the end
     case last(_ numbers: Int)
-    ///n numbers from the end with mask, e.g.  * * *1234
+    /// n numbers from the end with mask, e.g.  * * *1234
     case lastMasked(_ numbers: Int, mask: String = "***")
-    ///n numbers from the end except last
+    /// n numbers from the end except last
     case lastLunh(_ numbers: Int)
 }

@@ -52,7 +52,7 @@ struct CardDeserializer {
             guard let defaultCurve = defaultCurve else {
                 throw TangemSdkError.decodingFailed("Missing curve id")
             }
-            
+
             let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
                                      chainCode: nil,
                                      curve: defaultCurve,

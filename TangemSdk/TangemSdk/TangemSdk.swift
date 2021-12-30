@@ -248,14 +248,14 @@ public extension TangemSdk {
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - walletPublicKey: Seed public key.
-    ///   - derivationPaths: Derivation pathes
+    ///   - derivationPaths: Derivation paths. Repeated items will be ignored.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<ExtendedPublicKey,TangemSdkError>`
+    ///   - completion: Returns `Swift.Result<[ExtendedPublicKey],TangemSdkError>`. All derived keys are unique and will be returned in arbitrary order.
     func deriveWalletPublicKeys(cardId: String,
                                 walletPublicKey: Data,
                                 derivationPaths: [DerivationPath],
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<[ExtendedPublicKey]>) {
+                                completion: @escaping CompletionResult<[DerivationPath:ExtendedPublicKey]>) {
         let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPaths: derivationPaths)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
@@ -346,8 +346,8 @@ public extension TangemSdk {
     ///     - privateKey: Optional private key that will be used for signing files hashes. If it is provided, then  `FileHashData` will contain signed file signatures.
     /// - Returns:
     /// `FileHashData` with hashes to sign and signatures if `privateKey` was provided.
-    func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) -> FileHashData {
-        return FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
+    func prepareHashes(cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) throws -> FileHashData {
+        return try FileHashHelper.prepareHash(for: cardId, fileData: fileData, fileCounter: fileCounter, privateKey: privateKey)
     }
     
     //MARK: - Issuer/User data

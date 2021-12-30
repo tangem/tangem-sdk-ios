@@ -23,13 +23,23 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         self.derivationPath = derivationPath
     }
     
+    deinit {
+        Log.debug("DeriveWalletPublicKeyTask deinit")
+    }
+    
+       
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
-        guard let walletIndex = session.environment.card?.wallets[walletPublicKey]?.index else {
-            completion(.failure(.walletNotFound))
+        guard let wallet = session.environment.card?.wallets[walletPublicKey] else {
+            completion(.failure(TangemSdkError.walletNotFound))
             return
         }
         
-        let readWallet = ReadWalletCommand(walletIndex: walletIndex, derivationPath: derivationPath)
+        guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
+            completion(.failure(TangemSdkError.unsupportedCurve))
+            return
+        }
+        
+        let readWallet = ReadWalletCommand(walletIndex: wallet.index, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
             case .success(let response):
@@ -38,10 +48,8 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                     return
                 }
                 
-                let childKey = ExtendedPublicKey(compressedPublicKey: response.wallet.publicKey,
-                                                 chainCode: chainCode,
-                                                 derivationPath: self.derivationPath)
-                
+                let childKey = ExtendedPublicKey(publicKey: response.wallet.publicKey, chainCode: chainCode)
+                session.environment.card?.wallets[self.walletPublicKey]?.derivedKeys[self.derivationPath] = childKey
                 completion(.success(childKey))
             case .failure(let error):
                 completion(.failure(error))

@@ -12,7 +12,7 @@ import Foundation
 public extension Card {
     /// Describing wallets created on card
     struct Wallet: Codable {
-        /// Wallet's public key.
+        /// Wallet's public key.  For `secp256k1`, the key can be compressed or uncompressed. Use `Secp256k1Key` for any conversions.
         public let publicKey: Data
         /// Optional chain code for BIP32 derivation.
         public let chainCode: Data?
@@ -30,16 +30,8 @@ public extension Card {
         public let index: Int
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
-        
-        public var extendedPublicKey: ExtendedPublicKey? {
-            guard let chainCode = self.chainCode else {
-                return nil
-            }
-            
-            return ExtendedPublicKey(compressedPublicKey: publicKey,
-                                     chainCode: chainCode,
-                                     derivationPath: .init())
-        }
+        /// Derived keys according to `Config.defaultDerivationPaths`
+        public var derivedKeys: [DerivationPath:ExtendedPublicKey] = [:]
     }
 }
 

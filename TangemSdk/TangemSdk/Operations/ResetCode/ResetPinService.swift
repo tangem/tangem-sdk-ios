@@ -13,12 +13,12 @@ public class ResetPinService: ObservableObject {
     @Published public private(set) var currentState: State = .needCode
     @Published public private(set) var error: TangemSdkError? = nil
     
-    private let sdk: TangemSdk
+    private var session: CardSession?
+    private let config: Config
     private var repo: ResetPinRepo = .init()
-    private var handleErrors: Bool { sdk.config.handleErrors }
     
-    public init(sdk: TangemSdk) {
-        self.sdk = sdk
+    public init(config: Config) {
+        self.config = config
     }
     
     deinit {
@@ -28,7 +28,7 @@ public class ResetPinService: ObservableObject {
     public func setAccessCode(_ code: String) throws {
         repo.accessCode = nil
         
-        if handleErrors {
+        if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.accessCodeRequired
             }
@@ -45,7 +45,7 @@ public class ResetPinService: ObservableObject {
     public func setPasscode(_ code: String) throws {
         repo.passcode = nil
         
-        if handleErrors {
+        if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.passcodeRequired
             }
@@ -81,10 +81,11 @@ public class ResetPinService: ObservableObject {
     }
     
     private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
-        let command = GetResetPinTokenCommand()
-        sdk.startSession(with: command,
-                         cardId: resetCardId,
-                         initialMessage: Message(header: "Scan the card on which you want to reset the pin")) { result in
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetCardId,
+                                               initialMessage: Message(header: "Scan the card on which you want to reset the pin"))
+        
+        session!.start(with: GetResetPinTokenCommand()) { result in
             switch result {
             case .success(let response):
                 self.repo.resetPinCard = response
@@ -101,9 +102,11 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let command = SignResetPinTokenCommand(resetPinCard: resetPinCard)
-        sdk.startSession(with: command,
-                         initialMessage: Message(header: "Scan the confirmation card")) { result in
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: nil,
+                                               initialMessage: Message(header: "Scan the confirmation card"))
+        
+        session!.start(with: SignResetPinTokenCommand(resetPinCard: resetPinCard)) { result in
             switch result {
             case .success(let response):
                 self.repo.confirmationCard = response
@@ -128,7 +131,7 @@ public class ResetPinService: ObservableObject {
         var accessCode = repo.accessCode
         var passcode = repo.passcode
         
-        if handleErrors {
+        if config.handleErrors {
             if !resetPinCard.isAccessCodeSet {
                 accessCode = UserCodeType.accessCode.defaultValue.sha256()
             }
@@ -148,11 +151,13 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetPinCard.cardId,
+                                               initialMessage: Message(header: "Scan card to reset user codes"))
         
-        sdk.startSession(with: task,
-                         cardId: resetPinCard.cardId,
-                         initialMessage: Message(header: "Scan card to reset user codes")) { result in
+        
+        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        session!.start(with: task) { result in
             switch result {
             case .success:
                 completion(.success(()))

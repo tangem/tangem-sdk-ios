@@ -141,13 +141,12 @@ public final class Secp256k1Utils {
         var recoveredSignature: Data? = nil
         
         for v in 27..<31 {
-            let testSignature = serializedSig + [UInt8(v)]
-            var recoverableSignature = try parseRecoverableSignature(testSignature, v: Int32(v))
+            var recoverableSignature = try parseRecoverableSignature(serializedSig, v: Int32(v))
             var recoveredRawKey = try recoverPublicKey(hash: hash, recoverableSignature: &recoverableSignature)
             let recoveredKey = try serializePublicKey(&recoveredRawKey, compressed: isCompressed)
             
             if recoveredKey == publicKey {
-                recoveredSignature = testSignature
+                recoveredSignature = serializedSig + [UInt8(v)]
                 break
             }
         }

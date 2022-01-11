@@ -113,6 +113,19 @@ class CryptoUtilsTests: XCTestCase {
         let normalized = try! sig.normalize()
         XCTAssertEqual(normalized.hexString, "5365F955FC45763383936BBC021A15D583E8D2300D1A65D21853B6A0FCAECE4E29AF6C44A13AD6E138336A4BD872F15FC517C30816E9B4C57858697AEBE25364")
     }
+    
+    func testRecover() {
+        let privateKey = Data(hexString: "fd230007d4a39352f50d8c481456c1f86ddc5ff155df170af0100a62269852f0")
+        let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
+        
+        let dummyData = Data(repeating: UInt8(1), count: 64)
+        let hash = dummyData.getSha256()
+        let signature = try! Secp256k1Utils().sign(dummyData, with: privateKey)
+        let unmarshalled = try? Secp256k1Signature(with: signature).unmarshal(with: publicKey, hash: hash)
+        XCTAssertEqual(unmarshalled?.r.hexString, "1CF364E34E445A99AD7DBE616A93053E58C6B72A8C4F9158E506DE7C0DB3A3B3")
+        XCTAssertEqual(unmarshalled?.s.hexString, "4D5A1F20E671A6CC57D2A46FC28488C833B4337B5C37089B99BBC16707459BA1")
+        XCTAssertEqual(unmarshalled?.v.hexString, "1C")
+    }
 }
 
 

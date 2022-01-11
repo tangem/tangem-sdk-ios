@@ -440,7 +440,7 @@ public class CardSession {
     }
     
     func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
-        let resetService = ResetPinService(sdk: TangemSdk(config: environment.config))
+        let resetService = ResetPinService(config: environment.config)
         let viewDelegate = ResetCodesViewDelegate(style: environment.config.style)
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
         resetCodesController!.cardIdDisplayFormat = environment.config.cardIdDisplayFormat

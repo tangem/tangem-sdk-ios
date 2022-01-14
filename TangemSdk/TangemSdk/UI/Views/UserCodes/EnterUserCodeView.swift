@@ -13,7 +13,8 @@ struct EnterUserCodeView: View {
     let title: String
     let cardId: String
     let placeholder: String
-    let completion: ((String?) -> Void)
+    let showForgotButton: Bool
+    let completion: CompletionResult<String>
     
     @EnvironmentObject var style: TangemSdkStyle
     
@@ -34,12 +35,17 @@ struct EnterUserCodeView: View {
             FloatingTextField(title: placeholder, text: $code, onCommit: onDone, isSecured: true)
                 .padding(.top, 16)
             
-            VStack(spacing: 0) {
+            VStack(spacing: 16) {
                 
                 Spacer()
                 
+                if showForgotButton {
+                    Button("enter_user_code_button_title_forgot".localized, action: onForgot)
+                        .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
+                }
+                
                 Button("common_continue".localized, action: onDone)
-                    .buttonStyle(RoundedButton(style: style,
+                    .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
                                                isDisabled: isContinueDisabled,
                                                isLoading: isLoading))
             }
@@ -54,14 +60,18 @@ struct EnterUserCodeView: View {
     }
     
     private func onCancel() {
-        completion(nil)
+        completion(.failure(.userCancelled))
+    }
+    
+    private func onForgot() {
+        completion(.failure(.userForgotTheCode))
     }
     
     private func onDone() {
         if !isContinueDisabled {
             UIApplication.shared.endEditing()
             isLoading = true
-            completion(code.trim())
+            completion(.success(code.trim()))
         }
     }
 }
@@ -73,10 +83,12 @@ struct EnterUserCodeView_Previews: PreviewProvider {
             EnterUserCodeView(title: "Title",
                               cardId: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
+                              showForgotButton: true,
                               completion: {_ in})
             EnterUserCodeView(title: "Title",
                               cardId: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
+                              showForgotButton: true,
                               completion: {_ in})
                 .preferredColorScheme(.dark)
         }

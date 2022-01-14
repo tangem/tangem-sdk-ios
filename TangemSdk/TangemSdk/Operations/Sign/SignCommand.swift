@@ -171,12 +171,15 @@ class SignCommand: Command {
             throw TangemSdkError.walletNotFound
         }
         
+        let hashSize = hashes.first!.count
+        let hashSizeData = hashSize > 255 ? hashSize.bytes2 : hashSize.byte
+        
         let flattenHashes = Data(hashes[getChunk()].joined())
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.transactionOutHashSize, value: hashes.first!.count)
+            .append(.transactionOutHashSize, value: hashSizeData)
             .append(.transactionOutHash, value: flattenHashes)
             //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
             .append(.walletIndex, value: walletIndex)

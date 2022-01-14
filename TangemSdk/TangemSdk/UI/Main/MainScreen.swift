@@ -1,5 +1,5 @@
 //
-//  ProgressView.swift
+//  MainScreen.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 23.07.2021.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 @available(iOS 13.0, *)
-struct MainView: View {
+struct MainScreen: View {
     @EnvironmentObject var viewModel: MainViewModel
     @EnvironmentObject var style: TangemSdkStyle
 
@@ -19,7 +19,6 @@ struct MainView: View {
                             .identity
                             .combined(with: .opacity))
             .environmentObject(style)
-            .environmentObject(viewModel)
     }
     
     @ViewBuilder
@@ -28,10 +27,11 @@ struct MainView: View {
         case .scan:
             ReadView()
             
-        case .requestCode(let type, cardId: let cardId, completion: let completion):
+        case .requestCode(let type, cardId: let cardId, let showForgotButton, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
                               cardId: cardId ?? "",
                               placeholder: type.name,
+                              showForgotButton: showForgotButton,
                               completion: completion)
             
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
@@ -71,7 +71,7 @@ struct MainView: View {
 }
 
 @available(iOS 13.0, *)
-private extension MainView {
+private extension MainScreen {
     enum Constants {
         static let indicatorMaxSize: CGFloat = 280
         static let nfcSheetHeightZoomed: CGFloat = 310 //iPhone 7
@@ -80,14 +80,15 @@ private extension MainView {
 }
 
 @available(iOS 13.0, *)
-struct MainView_Preview: PreviewProvider {
+struct MainScreen_Preview: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainScreen()
             .environmentObject(MainViewModel(viewState: .scan))
             .environmentObject(TangemSdkStyle())
     }
 }
 
+@available(iOS 13.0, *)
 fileprivate extension SessionViewState {
     @available(iOS 13.0, *)
     var indicatorState: IndicatorView.ViewState? {

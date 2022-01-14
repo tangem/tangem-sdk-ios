@@ -21,11 +21,6 @@ struct ContentView: View {
                     label: {EmptyView()})
                 
                 NavigationLink(
-                    destination: model.makePinResetDestination(),
-                    isActive: $model.showResetPin,
-                    label: {EmptyView()})
-                
-                NavigationLink(
                     destination: model.makeSettingsDestination(),
                     isActive: $model.showSettings,
                     label: {EmptyView()})
@@ -53,7 +48,6 @@ struct ContentView: View {
                                 Button("Clear", action: model.clear)
                                 Button("Copy", action: model.copy)
                                 Button("Backup", action: model.onBackup)
-                                Button("Reset pin", action: model.onResetService)
                             }
                             
                             additionalView
@@ -170,7 +164,13 @@ struct ContentView: View {
                     TextEditor(text: $model.editorData)
                         .frame(height: 100)
                     
-                    Button("Paste json", action: model.pasteEditor)
+                    HStack {
+                        Spacer()
+                        Button("Paste json", action: model.pasteEditor)
+                        Spacer()
+                        Button("End editing", action: model.endEditing)
+                        Spacer()
+                    }
                 } else {
                     HStack {
                         Spacer()

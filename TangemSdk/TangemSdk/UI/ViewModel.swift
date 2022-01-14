@@ -1,5 +1,5 @@
 //
-//  MainViewModel.swift
+//  ViewModel.swift
 //  TangemSdk
 //
 //  Created by [REDACTED_AUTHOR]
@@ -10,10 +10,10 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, *)
-class MainViewModel: ObservableObject {
-    @Published var viewState: SessionViewState
+class ViewModel<ViewState>: ObservableObject {
+    @Published var viewState: ViewState
     
-    init(viewState: SessionViewState) {
+    init(viewState: ViewState) {
         self.viewState = viewState
     }
 }

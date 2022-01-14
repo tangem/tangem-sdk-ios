@@ -24,6 +24,20 @@ extension UIColor {
                   blue: 0.274509803922,
                   alpha: 1)
         }
+        
+        static var secondaryButtonBackground: UIColor {
+            .init(red: 224.0/255.0,
+                  green: 224/255.0,
+                  blue: 224.0/255.0,
+                  alpha: 1)
+        }
+        
+        static var secondaryButtonForeground: UIColor {
+            .init(red: 58.0/255.0,
+                  green: 58/255.0,
+                  blue: 60.0/255.0,
+                  alpha: 1)
+        }
     }
 }
 

@@ -131,7 +131,13 @@ public extension FirmwareVersion {
         case special
         
         static func type(for str: String) -> FirmwareType {
-            FirmwareType(rawValue: str) ?? .special
+            let trimmed = str.trim()
+            
+            if trimmed.isEmpty {
+                return .release
+            }
+            
+            return FirmwareType(rawValue: trimmed) ?? .special
         }
     }
 }

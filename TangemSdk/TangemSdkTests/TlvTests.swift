@@ -191,8 +191,12 @@ class TlvTests: XCTestCase {
         XCTAssertNil(productMaskWrong)
         
         //test byte
-        let testByte: Int = Data(hexString: "510109").decodeTlv(tag: .transactionOutHashSize)!
-        XCTAssertEqual(testByte, Int(9))
+        let testByte: Data = Data(hexString: "510109").decodeTlv(tag: .transactionOutHashSize)!
+        XCTAssertEqual(testByte.toInt(), Int(9))
+        
+        //test byte2
+        let testBytes2: Data = Data(hexString: "51020384").decodeTlv(tag: .transactionOutHashSize)!
+        XCTAssertEqual(testBytes2.toInt(), Int(900))
         
         let testByteWrong: String? = Data(hexString: "510109").decodeTlv(tag: .transactionOutHashSize)
         XCTAssertNil(testByteWrong)
@@ -220,7 +224,8 @@ class TlvTests: XCTestCase {
         XCTAssertEqual(try! TlvBuilder().append(.manufactureDateTime, value: date).serialize(), Data(hexString: "820407E2071B"))
         
         XCTAssertEqual(try! TlvBuilder().append(.productMask, value: ProductMask.tag).serialize(), Data(hexString: "8A0102"))
-        XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value:9).serialize(), Data(hexString: "510109"))
+        XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value: Int(9).byte).serialize(), Data(hexString: "510109"))
+        XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value: Int(900).bytes2).serialize(), Data(hexString: "51020384"))
         XCTAssertEqual(try! TlvBuilder().append(.pin, value: "12345".sha256()).serialize(), Data(hexString: "10205994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"))
     }
     

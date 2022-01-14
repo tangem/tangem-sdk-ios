@@ -170,7 +170,7 @@ public enum TlvTag: Byte {
             return .status
         case .signingMethod:
             return .signingMethod
-        case .transactionOutHashSize, .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex, .backupCount:
+        case .legacyMode, .fileIndex, .health, .walletIndex, .walletsCount, .fileOwnerIndex, .backupCount:
             return .byte
         case .interactionMode:
             return .interactionMode

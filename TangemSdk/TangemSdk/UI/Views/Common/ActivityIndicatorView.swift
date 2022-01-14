@@ -10,14 +10,6 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, *)
-struct IndicatorSettings {
-    let style: UIActivityIndicatorView.Style
-    let color: UIColor
-    
-    static let `default` = IndicatorSettings(style: .medium, color: .white)
-}
-
-@available(iOS 13.0, *)
 struct ActivityIndicatorView: UIViewRepresentable {
     private var isAnimating: Bool
     private var style: UIActivityIndicatorView.Style
@@ -29,10 +21,11 @@ struct ActivityIndicatorView: UIViewRepresentable {
         self.color = color
     }
     
-    init(settings: IndicatorSettings) {
-        self.isAnimating = true
-        self.style = settings.style
-        self.color = settings.color
+    @available(iOS 14.0, *)
+    init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: Color = .white) {
+        self.isAnimating = isAnimating
+        self.style = style
+        self.color = UIColor(color)
     }
     
     func makeUIView(context: UIViewRepresentableContext<ActivityIndicatorView>) -> UIActivityIndicatorView {

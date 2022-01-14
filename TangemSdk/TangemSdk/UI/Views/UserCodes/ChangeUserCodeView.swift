@@ -14,7 +14,7 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
-    let completion: ((String?) -> Void)
+    let completion: CompletionResult<String>
     
     @State private var code: String = ""
     @State private var confirmation: String = ""
@@ -23,7 +23,6 @@ struct ChangeUserCodeView: View {
     @State private var validationTimer: Timer? = nil
     
     @EnvironmentObject var style: TangemSdkStyle
-    @EnvironmentObject var viewModel: MainViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -52,41 +51,29 @@ struct ChangeUserCodeView: View {
                 Spacer()
                 
                 Button("common_continue".localized, action: onDone)
-                    .buttonStyle(RoundedButton(style: style,
+                    .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
                                                isDisabled: isContinueDisabled,
                                                isLoading: false))
             }
             .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
-        .onReceive(viewModel.objectWillChange, perform: { _ in
-            clear()
-        })
-    }
-    
-    private func clear() {
-        code = ""
-        confirmation = ""
-        error = ""
-        isContinueDisabled = true
-        validationTimer?.invalidate()
-        validationTimer = nil
     }
     
     private func onCancel() {
-        completion(nil)
+        completion(.failure(.userCancelled))
     }
     
     private func onDone() {
         if !isContinueDisabled {
             UIApplication.shared.endEditing()
-            completion(code.trim())
+            completion(.success(code.trim()))
         }
     }
     
     private func scheduleValidation() {
         validationTimer?.invalidate()
-        validationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false, block: validateInput)
+        validationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: validateInput)
     }
     
     private func validateInput(_ timer: Timer? = nil) {
@@ -128,6 +115,5 @@ struct ChangeUserCodeView_Previews: PreviewProvider {
                 .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())
-        .environmentObject(MainViewModel(viewState: .default))
     }
 }

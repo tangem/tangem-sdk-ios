@@ -17,7 +17,7 @@ Supported platforms: **iOS** | [Android](https://github.com/tangem/tangem-sdk-an
 
 For exhaustive documentation, see [developers.tangem.com](https://developers.tangem.com).
 
-To kick off the development process take a look at [Getting started](https://developers.tangem.com/getting-started/ios).
+To kick off the development process take a look at [Getting started](https://developers.tangem.com/getting-started/ios) page.
 
 # License
 

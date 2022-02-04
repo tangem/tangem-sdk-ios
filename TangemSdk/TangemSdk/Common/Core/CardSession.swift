@@ -36,6 +36,7 @@ public class CardSession {
     
     private var preflightReadMode: PreflightReadMode = .fullCardRead
     private var currentTag: NFCTagType = .none
+    private var resetCodesController: ResetCodesController? = nil
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -397,23 +398,53 @@ public class CardSession {
         
         
         let cardId = environment.card?.cardId ?? self.cardId
+        let showForgotButton = environment.card?.backupStatus?.isActive ?? false
         let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
-        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, completion: { [weak self] code in
+        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
             guard let self = self else { return }
-
-            if let code = code {
-                switch type {
-                case .accessCode:
-                    self.environment.accessCode = UserCode(.accessCode, stringValue: code)
-                case .passcode:
-                    self.environment.passcode = UserCode(.passcode, stringValue: code)
-                }
+            
+            switch result {
+            case .success(let code):
+                self.updateEnvironment(with: type, code: code)
                 completion(.success(()))
-            } else {
-                completion(.failure(.userCancelled))
+            case .failure(let error):
+                if case .userForgotTheCode = error {
+                    self.viewDelegate.sessionStopped {
+                        self.restoreUserCode(type, cardId: cardId) { result in
+                            switch result {
+                            case .success(let newCode):
+                                self.updateEnvironment(with: type, code: newCode)
+                                self.viewDelegate.setState(.default)
+                                completion(.success(()))
+                                self.resetCodesController = nil
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        }
+                    }
+                } else {
+                    completion(.failure(error))
+                }
             }
         }))
+    }
+    
+    private func updateEnvironment(with type: UserCodeType, code: String) {
+        switch type {
+        case .accessCode:
+            self.environment.accessCode = UserCode(.accessCode, stringValue: code)
+        case .passcode:
+            self.environment.passcode = UserCode(.passcode, stringValue: code)
+        }
+    }
+    
+    func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
+        let resetService = ResetPinService(config: environment.config)
+        let viewDelegate = ResetCodesViewDelegate(style: environment.config.style)
+        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
+        resetCodesController!.cardIdDisplayFormat = environment.config.cardIdDisplayFormat
+        resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
     }
 }
 //MARK: - JSON RPC

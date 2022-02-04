@@ -179,6 +179,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a user manually closes the NFC  Dialog.
     case userCancelled
     
+    case userForgotTheCode
+    
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
     
@@ -274,7 +276,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case hdWalletDisabled
     
     case resetPinNoCardToReset
-    case resetPinWrongCard
+    case resetPinWrongCard(internalCode: Int? = nil)
     
     public var code: Int {
         switch self {
@@ -382,7 +384,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedFirmware: return 41230
             
         case .resetPinNoCardToReset: return 41300
-        case .resetPinWrongCard: return 41301
+        case .resetPinWrongCard(let internalCode): return internalCode ?? 41301
             
         case .fileSettingsUnsupported: return 42000
         case .filesIsEmpty: return 42001
@@ -403,6 +405,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
+        case .userForgotTheCode: return 50013
             
         case .wrongInteractionMode: return 50027
             
@@ -429,6 +432,23 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
+        }
+    }
+    
+    public var message: String? {
+        switch self {
+        case .encodingFailed(let message):
+            return message
+        case .encodingFailedTypeMismatch(let message):
+            return message
+        case .decodingFailed(let message):
+            return message
+        case .decodingFailedTypeMismatch(let message):
+            return message
+        case .decodingFailedMissingTag(let message):
+            return message
+        default:
+            return nil
         }
     }
     
@@ -461,18 +481,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves, .backupFailedNotEnoughWallets,
                 .backupFailedFirmware, .backupNotAllowed, .backupFailedNotEmptyWallets:
             return "error_backup_wrong_card".localized("\(self.code)")
-        case .encodingFailed(let message):
-            return "generic_error_code".localized("\(self.code). \(message)")
-        case .encodingFailedTypeMismatch(let message):
-            return "generic_error_code".localized("\(self.code). \(message)")
-        case .decodingFailed(let message):
-            return "generic_error_code".localized("\(self.code). \(message)")
-        case .decodingFailedTypeMismatch(let message):
-            return "generic_error_code".localized("\(self.code). \(message)")
-        case .decodingFailedMissingTag(let message):
-            return "generic_error_code".localized("\(self.code). \(message)")
+        case .resetPinWrongCard:
+            return "error_reset_wrong_card".localized("\(self.code)")
         case .oldCard: return "error_old_card".localized
         default:
+            if let message = self.message {
+                return "generic_error_code".localized("\(self.code). \(message)")
+            }
+            
             //let description = "\(self)".capitalizingFirst()
             return "generic_error_code".localized("\(self.code)")
         }

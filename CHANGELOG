@@ -1,6 +1,46 @@
-*   4fe1207 - (HEAD -> release/3.2.1, tag: develop-124, origin/develop, develop) Merge pull request #147 from tangem/update_from_master
+*   c1de852 - (HEAD -> release/3.3.0, tag: develop-128, origin/develop, develop) Merge pull request #153 from tangem/CSS-306_old_cards_support
 |\  
-| * 89a7cf1 - Merge branch 'master' into update_from_master
+| * c4979b1 - CSS-306 Parse old fw version
 |/  
-* 8412644 - (tag: develop-123) Merge pull request #144 from tangem/CSS-303_fix_sig_unmarshall
-* d73252a - CSS-303 Fix unmarshal secp256k1 sig
+*   b92816f - (tag: develop-127) Merge pull request #150 from tangem/CSS-231_reset_pin_ui
+|\  
+| *   21fa2ab - Merge branch 'develop' into CSS-231_reset_pin_ui
+| |\  
+| |/  
+|/|   
+* |   ecfbcb0 - (tag: develop-126) Merge pull request #151 from tangem/CSS-304_long_hashes
+|\ \  
+| * | b527b7f - CSS-304 Handle long hashes
+|/ /  
+| * 2202d6d - (tag: reset-beta-4) CSS-231 Refactor resetService  initializer
+| *   be50a37 - Merge branch 'develop' into CSS-231_reset_pin_ui
+| |\  
+| |/  
+|/|   
+* | 69486a6 - (tag: develop-125) Merge pull request #149 from tangem/master
+ /  
+* 1df2e90 - Merge branch 'develop' into CSS-231_reset_pin_ui
+* 4fb6296 - (tag: reset-beta-3) CSS-299  Deny interactive dismissal
+* 593800f - CSS-231 Update example
+* d3f53a5 - CSS-295 Error for reset code
+* e80cb9c - (tag: reset-beta-2) CSS-296 Reset pin for specific cardId
+* abea169 - (tag: reset-beta-1) CSS-231 Clean
+* 0e68d96 - CSS-231 Handle reset inside session
+* 6357430 - CSS-231 refactor callbacks and add more logs
+* 4838d89 - CSS-231 Update xcodeproj
+* f48d689 - CSS-231 Add Fogot the code button
+* 526073b - CSS-231 Refactor style
+* 018c485 - CSS-231 Refactor completion handler
+* fac780e - Merge branch 'develop' into CSS-231_reset_pin_ui
+* 3698a1c - Merge branch 'develop' into CSS-231_reset_pin_ui
+* 082bc2d - Merge branch 'CSS-217_backup' into CSS-231_reset_pin_ui
+* fac9550 - Merge branch 'CSS-217_backup' into CSS-231_reset_pin_ui
+* a3f5a09 - CSS-231 Minor fixes
+* a8ced78 - CSS-231 Update localizations
+* 76d9c23 - Merge branch 'CSS-217_backup' into CSS-231_reset_pin_ui
+* 4a1cf08 - CSS-231 remove unused environment object
+* 19ce510 - Merge branch 'CSS-217_backup' into CSS-231_reset_pin_ui
+* ce3336d - CSS-231 Reset codes complete without animation
+* 51ea68b - Merge branch 'CSS-217_backup' into CSS-231_reset_pin_ui
+* d077d5c - CSS-231 Change card's position with default animation
+* 551dfef - CSS-231 Reset UI layout

@@ -564,7 +564,9 @@ extension TangemSdk {
         }
         
         configure()
-        cardSession = makeSession(with: cardId, initialMessage: initialMessage)
+        cardSession = makeSession(with: config,
+                                  cardId: cardId,
+                                  initialMessage: initialMessage)
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -586,7 +588,9 @@ extension TangemSdk {
         }
         
         configure()
-        cardSession = makeSession(with: cardId, initialMessage: initialMessage)
+        cardSession = makeSession(with: config,
+                                  cardId: cardId,
+                                  initialMessage: initialMessage)
         cardSession?.start(callback)
     }
     
@@ -608,7 +612,8 @@ extension TangemSdk {
             
             try checkSession()
             configure()
-            cardSession = makeSession(with: cardId,
+            cardSession = makeSession(with: config,
+                                      cardId: cardId,
                                       initialMessage: initialMessage.flatMap { Message($0) })
             
             let task = RunnablesTask(runnables: runnables)
@@ -637,18 +642,19 @@ extension TangemSdk {
 
 //MARK: - Private
 @available(iOS 13.0, *)
-private extension TangemSdk {
-    func checkSession() throws {
+extension TangemSdk {
+    private func checkSession() throws {
         if let existingSession = cardSession, existingSession.state == .active  {
             throw TangemSdkError.busy
         }
     }
     
-    func configure() {
+    private func configure() {
         Log.config = config.logConfig
     }
     
-    func makeSession(with cardId: String?,
+    func makeSession(with config: Config,
+                     cardId: String?,
                      initialMessage: Message?) -> CardSession {
         CardSession(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
                     cardId: cardId,

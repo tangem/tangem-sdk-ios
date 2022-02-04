@@ -17,6 +17,9 @@
 "common_save" = "Speichern";
 "common_success" = "Erfolg";
 "common_error" = "Fehler";
+"common_warning" = "Warning";
+"common_retry" = "Retry";
+"common_understand" = "I understand";
 
 // User codes
 "pin1" = "Zugangscode";
@@ -28,6 +31,7 @@
 "pin_change_current_code_format" = "Aktuell %@";
 "pin_set_code_confirm_format" = "Bestätigen %@";
 "enter_user_code_button_title_forgot" = "Forgot your code?";
+"pin_reset_code_format" = "Reset %@";
 
 // Errors
 "generic_error_code" = "Während des Vorgangs ist ein Fehler aufgetreten. Code: %@.";
@@ -52,7 +56,9 @@
 "error_wrong_pin2" = "Wrong Passcode";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_backup_card_already_added" = "This card has already been added to the list.";
-"error_backup_wrong_card" = "This card can’t be used as a backup card. Code: %@.";
+"error_backup_wrong_card" = "This card can’t be used as a backup card. Error code: %@.";
+"error_reset_wrong_card" = "This card can’t be used for code recovery. Error code: %@.";
+"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please, try again later.";
 
 //Backup
 "backup_prepare_primary_card_message" = "Connect your phone and the primary card exactly as it shown above.";
@@ -60,4 +66,18 @@
 "backup_add_backup_card_message" = "Connect your phone and the card you want to use as a backup exactly as it shown above.";
 "backup_finalize_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
 "backup_finalize_backup_card_message_format" = "Connect your phone and the backup card with number %@ exactly as it shown above.";
-"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please, try again later.";
+
+// Attestation
+"attestation_failed_dev_card" = "This is a development card. You can continue at your own risk";
+"attestation_failed_card" = "This card may be production sample or conterfeit. You can continue at your own risk";
+"attestation_online_failed_title" = "Online attestation failed";
+"attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
+"attestation_warning_attest_wallets" = "Too large runs count of Attest Wallet or Sign looks suspicious.";
+
+// Reset codes
+"reset_codes_message_title_restore" = "Tap the card you want to restore";
+"reset_codes_message_body_restore" = "First, prepare the card for restore process.";
+"reset_codes_message_title_backup" = "Tap a backup card";
+"reset_codes_message_body_backup" = "Tap the linked card.";
+"reset_codes_message_body_restore_final" = "Tap the restore card again.";
+"reset_codes_success_message" = "Code was reset successfully";

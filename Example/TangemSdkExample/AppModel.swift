@@ -38,8 +38,7 @@ class AppModel: ObservableObject {
     @Published var handleErrors: Bool = true
     
     var backupService: BackupService? = nil
-    var resetPinService: ResetPinService? = nil
-    
+
     private lazy var _tangemSdk: TangemSdk = { .init() }()
     
     private var tangemSdk: TangemSdk {
@@ -179,7 +178,10 @@ extension AppModel {
             pastePersonalizationConfig()
         default: break
         }
-        
+    }
+    
+    func endEditing() {
+        UIApplication.shared.endEditing()
     }
 }
 
@@ -309,13 +311,23 @@ extension AppModel {
             scan.run(in: session) { result in
                 switch result {
                 case .success:
-                    let verifyCommand = AttestCardKeyCommand()
-                    verifyCommand.run(in: session) { result in
+                    session.resume()
+                    let createWallet = CreateWalletTask(curve: .secp256k1)
+                    createWallet.run(in: session) { result2 in
+                        switch result2 {
+                        case .success(let response):
+                            self.log(response)
+                        case .failure:
+                            break
+                        }
+                        
                         DispatchQueue.main.async {
                             self.handleCompletion(result)
                         }
+                        
                         session.stop()
                     }
+
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.complete(with: error)
@@ -714,11 +726,6 @@ extension AppModel {
         showBackupView = true
     }
     
-    func onResetService() {
-        resetPinService = ResetPinService(sdk: tangemSdk)
-        showResetPin = true
-    }
-    
     func onSettings() {
         showSettings = true
     }
@@ -726,15 +733,6 @@ extension AppModel {
     @ViewBuilder
     func makeSettingsDestination() -> some View {
         SettingsView().environmentObject(self)
-    }
-    
-    @ViewBuilder
-    func makePinResetDestination() -> some View {
-        if let service = self.resetPinService {
-            ResetPinView().environmentObject(service)
-        } else {
-            ResetPinView()
-        }
     }
     
     @ViewBuilder

@@ -23,13 +23,16 @@ public extension TangemSdkStyle {
     struct Colors {
         public var tint: Color = .blue
         
-        public var disabledButtonBackground: Color = Color(UIColor.systemGray6)
-        
-        public var buttonForeground: Color = .white
-        
-        public var disabledButtonForeground: Color = .gray
-        
         public var errorTint: Color = .red
+        
+        public var buttonColors: ButtonColors = .init()
+        
+        public var secondaryButtonColors: ButtonColors = .init(foregroundColor: .adaptiveColor(dark: UIColor.lightGray,
+                                                                                               light: UIColor.LightPalette.secondaryButtonForeground),
+                                                               backgroundColor: .adaptiveColor(dark: UIColor.systemGray3,
+                                                                                               light: UIColor.LightPalette.secondaryButtonBackground),
+                                                               disabledForegroundColor: Color(UIColor.systemGray2),
+                                                               disabledBackgroundColor: Color(UIColor.systemGray5))
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
         
@@ -39,7 +42,19 @@ public extension TangemSdkStyle {
         
         public var cardColor: Color = .adaptiveColor(dark: UIColor.DarkPalette.cardColor, light: UIColor.LightPalette.cardColor)
         
+        public var starsColor: Color = Color(UIColor.systemGray5) //Card's stars
+        
         public static var `default`: Colors = .init()
+    }
+    
+    struct ButtonColors {
+        public var foregroundColor: Color = .white
+    
+        public var backgroundColor: Color = .blue
+        
+        public var disabledForegroundColor: Color = .gray
+        
+        public var disabledBackgroundColor: Color = Color(UIColor.systemGray5)
     }
 }
 

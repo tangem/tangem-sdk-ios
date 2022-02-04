@@ -12,6 +12,10 @@ import Foundation
 final class GetResetPinTokenCommand: Command {
     var requiresPasscode: Bool { return false }
     var preflightReadMode: PreflightReadMode { .readCardOnly }
+
+    deinit {
+        Log.debug("GetResetPinTokenCommand deinit")
+    }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {

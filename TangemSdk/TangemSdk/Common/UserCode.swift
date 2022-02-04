@@ -62,37 +62,22 @@ extension UserCodeType {
     }
     
     var enterCodeTitle: String {
-        switch self {
-        case .accessCode:
-            return String(format: "pin_enter".localized, name.lowercasingFirst())
-        case .passcode:
-            return String(format: "pin_enter".localized, name.lowercasingFirst())
-        }
+        "pin_enter".localized(name.lowercasingFirst())
     }
+    
     var enterNewCodeTitle: String {
-        switch self {
-        case .accessCode:
-            return String(format: "pin_change_new_code_format".localized, name.lowercasingFirst())
-        case .passcode:
-            return String(format: "pin_change_new_code_format".localized, name.lowercasingFirst())
-        }
+        "pin_change_new_code_format".localized(name.lowercasingFirst())
     }
     
     var changeCodeTitle: String {
-        switch self {
-        case .accessCode:
-            return String(format: "pin_change_code_format".localized, name.lowercasingFirst())
-        case .passcode:
-            return String(format: "pin_change_code_format".localized, name.lowercasingFirst())
-        }
+        "pin_change_code_format".localized(name.lowercasingFirst())
     }
     
     var confirmCodeTitle: String {
-        switch self {
-        case .accessCode:
-            return String(format: "pin_set_code_confirm_format".localized, name.lowercasingFirst())
-        case .passcode:
-            return String(format: "pin_set_code_confirm_format".localized, name.lowercasingFirst())
-        }
+        "pin_set_code_confirm_format".localized(name.lowercasingFirst())
+    }
+    
+    var resetCodeTitle: String {
+        "pin_reset_code_format".localized(name.lowercasingFirst())
     }
 }

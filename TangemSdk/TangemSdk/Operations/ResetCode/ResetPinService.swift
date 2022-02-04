@@ -10,15 +10,15 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class ResetPinService: ObservableObject {
-    @Published public private(set) var currentState: State = .needScanResetCard
+    @Published public private(set) var currentState: State = .needCode
     @Published public private(set) var error: TangemSdkError? = nil
     
-    private let sdk: TangemSdk
+    private var session: CardSession?
+    private let config: Config
     private var repo: ResetPinRepo = .init()
-    private var handleErrors: Bool { sdk.config.handleErrors }
     
-    public init(sdk: TangemSdk) {
-        self.sdk = sdk
+    public init(config: Config) {
+        self.config = config
     }
     
     deinit {
@@ -28,7 +28,7 @@ public class ResetPinService: ObservableObject {
     public func setAccessCode(_ code: String) throws {
         repo.accessCode = nil
         
-        if handleErrors {
+        if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.accessCodeRequired
             }
@@ -39,12 +39,13 @@ public class ResetPinService: ObservableObject {
         }
         
         repo.accessCode = code.sha256()
+        currentState = currentState.next()
     }
     
     public func setPasscode(_ code: String) throws {
         repo.passcode = nil
         
-        if handleErrors {
+        if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.passcodeRequired
             }
@@ -54,17 +55,18 @@ public class ResetPinService: ObservableObject {
             }
         }
         repo.passcode = code.sha256()
+        currentState = currentState.next()
     }
     
-    public func proceed() {
+    public func proceed(with resetCardId: String? = nil) {
         switch currentState {
         case .needScanResetCard:
-            scanResetPinCard(handleCompletion)
+            scanResetPinCard(resetCardId: resetCardId, handleCompletion)
         case .needScanConfirmationCard:
             scanConfirmationCard(handleCompletion)
         case .needWriteResetCard:
             writeResetPinCard(handleCompletion)
-        case .finished:
+        case .finished, .needCode:
             break
         }
     }
@@ -78,10 +80,12 @@ public class ResetPinService: ObservableObject {
         }
     }
     
-    private func scanResetPinCard(_ completion: @escaping CompletionResult<Void>) {
-        let command = GetResetPinTokenCommand()
-        sdk.startSession(with: command,
-                         initialMessage: Message(header: "Scan the card on which you want to reset the pin")) { result in
+    private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetCardId,
+                                               initialMessage: Message(header: "Scan the card on which you want to reset the pin"))
+        
+        session!.start(with: GetResetPinTokenCommand()) { result in
             switch result {
             case .success(let response):
                 self.repo.resetPinCard = response
@@ -98,9 +102,11 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let command = SignResetPinTokenCommand(resetPinCard: resetPinCard)
-        sdk.startSession(with: command,
-                         initialMessage: Message(header: "Scan the confirmation card")) { result in
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: nil,
+                                               initialMessage: Message(header: "Scan the confirmation card"))
+        
+        session!.start(with: SignResetPinTokenCommand(resetPinCard: resetPinCard)) { result in
             switch result {
             case .success(let response):
                 self.repo.confirmationCard = response
@@ -125,7 +131,7 @@ public class ResetPinService: ObservableObject {
         var accessCode = repo.accessCode
         var passcode = repo.passcode
         
-        if handleErrors {
+        if config.handleErrors {
             if !resetPinCard.isAccessCodeSet {
                 accessCode = UserCodeType.accessCode.defaultValue.sha256()
             }
@@ -145,11 +151,13 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetPinCard.cardId,
+                                               initialMessage: Message(header: "Scan card to reset user codes"))
         
-        sdk.startSession(with: task,
-                         cardId: resetPinCard.cardId,
-                         initialMessage: Message(header: "Scan card to reset user codes")) { result in
+        
+        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        session!.start(with: task) { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -170,10 +178,69 @@ extension ResetPinService {
     }
     
     public enum State: Equatable, CaseIterable {
+        case needCode
         case needScanResetCard
         case needScanConfirmationCard
         case needWriteResetCard
         case finished
+        
+        var messageTitle: String {
+            switch self {
+            case .finished: return "common_success".localized
+            case .needScanConfirmationCard:
+                return "reset_codes_message_title_backup".localized
+            case .needScanResetCard, .needWriteResetCard:
+                return "reset_codes_message_title_restore".localized
+            case .needCode:
+                return ""
+            }
+        }
+        
+        var messageBody: String {
+            switch self {
+            case .finished: return "reset_codes_success_message".localized
+            case .needScanConfirmationCard:
+                return "reset_codes_message_body_backup".localized
+            case .needScanResetCard:
+                return "reset_codes_message_body_restore".localized
+            case .needWriteResetCard:
+                return "reset_codes_message_body_restore_final".localized
+            case .needCode:
+                return ""
+            }
+        }
+        
+        var cardType: CardType {
+            switch self {
+            case .needCode, .needScanResetCard, .needWriteResetCard, .finished:
+                return .origin
+            case .needScanConfirmationCard:
+                return .backup
+            }
+        }
+    }
+}
+
+enum CardType {
+    case origin
+    case backup
+    
+    var topIndex: Int {
+        switch self {
+        case .origin:
+            return 0
+        case .backup:
+            return 1
+        }
+    }
+    
+    var bottomIndex: Int {
+        switch self {
+        case .origin:
+            return 1
+        case .backup:
+            return 0
+        }
     }
 }
 

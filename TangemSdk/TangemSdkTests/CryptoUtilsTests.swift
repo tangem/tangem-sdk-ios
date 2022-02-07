@@ -44,6 +44,28 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertEqual(verifyByHash, true)
     }
     
+    func testEd25519Sign() {
+        let privateKey = try! CryptoUtils.generateRandomBytes(count: 32)
+        let publicKey = try! Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).publicKey.rawRepresentation
+        let hash = Data(hexString: "0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let signature = try! hash.sign(privateKey: privateKey, curve: .ed25519)
+        
+        let verify = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, hash: hash, signature: signature)
+        XCTAssertNotNil(verify)
+        XCTAssertEqual(verify, true)
+    }
+    
+    func testP256Sign() {
+        let privateKey = try! CryptoUtils.generateRandomBytes(count: 32)
+        let publicKey = try! P256.Signing.PrivateKey(rawRepresentation: privateKey).publicKey.x963Representation
+        let message = Data(hexString: "0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let signature = try! message.sign(privateKey: privateKey, curve: .secp256r1)
+        
+        let verify = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
+        XCTAssertNotNil(verify)
+        XCTAssertEqual(verify, true)
+    }
+    
     func testEd25519Verify() {
         let publicKey = Data(hexString:"1C985027CBDD3326E58BF01311828588616855CBDFA15E46A20325AAE8BABE9A")
         let message = Data(hexString:"0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")

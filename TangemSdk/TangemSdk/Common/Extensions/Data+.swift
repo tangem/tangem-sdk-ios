@@ -199,7 +199,7 @@ extension Data {
         case .secp256r1:
             return try P256.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: self).rawRepresentation
         case .ed25519:
-            return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: self)
+            return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: getSha512())
         }
     }
 }

@@ -196,9 +196,10 @@ extension Data {
         switch curve {
         case .secp256k1:
             return try Secp256k1Utils().sign(self, with: privateKey)
-        default:
-            // TODO: Create sign for ED25519 and secp256r1 curve
-            fatalError("Sign not implemented for this curve")
+        case .secp256r1:
+            return try P256.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: self).rawRepresentation
+        case .ed25519:
+            return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: getSha512())
         }
     }
 }

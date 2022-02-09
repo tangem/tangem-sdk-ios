@@ -30,17 +30,43 @@ class CryptoUtilsTests: XCTestCase {
     func testSecp256k1Sign() {
         let privateKey = Data(hexString: "fd230007d4a39352f50d8c481456c1f86ddc5ff155df170af0100a62269852f0")
         let publicKey = Data(hexString: "0432f507f6a3029028faa5913838c50f5ff3355b9b000b51889d03a2bdb96570cd750e8187482a27ca9d2dd0c92c632155d0384521ed406753c9883621ad0da68c")
-        
-        let dummyData = Data(repeating: UInt8(1), count: 64)
-        let hash = dummyData.getSha256()
-        let signature = try! Secp256k1Utils().sign(dummyData, with: privateKey)
+        let message = Data(repeating: UInt8(1), count: 64)
+        let signature = try! Secp256k1Utils().sign(message, with: privateKey)
         XCTAssertNotNil(signature)
         
-        let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: dummyData, signature: signature)
-        let verifyByHash = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, hash: hash, signature: signature)
+        let verify = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, message: message, signature: signature)
+        let verifyByHash = try! CryptoUtils.verify(curve: .secp256k1, publicKey: publicKey, hash: message.getSha256(), signature: signature)
         XCTAssertNotNil(verify)
         XCTAssertEqual(verify, true)
         XCTAssertNotNil(verifyByHash)
+        XCTAssertEqual(verifyByHash, true)
+    }
+    
+    func testEd25519Sign() {
+        let privateKey = try! CryptoUtils.generateRandomBytes(count: 32)
+        let publicKey = try! Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).publicKey.rawRepresentation
+        let message = Data(hexString: "0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let signature = try! message.sign(privateKey: privateKey, curve: .ed25519)
+        
+        let verify = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, message: message, signature: signature)
+        let verifyByHash = try? CryptoUtils.verify(curve: .ed25519, publicKey: publicKey, hash: message.getSha512(), signature: signature)
+        XCTAssertNotNil(verify)
+        XCTAssertNotNil(verifyByHash)
+        XCTAssertEqual(verify, true)
+        XCTAssertEqual(verifyByHash, true)
+    }
+    
+    func testP256Sign() {
+        let privateKey = try! CryptoUtils.generateRandomBytes(count: 32)
+        let publicKey = try! P256.Signing.PrivateKey(rawRepresentation: privateKey).publicKey.x963Representation
+        let message = Data(hexString: "0DA5A5EDA1F8B4F52DA5F92C2DC40346AAFE8C180DA3AD811F6F5AE7CCFB387D")
+        let signature = try! message.sign(privateKey: privateKey, curve: .secp256r1)
+        
+        let verify = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, message: message, signature: signature)
+        let verifyByHash = try? CryptoUtils.verify(curve: .secp256r1, publicKey: publicKey, hash: message.getSha256(), signature: signature)
+        XCTAssertNotNil(verify)
+        XCTAssertNotNil(verifyByHash)
+        XCTAssertEqual(verify, true)
         XCTAssertEqual(verifyByHash, true)
     }
     

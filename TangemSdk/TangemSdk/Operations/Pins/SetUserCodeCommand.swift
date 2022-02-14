@@ -19,7 +19,7 @@ public class SetUserCodeCommand: Command {
     /// - Parameters:
     ///   - accessCode: If nil, user will be prompted to enter the code
     public init(accessCode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0) } ?? .request
+        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
         codes[.passcode] = .notChange
     }
     
@@ -28,7 +28,7 @@ public class SetUserCodeCommand: Command {
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(passcode: String?) {
         codes[.accessCode] = .notChange
-        codes[.passcode] = passcode.map{ .stringValue($0) } ?? .request
+        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
     }
     
     /// Change  access code and passcode.
@@ -36,8 +36,8 @@ public class SetUserCodeCommand: Command {
     ///   - accessCode: If nil, user will be prompted to enter the code
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(accessCode: String?, passcode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0) } ?? .request
-        codes[.passcode] = passcode.map{ .stringValue($0) } ?? .request
+        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
+        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
     }
     
     /// Change  access code and passcode. Useful for checkpin, because with take codes from environment as Data

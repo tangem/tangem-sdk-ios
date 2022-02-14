@@ -74,6 +74,7 @@ public class BackupService: ObservableObject {
     
     public func setAccessCode(_ code: String) throws {
         repo.data.accessCode = nil
+        let code = code.trim()
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -81,7 +82,11 @@ public class BackupService: ObservableObject {
             }
             
             if code == UserCodeType.accessCode.defaultValue {
-                throw TangemSdkError.accessCodeCannotBeChanged
+                throw TangemSdkError.accessCodeCannotBeDefault
+            }
+            
+            if code.count < 4 {
+                throw TangemSdkError.accessCodeTooShort
             }
         }
         
@@ -95,6 +100,7 @@ public class BackupService: ObservableObject {
     
     public func setPasscode(_ code: String) throws {
         repo.data.passcode = nil
+        let code = code.trim()
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -102,7 +108,11 @@ public class BackupService: ObservableObject {
             }
             
             if code == UserCodeType.passcode.defaultValue {
-                throw TangemSdkError.passcodeCannotBeChanged
+                throw TangemSdkError.passcodeCannotBeDefault
+            }
+            
+            if code.count < 4 {
+                throw TangemSdkError.passcodeTooShort
             }
         }
         

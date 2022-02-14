@@ -80,4 +80,8 @@ extension UserCodeType {
     var resetCodeTitle: String {
         "pin_reset_code_format".localized(name.lowercasingFirst())
     }
+    
+    var shortLengthErrorMessage: String {
+        "error_pin_too_short_format".localized(name)
+    }
 }

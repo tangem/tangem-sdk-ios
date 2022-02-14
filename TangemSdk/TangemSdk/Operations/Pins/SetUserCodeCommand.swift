@@ -96,14 +96,24 @@ public class SetUserCodeCommand: Command {
         //Restrict default codes except reset command
         if shouldRestrictDefaultCodes {
             if !isCodeAllowed(.accessCode) {
-                completion(.failure(TangemSdkError.accessCodeCannotBeChanged))
+                completion(.failure(TangemSdkError.accessCodeCannotBeDefault))
                 return
             }
             
             if !isCodeAllowed(.passcode) {
-                completion(.failure(TangemSdkError.passcodeCannotBeChanged))
+                completion(.failure(TangemSdkError.passcodeCannotBeDefault))
                 return
             }
+        }
+        
+        if !isCodeLengthValid(.accessCode) {
+            completion(.failure(TangemSdkError.accessCodeTooShort))
+            return
+        }
+        
+        if !isCodeLengthValid(.passcode) {
+            completion(.failure(TangemSdkError.passcodeTooShort))
+            return
         }
 
         self.transceive(in: session, completion: completion )
@@ -112,6 +122,15 @@ public class SetUserCodeCommand: Command {
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
         if let code = self.codes[type]?.value,
            code == type.defaultValue.sha256() {
+            return false
+        }
+        
+        return true
+    }
+    
+    private func isCodeLengthValid(_ type: UserCodeType) -> Bool  {
+        if let code = self.codes[type]?.value,
+           code.count < 4 {
             return false
         }
         

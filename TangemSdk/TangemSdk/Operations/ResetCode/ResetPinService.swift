@@ -27,6 +27,7 @@ public class ResetPinService: ObservableObject {
     
     public func setAccessCode(_ code: String) throws {
         repo.accessCode = nil
+        let code = code.trim()
         
         if config.handleErrors {
             guard !code.isEmpty else {
@@ -34,7 +35,11 @@ public class ResetPinService: ObservableObject {
             }
             
             if code == UserCodeType.accessCode.defaultValue {
-                throw TangemSdkError.accessCodeCannotBeChanged
+                throw TangemSdkError.accessCodeCannotBeDefault
+            }
+            
+            if code.count < 4 {
+                throw TangemSdkError.accessCodeTooShort
             }
         }
         
@@ -44,6 +49,7 @@ public class ResetPinService: ObservableObject {
     
     public func setPasscode(_ code: String) throws {
         repo.passcode = nil
+        let code = code.trim()
         
         if config.handleErrors {
             guard !code.isEmpty else {
@@ -51,7 +57,11 @@ public class ResetPinService: ObservableObject {
             }
             
             if code == UserCodeType.passcode.defaultValue {
-                throw TangemSdkError.passcodeCannotBeChanged
+                throw TangemSdkError.passcodeCannotBeDefault
+            }
+            
+            if code.count < 4 {
+                throw TangemSdkError.passcodeTooShort
             }
         }
         repo.passcode = code.sha256()

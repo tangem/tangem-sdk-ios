@@ -30,6 +30,12 @@ struct UserCode {
     }
 }
 
+//MARK: Constants
+@available(iOS 13.0, *)
+extension UserCode {
+    static let minLength = 4
+}
+
 public enum UserCodeType {
     case accessCode
     case passcode

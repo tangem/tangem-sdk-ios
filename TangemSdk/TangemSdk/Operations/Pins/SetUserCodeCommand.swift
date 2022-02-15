@@ -129,8 +129,12 @@ public class SetUserCodeCommand: Command {
     }
     
     private func isCodeLengthValid(_ type: UserCodeType) -> Bool  {
-        if let code = self.codes[type]?.value,
-           code.count < 4 {
+        if let stringValue = self.codes[type]?.stringValue,
+           stringValue.count < UserCode.minLength {
+            return false
+        }
+        
+        if let dataValue = self.codes[type]?.value, dataValue.isEmpty {
             return false
         }
         
@@ -237,6 +241,15 @@ extension SetUserCodeCommand {
             case .stringValue(let code):
                 return code.sha256()
             case .value(let code):
+                return code
+            default:
+                return nil
+            }
+        }
+        
+        var stringValue: String? {
+            switch self {
+            case .stringValue(let code):
                 return code
             default:
                 return nil

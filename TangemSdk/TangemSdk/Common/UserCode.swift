@@ -30,12 +30,6 @@ struct UserCode {
     }
 }
 
-//MARK: Constants
-@available(iOS 13.0, *)
-extension UserCode {
-    static let minLength = 4
-}
-
 public enum UserCodeType {
     case accessCode
     case passcode
@@ -51,9 +45,11 @@ public enum UserCodeType {
 }
 
 //MARK: Constants
-private extension UserCodeType {
-    static let defaultAccessCode = "000000"
-    static let defaultPasscode = "000"
+extension UserCodeType {
+    static let minLength = 4
+    
+    private static let defaultAccessCode = "000000"
+    private static let defaultPasscode = "000"
 }
 
 @available(iOS 13.0, *)
@@ -88,6 +84,11 @@ extension UserCodeType {
     }
     
     var shortLengthErrorMessage: String {
-        "error_pin_too_short_format".localized(name)
+        switch self {
+        case .accessCode:
+            return TangemSdkError.accessCodeTooShort.localizedDescription
+        case .passcode:
+            return TangemSdkError.passcodeTooShort.localizedDescription
+        }
     }
 }

@@ -41,7 +41,7 @@
 "error_purge_prohibited" = "Die Konfiguration der Karte erlaubt nicht, das Wallet zu löschen";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";
 "error_pin_cannot_be_default_format" = "%@ cannot be changed to this value. Please, enter another one";
-"error_pin_too_short_format" = "%@ must be at least 4 characters long";
+"error_pin_too_short_format" = "%@ must be at least %d characters long";
 "error_wrong_pin_format" = "Wrong %@";
 "error_pin_required_format" = "%@ is required";
 "error_not_activated" = "Diese Karte ist nicht aktiviert worden";

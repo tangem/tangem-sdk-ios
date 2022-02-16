@@ -85,7 +85,7 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.accessCodeCannotBeDefault
             }
             
-            if code.count < UserCode.minLength {
+            if code.count < UserCodeType.minLength {
                 throw TangemSdkError.accessCodeTooShort
             }
         }
@@ -111,7 +111,7 @@ public class BackupService: ObservableObject {
                 throw TangemSdkError.passcodeCannotBeDefault
             }
             
-            if code.count < UserCode.minLength {
+            if code.count < UserCodeType.minLength {
                 throw TangemSdkError.passcodeTooShort
             }
         }

@@ -351,6 +351,7 @@
 		5D379C2A268FA4D200C7F473 /* CompletionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionResult.swift; sourceTree = "<group>"; };
 		5D379C2C268FA53D00C7F473 /* KeyPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPair.swift; sourceTree = "<group>"; };
 		5D379C2E268FA57500C7F473 /* UserCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCode.swift; sourceTree = "<group>"; };
+		5D384E0F27B5355600869C0D /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D38D06D26790B1A0052F67C /* Scan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Scan.json; sourceTree = "<group>"; };
 		5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustedCardsRepo.swift; sourceTree = "<group>"; };
 		5D38D077267A4B0C0052F67C /* AttestationTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationTask.swift; sourceTree = "<group>"; };
@@ -1483,6 +1484,7 @@
 				fr,
 				de,
 				it,
+				ru,
 			);
 			mainGroup = 5DA80C90231D247A00A50A10;
 			packageReferences = (
@@ -1783,6 +1785,7 @@
 				5D06DF6823D8A1EE0041DD2B /* fr */,
 				5D011A252530BC2F00758010 /* de */,
 				5DD1D62D25557E7F007910EF /* it */,
+				5D384E0F27B5355600869C0D /* ru */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

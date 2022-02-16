@@ -130,7 +130,7 @@ public class SetUserCodeCommand: Command {
     
     private func isCodeLengthValid(_ type: UserCodeType) -> Bool  {
         if let stringValue = self.codes[type]?.stringValue,
-           stringValue.count < UserCode.minLength {
+           stringValue.count < UserCodeType.minLength {
             return false
         }
         

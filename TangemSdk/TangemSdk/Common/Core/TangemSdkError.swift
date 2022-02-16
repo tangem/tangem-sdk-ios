@@ -113,6 +113,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case accessCodeCannotBeChanged
     case passcodeCannotBeChanged
     case accessCodeCannotBeDefault
+    case passcodeCannotBeDefault
+    case accessCodeTooShort
+    case passcodeTooShort
     
     //Sign Errors
     case noRemainingSignatures
@@ -349,6 +352,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeCannotBeChanged: return 40801
         case .passcodeCannotBeChanged: return 40802
         case .accessCodeCannotBeDefault: return 40803
+        case .passcodeCannotBeDefault: return 40804
+        case .accessCodeTooShort: return 40805
+        case .passcodeTooShort: return 40806
             
         case .noRemainingSignatures: return 40901
         case .emptyHashes: return 40902
@@ -459,23 +465,26 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .alreadyCreated: return "error_already_created".localized
         case .noRemainingSignatures: return "error_no_remaining_signatures".localized
         case .notActivated: return "error_not_activated".localized
-        case .accessCodeCannotBeChanged: return "error_pin1_cannot_be_changed".localized
-        case .accessCodeCannotBeDefault: return "error_pin1_cannot_be_default".localized
-        case .passcodeCannotBeChanged: return "error_pin2_cannot_be_changed".localized
+        case .accessCodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.accessCode.name)
+        case .passcodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.passcode.name)
+        case .accessCodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.accessCode.name)
+        case .passcodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.passcode.name)
+        case .accessCodeTooShort: return String(format: "error_pin_too_short_format".localized, UserCodeType.accessCode.name, UserCodeType.minLength)
+        case .passcodeTooShort: return String(format: "error_pin_too_short_format".localized, UserCodeType.passcode.name, UserCodeType.minLength)
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized
         case .wrongCardNumber: return "error_wrong_card_number".localized
         case .wrongCardType: return "error_wrong_card_type".localized
-        case .accessCodeRequired: return "error_pin1_required".localized
-        case .passcodeRequired: return "error_pin2_required".localized
+        case .accessCodeRequired: return "error_pin_required_format".localized(UserCodeType.accessCode.name)
+        case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)
         case .underlying(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
         case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
         case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
-        case .wrongAccessCode: return "error_wrong_pin1".localized
-        case .wrongPasscode: return "error_wrong_pin2".localized
+        case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)
+        case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)
         case .issuerSignatureLoadingFailed: return "issuer_signature_loading_failed".localized
         case .backupCardRequired, .backupCardAlreadyAdded: return "error_backup_card_already_added".localized
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves, .backupFailedNotEnoughWallets,
@@ -484,6 +493,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")
         case .oldCard: return "error_old_card".localized
+            
         default:
             if let message = self.message {
                 return "generic_error_code".localized("\(self.code). \(message)")

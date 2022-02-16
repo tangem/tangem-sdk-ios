@@ -93,7 +93,7 @@ struct ChangeUserCodeView: View {
             return
         }
         
-        if trimmedCode.count < UserCode.minLength {
+        if trimmedCode.count < UserCodeType.minLength {
             error = type.shortLengthErrorMessage
             isContinueDisabled = true
             return

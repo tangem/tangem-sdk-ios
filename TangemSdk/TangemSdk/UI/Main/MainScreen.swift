@@ -35,7 +35,8 @@ struct MainScreen: View {
                               completion: completion)
             
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
-            ChangeUserCodeView(title: type.changeCodeTitle,
+            ChangeUserCodeView(type: type,
+                               title: type.changeCodeTitle,
                                cardId: cardId ?? "",
                                placeholder: type.enterNewCodeTitle,
                                confirmationPlaceholder: type.confirmCodeTitle,

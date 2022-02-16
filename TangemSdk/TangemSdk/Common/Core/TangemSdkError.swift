@@ -469,8 +469,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .passcodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.passcode.name)
         case .accessCodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.accessCode.name)
         case .passcodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.passcode.name)
-        case .accessCodeTooShort: return "error_pin_too_short_format".localized(UserCodeType.accessCode.name)
-        case .passcodeTooShort: return "error_pin_too_short_format".localized(UserCodeType.passcode.name)
+        case .accessCodeTooShort: return String(format: "error_pin_too_short_format".localized, UserCodeType.accessCode.name, UserCodeType.minLength)
+        case .passcodeTooShort: return String(format: "error_pin_too_short_format".localized, UserCodeType.passcode.name, UserCodeType.minLength)
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized

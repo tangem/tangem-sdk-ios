@@ -38,7 +38,7 @@ public class ResetPinService: ObservableObject {
                 throw TangemSdkError.accessCodeCannotBeDefault
             }
             
-            if code.count < UserCode.minLength {
+            if code.count < UserCodeType.minLength {
                 throw TangemSdkError.accessCodeTooShort
             }
         }
@@ -60,7 +60,7 @@ public class ResetPinService: ObservableObject {
                 throw TangemSdkError.passcodeCannotBeDefault
             }
             
-            if code.count < UserCode.minLength {
+            if code.count < UserCodeType.minLength {
                 throw TangemSdkError.passcodeTooShort
             }
         }

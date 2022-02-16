@@ -45,9 +45,11 @@ public enum UserCodeType {
 }
 
 //MARK: Constants
-private extension UserCodeType {
-    static let defaultAccessCode = "000000"
-    static let defaultPasscode = "000"
+extension UserCodeType {
+    static let minLength = 4
+    
+    private static let defaultAccessCode = "000000"
+    private static let defaultPasscode = "000"
 }
 
 @available(iOS 13.0, *)
@@ -79,5 +81,14 @@ extension UserCodeType {
     
     var resetCodeTitle: String {
         "pin_reset_code_format".localized(name.lowercasingFirst())
+    }
+    
+    var shortLengthErrorMessage: String {
+        switch self {
+        case .accessCode:
+            return TangemSdkError.accessCodeTooShort.localizedDescription
+        case .passcode:
+            return TangemSdkError.passcodeTooShort.localizedDescription
+        }
     }
 }

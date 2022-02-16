@@ -10,6 +10,7 @@ import SwiftUI
 
 @available(iOS 13.0, *)
 struct ChangeUserCodeView: View {
+    let type: UserCodeType
     let title: String
     let cardId: String
     let placeholder: String
@@ -86,8 +87,14 @@ struct ChangeUserCodeView: View {
             return
         }
         
-        if trimmedCode != trimmedConfirmation {
+        if code != confirmation {
             error = "pin_confirm_error_format".localized
+            isContinueDisabled = true
+            return
+        }
+        
+        if trimmedCode.count < UserCodeType.minLength {
+            error = type.shortLengthErrorMessage
             isContinueDisabled = true
             return
         }
@@ -102,12 +109,14 @@ struct ChangeUserCodeView: View {
 struct ChangeUserCodeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ChangeUserCodeView(title: "Title",
+            ChangeUserCodeView(type: .accessCode,
+                               title: "Title",
                                cardId: "0000 1111 2222 3333 444",
                                placeholder: "Enter code",
                                confirmationPlaceholder: "Confirm",
                                completion: {_ in})
-            ChangeUserCodeView(title: "Title",
+            ChangeUserCodeView(type: .accessCode,
+                               title: "Title",
                                cardId: "0000 1111 2222 3333 444",
                                placeholder: "Enter code",
                                confirmationPlaceholder: "Confirm",

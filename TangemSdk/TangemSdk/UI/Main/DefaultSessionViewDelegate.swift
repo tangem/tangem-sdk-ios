@@ -69,7 +69,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         if pinnedMessage == nil {
             pinnedMessage = reader.alertMessage
         }
-        showAlertMessage("nfc_alert_default_done".localized)
+        showAlertMessage("nfc_alert_default".localized)
     }
     
     func wrongCard(message: String) {

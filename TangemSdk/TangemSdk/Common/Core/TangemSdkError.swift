@@ -487,8 +487,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)
         case .issuerSignatureLoadingFailed: return "issuer_signature_loading_failed".localized
         case .backupCardRequired, .backupCardAlreadyAdded: return "error_backup_card_already_added".localized
+        case .backupFailedNotEmptyWallets: return "error_backup_not_empty_wallets".localized
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves, .backupFailedNotEnoughWallets,
-                .backupFailedFirmware, .backupNotAllowed, .backupFailedNotEmptyWallets:
+                .backupFailedFirmware, .backupNotAllowed:
             return "error_backup_wrong_card".localized("\(self.code)")
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")

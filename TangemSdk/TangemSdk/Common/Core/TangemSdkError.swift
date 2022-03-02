@@ -481,7 +481,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .underlying(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
         case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
-        case .maxNumberOfWalletsCreated: return "error_no_space_for_new_wallet".localized
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)
         case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)

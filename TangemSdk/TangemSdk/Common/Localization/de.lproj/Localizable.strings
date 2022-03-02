@@ -38,7 +38,6 @@
 "error_wrong_card_type" = "Diese Karte ist für eine andere App konfiguriert. Sehen Sie sich die Informationen auf Ihrer Karte an und laden Sie die entsprechende App herunter.";
 "error_file_not_found" = "File not found";
 "error_not_supported_firmware_version" = "The command requires a card with a different firmware version";
-"error_no_space_for_new_wallet" = "Max number of wallets already created";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_backup_card_already_added" = "This card has already been added to the list.";
 "error_backup_not_empty_wallets" = "This card already has a wallet. If you want to proceed you have to reset it to factory settings first.";
@@ -50,14 +49,14 @@
 "backup_finalize_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
 "backup_finalize_backup_card_message_format" = "Connect your phone and the backup card with number %@ exactly as it shown above.";
 "issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please try again later.";
-"attestation_failed_dev_card" = "This is a development card. You can continue at your own risk";
+"attestation_failed_dev_card" = "This is a development card. Its authenticity cannot be verified. Do not accept this card as a means of payment.";
 "attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk";
 "attestation_online_failed_title" = "Online attestation failed";
 "attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
 "attestation_warning_attest_wallets" = "Too many runs of Attest Wallet or Sign looks suspicious.";
 "reset_codes_message_title_restore" = "Tap the card you want to restore";
-"reset_codes_message_body_restore" = "First, prepare the card for restore process.";
+"reset_codes_message_body_restore" = "First, prepare the card for restore process";
 "reset_codes_message_title_backup" = "Tap a backup card";
-"reset_codes_message_body_backup" = "Tap the linked card.";
-"reset_codes_message_body_restore_final" = "Tap the restore card again.";
+"reset_codes_message_body_backup" = "Tap the linked card";
+"reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";

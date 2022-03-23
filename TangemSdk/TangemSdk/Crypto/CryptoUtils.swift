@@ -52,6 +52,9 @@ public final class CryptoUtils {
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             
             return pubKey.isValidSignature(sig, for: message)
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            assertionFailure("Not implemented")
+            throw TangemSdkError.unsupportedCurve
         }
     }
     
@@ -75,6 +78,8 @@ public final class CryptoUtils {
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            fatalError("not implemented")
         }
     }
 

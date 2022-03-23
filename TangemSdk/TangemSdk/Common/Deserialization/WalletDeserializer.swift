@@ -63,6 +63,7 @@ class WalletDeserializer {
                            totalSignedHashes: try decoder.decode(.walletSignedHashes),
                            remainingSignatures: nil,
                            index: try decoder.decode(.walletIndex),
+                           proof: try decoder.decode(.proof),
                            hasBackup: status == .backuped)
     }
 }

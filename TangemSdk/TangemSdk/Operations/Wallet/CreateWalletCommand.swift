@@ -164,6 +164,7 @@ final class CreateWalletCommand: Command {
                            totalSignedHashes: 0,
                            remainingSignatures: remainingSignatures,
                            index: index,
+                           proof: nil,
                            hasBackup: false)
     }
     

@@ -109,6 +109,8 @@ extension FirmwareVersion: Comparable {
 public extension FirmwareVersion { //todo: move all doubleValue checks to constants, group production cos
     /// Multi-wallet
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
+    /// BLS
+    static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
     /// Field on card that describes is passcode is default value or not
     static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
     /// Field on card that describes is accessCode is default value or not

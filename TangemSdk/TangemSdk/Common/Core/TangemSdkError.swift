@@ -273,6 +273,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupFailedNotEnoughCurves
     case backupFailedNotEnoughWallets
     case backupFailedFirmware
+    case backupFailedIncompatibleBatch
     
     //MARK: Settings
     case filesDisabled
@@ -388,6 +389,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedNotEnoughWallets: return 41228
         case .issuerSignatureLoadingFailed: return 41229
         case .backupFailedFirmware: return 41230
+        case .backupFailedIncompatibleBatch: return 41231
             
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard(let internalCode): return internalCode ?? 41301
@@ -488,7 +490,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupCardRequired, .backupCardAlreadyAdded: return "error_backup_card_already_added".localized
         case .backupFailedNotEmptyWallets: return "error_backup_not_empty_wallets".localized
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves, .backupFailedNotEnoughWallets,
-                .backupFailedFirmware, .backupNotAllowed:
+                .backupFailedFirmware, .backupNotAllowed, .backupFailedIncompatibleBatch:
             return "error_backup_wrong_card".localized("\(self.code)")
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")

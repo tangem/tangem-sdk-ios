@@ -56,6 +56,11 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                 return
             }
             
+            if !isBatchIdCompatible(card.batchId) {
+                completion(.failure(.backupFailedIncompatibleBatch))
+                return
+            }
+            
             if card.cardId.lowercased() == primaryCard.cardId.lowercased() {
                 completion(.failure(.backupCardRequired))
                 return
@@ -105,5 +110,31 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                 let backupCard = BackupCard(rawCard, issuerSignature: signature)
                 completion(.success(backupCard))
             })
+    }
+    
+    private func isBatchIdCompatible(_ batchId: String) -> Bool {
+        guard let primaryCardBatchId = primaryCard.batchId?.uppercased() else {
+            return true //We found the old interrupted backup. Skip this check.
+        }
+        
+        let backupCardBatchId = batchId.uppercased()
+        
+        if backupCardBatchId == primaryCardBatchId {
+            return true
+        }
+        
+        if BatchId.isDetached(backupCardBatchId) || BatchId.isDetached(primaryCardBatchId) {
+            return false
+        }
+        
+        return true
+    }
+}
+
+fileprivate struct BatchId {
+    private static let detached: [String] = ["AC01", "AC02"]
+    
+    static func isDetached(_ batchId: String) -> Bool {
+        BatchId.detached.contains(batchId)
     }
 }

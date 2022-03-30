@@ -14,4 +14,7 @@ public enum EllipticCurve: String, StringCodable, CaseIterable {
     case secp256k1
     case ed25519
     case secp256r1
+    case bls12381_G2
+    case bls12381_G2_AUG
+    case bls12381_G2_POP
 }

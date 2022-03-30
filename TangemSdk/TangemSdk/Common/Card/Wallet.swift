@@ -28,6 +28,8 @@ public extension Card {
         public internal(set) var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
+        /// Proof for BLS Proof of possession scheme (POP)
+        public let proof: Data?
         /// Does this wallet has a backup
         public internal(set) var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`

@@ -38,8 +38,7 @@ struct CardDeserializer {
             !(try decoder.decode(.pinIsDefault)) : nil
         
         let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)
-        let supportedCurves: [EllipticCurve] = firmware < .multiwalletAvailable ? defaultCurve.map { [$0] } ?? []
-            : EllipticCurve.allCases
+        let supportedCurves = getSupportedCurves(for: firmware, defaultCurve: defaultCurve)
         
         var wallets: [Card.Wallet] = []
         var remainingSignatures: Int? = nil
@@ -60,6 +59,7 @@ struct CardDeserializer {
                                      totalSignedHashes: try decoder.decode(.walletSignedHashes),
                                      remainingSignatures: remainingSignatures,
                                      index: 0,
+                                     proof: nil,
                                      hasBackup: false)
             
             wallets.append(wallet)
@@ -137,5 +137,17 @@ struct CardDeserializer {
         if status == .purged {
             throw TangemSdkError.walletIsPurged
         }
+    }
+    
+    private func getSupportedCurves(for fwVersion: FirmwareVersion, defaultCurve: EllipticCurve?) -> [EllipticCurve] {
+        if fwVersion < .multiwalletAvailable {
+            return defaultCurve.map { [$0] } ?? []
+        }
+        
+        if fwVersion < .blsAvailable {
+            return [.secp256k1, .ed25519, .secp256r1]
+        }
+        
+        return EllipticCurve.allCases
     }
 }

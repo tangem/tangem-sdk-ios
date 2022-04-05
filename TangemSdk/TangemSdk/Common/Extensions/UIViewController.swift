@@ -11,7 +11,15 @@ import Foundation
 import UIKit
 
 extension UIViewController {
-    @objc var topmostViewController: UIViewController? { return presentedViewController?.topmostViewController ?? self }
+    @objc var topmostViewController: UIViewController? {
+        let controller = presentedViewController?.topmostViewController ?? self
+        
+        if let alert = controller as? UIAlertController { //We can't present modally from detached controllers
+            return alert.presentingViewController
+        }
+        
+        return controller
+    }
 }
 
 extension UINavigationController {

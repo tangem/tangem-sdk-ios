@@ -30,6 +30,16 @@ class BaseViewDelegate {
               let topmostViewController = UIApplication.shared.topMostViewController
         else { return }
         
+        if let presentedController = topmostViewController.presentedViewController { //dismiss alert
+            presentedController.dismiss(animated: false) {
+                DispatchQueue.main.async {
+                    self.presentScreenIfNeeded()
+                }
+            }
+
+            return
+        }
+        
         topmostViewController.present(self.screen!, animated: true, completion: nil)
     }
     

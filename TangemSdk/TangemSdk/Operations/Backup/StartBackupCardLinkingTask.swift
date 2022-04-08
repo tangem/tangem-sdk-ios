@@ -131,10 +131,10 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
     }
 }
 
-fileprivate struct BatchId {
-    private static let detached: [String] = ["AC01", "AC02"]
+public struct BatchId {
+    private static let detached: [String] = ["AC01", "AC02", "CB95"]
     
-    static func isDetached(_ batchId: String) -> Bool {
+    public static func isDetached(_ batchId: String) -> Bool {
         BatchId.detached.contains(batchId)
     }
 }

@@ -19,7 +19,7 @@ public class SetUserCodeCommand: Command {
     /// - Parameters:
     ///   - accessCode: If nil, user will be prompted to enter the code
     public init(accessCode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0) } ?? .request
+        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
         codes[.passcode] = .notChange
     }
     
@@ -28,7 +28,7 @@ public class SetUserCodeCommand: Command {
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(passcode: String?) {
         codes[.accessCode] = .notChange
-        codes[.passcode] = passcode.map{ .stringValue($0) } ?? .request
+        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
     }
     
     /// Change  access code and passcode.
@@ -36,8 +36,8 @@ public class SetUserCodeCommand: Command {
     ///   - accessCode: If nil, user will be prompted to enter the code
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(accessCode: String?, passcode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0) } ?? .request
-        codes[.passcode] = passcode.map{ .stringValue($0) } ?? .request
+        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
+        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
     }
     
     /// Change  access code and passcode. Useful for checkpin, because with take codes from environment as Data
@@ -96,14 +96,24 @@ public class SetUserCodeCommand: Command {
         //Restrict default codes except reset command
         if shouldRestrictDefaultCodes {
             if !isCodeAllowed(.accessCode) {
-                completion(.failure(TangemSdkError.accessCodeCannotBeChanged))
+                completion(.failure(TangemSdkError.accessCodeCannotBeDefault))
                 return
             }
             
             if !isCodeAllowed(.passcode) {
-                completion(.failure(TangemSdkError.passcodeCannotBeChanged))
+                completion(.failure(TangemSdkError.passcodeCannotBeDefault))
                 return
             }
+        }
+        
+        if !isCodeLengthValid(.accessCode) {
+            completion(.failure(TangemSdkError.accessCodeTooShort))
+            return
+        }
+        
+        if !isCodeLengthValid(.passcode) {
+            completion(.failure(TangemSdkError.passcodeTooShort))
+            return
         }
 
         self.transceive(in: session, completion: completion )
@@ -112,6 +122,20 @@ public class SetUserCodeCommand: Command {
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
         if let code = self.codes[type]?.value,
            code == type.defaultValue.sha256() {
+            return false
+        }
+        
+        return true
+    }
+    
+    private func isCodeLengthValid(_ type: UserCodeType) -> Bool  {
+        if let stringValue = self.codes[type]?.stringValue,
+           stringValue != type.defaultValue,
+           stringValue.count < UserCodeType.minLength {
+            return false
+        }
+        
+        if let dataValue = self.codes[type]?.value, dataValue.isEmpty {
             return false
         }
         
@@ -218,6 +242,15 @@ extension SetUserCodeCommand {
             case .stringValue(let code):
                 return code.sha256()
             case .value(let code):
+                return code
+            default:
+                return nil
+            }
+        }
+        
+        var stringValue: String? {
+            switch self {
+            case .stringValue(let code):
                 return code
             default:
                 return nil

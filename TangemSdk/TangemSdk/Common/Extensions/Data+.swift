@@ -196,9 +196,13 @@ extension Data {
         switch curve {
         case .secp256k1:
             return try Secp256k1Utils().sign(self, with: privateKey)
+        case .secp256r1:
+            return try P256.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: self).rawRepresentation
+        case .ed25519:
+            return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: getSha512())
         default:
-            // [REDACTED_TODO_COMMENT]
-            fatalError("Sign not implemented for this curve")
+            assertionFailure("Not implemented")
+            throw TangemSdkError.unsupportedCurve
         }
     }
 }

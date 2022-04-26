@@ -254,8 +254,8 @@ public class CardSession {
                 
                 if tag != currentTag { //handle wrong tag connection during any operation
                     self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber.localizedDescription)
-                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                        self.restartPolling()
+                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+                        self?.restartPolling()
                     }
                     return false
                 } else {

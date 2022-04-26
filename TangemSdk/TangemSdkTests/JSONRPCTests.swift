@@ -84,6 +84,7 @@ class JSONRPCTests: XCTestCase {
                                                               totalSignedHashes: 10,
                                                               remainingSignatures: 100,
                                                               index: 1,
+                                                              proof: nil,
                                                               hasBackup: false))
         testMethod(name: "CreateWallet", result: result)
     }

@@ -63,6 +63,7 @@ public final class StartPrimaryCardLinkingCommand: Command {
                               existingWalletsCount: card.wallets.count,
                               isHDWalletAllowed: card.settings.isHDWalletAllowed,
                               issuer: card.issuer,
-                              walletCurves: card.wallets.map { $0.curve })
+                              walletCurves: card.wallets.map { $0.curve },
+                              batchId: card.batchId)
     }
 }

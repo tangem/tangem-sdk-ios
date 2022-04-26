@@ -144,6 +144,8 @@ public enum TlvTag: Byte {
     case backupCardLink = 0xD4
     case backupAttestSignature = 0xD5
     
+    case proof = 0xAA
+    
     // MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {

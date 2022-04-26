@@ -74,6 +74,7 @@ public class BackupService: ObservableObject {
     
     public func setAccessCode(_ code: String) throws {
         repo.data.accessCode = nil
+        let code = code.trim()
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -81,7 +82,11 @@ public class BackupService: ObservableObject {
             }
             
             if code == UserCodeType.accessCode.defaultValue {
-                throw TangemSdkError.accessCodeCannotBeChanged
+                throw TangemSdkError.accessCodeCannotBeDefault
+            }
+            
+            if code.count < UserCodeType.minLength {
+                throw TangemSdkError.accessCodeTooShort
             }
         }
         
@@ -95,6 +100,7 @@ public class BackupService: ObservableObject {
     
     public func setPasscode(_ code: String) throws {
         repo.data.passcode = nil
+        let code = code.trim()
         
         if handleErrors {
             guard !code.isEmpty else {
@@ -102,7 +108,11 @@ public class BackupService: ObservableObject {
             }
             
             if code == UserCodeType.passcode.defaultValue {
-                throw TangemSdkError.passcodeCannotBeChanged
+                throw TangemSdkError.passcodeCannotBeDefault
+            }
+            
+            if code.count < UserCodeType.minLength {
+                throw TangemSdkError.passcodeTooShort
             }
         }
         
@@ -353,6 +363,7 @@ public struct RawPrimaryCard {
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
+    public let batchId: String? //for compatibility with interrupted backups
 }
 
 @available(iOS 13.0, *)
@@ -367,6 +378,7 @@ public struct PrimaryCard: Codable, CertificateProvider {
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
+    public let batchId: String? //for compatibility with interrupted backups
     
     public init(_ rawPrimaryCard: RawPrimaryCard, issuerSignature: Data) {
         self.cardId = rawPrimaryCard.cardId
@@ -377,6 +389,7 @@ public struct PrimaryCard: Codable, CertificateProvider {
         self.isHDWalletAllowed = rawPrimaryCard.isHDWalletAllowed
         self.issuer = rawPrimaryCard.issuer
         self.walletCurves = rawPrimaryCard.walletCurves
+        self.batchId = rawPrimaryCard.batchId
     }
 }
 

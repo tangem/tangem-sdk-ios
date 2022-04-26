@@ -25,7 +25,8 @@ struct ResetCodesScreen: View {
     private var mainView: some View {
         switch viewModel.viewState {
         case .requestCode(let type, cardId: let cardId, completion: let completion):
-            ChangeUserCodeView(title: type.enterNewCodeTitle,
+            ChangeUserCodeView(type: type,
+                               title: type.enterNewCodeTitle,
                                cardId: cardId ?? "",
                                placeholder: type.name,
                                confirmationPlaceholder: type.confirmCodeTitle,

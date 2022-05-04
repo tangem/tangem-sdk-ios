@@ -5,7 +5,6 @@
 "common_ok" = "Ок";
 "common_cancel" = "Отменить";
 "common_continue" = "Продолжить";
-"common_save" = "Сохранить";
 "common_success" = "Успешно";
 "common_error" = "Ошибка";
 "common_warning" = "Предупреждение";
@@ -17,7 +16,6 @@
 "pin_confirm_error_format" = "Коды не совпадают";
 "pin_change_code_format" = "Установить %@";
 "pin_change_new_code_format" = "Новый %@";
-"pin_change_current_code_format" = "Текущий %@";
 "pin_set_code_confirm_format" = "Подтвердить %@";
 "enter_user_code_button_title_forgot" = "Забыли код?";
 "pin_reset_code_format" = "Сбросить %@";

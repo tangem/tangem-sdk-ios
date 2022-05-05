@@ -100,6 +100,34 @@ public enum FileToWrite: Decodable {
     case byFileOwner(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
                      fileName: String?, fileVisibility: FileVisibility?, walletPublicKey: Data?)
     
+    var payload: Data {
+        var payload: Data = data
+        
+        if let fileName = fileName, let serializedData = try? NamedFile(name: fileName, payload: data).serialize() {
+            payload = serializedData
+        }
+        
+        return payload
+    }
+    
+    private var data: Data {
+        switch self {
+        case .byUser(let data, _, _, _):
+            return data
+        case .byFileOwner(let data, _, _, _, _, _, _):
+            return data
+        }
+    }
+    
+    private var fileName: String? {
+        switch self {
+        case .byUser(_, let fileName, _, _):
+            return fileName
+        case .byFileOwner(_, _, _, _, let fileName, _, _):
+            return fileName
+        }
+    }
+    
     public init(from decoder: Decoder) throws {
         do {
             let file = try OwnerFile(from: decoder)

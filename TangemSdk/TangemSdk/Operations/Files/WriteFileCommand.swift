@@ -75,10 +75,10 @@ public final class WriteFileCommand: Command {
     /// - Parameter file: File to write
     public convenience init(_ file: FileToWrite) {
         switch file {
-        case .byUser(let data, let fileName, let fileVisibility, let walletPublicKey):
+        case .byUser(_, _, let fileVisibility, let walletPublicKey):
             self.init(data: file.payload, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
-        case .byFileOwner(let data, let startingSignature, let finalizingSignature,
-                          let counter, let fileName, let fileVisibility, let walletPublicKey):
+        case .byFileOwner(_, let startingSignature, let finalizingSignature,
+                          let counter, _, let fileVisibility, let walletPublicKey):
             self.init(data: file.payload, startingSignature: startingSignature, finalizingSignature: finalizingSignature,
                       counter: counter, fileVisibility: fileVisibility, walletPublicKey: walletPublicKey)
         }

@@ -19,7 +19,13 @@ public struct FileHashHelper {
     ///   - fileCounter: A counter that protect issuer data against replay attack.
     ///   - privateKey: Optional private key that will be used for signing files hashes. If provided - resulting `FileHashData` will have signed file signatures
     /// - Returns: `FileHashData`
-    public static func prepareHash(for cardId: String, fileData: Data, fileCounter: Int, privateKey: Data? = nil) throws -> FileHashData {
+    public static func prepareHash(for cardId: String, fileData: Data, fileCounter: Int, fileName: String? = nil, privateKey: Data? = nil) throws -> FileHashData {
+        var fileData: Data = fileData
+        
+        if let fileName = fileName {
+            fileData = try NamedFile(name: fileName, payload: fileData).serialize()
+        }
+       
         let startHash = Data(hexString: cardId) + fileCounter.bytes4 + fileData.count.bytes2
         let finalHash = Data(hexString: cardId) + fileData + fileCounter.bytes4
         var startSignature: Data?

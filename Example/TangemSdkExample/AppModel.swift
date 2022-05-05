@@ -415,7 +415,7 @@ extension AppModel {
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         let file: FileToWrite = .byUser(data: demoPayload,
                                         fileName: "User file",
-                                        fileVisibility: .private,
+                                        fileVisibility: .public,
                                         walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
@@ -449,7 +449,7 @@ extension AppModel {
                                              finalizingSignature: finalSignature,
                                              counter: counter,
                                              fileName: filename,
-                                             fileVisibility: .private,
+                                             fileVisibility: .public,
                                              walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)

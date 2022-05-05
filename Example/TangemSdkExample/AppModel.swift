@@ -393,9 +393,9 @@ extension AppModel {
                 for file in files {
                     text += file.json + "\n\n"
                     text += "Name: \(file.name)" + "\n"
-                    text += "File data: \(file.payload.hexString)" + "\n\n"
+                    text += "File data: \(file.data.hexString)" + "\n\n"
                     
-                    if let tlv = Tlv.deserialize(namedFile.payload) {
+                    if let tlv = Tlv.deserialize(file.data) {
                         let decoder = TlvDecoder(tlv: tlv)
                         let deserializer = WalletDataDeserializer()
                         if let walletData = try? deserializer.deserialize(decoder: decoder) {
@@ -418,7 +418,7 @@ extension AppModel {
     func writeUserFile() {
         let demoPayload = Data(repeating: UInt8(1), count: 10)
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
-        let file: FileToWrite = .byUser(data: demoData,
+        let file: FileToWrite = .byUser(data: demoPayload,
                                         fileName: "User file",
                                         fileVisibility: .private,
                                         walletPublicKey: nil)
@@ -449,7 +449,7 @@ extension AppModel {
             return
         }
         
-        let file: FileToWrite = .byFileOwner(data: demoData,
+        let file: FileToWrite = .byFileOwner(data: demoPayload,
                                              startingSignature: startSignature,
                                              finalizingSignature: finalSignature,
                                              counter: counter,

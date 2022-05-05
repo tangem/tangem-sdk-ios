@@ -101,13 +101,11 @@ public enum FileToWrite: Decodable {
                      fileName: String?, fileVisibility: FileVisibility?, walletPublicKey: Data?)
     
     var payload: Data {
-        var payload: Data = data
-        
         if let fileName = fileName, let serializedData = try? NamedFile(name: fileName, payload: data).serialize() {
-            payload = serializedData
+            return serializedData
         }
         
-        return payload
+        return data
     }
     
     private var data: Data {

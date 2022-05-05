@@ -378,11 +378,6 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
-        guard let card = self.card else {
-            self.complete(with: "Scan card to retrieve card")
-            return
-        }
-        
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         tangemSdk.readFiles(readPrivateFiles: true,
                             fileName: nil,
@@ -392,7 +387,7 @@ extension AppModel {
                 var text = ""
                 for file in files {
                     text += file.json + "\n\n"
-                    text += "Name: \(file.name)" + "\n"
+                    text += "Name: \(String(describing: file.name))" + "\n"
                     text += "File data: \(file.data.hexString)" + "\n\n"
                     
                     if let tlv = Tlv.deserialize(file.data) {

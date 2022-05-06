@@ -1,6 +1,6 @@
 "nfc_alert_default" = "Поднесите карту к телефону в точности, как показано выше";
 "nfc_alert_default_done" = "Готово";
-"view_delegate_security_delay_description" = "Пожалуйста удерживайте карту до завершения операции";
+"view_delegate_security_delay_description" = "Пожалуйста, удерживайте карту до завершения операции";
 "cid_format" = "Карта #%@";
 "common_ok" = "Ок";
 "common_cancel" = "Отменить";

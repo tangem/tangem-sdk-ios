@@ -10,6 +10,7 @@ import Foundation
 
 @available (iOS 13, *)
 public struct File: JSONStringConvertible {
+    public let name: String?
     public let data: Data
     public let index: Int
     public let settings: FileSettings
@@ -22,7 +23,14 @@ extension File {
             return nil //empty read file response. No files on the card
         }
         
-        self.data = response.fileData
+        if let namedFile = try? NamedFile(tlvData: response.fileData) {
+            self.name = namedFile.name
+            self.data = namedFile.payload
+        } else {
+            self.name = nil
+            self.data = response.fileData
+        }
+      
         self.index = response.fileIndex
         self.settings = settings
     }
@@ -78,17 +86,45 @@ public enum FileToWrite: Decodable {
     /// Write file protected by the user with security delay or user code if set
     ///   - data: Data to write
     ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
+    ///   - fileName: Optional name of the file. COS 4.0+
     ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
-    case byUser(data: Data, fileVisibility: FileVisibility?, walletPublicKey: Data?)
+    case byUser(data: Data, fileName: String?, fileVisibility: FileVisibility?, walletPublicKey: Data?)
     /// Write file protected by the file owner with two signatures and counter
     ///   - data: Data to write
     ///   - startingSignature: Starting signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
     ///   - finalizingSignature: Finalizing signature of the file data. You can use `FileHashHelper` to generate signatures or use it as a reference to create the signature yourself
     ///   - counter: File counter to prevent replay attack
+    ///   - fileName: Optional name of the file. COS 4.0+
     ///   - fileVisibility: Optional visibility setting for the file. COS 4.0+
     ///   - walletPublicKey: Optional link to the card's wallet. COS 4.0+
     case byFileOwner(data: Data, startingSignature: Data, finalizingSignature: Data, counter: Int,
-                     fileVisibility: FileVisibility?, walletPublicKey: Data?)
+                     fileName: String?, fileVisibility: FileVisibility?, walletPublicKey: Data?)
+    
+    var payload: Data {
+        if let fileName = fileName, let serializedData = try? NamedFile(name: fileName, payload: data).serialize() {
+            return serializedData
+        }
+        
+        return data
+    }
+    
+    private var data: Data {
+        switch self {
+        case .byUser(let data, _, _, _):
+            return data
+        case .byFileOwner(let data, _, _, _, _, _, _):
+            return data
+        }
+    }
+    
+    private var fileName: String? {
+        switch self {
+        case .byUser(_, let fileName, _, _):
+            return fileName
+        case .byFileOwner(_, _, _, _, let fileName, _, _):
+            return fileName
+        }
+    }
     
     public init(from decoder: Decoder) throws {
         do {
@@ -97,11 +133,13 @@ public enum FileToWrite: Decodable {
                                 startingSignature: file.startingSignature,
                                 finalizingSignature: file.finalizingSignature,
                                 counter: file.counter,
+                                fileName: file.name,
                                 fileVisibility: file.fileVisibility,
                                 walletPublicKey: file.walletPublicKey)
         } catch {
             let file = try UserFile(from: decoder)
             self = .byUser(data: file.data,
+                           fileName: file.name,
                            fileVisibility: file.fileVisibility,
                            walletPublicKey: file.walletPublicKey)
         }
@@ -109,6 +147,7 @@ public enum FileToWrite: Decodable {
     
     private struct UserFile: Decodable {
         let data: Data
+        let name: String?
         let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }
@@ -118,6 +157,7 @@ public enum FileToWrite: Decodable {
         let startingSignature: Data
         let finalizingSignature: Data
         let counter: Int
+        let name: String?
         let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }

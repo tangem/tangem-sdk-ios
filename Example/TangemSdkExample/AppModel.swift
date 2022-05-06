@@ -38,7 +38,7 @@ class AppModel: ObservableObject {
     @Published var handleErrors: Bool = true
     
     var backupService: BackupService? = nil
-
+    
     private lazy var _tangemSdk: TangemSdk = { .init() }()
     
     private var tangemSdk: TangemSdk {
@@ -327,7 +327,7 @@ extension AppModel {
                         
                         session.stop()
                     }
-
+                    
                 case .failure(let error):
                     DispatchQueue.main.async {
                         self.complete(with: error)
@@ -378,11 +378,6 @@ extension AppModel {
 //MARK:- Files
 extension AppModel {
     func readFiles() {
-        guard let card = self.card else {
-            self.complete(with: "Scan card to retrieve card")
-            return
-        }
-        
         //let wallet = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         tangemSdk.readFiles(readPrivateFiles: true,
                             fileName: nil,
@@ -392,27 +387,14 @@ extension AppModel {
                 var text = ""
                 for file in files {
                     text += file.json + "\n\n"
+                    text += "Name: \(String(describing: file.name))" + "\n"
+                    text += "File data: \(file.data.hexString)" + "\n\n"
                     
-                    if let namedFile = try? NamedFile(tlvData: file.data) {
-                        text += "Name: \(namedFile.name)" + "\n"
-                        text += "File data: \(namedFile.payload.hexString)" + "\n\n"
-                        
-                        if let fileSignature = namedFile.signature, let fileCounter = namedFile.counter {
-                            let dataToVerify = Data(hexString: card.cardId) + namedFile.payload + fileCounter.bytes4
-                            let isVerified: Bool = (try? CryptoUtils.verify(curve: .secp256k1,
-                                                                            publicKey: card.issuer.publicKey,
-                                                                            message: dataToVerify,
-                                                                            signature: fileSignature)) ?? false
-                            
-                            text += "File verification status: \(isVerified ? "verified" : "not verified")" + "\n\n"
-                        }
-                        
-                        if let tlv = Tlv.deserialize(namedFile.payload) {
-                            let decoder = TlvDecoder(tlv: tlv)
-                            let deserializer = WalletDataDeserializer()
-                            if let walletData = try? deserializer.deserialize(decoder: decoder) {
-                                text += "WalletData: \(walletData.json)" + "\n\n"
-                            }
+                    if let tlv = Tlv.deserialize(file.data) {
+                        let decoder = TlvDecoder(tlv: tlv)
+                        let deserializer = WalletDataDeserializer()
+                        if let walletData = try? deserializer.deserialize(decoder: decoder) {
+                            text += "WalletData: \(walletData.json)" + "\n\n"
                         }
                     }
                 }
@@ -430,11 +412,10 @@ extension AppModel {
     
     func writeUserFile() {
         let demoPayload = Data(repeating: UInt8(1), count: 10)
-        let demoData = try! NamedFile(name: "User file", payload: demoPayload).serialize()
-        let visibility: FileVisibility = .private
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
-        let file: FileToWrite = .byUser(data: demoData,
-                                        fileVisibility: visibility,
+        let file: FileToWrite = .byUser(data: demoPayload,
+                                        fileName: "User file",
+                                        fileVisibility: .public,
                                         walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
@@ -446,29 +427,29 @@ extension AppModel {
             return
         }
         
-        
+        let filename = "Issuer file"
         let demoPayload = Data(repeating: UInt8(2), count: 10)
-        let demoData = try! NamedFile(name: "Ownerfile", payload: demoPayload).serialize()
-        let visibility: FileVisibility = .private
         let counter = 1
         //let walletPublicKey = Data(hexString: "40D2D7CFEF2436C159CCC918B7833FCAC5CB6037A7C60C481E8CA50AF9EDC70B")
         
         let fileHash = try! FileHashHelper.prepareHash(for: cardId,
-                                                          fileData: demoData,
-                                                          fileCounter: counter,
-                                                          privateKey: Utils.issuer.privateKey)
+                                                       fileData: demoPayload,
+                                                       fileCounter: counter,
+                                                       fileName: filename,
+                                                       privateKey: Utils.issuer.privateKey)
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature else {
-                self.complete(with: "Failed to sign data with issuer signature")
-                return
-            }
+            self.complete(with: "Failed to sign data with issuer signature")
+            return
+        }
         
-        let file: FileToWrite = .byFileOwner(data: demoData,
+        let file: FileToWrite = .byFileOwner(data: demoPayload,
                                              startingSignature: startSignature,
                                              finalizingSignature: finalSignature,
                                              counter: counter,
-                                             fileVisibility: visibility,
+                                             fileName: filename,
+                                             fileVisibility: .public,
                                              walletPublicKey: nil)
         
         tangemSdk.writeFiles(files: [file], completion: handleCompletion)
@@ -667,7 +648,7 @@ extension AppModel {
         //files
         case readFiles
         case writeUserFile
-        case writeOnwerFile
+        case writeOwnerFile
         case deleteFile
         case updateFilePermissions
         //case json-rpc
@@ -701,7 +682,7 @@ extension AppModel {
         case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
         case .readFiles: readFiles()
         case .writeUserFile: writeUserFile()
-        case .writeOnwerFile: writeOwnerFile()
+        case .writeOwnerFile: writeOwnerFile()
         case .deleteFile: deleteFile()
         case .updateFilePermissions: updateFilePermissions()
         case .readIssuerData: readIssuerData()

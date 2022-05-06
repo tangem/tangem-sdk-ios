@@ -150,7 +150,8 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testFiles() {
-        testMethod(name: "ReadFiles", result: [File(data: Data(hexString: "00AABBCCDD"),
+        testMethod(name: "ReadFiles", result: [File(name: nil,
+                                                    data: Data(hexString: "00AABBCCDD"),
                                                     index: 0,
                                                     settings: FileSettings(isPermanent: false,
                                                                            visibility: .public))])

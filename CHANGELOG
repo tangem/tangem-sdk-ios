@@ -1,17 +1,5 @@
-*   10f5fab - (HEAD -> release/3.3.2, tag: develop-144, origin/develop, develop) Merge pull request #175 from tangem/IOS-1612_update_files
+*   bf9adee - (HEAD -> release/3.3.3, tag: develop-146, origin/develop, develop) Merge pull request #178 from tangem/IOS-1620_add_missong_handler
 |\  
-| * 5e638d1 - IOS-1612 Update example's build
-| * c8269b3 - IOS-1612 Update example's build
-| * d7ee136 - IOS-1612 Update example to public files
-| * 8743b1f - IOS-1612 Clean example
-| * 06857e1 - IOS-1612 Update example
-| * 8a4fdba - IOS-1612 Clean
-| * 1ecf9e1 - IOS-1612 Refactoring
-| * ca31333 - IOS-1612 Write named files support
+| * 8c94beb - IOS-1620 Add missing handler
 |/  
-*   8e2741b - (tag: develop-143) Merge pull request #174 from tangem/master_to_develop
-|\  
-| * f066a47 - Merge branch 'master' into master_to_develop
-|/  
-* 81acf7e - (tag: develop-142) Merge pull request #173 from tangem/IOS-1611-missing-commas
-* 7c15e91 - Add missing commas to localizable string
+* cd22bc8 - (tag: develop-145) Merge pull request #177 from tangem/master

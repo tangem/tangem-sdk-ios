@@ -133,13 +133,13 @@ public enum FileToWrite: Decodable {
                                 startingSignature: file.startingSignature,
                                 finalizingSignature: file.finalizingSignature,
                                 counter: file.counter,
-                                fileName: file.name,
+                                fileName: file.fileName,
                                 fileVisibility: file.fileVisibility,
                                 walletPublicKey: file.walletPublicKey)
         } catch {
             let file = try UserFile(from: decoder)
             self = .byUser(data: file.data,
-                           fileName: file.name,
+                           fileName: file.fileName,
                            fileVisibility: file.fileVisibility,
                            walletPublicKey: file.walletPublicKey)
         }
@@ -147,7 +147,7 @@ public enum FileToWrite: Decodable {
     
     private struct UserFile: Decodable {
         let data: Data
-        let name: String?
+        let fileName: String?
         let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }
@@ -157,7 +157,7 @@ public enum FileToWrite: Decodable {
         let startingSignature: Data
         let finalizingSignature: Data
         let counter: Int
-        let name: String?
+        let fileName: String?
         let fileVisibility: FileVisibility?
         let walletPublicKey: Data?
     }

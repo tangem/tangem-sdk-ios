@@ -21,6 +21,7 @@ public final class JSONRPCConverter {
         converter.register(DepersonalizeHandler())
         converter.register(SetAccessCodeHandler())
         converter.register(SetPasscodeHandler())
+        converter.register(ResetUserCodesHandler())
         converter.register(ReadFilesHandler())
         converter.register(WriteFilesHandler())
         converter.register(DeleteFilesHandler())

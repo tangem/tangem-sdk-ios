@@ -87,7 +87,7 @@ public extension TangemSdk {
     ///   - completion: Returns  `Swift.Result<SignHashResponse,TangemSdkError>`
     func sign(hash: Data,
               walletPublicKey: Data,
-              cardId: String,
+              cardId: String? = nil,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashResponse>) {
@@ -116,7 +116,7 @@ public extension TangemSdk {
     ///   - completion: Returns  `Swift.Result<SignHashesResponse,TangemSdkError>`
     func sign(hashes: [Data],
               walletPublicKey: Data,
-              cardId: String,
+              cardId: String? = nil,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashesResponse>) {

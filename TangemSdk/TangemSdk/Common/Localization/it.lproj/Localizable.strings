@@ -5,7 +5,6 @@
 "common_ok" = "OK";
 "common_cancel" = "Annulla";
 "common_continue" = "Continua";
-"common_save" = "Archivia";
 "common_success" = "Con successo";
 "common_error" = "Errore";
 "common_warning" = "Warning";
@@ -17,7 +16,6 @@
 "pin_confirm_error_format" = "I codici non corrispondono";
 "pin_change_code_format" = "Modifica %@";
 "pin_change_new_code_format" = "Nuovo %@";
-"pin_change_current_code_format" = "Corrente %@";
 "pin_set_code_confirm_format" = "Conferma %@";
 "enter_user_code_button_title_forgot" = "Forgot your code?";
 "pin_reset_code_format" = "Reset %@";

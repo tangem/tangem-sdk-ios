@@ -14,6 +14,8 @@ public struct File: JSONStringConvertible {
     public let data: Data
     public let index: Int
     public let settings: FileSettings
+    public let counter: Int?
+    public let signature: Data?
 }
 
 @available (iOS 13, *)
@@ -26,9 +28,13 @@ extension File {
         if let namedFile = try? NamedFile(tlvData: response.fileData) {
             self.name = namedFile.name
             self.data = namedFile.payload
+            self.counter = namedFile.counter
+            self.signature = namedFile.signature
         } else {
             self.name = nil
             self.data = response.fileData
+            self.counter = nil
+            self.signature = nil
         }
       
         self.index = response.fileIndex

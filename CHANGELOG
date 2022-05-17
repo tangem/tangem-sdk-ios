@@ -1,5 +1,9 @@
-*   bf9adee - (HEAD -> release/3.3.3, tag: develop-146, origin/develop, develop) Merge pull request #178 from tangem/IOS-1620_add_missong_handler
+*   b23c3f1 - (HEAD -> release/3.3.4, tag: develop-148, origin/develop, develop) Merge pull request #181 from tangem/IOS-1612_fix_write_json_rpc
 |\  
-| * 8c94beb - IOS-1620 Add missing handler
-|/  
-* cd22bc8 - (tag: develop-145) Merge pull request #177 from tangem/master
+| *   93e72fb - Merge branch 'develop' into IOS-1612_fix_write_json_rpc
+| |\  
+| |/  
+|/|   
+* | e12cb78 - (tag: develop-147) Merge pull request #180 from tangem/master
+ /  
+* c3e3800 - IOS-1612 Fix write json rpc

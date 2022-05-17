@@ -16,6 +16,15 @@ public struct File: JSONStringConvertible {
     public let settings: FileSettings
     public let counter: Int?
     public let signature: Data?
+    
+    public init(data: Data, index: Int, settings: FileSettings, name: String? = nil, counter: Int? = nil, signature: Data? = nil) {
+        self.name = name
+        self.data = data
+        self.index = index
+        self.settings = settings
+        self.counter = counter
+        self.signature = signature
+    }
 }
 
 @available (iOS 13, *)

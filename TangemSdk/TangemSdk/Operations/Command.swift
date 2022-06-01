@@ -199,8 +199,7 @@ extension Command {
     
     /// Helper method to parse security delay information received from a card.
     /// - Returns: Remaining security delay in milliseconds.
-    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Float,
-                                                                                                                     saveToFlash: Bool)? {
+    private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Float, saveToFlash: Bool)? {
         guard let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey),
               let remainingCs = tlv.value(for: .pause)?.toInt() else {
             return nil
@@ -213,12 +212,12 @@ extension Command {
     }
     
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        session.pause(error: TangemSdkError.from(userCodeType: type, environment: session.environment))
-        
         switch type {
         case .accessCode:
+            session.pause(message: "error_pin_required_format".localized(UserCodeType.accessCode.name))
             session.environment.accessCode = UserCode(.accessCode, value: nil)
         case .passcode:
+            session.pause(error: .from(userCodeType: type, environment: session.environment))
             session.environment.passcode = UserCode(.passcode, value: nil)
         }
         

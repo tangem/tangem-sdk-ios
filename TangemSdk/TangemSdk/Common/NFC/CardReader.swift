@@ -50,6 +50,10 @@ public extension CardReader {
         startSession(with: message)
     }
     
+    func pauseSession(with errorMessage: String? = nil) {
+        pauseSession(with: errorMessage)
+    }
+    
     func stopSession(with errorMessage: String? = nil) {
         stopSession(with: errorMessage)
     }

@@ -214,7 +214,17 @@ extension Command {
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         switch type {
         case .accessCode:
-            session.pause(message: "error_pin_required_format".localized(UserCodeType.accessCode.name))
+            let sdkError = TangemSdkError.from(userCodeType: type, environment: session.environment)
+                
+            switch sdkError {
+            case .wrongAccessCode:
+                session.pause(error: .from(userCodeType: type, environment: session.environment))
+            case .accessCodeRequired:
+                session.pause(message: "error_pin_required_format".localized(UserCodeType.accessCode.name))
+            default:
+                break
+            }
+            
             session.environment.accessCode = UserCode(.accessCode, value: nil)
         case .passcode:
             session.pause(error: .from(userCodeType: type, environment: session.environment))

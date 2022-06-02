@@ -212,6 +212,8 @@ extension Command {
     }
     
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+        let sdkError = TangemSdkError.from(userCodeType: type, environment: session.environment)
+        
         switch type {
         case .accessCode:
             if case .accessCodeRequired = sdkError {

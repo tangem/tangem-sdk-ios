@@ -213,18 +213,18 @@ extension Command {
     
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         let sdkError = TangemSdkError.from(userCodeType: type, environment: session.environment)
+
+        switch sdkError {
+        case .accessCodeRequired:
+            session.pause(message: sdkError.localizedDescription)
+        default:
+            session.pause(error: sdkError)
+        }
         
         switch type {
         case .accessCode:
-            if case .accessCodeRequired = sdkError {
-                session.pause(message: "error_pin_required_format".localized(UserCodeType.accessCode.name))
-            } else {
-                session.pause(error: sdkError)
-            }
-
             session.environment.accessCode = UserCode(.accessCode, value: nil)
         case .passcode:
-            session.pause(error: sdkError)
             session.environment.passcode = UserCode(.passcode, value: nil)
         }
         

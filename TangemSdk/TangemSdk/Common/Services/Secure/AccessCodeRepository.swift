@@ -38,8 +38,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private let authenticationPolicy: LAPolicy = .deviceOwnerAuthentication
     
     public init() {
-        print("HAS ACCESS CODES", hasAccessCodes())
-        print("HAS ACCESS", canAccessLocalAuthentication())
+        
     }
     
     public func shouldAskForAuthentication(for cardId: String?) -> Bool {
@@ -138,79 +137,6 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         } catch {
             print("Failed to remove access codes: \(error)")
         }
-    }
-    
-    private func canAccessLocalAuthentication() -> Bool {
-    
-        
-        
-        let pol: [LAPolicy] = [
-            .deviceOwnerAuthenticationWithBiometrics,
-            .deviceOwnerAuthentication,
-        ]
-        for p in pol {
-            switch p {
-            case .deviceOwnerAuthentication:
-                print("deviceOwnerAuthentication")
-            case .deviceOwnerAuthenticationWithBiometrics:
-                print("deviceOwnerAuthenticationWithBiometrics")
-            }
-            
-            let context = LAContext()
-        
-            var accessError: NSError? // ?
-            
-            guard context.canEvaluatePolicy(p, error: &accessError) else {
-//                return false
-                print("FALSE")
-                switch context.biometryType {
-                case .faceID:
-                    print("faceID")
-                case .touchID:
-                    print("touchID")
-                case .none:
-                    print("none")
-                }
-                print(accessError, accessError?.code)
-                continue
-            }
-            
-            switch context.biometryType {
-            case .faceID:
-                print("faceID")
-            case .touchID:
-                print("touchID")
-            case .none:
-                print("none")
-            }
-            print("TRUE")
-        }
-        
-        
-        let context = LAContext()
-    
-        var accessError: NSError? // ?
-        
-        guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
-//            print("No biometry access", accessError)
-//            if let accessError = accessError {
-//                completion(.failure(accessError))
-//            } else {
-//                completion(.failure(Errors.noBiometryAccess))
-//            }
-            return false
-        }
-        
-        switch context.biometryType {
-        case .faceID:
-            print("faceID")
-        case .touchID:
-            print("touchID")
-        case .none:
-            print("none")
-        }
-        
-        return true
     }
     
     private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, Error>) -> Void) {

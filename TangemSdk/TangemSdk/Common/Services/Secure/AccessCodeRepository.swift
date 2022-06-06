@@ -9,8 +9,8 @@
 import LocalAuthentication
 
 public protocol AccessCodeRepository {
-    func hasAccessCodes() -> Bool
-    func hasAccessCode(for cardId: String) -> Bool
+    func shouldAskForAuthentication(for cardId: String?) -> Bool
+    func prepareAuthentication(for cardId: String?, completion: @escaping (Result<Void, Error>) -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
     func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Bool, Error>) -> Void)
     func removeAllAccessCodes()
@@ -27,6 +27,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private typealias AccessCodeList = [String: String]
     
     private let secureStorage = SecureStorage()
+    private let storage = Storage()
     private var context: LAContext?
     
     private let cardIdListKey = "card-id-list"
@@ -41,13 +42,15 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         print("HAS ACCESS", canAccessLocalAuthentication())
     }
     
-    public func hasAccessCodes() -> Bool {
-        do {
-            let cardIds = try cardIds()
-            return !cardIds.isEmpty
-        } catch {
-            print("Failed to get card ID list: \(error)")
+    public func shouldAskForAuthentication(for cardId: String?) -> Bool {
+        guard askedForLocalAuthentication() else {
             return false
+        }
+        
+        if let cardId = cardId {
+            return hasAccessCode(for: cardId)
+        } else {
+            return hasAccessCodes()
         }
     }
     
@@ -61,8 +64,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func prepareAuthentication(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard hasAccessCodes() else {
+    public func prepareAuthentication(for cardId: String?, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard shouldAskForAuthentication(for: cardId) else {
             completion(.success(()))
             return
         }
@@ -222,6 +225,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
             return
         }
 
+        storage.set(boolValue: true, forKey: .askedForLocalAuthentication)
+        
         context.evaluatePolicy(authenticationPolicy, localizedReason: touchIdReason) { success, authenticationError in
             if let authenticationError = authenticationError {
                 completion(.failure(authenticationError))
@@ -229,6 +234,20 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
             }
             
             completion(.success(context))
+        }
+    }
+    
+    private func askedForLocalAuthentication() -> Bool {
+        storage.bool(forKey: .askedForLocalAuthentication)
+    }
+    
+    private func hasAccessCodes() -> Bool {
+        do {
+            let cardIds = try cardIds()
+            return !cardIds.isEmpty
+        } catch {
+            print("Failed to get card ID list: \(error)")
+            return false
         }
     }
     

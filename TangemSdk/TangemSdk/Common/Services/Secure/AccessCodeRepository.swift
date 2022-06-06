@@ -32,6 +32,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     private let cardIdListKey = "card-id-list"
     private let accessCodeListKey = "access-code-list"
+    #warning("TODO: l10n")
     private var touchIdReason: String {
         "Touch ID is needed BECAUSE"
     }

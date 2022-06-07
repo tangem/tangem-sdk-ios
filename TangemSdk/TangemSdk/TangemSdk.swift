@@ -700,7 +700,10 @@ extension TangemSdk {
             return
         }
         
-        viewDelegate.setState(.authentication)
+        if accessCodeRepository.hasAccessToBiometricAuthentication() {
+            viewDelegate.setState(.authentication)
+        }
+        
         accessCodeRepository.prepareAuthentication(for: cardId) {
             sessionCompletion(accessCodeRepository)
         }

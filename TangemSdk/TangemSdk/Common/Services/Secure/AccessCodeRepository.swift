@@ -151,16 +151,13 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     public func removeAllAccessCodes() {
         // We don't NEED to authenticate, we do it just to confirm
         authenticate(context: LAContext()) { result in
-            switch result {
-            case .failure(let error):
-                break
-            case .success:
-                do {
-                    try self.secureStorage.delete(account: self.cardIdListKey)
-                    try self.secureStorage.delete(account: self.accessCodeListKey)
-                } catch {
-                    print("Failed to remove access codes: \(error)")
-                }
+            guard case .success = result else { return }
+
+            do {
+                try self.secureStorage.delete(account: self.cardIdListKey)
+                try self.secureStorage.delete(account: self.accessCodeListKey)
+            } catch {
+                print("Failed to remove access codes: \(error)")
             }
         }
     }

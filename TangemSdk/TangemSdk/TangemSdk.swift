@@ -565,10 +565,14 @@ extension TangemSdk {
         }
         
         configure()
-        cardSession = makeSession(with: config,
-                                  cardId: cardId,
-                                  initialMessage: initialMessage)
-        cardSession!.start(with: runnable, completion: completion)
+        makeSession(with: config,
+                    cardId: cardId,
+                    initialMessage: initialMessage) { [weak self] cardSession in
+            guard let self = self else { return }
+            
+            self.cardSession = cardSession
+            self.cardSession?.start(with: runnable, completion: completion)
+        }
     }
     
     /// Allows running  a custom bunch of commands in one NFC Session with lightweight closure syntax. Tangem SDK will start a card sesion and perform preflight `Read` command.
@@ -589,10 +593,14 @@ extension TangemSdk {
         }
         
         configure()
-        cardSession = makeSession(with: config,
-                                  cardId: cardId,
-                                  initialMessage: initialMessage)
-        cardSession?.start(callback)
+        makeSession(with: config,
+                    cardId: cardId,
+                    initialMessage: initialMessage) { [weak self] cardSession in
+            guard let self = self else { return }
+            
+            self.cardSession = cardSession
+            self.cardSession?.start(callback)
+        }
     }
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
@@ -613,26 +621,32 @@ extension TangemSdk {
             
             try checkSession()
             configure()
-            cardSession = makeSession(with: config,
-                                      cardId: cardId,
-                                      initialMessage: initialMessage.flatMap { Message($0) })
             
-            let task = RunnablesTask(runnables: runnables)
-            cardSession!.start(with: task) { result in
-                switch result {
-                case .success(let response):
-                    switch parseResult {
-                    case .array:
-                        completion(response.json)
-                    case .single:
-                        if response.count == 1 {
-                            completion(response[0].json)
-                        } else {
-                            completion(TangemSdkError.unknownError.toJsonResponse().json)
+            let initialMessage = initialMessage.flatMap { Message($0) }
+            makeSession(with: config,
+                        cardId: cardId,
+                        initialMessage: initialMessage) { [weak self] cardSession in
+                guard let self = self else { return }
+                
+                self.cardSession = cardSession
+                
+                let task = RunnablesTask(runnables: runnables)
+                self.cardSession!.start(with: task) { result in
+                    switch result {
+                    case .success(let response):
+                        switch parseResult {
+                        case .array:
+                            completion(response.json)
+                        case .single:
+                            if response.count == 1 {
+                                completion(response[0].json)
+                            } else {
+                                completion(TangemSdkError.unknownError.toJsonResponse().json)
+                            }
                         }
+                    case .failure(let error):
+                        completion(error.toJsonResponse().json)
                     }
-                case .failure(let error):
-                    completion(error.toJsonResponse().json)
                 }
             }
         } catch {
@@ -656,12 +670,39 @@ extension TangemSdk {
     
     func makeSession(with config: Config,
                      cardId: String?,
-                     initialMessage: Message?) -> CardSession {
-        CardSession(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
-                    cardId: cardId,
-                    initialMessage: initialMessage,
-                    cardReader: reader,
-                    viewDelegate: viewDelegate,
-                    jsonConverter: jsonConverter)
+                     initialMessage: Message?,
+                     completion: @escaping (CardSession) -> Void)
+    {
+        let sessionCompletion: (AccessCodeRepository?) -> Void = {
+            [weak self, config, terminalKeysService, reader, viewDelegate, jsonConverter]
+            accessCodeRepository in
+            
+            let environment = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
+            
+            let session = CardSession(environment: environment,
+                                      cardId: cardId,
+                                      initialMessage: initialMessage,
+                                      cardReader: reader,
+                                      viewDelegate: viewDelegate,
+                                      accessCodeRepository: accessCodeRepository,
+                                      jsonConverter: jsonConverter)
+            completion(session)
+        }
+        
+        guard config.storeAccessCodesLocally else {
+            sessionCompletion(nil)
+            return
+        }
+        
+        let accessCodeRepository = DefaultAccessCodeRepository()
+        guard accessCodeRepository.shouldAskForAuthentication(for: cardId) else {
+            sessionCompletion(accessCodeRepository)
+            return
+        }
+        
+        viewDelegate.setState(.authentication)
+        accessCodeRepository.prepareAuthentication(for: cardId) {
+            sessionCompletion(accessCodeRepository)
+        }
     }
 }

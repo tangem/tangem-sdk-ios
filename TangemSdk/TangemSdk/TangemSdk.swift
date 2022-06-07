@@ -673,7 +673,7 @@ extension TangemSdk {
                      initialMessage: Message?,
                      completion: @escaping (CardSession) -> Void)
     {
-        let sessionCompletion: (AccessCodeRepository?) -> Void = {
+        let completeCreation: (AccessCodeRepository?) -> Void = {
             [weak self, config, terminalKeysService, reader, viewDelegate, jsonConverter]
             accessCodeRepository in
             
@@ -690,13 +690,13 @@ extension TangemSdk {
         }
         
         guard config.storeAccessCodesLocally else {
-            sessionCompletion(nil)
+            completeCreation(nil)
             return
         }
         
         let accessCodeRepository = DefaultAccessCodeRepository()
         guard accessCodeRepository.shouldAskForAuthentication(for: cardId) else {
-            sessionCompletion(accessCodeRepository)
+            completeCreation(accessCodeRepository)
             return
         }
         
@@ -705,7 +705,7 @@ extension TangemSdk {
         }
         
         accessCodeRepository.prepareAuthentication(for: cardId) {
-            sessionCompletion(accessCodeRepository)
+            completeCreation(accessCodeRepository)
         }
     }
 }

@@ -24,14 +24,19 @@ struct MainScreen: View {
     @ViewBuilder
     private var mainView: some View {
         switch viewModel.viewState {
+        case .authentication:
+            AuthenticationView()
+            
         case .scan:
             ReadView()
             
-        case .requestCode(let type, cardId: let cardId, let showForgotButton, completion: let completion):
+        case .requestCode(let type, cardId: let cardId, let cardIdFormatted, let showForgotButton, let accessCodeRepository, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
                               cardId: cardId ?? "",
+                              cardIdFormatted: cardIdFormatted ?? "",
                               placeholder: type.name,
                               showForgotButton: showForgotButton,
+                              accessCodeRepository: accessCodeRepository,
                               completion: completion)
             
         case .requestCodeChange(let type, cardId: let cardId, completion: let completion):

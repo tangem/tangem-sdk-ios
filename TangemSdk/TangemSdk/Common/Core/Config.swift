@@ -61,6 +61,9 @@ public struct Config {
     /// All derived keys will be stored in `Card.Wallet.derivedKeys`.
     /// Only `secp256k1` and `ed25519` supported
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
+    
+    #warning("TODO: //, name")
+    public var storeAccessCodesLocally: Bool = true
 }
 
 public enum CardIdDisplayFormat {

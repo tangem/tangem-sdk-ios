@@ -27,8 +27,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private typealias CardIdList = Set<String>
     private typealias AccessCodeList = [String: String]
     
-    private let secureStorage = SecureStorage()
     private let storage = Storage()
+    private let secureStorage = SecureStorage()
     private var context: LAContext?
     
     private let cardIdListKey = "card-id-list"

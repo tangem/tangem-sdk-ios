@@ -658,6 +658,10 @@ extension TangemSdk {
 //MARK: - Private
 @available(iOS 13.0, *)
 extension TangemSdk {
+    public func createAccessCodeRepository() -> AccessCodeRepository {
+        DefaultAccessCodeRepository()
+    }
+    
     private func checkSession() throws {
         if let existingSession = cardSession, existingSession.state == .active  {
             throw TangemSdkError.busy
@@ -694,7 +698,7 @@ extension TangemSdk {
             return
         }
         
-        let accessCodeRepository = DefaultAccessCodeRepository()
+        let accessCodeRepository = createAccessCodeRepository()
         guard accessCodeRepository.shouldAskForAuthentication(for: cardId) else {
             completeCreation(accessCodeRepository)
             return

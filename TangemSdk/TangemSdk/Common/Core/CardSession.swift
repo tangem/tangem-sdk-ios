@@ -20,6 +20,9 @@ public class CardSession {
     /// Allows interaction with users and shows visual elements.
     public let viewDelegate: SessionViewDelegate
     
+    /// Allows access codes to be stored in a secure location
+    public let accessCodeRepository: AccessCodeRepository?
+    
     var state: CardSessionState = .inactive
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
@@ -50,11 +53,13 @@ public class CardSession {
                 initialMessage: Message? = nil,
                 cardReader: CardReader,
                 viewDelegate: SessionViewDelegate,
+                accessCodeRepository: AccessCodeRepository?,
                 jsonConverter: JSONRPCConverter) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environment = environment
         self.initialMessage = initialMessage
+        self.accessCodeRepository = accessCodeRepository
         self.cardId = cardId
         self.jsonConverter = jsonConverter
     }
@@ -401,7 +406,7 @@ public class CardSession {
         let showForgotButton = environment.card?.backupStatus?.isActive ?? false
         let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
-        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
+        viewDelegate.setState(.requestCode(type, cardId: cardId, cardIdFormatted: formattedCardId, showForgotButton: showForgotButton, accessCodeRepository: accessCodeRepository, completion: { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -430,7 +435,7 @@ public class CardSession {
         }))
     }
     
-    private func updateEnvironment(with type: UserCodeType, code: String) {
+    func updateEnvironment(with type: UserCodeType, code: String) {
         switch type {
         case .accessCode:
             self.environment.accessCode = UserCode(.accessCode, stringValue: code)

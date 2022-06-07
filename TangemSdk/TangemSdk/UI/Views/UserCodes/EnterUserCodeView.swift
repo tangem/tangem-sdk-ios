@@ -12,14 +12,17 @@ import SwiftUI
 struct EnterUserCodeView: View {
     let title: String
     let cardId: String
+    let cardIdFormatted: String
     let placeholder: String
     let showForgotButton: Bool
+    let accessCodeRepository: AccessCodeRepository?
     let completion: CompletionResult<String>
     
     @EnvironmentObject var style: TangemSdkStyle
     
     @State private var isLoading: Bool = false
     @State private var code: String = ""
+    @State private var saveAccessCodeWithBiometry = false
     
     private var isContinueDisabled: Bool {
         code.trim().isEmpty
@@ -28,7 +31,7 @@ struct EnterUserCodeView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             UserCodeHeaderView(title: title,
-                               cardId: cardId,
+                               cardId: cardIdFormatted,
                                onCancel: onCancel)
                 .padding(.top, 8)
             
@@ -36,6 +39,10 @@ struct EnterUserCodeView: View {
                 .padding(.top, 16)
             
             VStack(spacing: 16) {
+                #warning("TODO: l10n")
+                if accessCodeRepository != nil {
+                    Toggle("Использовать Face ID на этом устройстве", isOn: $saveAccessCodeWithBiometry)
+                }
                 
                 Spacer()
                 
@@ -68,10 +75,27 @@ struct EnterUserCodeView: View {
     }
     
     private func onDone() {
-        if !isContinueDisabled {
-            UIApplication.shared.endEditing()
-            isLoading = true
-            completion(.success(code.trim()))
+        if isContinueDisabled {
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+        isLoading = true
+        
+        let accessCode = code.trim()
+        
+        guard
+            saveAccessCodeWithBiometry,
+            let accessCodeRepository = accessCodeRepository
+        else {
+            completion(.success(accessCode))
+            return
+        }
+        
+        accessCodeRepository.saveAccessCode(accessCode, for: cardId) { result in
+            if case let .success = result {
+                completion(.success(accessCode))
+            }
         }
     }
 }
@@ -81,14 +105,18 @@ struct EnterUserCodeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             EnterUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
+                              cardId: "0000111122223333444",
+                              cardIdFormatted: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
                               showForgotButton: true,
+                              accessCodeRepository: nil,
                               completion: {_ in})
             EnterUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
+                              cardId: "0000111122223333444",
+                              cardIdFormatted: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
                               showForgotButton: true,
+                              accessCodeRepository: nil,
                               completion: {_ in})
                 .preferredColorScheme(.dark)
         }

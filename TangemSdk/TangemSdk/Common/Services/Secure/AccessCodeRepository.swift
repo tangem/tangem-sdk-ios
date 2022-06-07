@@ -34,8 +34,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private let cardIdListKey = "card-id-list"
     private let accessCodeListKey = "access-code-list"
     #warning("TODO: l10n")
-    private var touchIdReason: String {
-        "Touch ID is needed BECAUSE"
+    private var localizedReason: String {
+        "Touch ID / pin code is needed BECAUSE"
     }
     private let authenticationPolicy: LAPolicy = .deviceOwnerAuthentication
     
@@ -160,7 +160,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
 
         storage.set(boolValue: true, forKey: .askedForLocalAuthentication)
         
-        context.evaluatePolicy(authenticationPolicy, localizedReason: touchIdReason) { success, authenticationError in
+        context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { success, authenticationError in
             if let authenticationError = authenticationError {
                 completion(.failure(authenticationError))
                 return

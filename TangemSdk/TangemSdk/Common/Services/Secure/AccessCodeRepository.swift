@@ -10,7 +10,7 @@ import LocalAuthentication
 
 public protocol AccessCodeRepository {
     func shouldAskForAuthentication(for cardId: String?) -> Bool
-    func prepareAuthentication(for cardId: String?, completion: @escaping (Result<Void, Error>) -> Void)
+    func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
     func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Bool, Error>) -> Void)
     func removeAllAccessCodes()
@@ -64,20 +64,20 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func prepareAuthentication(for cardId: String?, completion: @escaping (Result<Void, Error>) -> Void) {
+    public func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void) {
         guard shouldAskForAuthentication(for: cardId) else {
-            completion(.success(()))
+            completion()
             return
         }
         
         authenticate(context: LAContext()) { result in
             switch result {
             case .failure(let error):
-                completion(.failure(error))
+                print("Failed to authenticate", error)
             case .success(let authenticatedContext):
                 self.context = authenticatedContext
-                completion(.success(()))
             }
+            completion()
         }
     }
     

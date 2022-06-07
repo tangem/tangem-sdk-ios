@@ -13,7 +13,7 @@ public protocol AccessCodeRepository {
     func hasAccessToBiometricAuthentication() -> Bool
     func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
-    func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Bool, Error>) -> Void)
+    func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void)
     func removeAllAccessCodes()
 }
 
@@ -113,7 +113,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+    public func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let context = LAContext()
         authenticate(context: context) { result in
             if case let .failure(error) = result {
@@ -130,7 +130,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 cardIds.insert(cardId)
                 try self.saveCardIds(cardIds: cardIds)
                 
-                completion(.success(true))
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }

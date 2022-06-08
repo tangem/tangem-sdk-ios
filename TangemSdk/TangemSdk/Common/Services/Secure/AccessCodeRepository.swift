@@ -182,7 +182,10 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 return
             }
             
-            completion(.success(context))
+            let authenticationCompletionDelay = 1.2
+            DispatchQueue.main.asyncAfter(deadline: .now() + authenticationCompletionDelay) {
+                completion(.success(context))
+            }
         }
     }
     

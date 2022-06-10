@@ -215,7 +215,7 @@ extension Command {
         let sdkError = TangemSdkError.from(userCodeType: type, environment: session.environment)
 
         switch sdkError {
-        case .accessCodeRequired:
+        case .accessCodeRequired, .passcodeRequired:
             session.pause(message: sdkError.localizedDescription)
         default:
             session.pause(error: sdkError)

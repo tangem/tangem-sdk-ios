@@ -62,7 +62,7 @@ public struct Config {
     /// Only `secp256k1` and `ed25519` supported
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
     
-    #warning("TODO: //, name")
+    #warning("TODO: //, name, NSFaceIDUsageDescription, crash warning")
     public var storeAccessCodesLocally: Bool = true
 }
 

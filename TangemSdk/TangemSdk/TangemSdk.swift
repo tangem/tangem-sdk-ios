@@ -678,7 +678,7 @@ extension TangemSdk {
                      completion: @escaping (CardSession) -> Void)
     {
         let completeCreation: (AccessCodeRepository?) -> Void = {
-            [weak self, config, terminalKeysService, reader, viewDelegate, jsonConverter]
+            [config, terminalKeysService, reader, viewDelegate, jsonConverter]
             accessCodeRepository in
             
             let environment = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)

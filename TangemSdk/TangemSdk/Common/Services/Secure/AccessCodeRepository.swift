@@ -205,8 +205,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, Error>) -> Void) {
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
-            print("No biometry access", accessError)
             if let accessError = accessError {
+                print("No biometry access", accessError)
                 completion(.failure(accessError))
             } else {
                 completion(.failure(Errors.noBiometryAccess))

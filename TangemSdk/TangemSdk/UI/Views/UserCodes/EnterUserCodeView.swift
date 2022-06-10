@@ -49,7 +49,7 @@ struct EnterUserCodeView: View {
             VStack(spacing: 16) {
                 #warning("TODO: l10n")
                 if usingLocalAuthentication {
-                    Toggle("Использовать Face ID на этом устройстве", isOn: $saveAccessCodeWithBiometry)
+                    Toggle("Save access code", isOn: $saveAccessCodeWithBiometry)
                 }
                 
                 Spacer()

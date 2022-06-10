@@ -13,9 +13,14 @@ public protocol AccessCodeRepository {
     func hasAccessToBiometricAuthentication() -> Bool
     func hasAccessCodes() -> Bool
     func hasAccessCode(for cardId: String) -> Bool
+
+    func ignoringCard(with cardId: String) -> Bool
+    func setIgnoreCard(with cardId: String, ignore: Bool)
+    
     func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
     func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void)
+    
     func removeAllAccessCodes()
 }
 
@@ -35,6 +40,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     private let cardIdListKey = "card-id-list"
     private let accessCodeListKey = "access-code-list"
+    private let ignoredCardIdListKey = "ignored-card-id-list"
     #warning("TODO: l10n")
     private var localizedReason: String {
         "Touch ID / pin code is needed BECAUSE"
@@ -68,7 +74,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     public func hasAccessCodes() -> Bool {
         do {
-            let cardIds = try cardIds()
+            let cardIds = try cardIds(key: cardIdListKey)
             return !cardIds.isEmpty
         } catch {
             print("Failed to get card ID list: \(error)")
@@ -78,11 +84,31 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     public func hasAccessCode(for cardId: String) -> Bool {
         do {
-            let cardIds = try cardIds()
+            let cardIds = try cardIds(key: cardIdListKey)
             return cardIds.contains(cardId)
         } catch {
             print("Failed to get card ID list: \(error)")
             return false
+        }
+    }
+    
+    public func ignoringCard(with cardId: String) -> Bool {
+        do {
+            let ignoredCardIds = try cardIds(key: ignoredCardIdListKey)
+            return ignoredCardIds.contains(cardId)
+        } catch {
+            print("Failed to get ignored card ID list: \(error)")
+            return false
+        }
+    }
+    
+    public func setIgnoreCard(with cardId: String, ignore: Bool) {
+        do {
+            var ignoredCardIds = try cardIds(key: ignoredCardIdListKey)
+            ignoredCardIds.insert(cardId)
+            try saveCardIds(cardIds: ignoredCardIds, key: ignoredCardIdListKey)
+        } catch {
+            print("Failed to save ignored card ID list: \(error)")
         }
     }
     
@@ -142,9 +168,11 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 accessCodes[cardId] = accessCode
                 try self.saveAccessCodes(accessCodes: accessCodes, context: context)
                 
-                var cardIds = try self.cardIds()
+                var cardIds = try self.cardIds(key: self.cardIdListKey)
                 cardIds.insert(cardId)
-                try self.saveCardIds(cardIds: cardIds)
+                try self.saveCardIds(cardIds: cardIds, key: self.cardIdListKey)
+                
+                self.setIgnoreCard(with: cardId, ignore: false)
                 
                 completion(.success(()))
             } catch {
@@ -159,8 +187,15 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
             guard case .success = result else { return }
 
             do {
-                try self.secureStorage.delete(account: self.cardIdListKey)
-                try self.secureStorage.delete(account: self.accessCodeListKey)
+                let keys = [
+                    self.cardIdListKey,
+                    self.accessCodeListKey,
+                    self.ignoredCardIdListKey,
+                ]
+
+                try keys.forEach {
+                    try self.secureStorage.delete(account: $0)
+                }
             } catch {
                 print("Failed to remove access codes: \(error)")
             }
@@ -200,17 +235,17 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     // MARK: Helper save/get methods
     
-    private func cardIds() throws -> CardIdList {
-        let data = try secureStorage.get(account: cardIdListKey) ?? Data()
+    private func cardIds(key: String) throws -> CardIdList {
+        let data = try secureStorage.get(account: key) ?? Data()
         guard !data.isEmpty else {
             return CardIdList()
         }
         return try JSONDecoder().decode(CardIdList.self, from: data)
     }
     
-    private func saveCardIds(cardIds: CardIdList) throws {
+    private func saveCardIds(cardIds: CardIdList, key: String) throws {
         let data = try JSONEncoder().encode(cardIds)
-        try secureStorage.store(object: data, account: cardIdListKey, overwrite: true)
+        try secureStorage.store(object: data, account: key, overwrite: true)
     }
     
     private func accessCodes(context: LAContext) throws -> AccessCodeList {

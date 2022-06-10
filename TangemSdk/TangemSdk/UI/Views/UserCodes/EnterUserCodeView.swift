@@ -50,6 +50,8 @@ struct EnterUserCodeView: View {
                 #warning("TODO: l10n")
                 if usingLocalAuthentication {
                     Toggle("Save access code", isOn: $saveAccessCodeWithBiometry)
+                    // Buggy toggle color
+                    // Fix: https://github.com/tangem/tangem-app-ios/pull/156/files
                 }
                 
                 Spacer()

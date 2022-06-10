@@ -50,7 +50,7 @@ struct EnterUserCodeView: View {
                 #warning("TODO: l10n")
                 if usingLocalAuthentication {
                     Toggle("Save access code", isOn: $saveAccessCodeWithBiometry)
-                    // Buggy toggle color
+                    // TODO: Buggy toggle color
                     // Fix: https://github.com/tangem/tangem-app-ios/pull/156/files
                 }
                 
@@ -109,7 +109,7 @@ struct EnterUserCodeView: View {
         }
         
         accessCodeRepository.saveAccessCode(accessCode, for: cardId) { result in
-            if case let .success = result {
+            if case .success = result {
                 completion(.success(accessCode))
             }
         }

@@ -75,7 +75,8 @@ struct EnterUserCodeView: View {
             isLoading = false
         }
         
-        saveAccessCodeWithBiometry = usingLocalAuthentication
+        let ignoreCard = accessCodeRepository?.ignoringCard(with: cardId) ?? false
+        saveAccessCodeWithBiometry = usingLocalAuthentication && !ignoreCard
     }
     
     private func onCancel() {
@@ -100,6 +101,7 @@ struct EnterUserCodeView: View {
             saveAccessCodeWithBiometry,
             let accessCodeRepository = accessCodeRepository
         else {
+            accessCodeRepository?.setIgnoreCard(with: cardId, ignore: true)
             completion(.success(accessCode))
             return
         }

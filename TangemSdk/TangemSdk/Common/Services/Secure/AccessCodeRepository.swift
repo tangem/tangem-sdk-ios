@@ -12,6 +12,7 @@ public protocol AccessCodeRepository {
     func shouldAskForAuthentication(for cardId: String?) -> Bool
     func hasAccessToBiometricAuthentication() -> Bool
     func hasAccessCodes() -> Bool
+    func hasAccessCode(for cardId: String) -> Bool
     func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
     func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void)
@@ -57,6 +58,10 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     }
     
     public func hasAccessToBiometricAuthentication() -> Bool {
+        guard askedForLocalAuthentication() else {
+            return false
+        }
+        
         let context = LAContext()
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }

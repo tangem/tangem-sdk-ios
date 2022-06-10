@@ -28,6 +28,14 @@ struct EnterUserCodeView: View {
         code.trim().isEmpty
     }
     
+    private var usingLocalAuthentication: Bool {
+        guard let accessCodeRepository = accessCodeRepository else {
+            return false
+        }
+        
+        return !accessCodeRepository.hasAccessToBiometricAuthentication() || !accessCodeRepository.hasAccessCode(for: cardId)
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             UserCodeHeaderView(title: title,
@@ -40,7 +48,7 @@ struct EnterUserCodeView: View {
             
             VStack(spacing: 16) {
                 #warning("TODO: l10n")
-                if accessCodeRepository != nil {
+                if usingLocalAuthentication {
                     Toggle("Использовать Face ID на этом устройстве", isOn: $saveAccessCodeWithBiometry)
                 }
                 
@@ -59,11 +67,15 @@ struct EnterUserCodeView: View {
             .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
-        .onAppear {
-            if isLoading {
-                isLoading = false
-            }
+        .onAppear(perform: onAppear)
+    }
+    
+    private func onAppear() {
+        if isLoading {
+            isLoading = false
         }
+        
+        saveAccessCodeWithBiometry = usingLocalAuthentication
     }
     
     private func onCancel() {

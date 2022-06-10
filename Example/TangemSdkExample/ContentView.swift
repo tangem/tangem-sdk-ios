@@ -50,6 +50,9 @@ struct ContentView: View {
                                 Button("Backup", action: model.onBackup)
                             }
                             
+                            Button("Remove access codes", action: model.onRemoveAccessCodes)
+                                .padding(.top, 4)
+                            
                             additionalView
                                 .padding(.top, 4)
                             

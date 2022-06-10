@@ -38,7 +38,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private let secureStorage = SecureStorage()
     private var context: LAContext?
     
-    private let cardIdListKey = "card-id-list"
+    private let savedCardIdListKey = "card-id-list"
     private let accessCodeListKey = "access-code-list"
     private let ignoredCardIdListKey = "ignored-card-id-list"
     #warning("TODO: l10n")
@@ -74,8 +74,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     public func hasAccessCodes() -> Bool {
         do {
-            let cardIds = try cardIds(key: cardIdListKey)
-            return !cardIds.isEmpty
+            let savedCardIds = try cardIds(key: savedCardIdListKey)
+            return !savedCardIds.isEmpty
         } catch {
             print("Failed to get card ID list: \(error)")
             return false
@@ -84,8 +84,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     
     public func hasAccessCode(for cardId: String) -> Bool {
         do {
-            let cardIds = try cardIds(key: cardIdListKey)
-            return cardIds.contains(cardId)
+            let savedCardIds = try cardIds(key: savedCardIdListKey)
+            return savedCardIds.contains(cardId)
         } catch {
             print("Failed to get card ID list: \(error)")
             return false
@@ -168,9 +168,9 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 accessCodes[cardId] = accessCode
                 try self.saveAccessCodes(accessCodes: accessCodes, context: context)
                 
-                var cardIds = try self.cardIds(key: self.cardIdListKey)
-                cardIds.insert(cardId)
-                try self.saveCardIds(cardIds: cardIds, key: self.cardIdListKey)
+                var savedCardIds = try self.cardIds(key: self.savedCardIdListKey)
+                savedCardIds.insert(cardId)
+                try self.saveCardIds(cardIds: savedCardIds, key: self.savedCardIdListKey)
                 
                 self.setIgnoreCard(with: cardId, ignore: false)
                 
@@ -188,7 +188,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
 
             do {
                 let keys = [
-                    self.cardIdListKey,
+                    self.savedCardIdListKey,
                     self.accessCodeListKey,
                     self.ignoredCardIdListKey,
                 ]

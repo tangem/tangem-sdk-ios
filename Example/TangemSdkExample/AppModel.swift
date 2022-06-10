@@ -711,6 +711,11 @@ extension AppModel {
         showSettings = true
     }
     
+    func onRemoveAccessCodes() {
+        let accessCodeRepository = DefaultAccessCodeRepository()
+        accessCodeRepository.removeAllAccessCodes()
+    }
+    
     @ViewBuilder
     func makeSettingsDestination() -> some View {
         SettingsView().environmentObject(self)

@@ -222,11 +222,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 return
             }
             
-            let usingFaceID = (context.biometryType == .faceID && self.hasAccessToBiometricAuthentication())
-            let authenticationCompletionDelay = usingFaceID ? 1.1 : 0.4
-            DispatchQueue.main.asyncAfter(deadline: .now() + authenticationCompletionDelay) {
-                completion(.success(context))
-            }
+            completion(.success(context))
         }
     }
     

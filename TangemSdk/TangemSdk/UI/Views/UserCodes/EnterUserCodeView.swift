@@ -103,12 +103,12 @@ struct EnterUserCodeView: View {
             saveAccessCodeWithBiometry,
             let accessCodeRepository = accessCodeRepository
         else {
-            accessCodeRepository?.setIgnoreCard(with: cardId, ignore: true)
+            accessCodeRepository?.setIgnoreCards(with: [cardId], ignore: true)
             completion(.success(accessCode))
             return
         }
         
-        accessCodeRepository.saveAccessCode(accessCode, for: cardId) { result in
+        accessCodeRepository.saveAccessCode(accessCode, for: [cardId]) { result in
             if case .success = result {
                 completion(.success(accessCode))
             }

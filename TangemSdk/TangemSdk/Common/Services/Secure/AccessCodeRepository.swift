@@ -15,11 +15,11 @@ public protocol AccessCodeRepository {
     func hasAccessCode(for cardId: String) -> Bool
 
     func ignoringCard(with cardId: String) -> Bool
-    func setIgnoreCard(with cardId: String, ignore: Bool)
+    func setIgnoreCards(with cardIds: [String], ignore: Bool)
     
     func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
-    func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void)
+    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, Error>) -> Void)
     
     func removeAllAccessCodes()
 }
@@ -102,10 +102,10 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func setIgnoreCard(with cardId: String, ignore: Bool) {
+    public func setIgnoreCards(with cardIds: [String], ignore: Bool) {
         do {
-            var ignoredCardIds = try cardIds(key: ignoredCardIdListKey)
-            ignoredCardIds.insert(cardId)
+            var ignoredCardIds = try self.cardIds(key: ignoredCardIdListKey)
+            ignoredCardIds.formUnion(cardIds)
             try saveCardIds(cardIds: ignoredCardIds, key: ignoredCardIdListKey)
         } catch {
             print("Failed to save ignored card ID list: \(error)")
@@ -155,7 +155,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func saveAccessCode(_ accessCode: String, for cardId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    public func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, Error>) -> Void) {
         let context = LAContext()
         authenticate(context: context) { result in
             if case let .failure(error) = result {
@@ -165,14 +165,16 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
             
             do {
                 var accessCodes = try self.accessCodes(context: context)
-                accessCodes[cardId] = accessCode
+                for cardId in cardIds {
+                    accessCodes[cardId] = accessCode
+                }
                 try self.saveAccessCodes(accessCodes: accessCodes, context: context)
                 
                 var savedCardIds = try self.cardIds(key: self.savedCardIdListKey)
-                savedCardIds.insert(cardId)
+                savedCardIds.formUnion(cardIds)
                 try self.saveCardIds(cardIds: savedCardIds, key: self.savedCardIdListKey)
                 
-                self.setIgnoreCard(with: cardId, ignore: false)
+                self.setIgnoreCards(with: cardIds, ignore: false)
                 
                 completion(.success(()))
             } catch {

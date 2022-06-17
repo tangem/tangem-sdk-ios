@@ -102,7 +102,11 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     public func setIgnoreCards(with cardIds: [String], ignore: Bool) {
         do {
             var ignoredCardIds = try self.cardIds(key: ignoredCardIdListKey)
-            ignoredCardIds.formUnion(cardIds)
+            if ignore {
+                ignoredCardIds.formUnion(cardIds)
+            } else {
+                ignoredCardIds.subtract(cardIds)
+            }
             try saveCardIds(cardIds: ignoredCardIds, key: ignoredCardIdListKey)
         } catch {
             print("Failed to save ignored card ID list: \(error)")

@@ -68,7 +68,9 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                if let accessCodeRepository = session.accessCodeRepository {
+                if let accessCodeRepository = session.accessCodeRepository,
+                   readResponse.isAccessCodeSet
+                {
                     let cardId = readResponse.cardId
                     accessCodeRepository.fetchAccessCode(for: cardId) { result in
                         if case let .success(code) = result {

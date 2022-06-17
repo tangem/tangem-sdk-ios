@@ -109,6 +109,8 @@ struct EnterUserCodeView: View {
         }
         
         accessCodeRepository.saveAccessCode(accessCode, for: [cardId]) { result in
+            self.isLoading = false
+            
             if case .success = result {
                 completion(.success(accessCode))
             }

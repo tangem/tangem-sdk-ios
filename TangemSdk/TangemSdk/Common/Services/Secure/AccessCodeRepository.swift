@@ -45,7 +45,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private var localizedReason: String {
         "Touch ID / pin code is needed BECAUSE"
     }
-    private let authenticationPolicy: LAPolicy = .deviceOwnerAuthentication
+    private let authenticationPolicy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
     
     public init() {
         

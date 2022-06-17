@@ -205,6 +205,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     }
     
     private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, Error>) -> Void) {
+        context.localizedFallbackTitle = ""
+        
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
             if let accessError = accessError {

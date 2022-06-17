@@ -550,6 +550,7 @@ extension TangemSdk {
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
@@ -580,6 +581,7 @@ extension TangemSdk {
     /// Allows running  a custom bunch of commands in one NFC Session with lightweight closure syntax. Tangem SDK will start a card sesion and perform preflight `Read` command.
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - callback: At first, you should check that the `TangemSdkError` is not nil, then you can use the `CardSession` to interact with a card.
     ///   You can find the current card in the `environment` property of the `CardSession`
@@ -611,6 +613,7 @@ extension TangemSdk {
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
+    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - jsonRequest: A JSONRPCRequest, describing specific`CardSessionRunnable`
     ///   - completion: A JSONRPCResponse with with result of the operation
     public func startSession(with jsonRequest: String,

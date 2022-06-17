@@ -63,7 +63,7 @@ public struct Config {
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
     
     #warning("TODO: //, name, NSFaceIDUsageDescription, crash warning")
-    public var storeAccessCodesLocally: Bool = true
+    public var saveAccessCodesLocally: Bool = true
 }
 
 public enum CardIdDisplayFormat {

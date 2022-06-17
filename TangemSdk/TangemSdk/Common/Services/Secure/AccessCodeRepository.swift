@@ -18,19 +18,20 @@ public protocol AccessCodeRepository {
     func setIgnoreCards(with cardIds: [String], ignore: Bool)
     
     func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
-    func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void)
-    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void)
+    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void)
     
     func removeAllAccessCodes()
 }
 
+public enum AccessCodeRepositoryError: Error {
+    case noBiometryAccess
+    case noAccessCodeFound
+    case cancelled
+}
+
 @available(iOS 13.0, *)
 public class DefaultAccessCodeRepository: AccessCodeRepository {
-    public enum Errors: Error {
-        case noBiometryAccess
-        case noAccessCodeFound
-    }
-    
     private typealias CardIdList = Set<String>
     private typealias AccessCodeList = [String: String]
     
@@ -64,10 +65,6 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     }
     
     public func hasAccessToBiometricAuthentication() -> Bool {
-        guard askedForLocalAuthentication() else {
-            return false
-        }
-        
         let context = LAContext()
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
@@ -129,9 +126,9 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, Error>) -> Void) {
+    public func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void) {
         guard let context = self.context else {
-            completion(.failure(Errors.noBiometryAccess))
+            completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
             return
         }
         
@@ -147,15 +144,16 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 if let accessCode = accessCodes[cardId] {
                     completion(.success(accessCode))
                 } else {
-                    completion(.failure(Errors.noAccessCodeFound))
+                    completion(.failure(AccessCodeRepositoryError.noAccessCodeFound))
                 }
             } catch {
-                completion(.failure(error))
+                print(error)
+                completion(.failure(.noAccessCodeFound))
             }
         }
     }
     
-    public func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, Error>) -> Void) {
+    public func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void) {
         let context = LAContext()
         authenticate(context: context) { result in
             if case let .failure(error) = result {
@@ -178,7 +176,8 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
                 
                 completion(.success(()))
             } catch {
-                completion(.failure(error))
+                print(error)
+                completion(.failure(.noBiometryAccess))
             }
         }
     }
@@ -204,17 +203,15 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, Error>) -> Void) {
+    private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, AccessCodeRepositoryError>) -> Void) {
         context.localizedFallbackTitle = ""
         
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
             if let accessError = accessError {
                 print("No biometry access", accessError)
-                completion(.failure(accessError))
-            } else {
-                completion(.failure(Errors.noBiometryAccess))
             }
+            completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
             return
         }
 
@@ -222,7 +219,15 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         
         context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { _, error in
             if let error = error {
-                completion(.failure(error))
+                print("Failed to authenticate", error)
+                
+                switch (error as? LAError)?.code {
+                case .userCancel, .appCancel, .systemCancel:
+                    completion(.failure(AccessCodeRepositoryError.cancelled))
+                default:
+                    completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
+                }
+                
                 return
             }
             

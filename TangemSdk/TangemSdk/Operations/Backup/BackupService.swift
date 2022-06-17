@@ -155,6 +155,7 @@ public class BackupService: ObservableObject {
         currentCommand = command
         sdk.startSession(with: command,
                          cardId: cardId,
+                         useSavedAccessCodes: false,
                          initialMessage: initialMessage
         ) {[weak self] result in
             guard let self = self else { return }
@@ -212,6 +213,7 @@ public class BackupService: ObservableObject {
         currentCommand = command
         
         sdk.startSession(with: command,
+                         useSavedAccessCodes: false,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
@@ -264,6 +266,7 @@ public class BackupService: ObservableObject {
             
             sdk.startSession(with: task,
                              cardId: primaryCard.cardId,
+                             useSavedAccessCodes: false,
                              initialMessage: Message(header: nil,
                                                      body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
                              completion: completion)
@@ -321,6 +324,7 @@ public class BackupService: ObservableObject {
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
+                             useSavedAccessCodes: false,
                              initialMessage: Message(header: nil,
                                                      body: "backup_finalize_backup_card_message_format".localized(formattedCardId))) { result in
                 switch result {

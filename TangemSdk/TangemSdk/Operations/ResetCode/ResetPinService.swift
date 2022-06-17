@@ -94,6 +94,7 @@ public class ResetPinService: ObservableObject {
         let initialMessage = Message(header: "Scan the card on which you want to reset the pin")
         TangemSdk().makeSession(with: config,
                                 cardId: resetCardId,
+                                useSavedAccessCodes: true,
                                 initialMessage: initialMessage) { [weak self] cardSession in
             guard let self = self else { return }
             
@@ -119,6 +120,7 @@ public class ResetPinService: ObservableObject {
         let initialMessage = Message(header: "Scan the confirmation card")
         TangemSdk().makeSession(with: config,
                                 cardId: nil,
+                                useSavedAccessCodes: true,
                                 initialMessage: initialMessage) { [weak self] cardSession in
             guard let self = self else { return }
             
@@ -172,6 +174,7 @@ public class ResetPinService: ObservableObject {
         let initialMessage = Message(header: "Scan card to reset user codes")
         TangemSdk().makeSession(with: config,
                                 cardId: resetPinCard.cardId,
+                                useSavedAccessCodes: true,
                                 initialMessage: initialMessage) { [weak self] cardSession in
             guard let self = self else { return }
             

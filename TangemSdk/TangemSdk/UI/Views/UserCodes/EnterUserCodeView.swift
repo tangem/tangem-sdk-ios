@@ -33,7 +33,7 @@ struct EnterUserCodeView: View {
             return false
         }
         
-        return !accessCodeRepository.hasAccessToBiometricAuthentication() || !accessCodeRepository.hasAccessCode(for: cardId)
+        return accessCodeRepository.hasAccessToBiometricAuthentication()
     }
     
     var body: some View {
@@ -78,7 +78,7 @@ struct EnterUserCodeView: View {
         }
         
         let ignoreCard = accessCodeRepository?.ignoringCard(with: cardId) ?? false
-        saveAccessCodeWithBiometry = usingLocalAuthentication && !ignoreCard
+        saveAccessCodeWithBiometry = !ignoreCard
     }
     
     private func onCancel() {
@@ -101,6 +101,7 @@ struct EnterUserCodeView: View {
         
         guard
             saveAccessCodeWithBiometry,
+            usingLocalAuthentication,
             let accessCodeRepository = accessCodeRepository
         else {
             accessCodeRepository?.setIgnoreCards(with: [cardId], ignore: true)
@@ -111,8 +112,13 @@ struct EnterUserCodeView: View {
         accessCodeRepository.saveAccessCode(accessCode, for: [cardId]) { result in
             self.isLoading = false
             
-            if case .success = result {
+            switch result {
+            case .success:
                 completion(.success(accessCode))
+            case .failure(let error):
+                if error == .noBiometryAccess {
+                    completion(.success(accessCode))
+                }
             }
         }
     }

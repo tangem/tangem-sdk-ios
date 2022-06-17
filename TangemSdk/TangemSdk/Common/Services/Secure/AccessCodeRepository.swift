@@ -218,9 +218,9 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
 
         storage.set(boolValue: true, forKey: .askedForLocalAuthentication)
         
-        context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { success, authenticationError in
-            if let authenticationError = authenticationError {
-                completion(.failure(authenticationError))
+        context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { _, error in
+            if let error = error {
+                completion(.failure(error))
                 return
             }
             

@@ -554,6 +554,7 @@ extension TangemSdk {
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
                                 cardId: String? = nil,
+                                useSavedAccessCodes: Bool = true,
                                 initialMessage: Message? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
     where T : CardSessionRunnable {
@@ -567,6 +568,7 @@ extension TangemSdk {
         configure()
         makeSession(with: config,
                     cardId: cardId,
+                    useSavedAccessCodes: useSavedAccessCodes,
                     initialMessage: initialMessage) { [weak self] cardSession in
             guard let self = self else { return }
             
@@ -583,6 +585,7 @@ extension TangemSdk {
     ///   You can find the current card in the `environment` property of the `CardSession`
     ///   If you need to interact with UI, you should dispatch to the main thread manually
     public func startSession(cardId: String? = nil,
+                             useSavedAccessCodes: Bool = true,
                              initialMessage: Message? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
         do {
@@ -595,6 +598,7 @@ extension TangemSdk {
         configure()
         makeSession(with: config,
                     cardId: cardId,
+                    useSavedAccessCodes: useSavedAccessCodes,
                     initialMessage: initialMessage) { [weak self] cardSession in
             guard let self = self else { return }
             
@@ -612,6 +616,7 @@ extension TangemSdk {
     public func startSession(with jsonRequest: String,
                              cardId: String? = nil,
                              initialMessage: String? = nil,
+                             useSavedAccessCodes: Bool = true,
                              completion: @escaping (String) -> Void) {
         
         
@@ -625,6 +630,7 @@ extension TangemSdk {
             let initialMessage = initialMessage.flatMap { Message($0) }
             makeSession(with: config,
                         cardId: cardId,
+                        useSavedAccessCodes: useSavedAccessCodes,
                         initialMessage: initialMessage) { [weak self] cardSession in
                 guard let self = self else { return }
                 
@@ -674,6 +680,7 @@ extension TangemSdk {
     
     func makeSession(with config: Config,
                      cardId: String?,
+                     useSavedAccessCodes: Bool,
                      initialMessage: Message?,
                      completion: @escaping (CardSession) -> Void)
     {
@@ -693,7 +700,7 @@ extension TangemSdk {
             completion(session)
         }
         
-        guard config.storeAccessCodesLocally else {
+        guard useSavedAccessCodes && config.storeAccessCodesLocally else {
             completeCreation(nil)
             return
         }

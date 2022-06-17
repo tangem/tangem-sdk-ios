@@ -700,7 +700,7 @@ extension TangemSdk {
             completion(session)
         }
         
-        guard useSavedAccessCodes && config.storeAccessCodesLocally else {
+        guard useSavedAccessCodes && config.saveAccessCodesLocally else {
             completeCreation(nil)
             return
         }

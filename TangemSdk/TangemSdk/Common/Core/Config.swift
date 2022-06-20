@@ -63,7 +63,7 @@ public struct Config {
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
     
     #warning("TODO: //, name, NSFaceIDUsageDescription, crash warning")
-    public var saveAccessCodesLocally: Bool = true
+    public var saveAccessCodesLocally: Bool = false
     
     #warning("TODO: //, name, l10n")
     public var localAuthenticationReason: String = "Touch ID / pin code is needed BECAUSE"

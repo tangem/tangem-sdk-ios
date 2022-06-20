@@ -668,7 +668,10 @@ extension TangemSdk {
 @available(iOS 13.0, *)
 extension TangemSdk {
     public func createAccessCodeRepository() -> AccessCodeRepository {
-        DefaultAccessCodeRepository()
+        DefaultAccessCodeRepository(
+            authenticationReason: config.localAuthenticationReason,
+            onlyUseBiometrics: config.localAuthenticationBiometryOnly
+        )
     }
     
     private func checkSession() throws {

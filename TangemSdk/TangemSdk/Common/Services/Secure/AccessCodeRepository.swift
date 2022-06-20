@@ -42,14 +42,15 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     private let savedCardIdListKey = "card-id-list"
     private let accessCodeListKey = "access-code-list"
     private let ignoredCardIdListKey = "ignored-card-id-list"
-    #warning("TODO: l10n")
-    private var localizedReason: String {
-        "Touch ID / pin code is needed BECAUSE"
+    private let localizedReason: String
+    private let onlyUseBiometrics: Bool
+    private var authenticationPolicy: LAPolicy {
+        onlyUseBiometrics ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
     }
-    private let authenticationPolicy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
     
-    public init() {
-        
+    public init(authenticationReason: String, onlyUseBiometrics: Bool) {
+        self.localizedReason = authenticationReason
+        self.onlyUseBiometrics = onlyUseBiometrics
     }
     
     public func shouldAskForAuthentication(for cardId: String?) -> Bool {
@@ -208,7 +209,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
     }
     
     private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, AccessCodeRepositoryError>) -> Void) {
-        context.localizedFallbackTitle = ""
+        context.localizedFallbackTitle = onlyUseBiometrics ? "" : nil
         
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {

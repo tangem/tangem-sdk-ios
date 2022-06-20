@@ -22,7 +22,7 @@ struct EnterUserCodeView: View {
     
     @State private var isLoading: Bool = false
     @State private var code: String = ""
-    @State private var saveAccessCodeWithBiometry = false
+    @State private var saveAccessCodeWithBiometrics = false
     
     private var isContinueDisabled: Bool {
         code.trim().isEmpty
@@ -49,7 +49,7 @@ struct EnterUserCodeView: View {
             VStack(spacing: 16) {
                 #warning("TODO: l10n")
                 if usingLocalAuthentication {
-                    Toggle("Save access code", isOn: $saveAccessCodeWithBiometry)
+                    Toggle("Save access code", isOn: $saveAccessCodeWithBiometrics)
                     // TODO: Buggy toggle color
                     // Fix: https://github.com/tangem/tangem-app-ios/pull/156/files
                 }
@@ -78,7 +78,7 @@ struct EnterUserCodeView: View {
         }
         
         let ignoreCard = accessCodeRepository?.ignoringCard(with: cardId) ?? false
-        saveAccessCodeWithBiometry = !ignoreCard
+        saveAccessCodeWithBiometrics = !ignoreCard
     }
     
     private func onCancel() {
@@ -100,7 +100,7 @@ struct EnterUserCodeView: View {
         let accessCode = code.trim()
         
         guard
-            saveAccessCodeWithBiometry,
+            saveAccessCodeWithBiometrics,
             usingLocalAuthentication,
             let accessCodeRepository = accessCodeRepository
         else {
@@ -116,7 +116,7 @@ struct EnterUserCodeView: View {
             case .success:
                 completion(.success(accessCode))
             case .failure(let error):
-                if error == .noBiometryAccess {
+                if error == .noBiometricsAccess {
                     completion(.success(accessCode))
                 }
             }

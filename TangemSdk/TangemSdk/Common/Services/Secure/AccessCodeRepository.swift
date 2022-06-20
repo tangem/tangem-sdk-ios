@@ -31,7 +31,7 @@ public enum AccessCodeRepositoryError: Error {
 }
 
 @available(iOS 13.0, *)
-public class DefaultAccessCodeRepository: AccessCodeRepository {
+class DefaultAccessCodeRepository: AccessCodeRepository {
     private typealias CardIdList = Set<String>
     private typealias AccessCodeList = [String: String]
     
@@ -48,12 +48,12 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         onlyUseBiometrics ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
     }
     
-    public init(authenticationReason: String, onlyUseBiometrics: Bool) {
+    init(authenticationReason: String, onlyUseBiometrics: Bool) {
         self.localizedReason = authenticationReason
         self.onlyUseBiometrics = onlyUseBiometrics
     }
     
-    public func shouldAskForAuthentication(for cardId: String?) -> Bool {
+    func shouldAskForAuthentication(for cardId: String?) -> Bool {
         guard askedForLocalAuthentication() else {
             return false
         }
@@ -65,12 +65,12 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func hasAccessToBiometricAuthentication() -> Bool {
+    func hasAccessToBiometricAuthentication() -> Bool {
         let context = LAContext()
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
     
-    public func hasAccessCodes() -> Bool {
+    func hasAccessCodes() -> Bool {
         do {
             let savedCardIds = try cardIds(key: savedCardIdListKey)
             return !savedCardIds.isEmpty
@@ -80,7 +80,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func hasAccessCode(for cardId: String) -> Bool {
+    func hasAccessCode(for cardId: String) -> Bool {
         do {
             let savedCardIds = try cardIds(key: savedCardIdListKey)
             return savedCardIds.contains(cardId)
@@ -90,7 +90,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func ignoringCard(with cardId: String) -> Bool {
+    func ignoringCard(with cardId: String) -> Bool {
         do {
             let ignoredCardIds = try cardIds(key: ignoredCardIdListKey)
             return ignoredCardIds.contains(cardId)
@@ -100,7 +100,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func setIgnoreCards(with cardIds: [String], ignore: Bool) {
+    func setIgnoreCards(with cardIds: [String], ignore: Bool) {
         do {
             var ignoredCardIds = try self.cardIds(key: ignoredCardIdListKey)
             if ignore {
@@ -114,7 +114,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void) {
+    func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void) {
         guard shouldAskForAuthentication(for: cardId) else {
             completion()
             return
@@ -131,7 +131,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void) {
+    func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void) {
         guard let context = self.context else {
             completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
             return
@@ -158,7 +158,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void) {
+    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void) {
         let context = LAContext()
         authenticate(context: context) { result in
             if case let .failure(error) = result {
@@ -187,7 +187,7 @@ public class DefaultAccessCodeRepository: AccessCodeRepository {
         }
     }
     
-    public func removeAllAccessCodes() {
+    func removeAllAccessCodes() {
         // We don't NEED to authenticate, we do it just to confirm
         authenticate(context: LAContext()) { result in
             guard case .success = result else { return }

@@ -43,14 +43,10 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
     private let accessCodeListKey = "access-code-list"
     private let ignoredCardIdListKey = "ignored-card-id-list"
     private let localizedReason: String
-    private let onlyUseBiometrics: Bool
-    private var authenticationPolicy: LAPolicy {
-        onlyUseBiometrics ? .deviceOwnerAuthenticationWithBiometrics : .deviceOwnerAuthentication
-    }
+    private let authenticationPolicy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
     
-    init(authenticationReason: String, onlyUseBiometrics: Bool) {
+    init(authenticationReason: String) {
         self.localizedReason = authenticationReason
-        self.onlyUseBiometrics = onlyUseBiometrics
     }
     
     func shouldAskForAuthentication(for cardId: String?) -> Bool {
@@ -209,7 +205,7 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
     }
     
     private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, AccessCodeRepositoryError>) -> Void) {
-        context.localizedFallbackTitle = onlyUseBiometrics ? "" : nil
+        context.localizedFallbackTitle = ""
         
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {

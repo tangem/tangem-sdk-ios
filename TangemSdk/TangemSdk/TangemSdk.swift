@@ -670,7 +670,7 @@ extension TangemSdk {
     public func createAccessCodeRepository() -> AccessCodeRepository {
         DefaultAccessCodeRepository(
             authenticationReason: config.localAuthenticationReason,
-            onlyUseBiometrics: config.localAuthenticationBiometryOnly
+            onlyUseBiometrics: config.localAuthenticationBiometricsOnly
         )
     }
     

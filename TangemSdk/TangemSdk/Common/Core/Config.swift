@@ -69,7 +69,7 @@ public struct Config {
     public var localAuthenticationReason: String = "Touch ID / pin code is needed BECAUSE"
     
     #warning("TODO: //, name")
-    public var localAuthenticationBiometryOnly: Bool = true
+    public var localAuthenticationBiometricsOnly: Bool = true
 }
 
 public enum CardIdDisplayFormat {

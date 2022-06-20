@@ -25,7 +25,7 @@ public protocol AccessCodeRepository {
 }
 
 public enum AccessCodeRepositoryError: Error {
-    case noBiometryAccess
+    case noBiometricsAccess
     case noAccessCodeFound
     case cancelled
 }
@@ -133,7 +133,7 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
     
     func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void) {
         guard let context = self.context else {
-            completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
+            completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
             return
         }
         
@@ -182,7 +182,7 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
                 completion(.success(()))
             } catch {
                 print(error)
-                completion(.failure(.noBiometryAccess))
+                completion(.failure(.noBiometricsAccess))
             }
         }
     }
@@ -214,9 +214,9 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
         var accessError: NSError?
         guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
             if let accessError = accessError {
-                print("No biometry access", accessError)
+                print("No biometrics access", accessError)
             }
-            completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
+            completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
             return
         }
 
@@ -230,7 +230,7 @@ class DefaultAccessCodeRepository: AccessCodeRepository {
                 case .userCancel, .appCancel, .systemCancel:
                     completion(.failure(AccessCodeRepositoryError.cancelled))
                 default:
-                    completion(.failure(AccessCodeRepositoryError.noBiometryAccess))
+                    completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
                 }
                 
                 return

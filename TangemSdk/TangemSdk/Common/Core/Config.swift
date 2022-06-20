@@ -64,6 +64,12 @@ public struct Config {
     
     #warning("TODO: //, name, NSFaceIDUsageDescription, crash warning")
     public var saveAccessCodesLocally: Bool = true
+    
+    #warning("TODO: //, name, l10n")
+    public var localAuthenticationReason: String = "Touch ID / pin code is needed BECAUSE"
+    
+    #warning("TODO: //, name")
+    public var localAuthenticationBiometryOnly: Bool = true
 }
 
 public enum CardIdDisplayFormat {

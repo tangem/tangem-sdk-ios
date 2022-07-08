@@ -20,9 +20,6 @@ public class CardSession {
     /// Allows interaction with users and shows visual elements.
     public let viewDelegate: SessionViewDelegate
     
-    /// Allows access codes to be stored in a secure location
-    public let accessCodeRepository: AccessCodeRepository?
-    
     var state: CardSessionState = .inactive
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
@@ -40,6 +37,9 @@ public class CardSession {
     private var preflightReadMode: PreflightReadMode = .fullCardRead
     private var currentTag: NFCTagType = .none
     private var resetCodesController: ResetCodesController? = nil
+    /// Allows access codes to be stored in a secure location
+    private var accessCodeRepository: AccessCodeRepository? = nil
+    
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -48,20 +48,20 @@ public class CardSession {
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
     ///   - jsonConverter: JSONRPCConverter
-    public init(environment: SessionEnvironment,
-                cardId: String? = nil,
-                initialMessage: Message? = nil,
-                cardReader: CardReader,
-                viewDelegate: SessionViewDelegate,
-                accessCodeRepository: AccessCodeRepository?,
-                jsonConverter: JSONRPCConverter) {
+    init(environment: SessionEnvironment,
+         cardId: String? = nil,
+         initialMessage: Message? = nil,
+         cardReader: CardReader,
+         viewDelegate: SessionViewDelegate,
+         jsonConverter: JSONRPCConverter,
+         accessCodeRepository: AccessCodeRepository?) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self.environment = environment
         self.initialMessage = initialMessage
-        self.accessCodeRepository = accessCodeRepository
         self.cardId = cardId
         self.jsonConverter = jsonConverter
+        self.accessCodeRepository = accessCodeRepository
     }
     
     deinit {
@@ -85,7 +85,9 @@ public class CardSession {
             completion(.failure(.busy))
             return
         }
+        
         Log.session("Start card session with runnable")
+        
         prepareSession(for: runnable) { prepareResult in
             switch prepareResult {
             case .success:
@@ -110,6 +112,8 @@ public class CardSession {
                         case .success(let runnableResponse):
                             self.stop(message: "nfc_alert_default_done".localized) {
                                 completion(.success(runnableResponse))
+                                
+                                session.saveAccessCodeForEnvironmentCardIfNeeded()
                             }
                         case .failure(let error):
                             Log.error(error)
@@ -121,7 +125,9 @@ public class CardSession {
                 }
             case .failure(let error):
                 Log.error(error)
-                completion(.failure(error))
+                self.stop(error: error) {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -142,7 +148,6 @@ public class CardSession {
         
         Log.session("Start card session with delegate")
         state = .active
-        
         
         reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
@@ -171,25 +176,25 @@ public class CardSession {
             .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[unowned self] tag in
-                    self.environment.encryptionKey = nil
-                  })
+                self.environment.encryptionKey = nil
+            })
             .store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .filter { $0 != .none }
             .first()
             .sink(receiveCompletion: { [unowned self] readerCompletion in
-                    if case let .failure(error) = readerCompletion {
-                        self.stop(error: error) {
-                            onSessionStarted(self, error)
-                        }
-                    }}, receiveValue: { [unowned self] tag in
-                        if case .tag = tag, self.preflightReadMode != .none {
-                            self.preflightCheck(onSessionStarted)
-                        } else {
-                            onSessionStarted(self, nil)
-                        }
-                    })
+                if case let .failure(error) = readerCompletion {
+                    self.stop(error: error) {
+                        onSessionStarted(self, error)
+                    }
+                }}, receiveValue: { [unowned self] tag in
+                    if case .tag = tag, self.preflightReadMode != .none {
+                        self.preflightCheck(onSessionStarted)
+                    } else {
+                        onSessionStarted(self, nil)
+                    }
+                })
             .store(in: &nfcReaderSubscriptions)
         
         reader.startSession(with: initialMessage?.alertMessage)
@@ -249,7 +254,7 @@ public class CardSession {
             completion(.failure(.sessionInactive))
             return
         }
-
+        
         Log.apdu("Not encrypted apdu: \(apdu)")
         
         reader.tag
@@ -306,7 +311,43 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
-        runnable.prepare(self, completion: completion)
+        
+        let requestCodeAction = {
+            self.environment.accessCode = UserCode(.accessCode, value: nil)
+            self.requestUserCodeIfNeeded(.accessCode) { result in
+                switch result {
+                case .success:
+                    runnable.prepare(self, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        }
+        
+        switch environment.config.accessCodeRequestPolicy {
+        case .alwaysWithBiometrics:
+            if let accessCodeRepository = accessCodeRepository,
+               accessCodeRepository.hasItems(for: cardId) {
+                viewDelegate.setState(.authentication)
+                
+                accessCodeRepository.unlock { result in
+                    switch result {
+                    case .success:
+                        runnable.prepare(self, completion: completion)
+                    case .failure:
+                        requestCodeAction()
+                    }
+                }
+                
+                break
+            }
+            
+            fallthrough
+        case .always:
+            requestCodeAction()
+        case .cardRelated:
+            runnable.prepare(self, completion: completion)
+        }
     }
     
     // MARK: - Preflight check
@@ -406,7 +447,7 @@ public class CardSession {
         let showForgotButton = environment.card?.backupStatus?.isActive ?? false
         let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
-        viewDelegate.setState(.requestCode(type, cardId: cardId, cardIdFormatted: formattedCardId, showForgotButton: showForgotButton, accessCodeRepository: accessCodeRepository, completion: { [weak self] result in
+        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -435,7 +476,23 @@ public class CardSession {
         }))
     }
     
-    func updateEnvironment(with type: UserCodeType, code: String) {
+    func fetchAccessCodeForEnvironmentCardIfNeeded() {
+        if let card = environment.card, card.isAccessCodeSet,
+           let accessCodeValue = accessCodeRepository?.fetch(for: card.cardId) {
+            self.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
+        }
+    }
+    
+    func saveAccessCodeForEnvironmentCardIfNeeded() {
+        if let card = environment.card,
+           let code = environment.accessCode.value {
+            accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in
+                self?.accessCodeRepository?.lock()
+            }
+        }
+    }
+    
+    private func updateEnvironment(with type: UserCodeType, code: String) {
         switch type {
         case .accessCode:
             self.environment.accessCode = UserCode(.accessCode, stringValue: code)
@@ -444,11 +501,13 @@ public class CardSession {
         }
     }
     
-    func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
-        let resetService = ResetPinService(config: environment.config)
-        let viewDelegate = ResetCodesViewDelegate(style: environment.config.style)
+    private func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
+        var config = environment.config
+        config.accessCodeRequestPolicy = .cardRelated
+        let resetService = ResetPinService(config: config)
+        let viewDelegate = ResetCodesViewDelegate(style: config.style)
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
-        resetCodesController!.cardIdDisplayFormat = environment.config.cardIdDisplayFormat
+        resetCodesController!.cardIdDisplayFormat = config.cardIdDisplayFormat
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
     }
 }

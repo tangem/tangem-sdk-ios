@@ -23,6 +23,21 @@ public class DepersonalizeCommand: Command {
     
     public init() {}
     
+    public func run(in session: CardSession, completion: @escaping CompletionResult<DepersonalizeResponse>) {
+        transceive(in: session) { result in
+            switch result {
+            case .success(let response):
+                if response.success {
+                    session.environment.accessCode = UserCode(.accessCode, value: nil)
+                    session.environment.passcode = UserCode(.passcode, value: nil)
+                }
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         return CommandApdu(.depersonalize, tlv: Data())
     }

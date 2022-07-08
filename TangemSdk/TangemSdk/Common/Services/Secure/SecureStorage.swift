@@ -8,26 +8,18 @@
 
 import Foundation
 import Security
-import LocalAuthentication
 
 /// Helper class for Keychain
 @available(iOS 13.0, *)
 struct SecureStorage {
-    func get(account: String, context: LAContext? = nil) throws -> Data? {
-        var query: [CFString: Any] = [
+    func get(account: SecureStorageKey) throws -> Data? {
+        let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: account,
+            kSecAttrAccount: account.rawValue,
             kSecMatchLimit: kSecMatchLimitOne,
             kSecUseDataProtectionKeychain: true,
             kSecReturnData: true,
-        ]
-        
-        if let context = context,
-           let biometricAccessControl = self.biometricAccessControl()
-        {
-            query[kSecAttrAccessControl] = biometricAccessControl
-            query[kSecUseAuthenticationContext] = context
-        }
+        ] as [String: Any]
         
         var result: AnyObject?
         
@@ -43,37 +35,22 @@ struct SecureStorage {
         }
     }
     
-    func store(object: Data, account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
-        var query: [CFString: Any] = [
+    func store(object: Data, account: SecureStorageKey, overwrite: Bool = true) throws  {
+        let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: account,
+            kSecAttrAccount: account.rawValue,
             kSecValueData: object,
             kSecUseDataProtectionKeychain: true,
-        ]
-        
-        if let context = context,
-           let biometricAccessControl = self.biometricAccessControl()
-        {
-            query[kSecAttrAccessControl] = biometricAccessControl
-            query[kSecUseAuthenticationContext] = context
-        } else {
-            query[kSecAttrAccessible] = kSecAttrAccessibleWhenUnlocked
-        }
+            kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        ] as [String: Any]
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
         if status == errSecDuplicateItem && overwrite {
-            var searchQuery: [CFString: Any] = [
+            let searchQuery = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: account,
-            ]
-            
-            if let context = context,
-               let biometricAccessControl = self.biometricAccessControl()
-            {
-                searchQuery[kSecAttrAccessControl] = biometricAccessControl
-                searchQuery[kSecUseAuthenticationContext] = context
-            }
+                kSecAttrAccount: account.rawValue,
+            ] as [String: Any]
             
             let attributes = [kSecValueData: object] as [String: Any]
             
@@ -86,36 +63,30 @@ struct SecureStorage {
     }
     
     /// Removes any existing data with the given account.
-    func delete(account: String) throws {
-        let query = [kSecClass: kSecClassGenericPassword,
-                     kSecUseDataProtectionKeychain: true,
-                     kSecAttrAccount: account] as [String: Any]
+    func delete(account: SecureStorageKey) throws {
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecUseDataProtectionKeychain: true,
+            kSecAttrAccount: account.rawValue,
+        ] as [String: Any]
+        
         switch SecItemDelete(query as CFDictionary) {
         case errSecItemNotFound, errSecSuccess: break // Okay to ignore
         case let status:
             throw KeyStoreError("Unexpected deletion error: \(status.message)")
         }
     }
-    
-    private func biometricAccessControl() -> SecAccessControl? {
-        return SecAccessControlCreateWithFlags(
-            nil,
-            kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
-            .userPresence,
-            nil
-        )
-    }
 }
 
 @available(iOS 13.0, *)
 extension SecureStorage {
     /// Stores a CryptoKit key in the keychain as a generic password.
-    func storeKey<T: GenericPasswordConvertible>(_ key: T, account: String) throws {
+    func storeKey<T: GenericPasswordConvertible>(_ key: T, account: SecureStorageKey) throws {
         try store(object: key.rawRepresentation, account: account, overwrite: true)
     }
     
     /// Reads a CryptoKit key from the keychain as a generic password.
-    func readKey<T: GenericPasswordConvertible>(account: String) throws -> T? {
+    func readKey<T: GenericPasswordConvertible>(account: SecureStorageKey) throws -> T? {
         if let data = try get(account: account) {
             return try T(rawRepresentation: data)
         }

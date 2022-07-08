@@ -25,20 +25,19 @@ struct SecureEnclaveService {
     }
     
     private func makeOrRestoreKey() throws -> SecureEnclave.P256.Signing.PrivateKey {
-        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(account: StorageKey.secureEnclaveP256Key.rawValue) {
+        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(account: .secureEnclaveP256Key) {
             return restoredKey
         }
         
-        let key = try SecureEnclave.P256.Signing.PrivateKey()
-        try storage.storeKey(key, account: StorageKey.secureEnclaveP256Key.rawValue)
+        let accessControl = SecAccessControlCreateWithFlags(nil,
+                                                            kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+                                                            [],
+                                                            nil)!
+        
+        let key = try SecureEnclave.P256.Signing.PrivateKey(compactRepresentable: true,
+                                                            accessControl: accessControl,
+                                                            authenticationContext: nil)
+        try storage.storeKey(key, account: .secureEnclaveP256Key)
         return key
-    }
-}
-
-@available(iOS 13.0, *)
-private extension SecureEnclaveService {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case secureEnclaveP256Key
     }
 }

@@ -51,6 +51,11 @@ public final class TangemSdk {
     public func registerJSONRPCTask(_ object: JSONRPCHandler) {
         jsonConverter.register(object)
     }
+    
+    public func removeAccessCodes() {
+        let repo = AccessCodeRepository()
+        repo.removeAll()
+    }
 }
 
 //MARK: - Card operations
@@ -550,12 +555,10 @@ extension TangemSdk {
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
-    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
                                 cardId: String? = nil,
-                                useSavedAccessCodes: Bool = true,
                                 initialMessage: Message? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
     where T : CardSessionRunnable {
@@ -567,27 +570,20 @@ extension TangemSdk {
         }
         
         configure()
-        makeSession(with: config,
-                    cardId: cardId,
-                    useSavedAccessCodes: useSavedAccessCodes,
-                    initialMessage: initialMessage) { [weak self] cardSession in
-            guard let self = self else { return }
-            
-            self.cardSession = cardSession
-            self.cardSession?.start(with: runnable, completion: completion)
-        }
+        cardSession = makeSession(with: config,
+                                  cardId: cardId,
+                                  initialMessage: initialMessage)
+        cardSession!.start(with: runnable, completion: completion)
     }
     
     /// Allows running  a custom bunch of commands in one NFC Session with lightweight closure syntax. Tangem SDK will start a card sesion and perform preflight `Read` command.
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
-    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - callback: At first, you should check that the `TangemSdkError` is not nil, then you can use the `CardSession` to interact with a card.
     ///   You can find the current card in the `environment` property of the `CardSession`
     ///   If you need to interact with UI, you should dispatch to the main thread manually
     public func startSession(cardId: String? = nil,
-                             useSavedAccessCodes: Bool = true,
                              initialMessage: Message? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
         do {
@@ -598,28 +594,21 @@ extension TangemSdk {
         }
         
         configure()
-        makeSession(with: config,
-                    cardId: cardId,
-                    useSavedAccessCodes: useSavedAccessCodes,
-                    initialMessage: initialMessage) { [weak self] cardSession in
-            guard let self = self else { return }
-            
-            self.cardSession = cardSession
-            self.cardSession?.start(callback)
-        }
+        cardSession = makeSession(with: config,
+                                  cardId: cardId,
+                                  initialMessage: initialMessage)
+        cardSession?.start(callback)
     }
     
     /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
     /// invoke the `run ` method of `CardSessionRunnable` and close the session.
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
-    ///   - useSavedAccessCodes: Whether or not to use access codes saved to the Keychain
     ///   - jsonRequest: A JSONRPCRequest, describing specific`CardSessionRunnable`
     ///   - completion: A JSONRPCResponse with with result of the operation
     public func startSession(with jsonRequest: String,
                              cardId: String? = nil,
                              initialMessage: String? = nil,
-                             useSavedAccessCodes: Bool = true,
                              completion: @escaping (String) -> Void) {
         
         
@@ -629,33 +618,26 @@ extension TangemSdk {
             
             try checkSession()
             configure()
+            cardSession = makeSession(with: config,
+                                      cardId: cardId,
+                                      initialMessage: initialMessage.flatMap { Message($0) })
             
-            let initialMessage = initialMessage.flatMap { Message($0) }
-            makeSession(with: config,
-                        cardId: cardId,
-                        useSavedAccessCodes: useSavedAccessCodes,
-                        initialMessage: initialMessage) { [weak self] cardSession in
-                guard let self = self else { return }
-                
-                self.cardSession = cardSession
-                
-                let task = RunnablesTask(runnables: runnables)
-                self.cardSession!.start(with: task) { result in
-                    switch result {
-                    case .success(let response):
-                        switch parseResult {
-                        case .array:
-                            completion(response.json)
-                        case .single:
-                            if response.count == 1 {
-                                completion(response[0].json)
-                            } else {
-                                completion(TangemSdkError.unknownError.toJsonResponse().json)
-                            }
+            let task = RunnablesTask(runnables: runnables)
+            cardSession!.start(with: task) { result in
+                switch result {
+                case .success(let response):
+                    switch parseResult {
+                    case .array:
+                        completion(response.json)
+                    case .single:
+                        if response.count == 1 {
+                            completion(response[0].json)
+                        } else {
+                            completion(TangemSdkError.unknownError.toJsonResponse().json)
                         }
-                    case .failure(let error):
-                        completion(error.toJsonResponse().json)
                     }
+                case .failure(let error):
+                    completion(error.toJsonResponse().json)
                 }
             }
         } catch {
@@ -667,10 +649,6 @@ extension TangemSdk {
 //MARK: - Private
 @available(iOS 13.0, *)
 extension TangemSdk {
-    public func createAccessCodeRepository() -> AccessCodeRepository {
-        DefaultAccessCodeRepository(authenticationReason: config.localAuthenticationReason)
-    }
-    
     private func checkSession() throws {
         if let existingSession = cardSession, existingSession.state == .active  {
             throw TangemSdkError.busy
@@ -681,45 +659,24 @@ extension TangemSdk {
         Log.config = config.logConfig
     }
     
+    private func makeAccessCodeRepository(with config: Config) -> AccessCodeRepository? {
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
+            return AccessCodeRepository()
+        }
+        
+        return nil
+    }
+    
     func makeSession(with config: Config,
                      cardId: String?,
-                     useSavedAccessCodes: Bool,
-                     initialMessage: Message?,
-                     completion: @escaping (CardSession) -> Void)
-    {
-        let completeCreation: (AccessCodeRepository?) -> Void = {
-            [config, terminalKeysService, reader, viewDelegate, jsonConverter]
-            accessCodeRepository in
-            
-            let environment = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
-            
-            let session = CardSession(environment: environment,
-                                      cardId: cardId,
-                                      initialMessage: initialMessage,
-                                      cardReader: reader,
-                                      viewDelegate: viewDelegate,
-                                      accessCodeRepository: accessCodeRepository,
-                                      jsonConverter: jsonConverter)
-            completion(session)
-        }
-        
-        guard useSavedAccessCodes && config.saveAccessCodesLocally else {
-            completeCreation(nil)
-            return
-        }
-        
-        let accessCodeRepository = createAccessCodeRepository()
-        guard accessCodeRepository.shouldAskForAuthentication(for: cardId) else {
-            completeCreation(accessCodeRepository)
-            return
-        }
-        
-        if accessCodeRepository.hasAccessToBiometricAuthentication() {
-            viewDelegate.setState(.authentication)
-        }
-        
-        accessCodeRepository.prepareAuthentication(for: cardId) {
-            completeCreation(accessCodeRepository)
-        }
+                     initialMessage: Message?) -> CardSession {
+        .init(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
+              cardId: cardId,
+              initialMessage: initialMessage,
+              cardReader: reader,
+              viewDelegate: viewDelegate,
+              jsonConverter: jsonConverter,
+              accessCodeRepository: makeAccessCodeRepository(with: config))
     }
 }

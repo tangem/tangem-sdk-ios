@@ -91,22 +91,17 @@ public class ResetPinService: ObservableObject {
     }
     
     private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
-        let initialMessage = Message(header: "Scan the card on which you want to reset the pin")
-        TangemSdk().makeSession(with: config,
-                                cardId: resetCardId,
-                                useSavedAccessCodes: true,
-                                initialMessage: initialMessage) { [weak self] cardSession in
-            guard let self = self else { return }
-            
-            self.session = cardSession
-            self.session!.start(with: GetResetPinTokenCommand()) { result in
-                switch result {
-                case .success(let response):
-                    self.repo.resetPinCard = response
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetCardId,
+                                               initialMessage: Message(header: "Scan the card on which you want to reset the pin"))
+        
+        session!.start(with: GetResetPinTokenCommand()) { result in
+            switch result {
+            case .success(let response):
+                self.repo.resetPinCard = response
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -117,22 +112,17 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let initialMessage = Message(header: "Scan the confirmation card")
-        TangemSdk().makeSession(with: config,
-                                cardId: nil,
-                                useSavedAccessCodes: true,
-                                initialMessage: initialMessage) { [weak self] cardSession in
-            guard let self = self else { return }
-            
-            self.session = cardSession
-            self.session!.start(with: SignResetPinTokenCommand(resetPinCard: resetPinCard)) { result in
-                switch result {
-                case .success(let response):
-                    self.repo.confirmationCard = response
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: nil,
+                                               initialMessage: Message(header: "Scan the confirmation card"))
+        
+        session!.start(with: SignResetPinTokenCommand(resetPinCard: resetPinCard)) { result in
+            switch result {
+            case .success(let response):
+                self.repo.confirmationCard = response
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -171,22 +161,18 @@ public class ResetPinService: ObservableObject {
             return
         }
         
-        let initialMessage = Message(header: "Scan card to reset user codes")
-        TangemSdk().makeSession(with: config,
-                                cardId: resetPinCard.cardId,
-                                useSavedAccessCodes: true,
-                                initialMessage: initialMessage) { [weak self] cardSession in
-            guard let self = self else { return }
-            
-            self.session = cardSession
-            let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
-            self.session!.start(with: task) { result in
-                switch result {
-                case .success:
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        self.session = TangemSdk().makeSession(with: config,
+                                               cardId: resetPinCard.cardId,
+                                               initialMessage: Message(header: "Scan card to reset user codes"))
+        
+        
+        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        session!.start(with: task) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -283,4 +269,3 @@ struct ConfirmationCard {
     let salt: Data
     let authorizeSignature: Data
 }
-

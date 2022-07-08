@@ -68,19 +68,9 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                if let accessCodeRepository = session.accessCodeRepository,
-                   readResponse.isAccessCodeSet
-                {
-                    let cardId = readResponse.cardId
-                    accessCodeRepository.fetchAccessCode(for: cardId) { result in
-                        if case let .success(code) = result {
-                            session.updateEnvironment(with: .accessCode, code: code)
-                        }
-                        self.finalizeRead(in: session, completion: completion)
-                    }
-                } else {
-                    self.finalizeRead(in: session, completion: completion)
-                }
+                session.fetchAccessCodeForEnvironmentCardIfNeeded()
+                
+                self.finalizeRead(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -122,4 +112,3 @@ final class PreflightReadTask: CardSessionRunnable {
         }
     }
 }
-

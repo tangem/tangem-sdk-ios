@@ -62,11 +62,7 @@ public struct Config {
     /// Only `secp256k1` and `ed25519` supported
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
     
-    #warning("TODO: //, name, NSFaceIDUsageDescription, crash warning")
-    public var saveAccessCodesLocally: Bool = false
-    
-    #warning("TODO: //, name, l10n")
-    public var localAuthenticationReason: String = "Touch ID / pin code is needed BECAUSE"
+    public var accessCodeRequestPolicy: UserCodeRequestPolicy = .cardRelated
 }
 
 public enum CardIdDisplayFormat {
@@ -78,4 +74,14 @@ public enum CardIdDisplayFormat {
     case lastMasked(_ numbers: Int, mask: String = "***")
     /// n numbers from the end except last
     case lastLunh(_ numbers: Int)
+}
+
+
+public enum UserCodeRequestPolicy {
+    /// User code will be requested before card scan. Biometrics will be used if enabled and there are any saved codes.
+    case alwaysWithBiometrics
+    /// User code will be requested before card scan.
+    case always
+    /// User code will be requested only if set on the card. Need scan the card twice.
+    case cardRelated
 }

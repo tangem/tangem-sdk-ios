@@ -48,6 +48,7 @@ class AppModel: ObservableObject {
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
+        config.accessCodeRequestPolicy = .alwaysWithBiometrics
         _tangemSdk.config = config
         return _tangemSdk
     }
@@ -712,8 +713,7 @@ extension AppModel {
     }
     
     func onRemoveAccessCodes() {
-        let accessCodeRepository = DefaultAccessCodeRepository()
-        accessCodeRepository.removeAllAccessCodes()
+        tangemSdk.removeAccessCodes()
     }
     
     @ViewBuilder

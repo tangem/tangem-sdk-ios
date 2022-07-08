@@ -155,7 +155,6 @@ public class BackupService: ObservableObject {
         currentCommand = command
         sdk.startSession(with: command,
                          cardId: cardId,
-                         useSavedAccessCodes: false,
                          initialMessage: initialMessage
         ) {[weak self] result in
             guard let self = self else { return }
@@ -213,7 +212,6 @@ public class BackupService: ObservableObject {
         currentCommand = command
         
         sdk.startSession(with: command,
-                         useSavedAccessCodes: false,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
@@ -266,7 +264,6 @@ public class BackupService: ObservableObject {
             
             sdk.startSession(with: task,
                              cardId: primaryCard.cardId,
-                             useSavedAccessCodes: false,
                              initialMessage: Message(header: nil,
                                                      body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
                              completion: completion)
@@ -324,7 +321,6 @@ public class BackupService: ObservableObject {
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
-                             useSavedAccessCodes: false,
                              initialMessage: Message(header: nil,
                                                      body: "backup_finalize_backup_card_message_format".localized(formattedCardId))) { result in
                 switch result {
@@ -458,7 +454,7 @@ class BackupRepo {
     }
     
     func reset() {
-        try? storage.delete(account: StorageKey.backupData.rawValue)
+        try? storage.delete(account: .backupData)
         data = .init()
     }
     
@@ -466,24 +462,16 @@ class BackupRepo {
         guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
-        try storage.store(object: encoded, account: StorageKey.backupData.rawValue)
+        try storage.store(object: encoded, account: .backupData)
     }
     
     private func fetch() throws {
         self.isFetching = true
         defer { self.isFetching = false }
         
-        if let savedData = try storage.get(account: StorageKey.backupData.rawValue) {
+        if let savedData = try storage.get(account: .backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-private extension BackupRepo {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case backupData
     }
 }
 

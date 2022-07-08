@@ -50,13 +50,13 @@ public class TrustedCardsRepo {
         let convertedData = data.mapValues { $0.rawRepresentation }
         let encoded = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
         let signature = try secureEnclave.sign(data: encoded)
-        try secureStorage.store(object: encoded, account: StorageKey.attestedCards.rawValue)
-        try secureStorage.store(object: signature, account: StorageKey.signatureOfAttestedCards.rawValue)
+        try secureStorage.store(object: encoded, account: .attestedCards)
+        try secureStorage.store(object: signature, account: .signatureOfAttestedCards)
     }
     
     private func fetch() throws {
-        if let data = try secureStorage.get(account: StorageKey.attestedCards.rawValue),
-           let signature = try secureStorage.get(account: StorageKey.signatureOfAttestedCards.rawValue),
+        if let data = try secureStorage.get(account: .attestedCards),
+           let signature = try secureStorage.get(account: .signatureOfAttestedCards),
            try secureEnclave.verify(signature: signature, message: data) {
             let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
             let converted = decoded.compactMapValues { Attestation(rawRepresentation: $0) }
@@ -65,16 +65,7 @@ public class TrustedCardsRepo {
     }
     
     private func clean() throws {
-        try secureStorage.delete(account: StorageKey.attestedCards.rawValue)
-    }
-}
-
-@available(iOS 13.0, *)
-private extension TrustedCardsRepo {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case attestedCards
-        case signatureOfAttestedCards
+        try secureStorage.delete(account: .attestedCards)
     }
 }
 

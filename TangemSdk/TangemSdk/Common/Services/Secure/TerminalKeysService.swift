@@ -15,12 +15,12 @@ public class TerminalKeysService {
     
     /// Retrieve generated keys from keychain if they exist. Generate new and store in Keychain otherwise
     public lazy var keys: KeyPair?  = {
-        guard let privateKey = try? secureStorage.get(account: StorageKey.terminalPrivateKey.rawValue),
-              let publicKey = try? secureStorage.get(account: StorageKey.terminalPublicKey.rawValue) else {
+        guard let privateKey = try? secureStorage.get(account: .terminalPrivateKey),
+              let publicKey = try? secureStorage.get(account: .terminalPublicKey) else {
             
             if let newKeys = try? Secp256k1Utils().generateKeyPair() {
-                try? secureStorage.store(object: newKeys.privateKey, account: StorageKey.terminalPrivateKey.rawValue)
-                try? secureStorage.store(object: newKeys.publicKey, account: StorageKey.terminalPublicKey.rawValue)
+                try? secureStorage.store(object: newKeys.privateKey, account: .terminalPrivateKey)
+                try? secureStorage.store(object: newKeys.publicKey, account: .terminalPublicKey)
                 return newKeys
             }
             
@@ -37,13 +37,4 @@ public class TerminalKeysService {
         
         return KeyPair(privateKey: privateKey, publicKey: publicKey)
     }()
-}
-
-@available(iOS 13.0, *)
-private extension TerminalKeysService {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case terminalPrivateKey //link card to terminal
-        case terminalPublicKey
-    }
 }

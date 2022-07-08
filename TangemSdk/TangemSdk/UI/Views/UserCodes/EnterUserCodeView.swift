@@ -12,34 +12,23 @@ import SwiftUI
 struct EnterUserCodeView: View {
     let title: String
     let cardId: String
-    let cardIdFormatted: String
     let placeholder: String
     let showForgotButton: Bool
-    let accessCodeRepository: AccessCodeRepository?
     let completion: CompletionResult<String>
     
     @EnvironmentObject var style: TangemSdkStyle
     
     @State private var isLoading: Bool = false
     @State private var code: String = ""
-    @State private var saveAccessCodeWithBiometrics = false
     
     private var isContinueDisabled: Bool {
         code.trim().isEmpty
     }
     
-    private var usingLocalAuthentication: Bool {
-        guard let accessCodeRepository = accessCodeRepository else {
-            return false
-        }
-        
-        return accessCodeRepository.hasAccessToBiometricAuthentication()
-    }
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             UserCodeHeaderView(title: title,
-                               cardId: cardIdFormatted,
+                               cardId: cardId,
                                onCancel: onCancel)
                 .padding(.top, 8)
             
@@ -47,12 +36,6 @@ struct EnterUserCodeView: View {
                 .padding(.top, 16)
             
             VStack(spacing: 16) {
-                #warning("TODO: l10n")
-                if usingLocalAuthentication {
-                    Toggle("Save access code", isOn: $saveAccessCodeWithBiometrics)
-                    // TODO: Buggy toggle color
-                    // Fix: https://github.com/tangem/tangem-app-ios/pull/156/files
-                }
                 
                 Spacer()
                 
@@ -76,9 +59,6 @@ struct EnterUserCodeView: View {
         if isLoading {
             isLoading = false
         }
-        
-        let ignoreCard = accessCodeRepository?.ignoringCard(with: cardId) ?? false
-        saveAccessCodeWithBiometrics = !ignoreCard
     }
     
     private func onCancel() {
@@ -97,30 +77,8 @@ struct EnterUserCodeView: View {
         UIApplication.shared.endEditing()
         isLoading = true
         
-        let accessCode = code.trim()
-        
-        guard
-            saveAccessCodeWithBiometrics,
-            usingLocalAuthentication,
-            let accessCodeRepository = accessCodeRepository
-        else {
-            accessCodeRepository?.setIgnoreCards(with: [cardId], ignore: true)
-            completion(.success(accessCode))
-            return
-        }
-        
-        accessCodeRepository.saveAccessCode(accessCode, for: [cardId]) { result in
-            self.isLoading = false
-            
-            switch result {
-            case .success:
-                completion(.success(accessCode))
-            case .failure(let error):
-                if error == .noBiometricsAccess {
-                    completion(.success(accessCode))
-                }
-            }
-        }
+        let userCode = code.trim()
+        completion(.success(userCode))
     }
 }
 
@@ -129,18 +87,14 @@ struct EnterUserCodeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             EnterUserCodeView(title: "Title",
-                              cardId: "0000111122223333444",
-                              cardIdFormatted: "0000 1111 2222 3333 444",
+                              cardId: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
                               showForgotButton: true,
-                              accessCodeRepository: nil,
                               completion: {_ in})
             EnterUserCodeView(title: "Title",
-                              cardId: "0000111122223333444",
-                              cardIdFormatted: "0000 1111 2222 3333 444",
+                              cardId: "0000 1111 2222 3333 444",
                               placeholder: "Enter code",
                               showForgotButton: true,
-                              accessCodeRepository: nil,
                               completion: {_ in})
                 .preferredColorScheme(.dark)
         }

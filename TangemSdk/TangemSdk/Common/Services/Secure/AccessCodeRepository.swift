@@ -6,265 +6,125 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
-import LocalAuthentication
-
-public protocol AccessCodeRepository {
-    func shouldAskForAuthentication(for cardId: String?) -> Bool
-    func hasAccessToBiometricAuthentication() -> Bool
-    func hasAccessCodes() -> Bool
-    func hasAccessCode(for cardId: String) -> Bool
-
-    func ignoringCard(with cardId: String) -> Bool
-    func setIgnoreCards(with cardIds: [String], ignore: Bool)
-    
-    func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void)
-    func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void)
-    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void)
-    
-    func removeAllAccessCodes()
-}
-
-public enum AccessCodeRepositoryError: Error {
-    case noBiometricsAccess
-    case noAccessCodeFound
-    case cancelled
-}
-
 @available(iOS 13.0, *)
-class DefaultAccessCodeRepository: AccessCodeRepository {
-    private typealias CardIdList = Set<String>
-    private typealias AccessCodeList = [String: String]
+class AccessCodeRepository {
+    private let secureStorage: SecureStorage = .init()
+    private let biometricsStorage: BiometricsStorage  = .init()
+    private var accessCodes: [String: Data] = .init()
     
-    private let storage = Storage()
-    private let secureStorage = SecureStorage()
-    private var context: LAContext?
-    
-    private let savedCardIdListKey = "card-id-list"
-    private let accessCodeListKey = "access-code-list"
-    private let ignoredCardIdListKey = "ignored-card-id-list"
-    private let localizedReason: String
-    private let authenticationPolicy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
-    
-    init(authenticationReason: String) {
-        self.localizedReason = authenticationReason
+    deinit {
+        Log.debug("AccessCodeRepository deinit")
     }
     
-    func shouldAskForAuthentication(for cardId: String?) -> Bool {
-        guard askedForLocalAuthentication() else {
+    func hasItems(for cardId: String?) -> Bool {
+        let savedCards = getCards()
+        
+        if savedCards.isEmpty {
             return false
         }
         
         if let cardId = cardId {
-            return hasAccessCode(for: cardId)
-        } else {
-            return hasAccessCodes()
+            return savedCards.contains(cardId)
         }
+        
+        return true
     }
     
-    func hasAccessToBiometricAuthentication() -> Bool {
-        let context = LAContext()
-        return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-    }
-    
-    func hasAccessCodes() -> Bool {
-        do {
-            let savedCardIds = try cardIds(key: savedCardIdListKey)
-            return !savedCardIds.isEmpty
-        } catch {
-            print("Failed to get card ID list: \(error)")
-            return false
-        }
-    }
-    
-    func hasAccessCode(for cardId: String) -> Bool {
-        do {
-            let savedCardIds = try cardIds(key: savedCardIdListKey)
-            return savedCardIds.contains(cardId)
-        } catch {
-            print("Failed to get card ID list: \(error)")
-            return false
-        }
-    }
-    
-    func ignoringCard(with cardId: String) -> Bool {
-        do {
-            let ignoredCardIds = try cardIds(key: ignoredCardIdListKey)
-            return ignoredCardIds.contains(cardId)
-        } catch {
-            print("Failed to get ignored card ID list: \(error)")
-            return false
-        }
-    }
-    
-    func setIgnoreCards(with cardIds: [String], ignore: Bool) {
-        do {
-            var ignoredCardIds = try self.cardIds(key: ignoredCardIdListKey)
-            if ignore {
-                ignoredCardIds.formUnion(cardIds)
-            } else {
-                ignoredCardIds.subtract(cardIds)
-            }
-            try saveCardIds(cardIds: ignoredCardIds, key: ignoredCardIdListKey)
-        } catch {
-            print("Failed to save ignored card ID list: \(error)")
-        }
-    }
-    
-    func prepareAuthentication(for cardId: String?, completion: @escaping () -> Void) {
-        guard shouldAskForAuthentication(for: cardId) else {
-            completion()
+    func unlock(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+        guard BiometricsUtil.isAvailable else {
+            completion(.failure(.biometricsUnavailable))
             return
         }
         
-        authenticate(context: LAContext()) { result in
+        accessCodes = .init()
+        
+        biometricsStorage.get(account: .accessCodes) { result in
             switch result {
-            case .failure(let error):
-                print("Failed to authenticate", error)
-            case .success(let authenticatedContext):
-                self.context = authenticatedContext
-            }
-            completion()
-        }
-    }
-    
-    func fetchAccessCode(for cardId: String, completion: @escaping (Result<String, AccessCodeRepositoryError>) -> Void) {
-        guard let context = self.context else {
-            completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
-            return
-        }
-        
-        authenticate(context: context) { result in
-            if case let .failure(error) = result {
-                completion(.failure(error))
-                return
-            }
-            
-            do {
-                let accessCodes = try self.accessCodes(context: context)
-                
-                if let accessCode = accessCodes[cardId] {
-                    completion(.success(accessCode))
-                } else {
-                    completion(.failure(AccessCodeRepositoryError.noAccessCodeFound))
+            case .success(let data):
+                if let data = data,
+                   let codes = try? JSONDecoder().decode([String: Data].self, from: data) {
+                    self.accessCodes = codes
                 }
-            } catch {
-                print(error)
-                completion(.failure(.noAccessCodeFound))
-            }
-        }
-    }
-    
-    func saveAccessCode(_ accessCode: String, for cardIds: [String], completion: @escaping (Result<Void, AccessCodeRepositoryError>) -> Void) {
-        let context = LAContext()
-        authenticate(context: context) { result in
-            if case let .failure(error) = result {
-                completion(.failure(error))
-                return
-            }
-            
-            do {
-                var accessCodes = try self.accessCodes(context: context)
-                for cardId in cardIds {
-                    accessCodes[cardId] = accessCode
-                }
-                try self.saveAccessCodes(accessCodes: accessCodes, context: context)
-                
-                var savedCardIds = try self.cardIds(key: self.savedCardIdListKey)
-                savedCardIds.formUnion(cardIds)
-                try self.saveCardIds(cardIds: savedCardIds, key: self.savedCardIdListKey)
-                
-                self.setIgnoreCards(with: cardIds, ignore: false)
-                
                 completion(.success(()))
-            } catch {
-                print(error)
-                completion(.failure(.noBiometricsAccess))
+            case .failure(let error):
+                Log.error(error)
+                completion(.failure(error))
             }
         }
     }
     
-    func removeAllAccessCodes() {
-        // We don't NEED to authenticate, we do it just to confirm
-        authenticate(context: LAContext()) { result in
-            guard case .success = result else { return }
-
-            do {
-                let keys = [
-                    self.savedCardIdListKey,
-                    self.accessCodeListKey,
-                    self.ignoredCardIdListKey,
-                ]
-
-                try keys.forEach {
-                    try self.secureStorage.delete(account: $0)
-                }
-            } catch {
-                print("Failed to remove access codes: \(error)")
-            }
-        }
+    func lock() {
+        accessCodes = .init()
     }
     
-    private func authenticate(context: LAContext, completion: @escaping (Result<LAContext, AccessCodeRepositoryError>) -> Void) {
-        context.localizedFallbackTitle = ""
-        
-        var accessError: NSError?
-        guard context.canEvaluatePolicy(authenticationPolicy, error: &accessError) else {
-            if let accessError = accessError {
-                print("No biometrics access", accessError)
-            }
-            completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
+    func fetch(for cardId: String) -> Data? {
+        return accessCodes[cardId]
+    }
+    
+    func save(_ accessCode: Data, for cardId: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+        guard BiometricsUtil.isAvailable else {
+            completion(.failure(.biometricsUnavailable))
             return
         }
 
-        storage.set(boolValue: true, forKey: .askedForLocalAuthentication)
+        let existingCode = accessCodes[cardId]
+
+        if existingCode == accessCode {
+            completion(.success(())) //We already know this code. Ignoring
+            return
+        }
         
-        context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { _, error in
-            if let error = error {
-                print("Failed to authenticate", error)
-                
-                switch (error as? LAError)?.code {
-                case .userCancel, .appCancel, .systemCancel:
-                    completion(.failure(AccessCodeRepositoryError.cancelled))
-                default:
-                    completion(.failure(AccessCodeRepositoryError.noBiometricsAccess))
-                }
-                
+        //We found default code
+        if accessCode == UserCodeType.accessCode.defaultValue.sha256() {
+            if existingCode == nil {
+                completion(.success(())) //Ignore default code
                 return
+            } else {
+                accessCodes[cardId] = nil //User deleted the code. We should update the storage
             }
+        } else {
+            accessCodes[cardId] = accessCode //Save a new code
+        }
+        
+        do {
+            let data = try JSONEncoder().encode(accessCodes)
             
-            completion(.success(context))
+            biometricsStorage.store(object: data, account: .accessCodes) { result in
+                switch result {
+                case .success:
+                    self.saveCards()
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+        } catch {
+            Log.error(error)
+            completion(.failure(error.toTangemSdkError()))
         }
     }
     
-    private func askedForLocalAuthentication() -> Bool {
-        storage.bool(forKey: .askedForLocalAuthentication)
+    func removeAll() {
+        do {
+            try biometricsStorage.delete(account: .accessCodes)
+            try secureStorage.delete(account: .cardsWithSavedCodes)
+        } catch {
+            Log.error(error)
+        }
     }
     
     // MARK: Helper save/get methods
-    
-    private func cardIds(key: String) throws -> CardIdList {
-        let data = try secureStorage.get(account: key) ?? Data()
-        guard !data.isEmpty else {
-            return CardIdList()
+    private func getCards() -> [String] {
+        if let data = try? secureStorage.get(account: .cardsWithSavedCodes) {
+            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
         }
-        return try JSONDecoder().decode(CardIdList.self, from: data)
+        
+        return []
     }
     
-    private func saveCardIds(cardIds: CardIdList, key: String) throws {
-        let data = try JSONEncoder().encode(cardIds)
-        try secureStorage.store(object: data, account: key, overwrite: true)
-    }
-    
-    private func accessCodes(context: LAContext) throws -> AccessCodeList {
-        let data = try secureStorage.get(account: accessCodeListKey, context: context) ?? Data()
-        guard !data.isEmpty else {
-            return AccessCodeList()
+    private func saveCards() {
+        if let data = try? JSONEncoder().encode(Array(accessCodes.keys)) {
+            try? secureStorage.store(object: data, account: .cardsWithSavedCodes)
         }
-        return try JSONDecoder().decode(AccessCodeList.self, from: data)
-    }
-    
-    private func saveAccessCodes(accessCodes: AccessCodeList, context: LAContext) throws {
-        let data = try JSONEncoder().encode(accessCodes)
-        try secureStorage.store(object: data, account: accessCodeListKey, overwrite: true, context: context)
     }
 }

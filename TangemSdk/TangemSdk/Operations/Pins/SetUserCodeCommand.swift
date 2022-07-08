@@ -116,7 +116,23 @@ public class SetUserCodeCommand: Command {
             return
         }
 
-        self.transceive(in: session, completion: completion )
+        self.transceive(in: session) { result in
+            switch result {
+            case .success(let response):
+                
+                if let accessCodeValue = self.codes[.accessCode]?.value {
+                    session.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
+                }
+                
+                if let passcodeValue = self.codes[.passcode]?.value {
+                    session.environment.passcode = UserCode(.passcode, value: passcodeValue)
+                }
+                
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {

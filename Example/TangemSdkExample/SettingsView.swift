@@ -14,6 +14,7 @@ struct SettingsView: View {
     var body: some View {
         VStack {
             Toggle("Error handling", isOn: $model.handleErrors)
+            Toggle("Display logs", isOn: $model.displayLogs)
             Spacer()
         }
         .padding()

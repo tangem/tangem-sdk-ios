@@ -64,6 +64,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case invalidResponseApdu
     
+    case failedToBuildCommandApdu
+    
     //MARK: Card errors
     
     /// This error is returned when unknown `StatusWord` is received from a card.
@@ -306,6 +308,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToDecryptApdu: return 20009
         case .failedToEstablishEncryption: return 20010
         case .invalidResponseApdu: return 20011
+        case .failedToBuildCommandApdu: return 20012
             
             // MARK: 3xxxx Errors
             // Errors from card SW codes

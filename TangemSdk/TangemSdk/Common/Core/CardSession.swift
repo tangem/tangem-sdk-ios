@@ -40,6 +40,18 @@ public class CardSession {
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository? = nil
     
+    private var shouldRequestBiometrics: Bool {
+        guard let accessCodeRepository = self.accessCodeRepository else {
+            return false
+        }
+        
+        if let cardId = self.cardId {
+            return accessCodeRepository.hasItem(for: cardId)
+        }
+        
+        return accessCodeRepository.hasItems()
+    }
+    
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
@@ -113,7 +125,7 @@ public class CardSession {
                             self.stop(message: "nfc_alert_default_done".localized) {
                                 completion(.success(runnableResponse))
                                 
-                                session.saveAccessCodeForEnvironmentCardIfNeeded()
+                                session.saveAccessCodeIfNeeded()
                             }
                         case .failure(let error):
                             Log.error(error)
@@ -317,7 +329,7 @@ public class CardSession {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
         
-        let requestCodeAction = {
+        let requestAccessCodeAction = {
             self.environment.accessCode = UserCode(.accessCode, value: nil)
             self.requestUserCodeIfNeeded(.accessCode) { result in
                 switch result {
@@ -331,25 +343,24 @@ public class CardSession {
         
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
-            if let accessCodeRepository = accessCodeRepository,
-               accessCodeRepository.hasItems(for: cardId) {
-                viewDelegate.setState(.authentication)
-                
-                accessCodeRepository.unlock { result in
-                    switch result {
-                    case .success:
-                        runnable.prepare(self, completion: completion)
-                    case .failure:
-                        requestCodeAction()
-                    }
-                }
-                
-                break
+            if shouldRequestBiometrics {
+                 viewDelegate.setState(.authentication)
+                 
+                 accessCodeRepository?.unlock { result in
+                     switch result {
+                     case .success:
+                         runnable.prepare(self, completion: completion)
+                     case .failure:
+                         requestAccessCodeAction()
+                     }
+                 }
+                 
+                 break
             }
             
             fallthrough
         case .always:
-            requestCodeAction()
+            requestAccessCodeAction()
         case .cardRelated:
             runnable.prepare(self, completion: completion)
         }
@@ -481,14 +492,14 @@ public class CardSession {
         }))
     }
     
-    func fetchAccessCodeForEnvironmentCardIfNeeded() {
+    func fetchAccessCodeIfNeeded() {
         if let card = environment.card, card.isAccessCodeSet,
            let accessCodeValue = accessCodeRepository?.fetch(for: card.cardId) {
             self.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
         }
     }
     
-    func saveAccessCodeForEnvironmentCardIfNeeded() {
+    func saveAccessCodeIfNeeded() {
         if let card = environment.card,
            let code = environment.accessCode.value {
             accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in

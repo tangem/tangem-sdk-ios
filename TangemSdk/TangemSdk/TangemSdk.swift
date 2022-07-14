@@ -51,11 +51,6 @@ public final class TangemSdk {
     public func registerJSONRPCTask(_ object: JSONRPCHandler) {
         jsonConverter.register(object)
     }
-    
-    public func removeAccessCodes() {
-        let repo = AccessCodeRepository()
-        repo.removeAll()
-    }
 }
 
 //MARK: - Card operations

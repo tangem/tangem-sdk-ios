@@ -25,7 +25,7 @@ struct SecureEnclaveService {
     }
     
     private func makeOrRestoreKey() throws -> SecureEnclave.P256.Signing.PrivateKey {
-        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(account: .secureEnclaveP256Key) {
+        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(.secureEnclaveP256Key) {
             return restoredKey
         }
         
@@ -37,7 +37,7 @@ struct SecureEnclaveService {
         let key = try SecureEnclave.P256.Signing.PrivateKey(compactRepresentable: true,
                                                             accessControl: accessControl,
                                                             authenticationContext: nil)
-        try storage.storeKey(key, account: .secureEnclaveP256Key)
+        try storage.storeKey(key, forKey: .secureEnclaveP256Key)
         return key
     }
 }

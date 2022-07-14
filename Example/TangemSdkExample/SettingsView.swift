@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TangemSdk
 
 struct SettingsView: View {
     @EnvironmentObject var model: AppModel
@@ -14,7 +15,24 @@ struct SettingsView: View {
     var body: some View {
         VStack {
             Toggle("Error handling", isOn: $model.handleErrors)
+            
             Toggle("Display logs", isOn: $model.displayLogs)
+            
+            Text("Access code request policy")
+                .fontWeight(.bold)
+                .padding()
+            
+            Picker("", selection: $model.accessCodeRequestPolicy) {
+                ForEach(0..<UserCodeRequestPolicy.allCases.count, id: \.self) { index in
+                    Text(UserCodeRequestPolicy.allCases[index].rawValue)
+                        .tag(UserCodeRequestPolicy.allCases[index])
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            
+            Button("Remove access codes", action: model.onRemoveAccessCodes)
+                .padding()
+            
             Spacer()
         }
         .padding()
@@ -25,5 +43,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(AppModel())
     }
 }

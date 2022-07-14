@@ -38,6 +38,7 @@ class AppModel: ObservableObject {
     //MARK:-  Config
     @Published var handleErrors: Bool = true
     @Published var displayLogs: Bool = false
+    @Published var accessCodeRequestPolicy: UserCodeRequestPolicy = .alwaysWithBiometrics
     
     var backupService: BackupService? = nil
     
@@ -50,7 +51,7 @@ class AppModel: ObservableObject {
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
-        config.accessCodeRequestPolicy = .alwaysWithBiometrics
+        config.accessCodeRequestPolicy = accessCodeRequestPolicy
         if displayLogs {
             config.logConfig = .custom(logLevel: Log.Level.allCases,
                                        loggers: [ConsoleLogger(), logger])
@@ -725,7 +726,8 @@ extension AppModel {
     }
     
     func onRemoveAccessCodes() {
-        tangemSdk.removeAccessCodes()
+        let repo = AccessCodeRepository()
+        repo.clear()
     }
     
     @ViewBuilder

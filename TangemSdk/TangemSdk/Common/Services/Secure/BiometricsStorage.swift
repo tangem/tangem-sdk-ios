@@ -12,12 +12,15 @@ import LocalAuthentication
 
 /// Helper class for Keychain
 @available(iOS 13.0, *)
-struct BiometricsStorage {
-    func get(account: SecureStorageKey, completion: @escaping (Result<Data?, TangemSdkError>) -> Void) {
+public struct BiometricsStorage {
+    
+    public init() {}
+    
+    public func get(_ account: String, completion: @escaping (Result<Data?, TangemSdkError>) -> Void) {
         DispatchQueue.global().async {
             let query = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: account.rawValue,
+                kSecAttrAccount: account,
                 kSecMatchLimit: kSecMatchLimitOne,
                 kSecUseDataProtectionKeychain: true,
                 kSecReturnData: true,
@@ -45,11 +48,11 @@ struct BiometricsStorage {
         }
     }
     
-    func store(object: Data, account: SecureStorageKey, overwrite: Bool = true, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    public func store(_ object: Data, forKey account: String, overwrite: Bool = true, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         DispatchQueue.global().async {
             let query = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: account.rawValue,
+                kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
                 kSecValueData: object,
                 kSecAttrAccessControl: makeBiometricAccessControl()
@@ -60,7 +63,7 @@ struct BiometricsStorage {
             if status == errSecDuplicateItem && overwrite {
                 let searchQuery = [
                     kSecClass: kSecClassGenericPassword,
-                    kSecAttrAccount: account.rawValue,
+                    kSecAttrAccount: account,
                     kSecUseDataProtectionKeychain: true,
                     kSecAttrAccessControl: makeBiometricAccessControl(),
                 ] as [CFString: Any]
@@ -81,12 +84,11 @@ struct BiometricsStorage {
         }
     }
     
-    /// Removes any existing data with the given account.
-    func delete(account: SecureStorageKey) throws {
+    public func delete(_ account : String) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
-            kSecAttrAccount: account.rawValue,
+            kSecAttrAccount: account,
         ] as [String: Any]
         
         let status = SecItemDelete(query as CFDictionary)
@@ -98,6 +100,18 @@ struct BiometricsStorage {
             let error = KeyStoreError("Unexpected deletion error: \(status.message)")
             throw error.toTangemSdkError()
         }
+    }
+    
+    func get(_ storageKey: SecureStorageKey, completion: @escaping (Result<Data?, TangemSdkError>) -> Void) {
+        get(storageKey.rawValue, completion: completion)
+    }
+    
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+         store(object, forKey: storageKey.rawValue, completion: completion)
+    }
+    
+    func delete(_ storageKey: SecureStorageKey) throws {
+        try delete(storageKey.rawValue)
     }
     
     private func makeBiometricAccessControl() -> SecAccessControl {

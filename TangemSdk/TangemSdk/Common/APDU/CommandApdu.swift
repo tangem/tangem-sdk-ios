@@ -25,7 +25,7 @@ public struct CommandApdu: Equatable {
     //MARK: Body
     /// An array of  serialized TLVs that are to be sent to the card
     fileprivate let data: Data
-    fileprivate let le: Int
+    fileprivate let le: Int?
     
     /// Convinience initializer
     /// - Parameter instruction: Instruction code
@@ -39,14 +39,16 @@ public struct CommandApdu: Equatable {
     /// - Parameter ins: Instruction code (INS) byte
     /// - Parameter p1:  P1 parameter byte
     /// - Parameter p2:  P2 parameter byte
-    /// - Parameter le:  Le byte
-    /// - Parameter tlv: data
-    /// - Parameter encryptionKey: optional encryption - not implemented
+    /// - Parameter le:  Optional Le value.
+    /// Valid values from 1 to 65535. Pass 0 to send 65536.
+    /// Values exceeding 65535 will be clamped to 65535.
+    /// Negative values will be clamped to 0.
+    /// - Parameter tlv: Payload data
     public init(cla: Byte = 0x00,
                 ins: Byte,
                 p1: Byte = 0x0,
                 p2: Byte = 0x0,
-                le: Int = -1,
+                le: Int? = nil,
                 tlv: Data) {
         self.cla = cla
         self.ins = ins
@@ -70,25 +72,38 @@ public struct CommandApdu: Equatable {
         let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
         return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.byteValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
     }
+    
+    /// Serialize as an extended APDU
+    /// - Returns: Data to send
+    public func serialize() -> Data {
+        var apduBytes: Data = .init()
+        apduBytes.append(cla)
+        apduBytes.append(ins)
+        apduBytes.append(p1)
+        apduBytes.append(p2)
+        
+        if !data.isEmpty {
+            //append LC as an extended field
+            apduBytes.append(UInt8(0))
+            apduBytes.append(contentsOf: data.count.bytes2)
+            
+            apduBytes.append(contentsOf: data)
+        }
+        
+        if let le = le {
+            //append LE as an extended field
+            apduBytes.append(contentsOf: le.bytes2)
+        }
+        
+        return apduBytes
+    }
 }
 
 @available(iOS 13.0, *)
 extension CommandApdu: CustomStringConvertible {
     public var description: String {
         let instruction = Instruction(rawValue: ins) ?? .unknown
-        let lc = data.count.bytes2
-        return "\(instruction) [\(data.count + 4) bytes]: \(cla) \(ins) \(p1) \(p2) \(lc) \(data)"
-    }
-}
-
-@available(iOS 13.0, *)
-extension NFCISO7816APDU {
-    convenience init(_ commandApdu: CommandApdu) {
-        self.init(instructionClass: commandApdu.cla,
-                  instructionCode: commandApdu.ins,
-                  p1Parameter: commandApdu.p1,
-                  p2Parameter: commandApdu.p2,
-                  data: commandApdu.data,
-                  expectedResponseLength: commandApdu.le)
+        let bytes = serialize()
+        return "\(instruction) [\(bytes.count) bytes]: \(bytes)"
     }
 }

@@ -137,9 +137,7 @@ public class CardSession {
                 }
             case .failure(let error):
                 Log.error(error)
-                self.stop(error: error) {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }

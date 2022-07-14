@@ -15,12 +15,12 @@ public class TerminalKeysService {
     
     /// Retrieve generated keys from keychain if they exist. Generate new and store in Keychain otherwise
     public lazy var keys: KeyPair?  = {
-        guard let privateKey = try? secureStorage.get(account: .terminalPrivateKey),
-              let publicKey = try? secureStorage.get(account: .terminalPublicKey) else {
+        guard let privateKey = try? secureStorage.get(.terminalPrivateKey),
+              let publicKey = try? secureStorage.get(.terminalPublicKey) else {
             
             if let newKeys = try? Secp256k1Utils().generateKeyPair() {
-                try? secureStorage.store(object: newKeys.privateKey, account: .terminalPrivateKey)
-                try? secureStorage.store(object: newKeys.publicKey, account: .terminalPublicKey)
+                try? secureStorage.store(newKeys.privateKey, forKey: .terminalPrivateKey)
+                try? secureStorage.store(newKeys.publicKey, forKey: .terminalPublicKey)
                 return newKeys
             }
             

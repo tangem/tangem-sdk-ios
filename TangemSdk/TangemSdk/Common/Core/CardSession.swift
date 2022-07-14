@@ -220,6 +220,11 @@ public class CardSession {
         sessionDidStop(completion: completion)
     }
     
+    public func pause(message: String) {
+        viewDelegate.showAlertMessage(message)
+        reader.pauseSession()
+    }
+    
     public func pause(error: TangemSdkError? = nil) {
         reader.pauseSession(with: error?.localizedDescription)
     }

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import TangemSdk
+import Combine
 
 class AppModel: ObservableObject {
     //MARK:- Inputs
@@ -26,7 +27,7 @@ class AppModel: ObservableObject {
     @Published var personalizationConfig: String =  ""
     
     //MARK:-  Outputs
-    @Published var logText: String = AppModel.logPlaceholder
+    @Published var logText: String = DebugLogger.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
@@ -36,19 +37,26 @@ class AppModel: ObservableObject {
     @Published var showSettings: Bool = false
     //MARK:-  Config
     @Published var handleErrors: Bool = true
+    @Published var displayLogs: Bool = false
     
     var backupService: BackupService? = nil
     
     private lazy var _tangemSdk: TangemSdk = { .init() }()
+    private lazy var logger: DebugLogger = .init()
     
     private var tangemSdk: TangemSdk {
         var config = Config()
-        config.logConfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         config.accessCodeRequestPolicy = .alwaysWithBiometrics
+        if displayLogs {
+            config.logConfig = .custom(logLevel: Log.Level.allCases,
+                                       loggers: [ConsoleLogger(), logger])
+        } else {
+            config.logConfig = .verbose
+        }
         _tangemSdk.config = config
         return _tangemSdk
     }
@@ -56,10 +64,22 @@ class AppModel: ObservableObject {
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
-    private static let logPlaceholder = "Logs will appear here"
+    private var bag: Set<AnyCancellable> = []
+    
+    init() {
+        logger
+            .logsPublisher
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .sink {[weak self] logs in
+                self?.logText = logs
+            }
+            .store(in: &bag)
+    }
     
     func clear() {
         logText = ""
+        logger.clear()
     }
     
     func copy() {
@@ -90,22 +110,14 @@ class AppModel: ObservableObject {
         }
     }
     
-    private func log(_ object: Any) {
-        let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
-        if logText == AppModel.logPlaceholder {
-            logText = ""
-        }
-        logText = "\(text)\n\n" + logText
-    }
-    
     private func complete(with object: Any) {
-        log(object)
+        logger.log(object)
         isScanning = false
     }
     
     private func complete(with error: TangemSdkError) {
         if !error.isUserCancelled {
-            self.log("\(error.localizedDescription)")
+            logger.log("\(error.localizedDescription)")
         }
         
         isScanning = false
@@ -317,7 +329,7 @@ extension AppModel {
                     createWallet.run(in: session) { result2 in
                         switch result2 {
                         case .success(let response):
-                            self.log(response)
+                            self.logger.log(response)
                         case .failure:
                             break
                         }
@@ -592,7 +604,7 @@ extension AppModel {
     }
     
     private func printJson() {
-        log(json)
+        logger.log(json)
     }
 }
 
@@ -609,7 +621,7 @@ extension AppModel {
     }
     
     private func printPersonalizationConfig() {
-        log(personalizationConfig)
+        logger.log(personalizationConfig)
     }
     
     func personalize() {
@@ -627,7 +639,7 @@ extension AppModel {
             
             tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
-            log(error)
+            logger.log(error)
         }
     }
 }

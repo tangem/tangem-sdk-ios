@@ -44,7 +44,9 @@ extension NFCISO7816Tag {
         return Deferred { Future() {[unowned self] promise in
             let requestDate = Date()
             
-            self.sendCommand(apdu: NFCISO7816APDU(cApdu)) { data, sw1, sw2, error in
+            let apdu = NFCISO7816APDU(cApdu)
+            Log.command("!!!! \(apdu)")
+            self.sendCommand(apdu: apdu) { data, sw1, sw2, error in
                 if let sdkError = error?.toTangemSdkError() {
                     Log.error(sdkError)
                     promise(.failure(sdkError))

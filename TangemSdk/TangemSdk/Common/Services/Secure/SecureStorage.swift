@@ -11,11 +11,14 @@ import Security
 
 /// Helper class for Keychain
 @available(iOS 13.0, *)
-struct SecureStorage {
-    func get(account: SecureStorageKey) throws -> Data? {
+public struct SecureStorage {
+    
+    public init() {}
+    
+    public func get(_ account: String) throws -> Data? {
         let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: account.rawValue,
+            kSecAttrAccount: account,
             kSecMatchLimit: kSecMatchLimitOne,
             kSecUseDataProtectionKeychain: true,
             kSecReturnData: true,
@@ -35,10 +38,10 @@ struct SecureStorage {
         }
     }
     
-    func store(object: Data, account: SecureStorageKey, overwrite: Bool = true) throws  {
+    public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrAccount: account.rawValue,
+            kSecAttrAccount: account,
             kSecValueData: object,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
@@ -49,7 +52,7 @@ struct SecureStorage {
         if status == errSecDuplicateItem && overwrite {
             let searchQuery = [
                 kSecClass: kSecClassGenericPassword,
-                kSecAttrAccount: account.rawValue,
+                kSecAttrAccount: account,
             ] as [String: Any]
             
             let attributes = [kSecValueData: object] as [String: Any]
@@ -62,12 +65,11 @@ struct SecureStorage {
         }
     }
     
-    /// Removes any existing data with the given account.
-    func delete(account: SecureStorageKey) throws {
+    public func delete(_ account: String) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
-            kSecAttrAccount: account.rawValue,
+            kSecAttrAccount: account,
         ] as [String: Any]
         
         switch SecItemDelete(query as CFDictionary) {
@@ -76,18 +78,30 @@ struct SecureStorage {
             throw KeyStoreError("Unexpected deletion error: \(status.message)")
         }
     }
+    
+    func get(_ storageKey: SecureStorageKey) throws -> Data? {
+        try get(storageKey.rawValue)
+    }
+    
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) throws  {
+       try store(object, forKey: storageKey.rawValue)
+    }
+    
+    func delete(_ storageKey: SecureStorageKey) throws {
+        try delete(storageKey.rawValue)
+    }
 }
 
 @available(iOS 13.0, *)
 extension SecureStorage {
     /// Stores a CryptoKit key in the keychain as a generic password.
-    func storeKey<T: GenericPasswordConvertible>(_ key: T, account: SecureStorageKey) throws {
-        try store(object: key.rawRepresentation, account: account, overwrite: true)
+    func storeKey<T: GenericPasswordConvertible>(_ key: T, forKey storageKey: SecureStorageKey) throws {
+        try store(key.rawRepresentation, forKey: storageKey, overwrite: true)
     }
     
     /// Reads a CryptoKit key from the keychain as a generic password.
-    func readKey<T: GenericPasswordConvertible>(account: SecureStorageKey) throws -> T? {
-        if let data = try get(account: account) {
+    func readKey<T: GenericPasswordConvertible>(_ storageKey: SecureStorageKey) throws -> T? {
+        if let data = try get(storageKey) {
             return try T(rawRepresentation: data)
         }
         

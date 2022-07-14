@@ -48,15 +48,15 @@ public class TrustedCardsRepo {
     
     private func save() throws {
         let convertedData = data.mapValues { $0.rawRepresentation }
-        let encoded = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
-        let signature = try secureEnclave.sign(data: encoded)
-        try secureStorage.store(object: encoded, account: .attestedCards)
-        try secureStorage.store(object: signature, account: .signatureOfAttestedCards)
+        let encodedData = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
+        let signature = try secureEnclave.sign(data: encodedData)
+        try secureStorage.store(encodedData, forKey: .attestedCards)
+        try secureStorage.store(signature, forKey: .signatureOfAttestedCards)
     }
     
     private func fetch() throws {
-        if let data = try secureStorage.get(account: .attestedCards),
-           let signature = try secureStorage.get(account: .signatureOfAttestedCards),
+        if let data = try secureStorage.get(.attestedCards),
+           let signature = try secureStorage.get(.signatureOfAttestedCards),
            try secureEnclave.verify(signature: signature, message: data) {
             let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
             let converted = decoded.compactMapValues { Attestation(rawRepresentation: $0) }
@@ -65,7 +65,7 @@ public class TrustedCardsRepo {
     }
     
     private func clean() throws {
-        try secureStorage.delete(account: .attestedCards)
+        try secureStorage.delete(.attestedCards)
     }
 }
 

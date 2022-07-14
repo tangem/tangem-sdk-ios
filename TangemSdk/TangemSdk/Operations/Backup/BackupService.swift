@@ -454,7 +454,7 @@ class BackupRepo {
     }
     
     func reset() {
-        try? storage.delete(account: .backupData)
+        try? storage.delete(.backupData)
         data = .init()
     }
     
@@ -462,14 +462,14 @@ class BackupRepo {
         guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
-        try storage.store(object: encoded, account: .backupData)
+        try storage.store(encoded, forKey: .backupData)
     }
     
     private func fetch() throws {
         self.isFetching = true
         defer { self.isFetching = false }
         
-        if let savedData = try storage.get(account: .backupData) {
+        if let savedData = try storage.get(.backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
     }

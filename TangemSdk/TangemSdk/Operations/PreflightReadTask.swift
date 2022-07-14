@@ -68,7 +68,7 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                session.fetchAccessCodeForEnvironmentCardIfNeeded()
+                session.fetchAccessCodeIfNeeded()
                 
                 self.finalizeRead(in: session, completion: completion)
             case .failure(let error):

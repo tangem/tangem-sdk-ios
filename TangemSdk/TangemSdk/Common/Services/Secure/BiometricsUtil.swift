@@ -9,8 +9,8 @@
 import Foundation
 import LocalAuthentication
 
-final class BiometricsUtil {
-    static var isAvailable: Bool {
+public final class BiometricsUtil {
+    public static var isAvailable: Bool {
         var error: NSError?
         
         let context = LAContext()

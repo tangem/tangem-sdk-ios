@@ -105,18 +105,18 @@ class SignCommand: Command {
             return
         }
         
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        terminalKeys = retrieveTerminalKeys(from: session.environment)
-        
-        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
-        guard hashes.count <= chunkSize || terminalKeys != nil || hasEnoughDelay else {
-            completion(.failure(.tooManyHashesInOneTransaction))
-            return
-        }
+//        guard let card = session.environment.card else {
+//            completion(.failure(.missingPreflightRead))
+//            return
+//        }
+//
+//        terminalKeys = retrieveTerminalKeys(from: session.environment)
+//
+//        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
+//        guard hashes.count <= chunkSize || terminalKeys != nil || hasEnoughDelay else {
+//            completion(.failure(.tooManyHashesInOneTransaction))
+//            return
+//        }
         
         sign(in: session, completion: completion)
     }

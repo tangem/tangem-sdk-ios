@@ -27,7 +27,6 @@ class SignCommand: Command {
     private let derivationPath: DerivationPath?
     private let hashes: [Data]
     private var signatures: [Data] = []
-    private var terminalKeys: KeyPair? = nil
     
     private var currentChunkNumber: Int {
         signatures.count / chunkSize
@@ -102,19 +101,6 @@ class SignCommand: Command {
         
         if hashes.contains(where: { $0.count != hashes.first!.count }) {
             completion(.failure(.hashSizeMustBeEqual))
-            return
-        }
-        
-        guard let card = session.environment.card else {
-            completion(.failure(.missingPreflightRead))
-            return
-        }
-        
-        terminalKeys = retrieveTerminalKeys(from: session.environment)
-        
-        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
-        guard hashes.count <= chunkSize || terminalKeys != nil || hasEnoughDelay else {
-            completion(.failure(.tooManyHashesInOneTransaction))
             return
         }
         
@@ -196,8 +182,8 @@ class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        if let terminalKeys = self.terminalKeys {
-            let signedData = try Secp256k1Utils().sign(flattenHashes, with: terminalKeys.privateKey)
+        if let terminalKeys = self.retrieveTerminalKeys(from: environment) {
+            let signedData = try flattenHashes.sign(privateKey: terminalKeys.privateKey)
             
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)

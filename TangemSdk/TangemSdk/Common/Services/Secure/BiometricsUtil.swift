@@ -25,19 +25,21 @@ public final class BiometricsUtil {
     
     private static let authenticationPolicy: LAPolicy = .deviceOwnerAuthenticationWithBiometrics
     
-    @available(iOS 13.0, *)
     /// Request access to biometrics
     /// - Parameters:
-    ///   - localizedReason: Only for touchID
+    ///   - localizedReason:The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user. Must be non-empty. Only for touchID.
     ///   - completion: Result<Void, TangemSdkError>
+    @available(iOS 13.0, *)
     public static func requestAccess(localizedReason: String, completion: @escaping CompletionResult<Void>) {
         let context = LAContext()
         DispatchQueue.global().async {
             context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { isSuccess, error in
-                if let error = error {
-                    completion(.failure(error.toTangemSdkError()))
-                } else {
-                    completion(.success(()))
+                DispatchQueue.main.async {
+                    if let error = error {
+                        completion(.failure(error.toTangemSdkError()))
+                    } else {
+                        completion(.success(()))
+                    }
                 }
             }
         }

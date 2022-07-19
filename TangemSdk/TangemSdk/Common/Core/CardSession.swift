@@ -342,8 +342,6 @@ public class CardSession {
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
             if shouldRequestBiometrics {
-                 viewDelegate.setState(.authentication)
-                 
                  accessCodeRepository?.unlock { result in
                      switch result {
                      case .success:

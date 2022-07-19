@@ -292,7 +292,6 @@
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
-		DACF5779284F18D900E936D8 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DACF5778284F18D900E936D8 /* AuthenticationView.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
@@ -601,7 +600,6 @@
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
-		DACF5778284F18D900E936D8 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
@@ -1109,7 +1107,6 @@
 				5D2F3EE726CBE30800779CAC /* Common */,
 				5D2F3EE626CBE2E700779CAC /* Scan */,
 				5D2F3EE126CBDAA000779CAC /* KeyboardAvoidance */,
-				DACF5777284F18B500E936D8 /* Authentication */,
 				5D0243BD26CACACD00B76F37 /* IndicatorView.swift */,
 			);
 			path = Views;
@@ -1370,14 +1367,6 @@
 				5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */,
 			);
 			path = Deserialization;
-			sourceTree = "<group>";
-		};
-		DACF5777284F18B500E936D8 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-				DACF5778284F18D900E936D8 /* AuthenticationView.swift */,
-			);
-			path = Authentication;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1768,7 +1757,6 @@
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
 				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
-				DACF5779284F18D900E936D8 /* AuthenticationView.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				5D86665C273166810095CC82 /* ResetCodesViewState.swift in Sources */,

@@ -131,10 +131,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case signHashesNotAvailable
     
-    /// Tangem cards can sign currently up to 10 hashes during one `SignCommand`.
-    /// This error is returned when a `SignCommand` receives more than 10 hashes to sign.
-    case tooManyHashesInOneTransaction
-    
     // Write Extra Issuer Data Errors
     case extendedDataSizeTooLarge
     
@@ -366,7 +362,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .emptyHashes: return 40902
         case .hashSizeMustBeEqual: return 40903
         case .signHashesNotAvailable: return 40905
-        case .tooManyHashesInOneTransaction: return 40906
         case .oldCard: return 40907
             
         case .extendedDataSizeTooLarge: return 41101

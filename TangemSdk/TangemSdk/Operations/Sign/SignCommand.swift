@@ -110,7 +110,7 @@ class SignCommand: Command {
 //            return
 //        }
 //
-//        terminalKeys = retrieveTerminalKeys(from: session.environment)
+        terminalKeys = retrieveTerminalKeys(from: session.environment)
 //
 //        let hasEnoughDelay = (card.settings.securityDelay * numberOfChunks) <= 50000
 //        guard hashes.count <= chunkSize || terminalKeys != nil || hasEnoughDelay else {

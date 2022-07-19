@@ -24,9 +24,6 @@ struct MainScreen: View {
     @ViewBuilder
     private var mainView: some View {
         switch viewModel.viewState {
-        case .authentication:
-            AuthenticationView()
-            
         case .scan:
             ReadView()
             

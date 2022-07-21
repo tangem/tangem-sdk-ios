@@ -46,10 +46,10 @@ public class CardSession {
         }
         
         if let cardId = self.cardId {
-            return accessCodeRepository.hasItem(for: cardId)
+            return accessCodeRepository.contains(cardId)
         }
         
-        return accessCodeRepository.hasItems()
+        return !accessCodeRepository.isEmpty
     }
     
     /// Main initializer
@@ -60,6 +60,7 @@ public class CardSession {
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
     ///   - jsonConverter: JSONRPCConverter
+    ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
     init(environment: SessionEnvironment,
          cardId: String? = nil,
          initialMessage: Message? = nil,
@@ -137,7 +138,9 @@ public class CardSession {
                 }
             case .failure(let error):
                 Log.error(error)
-                completion(.failure(error))
+                self.stop(error: error) {
+                    completion(.failure(error))
+                }
             }
         }
     }
@@ -350,14 +353,12 @@ public class CardSession {
                          requestAccessCodeAction()
                      }
                  }
-                 
-                 break
+            } else {
+                requestAccessCodeAction()
             }
-            
-            fallthrough
         case .always:
             requestAccessCodeAction()
-        case .cardRelated:
+        case .default:
             runnable.prepare(self, completion: completion)
         }
     }
@@ -515,7 +516,7 @@ public class CardSession {
     
     private func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
         var config = environment.config
-        config.accessCodeRequestPolicy = .cardRelated
+        config.accessCodeRequestPolicy = .default
         let resetService = ResetPinService(config: config)
         let viewDelegate = ResetCodesViewDelegate(style: config.style)
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)

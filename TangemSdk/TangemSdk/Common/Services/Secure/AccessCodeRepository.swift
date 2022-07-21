@@ -28,7 +28,7 @@ public class AccessCodeRepository {
             return
         }
         
-        guard checkUpdateNeeded(accessCode, for: cardIds) else {
+        guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
             completion(.success(())) //Nothing changed. Return
             return
         }
@@ -100,8 +100,8 @@ public class AccessCodeRepository {
         return accessCodes[cardId]
     }
     
-    private func checkUpdateNeeded(_ accessCode: Data, for cardIds: [String]) -> Bool {
-        var shouldUpdate: Bool = false
+    private func updateCodesIfNeeded(with accessCode: Data, for cardIds: [String]) -> Bool {
+        var hasChanges: Bool = false
         
         for cardId in cardIds {
             let existingCode = accessCodes[cardId]
@@ -116,15 +116,15 @@ public class AccessCodeRepository {
                     continue //Ignore default code
                 } else {
                     accessCodes[cardId] = nil //User deleted the code. We should update the storage
-                    shouldUpdate = true
+                    hasChanges = true
                 }
             } else {
                 accessCodes[cardId] = accessCode //Save a new code
-                shouldUpdate = true
+                hasChanges = true
             }
         }
         
-        return shouldUpdate
+        return hasChanges
     }
     
     private func getCards() -> Set<String> {

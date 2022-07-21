@@ -38,7 +38,7 @@ class AppModel: ObservableObject {
     //MARK:-  Config
     @Published var handleErrors: Bool = true
     @Published var displayLogs: Bool = false
-    @Published var accessCodeRequestPolicy: UserCodeRequestPolicy = .alwaysWithBiometrics
+    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .alwaysWithBiometrics
     
     var backupService: BackupService? = nil
     

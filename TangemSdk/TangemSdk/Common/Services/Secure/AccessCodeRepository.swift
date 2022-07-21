@@ -8,6 +8,10 @@
 
 @available(iOS 13.0, *)
 public class AccessCodeRepository {
+    var isEmpty: Bool {
+        getCards().isEmpty
+    }
+    
     private let secureStorage: SecureStorage = .init()
     private let biometricsStorage: BiometricsStorage  = .init()
     private var accessCodes: [String: Data] = .init()
@@ -24,9 +28,7 @@ public class AccessCodeRepository {
             return
         }
         
-        let shouldSave = process(accessCode, for: cardIds)
-        
-        guard shouldSave else {
+        guard checkUpdateNeeded(accessCode, for: cardIds) else {
             completion(.success(())) //Nothing changed. Return
             return
         }
@@ -62,14 +64,9 @@ public class AccessCodeRepository {
         }
     }
     
-    func hasItem(for cardId: String) -> Bool {
+    func contains(_ cardId: String) -> Bool {
         let savedCards = getCards()
         return savedCards.contains(cardId)
-    }
-    
-    func hasItems() -> Bool {
-        let savedCards = getCards()
-        return !savedCards.isEmpty
     }
     
     func unlock(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
@@ -103,8 +100,8 @@ public class AccessCodeRepository {
         return accessCodes[cardId]
     }
     
-    private func process(_ accessCode: Data, for cardIds: [String]) -> Bool {
-        var shouldSave: Bool = false
+    private func checkUpdateNeeded(_ accessCode: Data, for cardIds: [String]) -> Bool {
+        var shouldUpdate: Bool = false
         
         for cardId in cardIds {
             let existingCode = accessCodes[cardId]
@@ -119,27 +116,27 @@ public class AccessCodeRepository {
                     continue //Ignore default code
                 } else {
                     accessCodes[cardId] = nil //User deleted the code. We should update the storage
-                    shouldSave = true
+                    shouldUpdate = true
                 }
             } else {
                 accessCodes[cardId] = accessCode //Save a new code
-                shouldSave = true
+                shouldUpdate = true
             }
         }
         
-        return shouldSave
+        return shouldUpdate
     }
     
-    private func getCards() -> [String] {
+    private func getCards() -> Set<String> {
         if let data = try? secureStorage.get(.cardsWithSavedCodes) {
-            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+            return (try? JSONDecoder().decode(Set<String>.self, from: data)) ?? []
         }
         
         return []
     }
     
     private func saveCards() {
-        if let data = try? JSONEncoder().encode(Array(accessCodes.keys)) {
+        if let data = try? JSONEncoder().encode(Set(accessCodes.keys)) {
             try? secureStorage.store(data, forKey: .cardsWithSavedCodes)
         }
     }

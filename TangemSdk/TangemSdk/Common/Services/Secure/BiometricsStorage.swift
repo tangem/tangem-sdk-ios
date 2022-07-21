@@ -12,8 +12,13 @@ import LocalAuthentication
 
 /// Helper class for Keychain
 @available(iOS 13.0, *)
-public struct BiometricsStorage {
-    
+public class BiometricsStorage {
+    private lazy var context: LAContext = {
+        let context = LAContext()
+        context.touchIDAuthenticationAllowableReuseDuration = 60
+        return context
+    }()
+  
     public init() {}
     
     public func get(_ account: String, completion: @escaping (Result<Data?, TangemSdkError>) -> Void) {
@@ -24,6 +29,7 @@ public struct BiometricsStorage {
                 kSecMatchLimit: kSecMatchLimitOne,
                 kSecUseDataProtectionKeychain: true,
                 kSecReturnData: true,
+                kSecUseAuthenticationContext: self.context,
             ] as [String: Any]
             
             var result: AnyObject?
@@ -49,13 +55,16 @@ public struct BiometricsStorage {
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            
             let query = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
                 kSecValueData: object,
-                kSecAttrAccessControl: makeBiometricAccessControl()
+                kSecAttrAccessControl: self.makeBiometricAccessControl(),
+                kSecUseAuthenticationContext: self.context,
             ] as [String: Any]
             
             var status = SecItemAdd(query as CFDictionary, nil)
@@ -65,7 +74,8 @@ public struct BiometricsStorage {
                     kSecClass: kSecClassGenericPassword,
                     kSecAttrAccount: account,
                     kSecUseDataProtectionKeychain: true,
-                    kSecAttrAccessControl: makeBiometricAccessControl(),
+                    kSecAttrAccessControl: self.makeBiometricAccessControl(),
+                    kSecUseAuthenticationContext: self.context,
                 ] as [CFString: Any]
                 
                 let attributes = [kSecValueData: object] as [String: Any]
@@ -89,6 +99,7 @@ public struct BiometricsStorage {
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
+            kSecUseAuthenticationContext: self.context,
         ] as [String: Any]
         
         let status = SecItemDelete(query as CFDictionary)

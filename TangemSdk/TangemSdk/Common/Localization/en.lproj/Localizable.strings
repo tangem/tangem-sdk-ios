@@ -36,7 +36,7 @@
 "error_wrong_card_type" = "This card is not designed to work with this app";
 "error_file_not_found" = "File not found";
 "error_not_supported_firmware_version" = "The command requires a card with a different firmware version";
-"wallet_not_found" = "You tapped the card from a different wallet. Please tap the card associated with this wallet or scan this card in the app to open another wallet.";
+"wallet_not_found" = "This card does not contain the current wallet";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_backup_card_already_added" = "This card has already been added to the list.";
 "error_backup_not_empty_wallets" = "This card already has a wallet. If you want to proceed you have to reset it to factory settings first.";

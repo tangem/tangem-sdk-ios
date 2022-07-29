@@ -23,14 +23,14 @@ public class BiometricsStorage {
     
     public func get(_ account: String, completion: @escaping (Result<Data?, TangemSdkError>) -> Void) {
         DispatchQueue.global().async {
-            let query = [
+            let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
                 kSecMatchLimit: kSecMatchLimitOne,
                 kSecUseDataProtectionKeychain: true,
                 kSecReturnData: true,
                 kSecUseAuthenticationContext: self.context,
-            ] as [String: Any]
+            ]
             
             var result: AnyObject?
             
@@ -58,25 +58,25 @@ public class BiometricsStorage {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             
-            let query = [
+            let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
                 kSecValueData: object,
                 kSecAttrAccessControl: self.makeBiometricAccessControl(),
                 kSecUseAuthenticationContext: self.context,
-            ] as [String: Any]
+            ]
             
             var status = SecItemAdd(query as CFDictionary, nil)
             
             if status == errSecDuplicateItem && overwrite {
-                let searchQuery = [
+                let searchQuery: [CFString: Any] = [
                     kSecClass: kSecClassGenericPassword,
                     kSecAttrAccount: account,
                     kSecUseDataProtectionKeychain: true,
                     kSecAttrAccessControl: self.makeBiometricAccessControl(),
                     kSecUseAuthenticationContext: self.context,
-                ] as [CFString: Any]
+                ]
                 
                 let attributes = [kSecValueData: object] as [String: Any]
                 status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
@@ -95,12 +95,12 @@ public class BiometricsStorage {
     }
     
     public func delete(_ account : String) throws {
-        let query = [
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
             kSecUseAuthenticationContext: self.context,
-        ] as [String: Any]
+        ]
         
         let status = SecItemDelete(query as CFDictionary)
         

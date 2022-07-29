@@ -217,12 +217,6 @@ extension AppModel {
     }
     
     func signHash(walletPublicKey: Data) {
-        guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
-            return
-        }
-        
-        
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -241,18 +235,13 @@ extension AppModel {
         
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
-                       cardId: cardId,
+                       cardId: nil,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
     
     func signHashes(walletPublicKey: Data) {
-        guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
-            return
-        }
-        
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -265,7 +254,7 @@ extension AppModel {
         
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
-                       cardId: cardId,
+                       cardId: nil,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)

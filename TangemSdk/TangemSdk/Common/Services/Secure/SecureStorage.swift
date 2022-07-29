@@ -16,13 +16,13 @@ public struct SecureStorage {
     public init() {}
     
     public func get(_ account: String) throws -> Data? {
-        let query = [
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
             kSecMatchLimit: kSecMatchLimitOne,
             kSecUseDataProtectionKeychain: true,
             kSecReturnData: true,
-        ] as [String: Any]
+        ]
         
         var result: AnyObject?
         
@@ -39,21 +39,21 @@ public struct SecureStorage {
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
-        let query = [
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
             kSecValueData: object,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-        ] as [String: Any]
+        ]
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
         if status == errSecDuplicateItem && overwrite {
-            let searchQuery = [
+            let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
-            ] as [String: Any]
+            ]
             
             let attributes = [kSecValueData: object] as [String: Any]
             
@@ -66,11 +66,11 @@ public struct SecureStorage {
     }
     
     public func delete(_ account: String) throws {
-        let query = [
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
-        ] as [String: Any]
+        ]
         
         switch SecItemDelete(query as CFDictionary) {
         case errSecItemNotFound, errSecSuccess: break // Okay to ignore

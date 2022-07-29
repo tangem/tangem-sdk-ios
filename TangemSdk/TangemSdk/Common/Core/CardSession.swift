@@ -490,18 +490,22 @@ public class CardSession {
     }
     
     func fetchAccessCodeIfNeeded() {
-        if let card = environment.card, card.isAccessCodeSet,
-           let accessCodeValue = accessCodeRepository?.fetch(for: card.cardId) {
-            self.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
+        guard let card = environment.card, card.isAccessCodeSet,
+              let accessCodeValue = accessCodeRepository?.fetch(for: card.cardId) else {
+            return
         }
+        
+        environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
     }
     
     func saveAccessCodeIfNeeded() {
-        if let card = environment.card,
-           let code = environment.accessCode.value {
-            accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in
-                self?.accessCodeRepository?.lock()
-            }
+        guard let card = environment.card,
+              let code = environment.accessCode.value else {
+            return
+        }
+        
+        accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in
+            self?.accessCodeRepository?.lock()
         }
     }
     

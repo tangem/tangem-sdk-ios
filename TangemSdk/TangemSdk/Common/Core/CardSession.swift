@@ -307,6 +307,11 @@ public class CardSession {
             .store(in: &sendSubscription)
     }
     
+    /// Update session environment config with the new one
+    public func updateConfig(with newConfig: Config) {
+        environment.config = newConfig
+    }
+    
     /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
     func rememberTag() {
         currentTag = reader.tag.value

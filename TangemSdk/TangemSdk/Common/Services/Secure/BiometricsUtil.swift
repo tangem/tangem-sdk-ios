@@ -13,7 +13,7 @@ public final class BiometricsUtil {
     public static var isAvailable: Bool {
         var error: NSError?
         
-        let context = LAContext()
+        let context = LAContext.default
         let result = context.canEvaluatePolicy(authenticationPolicy, error: &error)
         
         if let error = error {
@@ -31,7 +31,8 @@ public final class BiometricsUtil {
     ///   - completion: Result<Void, TangemSdkError>
     @available(iOS 13.0, *)
     public static func requestAccess(localizedReason: String, completion: @escaping CompletionResult<Void>) {
-        let context = LAContext()
+        let context = LAContext.default
+        
         DispatchQueue.global().async {
             context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { isSuccess, error in
                 DispatchQueue.main.async {

@@ -54,7 +54,7 @@ struct ContentView: View {
                                 .padding(.top, 4)
                             
                             Picker("", selection: $model.method) {
-                                ForEach(0..<AppModel.Method.allCases.count) { index in
+                                ForEach(0..<AppModel.Method.allCases.count, id: \.self) { index in
                                     Text(AppModel.Method.allCases[index].rawValue)
                                         .tag(AppModel.Method.allCases[index])
                                 }
@@ -108,7 +108,7 @@ struct ContentView: View {
                     .bold()
                 
                 Picker("", selection: $model.attestationMode) {
-                    ForEach(0..<AttestationTask.Mode.allCases.count) { index in
+                    ForEach(0..<AttestationTask.Mode.allCases.count, id: \.self) { index in
                         Text(AttestationTask.Mode.allCases[index].rawValue)
                             .tag(AttestationTask.Mode.allCases[index])
                     }
@@ -127,7 +127,7 @@ struct ContentView: View {
                 
                 if let supportedCurves = model.card?.supportedCurves {
                     Picker("", selection: $model.curve) {
-                        ForEach(0..<supportedCurves.count) { index in
+                        ForEach(0..<supportedCurves.count, id: \.self) { index in
                             Text(supportedCurves[index].rawValue)
                                 .tag(supportedCurves[index])
                         }

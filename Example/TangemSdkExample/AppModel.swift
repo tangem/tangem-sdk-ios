@@ -38,6 +38,7 @@ class AppModel: ObservableObject {
     //MARK:-  Config
     @Published var handleErrors: Bool = true
     @Published var displayLogs: Bool = false
+    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .alwaysWithBiometrics
     
     var backupService: BackupService? = nil
     
@@ -50,6 +51,7 @@ class AppModel: ObservableObject {
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
+        config.accessCodeRequestPolicy = accessCodeRequestPolicy
         if displayLogs {
             config.logConfig = .custom(logLevel: Log.Level.allCases,
                                        loggers: [ConsoleLogger(), logger])
@@ -710,6 +712,11 @@ extension AppModel {
     
     func onSettings() {
         showSettings = true
+    }
+    
+    func onRemoveAccessCodes() {
+        let repo = AccessCodeRepository()
+        repo.clear()
     }
     
     @ViewBuilder

@@ -35,7 +35,8 @@ struct ChangeUserCodeView: View {
             
             FloatingTextField(title: placeholder,
                               text: $code.onUpdate(scheduleValidation),
-                              onCommit: onDone)
+                              onCommit: onDone,
+                              shouldBecomeFirstResponder: true)
                 .padding(.top, 16)
             
             FloatingTextField(title: confirmationPlaceholder,

@@ -61,6 +61,9 @@ public struct Config {
     /// All derived keys will be stored in `Card.Wallet.derivedKeys`.
     /// Only `secp256k1` and `ed25519` supported
     public var defaultDerivationPaths: [EllipticCurve: [DerivationPath]] = [:]
+    
+    /// Access codes  request policy
+    public var accessCodeRequestPolicy: AccessCodeRequestPolicy = .`default`
 }
 
 public enum CardIdDisplayFormat {
@@ -72,4 +75,13 @@ public enum CardIdDisplayFormat {
     case lastMasked(_ numbers: Int, mask: String = "***")
     /// n numbers from the end except last
     case lastLunh(_ numbers: Int)
+}
+
+public enum AccessCodeRequestPolicy: String, CaseIterable {
+    /// User code will be requested before card scan. Biometrics will be used if enabled and there are any saved codes.
+    case alwaysWithBiometrics
+    /// User code will be requested before card scan.
+    case always
+    /// User code will be requested only if set on the card. Need scan the card twice.
+    case `default`
 }

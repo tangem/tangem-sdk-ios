@@ -68,6 +68,8 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
+                session.fetchAccessCodeIfNeeded()
+                
                 self.finalizeRead(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -110,4 +112,3 @@ final class PreflightReadTask: CardSessionRunnable {
         }
     }
 }
-

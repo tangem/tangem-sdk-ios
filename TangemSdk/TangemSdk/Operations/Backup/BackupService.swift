@@ -454,7 +454,7 @@ class BackupRepo {
     }
     
     func reset() {
-        try? storage.delete(account: StorageKey.backupData.rawValue)
+        try? storage.delete(.backupData)
         data = .init()
     }
     
@@ -462,24 +462,16 @@ class BackupRepo {
         guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
-        try storage.store(object: encoded, account: StorageKey.backupData.rawValue)
+        try storage.store(encoded, forKey: .backupData)
     }
     
     private func fetch() throws {
         self.isFetching = true
         defer { self.isFetching = false }
         
-        if let savedData = try storage.get(account: StorageKey.backupData.rawValue) {
+        if let savedData = try storage.get(.backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-private extension BackupRepo {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case backupData
     }
 }
 

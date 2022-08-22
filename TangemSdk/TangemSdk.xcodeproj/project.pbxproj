@@ -291,6 +291,11 @@
 		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
+		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
+		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
+		DC9FFF2C28B354EF0076BCDC /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9FFF2B28B354EF0076BCDC /* LAContext+.swift */; };
+		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
+		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -595,6 +600,11 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
+		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
+		DC9FFF2B28B354EF0076BCDC /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
+		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
+		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -650,6 +660,10 @@
 				5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */,
 				5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */,
 				5D1494802686488600C0D923 /* SecureEnclaveService.swift */,
+				DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */,
+				DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */,
+				DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */,
+				DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */,
 			);
 			path = Secure;
 			sourceTree = "<group>";
@@ -1284,6 +1298,7 @@
 				5D445B7D26E2A1F300F6F0FE /* CaseIterable+.swift */,
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
+				DC9FFF2B28B354EF0076BCDC /* LAContext+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1581,6 +1596,8 @@
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */,
+				DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */,
 				5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */,
 				5D2BDF8826DD64DB002F7E19 /* RunnablesTask.swift in Sources */,
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
@@ -1591,6 +1608,7 @@
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
+				DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */,
 				5DE43A6426D5158300ECA36A /* WriteBackupDataCommand.swift in Sources */,
 				5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */,
 				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
@@ -1629,6 +1647,7 @@
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
 				5D8666622731687A0095CC82 /* ResetCodesViewModel.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
+				DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
@@ -1643,6 +1662,7 @@
 				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
 				5D503A40276A4411007B1C1A /* RoundedButtonStyle.swift in Sources */,
+				DC9FFF2C28B354EF0076BCDC /* LAContext+.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */,
 				5DE43A5E26D4F45800ECA36A /* LinkPrimaryCardCommand.swift in Sources */,
 				5D86665627315F050095CC82 /* ResetCodesViewDelegate.swift in Sources */,

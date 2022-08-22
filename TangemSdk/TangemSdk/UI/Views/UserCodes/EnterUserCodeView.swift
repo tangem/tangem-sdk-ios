@@ -52,10 +52,12 @@ struct EnterUserCodeView: View {
             .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
-        .onAppear {
-            if isLoading {
-                isLoading = false
-            }
+        .onAppear(perform: onAppear)
+    }
+    
+    private func onAppear() {
+        if isLoading {
+            isLoading = false
         }
     }
     
@@ -68,11 +70,15 @@ struct EnterUserCodeView: View {
     }
     
     private func onDone() {
-        if !isContinueDisabled {
-            UIApplication.shared.endEditing()
-            isLoading = true
-            completion(.success(code.trim()))
+        if isContinueDisabled {
+            return
         }
+        
+        UIApplication.shared.endEditing()
+        isLoading = true
+        
+        let userCode = code.trim()
+        completion(.success(userCode))
     }
 }
 

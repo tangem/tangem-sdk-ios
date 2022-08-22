@@ -269,4 +269,3 @@ struct ConfirmationCard {
     let salt: Data
     let authorizeSignature: Data
 }
-

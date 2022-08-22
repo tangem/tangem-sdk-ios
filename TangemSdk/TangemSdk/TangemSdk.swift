@@ -654,14 +654,24 @@ extension TangemSdk {
         Log.config = config.logConfig
     }
     
+    private func makeAccessCodeRepository(with config: Config) -> AccessCodeRepository? {
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
+            return AccessCodeRepository()
+        }
+        
+        return nil
+    }
+    
     func makeSession(with config: Config,
                      cardId: String?,
                      initialMessage: Message?) -> CardSession {
-        CardSession(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
-                    cardId: cardId,
-                    initialMessage: initialMessage,
-                    cardReader: reader,
-                    viewDelegate: viewDelegate,
-                    jsonConverter: jsonConverter)
+        .init(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
+              cardId: cardId,
+              initialMessage: initialMessage,
+              cardReader: reader,
+              viewDelegate: viewDelegate,
+              jsonConverter: jsonConverter,
+              accessCodeRepository: makeAccessCodeRepository(with: config))
     }
 }

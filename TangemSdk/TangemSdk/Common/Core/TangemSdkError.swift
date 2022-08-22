@@ -182,6 +182,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case userForgotTheCode
     
+    case biometricsUnavailable
+    
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
     
@@ -412,6 +414,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
         case .userForgotTheCode: return 50013
+        case .biometricsUnavailable: return 50014
             
         case .wrongInteractionMode: return 50027
             

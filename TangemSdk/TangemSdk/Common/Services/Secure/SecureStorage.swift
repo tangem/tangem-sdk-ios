@@ -11,14 +11,18 @@ import Security
 
 /// Helper class for Keychain
 @available(iOS 13.0, *)
-struct SecureStorage {
-    func get(account: String) throws -> Data? {
-        let query = [kSecClass: kSecClassGenericPassword,
-                     kSecAttrAccount: account,
-                     kSecMatchLimit: kSecMatchLimitOne,
-                     kSecUseDataProtectionKeychain: true,
-                     kSecReturnData: true] as [String: Any]
-        
+public struct SecureStorage {
+    
+    public init() {}
+    
+    public func get(_ account: String) throws -> Data? {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: account,
+            kSecMatchLimit: kSecMatchLimitOne,
+            kSecUseDataProtectionKeychain: true,
+            kSecReturnData: true,
+        ]
         
         var result: AnyObject?
         
@@ -34,18 +38,22 @@ struct SecureStorage {
         }
     }
     
-    func store(object: Data, account: String, overwrite: Bool = true) throws  {
-        let query = [kSecClass: kSecClassGenericPassword,
-                     kSecAttrAccount: account,
-                     kSecValueData: object,
-                     kSecUseDataProtectionKeychain: true,
-                     kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked] as [String : Any]
+    public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: account,
+            kSecValueData: object,
+            kSecUseDataProtectionKeychain: true,
+            kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        ]
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
         if status == errSecDuplicateItem && overwrite {
-            let searchQuery = [kSecClass: kSecClassGenericPassword,
-                               kSecAttrAccount: account] as [String: Any]
+            let searchQuery: [CFString: Any] = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrAccount: account,
+            ]
             
             let attributes = [kSecValueData: object] as [String: Any]
             
@@ -57,29 +65,43 @@ struct SecureStorage {
         }
     }
     
-    /// Removes any existing data with the given account.
-    func delete(account: String) throws {
-        let query = [kSecClass: kSecClassGenericPassword,
-                     kSecUseDataProtectionKeychain: true,
-                     kSecAttrAccount: account] as [String: Any]
+    public func delete(_ account: String) throws {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecUseDataProtectionKeychain: true,
+            kSecAttrAccount: account,
+        ]
+        
         switch SecItemDelete(query as CFDictionary) {
         case errSecItemNotFound, errSecSuccess: break // Okay to ignore
         case let status:
             throw KeyStoreError("Unexpected deletion error: \(status.message)")
         }
     }
+    
+    func get(_ storageKey: SecureStorageKey) throws -> Data? {
+        try get(storageKey.rawValue)
+    }
+    
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) throws  {
+       try store(object, forKey: storageKey.rawValue)
+    }
+    
+    func delete(_ storageKey: SecureStorageKey) throws {
+        try delete(storageKey.rawValue)
+    }
 }
 
 @available(iOS 13.0, *)
 extension SecureStorage {
     /// Stores a CryptoKit key in the keychain as a generic password.
-    func storeKey<T: GenericPasswordConvertible>(_ key: T, account: String) throws {
-        try store(object: key.rawRepresentation, account: account, overwrite: true)
+    func storeKey<T: GenericPasswordConvertible>(_ key: T, forKey storageKey: SecureStorageKey) throws {
+        try store(key.rawRepresentation, forKey: storageKey, overwrite: true)
     }
     
     /// Reads a CryptoKit key from the keychain as a generic password.
-    func readKey<T: GenericPasswordConvertible>(account: String) throws -> T? {
-        if let data = try get(account: account) {
+    func readKey<T: GenericPasswordConvertible>(_ storageKey: SecureStorageKey) throws -> T? {
+        if let data = try get(storageKey) {
             return try T(rawRepresentation: data)
         }
         

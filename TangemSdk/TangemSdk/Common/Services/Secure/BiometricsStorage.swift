@@ -13,11 +13,7 @@ import LocalAuthentication
 /// Helper class for Keychain
 @available(iOS 13.0, *)
 public class BiometricsStorage {
-    private lazy var context: LAContext = {
-        let context = LAContext()
-        context.touchIDAuthenticationAllowableReuseDuration = 60
-        return context
-    }()
+    private let context: LAContext = .default
   
     public init() {}
     
@@ -99,7 +95,6 @@ public class BiometricsStorage {
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
-            kSecUseAuthenticationContext: self.context,
         ]
         
         let status = SecItemDelete(query as CFDictionary)

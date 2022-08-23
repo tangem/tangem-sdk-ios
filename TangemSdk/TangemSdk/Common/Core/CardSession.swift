@@ -480,6 +480,7 @@ public class CardSession {
                             case .success(let newCode):
                                 self.updateEnvironment(with: type, code: newCode)
                                 self.viewDelegate.setState(.default)
+                                self.viewDelegate.showAlertMessage("nfc_alert_default".localized)
                                 completion(.success(()))
                                 self.resetCodesController = nil
                             case .failure(let error):

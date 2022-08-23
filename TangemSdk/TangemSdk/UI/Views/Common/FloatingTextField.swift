@@ -42,7 +42,6 @@ struct FloatingTextField: View {
     
     var body: some View {
         VStack(spacing: 6) {
-            
             HStack {
                 ZStack(alignment: .leading) {
                     

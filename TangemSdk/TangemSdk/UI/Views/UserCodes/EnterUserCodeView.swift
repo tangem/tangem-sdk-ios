@@ -32,7 +32,10 @@ struct EnterUserCodeView: View {
                                onCancel: onCancel)
                 .padding(.top, 8)
             
-            FloatingTextField(title: placeholder, text: $code, onCommit: onDone, isSecured: true)
+            FloatingTextField(title: placeholder,
+                              text: $code,
+                              onCommit: onDone,
+                              shouldBecomeFirstResponder: true)
                 .padding(.top, 16)
             
             VStack(spacing: 16) {

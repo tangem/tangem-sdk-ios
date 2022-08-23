@@ -44,7 +44,6 @@ struct FloatingTextField: View {
         VStack(spacing: 6) {
             HStack {
                 ZStack(alignment: .leading) {
-                    
                     Text(title)
                         .foregroundColor(text.wrappedValue.isEmpty ? Color(.placeholderText) : style.colors.tint)
                         .offset(y: text.wrappedValue.isEmpty ? 0 : -32)

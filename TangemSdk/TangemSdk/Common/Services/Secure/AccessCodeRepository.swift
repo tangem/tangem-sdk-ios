@@ -36,14 +36,13 @@ public class AccessCodeRepository {
         do {
             let data = try JSONEncoder().encode(accessCodes)
             
-            biometricsStorage.store(data, forKey: .accessCodes) { result in
-                switch result {
-                case .success:
-                    self.saveCards()
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+            let result = biometricsStorage.store(data, forKey: .accessCodes)
+            switch result {
+            case .success:
+                self.saveCards()
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
             }
         } catch {
             Log.error(error)
@@ -77,18 +76,17 @@ public class AccessCodeRepository {
         
         accessCodes = .init()
         
-        biometricsStorage.get(.accessCodes) { result in
-            switch result {
-            case .success(let data):
-                if let data = data,
-                   let codes = try? JSONDecoder().decode([String: Data].self, from: data) {
-                    self.accessCodes = codes
-                }
-                completion(.success(()))
-            case .failure(let error):
-                Log.error(error)
-                completion(.failure(error))
+        let result = biometricsStorage.get(.accessCodes)
+        switch result {
+        case .success(let data):
+            if let data = data,
+               let codes = try? JSONDecoder().decode([String: Data].self, from: data) {
+                self.accessCodes = codes
             }
+            completion(.success(()))
+        case .failure(let error):
+            Log.error(error)
+            completion(.failure(error))
         }
     }
     

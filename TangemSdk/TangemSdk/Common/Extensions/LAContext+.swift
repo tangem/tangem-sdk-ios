@@ -12,7 +12,7 @@ import LocalAuthentication
 extension LAContext {
     static var `default`: LAContext {
         let context = LAContext()
-        context.touchIDAuthenticationAllowableReuseDuration = 60
+        context.touchIDAuthenticationAllowableReuseDuration = 0
         return context
     }
 }

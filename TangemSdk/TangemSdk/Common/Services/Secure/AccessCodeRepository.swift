@@ -6,6 +6,8 @@
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 
+import LocalAuthentication
+
 @available(iOS 13.0, *)
 public class AccessCodeRepository {
     var isEmpty: Bool {
@@ -15,6 +17,8 @@ public class AccessCodeRepository {
     private let secureStorage: SecureStorage = .init()
     private let biometricsStorage: BiometricsStorage  = .init()
     private var accessCodes: [String: Data] = .init()
+    
+    private lazy var context: LAContext = LAContext.default
     
     public init() {}
     
@@ -36,7 +40,7 @@ public class AccessCodeRepository {
         do {
             let data = try JSONEncoder().encode(accessCodes)
             
-            let result = biometricsStorage.store(data, forKey: .accessCodes)
+            let result = biometricsStorage.store(data, forKey: .accessCodes, context: context)
             switch result {
             case .success:
                 self.saveCards()
@@ -76,7 +80,7 @@ public class AccessCodeRepository {
         
         accessCodes = .init()
         
-        let result = biometricsStorage.get(.accessCodes)
+        let result = biometricsStorage.get(.accessCodes, context: context)
         switch result {
         case .success(let data):
             if let data = data,

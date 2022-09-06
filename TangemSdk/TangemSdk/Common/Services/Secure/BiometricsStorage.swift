@@ -107,12 +107,12 @@ public class BiometricsStorage {
         }
     }
     
-    func get(_ storageKey: SecureStorageKey) -> Result<Data?, TangemSdkError> {
-        get(storageKey.rawValue)
+    func get(_ storageKey: SecureStorageKey, context: LAContext?) -> Result<Data?, TangemSdkError> {
+        get(storageKey.rawValue, context: context)
     }
     
-    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) -> Result<Void, TangemSdkError> {
-         store(object, forKey: storageKey.rawValue)
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true, context: LAContext?) -> Result<Void, TangemSdkError> {
+        store(object, forKey: storageKey.rawValue, context: context)
     }
     
     func delete(_ storageKey: SecureStorageKey) throws {

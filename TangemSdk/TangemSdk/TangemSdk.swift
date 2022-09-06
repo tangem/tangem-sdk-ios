@@ -639,6 +639,11 @@ extension TangemSdk {
             completion(error.toJsonResponse().json)
         }
     }
+    
+    public func deleteSavedAccessCodes() {
+        let accessCodeRepository = AccessCodeRepository()
+        accessCodeRepository.clear()
+    }
 }
 
 //MARK: - Private

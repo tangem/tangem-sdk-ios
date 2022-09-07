@@ -641,8 +641,8 @@ extension TangemSdk {
     }
     
     public func deleteSavedAccessCodes() {
-        let accessCodeRepository = AccessCodeRepository()
-        accessCodeRepository.clear()
+        let accessCodeRepository = makeAccessCodeRepository(with: config)
+        accessCodeRepository?.clear()
     }
 }
 

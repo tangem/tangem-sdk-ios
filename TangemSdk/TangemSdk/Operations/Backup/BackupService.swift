@@ -37,6 +37,9 @@ public class BackupService: ObservableObject {
     public var primaryCardId: String? { repo.data.primaryCard?.cardId }
     public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
+    /// Perform additional compatibility checks while adding backup cards. Change this setting only if you understand what you do.
+    public var skipCompatibilityChecks: Bool = false
+    
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
     private var currentCommand: AnyObject? = nil
@@ -208,7 +211,8 @@ public class BackupService: ObservableObject {
     
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
         let command = StartBackupCardLinkingTask(primaryCard: primaryCard,
-                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId })
+                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId },
+                                                 skipCompatibilityChecks: skipCompatibilityChecks)
         currentCommand = command
         
         sdk.startSession(with: command,

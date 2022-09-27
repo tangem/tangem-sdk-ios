@@ -55,8 +55,8 @@ public class GenerateOTPCommand: Command {
         let decoder = TlvDecoder(tlv: tlv)
         
         return GenerateOTPResponse(cardId: try decoder.decode(.cardId),
-                                   hash: try decoder.decode(.codeHash),
-                                   index: try decoder.decode(.fileIndex),
+                                   rootOTP: try decoder.decode(.codeHash),
+                                   rootOTPCounter: try decoder.decode(.fileIndex),
                                    walletPublicKey: try decoder.decode(.walletPublicKey))
     }
 }

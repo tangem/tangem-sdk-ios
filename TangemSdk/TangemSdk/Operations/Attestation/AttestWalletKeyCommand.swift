@@ -100,7 +100,7 @@ public final class AttestWalletKeyCommand: Command {
             .append(.walletIndex, value: walletIndex)
         
         //Otherwise, static confirmation will fail with the "invalidParams" error.
-        if card.firmwareVersion >= .attestWalletConfirmation {
+        if card.firmwareVersion >= .walletOwnershipConfirmationAvailable {
             switch confirmationMode {
             case .none:
                 break

@@ -14,7 +14,7 @@ public struct CardFilter {
     public var allowedCardTypes: [FirmwareVersion.FirmwareType] = [.release, .sdk]
     
     /// Use this filter to configure cards allowed to work with your app
-    public var cardIdFilter: ItemFilter? = nil
+    public var cardIdFilter: CardIdFilter? = nil
     
     /// Use this filter to configure batches allowed to work with your app
     public var batchIdFilter: ItemFilter? = nil
@@ -53,6 +53,42 @@ public struct CardFilter {
     }
 }
 
+//TODO: Add tests
+public struct CardIdRange {
+    public let batch: String
+    public let start: Int
+    public let end: Int
+    
+    public init?(start: String, end: String) {
+        let startBatch = start.getBatchPrefix()
+        let endBatch = end.getBatchPrefix()
+
+        guard startBatch == endBatch,
+              let startValue = start.toInt(),
+              let endValue = end.toInt() else {
+            return nil
+        }
+        
+        self.start = startValue
+        self.end = endValue
+        self.batch = startBatch
+    }
+    
+    func contains(_ cardId: String) -> Bool {
+        guard cardId.getBatchPrefix() == batch else {
+            return false
+        }
+        
+        guard let card = cardId.toInt() else {
+            return true //failed to convert, skip filtration
+        }
+        
+        let range = start...end
+        return range.contains(card)
+    }
+}
+
+
 @available(iOS 13.0, *)
 public extension CardFilter {
     enum ItemFilter {
@@ -67,5 +103,45 @@ public extension CardFilter {
                 return !items.contains(item)
             }
         }
+    }
+    
+    enum CardIdFilter {
+        case allow(_ items: Set<String>, ranges: [CardIdRange] = [])
+        case deny(_ items: Set<String>, ranges: [CardIdRange] = [])
+        
+        func isAllowed(_ item: String) -> Bool {
+            switch self {
+            case .allow(let items, let ranges):
+                return items.contains(item) || ranges.contains(item)
+            case .deny(let items, let ranges):
+                return !(items.contains(item) || ranges.contains(item))
+            }
+        }
+    }
+}
+
+fileprivate extension String {
+    func getBatchPrefix() -> String {
+        String(self.prefix(4)).uppercased()
+    }
+    
+    func stripBatchPrefix() -> String {
+        String(self.dropFirst(4))
+    }
+    
+    func toInt() -> Int? {
+        Int(self.stripBatchPrefix())
+    }
+}
+
+extension Array where Element == CardIdRange {
+    public func contains(_ cardId: String) -> Bool {
+        for range in self {
+            if range.contains(cardId) {
+                return true
+            }
+        }
+        
+        return false
     }
 }

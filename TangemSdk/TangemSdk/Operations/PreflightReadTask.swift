@@ -68,6 +68,7 @@ final class PreflightReadTask: CardSessionRunnable {
                     try filter.verifyCard(readResponse)
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
+                    return
                 }
                 
                 session.fetchAccessCodeIfNeeded()

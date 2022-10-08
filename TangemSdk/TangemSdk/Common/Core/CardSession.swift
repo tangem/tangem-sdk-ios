@@ -468,20 +468,23 @@ public class CardSession {
         viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
             guard let self = self else { return }
             
+            func continueRunnable(code: String) {
+                self.updateEnvironment(with: type, code: code)
+                self.viewDelegate.setState(.default)
+                self.viewDelegate.showAlertMessage("nfc_alert_default".localized)
+                completion(.success(()))
+            }
+            
             switch result {
             case .success(let code):
-                self.updateEnvironment(with: type, code: code)
-                completion(.success(()))
+                continueRunnable(code: code)
             case .failure(let error):
                 if case .userForgotTheCode = error {
                     self.viewDelegate.sessionStopped {
                         self.restoreUserCode(type, cardId: cardId) { result in
                             switch result {
                             case .success(let newCode):
-                                self.updateEnvironment(with: type, code: newCode)
-                                self.viewDelegate.setState(.default)
-                                self.viewDelegate.showAlertMessage("nfc_alert_default".localized)
-                                completion(.success(()))
+                                continueRunnable(code: newCode)
                                 self.resetCodesController = nil
                             case .failure(let error):
                                 completion(.failure(error))

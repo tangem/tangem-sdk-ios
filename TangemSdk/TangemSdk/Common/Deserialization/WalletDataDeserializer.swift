@@ -17,12 +17,12 @@ public struct WalletDataDeserializer {
         if blockchain == nil {
             return nil
         }
-
+        
         return WalletData(blockchain: blockchain!,
                           token: try deserializeToken(decoder: decoder))
     }
     
-    private func deserializeToken(decoder: TlvDecoder) throws -> Token? {
+    private func deserializeToken(decoder: TlvDecoder) throws -> WalletData.Token? {
         let tokenName: String? = try decoder.decode(.tokenName)
         let tokenSymbol: String? = try decoder.decode(.tokenSymbol)
         let tokenContractAddress: String? = try decoder.decode(.tokenContractAddress)
@@ -31,7 +31,7 @@ public struct WalletDataDeserializer {
         if let tokenSymbol = tokenSymbol,
            let tokenContractAddress = tokenContractAddress,
            let tokenDecimals = tokenDecimals {
-            return Token(name: tokenName ?? tokenSymbol,
+            return .init(name: tokenName ?? tokenSymbol,
                          symbol: tokenSymbol,
                          contractAddress: tokenContractAddress,
                          decimals: tokenDecimals)

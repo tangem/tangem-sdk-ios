@@ -9,18 +9,26 @@
 import Foundation
 
 public struct CardVerifyAndGetInfoRequest: Codable {
-    
     public struct Item: Codable {
-        let cardId: String
-        let publicKey: String
-        
         enum CodingKeys: String, CodingKey {
             case cardId = "CID"
             case publicKey
         }
+        
+        public let cardId: String
+        public let publicKey: String
+        
+        public init(cardId: String, publicKey: String) {
+            self.cardId = cardId
+            self.publicKey = publicKey
+        }
     }
     
-    let requests: [Item]
+    public let requests: [Item]
+    
+    public init(requests: [CardVerifyAndGetInfoRequest.Item]) {
+        self.requests = requests
+    }
 }
 
 public struct CardVerifyAndGetInfoResponse: Codable {

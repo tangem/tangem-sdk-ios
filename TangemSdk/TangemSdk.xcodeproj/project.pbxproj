@@ -297,6 +297,7 @@
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
+		DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17628F5629F0037586C /* FocusableTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -607,6 +608,7 @@
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
+		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -730,6 +732,7 @@
 				5D23C42326CE749F00A1A280 /* FloatingTextField.swift */,
 				5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */,
 				5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */,
+				DCFCA17628F5629F0037586C /* FocusableTextField.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1695,6 +1698,7 @@
 				5DA5B618233E124A0058C720 /* StatusWord.swift in Sources */,
 				5D866658273163BB0095CC82 /* BaseViewDelegate.swift in Sources */,
 				B0A9447B256546DE00A7958E /* Card.swift in Sources */,
+				DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */,
 				B06EBBC525347B7800B0FEEA /* ChangeFileSettingsTask.swift in Sources */,
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,

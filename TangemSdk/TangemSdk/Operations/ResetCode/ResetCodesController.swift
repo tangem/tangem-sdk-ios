@@ -23,7 +23,7 @@ public class ResetCodesController {
     private var cardId: String? = nil
 
     private var formattedCardId: String? {
-        cardId.map { CardIdFormatter(style: cardIdDisplayFormat).string(from: $0) }
+        cardId.flatMap { CardIdFormatter(style: cardIdDisplayFormat).string(from: $0) }
     }
     
     init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate) {

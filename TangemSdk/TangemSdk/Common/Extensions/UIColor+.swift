@@ -19,10 +19,10 @@ extension UIColor {
         }
         
         static var cardColor: UIColor {
-            .init(red: 0.164705882353,
-                  green: 0.196078431373,
-                  blue: 0.274509803922,
-                  alpha: 1)
+            .init(red: 176.0/255.0,
+                  green: 176.0/255.0,
+                  blue: 176.0/255.0,
+                  alpha: 0.9)
         }
         
         static var secondaryButtonBackground: UIColor {
@@ -44,10 +44,10 @@ extension UIColor {
 extension UIColor {
     enum DarkPalette {
         static var cardColor: UIColor {
-            .init(red: 209.0/255.0,
-                  green: 209/255.0,
-                  blue: 214.0/255.0,
-                  alpha: 1)
+            .init(red: 101.0/255.0,
+                  green: 101.0/255.0,
+                  blue: 101.0/255.0,
+                  alpha: 0.9)
         }
     }
 }

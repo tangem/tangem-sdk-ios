@@ -17,8 +17,10 @@ public struct CardIdFormatter {
         self.style = style
     }
     
-    public func string(from cardId: String) -> String {
+    public func string(from cardId: String) -> String? {
         switch style {
+        case .none:
+            return nil
         case .full:
             return split(cardId)
         case .last(let numbers):

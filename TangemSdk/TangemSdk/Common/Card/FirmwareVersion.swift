@@ -125,6 +125,8 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     static let backupAvailable = FirmwareVersion(major: 4, minor: 39)
     /// Wallet ownership confirmation available
     static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
+    /// Tmp range for visa cards
+    static let visaRange = 5.25...5.30
 }
 
 @available(iOS 13.0, *)

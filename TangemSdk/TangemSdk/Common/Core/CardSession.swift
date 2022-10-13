@@ -463,7 +463,7 @@ public class CardSession {
         
         let cardId = environment.card?.cardId ?? self.cardId
         let showForgotButton = environment.card?.backupStatus?.isActive ?? false
-        let formattedCardId = cardId.map { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
+        let formattedCardId = cardId.flatMap { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
         
         viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
             guard let self = self else { return }

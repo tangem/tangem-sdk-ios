@@ -71,6 +71,7 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
+                self.updateEnvironmentIfNeeded(for: readResponse, in: session)
                 session.fetchAccessCodeIfNeeded()
                 
                 self.finalizeRead(in: session, completion: completion)
@@ -112,6 +113,12 @@ final class PreflightReadTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+    
+    private func updateEnvironmentIfNeeded(for card: Card, in session: CardSession) {
+        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
+            session.environment.config.cardIdDisplayFormat = .none
         }
     }
 }

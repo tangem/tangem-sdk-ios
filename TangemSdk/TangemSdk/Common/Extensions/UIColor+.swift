@@ -22,7 +22,7 @@ extension UIColor {
             .init(red: 176.0/255.0,
                   green: 176.0/255.0,
                   blue: 176.0/255.0,
-                  alpha: 0.9)
+                  alpha: 1)
         }
         
         static var secondaryButtonBackground: UIColor {
@@ -47,7 +47,7 @@ extension UIColor {
             .init(red: 101.0/255.0,
                   green: 101.0/255.0,
                   blue: 101.0/255.0,
-                  alpha: 0.9)
+                  alpha: 1)
         }
     }
 }

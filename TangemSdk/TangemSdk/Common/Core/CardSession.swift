@@ -350,7 +350,8 @@ public class CardSession {
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
             if shouldRequestBiometrics {
-                 accessCodeRepository?.unlock { result in
+                let reason = environment.config.biometryLocalizedReason
+                accessCodeRepository?.unlock(localizedReason: reason) { result in
                      switch result {
                      case .success:
                          runnable.prepare(self, completion: completion)

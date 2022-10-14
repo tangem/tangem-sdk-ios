@@ -34,16 +34,23 @@ public class AccessCodeRepository {
         }
         
         do {
-            let data = try JSONEncoder().encode(accessCodes)
-            
-            let result = biometricsStorage.store(data, forKey: .accessCodes)
-            switch result {
-            case .success:
-                self.saveCards()
-                completion(.success(()))
-            case .failure(let error):
-                completion(.failure(error))
+            for cardId in cardIds {
+                let storageKey = SecureStorageKey.accessCode(for: cardId)
+                
+                if try getCards().contains(cardId) {
+                    try biometricsStorage.delete(storageKey)
+                }
+                
+                let result = biometricsStorage.store(accessCode, forKey: storageKey)
+                
+                if case .failure(let error) = result {
+                    completion(.failure(error))
+                    return
+                }
             }
+
+            self.saveCards()
+            completion(.success(()))
         } catch {
             Log.error(error)
             completion(.failure(error.toTangemSdkError()))
@@ -54,9 +61,21 @@ public class AccessCodeRepository {
         save(accessCode, for: [cardId], completion: completion)
     }
     
+    public func deleteAccessCode(for cardIds: [String], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+        let defaultAccessCode = UserCode(.accessCode, stringValue: UserCodeType.accessCode.defaultValue)
+        guard let defaultAccessCodeValue = defaultAccessCode.value else {
+            completion(.failure(.wrongAccessCode))
+            return
+        }
+        
+        save(defaultAccessCodeValue, for: cardIds, completion: completion)
+    }
+    
     public func clear() {
         do {
-            try biometricsStorage.delete(.accessCodes)
+            for cardId in getCards() {
+                try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
+            }
             try secureStorage.delete(.cardsWithSavedCodes)
         } catch {
             Log.error(error)
@@ -68,25 +87,40 @@ public class AccessCodeRepository {
         return savedCards.contains(cardId)
     }
     
-    func unlock(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func unlock(localizedReason: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         guard BiometricsUtil.isAvailable else {
             completion(.failure(.biometricsUnavailable))
             return
         }
         
-        accessCodes = .init()
+        self.accessCodes = [:]
         
-        let result = biometricsStorage.get(.accessCodes)
-        switch result {
-        case .success(let data):
-            if let data = data,
-               let codes = try? JSONDecoder().decode([String: Data].self, from: data) {
-                self.accessCodes = codes
+        BiometricsUtil.requestAccess(localizedReason: localizedReason) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .failure(let error):
+                Log.error(error)
+                completion(.failure(error))
+            case .success(let context):
+                var fetchedAccessCodes: [String: Data] = [:]
+                
+                for cardId in self.getCards() {
+                    let result = self.biometricsStorage.get(SecureStorageKey.accessCode(for: cardId), context: context)
+                    
+                    switch result {
+                    case .success(let data):
+                        fetchedAccessCodes[cardId] = data
+                    case .failure(let error):
+                        Log.error(error)
+                        completion(.failure(error))
+                        return
+                    }
+                }
+
+                self.accessCodes = fetchedAccessCodes
+                completion(.success(()))
             }
-            completion(.success(()))
-        case .failure(let error):
-            Log.error(error)
-            completion(.failure(error))
         }
     }
     

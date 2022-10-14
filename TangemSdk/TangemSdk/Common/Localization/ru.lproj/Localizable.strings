@@ -59,3 +59,4 @@
 "reset_codes_message_body_backup" = "Приложите связанную карту";
 "reset_codes_message_body_restore_final" = "Приложите еще раз карту, которую хотите восстановить";
 "reset_codes_success_message" = "Код успешно сброшен";
+"touch_id_localized_reason" = "Используйте Touch ID для сохранения кодов доступа в приложении";

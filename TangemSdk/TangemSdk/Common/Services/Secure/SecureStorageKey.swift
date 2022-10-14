@@ -14,8 +14,10 @@ enum SecureStorageKey: String {
     case signatureOfAttestedCards
     
     //access codes repo
-    case accessCodes
     case cardsWithSavedCodes
+    static func accessCode(for cardId: String) -> String {
+        "accessCode_\(cardId)"
+    }
     
     //secure enclave service
     case secureEnclaveP256Key

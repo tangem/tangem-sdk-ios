@@ -59,12 +59,18 @@ public class AccessCodeRepository {
     }
     
     public func deleteAccessCode(for cardIds: [String]) -> Result<Void, TangemSdkError> {
-        let defaultAccessCode = UserCode(.accessCode, stringValue: UserCodeType.accessCode.defaultValue)
-        guard let defaultAccessCodeValue = defaultAccessCode.value else {
-            return .failure(.wrongAccessCode)
+        do {
+            let savedCardIds = getCards()
+            for cardId in cardIds {
+                guard savedCardIds.contains(cardId) else { continue }
+                
+                try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
+            }
+            return .success(())
+        } catch {
+            Log.error(error)
+            return .failure(error.toTangemSdkError())
         }
-        
-        return save(defaultAccessCodeValue, for: cardIds)
     }
     
     public func clear() {

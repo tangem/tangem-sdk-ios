@@ -22,16 +22,16 @@ public extension Card {
         public let settings: Settings
         /// Total number of signed hashes returned by the wallet since its creation
         /// COS 1.16+
-        public internal(set) var totalSignedHashes: Int?
+        public var totalSignedHashes: Int?
         /// Remaining number of `Sign` operations before the wallet will stop signing any data.
         /// - Note: This counter were deprecated for cards with COS 4.0 and higher
-        public internal(set) var remainingSignatures: Int?
+        public var remainingSignatures: Int?
         /// Index of the wallet in the card storage
         public let index: Int
         /// Proof for BLS Proof of possession scheme (POP)
         public let proof: Data?
         /// Does this wallet has a backup
-        public internal(set) var hasBackup: Bool
+        public var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
         public var derivedKeys: [DerivationPath:ExtendedPublicKey] = [:]
     }

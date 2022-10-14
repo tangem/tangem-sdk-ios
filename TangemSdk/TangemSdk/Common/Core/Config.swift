@@ -64,6 +64,9 @@ public struct Config {
     
     /// Access codes  request policy
     public var accessCodeRequestPolicy: AccessCodeRequestPolicy = .`default`
+    
+    /// Localized reason for Touch ID. DO NOT leave it empty.
+    public var biometryLocalizedReason: String = "touch_id_localized_reason".localized
 }
 
 public enum CardIdDisplayFormat {

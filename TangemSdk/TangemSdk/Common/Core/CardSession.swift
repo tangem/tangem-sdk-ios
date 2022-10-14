@@ -514,9 +514,8 @@ public class CardSession {
             return
         }
         
-        accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in
-            self?.accessCodeRepository?.lock()
-        }
+        accessCodeRepository?.save(code, for: card.cardId)
+        accessCodeRepository?.lock()
     }
     
     private func updateEnvironment(with type: UserCodeType, code: String) {

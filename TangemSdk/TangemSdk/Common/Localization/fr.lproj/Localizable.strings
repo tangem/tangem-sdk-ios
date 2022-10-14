@@ -59,3 +59,4 @@
 "reset_codes_message_body_backup" = "Tap the linked card";
 "reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";
+"touch_id_localized_reason" = "Use Touch ID to save access codes in the app";

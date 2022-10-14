@@ -22,15 +22,13 @@ public class AccessCodeRepository {
         Log.debug("AccessCodeRepository deinit")
     }
     
-    public func save(_ accessCode: Data, for cardIds: [String], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    public func save(_ accessCode: Data, for cardIds: [String]) -> Result<Void, TangemSdkError> {
         guard BiometricsUtil.isAvailable else {
-            completion(.failure(.biometricsUnavailable))
-            return
+            return .failure(.biometricsUnavailable)
         }
         
         guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
-            completion(.success(())) //Nothing changed. Return
-            return
+            return .success(()) //Nothing changed. Return
         }
         
         do {
@@ -44,31 +42,29 @@ public class AccessCodeRepository {
                 let result = biometricsStorage.store(accessCode, forKey: storageKey)
                 
                 if case .failure(let error) = result {
-                    completion(.failure(error))
-                    return
+                    return .failure(error)
                 }
             }
 
             self.saveCards()
-            completion(.success(()))
+            return .success(())
         } catch {
             Log.error(error)
-            completion(.failure(error.toTangemSdkError()))
+            return .failure(error.toTangemSdkError())
         }
     }
     
-    public func save(_ accessCode: Data, for cardId: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        save(accessCode, for: [cardId], completion: completion)
+    public func save(_ accessCode: Data, for cardId: String) -> Result<Void, TangemSdkError> {
+        return save(accessCode, for: [cardId])
     }
     
-    public func deleteAccessCode(for cardIds: [String], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    public func deleteAccessCode(for cardIds: [String]) -> Result<Void, TangemSdkError> {
         let defaultAccessCode = UserCode(.accessCode, stringValue: UserCodeType.accessCode.defaultValue)
         guard let defaultAccessCodeValue = defaultAccessCode.value else {
-            completion(.failure(.wrongAccessCode))
-            return
+            return .failure(.wrongAccessCode)
         }
         
-        save(defaultAccessCodeValue, for: cardIds, completion: completion)
+        return save(defaultAccessCodeValue, for: cardIds)
     }
     
     public func clear() {

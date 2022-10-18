@@ -25,27 +25,27 @@ public struct Card: Codable, JSONStringConvertible {
     /// Information about issuer
     public let issuer: Issuer
     /// Card setting, that were set during the personalization process
-    public internal(set) var settings: Settings
+    public var settings: Settings
     /// When this value is `current`, it means that the application is linked to the card,
     /// and COS will not enforce security delay if `SignCommand` will be called
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data
     /// to be signed made with `TlvTag.TerminalPublicKey`.
     public let linkedTerminalStatus: LinkedTerminalStatus
     /// Access code (aka PIN1) is set.
-    public internal(set) var isAccessCodeSet: Bool
+    public var isAccessCodeSet: Bool
     /// Passcode (aka PIN2) is set.
     /// COS v. 4.33 and higher - always available
     /// COS v. 1.19 and lower - always unavailable
     /// COS  v > 1.19 &&  v < 4.33 - available only if `isResettingUserCodesAllowed` set to true
-    public internal(set) var isPasscodeSet: Bool?
+    public var isPasscodeSet: Bool?
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]
     /// Status of card's backup
-    public internal(set) var backupStatus: BackupStatus?
+    public var backupStatus: BackupStatus?
     /// Wallets, created on the card, that can be used for signature
-    public internal(set) var wallets: [Wallet] = []
+    public var wallets: [Wallet] = []
     /// Card's attestation report
-    public internal(set) var attestation: Attestation = .empty
+    public var attestation: Attestation = .empty
     /// Any non-zero value indicates that the card experiences some hardware problems.
     /// User should withdraw the value to other blockchain wallet as soon as possible.
     /// Non-zero Health tag will also appear in responses of all other commands.

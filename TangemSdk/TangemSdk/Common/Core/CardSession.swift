@@ -347,18 +347,28 @@ public class CardSession {
             }
         }
         
+        let requestBiometryAction = {
+            let reason = self.environment.config.biometryLocalizedReason
+            self.accessCodeRepository?.unlock(localizedReason: reason) { result in
+                 switch result {
+                 case .success:
+                     runnable.prepare(self, completion: completion)
+                 case .failure:
+                     requestAccessCodeAction()
+                 }
+             }
+        }
+        
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
             if shouldRequestBiometrics {
-                let reason = environment.config.biometryLocalizedReason
-                accessCodeRepository?.unlock(localizedReason: reason) { result in
-                     switch result {
-                     case .success:
-                         runnable.prepare(self, completion: completion)
-                     case .failure:
-                         requestAccessCodeAction()
-                     }
-                 }
+                requestBiometryAction()
+            } else {
+                requestAccessCodeAction()
+            }
+        case .defaultWithBiometrics:
+            if shouldRequestBiometrics {
+                requestBiometryAction()
             } else {
                 runnable.prepare(self, completion: completion)
             }

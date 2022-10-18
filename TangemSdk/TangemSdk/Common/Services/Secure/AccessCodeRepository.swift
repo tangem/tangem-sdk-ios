@@ -18,9 +18,9 @@ public class AccessCodeRepository {
     private var accessCodes: [String: Data] = .init()
     
     public init() {
-        if !storage.bool(forKey: .hasClearedAccessCodeRepoOnLaunch) {
+        if !storage.bool(forKey: .hasClearedAccessCodeRepoOnFirstLaunch) {
             clear()
-            storage.set(boolValue: true, forKey: .hasClearedAccessCodeRepoOnLaunch)
+            storage.set(boolValue: true, forKey: .hasClearedAccessCodeRepoOnFirstLaunch)
         }
     }
     

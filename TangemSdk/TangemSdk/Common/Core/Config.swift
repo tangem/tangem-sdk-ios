@@ -70,6 +70,8 @@ public struct Config {
 }
 
 public enum CardIdDisplayFormat {
+    /// Don't show the cardId
+    case none
     /// Full cardId splitted by 4 numbers
     case full
     /// n numbers from the end

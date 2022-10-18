@@ -34,7 +34,7 @@ public class BackupService: ObservableObject {
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
     public var primaryCardIsSet: Bool { repo.data.primaryCard != nil }
-    public var primaryCardId: String? { repo.data.primaryCard?.cardId }
+    public var primaryCard: PrimaryCard? { repo.data.primaryCard }
     public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
     /// Perform additional compatibility checks while adding backup cards. Change this setting only if you understand what you do.
@@ -148,10 +148,11 @@ public class BackupService: ObservableObject {
     }
     
     public func readPrimaryCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
-        let initialMessage = cardId.map {
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: $0)
-            return  Message(header: nil,
-                            body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
+        let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
+        
+        let initialMessage = formattedCardId.map {
+            Message(header: nil,
+                    body: "backup_prepare_primary_card_message_format".localized($0)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
          
         let command = StartPrimaryCardLinkingTask()
@@ -264,12 +265,16 @@ public class BackupService: ObservableObject {
                                               onLink: { self.repo.data.attestSignature = $0 },
                                               onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: primaryCard.cardId)
+            let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: primaryCard.cardId)
+            
+            let initialMessage = formattedCardId.map {
+                Message(header: nil,
+                        body: "backup_finalize_primary_card_message_format".localized($0))
+            }
             
             sdk.startSession(with: task,
                              cardId: primaryCard.cardId,
-                             initialMessage: Message(header: nil,
-                                                     body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
+                             initialMessage: initialMessage,
                              completion: completion)
             
         } catch {
@@ -321,12 +326,16 @@ public class BackupService: ObservableObject {
                                                  accessCode: accessCode,
                                                  passcode: passcode)
             
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: backupCard.cardId)
+            let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: backupCard.cardId)
+            
+            let initialMessage = formattedCardId.map {
+                Message(header: nil,
+                        body: "backup_finalize_backup_card_message_format".localized($0))
+            }
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
-                             initialMessage: Message(header: nil,
-                                                     body: "backup_finalize_backup_card_message_format".localized(formattedCardId))) { result in
+                             initialMessage: initialMessage) { result in
                 switch result {
                 case .success(let card):
                     self.repo.data.finalizedBackupCardsCount += 1

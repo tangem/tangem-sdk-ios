@@ -12,11 +12,9 @@ import Foundation
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `AttestWalletKeyCommand`, subsequently.
 @available(iOS 13.0, *)
 public final class ScanTask: CardSessionRunnable {
-    private var attestationTask: AttestationTask? = nil
-    
-    public var accessCodeRequestPolicy: AccessCodeRequestPolicy? {
-        .defaultWithBiometrics
-    }
+    public let accessCodeRequestPolicy: AccessCodeRequestPolicy? = .defaultWithBiometrics
+
+    private var attestationTask: AttestationTask? = nil    
 
     public init() {}
     

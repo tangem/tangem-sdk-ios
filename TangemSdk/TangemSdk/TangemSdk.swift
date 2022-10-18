@@ -570,7 +570,8 @@ extension TangemSdk {
         cardSession = makeSession(with: config,
                                   cardId: cardId,
                                   initialMessage: initialMessage,
-                                  accessCode: accessCode)
+                                  accessCode: accessCode,
+                                  accessCodeRequestPolicy: runnable.accessCodeRequestPolicy)
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -666,18 +667,27 @@ extension TangemSdk {
     }
     
     private func makeAccessCodeRepository(with config: Config) -> AccessCodeRepository? {
-        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
-           BiometricsUtil.isAvailable {
-            return AccessCodeRepository()
-        }
+        guard BiometricsUtil.isAvailable else { return nil }
         
-        return nil
+        switch config.accessCodeRequestPolicy {
+        case .alwaysWithBiometrics, .defaultWithBiometrics:
+            return AccessCodeRepository()
+        default:
+            return nil
+        }
     }
     
-    func makeSession(with config: Config,
+    func makeSession(with originalConfig: Config,
                      cardId: String?,
                      initialMessage: Message?,
-                     accessCode: String? = nil) -> CardSession {
+                     accessCode: String? = nil,
+                     accessCodeRequestPolicy: AccessCodeRequestPolicy? = nil
+    ) -> CardSession {
+        var config = originalConfig
+        if let accessCodeRequestPolicy = accessCodeRequestPolicy {
+            config.accessCodeRequestPolicy = accessCodeRequestPolicy
+        }
+        
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
         
         if let accessCode = accessCode {

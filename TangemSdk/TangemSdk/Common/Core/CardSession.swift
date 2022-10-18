@@ -524,7 +524,7 @@ public class CardSession {
             return
         }
         
-        accessCodeRepository?.save(code, for: card.cardId)
+        let _ = accessCodeRepository?.save(code, for: card.cardId)
         accessCodeRepository?.lock()
     }
     

@@ -12,11 +12,17 @@ public class AccessCodeRepository {
         getCards().isEmpty
     }
     
+    private let storage: Storage = .init()
     private let secureStorage: SecureStorage = .init()
     private let biometricsStorage: BiometricsStorage  = .init()
     private var accessCodes: [String: Data] = .init()
     
-    public init() {}
+    public init() {
+        if !storage.bool(forKey: .hasClearedAccessCodeRepoOnLaunch) {
+            clear()
+            storage.set(boolValue: true, forKey: .hasClearedAccessCodeRepoOnLaunch)
+        }
+    }
     
     deinit {
         Log.debug("AccessCodeRepository deinit")

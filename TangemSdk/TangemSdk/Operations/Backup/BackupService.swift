@@ -34,7 +34,7 @@ public class BackupService: ObservableObject {
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
     public var primaryCardIsSet: Bool { repo.data.primaryCard != nil }
-    public var primaryCardId: String? { repo.data.primaryCard?.cardId }
+    public var primaryCard: PrimaryCard? { repo.data.primaryCard }
     public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
     
     /// Perform additional compatibility checks while adding backup cards. Change this setting only if you understand what you do.

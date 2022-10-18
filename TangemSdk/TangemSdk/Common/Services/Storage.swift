@@ -13,6 +13,7 @@ public class Storage {
 
     enum Keys: String {
         case refreshedTrustedCardsRepo
+        case hasClearedAccessCodeRepoOnLaunch
     }
 
     func bool(forKey: Storage.Keys) -> Bool {

@@ -74,6 +74,7 @@ public class AccessCodeRepository {
                 
                 try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
             }
+            saveCards()
             return .success(())
         } catch {
             Log.error(error)
@@ -82,14 +83,8 @@ public class AccessCodeRepository {
     }
     
     public func clear() {
-        do {
-            for cardId in getCards() {
-                try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
-            }
-            try secureStorage.delete(.cardsWithSavedCodes)
-        } catch {
-            Log.error(error)
-        }
+        let cardIds = getCards()
+        let _ = deleteAccessCode(for: Array(cardIds))
     }
     
     func contains(_ cardId: String) -> Bool {

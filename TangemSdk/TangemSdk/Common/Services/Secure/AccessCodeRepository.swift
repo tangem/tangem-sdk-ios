@@ -38,10 +38,12 @@ public class AccessCodeRepository {
         }
         
         do {
+            let savedCardIds = getCards()
+            
             for cardId in cardIds {
                 let storageKey = SecureStorageKey.accessCode(for: cardId)
                 
-                if getCards().contains(cardId) {
+                if savedCardIds.contains(cardId) {
                     try biometricsStorage.delete(storageKey)
                 }
                 

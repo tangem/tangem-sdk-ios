@@ -67,14 +67,19 @@ public class AccessCodeRepository {
     }
     
     public func deleteAccessCode(for cardIds: [String]) -> Result<Void, TangemSdkError> {
+        if cardIds.isEmpty {
+            return .success(())
+        }
+        
         do {
-            let savedCardIds = getCards()
+            var savedCardIds = getCards()
             for cardId in cardIds {
                 guard savedCardIds.contains(cardId) else { continue }
                 
                 try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
+                savedCardIds.remove(cardId)
             }
-            saveCards()
+            saveCards(cardIds: savedCardIds)
             return .success(())
         } catch {
             Log.error(error)
@@ -173,7 +178,11 @@ public class AccessCodeRepository {
     }
     
     private func saveCards() {
-        if let data = try? JSONEncoder().encode(Set(accessCodes.keys)) {
+        saveCards(cardIds: Set(accessCodes.keys))
+    }
+    
+    private func saveCards(cardIds: Set<String>) {
+        if let data = try? JSONEncoder().encode(cardIds) {
             try? secureStorage.store(data, forKey: .cardsWithSavedCodes)
         }
     }

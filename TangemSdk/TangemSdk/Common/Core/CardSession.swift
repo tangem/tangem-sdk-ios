@@ -347,9 +347,9 @@ public class CardSession {
             }
         }
         
-        let requestBiometryWithFallback = { (fallbackAction: @escaping () -> Void) in
+        let requestBiometricsWithFallback = { (fallbackAction: @escaping () -> Void) in
             if self.shouldRequestBiometrics {
-                let reason = self.environment.config.biometryLocalizedReason
+                let reason = self.environment.config.biometricsLocalizedReason
                 self.accessCodeRepository?.unlock(localizedReason: reason) { result in
                      switch result {
                      case .success:
@@ -365,11 +365,11 @@ public class CardSession {
         
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
-            requestBiometryWithFallback {
+            requestBiometricsWithFallback {
                 requestAccessCodeAction()
             }
         case .defaultWithBiometrics:
-            requestBiometryWithFallback {
+            requestBiometricsWithFallback {
                 runnable.prepare(self, completion: completion)
             }
         case .always:

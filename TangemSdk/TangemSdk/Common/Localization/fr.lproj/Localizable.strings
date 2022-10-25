@@ -62,4 +62,4 @@
 "reset_codes_message_body_backup" = "Tap the linked card";
 "reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";
-"sign_multiple_chunks_part" = "Signing part %@ of %@";
+"sign_multiple_chunks_part" = "Signing part %d of %d";

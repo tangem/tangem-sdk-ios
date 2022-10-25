@@ -44,6 +44,12 @@ public extension String {
     }
     
     @available(iOS 13.0, *)
+    internal func localized(_ arguments: [CVarArg]) -> String {
+        let format = Localization.getFormat(for: self)
+        return String(format: format, arguments: arguments)
+    }
+    
+    @available(iOS 13.0, *)
     internal func localized(_ arguments: CVarArg) -> String {
         let format = Localization.getFormat(for: self)
         return String(format: format, arguments)

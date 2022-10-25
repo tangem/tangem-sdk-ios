@@ -51,7 +51,7 @@ struct FloatingTextField: View {
                         .scaleEffect(text.wrappedValue.isEmpty ? 1 : 0.76, anchor: .leading)
                     
                     textField
-                        .keyboardType(.alphabet)
+                        .keyboardType(.default)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .font(.system(size: 17))

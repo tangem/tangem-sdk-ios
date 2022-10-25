@@ -30,6 +30,7 @@ struct FocusableTextField: View {
                     .focused($focusedField, equals: .plain)
             }
         }
+        .keyboardType(.default)
         .onAppear(perform: model.onAppear)
         .onChange(of: isSecured) { newValue in
             setFocus(for: newValue)

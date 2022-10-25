@@ -117,7 +117,7 @@ class SignCommand: Command {
     
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if numberOfChunks > 1 {
-            session.viewDelegate.showAlertMessage("Signing part \(currentChunkNumber + 1) of \(numberOfChunks)")
+            session.viewDelegate.showAlertMessage("sign_multiple_chunks_part".localized(["\(currentChunkNumber + 1)", "\(numberOfChunks)"]))
         }
         
         transceive(in: session) { result in

@@ -53,6 +53,9 @@
 "attestation_online_failed_title" = "Онлайн-аттестация не удалась";
 "attestation_online_failed_body" = "В настоящее время мы не можем завершить онлайн-аттестацию карты. Вы можете продолжить на свой страх и риск и повторить попытку позже, повторить сейчас или отменить операцию.";
 "attestation_warning_attest_wallets" = "Слишком большое количество вызовов Attest Wallet или Sign выглядит подозрительно.";
+"reset_codes_scan_first_card" = "Отсканируйте карту, на которой вы хотите сбросить пин-код";
+"reset_codes_scan_confirmation_card" = "Отсканируйте другую привязанную карту";
+"reset_codes_scan_to_reset" = "Отсканируйте карту для сброса кода";
 "reset_codes_message_title_restore" = "Отсканируйте карту, которую хотите восстановить";
 "reset_codes_message_body_restore" = "Сначала подготовьте карту к процессу восстановления";
 "reset_codes_message_title_backup" = "Приложите резервную карту";

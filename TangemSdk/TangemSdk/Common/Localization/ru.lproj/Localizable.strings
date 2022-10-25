@@ -62,3 +62,4 @@
 "reset_codes_message_body_backup" = "Приложите связанную карту";
 "reset_codes_message_body_restore_final" = "Приложите еще раз карту, которую хотите восстановить";
 "reset_codes_success_message" = "Код успешно сброшен";
+"sign_multiple_chunks_part" = "Подпись части %@ из %@";

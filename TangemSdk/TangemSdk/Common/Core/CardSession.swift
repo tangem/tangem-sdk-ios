@@ -286,7 +286,7 @@ public class CardSession {
                     let cardIdFormatted = cardId.flatMap {
                         formatter.string(from: $0)
                     }
-                    self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber(cardId: cardIdFormatted).localizedDescription)
+                    self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber(expectedCardId: cardIdFormatted).localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
                         self?.restartPolling()
                     }

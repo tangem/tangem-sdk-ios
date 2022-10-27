@@ -282,7 +282,11 @@ public class CardSession {
                 
                 if tag != currentTag { //handle wrong tag connection during any operation
                     let cardId = self.environment.card?.cardId
-                    self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber(cardId: cardId).localizedDescription)
+                    let formatter = CardIdFormatter(style: environment.config.cardIdDisplayFormat)
+                    let cardIdFormatted = cardId.flatMap {
+                        formatter.string(from: $0)
+                    }
+                    self.viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber(cardId: cardIdFormatted).localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
                         self?.restartPolling()
                     }

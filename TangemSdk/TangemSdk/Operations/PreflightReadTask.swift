@@ -60,7 +60,7 @@ final class PreflightReadTask: CardSessionRunnable {
                        expectedCardId != readResponse.cardId.uppercased() {
                         let formatter = CardIdFormatter(style: session.environment.config.cardIdDisplayFormat)
                         let expectedCardIdFormatted = formatter.string(from: expectedCardId)
-                        completion(.failure(.wrongCardNumber(cardId: expectedCardIdFormatted)))
+                        completion(.failure(.wrongCardNumber(expectedCardId: expectedCardIdFormatted)))
                         return
                     }
                 }

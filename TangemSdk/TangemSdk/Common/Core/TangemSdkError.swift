@@ -193,7 +193,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when a [Task] expects a user to use a particular card,
     /// but the user tries to use a different card.
-    case wrongCardNumber(cardId: String?)
+    case wrongCardNumber(expectedCardId: String?)
     
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].

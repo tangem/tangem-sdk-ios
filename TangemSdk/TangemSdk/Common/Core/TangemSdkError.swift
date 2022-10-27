@@ -477,9 +477,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized
-        case .wrongCardNumber(let cardId):
-            if let cardId {
-                return "error_wrong_card_number_with_card_id".localized(cardId)
+        case .wrongCardNumber(let expectedCardId):
+            if let expectedCardId {
+                return "error_wrong_card_number_with_card_id".localized(expectedCardId)
             } else {
                 return "error_wrong_card_number_without_card_id".localized
             }

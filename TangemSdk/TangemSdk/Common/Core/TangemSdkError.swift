@@ -478,9 +478,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized
         case .wrongCardNumber(let cardId):
-            if let cardId,
-               let cardIdFormatted = CardIdFormatter(style: .full).string(from: cardId) {
-                return "error_wrong_card_number_with_card_id".localized(cardIdFormatted)
+            if let cardId {
+                return "error_wrong_card_number_with_card_id".localized(cardId)
             } else {
                 return "error_wrong_card_number_without_card_id".localized
             }

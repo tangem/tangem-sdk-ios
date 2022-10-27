@@ -281,8 +281,8 @@ public class CardSession {
                 guard currentTag != .none else { return true } //Skip filtration because we have nothing to compare with
                 
                 if tag != currentTag { //handle wrong tag connection during any operation
-                    let cardId = self.environment.card?.cardId
                     let formatter = CardIdFormatter(style: environment.config.cardIdDisplayFormat)
+                    let cardId = environment.card?.cardId
                     let cardIdFormatted = cardId.flatMap {
                         formatter.string(from: $0)
                     }

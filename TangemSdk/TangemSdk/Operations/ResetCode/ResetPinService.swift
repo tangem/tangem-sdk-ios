@@ -91,9 +91,18 @@ public class ResetPinService: ObservableObject {
     }
     
     private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
+        let userCodeType: UserCodeType
+        if repo.accessCode != nil {
+            userCodeType = .accessCode
+        } else if repo.passcode != nil {
+            userCodeType = .passcode
+        } else {
+            fatalError("Scan card called without the code specified")
+        }
+        
         self.session = TangemSdk().makeSession(with: config,
                                                cardId: resetCardId,
-                                               initialMessage: Message(header: "reset_codes_scan_first_card".localized))
+                                               initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()])))
         
         session!.start(with: GetResetPinTokenCommand()) { result in
             switch result {

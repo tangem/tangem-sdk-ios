@@ -54,6 +54,27 @@ public final class Secp256k1Utils {
         return try serializeDer(&sig)
     }
     
+    public func sum(compressedPubKey1: Data, compressedPubKey2: Data) throws -> Data {
+        var pubKey1 = try parsePublicKey(compressedPubKey1)
+        var pubKey2 = try parsePublicKey(compressedPubKey2)
+        var publicKeySecp = secp256k1_pubkey()
+        var result: Int32 = 0
+        
+        withUnsafePointer(to: &pubKey1) { pointer1 in
+            withUnsafePointer(to: &pubKey2) { pointer2 in
+                var pubkeyPointers: [UnsafePointer<secp256k1_pubkey>?] = [pointer1, pointer2]
+                
+                result = secp256k1_ec_pubkey_combine(context, &publicKeySecp, &pubkeyPointers, 2)
+            }
+        }
+        
+        guard result == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to sum keys")
+        }
+        
+        return try serializePublicKey(&publicKeySecp, compressed: true)
+    }
+    
     func compressKey(_ publicKey: Data) throws -> Data {
         if publicKey.count == 33 {
             return publicKey
@@ -95,27 +116,6 @@ public final class Secp256k1Utils {
         }
         
         return try serializePublicKey(&publicKey, compressed: compressed)
-    }
-    
-    func sum(compressedPubKey1: Data, compressedPubKey2: Data) throws -> Data {
-        var pubKey1 = try parsePublicKey(compressedPubKey1)
-        var pubKey2 = try parsePublicKey(compressedPubKey2)
-        var publicKeySecp = secp256k1_pubkey()
-        var result: Int32 = 0
-        
-        withUnsafePointer(to: &pubKey1) { pointer1 in
-            withUnsafePointer(to: &pubKey2) { pointer2 in
-                var pubkeyPointers: [UnsafePointer<secp256k1_pubkey>?] = [pointer1, pointer2]
-                
-                result = secp256k1_ec_pubkey_combine(context, &publicKeySecp, &pubkeyPointers, 2)
-            }
-        }
-        
-        guard result == 1 else {
-            throw TangemSdkError.cryptoUtilsError("Failed to sum keys")
-        }
-        
-        return try serializePublicKey(&publicKeySecp, compressed: true)
     }
     
     func serializeDer(_ signature: inout secp256k1_ecdsa_signature) throws -> Data {

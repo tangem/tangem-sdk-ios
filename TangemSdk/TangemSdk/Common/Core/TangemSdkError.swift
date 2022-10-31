@@ -193,7 +193,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when a [Task] expects a user to use a particular card,
     /// but the user tries to use a different card.
-    case wrongCardNumber
+    case wrongCardNumber(expectedCardId: String?)
     
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].
@@ -477,7 +477,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized
-        case .wrongCardNumber: return "error_wrong_card_number".localized
+        case .wrongCardNumber(let expectedCardId):
+            if let expectedCardId {
+                return "error_wrong_card_number_with_card_id".localized(expectedCardId)
+            } else {
+                return "error_wrong_card_number_without_card_id".localized
+            }
         case .wrongCardType(let localizedDescription): return localizedDescription ?? "error_wrong_card_type".localized
         case .accessCodeRequired: return "error_pin_required_format".localized(UserCodeType.accessCode.name)
         case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)

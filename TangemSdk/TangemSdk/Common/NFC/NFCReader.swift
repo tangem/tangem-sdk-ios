@@ -330,9 +330,9 @@ extension NFCReader: CardReader {
                 Log.nfc("Stop by stuck timer")
                 startRetryCount -= 1
                 if startRetryCount == 0 {
-                    self.stopSession(with: TangemSdkError.nfcStuck.localizedDescription)
-                    self.invalidatedWithError = .nfcStuck
-                    self.nfcStuckTimerCancellable = nil
+                    self.tag.send(completion: .failure(.nfcStuck))
+                    self.tag = .init(.none)
+                    self.stopSession()
                 } else {
                     self.start()
                 }
@@ -444,7 +444,7 @@ extension NFCReader {
         static let sessionTimeout = 60.0
         static let nfcStuckTimeout = 1.0
         static let retryCount = 20
-        static let startRetryCount = 10
+        static let startRetryCount = 5
         static let timestampTolerance = 1.0
         static let searchTagTimeout = 1.0
     }

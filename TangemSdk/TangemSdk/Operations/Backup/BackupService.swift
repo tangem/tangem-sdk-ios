@@ -271,11 +271,15 @@ public class BackupService: ObservableObject {
                 Message(header: nil,
                         body: "backup_finalize_primary_card_message_format".localized($0))
             }
+
+            currentCommand = task
             
             sdk.startSession(with: task,
                              cardId: primaryCard.cardId,
-                             initialMessage: initialMessage,
-                             completion: completion)
+                             initialMessage: initialMessage) {[weak self] result in
+                completion(result)
+                self?.currentCommand = nil
+            }
             
         } catch {
             completion(.failure(error.toTangemSdkError()))
@@ -332,10 +336,14 @@ public class BackupService: ObservableObject {
                 Message(header: nil,
                         body: "backup_finalize_backup_card_message_format".localized($0))
             }
+
+            currentCommand = command
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
-                             initialMessage: initialMessage) { result in
+                             initialMessage: initialMessage) {[weak self] result in
+                guard let self = self else { return }
+
                 switch result {
                 case .success(let card):
                     self.repo.data.finalizedBackupCardsCount += 1
@@ -343,6 +351,8 @@ public class BackupService: ObservableObject {
                 case .failure(let error):
                     completion(.failure(error))
                 }
+
+                self.currentCommand = nil
             }
             
         } catch {

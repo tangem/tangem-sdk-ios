@@ -290,6 +290,7 @@ extension NFCReader: CardReader {
                 let distance = requestTimestamp.distance(to: Date())
                 if distance > Constants.timestampTolerance || self.sendRetryCount <= 0 { //retry to fix old device issues
                     Log.nfc("Invoke restart polling on error")
+                    self.sendRetryCount = Constants.retryCount
                     self.restartPolling(silent: true)
                     return Empty(completeImmediately: false).eraseToAnyPublisher()
                 } else {

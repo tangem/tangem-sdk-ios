@@ -32,7 +32,8 @@
 "error_not_activated" = "This card has not been activated";
 "error_card_verification_failed" = "Card verification failed";
 "error_user_cancelled" = "The user cancelled the operation";
-"error_wrong_card_number" = "You have used a card from another wallet. Tap the card associated with this wallet.";
+"error_wrong_card_number_with_card_id" = "You tapped a different card. Please tap card %@.";
+"error_wrong_card_number_without_card_id" = "You tapped a different card";
 "error_wrong_card_type" = "This card is not designed to work with this app";
 "error_file_not_found" = "File not found";
 "error_not_supported_firmware_version" = "The command requires a card with a different firmware version";
@@ -53,6 +54,9 @@
 "attestation_online_failed_title" = "Online attestation failed";
 "attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
 "attestation_warning_attest_wallets" = "Too many runs of Attest Wallet or Sign looks suspicious.";
+"reset_codes_scan_first_card" = "Scan the card on which you want to reset the %@";
+"reset_codes_scan_confirmation_card" = "Scan another linked card";
+"reset_codes_scan_to_reset" = "Scan card to reset user codes";
 "reset_codes_message_title_restore" = "Tap the card you want to restore";
 "reset_codes_message_body_restore" = "First, prepare the card for restore process";
 "reset_codes_message_title_backup" = "Tap a backup card";
@@ -60,3 +64,4 @@
 "reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";
 "touch_id_localized_reason" = "Use Touch ID to save access codes in the app";
+"sign_multiple_chunks_part" = "Signing part %d of %d";

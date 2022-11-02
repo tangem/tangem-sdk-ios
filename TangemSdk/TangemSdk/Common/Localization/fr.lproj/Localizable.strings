@@ -54,9 +54,13 @@
 "attestation_online_failed_title" = "Online attestation failed";
 "attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
 "attestation_warning_attest_wallets" = "Too many runs of Attest Wallet or Sign looks suspicious.";
+"reset_codes_scan_first_card" = "Scan the card on which you want to reset the %@";
+"reset_codes_scan_confirmation_card" = "Scan another linked card";
+"reset_codes_scan_to_reset" = "Scan card to reset user codes";
 "reset_codes_message_title_restore" = "Tap the card you want to restore";
 "reset_codes_message_body_restore" = "First, prepare the card for restore process";
 "reset_codes_message_title_backup" = "Tap a backup card";
 "reset_codes_message_body_backup" = "Tap the linked card";
 "reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";
+"sign_multiple_chunks_part" = "Signing part %d of %d";

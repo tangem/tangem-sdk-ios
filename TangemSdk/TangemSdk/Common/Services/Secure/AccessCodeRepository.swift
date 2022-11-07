@@ -67,7 +67,9 @@ public class AccessCodeRepository {
         
         var savedCardIds = getCards()
         for cardId in cardIds {
-            guard savedCardIds.contains(cardId) else { continue }
+            guard savedCardIds.contains(cardId) else {
+                continue
+            }
             
             try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
             savedCardIds.remove(cardId)

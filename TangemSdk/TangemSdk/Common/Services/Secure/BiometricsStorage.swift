@@ -65,11 +65,8 @@ public class BiometricsStorage {
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
                 kSecAttrAccessControl: self.makeBiometricAccessControl(),
+                kSecUseAuthenticationContext: context ?? self.context
             ]
-        
-            if let context = context {
-                searchQuery[kSecUseAuthenticationContext] = context
-            }
             
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)

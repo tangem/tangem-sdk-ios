@@ -39,6 +39,8 @@
 		5DDCEC7A25C958220002090D /* UI+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDCEC7425C957930002090D /* UI+.swift */; };
 		B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
 		B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
+		DC23ED9F2912DD0D0023E626 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */; };
+		DC23EDA02912DD520023E626 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */; };
 		DC28E0F22877F84B00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
 		DC28E0F32877F9BA00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
 /* End PBXBuildFile section */
@@ -87,6 +89,7 @@
 		5E2717BD1D7CB2EFFB59D0F4 /* Pods-TangemSdkExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSdkExample.release.xcconfig"; path = "Target Support Files/Pods-TangemSdkExample/Pods-TangemSdkExample.release.xcconfig"; sourceTree = "<group>"; };
 		ABA3866CD02DAF9913B7E6BD /* Pods-TangemSdkExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSdkExample.debug.xcconfig"; path = "Target Support Files/Pods-TangemSdkExample/Pods-TangemSdkExample.debug.xcconfig"; sourceTree = "<group>"; };
 		B00A67B2253D8CAC002D7D53 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactorySettingsTask.swift; sourceTree = "<group>"; };
 		DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
 		E53EB3E423F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemSdkExampleDevelopmentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkExampleDevelopmentUITests.swift; sourceTree = "<group>"; };
@@ -142,6 +145,7 @@
 				5D3C2BCE26D93E7200722E33 /* BackupView.swift */,
 				5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */,
 				DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */,
+				DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */,
 			);
 			path = Developer;
 			sourceTree = "<group>";
@@ -387,6 +391,7 @@
 				DC28E0F22877F84B00AE7A84 /* DebugLogger.swift in Sources */,
 				5DDCEC7525C957930002090D /* UI+.swift in Sources */,
 				5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */,
+				DC23ED9F2912DD0D0023E626 /* ResetToFactorySettingsTask.swift in Sources */,
 				5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
 				5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */,
 			);
@@ -399,6 +404,7 @@
 				5D2BDF8326DCE5A6002F7E19 /* StaticData.swift in Sources */,
 				5D031FFE266A6960008472EC /* ContentView.swift in Sources */,
 				5DBC25BA235F053F005F0C79 /* AppDelegate.swift in Sources */,
+				DC23EDA02912DD520023E626 /* ResetToFactorySettingsTask.swift in Sources */,
 				5D032002266A6A15008472EC /* AppModel.swift in Sources */,
 				5D03200A266A8523008472EC /* ExampleButton.swift in Sources */,
 				B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */,

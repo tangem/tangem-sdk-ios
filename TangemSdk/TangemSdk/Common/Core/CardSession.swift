@@ -529,8 +529,12 @@ public class CardSession {
             return
         }
         
-        let _ = accessCodeRepository?.save(code, for: card.cardId)
-        accessCodeRepository?.lock()
+        do {
+            try accessCodeRepository?.save(code, for: card.cardId)
+            accessCodeRepository?.lock()
+        } catch {
+            Log.error(error)
+        }
     }
     
     private func updateEnvironment(with type: UserCodeType, code: String) {

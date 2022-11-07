@@ -48,7 +48,7 @@ public class BiometricsStorage {
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) -> Result<Void, TangemSdkError> {
-        var query: [CFString: Any] = [
+        let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
             kSecUseDataProtectionKeychain: true,

@@ -54,7 +54,7 @@ public class AccessCodeRepository {
                 }
             }
 
-            self.saveCards()
+            self.saveCards(cardIds: Set(self.accessCodes.keys))
             return .success(())
         } catch {
             Log.error(error)
@@ -175,10 +175,6 @@ public class AccessCodeRepository {
         }
         
         return []
-    }
-    
-    private func saveCards() {
-        saveCards(cardIds: Set(accessCodes.keys))
     }
     
     private func saveCards(cardIds: Set<String>) {

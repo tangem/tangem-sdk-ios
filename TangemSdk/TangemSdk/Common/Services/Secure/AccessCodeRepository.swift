@@ -28,68 +28,60 @@ public class AccessCodeRepository {
         Log.debug("AccessCodeRepository deinit")
     }
     
-    public func save(_ accessCode: Data, for cardIds: [String]) -> Result<Void, TangemSdkError> {
+    public func save(_ accessCode: Data, for cardIds: [String]) throws {
         guard BiometricsUtil.isAvailable else {
-            return .failure(.biometricsUnavailable)
+            throw TangemSdkError.biometricsUnavailable
         }
         
         guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
-            return .success(()) //Nothing changed. Return
+            return //Nothing changed. Return
         }
         
-        do {
-            let savedCardIds = getCards()
+        let savedCardIds = getCards()
+        
+        for cardId in cardIds {
+            let storageKey = SecureStorageKey.accessCode(for: cardId)
             
-            for cardId in cardIds {
-                let storageKey = SecureStorageKey.accessCode(for: cardId)
-                
-                if savedCardIds.contains(cardId) {
-                    try biometricsStorage.delete(storageKey)
-                }
-                
-                let result = biometricsStorage.store(accessCode, forKey: storageKey)
-                
-                if case .failure(let error) = result {
-                    return .failure(error)
-                }
+            if savedCardIds.contains(cardId) {
+                try biometricsStorage.delete(storageKey)
             }
-
-            self.saveCards(cardIds: Set(self.accessCodes.keys))
-            return .success(())
-        } catch {
-            Log.error(error)
-            return .failure(error.toTangemSdkError())
+            
+            let result = biometricsStorage.store(accessCode, forKey: storageKey)
+            
+            if case .failure(let error) = result {
+                throw error
+            }
         }
+
+        self.saveCards(cardIds: Set(self.accessCodes.keys))
     }
     
-    public func save(_ accessCode: Data, for cardId: String) -> Result<Void, TangemSdkError> {
-        return save(accessCode, for: [cardId])
+    public func save(_ accessCode: Data, for cardId: String) throws {
+        try save(accessCode, for: [cardId])
     }
     
-    public func deleteAccessCode(for cardIds: [String]) -> Result<Void, TangemSdkError> {
+    public func deleteAccessCode(for cardIds: [String]) throws {
         if cardIds.isEmpty {
-            return .success(())
+            return
         }
         
-        do {
-            var savedCardIds = getCards()
-            for cardId in cardIds {
-                guard savedCardIds.contains(cardId) else { continue }
-                
-                try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
-                savedCardIds.remove(cardId)
-            }
-            saveCards(cardIds: savedCardIds)
-            return .success(())
-        } catch {
-            Log.error(error)
-            return .failure(error.toTangemSdkError())
+        var savedCardIds = getCards()
+        for cardId in cardIds {
+            guard savedCardIds.contains(cardId) else { continue }
+            
+            try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
+            savedCardIds.remove(cardId)
         }
+        saveCards(cardIds: savedCardIds)
     }
     
     public func clear() {
-        let cardIds = getCards()
-        let _ = deleteAccessCode(for: Array(cardIds))
+        do {
+            let cardIds = getCards()
+            try deleteAccessCode(for: Array(cardIds))
+        } catch {
+            Log.error(error)
+        }
     }
     
     func contains(_ cardId: String) -> Bool {

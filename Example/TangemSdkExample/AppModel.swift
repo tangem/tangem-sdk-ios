@@ -575,6 +575,10 @@ extension AppModel {
     func resetBackup() {
         tangemSdk.startSession(with: ResetBackupCommand(), completion: handleCompletion)
     }
+
+    func resetToFactory() {
+        tangemSdk.startSession(with: ResetToFactorySettingsTask(), completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -669,6 +673,7 @@ extension AppModel {
         case depersonalize
         case personalize
         case resetBackup
+        case resetToFactory
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -700,6 +705,7 @@ extension AppModel {
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
         case .resetBackup: resetBackup()
+        case .resetToFactory: resetToFactory()
         }
     }
 }

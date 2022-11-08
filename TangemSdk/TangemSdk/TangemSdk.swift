@@ -677,8 +677,7 @@ extension TangemSdk {
     func makeSession(with config: Config,
                      cardId: String?,
                      initialMessage: Message?,
-                     accessCode: String? = nil
-    ) -> CardSession {
+                     accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
         
         if let accessCode = accessCode {

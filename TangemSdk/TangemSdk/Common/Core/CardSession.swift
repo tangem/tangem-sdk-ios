@@ -373,12 +373,12 @@ public class CardSession {
             requestBiometricsWithFallback {
                 requestAccessCodeAction()
             }
+        case .always:
+            requestAccessCodeAction()
         case .defaultWithBiometrics:
             requestBiometricsWithFallback {
                 runnable.prepare(self, completion: completion)
             }
-        case .always:
-            requestAccessCodeAction()
         case .default:
             runnable.prepare(self, completion: completion)
         }

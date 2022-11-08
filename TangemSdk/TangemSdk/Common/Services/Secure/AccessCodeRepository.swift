@@ -12,53 +12,73 @@ public class AccessCodeRepository {
         getCards().isEmpty
     }
     
+    private let storage: Storage = .init()
     private let secureStorage: SecureStorage = .init()
     private let biometricsStorage: BiometricsStorage  = .init()
     private var accessCodes: [String: Data] = .init()
     
-    public init() {}
+    public init() {
+        if !storage.bool(forKey: .hasClearedAccessCodeRepoOnFirstLaunch) {
+            clear()
+            storage.set(boolValue: true, forKey: .hasClearedAccessCodeRepoOnFirstLaunch)
+        }
+    }
     
     deinit {
         Log.debug("AccessCodeRepository deinit")
     }
     
-    public func save(_ accessCode: Data, for cardIds: [String], completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    public func save(_ accessCode: Data, for cardIds: [String]) throws {
         guard BiometricsUtil.isAvailable else {
-            completion(.failure(.biometricsUnavailable))
-            return
+            throw TangemSdkError.biometricsUnavailable
         }
         
         guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
-            completion(.success(())) //Nothing changed. Return
+            return //Nothing changed. Return
+        }
+        
+        var savedCardIds = getCards()
+        
+        for cardId in cardIds {
+            let storageKey = SecureStorageKey.accessCode(for: cardId)
+            
+            if savedCardIds.contains(cardId) {
+                try biometricsStorage.delete(storageKey)
+            }
+            
+            try biometricsStorage.store(accessCode, forKey: storageKey)
+            
+            savedCardIds.insert(cardId)
+        }
+
+        saveCards(cardIds: savedCardIds)
+    }
+    
+    public func save(_ accessCode: Data, for cardId: String) throws {
+        try save(accessCode, for: [cardId])
+    }
+    
+    public func deleteAccessCode(for cardIds: [String]) throws {
+        if cardIds.isEmpty {
             return
         }
         
-        do {
-            let data = try JSONEncoder().encode(accessCodes)
-            
-            biometricsStorage.store(data, forKey: .accessCodes) { result in
-                switch result {
-                case .success:
-                    self.saveCards()
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        var savedCardIds = getCards()
+        for cardId in cardIds {
+            guard savedCardIds.contains(cardId) else {
+                continue
             }
-        } catch {
-            Log.error(error)
-            completion(.failure(error.toTangemSdkError()))
+            
+            try biometricsStorage.delete(SecureStorageKey.accessCode(for: cardId))
+            savedCardIds.remove(cardId)
         }
-    }
-    
-    public func save(_ accessCode: Data, for cardId: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        save(accessCode, for: [cardId], completion: completion)
+        saveCards(cardIds: savedCardIds)
     }
     
     public func clear() {
         do {
-            try biometricsStorage.delete(.accessCodes)
-            try secureStorage.delete(.cardsWithSavedCodes)
+            let cardIds = getCards()
+            try deleteAccessCode(for: Array(cardIds))
         } catch {
             Log.error(error)
         }
@@ -69,25 +89,36 @@ public class AccessCodeRepository {
         return savedCards.contains(cardId)
     }
     
-    func unlock(completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
+    func unlock(localizedReason: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
         guard BiometricsUtil.isAvailable else {
             completion(.failure(.biometricsUnavailable))
             return
         }
         
-        accessCodes = .init()
+        self.accessCodes = [:]
         
-        biometricsStorage.get(.accessCodes) { result in
+        BiometricsUtil.requestAccess(localizedReason: localizedReason) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
-            case .success(let data):
-                if let data = data,
-                   let codes = try? JSONDecoder().decode([String: Data].self, from: data) {
-                    self.accessCodes = codes
-                }
-                completion(.success(()))
             case .failure(let error):
                 Log.error(error)
                 completion(.failure(error))
+            case .success(let context):
+                do {
+                    var fetchedAccessCodes: [String: Data] = [:]
+                    
+                    for cardId in self.getCards() {
+                        let accessCode = try self.biometricsStorage.get(SecureStorageKey.accessCode(for: cardId), context: context)
+                        fetchedAccessCodes[cardId] = accessCode
+                    }
+                    
+                    self.accessCodes = fetchedAccessCodes
+                    completion(.success(()))
+                } catch {
+                    Log.error(error)
+                    completion(.failure(error.toTangemSdkError()))
+                }
             }
         }
     }
@@ -135,8 +166,8 @@ public class AccessCodeRepository {
         return []
     }
     
-    private func saveCards() {
-        if let data = try? JSONEncoder().encode(Set(accessCodes.keys)) {
+    private func saveCards(cardIds: Set<String>) {
+        if let data = try? JSONEncoder().encode(cardIds) {
             try? secureStorage.store(data, forKey: .cardsWithSavedCodes)
         }
     }

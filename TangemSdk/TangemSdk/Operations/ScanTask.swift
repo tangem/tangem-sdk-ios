@@ -13,7 +13,7 @@ import Foundation
 @available(iOS 13.0, *)
 public final class ScanTask: CardSessionRunnable {
     private var attestationTask: AttestationTask? = nil
-    
+
     public init() {}
     
     deinit {

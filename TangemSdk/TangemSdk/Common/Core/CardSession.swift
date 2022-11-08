@@ -374,7 +374,7 @@ public class CardSession {
             }
         case .always:
             requestAccessCodeAction()
-        case .defaultWithBiometrics, .default:
+        case .default:
             runnable.prepare(self, completion: completion)
         }
     }

@@ -340,6 +340,11 @@ public class CardSession {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
         
+        if runnable.skipBiometricsRequest {
+            runnable.prepare(self, completion: completion)
+            return
+        }
+        
         let requestAccessCodeAction = {
             self.environment.accessCode = UserCode(.accessCode, value: nil)
             self.requestUserCodeIfNeeded(.accessCode) { result in

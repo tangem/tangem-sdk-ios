@@ -46,11 +46,7 @@ public class AccessCodeRepository {
                 try biometricsStorage.delete(storageKey)
             }
             
-            let result = biometricsStorage.store(accessCode, forKey: storageKey)
-            
-            if case .failure(let error) = result {
-                throw error
-            }
+            try biometricsStorage.store(accessCode, forKey: storageKey)
             
             savedCardIds.insert(cardId)
         }
@@ -109,23 +105,20 @@ public class AccessCodeRepository {
                 Log.error(error)
                 completion(.failure(error))
             case .success(let context):
-                var fetchedAccessCodes: [String: Data] = [:]
-                
-                for cardId in self.getCards() {
-                    let result = self.biometricsStorage.get(SecureStorageKey.accessCode(for: cardId), context: context)
+                do {
+                    var fetchedAccessCodes: [String: Data] = [:]
                     
-                    switch result {
-                    case .success(let data):
-                        fetchedAccessCodes[cardId] = data
-                    case .failure(let error):
-                        Log.error(error)
-                        completion(.failure(error))
-                        return
+                    for cardId in self.getCards() {
+                        let accessCode = try self.biometricsStorage.get(SecureStorageKey.accessCode(for: cardId), context: context)
+                        fetchedAccessCodes[cardId] = accessCode
                     }
+                    
+                    self.accessCodes = fetchedAccessCodes
+                    completion(.success(()))
+                } catch {
+                    Log.error(error)
+                    completion(.failure(error.toTangemSdkError()))
                 }
-
-                self.accessCodes = fetchedAccessCodes
-                completion(.success(()))
             }
         }
     }

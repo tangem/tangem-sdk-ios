@@ -17,7 +17,7 @@ public class BiometricsStorage {
   
     public init() {}
     
-    public func get(_ account: String, context: LAContext? = nil) -> Result<Data?, TangemSdkError> {
+    public func get(_ account: String, context: LAContext? = nil) throws -> Data? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -33,21 +33,21 @@ public class BiometricsStorage {
         switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
-                return .success(nil)
+                return nil
             }
             
-            return .success(data)
+            return data
         case errSecItemNotFound:
-            return .success(nil)
+            return nil
         case errSecUserCanceled:
-            return .failure(.userCancelled)
+            throw TangemSdkError.userCancelled
         case let status:
             let error = KeyStoreError("Keychain read failed: \(status.message)")
-            return .failure(error.toTangemSdkError())
+            throw error
         }
     }
     
-    public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) -> Result<Void, TangemSdkError> {
+    public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -74,12 +74,12 @@ public class BiometricsStorage {
         
         switch status {
         case errSecSuccess:
-            return .success(())
+            break
         case errSecUserCanceled:
-            return .failure(.userCancelled)
+            throw TangemSdkError.userCancelled
         default:
             let error = KeyStoreError("Unable to store item: \(status.message)")
-            return .failure(error.toTangemSdkError())
+            throw error
         }
     }
     
@@ -101,12 +101,12 @@ public class BiometricsStorage {
         }
     }
     
-    func get(_ storageKey: SecureStorageKey, context: LAContext? = nil) -> Result<Data?, TangemSdkError> {
-        get(storageKey.rawValue, context: context)
+    func get(_ storageKey: SecureStorageKey, context: LAContext? = nil) throws -> Data? {
+        try get(storageKey.rawValue, context: context)
     }
     
-    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true, context: LAContext? = nil) -> Result<Void, TangemSdkError> {
-         store(object, forKey: storageKey.rawValue, overwrite: overwrite, context: context)
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true, context: LAContext? = nil) throws {
+         try store(object, forKey: storageKey.rawValue, overwrite: overwrite, context: context)
     }
     
     func delete(_ storageKey: SecureStorageKey) throws {

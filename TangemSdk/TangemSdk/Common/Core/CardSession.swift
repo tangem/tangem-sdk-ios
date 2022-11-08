@@ -340,6 +340,11 @@ public class CardSession {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
         
+        guard runnable.allowsAccessCodeFromRepository else {
+            runnable.prepare(self, completion: completion)
+            return
+        }
+        
         let requestAccessCodeAction = {
             self.environment.accessCode = UserCode(.accessCode, value: nil)
             self.requestUserCodeIfNeeded(.accessCode) { result in
@@ -355,7 +360,8 @@ public class CardSession {
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
             if shouldRequestBiometrics {
-                 accessCodeRepository?.unlock { result in
+                let reason = environment.config.biometricsLocalizedReason
+                accessCodeRepository?.unlock(localizedReason: reason) { result in
                      switch result {
                      case .success:
                          runnable.prepare(self, completion: completion)
@@ -518,8 +524,11 @@ public class CardSession {
             return
         }
         
-        accessCodeRepository?.save(code, for: card.cardId) {[weak self] result in
-            self?.accessCodeRepository?.lock()
+        do {
+            try accessCodeRepository?.save(code, for: card.cardId)
+            accessCodeRepository?.lock()
+        } catch {
+            Log.error(error)
         }
     }
     

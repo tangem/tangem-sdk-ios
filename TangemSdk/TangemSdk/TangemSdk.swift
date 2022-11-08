@@ -570,8 +570,7 @@ extension TangemSdk {
         cardSession = makeSession(with: config,
                                   cardId: cardId,
                                   initialMessage: initialMessage,
-                                  accessCode: accessCode,
-                                  accessCodeRequestPolicy: runnable.accessCodeRequestPolicy)
+                                  accessCode: accessCode)
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -586,7 +585,6 @@ extension TangemSdk {
     public func startSession(cardId: String? = nil,
                              initialMessage: Message? = nil,
                              accessCode: String? = nil,
-                             accessCodeRequestPolicy: AccessCodeRequestPolicy? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
         do {
             try checkSession()
@@ -599,8 +597,7 @@ extension TangemSdk {
         cardSession = makeSession(with: config,
                                   cardId: cardId,
                                   initialMessage: initialMessage,
-                                  accessCode: accessCode,
-                                  accessCodeRequestPolicy: accessCodeRequestPolicy)
+                                  accessCode: accessCode)
         cardSession?.start(callback)
     }
     
@@ -617,7 +614,6 @@ extension TangemSdk {
                              cardId: String? = nil,
                              initialMessage: String? = nil,
                              accessCode: String? = nil,
-                             accessCodeRequestPolicy: AccessCodeRequestPolicy? = nil,
                              completion: @escaping (String) -> Void) {
         
         
@@ -630,8 +626,7 @@ extension TangemSdk {
             cardSession = makeSession(with: config,
                                       cardId: cardId,
                                       initialMessage: initialMessage.flatMap { Message($0) },
-                                      accessCode: accessCode,
-                                      accessCodeRequestPolicy: accessCodeRequestPolicy)
+                                      accessCode: accessCode)
             
             let task = RunnablesTask(runnables: runnables)
             cardSession!.start(with: task) { result in
@@ -681,17 +676,11 @@ extension TangemSdk {
         }
     }
     
-    func makeSession(with originalConfig: Config,
+    func makeSession(with config: Config,
                      cardId: String?,
                      initialMessage: Message?,
-                     accessCode: String? = nil,
-                     accessCodeRequestPolicy: AccessCodeRequestPolicy? = nil
+                     accessCode: String? = nil
     ) -> CardSession {
-        var config = originalConfig
-        if let accessCodeRequestPolicy = accessCodeRequestPolicy {
-            config.accessCodeRequestPolicy = accessCodeRequestPolicy
-        }
-        
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
         
         if let accessCode = accessCode {

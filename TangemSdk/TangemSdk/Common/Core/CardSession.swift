@@ -340,7 +340,7 @@ public class CardSession {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
         
-        if runnable.skipBiometricsRequest {
+        guard runnable.allowsAccessCodeFromRepository else {
             runnable.prepare(self, completion: completion)
             return
         }

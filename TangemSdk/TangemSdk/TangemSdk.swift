@@ -666,14 +666,12 @@ extension TangemSdk {
     }
     
     private func makeAccessCodeRepository(with config: Config) -> AccessCodeRepository? {
-        guard BiometricsUtil.isAvailable else { return nil }
-        
-        switch config.accessCodeRequestPolicy {
-        case .alwaysWithBiometrics, .defaultWithBiometrics:
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
             return AccessCodeRepository()
-        default:
-            return nil
         }
+        
+        return nil
     }
     
     func makeSession(with config: Config,

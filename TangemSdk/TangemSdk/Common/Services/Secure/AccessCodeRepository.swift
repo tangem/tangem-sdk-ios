@@ -37,7 +37,7 @@ public class AccessCodeRepository {
             return //Nothing changed. Return
         }
         
-        let savedCardIds = getCards()
+        var savedCardIds = getCards()
         
         for cardId in cardIds {
             let storageKey = SecureStorageKey.accessCode(for: cardId)
@@ -51,9 +51,11 @@ public class AccessCodeRepository {
             if case .failure(let error) = result {
                 throw error
             }
+            
+            savedCardIds.insert(cardId)
         }
 
-        self.saveCards(cardIds: Set(self.accessCodes.keys))
+        saveCards(cardIds: savedCardIds)
     }
     
     public func save(_ accessCode: Data, for cardId: String) throws {

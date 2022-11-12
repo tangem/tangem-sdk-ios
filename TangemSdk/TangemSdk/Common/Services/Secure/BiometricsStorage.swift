@@ -13,7 +13,7 @@ import LocalAuthentication
 /// Helper class for Keychain
 @available(iOS 13.0, *)
 public class BiometricsStorage {
-    private let context: LAContext = .default
+    private let context = LAContext()
   
     public init() {}
     

@@ -36,10 +36,21 @@ public final class BiometricsUtil {
         DispatchQueue.global().async {
             context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) { isSuccess, error in
                 DispatchQueue.main.async {
-                    if let error = error {
-                        completion(.failure(error.toTangemSdkError()))
-                    } else {
+                    guard let error = error else {
                         completion(.success(context))
+                        return
+                    }
+                    
+                    guard let laError = error as? LAError else {
+                        completion(.failure(error.toTangemSdkError()))
+                        return
+                    }
+                    
+                    switch laError.code {
+                    case .userCancel, .appCancel, .systemCancel:
+                        completion(.failure(.userCancelled))
+                    default:
+                        completion(.failure(error.toTangemSdkError()))
                     }
                 }
             }

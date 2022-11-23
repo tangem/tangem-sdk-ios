@@ -103,7 +103,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         
         let title = TangemSdkError.cardVerificationFailed.localizedDescription
         let message = isDevelopmentCard ? "attestation_failed_dev_card".localized
-            : "attestation_failed_card".localized
+            : "dialog_attestation_did_failed_message".localized
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,
@@ -119,8 +119,8 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
             return
         }
         
-        let title =  "attestation_online_failed_title".localized
-        let message = "attestation_online_failed_body".localized
+        let title =  "dialog_attestation_completed_offline_title".localized
+        let message = "dialog_attestation_completed_offline_message".localized
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,
@@ -137,7 +137,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
             return
         }
         
-        let title = "common_warning".localized
+        let title = "dialog_attestation_completed_with_warnings_title".localized
         let message = "attestation_warning_attest_wallets".localized
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,

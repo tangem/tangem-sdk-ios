@@ -482,7 +482,7 @@ public class CardSession {
             func continueRunnable(code: String) {
                 self.updateEnvironment(with: type, code: code)
                 self.viewDelegate.setState(.default)
-                self.viewDelegate.showAlertMessage("nfc_alert_default".localized)
+                self.viewDelegate.showAlertMessage("view_delegate_scan_description".localized)
                 completion(.success(()))
             }
             

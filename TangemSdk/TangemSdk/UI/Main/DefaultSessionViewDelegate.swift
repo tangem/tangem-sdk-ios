@@ -138,7 +138,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
         
         let title = "dialog_attestation_completed_with_warnings_title".localized
-        let message = "attestation_warning_attest_wallets".localized
+        let message = "dialog_attestation_completed_with_warnings_message".localized
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,
                                                     message: message,

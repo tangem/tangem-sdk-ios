@@ -24,7 +24,7 @@
 "nfc_stuck_error" = "Судя по всему, NFC не работает должным образом на вашем iPhone";
 "error_already_created" = "Кошелек уже создан";
 "error_purge_prohibited" = "Конфигурация этой карты не позволяет удалить кошелек";
-"error_pin_cannot_be_changed_format" = "Код доступа не может быть изменен";
+"error_pin_cannot_be_changed_format" = "%@ не может быть изменен";
 "error_pin_cannot_be_default_format" = "%@ нельзя изменить на это значение. Пожалуйста, введите другое";
 "error_pin_too_short_format" = "%@ должен состоять не менее чем из %d символов.";
 "error_pin_required_format" = "Введите %@";

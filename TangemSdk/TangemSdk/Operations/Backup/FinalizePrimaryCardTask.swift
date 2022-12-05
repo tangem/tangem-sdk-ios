@@ -10,6 +10,8 @@ import Foundation
 
 @available(iOS 13.0, *)
 class FinalizePrimaryCardTask: CardSessionRunnable {
+    let allowsAccessCodeFromRepository = false
+    
     private let backupCards: [BackupCard]
     private let accessCode: Data
     private let passcode: Data

@@ -11,6 +11,8 @@ import Combine
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
+    var allowsAccessCodeFromRepository: Bool { false }
+    
     private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
     private let onlineCardVerifier = OnlineCardVerifier()

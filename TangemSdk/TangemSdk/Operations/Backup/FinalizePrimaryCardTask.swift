@@ -10,7 +10,7 @@ import Foundation
 
 @available(iOS 13.0, *)
 class FinalizePrimaryCardTask: CardSessionRunnable {
-    let allowsAccessCodeFromRepository = false
+    var allowsAccessCodeFromRepository: Bool { false }
     
     private let backupCards: [BackupCard]
     private let accessCode: Data

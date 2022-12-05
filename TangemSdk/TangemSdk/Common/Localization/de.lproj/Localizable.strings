@@ -1,4 +1,4 @@
-"nfc_alert_default" = "Connect your phone and the card exactly as it shown above";
+"view_delegate_scan_description" = "Tap the card as shown above and hold until the end of the operation";
 "nfc_alert_default_done" = "Erledigt";
 "view_delegate_security_delay_description" = "To ensure security please hold the card until the operation complete";
 "cid_format" = "Card #%@";

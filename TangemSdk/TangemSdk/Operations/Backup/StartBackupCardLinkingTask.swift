@@ -11,7 +11,7 @@ import Combine
 
 @available(iOS 13.0, *)
 final class StartBackupCardLinkingTask: CardSessionRunnable {
-    let allowsAccessCodeFromRepository = false
+    var allowsAccessCodeFromRepository: Bool { false }
     
     private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]

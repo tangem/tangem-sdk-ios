@@ -7,7 +7,7 @@
 "common_continue" = "Fortsetzen";
 "common_success" = "Erfolg";
 "common_error" = "Fehler";
-"dialog_attestation_completed_with_warnings_title" = "Warning";
+"common_warning" = "Warning";
 "common_retry" = "Retry";
 "common_understand" = "I understand";
 "pin1" = "Zugangscode";

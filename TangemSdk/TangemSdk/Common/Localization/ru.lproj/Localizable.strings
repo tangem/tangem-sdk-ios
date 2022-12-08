@@ -7,7 +7,7 @@
 "common_continue" = "Продолжить";
 "common_success" = "Успешно";
 "common_error" = "Ошибка";
-"dialog_attestation_completed_with_warnings_title" = "Предупреждение";
+"common_warning" = "Предупреждение";
 "common_retry" = "Повторить";
 "common_understand" = "Я понимаю";
 "pin1" = "Код доступа";

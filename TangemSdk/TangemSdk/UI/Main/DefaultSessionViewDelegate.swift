@@ -103,7 +103,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         
         let title = TangemSdkError.cardVerificationFailed.localizedDescription
         let message = isDevelopmentCard ? "attestation_failed_dev_card".localized
-            : "dialog_attestation_did_failed_message".localized
+            : "attestation_failed_card".localized
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,

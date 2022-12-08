@@ -120,7 +120,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
         
         let title =  "attestation_online_failed_title".localized
-        let message = "dialog_attestation_completed_offline_message".localized
+        let message = "attestation_online_failed_body".localized
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,

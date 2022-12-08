@@ -53,7 +53,7 @@
 "attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk";
 "attestation_online_failed_title" = "Online attestation failed";
 "attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
-"dialog_attestation_completed_with_warnings_message" = "Too many runs of Attest Wallet or Sign looks suspicious.";
+"attestation_warning_attest_wallets" = "Too many runs of Attest Wallet or Sign looks suspicious.";
 "reset_codes_scan_first_card" = "Scan the card on which you want to reset the %@";
 "reset_codes_scan_confirmation_card" = "Scan another linked card";
 "reset_codes_scan_to_reset" = "Scan card to reset user codes";

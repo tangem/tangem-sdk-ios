@@ -43,7 +43,7 @@ struct EnterUserCodeView: View {
                 Spacer()
                 
                 if showForgotButton {
-                    Button("enter_user_code_button_title_forgot".localized, action: onForgot)
+                    Button("reset_codes_btn_forgot_your_code".localized, action: onForgot)
                         .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
                 }
                 

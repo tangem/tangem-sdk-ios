@@ -72,7 +72,7 @@ extension UserCodeType {
     }
     
     var changeCodeTitle: String {
-        "pin_change_code_format".localized(name.lowercasingFirst())
+        "pin_set_code_format".localized(name.lowercasingFirst())
     }
     
     var confirmCodeTitle: String {

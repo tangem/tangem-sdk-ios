@@ -110,7 +110,7 @@ extension NFCReader: CardReader {
         cancelled = false
         connectedTag = nil
         
-        let alertMessage = message ?? "nfc_alert_default".localized
+        let alertMessage = message ?? "view_delegate_scan_description".localized
         _alertMessage = alertMessage
         
         let isExistingSessionActive = readerSession?.isReady ?? false

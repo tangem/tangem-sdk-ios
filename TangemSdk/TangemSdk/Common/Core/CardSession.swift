@@ -165,6 +165,8 @@ public class CardSession {
         reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
             .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .debounce(for: 0.2, scheduler: DispatchQueue.main)
             .sink(receiveValue: { [unowned self] event in
                 switch event {
                 case .none:

@@ -447,7 +447,7 @@ extension NFCReader: NFCTagReaderSessionDelegate {
 extension NFCReader {
     enum Constants {
         static let tagTimeout = 20.0
-        static let idleTimeout = 2.0
+        static let idleTimeout = 4.0
         static let sessionTimeout = 60.0
         static let nfcStuckTimeout = 1.0
         static let retryCount = 20

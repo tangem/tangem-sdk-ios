@@ -417,10 +417,8 @@ extension NFCReader: CardReader {
 
         if isSilentRestartPolling { //reset silent mode
             isSilentRestartPolling = false
-        } else {
-            if !isPaused {
-                viewEventsPublisher.send(.tagConnected)
-            }
+        } else if !isPaused {
+            viewEventsPublisher.send(.tagConnected)
         }
 
         tag.send(tagType)

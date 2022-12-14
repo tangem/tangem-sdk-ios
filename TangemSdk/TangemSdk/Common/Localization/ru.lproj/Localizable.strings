@@ -1,4 +1,4 @@
-"view_delegate_scan_description" = "Поднесите карту к телефону в точности, как показано выше";
+"view_delegate_scan_description" = "Поднесите карту, как показано выше, и удерживайте до конца операции";
 "nfc_alert_default_done" = "Готово";
 "view_delegate_security_delay_description" = "Пожалуйста, удерживайте карту до завершения операции";
 "cid_format" = "Карта #%@";

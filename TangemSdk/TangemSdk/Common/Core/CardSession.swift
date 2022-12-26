@@ -339,17 +339,22 @@ public class CardSession {
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
-        
-        guard runnable.allowsAccessCodeFromRepository else {
+
+        Log.session("Current policy is \(environment.config.accessCodeRequestPolicy)")
+
+        guard runnable.shouldAskForAccessCode else {
+            Log.session("Skip an access codes request")
             runnable.prepare(self, completion: completion)
             return
         }
         
         let requestAccessCodeAction = {
+            Log.session("Request for an access code")
             self.environment.accessCode = UserCode(.accessCode, value: nil)
             self.requestUserCodeIfNeeded(.accessCode) { result in
                 switch result {
                 case .success:
+                    Log.session("Continue the runnable")
                     runnable.prepare(self, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
@@ -360,10 +365,12 @@ public class CardSession {
         switch environment.config.accessCodeRequestPolicy {
         case .alwaysWithBiometrics:
             if shouldRequestBiometrics {
+                Log.session("Request the biometric auth")
                 let reason = environment.config.biometricsLocalizedReason
                 accessCodeRepository?.unlock(localizedReason: reason) { result in
                      switch result {
                      case .success:
+                         Log.session("Biometric auth completed successfully")
                          runnable.prepare(self, completion: completion)
                      case .failure:
                          requestAccessCodeAction()
@@ -510,15 +517,18 @@ public class CardSession {
     }
     
     func fetchAccessCodeIfNeeded() {
+        Log.session("Try fetch an access code")
         guard let card = environment.card, card.isAccessCodeSet,
               let accessCodeValue = accessCodeRepository?.fetch(for: card.cardId) else {
             return
         }
-        
+
+        Log.session("The access code fetched successfully")
         environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
     }
     
     func saveAccessCodeIfNeeded() {
+        Log.session("Try save an access code")
         guard let card = environment.card,
               let code = environment.accessCode.value else {
             return
@@ -527,6 +537,7 @@ public class CardSession {
         do {
             try accessCodeRepository?.save(code, for: card.cardId)
             accessCodeRepository?.lock()
+            Log.session("The access code saved successfully")
         } catch {
             Log.error(error)
         }

@@ -670,6 +670,8 @@ extension TangemSdk {
            BiometricsUtil.isAvailable {
             return AccessCodeRepository()
         }
+
+        Log.debug("Failed to initialize AccessCodeRepository. Biometrics is unavailable.")
         
         return nil
     }

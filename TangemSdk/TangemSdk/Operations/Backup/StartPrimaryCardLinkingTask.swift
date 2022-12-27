@@ -11,7 +11,7 @@ import Combine
 
 @available(iOS 13.0, *)
 public class StartPrimaryCardLinkingTask: CardSessionRunnable {
-    public var allowsAccessCodeFromRepository: Bool { false }
+    public var shouldAskForAccessCode: Bool { false }
     
     private var attestationTask: AttestationTask? = nil
     private let onlineCardVerifier = OnlineCardVerifier()

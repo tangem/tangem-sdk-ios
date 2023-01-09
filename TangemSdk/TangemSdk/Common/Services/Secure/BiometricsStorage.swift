@@ -18,6 +18,8 @@ public class BiometricsStorage {
     public init() {}
     
     public func get(_ account: String, context: LAContext? = nil) throws -> Data? {
+        Log.debug("BIO BiometricsStorage \(account) get - fetching key")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -30,24 +32,31 @@ public class BiometricsStorage {
         var result: AnyObject?
         
         let status = SecItemCopyMatching(query as CFDictionary, &result)
+        Log.debug("BIO BiometricsStorage \(account) get - status \(status.message) \(status)")
         switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
+                Log.debug("BIO BiometricsStorage \(account) get - no data")
                 return nil
             }
             
+            Log.debug("BIO BiometricsStorage \(account) get - fetched data \(data.getSha256().hexString)")
             return data
         case errSecItemNotFound:
+            Log.debug("BIO BiometricsStorage \(account) get - not found")
             return nil
         case errSecUserCanceled:
+            Log.debug("BIO BiometricsStorage \(account) get - user cancelled")
             throw TangemSdkError.userCancelled
         case let status:
+            Log.debug("BIO BiometricsStorage \(account) get - error \(status.message)")
             let error = KeyStoreError("Keychain read failed: \(status.message)")
             throw error
         }
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
+        Log.debug("BIO BiometricsStorage \(account) set - setting data \(object.getSha256().hexString)")
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -68,16 +77,22 @@ public class BiometricsStorage {
                 kSecUseAuthenticationContext: context ?? self.context
             ]
             
+            Log.debug("BIO BiometricsStorage \(account) set - failed to set a duplicate, overwriting")
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
         }
         
+        Log.debug("BIO BiometricsStorage \(account) set - status \(status.message) \(status)")
+        
         switch status {
         case errSecSuccess:
+            Log.debug("BIO BiometricsStorage \(account) set - OK")
             break
         case errSecUserCanceled:
+            Log.debug("BIO BiometricsStorage \(account) set - user cancelled")
             throw TangemSdkError.userCancelled
         default:
+            Log.debug("BIO BiometricsStorage \(account) set - error \(status.message)")
             let error = KeyStoreError("Unable to store item: \(status.message)")
             throw error
         }

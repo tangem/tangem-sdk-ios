@@ -16,6 +16,8 @@ public struct SecureStorage {
     public init() {}
     
     public func get(_ account: String) throws -> Data? {
+        Log.debug("SecureStorage \(account) get")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -28,17 +30,26 @@ public struct SecureStorage {
         
         switch SecItemCopyMatching(query as CFDictionary, &result) {
         case errSecSuccess:
-            guard let data = result as? Data else { return nil }
+            guard let data = result as? Data else {
+                Log.debug("SecureStorage \(account) get - data nil")
+                return nil
+            }
+            
+            Log.debug("SecureStorage \(account) get - data not nil")
             
             return data
         case errSecItemNotFound:
+            Log.debug("SecureStorage \(account) get - not found")
             return nil
         case let status:
+            Log.debug("SecureStorage \(account) get - error \(status.message) \(status)")
             throw KeyStoreError("Keychain read failed: \(status.message)")
         }
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
+        Log.debug("SecureStorage \(account) store - overwrite \(overwrite)")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -49,7 +60,11 @@ public struct SecureStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
+        Log.debug("SecureStorage \(account) store - status \(status.message) \(status)")
+        
         if status == errSecDuplicateItem && overwrite {
+            Log.debug("SecureStorage \(account) store - failed to write, overwriting")
+            
             let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
@@ -58,6 +73,8 @@ public struct SecureStorage {
             let attributes = [kSecValueData: object] as [String: Any]
             
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
+            
+            Log.debug("SecureStorage \(account) store - status \(status.message) \(status)")
         }
         
         guard status == errSecSuccess else {
@@ -66,14 +83,22 @@ public struct SecureStorage {
     }
     
     public func delete(_ account: String) throws {
+        Log.debug("SecureStorage \(account) delete")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
         ]
         
-        switch SecItemDelete(query as CFDictionary) {
-        case errSecItemNotFound, errSecSuccess: break // Okay to ignore
+        
+        let status = SecItemDelete(query as CFDictionary)
+
+        Log.debug("SecureStorage \(account) delete - status \(status.message) \(status)")
+        
+        switch status {
+        case errSecItemNotFound, errSecSuccess:
+            break // Okay to ignore
         case let status:
             throw KeyStoreError("Unexpected deletion error: \(status.message)")
         }

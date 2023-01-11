@@ -99,6 +99,8 @@ public class BiometricsStorage {
     }
     
     public func delete(_ account : String) throws {
+        Log.debug("BiometricsStorage \(account) delete")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
@@ -106,6 +108,8 @@ public class BiometricsStorage {
         ]
         
         let status = SecItemDelete(query as CFDictionary)
+        
+        Log.debug("BiometricsStorage \(account) delete - status \(status.message) \(status)")
         
         switch status {
         case errSecItemNotFound, errSecSuccess:

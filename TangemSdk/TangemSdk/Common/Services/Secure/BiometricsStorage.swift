@@ -33,6 +33,7 @@ public class BiometricsStorage {
         
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         Log.debug("BiometricsStorage \(account) get - status \(status.message) \(status)")
+        
         switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
@@ -50,6 +51,7 @@ public class BiometricsStorage {
             throw TangemSdkError.userCancelled
         case let status:
             Log.debug("BiometricsStorage \(account) get - error \(status.message)")
+            
             let error = KeyStoreError("Keychain read failed: \(status.message)")
             throw error
         }
@@ -57,6 +59,7 @@ public class BiometricsStorage {
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
         Log.debug("BiometricsStorage \(account) set - setting data")
+        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -78,6 +81,7 @@ public class BiometricsStorage {
             ]
             
             Log.debug("BiometricsStorage \(account) set - failed to set a duplicate, overwriting")
+            
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
         }
@@ -93,6 +97,7 @@ public class BiometricsStorage {
             throw TangemSdkError.userCancelled
         default:
             Log.debug("BiometricsStorage \(account) set - error \(status.message)")
+            
             let error = KeyStoreError("Unable to store item: \(status.message)")
             throw error
         }

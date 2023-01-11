@@ -36,11 +36,11 @@ public class BiometricsStorage {
         switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
-                Log.debug("BiometricsStorage \(account) get - no data")
+                Log.debug("BiometricsStorage \(account) get - data nil")
                 return nil
             }
             
-            Log.debug("BiometricsStorage \(account) get - fetched data \(data.getSha256().hexString)")
+            Log.debug("BiometricsStorage \(account) get - data not nil")
             return data
         case errSecItemNotFound:
             Log.debug("BiometricsStorage \(account) get - not found")
@@ -56,7 +56,7 @@ public class BiometricsStorage {
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
-        Log.debug("BiometricsStorage \(account) set - setting data \(object.getSha256().hexString)")
+        Log.debug("BiometricsStorage \(account) set - setting data")
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,

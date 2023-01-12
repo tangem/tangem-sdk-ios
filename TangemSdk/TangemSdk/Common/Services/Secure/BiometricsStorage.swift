@@ -18,8 +18,6 @@ public class BiometricsStorage {
     public init() {}
     
     public func get(_ account: String, context: LAContext? = nil) throws -> Data? {
-        Log.debug("BiometricsStorage \(account) get - fetching key")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -32,34 +30,26 @@ public class BiometricsStorage {
         var result: AnyObject?
         
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        Log.debug("BiometricsStorage \(account) get - status \(status.message) \(status)")
+        Log.debug("BiometricsStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
         
-        switch  status {
+        switch status {
         case errSecSuccess:
             guard let data = result as? Data else {
-                Log.debug("BiometricsStorage \(account) get - data nil")
                 return nil
             }
             
-            Log.debug("BiometricsStorage \(account) get - data not nil")
             return data
         case errSecItemNotFound:
-            Log.debug("BiometricsStorage \(account) get - not found")
             return nil
         case errSecUserCanceled:
-            Log.debug("BiometricsStorage \(account) get - user cancelled")
             throw TangemSdkError.userCancelled
         case let status:
-            Log.debug("BiometricsStorage \(account) get - error \(status.message)")
-            
             let error = KeyStoreError("Keychain read failed: \(status.message)")
             throw error
         }
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
-        Log.debug("BiometricsStorage \(account) set - setting data")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -71,6 +61,8 @@ public class BiometricsStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
+        Log.debug("BiometricsStorage store - status \(status.message) \(status)")
+        
         if status == errSecDuplicateItem && overwrite {
             var searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
@@ -80,32 +72,24 @@ public class BiometricsStorage {
                 kSecUseAuthenticationContext: context ?? self.context
             ]
             
-            Log.debug("BiometricsStorage \(account) set - failed to set a duplicate, overwriting")
-            
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
+    
+            Log.debug("BiometricsStorage set - overwrite status \(status.message) \(status)")
         }
-        
-        Log.debug("BiometricsStorage \(account) set - status \(status.message) \(status)")
         
         switch status {
         case errSecSuccess:
-            Log.debug("BiometricsStorage \(account) set - OK")
             break
         case errSecUserCanceled:
-            Log.debug("BiometricsStorage \(account) set - user cancelled")
             throw TangemSdkError.userCancelled
         default:
-            Log.debug("BiometricsStorage \(account) set - error \(status.message)")
-            
             let error = KeyStoreError("Unable to store item: \(status.message)")
             throw error
         }
     }
     
     public func delete(_ account : String) throws {
-        Log.debug("BiometricsStorage \(account) delete")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
@@ -114,7 +98,7 @@ public class BiometricsStorage {
         
         let status = SecItemDelete(query as CFDictionary)
         
-        Log.debug("BiometricsStorage \(account) delete - status \(status.message) \(status)")
+        Log.debug("BiometricsStorage delete - status \(status.message) \(status)")
         
         switch status {
         case errSecItemNotFound, errSecSuccess:

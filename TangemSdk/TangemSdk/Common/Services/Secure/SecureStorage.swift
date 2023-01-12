@@ -26,7 +26,11 @@ public struct SecureStorage {
         
         var result: AnyObject?
         
-        switch SecItemCopyMatching(query as CFDictionary, &result) {
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        
+        Log.debug("SecureStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
+        
+        switch status {
         case errSecSuccess:
             guard let data = result as? Data else { return nil }
             
@@ -49,6 +53,8 @@ public struct SecureStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
+        Log.debug("SecureStorage set - status \(status.message) \(status)")
+        
         if status == errSecDuplicateItem && overwrite {
             let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
@@ -58,6 +64,8 @@ public struct SecureStorage {
             let attributes = [kSecValueData: object] as [String: Any]
             
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
+            
+            Log.debug("SecureStorage set - overwrite status \(status.message) \(status)")
         }
         
         guard status == errSecSuccess else {
@@ -72,7 +80,12 @@ public struct SecureStorage {
             kSecAttrAccount: account,
         ]
         
-        switch SecItemDelete(query as CFDictionary) {
+        
+        let status = SecItemDelete(query as CFDictionary)
+
+        Log.debug("SecureStorage delete - status \(status.message) \(status)")
+        
+        switch status {
         case errSecItemNotFound, errSecSuccess: break // Okay to ignore
         case let status:
             throw KeyStoreError("Unexpected deletion error: \(status.message)")

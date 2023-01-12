@@ -32,7 +32,7 @@ public class BiometricsStorage {
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         Log.debug("BiometricsStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
         
-        switch status {
+        switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
                 return nil

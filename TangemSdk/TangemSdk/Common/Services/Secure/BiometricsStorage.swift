@@ -61,7 +61,7 @@ public class BiometricsStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
-        Log.debug("BiometricsStorage store - status \(status.message) \(status)")
+        Log.debug("BiometricsStorage set - status \(status.message) \(status)")
         
         if status == errSecDuplicateItem && overwrite {
             var searchQuery: [CFString: Any] = [

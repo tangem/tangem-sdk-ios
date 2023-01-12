@@ -30,6 +30,8 @@ public class BiometricsStorage {
         var result: AnyObject?
         
         let status = SecItemCopyMatching(query as CFDictionary, &result)
+        Log.debug("BiometricsStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
+        
         switch  status {
         case errSecSuccess:
             guard let data = result as? Data else {
@@ -59,6 +61,8 @@ public class BiometricsStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
+        Log.debug("BiometricsStorage set - status \(status.message) \(status)")
+        
         if status == errSecDuplicateItem && overwrite {
             var searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
@@ -70,6 +74,8 @@ public class BiometricsStorage {
             
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
+    
+            Log.debug("BiometricsStorage set - overwrite status \(status.message) \(status)")
         }
         
         switch status {
@@ -91,6 +97,8 @@ public class BiometricsStorage {
         ]
         
         let status = SecItemDelete(query as CFDictionary)
+        
+        Log.debug("BiometricsStorage delete - status \(status.message) \(status)")
         
         switch status {
         case errSecItemNotFound, errSecSuccess:

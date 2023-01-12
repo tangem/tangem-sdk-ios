@@ -32,9 +32,7 @@ public struct SecureStorage {
         
         switch status {
         case errSecSuccess:
-            guard let data = result as? Data else {
-                return nil
-            }
+            guard let data = result as? Data else { return nil }
             
             return data
         case errSecItemNotFound:
@@ -88,8 +86,7 @@ public struct SecureStorage {
         Log.debug("SecureStorage delete - status \(status.message) \(status)")
         
         switch status {
-        case errSecItemNotFound, errSecSuccess:
-            break // Okay to ignore
+        case errSecItemNotFound, errSecSuccess: break // Okay to ignore
         case let status:
             throw KeyStoreError("Unexpected deletion error: \(status.message)")
         }

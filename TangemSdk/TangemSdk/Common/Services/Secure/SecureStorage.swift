@@ -16,8 +16,6 @@ public struct SecureStorage {
     public init() {}
     
     public func get(_ account: String) throws -> Data? {
-        Log.debug("SecureStorage \(account) get")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -28,28 +26,25 @@ public struct SecureStorage {
         
         var result: AnyObject?
         
-        switch SecItemCopyMatching(query as CFDictionary, &result) {
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        
+        Log.debug("SecureStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
+        
+        switch status {
         case errSecSuccess:
             guard let data = result as? Data else {
-                Log.debug("SecureStorage \(account) get - data nil")
                 return nil
             }
             
-            Log.debug("SecureStorage \(account) get - data not nil")
-            
             return data
         case errSecItemNotFound:
-            Log.debug("SecureStorage \(account) get - not found")
             return nil
         case let status:
-            Log.debug("SecureStorage \(account) get - error \(status.message) \(status)")
             throw KeyStoreError("Keychain read failed: \(status.message)")
         }
     }
     
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
-        Log.debug("SecureStorage \(account) store - overwrite \(overwrite)")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
@@ -60,10 +55,10 @@ public struct SecureStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
-        Log.debug("SecureStorage \(account) store - status \(status.message) \(status)")
+        Log.debug("SecureStorage store - status \(status.message) \(status)")
         
         if status == errSecDuplicateItem && overwrite {
-            Log.debug("SecureStorage \(account) store - failed to write, overwriting")
+            Log.debug("SecureStorage store - failed to write, overwriting")
             
             let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
@@ -74,7 +69,7 @@ public struct SecureStorage {
             
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
             
-            Log.debug("SecureStorage \(account) store - status \(status.message) \(status)")
+            Log.debug("SecureStorage store - overwrite status \(status.message) \(status)")
         }
         
         guard status == errSecSuccess else {
@@ -83,8 +78,6 @@ public struct SecureStorage {
     }
     
     public func delete(_ account: String) throws {
-        Log.debug("SecureStorage \(account) delete")
-        
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
@@ -94,7 +87,7 @@ public struct SecureStorage {
         
         let status = SecItemDelete(query as CFDictionary)
 
-        Log.debug("SecureStorage \(account) delete - status \(status.message) \(status)")
+        Log.debug("SecureStorage delete - status \(status.message) \(status)")
         
         switch status {
         case errSecItemNotFound, errSecSuccess:

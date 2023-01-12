@@ -55,11 +55,9 @@ public struct SecureStorage {
         
         var status = SecItemAdd(query as CFDictionary, nil)
         
-        Log.debug("SecureStorage store - status \(status.message) \(status)")
+        Log.debug("SecureStorage set - status \(status.message) \(status)")
         
         if status == errSecDuplicateItem && overwrite {
-            Log.debug("SecureStorage store - failed to write, overwriting")
-            
             let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
@@ -69,7 +67,7 @@ public struct SecureStorage {
             
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
             
-            Log.debug("SecureStorage store - overwrite status \(status.message) \(status)")
+            Log.debug("SecureStorage set - overwrite status \(status.message) \(status)")
         }
         
         guard status == errSecSuccess else {

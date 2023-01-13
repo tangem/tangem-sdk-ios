@@ -26,7 +26,7 @@
 "error_purge_prohibited" = "This card's configuration does not allow you to erase the wallet";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";
 "error_pin_cannot_be_default_format" = "%@ cannot be changed to this value. Please, enter another one.";
-"error_pin_too_short_format" = "%@ must be at least %d characters long";
+"error_pin_too_short_format" = "%1$@ must be at least %2$li characters long";
 "error_pin_required_format" = "%@ is required";
 "error_wrong_pin_format" = "Wrong %@";
 "error_not_activated" = "This card has not been activated";
@@ -64,4 +64,4 @@
 "reset_codes_message_body_restore_final" = "Tap the restore card again";
 "reset_codes_success_message" = "Code was reset successfully";
 "touch_id_localized_reason" = "Use Touch ID to save access codes in the app";
-"sign_multiple_chunks_part" = "Signing part %d of %d";
+"sign_multiple_chunks_part" = "Signing part %1$li of %2$li";

@@ -26,7 +26,7 @@
 "error_purge_prohibited" = "Конфигурация этой карты не позволяет удалить кошелек";
 "error_pin_cannot_be_changed_format" = "%@ не может быть изменен";
 "error_pin_cannot_be_default_format" = "%@ нельзя изменить на это значение. Пожалуйста, введите другое";
-"error_pin_too_short_format" = "%@ должен состоять не менее чем из %d символов.";
+"error_pin_too_short_format" = "%1$@ должен состоять не менее чем из %2$li символов.";
 "error_pin_required_format" = "Введите %@";
 "error_wrong_pin_format" = "Неверный %@";
 "error_not_activated" = "Эта карта не активирована";
@@ -64,4 +64,4 @@
 "reset_codes_message_body_restore_final" = "Приложите еще раз карту, которую хотите восстановить";
 "reset_codes_success_message" = "Код успешно сброшен";
 "touch_id_localized_reason" = "Используйте Touch ID для сохранения кодов доступа в приложении";
-"sign_multiple_chunks_part" = "Подпись части %d из %d";
+"sign_multiple_chunks_part" = "Подпись части %1$li из %2$li";

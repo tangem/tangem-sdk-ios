@@ -32,7 +32,10 @@ struct EnterUserCodeView: View {
                                onCancel: onCancel)
                 .padding(.top, 8)
             
-            FloatingTextField(title: placeholder, text: $code, onCommit: onDone, isSecured: true)
+            FloatingTextField(title: placeholder,
+                              text: $code,
+                              onCommit: onDone,
+                              shouldBecomeFirstResponder: true)
                 .padding(.top, 16)
             
             VStack(spacing: 16) {
@@ -40,7 +43,7 @@ struct EnterUserCodeView: View {
                 Spacer()
                 
                 if showForgotButton {
-                    Button("enter_user_code_button_title_forgot".localized, action: onForgot)
+                    Button("reset_codes_btn_forgot_your_code".localized, action: onForgot)
                         .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
                 }
                 
@@ -52,10 +55,12 @@ struct EnterUserCodeView: View {
             .keyboardAdaptive(animated: .constant(true))
         }
         .padding([.horizontal, .bottom])
-        .onAppear {
-            if isLoading {
-                isLoading = false
-            }
+        .onAppear(perform: onAppear)
+    }
+    
+    private func onAppear() {
+        if isLoading {
+            isLoading = false
         }
     }
     
@@ -68,11 +73,15 @@ struct EnterUserCodeView: View {
     }
     
     private func onDone() {
-        if !isContinueDisabled {
-            UIApplication.shared.endEditing()
-            isLoading = true
-            completion(.success(code.trim()))
+        if isContinueDisabled {
+            return
         }
+        
+        UIApplication.shared.endEditing()
+        isLoading = true
+        
+        let userCode = code.trim()
+        completion(.success(userCode))
     }
 }
 

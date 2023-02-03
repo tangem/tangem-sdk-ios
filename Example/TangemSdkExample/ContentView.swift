@@ -25,6 +25,11 @@ struct ContentView: View {
                     isActive: $model.showSettings,
                     label: {EmptyView()})
                 
+                NavigationLink(
+                    destination: model.makePinResetDestination(),
+                    isActive: $model.showResetPin,
+                    label: {EmptyView()})
+                
                 GeometryReader { geo in
                     VStack {
                         ScrollView {
@@ -48,13 +53,14 @@ struct ContentView: View {
                                 Button("Clear", action: model.clear)
                                 Button("Copy", action: model.copy)
                                 Button("Backup", action: model.onBackup)
+                                Button("Reset", action: model.onResetService)
                             }
                             
                             additionalView
                                 .padding(.top, 4)
                             
                             Picker("", selection: $model.method) {
-                                ForEach(0..<AppModel.Method.allCases.count) { index in
+                                ForEach(0..<AppModel.Method.allCases.count, id: \.self) { index in
                                     Text(AppModel.Method.allCases[index].rawValue)
                                         .tag(AppModel.Method.allCases[index])
                                 }
@@ -75,7 +81,7 @@ struct ContentView: View {
             }
             .navigationBarTitle("SDK", displayMode: .inline)
             .navigationBarItems(trailing: Button(action: model.onSettings,
-                                                 label: { Image(systemName: "gearshape")}))
+                                                 label: { Image(systemName: "gear")}))
         }
         .padding(.bottom, 8)
         .actionSheet(isPresented: $model.showWalletSelection) {
@@ -108,7 +114,7 @@ struct ContentView: View {
                     .bold()
                 
                 Picker("", selection: $model.attestationMode) {
-                    ForEach(0..<AttestationTask.Mode.allCases.count) { index in
+                    ForEach(0..<AttestationTask.Mode.allCases.count, id: \.self) { index in
                         Text(AttestationTask.Mode.allCases[index].rawValue)
                             .tag(AttestationTask.Mode.allCases[index])
                     }
@@ -127,7 +133,7 @@ struct ContentView: View {
                 
                 if let supportedCurves = model.card?.supportedCurves {
                     Picker("", selection: $model.curve) {
-                        ForEach(0..<supportedCurves.count) { index in
+                        ForEach(0..<supportedCurves.count, id: \.self) { index in
                             Text(supportedCurves[index].rawValue)
                                 .tag(supportedCurves[index])
                         }

@@ -34,8 +34,11 @@ public class BackupService: ObservableObject {
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
     public var passcodeIsSet: Bool { repo.data.passcode != nil }
     public var primaryCardIsSet: Bool { repo.data.primaryCard != nil }
-    public var primaryCardId: String? { repo.data.primaryCard?.cardId }
+    public var primaryCard: PrimaryCard? { repo.data.primaryCard }
     public var backupCardIds: [String] { repo.data.backupCards.map {$0.cardId} }
+    
+    /// Perform additional compatibility checks while adding backup cards. Change this setting only if you understand what you do.
+    public var skipCompatibilityChecks: Bool = false
     
     private let sdk: TangemSdk
     private var repo: BackupRepo = .init()
@@ -145,10 +148,11 @@ public class BackupService: ObservableObject {
     }
     
     public func readPrimaryCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
-        let initialMessage = cardId.map {
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: $0)
-            return  Message(header: nil,
-                            body: "backup_prepare_primary_card_message_format".localized(formattedCardId)) }
+        let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
+        
+        let initialMessage = formattedCardId.map {
+            Message(header: nil,
+                    body: "backup_prepare_primary_card_message_format".localized($0)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
          
         let command = StartPrimaryCardLinkingTask()
@@ -208,7 +212,8 @@ public class BackupService: ObservableObject {
     
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
         let command = StartBackupCardLinkingTask(primaryCard: primaryCard,
-                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId })
+                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId },
+                                                 skipCompatibilityChecks: skipCompatibilityChecks)
         currentCommand = command
         
         sdk.startSession(with: command,
@@ -260,13 +265,21 @@ public class BackupService: ObservableObject {
                                               onLink: { self.repo.data.attestSignature = $0 },
                                               onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: primaryCard.cardId)
+            let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: primaryCard.cardId)
+            
+            let initialMessage = formattedCardId.map {
+                Message(header: nil,
+                        body: "backup_finalize_primary_card_message_format".localized($0))
+            }
+
+            currentCommand = task
             
             sdk.startSession(with: task,
                              cardId: primaryCard.cardId,
-                             initialMessage: Message(header: nil,
-                                                     body: "backup_finalize_primary_card_message_format".localized(formattedCardId)),
-                             completion: completion)
+                             initialMessage: initialMessage) {[weak self] result in
+                completion(result)
+                self?.currentCommand = nil
+            }
             
         } catch {
             completion(.failure(error.toTangemSdkError()))
@@ -317,12 +330,20 @@ public class BackupService: ObservableObject {
                                                  accessCode: accessCode,
                                                  passcode: passcode)
             
-            let formattedCardId = CardIdFormatter(style: .lastMasked(4)).string(from: backupCard.cardId)
+            let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: backupCard.cardId)
+            
+            let initialMessage = formattedCardId.map {
+                Message(header: nil,
+                        body: "backup_finalize_backup_card_message_format".localized($0))
+            }
+
+            currentCommand = command
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
-                             initialMessage: Message(header: nil,
-                                                     body: "backup_finalize_backup_card_message_format".localized(formattedCardId))) { result in
+                             initialMessage: initialMessage) {[weak self] result in
+                guard let self = self else { return }
+
                 switch result {
                 case .success(let card):
                     self.repo.data.finalizedBackupCardsCount += 1
@@ -330,6 +351,8 @@ public class BackupService: ObservableObject {
                 case .failure(let error):
                     completion(.failure(error))
                 }
+
+                self.currentCommand = nil
             }
             
         } catch {
@@ -454,7 +477,7 @@ class BackupRepo {
     }
     
     func reset() {
-        try? storage.delete(account: StorageKey.backupData.rawValue)
+        try? storage.delete(.backupData)
         data = .init()
     }
     
@@ -462,24 +485,16 @@ class BackupRepo {
         guard !isFetching && data.shouldSave else { return }
         
         let encoded = try JSONEncoder().encode(data)
-        try storage.store(object: encoded, account: StorageKey.backupData.rawValue)
+        try storage.store(encoded, forKey: .backupData)
     }
     
     private func fetch() throws {
         self.isFetching = true
         defer { self.isFetching = false }
         
-        if let savedData = try storage.get(account: StorageKey.backupData.rawValue) {
+        if let savedData = try storage.get(.backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-private extension BackupRepo {
-    /// Keys used for store data in Keychain
-    enum StorageKey: String {
-        case backupData
     }
 }
 

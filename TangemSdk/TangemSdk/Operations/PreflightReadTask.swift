@@ -58,15 +58,23 @@ final class PreflightReadTask: CardSessionRunnable {
                 if session.environment.config.handleErrors {
                     if let expectedCardId = self.cardId?.uppercased(),
                        expectedCardId != readResponse.cardId.uppercased() {
-                        completion(.failure(.wrongCardNumber))
+                        let formatter = CardIdFormatter(style: session.environment.config.cardIdDisplayFormat)
+                        let expectedCardIdFormatted = formatter.string(from: expectedCardId)
+                        completion(.failure(.wrongCardNumber(expectedCardId: expectedCardIdFormatted)))
                         return
                     }
                 }
                 
-                if !session.environment.config.filter.isCardAllowed(readResponse) {
-                    completion(.failure(.wrongCardType))
+                do {
+                    let filter = session.environment.config.filter
+                    try filter.verifyCard(readResponse)
+                } catch {
+                    completion(.failure(error.toTangemSdkError()))
                     return
                 }
+                
+                self.updateEnvironmentIfNeeded(for: readResponse, in: session)
+                session.fetchAccessCodeIfNeeded()
                 
                 self.finalizeRead(in: session, completion: completion)
             case .failure(let error):
@@ -109,5 +117,10 @@ final class PreflightReadTask: CardSessionRunnable {
             }
         }
     }
+    
+    private func updateEnvironmentIfNeeded(for card: Card, in session: CardSession) {
+        if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
+            session.environment.config.cardIdDisplayFormat = .none
+        }
+    }
 }
-

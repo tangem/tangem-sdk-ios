@@ -14,6 +14,9 @@ public protocol CardSessionRunnable {
     /// Mode for preflight read. Change this property only if you understand what to do
     var preflightReadMode: PreflightReadMode { get }
     
+    /// Allow SDK to fetch access code from the local encrypted repository when running the command
+    var shouldAskForAccessCode: Bool { get }
+    
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype Response
     
@@ -33,6 +36,8 @@ public protocol CardSessionRunnable {
 @available(iOS 13.0, *)
 extension CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode { .fullCardRead }
+    
+    public var shouldAskForAccessCode: Bool { true }
     
     public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
         completion(.success(()))

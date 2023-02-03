@@ -116,7 +116,23 @@ public class SetUserCodeCommand: Command {
             return
         }
 
-        self.transceive(in: session, completion: completion )
+        self.transceive(in: session) { result in
+            switch result {
+            case .success(let response):
+                
+                if let accessCodeValue = self.codes[.accessCode]?.value {
+                    session.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
+                }
+                
+                if let passcodeValue = self.codes[.passcode]?.value {
+                    session.environment.passcode = UserCode(.passcode, value: passcodeValue)
+                }
+                
+                completion(.success(response))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
@@ -192,7 +208,7 @@ public class SetUserCodeCommand: Command {
             return
         }
         
-        let formattedCid = session.cardId.map { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
+        let formattedCid = session.cardId.flatMap { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
         
         session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { result in
             switch result {

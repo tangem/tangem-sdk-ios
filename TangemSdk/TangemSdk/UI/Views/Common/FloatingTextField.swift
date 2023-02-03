@@ -7,30 +7,61 @@
 //
 
 import SwiftUI
+import Combine
 
 @available(iOS 13.0, *)
 struct FloatingTextField: View {
     let title: String
     let text: Binding<String>
     var onCommit: () -> Void = {}
-    var isSecured: Bool = false
+    /// iOS15+
+    var shouldBecomeFirstResponder: Bool = false
     
-    @EnvironmentObject var style: TangemSdkStyle
+    @EnvironmentObject private var style: TangemSdkStyle
+    @State private var isSecured: Bool = true
+    
+    @ViewBuilder
+    private var textField: some View {
+        if #available(iOS 15.0, *) {
+            FocusableTextField(isSecured: isSecured,
+                               shouldBecomeFirstResponder: shouldBecomeFirstResponder,
+                               text: text,
+                               onCommit: onCommit)
+        } else {
+            legacyTextField
+        }
+    }
+    
+    @ViewBuilder
+    private var legacyTextField: some View {
+        if isSecured {
+            SecureField("", text: text, onCommit: onCommit)
+        } else {
+            TextField("", text: text, onCommit: onCommit)
+        }
+    }
     
     var body: some View {
         VStack(spacing: 6) {
-            
-            ZStack(alignment: .leading) {
+            HStack {
+                ZStack(alignment: .leading) {
+                    Text(title)
+                        .foregroundColor(text.wrappedValue.isEmpty ? Color(.placeholderText) : style.colors.tint)
+                        .offset(y: text.wrappedValue.isEmpty ? 0 : -32)
+                        .scaleEffect(text.wrappedValue.isEmpty ? 1 : 0.76, anchor: .leading)
+                    
+                    textField
+                        .keyboardType(.default)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .font(.system(size: 17))
+                        .frame(height: 17)
+                }
                 
-                Text(title)
-                    .foregroundColor(text.wrappedValue.isEmpty ? Color(.placeholderText) : style.colors.tint)
-                    .offset(y: text.wrappedValue.isEmpty ? 0 : -32)
-                    .scaleEffect(text.wrappedValue.isEmpty ? 1 : 0.76, anchor: .leading)
-                
-                textField
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .font(.system(size: 17))
+                Button(action: toggleSecured) {
+                    Image(systemName: isSecured ? "eye" : "eye.slash")
+                        .foregroundColor(.gray)
+                }
             }
             
             Color(UIColor.opaqueSeparator)
@@ -40,15 +71,11 @@ struct FloatingTextField: View {
         .animation(Animation.easeInOut(duration: 0.1))
     }
     
-    @ViewBuilder
-    private var textField: some View {
-        if isSecured {
-            SecureField("", text: text, onCommit: onCommit)
-        } else {
-            TextField("", text: text, onCommit: onCommit)
-        }
+    private func toggleSecured() {
+        isSecured.toggle()
     }
 }
+
 
 @available(iOS 13.0, *)
 struct FloatingTextField_Previews: PreviewProvider {
@@ -59,5 +86,3 @@ struct FloatingTextField_Previews: PreviewProvider {
             .environmentObject(TangemSdkStyle())
     }
 }
-
-

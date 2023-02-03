@@ -89,7 +89,7 @@ public extension Log {
         case network
         case view
         
-        var emoji: String {
+        public var emoji: String {
             switch self {
             case .command:
                 return "⚪️"
@@ -114,7 +114,7 @@ public extension Log {
             }
         }
         
-        var prefix: String {
+        public var prefix: String {
             switch self {
             case .session:
                 return " (CardSession)"

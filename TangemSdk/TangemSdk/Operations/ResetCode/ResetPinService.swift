@@ -16,7 +16,8 @@ public class ResetPinService: ObservableObject {
     private var session: CardSession?
     private let config: Config
     private var repo: ResetPinRepo = .init()
-    
+    private var currentCommand: AnyObject? = nil
+
     public init(config: Config) {
         self.config = config
     }
@@ -91,11 +92,25 @@ public class ResetPinService: ObservableObject {
     }
     
     private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
+        let userCodeType: UserCodeType
+        if repo.accessCode != nil {
+            userCodeType = .accessCode
+        } else if repo.passcode != nil {
+            userCodeType = .passcode
+        } else {
+            fatalError("Scan card called without the code specified")
+        }
+        
         self.session = TangemSdk().makeSession(with: config,
                                                cardId: resetCardId,
-                                               initialMessage: Message(header: "Scan the card on which you want to reset the pin"))
+                                               initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()])))
+
+        let command = GetResetPinTokenCommand()
+        currentCommand = command
         
-        session!.start(with: GetResetPinTokenCommand()) { result in
+        session!.start(with: command) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success(let response):
                 self.repo.resetPinCard = response
@@ -103,6 +118,8 @@ public class ResetPinService: ObservableObject {
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            self.currentCommand = nil
         }
     }
     
@@ -114,9 +131,14 @@ public class ResetPinService: ObservableObject {
         
         self.session = TangemSdk().makeSession(with: config,
                                                cardId: nil,
-                                               initialMessage: Message(header: "Scan the confirmation card"))
-        
-        session!.start(with: SignResetPinTokenCommand(resetPinCard: resetPinCard)) { result in
+                                               initialMessage: Message(header: "reset_codes_scan_confirmation_card".localized))
+
+        let command = SignResetPinTokenCommand(resetPinCard: resetPinCard)
+        currentCommand = command
+
+        session!.start(with: command) { [weak self] result in
+            guard let self = self else { return }
+
             switch result {
             case .success(let response):
                 self.repo.confirmationCard = response
@@ -124,6 +146,8 @@ public class ResetPinService: ObservableObject {
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            self.currentCommand = nil
         }
     }
     
@@ -163,17 +187,22 @@ public class ResetPinService: ObservableObject {
         
         self.session = TangemSdk().makeSession(with: config,
                                                cardId: resetPinCard.cardId,
-                                               initialMessage: Message(header: "Scan card to reset user codes"))
-        
-        
-        let task = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
-        session!.start(with: task) { result in
+                                               initialMessage: Message(header: "reset_codes_scan_to_reset".localized))
+
+        let command = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
+        currentCommand = command
+
+        session!.start(with: command) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success:
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            self.currentCommand = nil
         }
     }
 }
@@ -269,4 +298,3 @@ struct ConfirmationCard {
     let salt: Data
     let authorizeSignature: Data
 }
-

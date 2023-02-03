@@ -87,7 +87,7 @@ public extension TangemSdk {
     ///   - completion: Returns  `Swift.Result<SignHashResponse,TangemSdkError>`
     func sign(hash: Data,
               walletPublicKey: Data,
-              cardId: String,
+              cardId: String? = nil,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashResponse>) {
@@ -116,7 +116,7 @@ public extension TangemSdk {
     ///   - completion: Returns  `Swift.Result<SignHashesResponse,TangemSdkError>`
     func sign(hashes: [Data],
               walletPublicKey: Data,
-              cardId: String,
+              cardId: String? = nil,
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashesResponse>) {
@@ -550,11 +550,13 @@ extension TangemSdk {
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used.
+    ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
                                 cardId: String? = nil,
                                 initialMessage: Message? = nil,
+                                accessCode: String? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
     where T : CardSessionRunnable {
         do {
@@ -567,7 +569,8 @@ extension TangemSdk {
         configure()
         cardSession = makeSession(with: config,
                                   cardId: cardId,
-                                  initialMessage: initialMessage)
+                                  initialMessage: initialMessage,
+                                  accessCode: accessCode)
         cardSession!.start(with: runnable, completion: completion)
     }
     
@@ -575,11 +578,13 @@ extension TangemSdk {
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - callback: At first, you should check that the `TangemSdkError` is not nil, then you can use the `CardSession` to interact with a card.
     ///   You can find the current card in the `environment` property of the `CardSession`
     ///   If you need to interact with UI, you should dispatch to the main thread manually
     public func startSession(cardId: String? = nil,
                              initialMessage: Message? = nil,
+                             accessCode: String? = nil,
                              callback: @escaping (CardSession, TangemSdkError?) -> Void) {
         do {
             try checkSession()
@@ -591,7 +596,8 @@ extension TangemSdk {
         configure()
         cardSession = makeSession(with: config,
                                   cardId: cardId,
-                                  initialMessage: initialMessage)
+                                  initialMessage: initialMessage,
+                                  accessCode: accessCode)
         cardSession?.start(callback)
     }
     
@@ -600,10 +606,14 @@ extension TangemSdk {
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
     ///   - jsonRequest: A JSONRPCRequest, describing specific`CardSessionRunnable`
+    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: A JSONRPCResponse with with result of the operation
     public func startSession(with jsonRequest: String,
                              cardId: String? = nil,
                              initialMessage: String? = nil,
+                             accessCode: String? = nil,
                              completion: @escaping (String) -> Void) {
         
         
@@ -615,7 +625,8 @@ extension TangemSdk {
             configure()
             cardSession = makeSession(with: config,
                                       cardId: cardId,
-                                      initialMessage: initialMessage.flatMap { Message($0) })
+                                      initialMessage: initialMessage.flatMap { Message($0) },
+                                      accessCode: accessCode)
             
             let task = RunnablesTask(runnables: runnables)
             cardSession!.start(with: task) { result in
@@ -654,14 +665,33 @@ extension TangemSdk {
         Log.config = config.logConfig
     }
     
+    private func makeAccessCodeRepository(with config: Config) -> AccessCodeRepository? {
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
+            return AccessCodeRepository()
+        }
+
+        Log.debug("Failed to initialize AccessCodeRepository. Biometrics is unavailable.")
+        
+        return nil
+    }
+    
     func makeSession(with config: Config,
                      cardId: String?,
-                     initialMessage: Message?) -> CardSession {
-        CardSession(environment: SessionEnvironment(config: config, terminalKeysService: terminalKeysService),
-                    cardId: cardId,
-                    initialMessage: initialMessage,
-                    cardReader: reader,
-                    viewDelegate: viewDelegate,
-                    jsonConverter: jsonConverter)
+                     initialMessage: Message?,
+                     accessCode: String? = nil) -> CardSession {
+        var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
+        
+        if let accessCode = accessCode {
+            env.accessCode = .init(.accessCode, stringValue: accessCode)
+        }
+        
+        return CardSession(environment: env,
+                           cardId: cardId,
+                           initialMessage: initialMessage,
+                           cardReader: reader,
+                           viewDelegate: viewDelegate,
+                           jsonConverter: jsonConverter,
+                           accessCodeRepository: makeAccessCodeRepository(with: config))
     }
 }

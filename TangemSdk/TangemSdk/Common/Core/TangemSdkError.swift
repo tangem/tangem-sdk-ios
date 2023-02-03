@@ -64,6 +64,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case invalidResponseApdu
     
+    case failedToBuildCommandApdu
+    
     //MARK: Card errors
     
     /// This error is returned when unknown `StatusWord` is received from a card.
@@ -129,10 +131,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case signHashesNotAvailable
     
-    /// Tangem cards can sign currently up to 10 hashes during one `SignCommand`.
-    /// This error is returned when a `SignCommand` receives more than 10 hashes to sign.
-    case tooManyHashesInOneTransaction
-    
     // Write Extra Issuer Data Errors
     case extendedDataSizeTooLarge
     
@@ -184,6 +182,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case userForgotTheCode
     
+    case biometricsUnavailable
+    
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
     
@@ -193,11 +193,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when a [Task] expects a user to use a particular card,
     /// but the user tries to use a different card.
-    case wrongCardNumber
+    case wrongCardNumber(expectedCardId: String?)
     
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].
-    case wrongCardType
+    case wrongCardType(_ localizedDescription: String?)
     
     /// This error is returned when the scanned card doesn't have some essential fields.
     case cardError
@@ -306,6 +306,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToDecryptApdu: return 20009
         case .failedToEstablishEncryption: return 20010
         case .invalidResponseApdu: return 20011
+        case .failedToBuildCommandApdu: return 20012
             
             // MARK: 3xxxx Errors
             // Errors from card SW codes
@@ -361,7 +362,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .emptyHashes: return 40902
         case .hashSizeMustBeEqual: return 40903
         case .signHashesNotAvailable: return 40905
-        case .tooManyHashesInOneTransaction: return 40906
         case .oldCard: return 40907
             
         case .extendedDataSizeTooLarge: return 41101
@@ -414,6 +414,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
         case .userForgotTheCode: return 50013
+        case .biometricsUnavailable: return 50014
             
         case .wrongInteractionMode: return 50027
             
@@ -476,13 +477,19 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .purgeWalletProhibited: return "error_purge_prohibited".localized
         case .userCancelled: return "error_user_cancelled".localized
         case .cardVerificationFailed: return "error_card_verification_failed".localized
-        case .wrongCardNumber: return "error_wrong_card_number".localized
-        case .wrongCardType: return "error_wrong_card_type".localized
+        case .wrongCardNumber(let expectedCardId):
+            if let expectedCardId {
+                return "error_wrong_card_number_with_card_id".localized(expectedCardId)
+            } else {
+                return "error_wrong_card_number_without_card_id".localized
+            }
+        case .wrongCardType(let localizedDescription): return localizedDescription ?? "error_wrong_card_type".localized
         case .accessCodeRequired: return "error_pin_required_format".localized(UserCodeType.accessCode.name)
         case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)
         case .underlying(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
-        case .notSupportedFirmwareVersion: return "error_not_supported_firmware_version".localized
+        case .notSupportedFirmwareVersion: return "error_old_firmware".localized
+        case .walletNotFound: return "wallet_not_found".localized
         case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)
         case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)

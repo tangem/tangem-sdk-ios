@@ -57,6 +57,8 @@ public final class ResetBackupCommand: Command {
                 session.environment.card?.backupStatus = .noBackup
                 session.environment.card?.isAccessCodeSet = !response.isDefaultAccessCode
                 session.environment.card?.isPasscodeSet = !response.isDefaultPasscode
+                session.environment.accessCode = response.isDefaultAccessCode ? UserCode(.accessCode) : UserCode(.accessCode, value: nil)
+                session.environment.passcode = response.isDefaultPasscode ? UserCode(.passcode) : UserCode(.passcode, value: nil)
                 
                 if let settings = session.environment.card?.settings {
                     session.environment.card?.settings = settings.updated(with: response.settingsMask)

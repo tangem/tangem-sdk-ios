@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct WalletData: Equatable, Hashable, JSONStringConvertible {
+public struct WalletData: Equatable, Hashable, Codable, JSONStringConvertible {
     /// Name of the blockchain.
     public let blockchain: String
     /// Token of the specified blockchain.
@@ -19,21 +19,23 @@ public struct WalletData: Equatable, Hashable, JSONStringConvertible {
         self.token = token
     }
 }
-    
-public struct Token: Equatable, Hashable, JSONStringConvertible {
-    /// Display name of the token.
-    public let name: String
-    /// Token symbol
-    public let symbol: String
-    /// Smart contract address.
-    public let contractAddress: String
-    /// Number of decimals in token value.
-    public let decimals: Int
-    
-    public init(name: String, symbol: String, contractAddress: String, decimals: Int) {
-        self.name = name
-        self.symbol = symbol
-        self.contractAddress = contractAddress
-        self.decimals = decimals
+
+extension WalletData {
+    public struct Token: Equatable, Hashable, Codable, JSONStringConvertible {
+        /// Display name of the token.
+        public let name: String
+        /// Token symbol
+        public let symbol: String
+        /// Smart contract address.
+        public let contractAddress: String
+        /// Number of decimals in token value.
+        public let decimals: Int
+        
+        public init(name: String, symbol: String, contractAddress: String, decimals: Int) {
+            self.name = name
+            self.symbol = symbol
+            self.contractAddress = contractAddress
+            self.decimals = decimals
+        }
     }
 }

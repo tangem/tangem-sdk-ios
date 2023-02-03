@@ -1,9 +1,494 @@
-*   b23c3f1 - (HEAD -> release/3.3.4, tag: develop-148, origin/develop, develop) Merge pull request #181 from tangem/IOS-1612_fix_write_json_rpc
+*   04f6481 - (HEAD -> release/3.4.0, tag: develop-200, origin/develop, develop) Merge pull request #247 from tangem/IOS-2933-chinese-translation-card-sdk
 |\  
-| *   93e72fb - Merge branch 'develop' into IOS-1612_fix_write_json_rpc
+| * 2136daf - IOS-2933 Added basic chinese translation
+|/  
+*   0c83446 - (tag: develop-199) Merge pull request #246 from tangem/IOS-2850-overwrite-localization-with-lokalize-com-output-card-sdk
+|\  
+| * ce4e1a9 - IOS-2850 Sorting keys alphabetically
+| * 774d781 - IOS-2850 Added strings exported from lokalise
+|/  
+*   8d418f9 - (tag: develop-198) Merge pull request #245 from tangem/IOS-2816-wallet-keys-are-not-being-retrieved-from-keychain
+|\  
+| * 22e9c20 - IOS-2816 Removing extra changes
+| * e425dcc - IOS-2816 Consistency
+| * 7551378 - IOS-2816 Returned extra whitespace
+| * b012f09 - IOS-2816 Reduced debug output
+| * 6a0217a - IOS-2816 Extra newlines
+| * 25525a9 - IOS-2816 Added output in SecureStorage
+| * ee50dc8 - IOS-2816 Don't output data in sha256
+| * 68eab5c - IOS-2816 Added more logs
+| * e4f29b5 - IOS-2816 Removed "BIO" prefix
+| * d24e306 - (tag: biometry-extra-debug-output-1) IOS-2816 Added more debug info for biometricsstorage
+|/  
+*   6728275 - (tag: develop-197) Merge pull request #243 from tangem/IOS-2474-change-pin-the-header-does-not-fit-in-the-line
+|\  
+| * da33a31 - IOS-2474 Using smaller font size
+| * afe7aa4 - IOS-2474 Removed fixedSize
+| * 2332f3e - IOS-2474 Let the title occupy two lines
+| * 0c39f09 - IOS-2474 Shrinking User Code change header text
+|/  
+*   ad17fae - (tag: develop-196) Merge pull request #242 from tangem/IOS-2779_add_logs
+|\  
+| * 4bbf03c - IOS-2779 Add logs and rename
+|/  
+*   72b51b9 - (tag: develop-195) Merge pull request #241 from tangem/IOS-2722_fix_pin_request
+|\  
+| * aba0cd7 - IOS-2722 Remove debounce for now
+|/  
+*   18f73db - (tag: develop-194) Merge pull request #240 from tangem/IOS-2715_increase_idle_timeout
+|\  
+| *   30a2d37 - IOS-2715 Merge remote-tracking branch 'origin/IOS-2715_increase_idle_timeout' into IOS-2715_increase_idle_timeout
+| |\  
+| | *   29fb5bb - Merge branch 'develop' into IOS-2715_increase_idle_timeout
+| | |\  
+| |_|/  
+|/| |   
+* | |   652d8f6 - (tag: develop-193) Merge pull request #238 from tangem/IOS-2454_update-default-nfc-message
+|\ \ \  
+| * \ \   eba2358 - Merge branch 'develop' into IOS-2454_update-default-nfc-message
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   1cf6629 - (tag: develop-192) Merge pull request #239 from tangem/IOS-2715_increase_idle_timeout
+|\ \ \ \  
+| | * \ \   c3988ff - Merge branch 'develop' into IOS-2454_update-default-nfc-message
+| | |\ \ \  
+| |_|/ / /  
+|/| | | |   
+| | * | | 7127985 - IOS-2454: New text
+| | | * | feee486 - IOS-2715 Polish
+| | | |/  
+| | | * 871c618 - IOS-2715 Resolve NFC issues
+| | |/  
+| |/|   
+| * | f5447e1 - IOS-2715 Increase idle timeout
+|/ /  
+* |   0d2c527 - (tag: develop-191) Merge pull request #234 from tangem/IOS-2592-wording-conflicts-card
+|\ \  
+| |/  
+|/|   
+| * 6fae6b6 - IOS-2592 dialog_attestation_completed_with_warnings_title -> common_warning
+| * 8470733 - IOS-2592 dialog_attestation_completed_with_warnings_message -> attestation_warning_attest_wallets
+| * 8bb1314 - IOS-2592 dialog_attestation_completed_offline_message -> attestation_online_failed_body
+| * 878144c - IOS-2592 dialog_attestation_completed_offline_title -> attestation_online_failed_title
+| * a347d6a - IOS-2592 dialog_attestation_did_failed_message -> attestation_failed_card
+| *   dcad9bd - IOS-2592 Merge branch 'develop' into IOS-2592-wording-conflicts-card
 | |\  
 | |/  
 |/|   
-* | e12cb78 - (tag: develop-147) Merge pull request #180 from tangem/master
- /  
-* c3e3800 - IOS-1612 Fix write json rpc
+* |   85b7078 - (tag: develop-190) Merge pull request #237 from tangem/IOS-2685-dont-use-biometry-for-backup-tasks
+|\ \  
+| * | af2169b - IOS-2685 Refactoring
+| * | 8b21ab6 - IOS-2685 Don't use access code repository in backup tasks
+|/ /  
+| *   1877c7e - IOS-2592 Merge branch 'develop' into IOS-2592-wording-conflicts-card
+| |\  
+| |/  
+|/|   
+* |   b33ffac - (tag: develop-189) Merge pull request #236 from tangem/IOS-2621_skip_biometrics_request_for_scantask
+|\ \  
+| * | 638cd65 - IOS-2621 Skip biometrics request for scantask
+|/ /  
+* |   b1701de - (tag: develop-188) Merge pull request #235 from tangem/IOS-2618_pass_service
+|\ \  
+| * | 5b1937c - IOS-2618 Refactor OnlineCardVerifier initialization
+|/ /  
+| * 640ef3e - IOS-2592 Added placeholder to error_pin_cannot_be_changed_format
+| * 0932be8 - IOS-2592 ’ -> '
+| * 4c51efd - IOS-2592 Removed full stop
+| * 113a852 - IOS-2592 attestation_warning_attest_wallets -> dialog_attestation_completed_with_warnings_message
+| *   92abcf4 - IOS-2592 Merge remote-tracking branch 'origin/develop' into IOS-2592-wording-conflicts-card
+| |\  
+| |/  
+|/|   
+* |   7652e19 - (tag: develop-187) Merge pull request #233 from tangem/IOS-2602_add_explicit_retain
+|\ \  
+| * | 1f54115 - IOS-2602 Retain current command explicitly
+|/ /  
+| * 3cb2c84 - IOS-2592 nfc_alert_default -> view_delegate_scan_description
+| * c0651ec - IOS-2592 changing identifiers:
+|/  
+*   c194461 - (tag: develop-186) Merge pull request #232 from tangem/IOS-2547-biometry-enter-password-is-displayed-if-biometrics-failed
+|\  
+| * 67cc8d8 - IOS-2547 Use static variable
+| * 9c978a8 - IOS-2547 Hiding "enter password" button in the Face ID prompt
+|/  
+*   30d4a2a - (tag: develop-185) Merge pull request #231 from tangem/IOS-1943-passing-user-cancelled-from-biometrics
+|\  
+| * 8bcc8bf - IOS-1943 Passing userCancelled from biometrics
+|/  
+*   60a5ed8 - (tag: develop-184) Merge pull request #230 from tangem/IOS-2509-add-face-id-usage-description-to-tangem-sdk
+|\  
+| *   69b94d2 - Merge branch 'develop' into IOS-2509-add-face-id-usage-description-to-tangem-sdk
+| |\  
+| |/  
+|/|   
+* |   a0c4fd8 - (tag: develop-183) Merge pull request #229 from tangem/IOS-2502-remove-reuse-duration-in-card-sdk
+|\ \  
+| * | dcd2115 - IOS-2502 Removed LAContext+
+| * | 76b70ba - IOS-2502 Removed reuseDuration from LAContext
+|/ /  
+| * 6874ee4 - IOS-2509 Added usage description to other SDK example app target
+|/  
+*   3b75358 - (tag: develop-182) Merge pull request #210 from tangem/IOS-1943-biometry-expose-lacontext
+|\  
+| * c840509 - IOS-1943 Renamed the variable
+| * 0e38c27 - IOS-1943 Refactoring
+| * c459a9d - IOS-1943 Refactoring
+| * 90addd9 - IOS-1943 Removed defaultWithBiometrics
+| * a5f22c3 - IOS-1943 Refactoring
+| * 0c479b4 - IOS-1943 Refactoring
+| * dedad47 - IOS-1943 Removed custom access code request policy
+| * 1b455dd - IOS-1943 Use throwable functions in BiometricStorage
+| * 6f8f48c - IOS-1943 Don't request biometry for `defaultWithBiometrics`
+| * 266296b - IOS-1943 Changed the order of the cases
+| * be470f1 - IOS-1943 Refactoring
+| * fb3cde8 - IOS-1943 Made AccessCodeRepo methods throwable
+| * 161a758 - IOS-1943 Refactoring
+| * 038f0a3 - IOS-1943 Use local context if none passed
+| * dfbf0c5 - IOS-1943 Refactoring
+| * 643f3c2 - IOS-1943 Refactoring
+| *   4aa264e - (tag: biometry-additional-3) Merge branch 'develop' into IOS-1943-biometry-expose-lacontext
+| |\  
+| |/  
+|/|   
+* |   79db9d8 - (tag: develop-181) Merge pull request #228 from tangem/IOS-2469_dispatch_same_queue
+|\ \  
+| * | a187077 - IOS-2469 Dispatch all events into single queue
+|/ /  
+* |   c327e68 - (tag: develop-180) Merge pull request #227 from tangem/IOS-2462_keep_explicit_reference
+|\ \  
+| * \   789e81a - Merge branch 'develop' into IOS-2462_keep_explicit_reference
+| |\ \  
+| |/ /  
+|/| |   
+* | |   3dd95dd - (tag: develop-179) Merge pull request #226 from tangem/IOS-2463_add_reset_to_demo
+|\ \ \  
+| * \ \   873a0b7 - Merge branch 'develop' into IOS-2463_add_reset_to_demo
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | |   d601f23 - (tag: develop-178) Merge pull request #225 from tangem/IOS-2462_completion_After_stuck
+|\ \ \ \  
+| * | | | c5768da - IOS-2462 Send completion handler after nfc stuck
+|/ / / /  
+| * / / d120a88 - IOS-2463 Add reset to factory to demo
+|/ / /  
+| * / de192dd - IOS-2464 Keep explicit reference
+|/ /  
+* |   ecf1205 - (tag: develop-177) Merge pull request #224 from tangem/IOS-2461_reset_retry_counter
+|\ \  
+| * \   059fdb5 - Merge branch 'develop' into IOS-2461_reset_retry_counter
+| |\ \  
+| |/ /  
+|/| |   
+| * | 519dcd8 - IOS-2461 Reset retry counter after failure
+| | *   c0eeee2 - IOS-1943 Merge branch 'develop' into IOS-1943-biometry-expose-lacontext
+| | |\  
+| |_|/  
+|/| |   
+* | |   030d3e3 - (tag: develop-176) Merge pull request #220 from tangem/IOS-2393-add-backup-service-localisation
+|\ \ \  
+| |/ /  
+|/| |   
+| * |   49ec178 - Merge branch 'develop' into IOS-2393-add-backup-service-localisation
+| |\ \  
+| |/ /  
+|/| |   
+* | |   31ed4f1 - (tag: develop-175) Merge pull request #223 from tangem/IOS-2410-wrong-card-wording
+|\ \ \  
+| * | | 020a7fd - IOS-2410 Fixed the test to account for NBSPs
+| * | | dc2f045 - IOS-2410 Refactoring
+| * | | 7bfb6f9 - IOS-2410 Refactoring
+| * | | 1a0cc9e - IOS-2410 Refactoring
+| * | | 4e5cf34 - IOS-2410 Refactoring. Taking card ID format from the config
+| * | | 36c68e7 - IOS-2410 IOS-1843 Different wordings for when there is and there isn't a card ID
+| * | | 160aea8 - IOS-2410 IOS-1843 Changed the wording for "wrong card" error
+|/ / /  
+| * | 661a03c - IOS-2393 Use correct type of code in the reset message
+| * |   d148684 - IOS-2393 Merge branch 'develop' into IOS-2393-add-backup-service-localisation
+| |\ \  
+| |/ /  
+|/| |   
+| * | 7330a77 - IOS-2393 Use integer variables in the localisation wording
+| * | e80a193 - IOS-2393 IOS-2211 Localisation for multiple chunks
+| * | ed4c495 - IOS-2393 IOS-2211 Added backup service localisation
+| | *   48ef8c2 - IOS-1943 Merge branch 'develop' into IOS-1943-biometry-expose-lacontext
+| | |\  
+| |_|/  
+|/| |   
+* | |   efb2a81 - (tag: develop-174) Merge pull request #221 from tangem/IOS-2399_make-sum-function-public
+|\ \ \  
+| |/ /  
+|/| |   
+| * | a64f9ce - IOS-2399: Make sum public
+|/ /  
+* |   03ab40c - (tag: develop-173) Merge pull request #219 from tangem/IOS-2389_change_keyboard_type
+|\ \  
+| * | 443ffdd - IOS-2389 Set default keyboard type
+|/ /  
+| * 3ac5bc8 - IOS-1943 Fixed the saving of cardIDs
+| * aef301d - IOS-1943 Added `accessCodeRequestPolicy` parameter for consistency
+| * 0773763 - IOS-1943 Refactoring the removal of access codes
+| * a212c3f - IOS-1943 Refactoring
+| * 8d7fe31 - IOS-1943 Changed the wording
+| * a11be1e - IOS-1943 Allow ScanTask's access code policy to be overwritten
+| *   4b8eab6 - IOS-1943 Merge remote-tracking branch 'origin/develop' into IOS-1943-biometry-expose-lacontext
+| |\  
+| |/  
+|/|   
+* |   ac59950 - (tag: develop-172) Merge pull request #218 from tangem/IOS-2321_expose_primary_card
+|\ \  
+| * | 83e4e0d - IOS-2321 Expose primary card
+|/ /  
+* |   0ee7e26 - (tag: develop-171) Merge pull request #216 from tangem/IOS-2301_open_for_changes
+|\ \  
+| * | 8466663 - IOS-2301 Open some properties to changes
+|/ /  
+* |   62fea44 - (tag: develop-170) Merge pull request #214 from tangem/IOS-2286_hide_cardId
+|\ \  
+| * \   019cd39 - Merge branch 'develop' into IOS-2286_hide_cardId
+| |\ \  
+| |/ /  
+|/| |   
+* | |   2948003 - (tag: develop-169) Merge pull request #215 from tangem/IOS-2285_change_card_color
+|\ \ \  
+| * | | 715cec5 - IOS-2285 Fix alpha
+| * | | 627e699 - IOS-2285 Change card color
+|/ / /  
+| * | a9f9264 - IOS-2286 Update environment based on card's batch
+| * | 4dc57ef - IOS-2286 Add ability to hide cardId
+|/ /  
+* |   9487bf1 - (tag: develop-168) Merge pull request #213 from tangem/IOS-2277
+|\ \  
+| * | 2de51e0 - Fix error_wrong_card_number
+| * | 6406801 - IOS-2277 Other languages
+| * | 9b67673 - IOS-2277 Fix incorrect error text
+|/ /  
+| * 56fe355 - IOS-1943 Refactoring
+| * 92a4ba5 - IOS-1943 Ability to overwrite access code policy
+| * 785b89b - IOS-1943 Refactoring
+| * 24796b0 - IOS-1943 Added new biometrics policy
+| * cba8a95 - IOS-1943 Clarification
+| * 6be80fd - IOS-1943 Refactoring
+| * cf13b10 - IOS-1943 Clear access code repo on launch
+| * 33dd830 - IOS-1943 Delete access codes manually
+| * 3b7c1a7 - IOS-1943 Use return value instead of completion handler
+| * 0dcdf97 - IOS-1943 Store access codes separately
+| * f992a34 - IOS-1943 Added Touch ID localized reason
+| *   3fd987c - (tag: biometry-additional-2) IOS-1943 Merge branch 'develop' into IOS-1943-biometry-expose-lacontext
+| |\  
+| |/  
+|/|   
+* |   ba03f25 - (tag: develop-167) Merge pull request #211 from tangem/IOS-2257_fix_focus
+|\ \  
+| * | 9134e60 - IOS-2257 Fix focus missing state
+|/ /  
+| * b723a5d - IOS-1943 Don't force access code to be requested
+| * fd1cbbf - IOS-1943 Exposing LAContext in biometry code
+|/  
+*   8f6380f - (tag: develop-166) Merge pull request #209 from tangem/IOS-2201_add_customization_options
+|\  
+| * 2cdb0c7 - IOS-2201 Add ability to pass accessCode into session
+| * 5d1be09 - IOS-2201 Fix ui issues
+| * ce38c6e - IOS-2201 Extend card filter to filter by ranges
+| * b374900 - IOS-2201 Make request more public
+| * 93c7b45 - IOS-2201 Wrap token in WaleltData
+|/  
+*   770f78f - (tag: develop-165) Merge pull request #206 from tangem/IOS-2176_add_generate_otp_command
+|\  
+| *   43c38e1 - Merge branch 'develop' into IOS-2176_add_generate_otp_command
+| |\  
+| |/  
+|/|   
+* |   16c946b - (tag: develop-164) Merge pull request #207 from tangem/IOS-2177_extend_attest_wallet
+|\ \  
+| * | 0f6e1da - IOS-2177 Rename fw constant
+| * | 87fbb9e - IOS-2177 Add confirmation to wallet attestation
+|/ /  
+| * adf2f95 - IOS-2176 Fix labels
+| * e4825e7 - IOS-2176 Add generate OTP command
+|/  
+*   6dd2836 - (tag: develop-163) Merge pull request #202 from tangem/IOS-2100_update_backup_process
+|\  
+| *   b2650fc - Merge branch 'develop' into IOS-2100_update_backup_process
+| |\  
+| |/  
+|/|   
+* |   3f4cb83 - (tag: develop-162) Merge pull request #204 from tangem/IOS-2116_fix_focusable_ios16
+|\ \  
+| * \   41a1b74 - Merge branch 'develop' into IOS-2116_fix_focusable_ios16
+| |\ \  
+| |/ /  
+|/| |   
+| * | 7ff166a - IOS-2116 Fix become first responder for iOS16
+| | *   5673faa - Merge branch 'develop' into IOS-2100_update_backup_process
+| | |\  
+| |_|/  
+|/| |   
+* | |   976aaf7 - (tag: develop-161) Merge pull request #203 from tangem/IOS-2127_reset_test
+|\ \ \  
+| |/ /  
+|/| |   
+| * | 6e099e6 - IOS-2127 Restore reset pins testing
+|/ /  
+| * 302aa7e - IOS-2100 Add ability to skip compatibility checks
+| * ce5b362 - IOS-2100 Add cardId filter
+|/  
+*   bfb3e85 - (tag: develop-160) Merge pull request #199 from tangem/IOS-2049_implement_focusstate_usercode
+|\  
+| *   797d1d2 - Merge branch 'develop' into IOS-2049_implement_focusstate_usercode
+| |\  
+| |/  
+|/|   
+* |   d10f58f - (tag: develop-159) Merge pull request #200 from tangem/IOS-2003_fix_alert_message
+|\ \  
+| * | 463427d - IOS-2003 Show default alert message after code restore
+|/ /  
+| * 2d8a21e - Remove empty line
+| * c49e34a - Remove empty line
+| * 16ac147 - IOS-2049 Add show/hide password button
+|/  
+*   35af1ab - (tag: develop-158) Merge pull request #195 from tangem/IOS-1625-save-passcode-to-apple-keychain
+|\  
+| * 8723c50 - IOS-1625 Add possibility to change active session config
+| * eb3f58f - (tag: biometrics-2) IOS-1625 Refactor LAContext
+| * 507d83b - IOS-1625 Make some models Codable
+| *   fb6face - (tag: biometrics-1) Merge branch 'develop' into IOS-1625-save-passcode-to-apple-keychain
+| |\  
+| |/  
+|/|   
+* |   09cc9b1 - (tag: develop-157) Merge pull request #196 from tangem/IOS-1940-error-invalid-error-text-after-signing-tx-with-another-wallet
+|\ \  
+| * | 78c2a73 - IOS-1940 Changed "specified" to "current"
+| * | 0d28931 - IOS-1940 Don't limit cards by card ID when signing data in the example app
+| * | b7483d1 - IOS-1940 Changed walletNotFound error description
+|/ /  
+| * c59e250 - IOS-1625 Refactor from if let to guard
+| * 2fd8fa1 - IOS-1625 Remove as
+| * 5bdf2f4 - IOS-1625 Update example's usage description
+| * f22cf8c - IOS-1625 Rename method
+| * 96c8fd9 - IOS-1625 Set biometrics reuse duration to 60 sec
+| * 6e11f9f - IOS-1625 Polishing
+| * 758d7dd - IOS-1625 Switch back to main thread
+| * b1275b0 - IOS-1625 Remove auth ui
+| * 10166c3 - IOS-1625 Add request access method
+| *   36f613f - IOS-1625 Merge branch 'develop' into IOS-1625-save-passcode-to-apple-keychain
+| |\  
+| |/  
+|/|   
+* |   535c739 - (tag: develop-156) Merge pull request #194 from tangem/CSS-326_remove_sign_precheck_hashes_length
+|\ \  
+| * | 93f58b1 - CSS-326 Remove hashes check on sign
+|/ /  
+| * fc85c14 - IOS-1625 Rollback change
+| * d94ce82 - IOS-1625 Make BiometricsUtil public
+| *   0e83aaf - IOS-1625 Merge branch 'develop' into IOS-1625-save-passcode-to-apple-keychain
+| |\  
+| |/  
+|/|   
+* |   64bc8e1 - (tag: develop-155) Merge pull request #193 from tangem/CSS-324_send_all_capdu_as_extended
+|\ \  
+| * | 245b837 - CSS-324 Send all APDU as an extended APDU
+|/ /  
+| * 085304e - IOS-1625 Polishing
+| *   d719a31 - IOS-1625 Merge branch 'develop' into IOS-1625-save-passcode-to-apple-keychain
+| |\  
+| |/  
+|/|   
+* |   01b3ea5 - (tag: develop-154) Merge pull request #192 from tangem/CSS-323_display_logs_example
+|\ \  
+| * | bfead2f - CSS-323 Example. Add possibility to display logs
+|/ /  
+* |   b4a4a5c - (tag: develop-153) Merge pull request #188 from tangem/IOS-1695-Remove-error-access-code
+|\ \  
+| * | 76b2056 - add .passcodeRequired
+| * | a78b915 - Update Command.swift
+| * | 9345281 - Update Command.swift
+| * | d044d49 - refactoring
+| * | 37ab80a - Show error when wrongAccessCode
+| * | 7675544 - add pauseSession with message
+|/ /  
+| * c3ba0ff - IOS-1625 Add Biometrics
+| * 9ed8321 - IOS-1625 Update environment after pin changes
+| * 2488137 - IOS-1625 Refactor StorageKey
+| * 8007e62 - IOS-1625 Rollback some changes
+| * e992f7b - IOS-1625 Default saveAccessCodesLocally is FALSE
+| * 6624de3 - IOS-1625 Removed useless config variable
+| * 1b7365f - IOS-1625 Biometry -> biometrics
+| * 00d2935 - IOS-1625 Removed `public` access modifiers
+| * 00a0e73 - IOS-1625 Controlling access code repository via TangemSDK config
+| * 58d1d32 - IOS-1625 Fixed the ignore function
+| * 3f51f0f - IOS-1625 Better handling of the LocalAuthentication access
+| * ce2c0a0 - IOS-1625 Properly handling failure to save access code with biometry
+| * 457077c - IOS-1625 Added some comments
+| * 0abc3f8 - IOS-1625 Hiding password fallback button
+| * e4b2bab - IOS-1625 Don't use biometry during backup
+| * ed160ce - IOS-1625 Refactoring
+| * 19fb6db - IOS-1625 Added a flag to control whether to invoke biometry
+| * 1ab6dc8 - IOS-1625 Don't allow to fall back to device's pin code
+| * e123749 - IOS-1625 Refactoring
+| * da570b4 - IOS-1625 Check if the card requires access code
+| * 12c192f - IOS-1625 Made some of the methods accept arrays
+| * 3297d00 - IOS-1625 Removed authentication delay
+| * a3f661c - IOS-1625 Updated completion delays
+| * 37ef829 - IOS-1625 Unnecessary background
+| * a1980fa - IOS-1625 Code cleanup
+| * bf1502f - IOS-1625 Code cleanup
+| * 2980099 - IOS-1625 Added TODO
+| * 933f8b6 - IOS-1625 Added TODO
+| * 172d399 - IOS-1625 Added a button to remove access codes
+| * 7e80ee4 - IOS-1625 Added FaceID usage description
+| * 15649d2 - IOS-1625 Changed the wording
+| * e76f2f5 - IOS-1625 Refactoring
+| * 70ad74c - IOS-1625 Ability to ignore cards
+| * 7b158d8 - IOS-1625 Turn biometry toggle ON by default
+| * a381eaa - IOS-1625 Reduced completion delay for touch ID / pin
+| * 50166a7 - IOS-1625 Added a delay before completion
+| * b1c12e9 - IOS-1625 Refactoring
+| * 8c5991c - IOS-1625 Exposing access code repo to the outside
+| * 98269c3 - IOS-1625 Confirm access code repository with biometric confirmation
+| * 9c5dca5 - IOS-1625 Made hasAccessCodes public
+| * 2fb8ba7 - IOS-1625 Refactoring
+| * 7b51ec1 - IOS-1625 Refactoring
+| * 3b8a9bf - IOS-1625 Refactoring
+| * fe2c365 - IOS-1625 Refactoring
+| * c4d5131 - IOS-1625 Don't show authentication view if we can't use biometric authentication
+| * 03064f5 - IOS-1625 Added biometry to the passcode screen, added authentication screen
+| * e2c9d72 - IOS-1625 No need for an error
+| * 2a48651 - IOS-1625 Added a TODO
+| * fff89e1 - IOS-1625 Useless code
+| * 93642ea - IOS-1625 Don't do unnecessary authentications
+| * 410161b - IOS-1625 Updated the secure access repo
+| * ae40f77 - IOS-1625 Initial changes
+|/  
+*   55f3713 - (tag: develop-152) Merge pull request #184 from tangem/IOS-1614-add-possibility-to-sign-transacton-by-any-card-of-one-wallet
+|\  
+| *   a23ba13 - Merge branch 'develop' into IOS-1614-add-possibility-to-sign-transacton-by-any-card-of-one-wallet
+| |\  
+| |/  
+|/|   
+* |   d58e7cd - (tag: develop-151) Merge pull request #187 from tangem/IOS-1637_add_missing_fields_into_file
+|\ \  
+| * | 5fcddc8 - IOS-1637 Fix tests
+| * | 247d4b2 - IOS-1637 Add recommended properties into file struct
+|/ /  
+| * 4815301 - IOS-1614 Revert "IOS-1614 Removed the full stop from the error message. Otherwise there is going to be full stops in the message that includes this one."
+| * c6a0f8b - IOS-1614 Removed the full stop from the error message. Otherwise there is going to be full stops in the message that includes this one.
+| * 18ba1ba - IOS-1614 Added new message
+| *   b4eea12 - Merge branch 'develop' into IOS-1614-add-possibility-to-sign-transacton-by-any-card-of-one-wallet
+| |\  
+| |/  
+|/|   
+* |   4d41448 - (tag: develop-150) Merge pull request #186 from tangem/master_dev_update
+|\ \  
+| * | 3c8b5b9 - Merge branch 'develop' into master_dev_update
+|/ /  
+| * cf9ec2c - IOS-1614 Made `cardId` optional when signing
+|/  
+* 41c2146 - (tag: develop-149) Merge pull request #172 from tangem/IOS-1607-string-synchronization-for-application-translation
+* 886d0e8 - Merge branch 'develop' into IOS-1607-string-synchronization-for-application-translation
+* ef6e629 - Merge branch 'develop' into IOS-1607-string-synchronization-for-application-translation
+* b0cf0b3 - Merge branch 'develop' into IOS-1607-string-synchronization-for-application-translation
+* e2742aa - Merge branch 'develop' into IOS-1607-string-synchronization-for-application-translation
+* 17585fe - Removed unused strings

@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import TangemSdk
+import Combine
 
 class AppModel: ObservableObject {
     //MARK:- Inputs
@@ -26,7 +27,7 @@ class AppModel: ObservableObject {
     @Published var personalizationConfig: String =  ""
     
     //MARK:-  Outputs
-    @Published var logText: String = AppModel.logPlaceholder
+    @Published var logText: String = DebugLogger.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
@@ -36,18 +37,28 @@ class AppModel: ObservableObject {
     @Published var showSettings: Bool = false
     //MARK:-  Config
     @Published var handleErrors: Bool = true
+    @Published var displayLogs: Bool = false
+    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
     
     var backupService: BackupService? = nil
+    var resetPinService: ResetPinService? = nil
     
     private lazy var _tangemSdk: TangemSdk = { .init() }()
+    private lazy var logger: DebugLogger = .init()
     
     private var tangemSdk: TangemSdk {
         var config = Config()
-        config.logConfig = .verbose
         config.linkedTerminal = false
         config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
+        config.accessCodeRequestPolicy = accessCodeRequestPolicy
+        if displayLogs {
+            config.logConfig = .custom(logLevel: Log.Level.allCases,
+                                       loggers: [ConsoleLogger(), logger])
+        } else {
+            config.logConfig = .verbose
+        }
         _tangemSdk.config = config
         return _tangemSdk
     }
@@ -55,10 +66,22 @@ class AppModel: ObservableObject {
     private var issuerDataResponse: ReadIssuerDataResponse?
     private var issuerExtraDataResponse: ReadIssuerExtraDataResponse?
     private var savedFiles: [File]?
-    private static let logPlaceholder = "Logs will appear here"
+    private var bag: Set<AnyCancellable> = []
+    
+    init() {
+        logger
+            .logsPublisher
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .sink {[weak self] logs in
+                self?.logText = logs
+            }
+            .store(in: &bag)
+    }
     
     func clear() {
         logText = ""
+        logger.clear()
     }
     
     func copy() {
@@ -89,22 +112,14 @@ class AppModel: ObservableObject {
         }
     }
     
-    private func log(_ object: Any) {
-        let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
-        if logText == AppModel.logPlaceholder {
-            logText = ""
-        }
-        logText = "\(text)\n\n" + logText
-    }
-    
     private func complete(with object: Any) {
-        log(object)
+        logger.log(object)
         isScanning = false
     }
     
     private func complete(with error: TangemSdkError) {
         if !error.isUserCancelled {
-            self.log("\(error.localizedDescription)")
+            logger.log("\(error.localizedDescription)")
         }
         
         isScanning = false
@@ -203,12 +218,6 @@ extension AppModel {
     }
     
     func signHash(walletPublicKey: Data) {
-        guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
-            return
-        }
-        
-        
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -227,18 +236,13 @@ extension AppModel {
         
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
-                       cardId: cardId,
+                       cardId: nil,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hash"),
                        completion: handleCompletion)
     }
     
     func signHashes(walletPublicKey: Data) {
-        guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
-            return
-        }
-        
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -251,7 +255,7 @@ extension AppModel {
         
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
-                       cardId: cardId,
+                       cardId: nil,
                        derivationPath: path,
                        initialMessage: Message(header: "Signing hashes"),
                        completion: handleCompletion)
@@ -316,7 +320,7 @@ extension AppModel {
                     createWallet.run(in: session) { result2 in
                         switch result2 {
                         case .success(let response):
-                            self.log(response)
+                            self.logger.log(response)
                         case .failure:
                             break
                         }
@@ -571,6 +575,10 @@ extension AppModel {
     func resetBackup() {
         tangemSdk.startSession(with: ResetBackupCommand(), completion: handleCompletion)
     }
+
+    func resetToFactory() {
+        tangemSdk.startSession(with: ResetToFactorySettingsTask(), completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -591,7 +599,7 @@ extension AppModel {
     }
     
     private func printJson() {
-        log(json)
+        logger.log(json)
     }
 }
 
@@ -608,7 +616,7 @@ extension AppModel {
     }
     
     private func printPersonalizationConfig() {
-        log(personalizationConfig)
+        logger.log(personalizationConfig)
     }
     
     func personalize() {
@@ -626,7 +634,7 @@ extension AppModel {
             
             tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
-            log(error)
+            logger.log(error)
         }
     }
 }
@@ -665,6 +673,7 @@ extension AppModel {
         case depersonalize
         case personalize
         case resetBackup
+        case resetToFactory
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -696,6 +705,7 @@ extension AppModel {
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
         case .resetBackup: resetBackup()
+        case .resetToFactory: resetToFactory()
         }
     }
 }
@@ -711,6 +721,16 @@ extension AppModel {
         showSettings = true
     }
     
+    func onRemoveAccessCodes() {
+        let repo = AccessCodeRepository()
+        repo.clear()
+    }
+    
+    func onResetService() {
+        resetPinService = ResetPinService(config: tangemSdk.config)
+        showResetPin = true
+    }
+    
     @ViewBuilder
     func makeSettingsDestination() -> some View {
         SettingsView().environmentObject(self)
@@ -722,6 +742,15 @@ extension AppModel {
             BackupView().environmentObject(service)
         } else {
             BackupView()
+        }
+    }
+    
+    @ViewBuilder
+    func makePinResetDestination() -> some View {
+        if let service = self.resetPinService {
+            ResetPinView().environmentObject(service)
+        } else {
+            ResetPinView()
         }
     }
 }

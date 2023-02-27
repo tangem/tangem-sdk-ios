@@ -98,11 +98,10 @@ extension Command {
             Log.apdu("C-APDU serialization finish".titleFormatted)
             
             transceive(apdu: commandApdu, in: session) { result in
-                session.releaseTag()
                 switch result {
                 case .success(let responseApdu):
                     do {
-                        
+                        session.releaseTag()
                         Log.apdu("R-APDU deserialization start".titleFormatted)
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
                         Log.apdu("R-APDU deserialization finish".titleFormatted)
@@ -129,6 +128,7 @@ extension Command {
                             self.requestPin(.passcode, session, completion: completion)
                         } else { fallthrough }
                     default:
+                        session.releaseTag()
                         completion(.failure(error))
                     }
                 }
@@ -235,6 +235,7 @@ extension Command {
                     session.resume()
                     self.transceiveInternal(in: session, completion: completion)
                 case .failure(let error):
+                    session.releaseTag()
                     completion(.failure(error))
                 }
             }

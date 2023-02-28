@@ -91,12 +91,12 @@ extension Command {
     
     private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
-            session.rememberTag()
-            
             Log.apdu("C-APDU serialization start".titleFormatted)
             let commandApdu = try serialize(with: session.environment)
             Log.apdu("C-APDU serialization finish".titleFormatted)
-            
+
+            session.rememberTag()
+
             transceive(apdu: commandApdu, in: session) { result in
                 switch result {
                 case .success(let responseApdu):
@@ -134,6 +134,7 @@ extension Command {
                 }
             }
         } catch {
+            session.releaseTag()
             completion(.failure(error.toTangemSdkError()))
         }
     }

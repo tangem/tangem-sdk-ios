@@ -319,6 +319,8 @@ public class CardSession {
     
     /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
     func rememberTag() {
+        guard case .tag = reader.tag.value else { return }
+        
         currentTag = reader.tag.value
     }
     

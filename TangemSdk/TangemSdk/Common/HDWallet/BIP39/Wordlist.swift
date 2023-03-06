@@ -31,6 +31,7 @@ public enum Wordlist {
 
         let content = try String(contentsOfFile: path, encoding: .utf8)
         let words = content.trim().components(separatedBy: "\n")
+        
         guard words.count == 2048 else {
             throw MnemonicError.invalidWordCount
         }

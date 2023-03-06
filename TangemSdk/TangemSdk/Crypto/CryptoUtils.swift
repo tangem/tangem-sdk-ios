@@ -11,7 +11,7 @@ import CommonCrypto
 import CryptoKit
 
 @available(iOS 13.0, *)
-public final class CryptoUtils {
+public enum CryptoUtils {
     
     /**
      * Generates array of random bytes.

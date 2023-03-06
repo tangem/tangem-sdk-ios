@@ -49,7 +49,7 @@ public final class CryptoUtils {
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
             // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
-            if publicKey.count == 33 {
+            if publicKey.count == Constants.p256CompressedKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
 
@@ -81,7 +81,7 @@ public final class CryptoUtils {
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
             // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
-            if publicKey.count == 33 {
+            if publicKey.count == Constants.p256CompressedKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
 
@@ -124,5 +124,13 @@ fileprivate struct CustomSha256Digest: Digest {
     
     func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
        try hash.withUnsafeBytes(body)
+    }
+}
+
+// MARK: - Constants
+@available(iOS 13.0, *)
+private extension CryptoUtils {
+    enum Constants {
+        static let p256CompressedKeySize = 33
     }
 }

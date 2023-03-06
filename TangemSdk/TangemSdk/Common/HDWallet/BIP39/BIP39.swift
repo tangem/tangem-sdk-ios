@@ -49,8 +49,9 @@ public struct BIP39 {
         }
 
         let allWords = wordlist.words
+        let maxWordIndex = allWords.count
 
-        guard indexes.allSatisfy({ $0 < allWords.count }) else {
+        guard indexes.allSatisfy({ $0 < maxWordIndex }) else {
             throw MnemonicError.mnenmonicCreationFailed
         }
 

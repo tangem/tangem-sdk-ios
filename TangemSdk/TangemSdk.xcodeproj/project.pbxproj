@@ -293,6 +293,14 @@
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
+		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
+		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
+		DC1244B929B610550037BC05 /* MnemonicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* MnemonicTests.swift */; };
+		DC1244BD29B61DCB0037BC05 /* seed_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */; };
+		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
+		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
+		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
+		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
@@ -605,6 +613,14 @@
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
+		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
+		DC1244B829B610550037BC05 /* MnemonicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicTests.swift; sourceTree = "<group>"; };
+		DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed_test_vectors.json; sourceTree = "<group>"; };
+		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
+		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
+		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
+		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
@@ -676,6 +692,7 @@
 		5D170AEF26B42C88000D4F36 /* HDWallet */ = {
 			isa = PBXGroup;
 			children = (
+				DC59CB0129AF582800EC14E1 /* BIP39 */,
 				5D2B798426BBED1D002A78D4 /* BIP32 */,
 				5D14091B26B9692500B811A1 /* BIP44.swift */,
 				5D14091D26B9886800B811A1 /* HDWalletError.swift */,
@@ -1183,6 +1200,7 @@
 		5DA80CA7231D247A00A50A10 /* TangemSdkTests */ = {
 			isa = PBXGroup;
 			children = (
+				DC1244BB29B61DAC0037BC05 /* Seed */,
 				5D38D0672679040C0052F67C /* Jsons */,
 				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
@@ -1379,6 +1397,36 @@
 			path = Deserialization;
 			sourceTree = "<group>";
 		};
+		DC1244BB29B61DAC0037BC05 /* Seed */ = {
+			isa = PBXGroup;
+			children = (
+				DC1244B829B610550037BC05 /* MnemonicTests.swift */,
+				DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */,
+			);
+			path = Seed;
+			sourceTree = "<group>";
+		};
+		DC59CB0129AF582800EC14E1 /* BIP39 */ = {
+			isa = PBXGroup;
+			children = (
+				DC59CB0229AF590200EC14E1 /* Wordlists */,
+				DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */,
+				DC59CB0329AF597900EC14E1 /* Wordlist.swift */,
+				DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */,
+				DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */,
+				DC1244B229B60B6F0037BC05 /* BIP39.swift */,
+			);
+			path = BIP39;
+			sourceTree = "<group>";
+		};
+		DC59CB0229AF590200EC14E1 /* Wordlists */ = {
+			isa = PBXGroup;
+			children = (
+				DC1244B429B60E480037BC05 /* english.txt */,
+			);
+			path = Wordlists;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1527,6 +1575,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC1244B529B60E480037BC05 /* english.txt in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
 				5D6A92D82344E2D700158457 /* Localizable.strings in Resources */,
@@ -1538,6 +1587,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC1244BD29B61DCB0037BC05 /* seed_test_vectors.json in Resources */,
 				5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */,
 				5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
@@ -1604,6 +1654,7 @@
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */,
 				DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */,
 				DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */,
 				5D445B7026E2944300F6F0FE /* AuthorizeMode.swift in Sources */,
@@ -1635,6 +1686,7 @@
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
+				DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */,
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
@@ -1654,6 +1706,7 @@
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
+				DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */,
 				5D8666622731687A0095CC82 /* ResetCodesViewModel.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */,
@@ -1671,6 +1724,7 @@
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
 				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,
 				5DA5B613233E11A50058C720 /* ResponseApdu.swift in Sources */,
+				DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */,
 				5D503A40276A4411007B1C1A /* RoundedButtonStyle.swift in Sources */,
 				B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */,
 				5DE43A5E26D4F45800ECA36A /* LinkPrimaryCardCommand.swift in Sources */,
@@ -1758,6 +1812,7 @@
 				5DA3A2EF251CA507009A8E08 /* CheckUserCodesCommand.swift in Sources */,
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
+				DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
 				5DE43A6626D515B100ECA36A /* FinalizePrimaryCardTask.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
@@ -1786,6 +1841,7 @@
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				DC1244B929B610550037BC05 /* MnemonicTests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,

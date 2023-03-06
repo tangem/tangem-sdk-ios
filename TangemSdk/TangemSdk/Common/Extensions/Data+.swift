@@ -98,6 +98,10 @@ extension Data {
     public var toBytes: [Byte] {
         return Array(self)
     }
+
+    func toBits() -> [String] {
+        return flatMap { $0.toBits() }
+    }
     
     @available(iOS 13.0, *)
     func decodeTlv<T>(tag: TlvTag) -> T? {

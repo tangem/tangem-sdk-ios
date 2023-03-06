@@ -91,18 +91,17 @@ extension Command {
     
     private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
-            session.rememberTag()
-            
             Log.apdu("C-APDU serialization start".titleFormatted)
             let commandApdu = try serialize(with: session.environment)
             Log.apdu("C-APDU serialization finish".titleFormatted)
-            
+
+            session.rememberTag()
+
             transceive(apdu: commandApdu, in: session) { result in
-                session.releaseTag()
                 switch result {
                 case .success(let responseApdu):
                     do {
-                        
+                        session.releaseTag()
                         Log.apdu("R-APDU deserialization start".titleFormatted)
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
                         Log.apdu("R-APDU deserialization finish".titleFormatted)
@@ -129,11 +128,13 @@ extension Command {
                             self.requestPin(.passcode, session, completion: completion)
                         } else { fallthrough }
                     default:
+                        session.releaseTag()
                         completion(.failure(error))
                     }
                 }
             }
         } catch {
+            session.releaseTag()
             completion(.failure(error.toTangemSdkError()))
         }
     }
@@ -235,6 +236,7 @@ extension Command {
                     session.resume()
                     self.transceiveInternal(in: session, completion: completion)
                 case .failure(let error):
+                    session.releaseTag()
                     completion(.failure(error))
                 }
             }

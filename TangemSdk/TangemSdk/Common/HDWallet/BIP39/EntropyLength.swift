@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum EntropyLength: Int {
+public enum EntropyLength: Int, CaseIterable {
     case bits128 = 128
     case bits160 = 160
     case bits192 = 192
@@ -23,5 +23,9 @@ public enum EntropyLength: Int {
         case .bits224: return 21
         case .bits256: return 24
         }
+    }
+
+    var cheksumBitsCount: Int {
+        rawValue / 32
     }
 }

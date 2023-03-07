@@ -12,5 +12,10 @@ public enum MnemonicError: Error {
     case invalidEntropyLength
     case invalidWordCount
     case invalidWordsFile
+    case invalidCheksum
     case mnenmonicCreationFailed
+    case normalizationFailed
+    case wrongWordCount
+    case unsupportedLanguage
+    case invalidWords(words: [String])
 }

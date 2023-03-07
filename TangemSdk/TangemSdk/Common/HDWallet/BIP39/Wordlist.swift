@@ -9,7 +9,7 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public enum Wordlist {
+public enum Wordlist: CaseIterable {
     case en
 
     /// This var reads a big array from a file

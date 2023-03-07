@@ -13,7 +13,7 @@ import XCTest
 @available(iOS 13.0, *)
 class MnemonicTests: XCTestCase {
     func testReadWords() {
-        let langs: [Wordlist] = [.en]
+        let langs = Wordlist.allCases
 
         for lang in langs {
             XCTAssertTrue(lang.words.count > 0)
@@ -21,8 +21,8 @@ class MnemonicTests: XCTestCase {
     }
 
     func testMnemonicGenerationBase() throws  {
-        let entropyLengthArray: [EntropyLength] = [.bits128, .bits160, .bits192, .bits224, .bits256]
-        let wordLists: [Wordlist] = [.en]
+        let entropyLengthArray = EntropyLength.allCases
+        let wordLists = Wordlist.allCases
 
         let bip39 = BIP39()
 
@@ -34,8 +34,8 @@ class MnemonicTests: XCTestCase {
         }
     }
 
-    func testMnemonicGenerationByEnVectors() throws  {
-        guard let allVectors = try getTestVectors(),
+    func testMnemonicByEnVectors() throws  {
+        guard let allVectors = try getTestVectors(from: Constants.seedTestVectorsFilename),
               let vectors = allVectors[Constants.englishTestVectors] as? [[String]] else {
             XCTFail("Failed to parse test vectors file.")
             return
@@ -46,21 +46,68 @@ class MnemonicTests: XCTestCase {
         for vector in vectors {
             let entropy = vector[0]
             let expectedMnemonic = vector[1]
-            let mnemonic = (try bip39.generateMnemonic(from: Data(hexString: entropy), wordlist: .en)).joined(separator: " ")
-            XCTAssertEqual(mnemonic, expectedMnemonic)
+            let expectedSeed = vector[2]
+
+            let mnemonic = try bip39.generateMnemonic(from: Data(hexString: entropy), wordlist: .en)
+            let mnemonicString = bip39.convertToMnemonicString(mnemonic)
+            XCTAssertEqual(mnemonicString, expectedMnemonic)
+
+            let seed = try bip39.generateSeed(from: mnemonic, passphrase: Constants.passphrase)
+            XCTAssertEqual(seed.hexString.lowercased(), expectedSeed)
         }
     }
 
-    private func getTestVectors() throws -> [String: Any]? {
-        guard let url = Bundle(for: MnemonicTests.self).url(forResource: "seed_test_vectors", withExtension: "json") else {
+    func testParseMnemonic() throws {
+        guard let allVectors = try getTestVectors(from: Constants.mnemonicValidTestVectorsFilename),
+              let vectors = allVectors[Constants.englishTestVectors] as? [[String]] else {
+            XCTFail("Failed to parse test vectors file.")
+            return
+        }
+
+        let bip39 = BIP39()
+
+        for vector in vectors {
+            let mnemonicToParse = vector[0]
+            let expectedMnemonic = vector[1]
+
+            let parsedMnemonic = try bip39.parse(mnemonicString: mnemonicToParse)
+            let parsedMnemonicString = bip39.convertToMnemonicString(parsedMnemonic)
+            XCTAssertEqual(parsedMnemonicString, expectedMnemonic)
+        }
+    }
+
+    func testParseInvalidMnemonic() throws {
+        guard let allVectors = try getTestVectors(from: Constants.mnemonicInvalidTestVectorsFilename),
+              let vectors = allVectors[Constants.englishTestVectors] as? [[String]],
+              let firstVector = vectors.first else {
+            XCTFail("Failed to parse test vectors file.")
+            return
+        }
+
+        let bip39 = BIP39()
+
+        for cases in firstVector {
+            XCTAssertThrowsError(try bip39.parse(mnemonicString: cases))
+        }
+    }
+
+    func testSwapWords() throws {
+        let bip39 = BIP39()
+        let valid = "legal winner thank year wave sausage worth useful legal winner thank yellow"
+        var components = valid.split(separator: " ")
+        components.swapAt(3, 4)
+        let invalid = components.joined(separator: " ")
+        XCTAssertThrowsError(try bip39.parse(mnemonicString: invalid))
+    }
+
+    private func getTestVectors(from filename: String) throws -> [String: Any]? {
+        guard let url = Bundle(for: MnemonicTests.self).url(forResource: filename, withExtension: "json") else {
             return nil
         }
 
         let data = try Data(contentsOf: url)
-        let options: JSONSerialization.ReadingOptions = [.allowFragments, .mutableContainers, .mutableLeaves]
 
-        guard let dictionary =
-                try JSONSerialization.jsonObject(with: data, options: options) as? [String: Any] else {
+        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             return nil
         }
 
@@ -72,5 +119,9 @@ class MnemonicTests: XCTestCase {
 private extension MnemonicTests {
     enum Constants {
         static let englishTestVectors = "english"
+        static let passphrase = "TREZOR"
+        static let seedTestVectorsFilename = "seed_test_vectors"
+        static let mnemonicValidTestVectorsFilename = "mnemonic_valid_test_vectors"
+        static let mnemonicInvalidTestVectorsFilename = "mnemonic_invalid_test_vectors"
     }
 }

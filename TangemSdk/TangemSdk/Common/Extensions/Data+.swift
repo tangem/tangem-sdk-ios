@@ -82,7 +82,30 @@ extension Data {
     public init(_ byte: Byte) {
         self = Data([byte])
     }
-    
+
+    init?(bitsString: String) {
+        let byteLength = 8
+        
+        guard bitsString.count % byteLength == 0 else {
+            return nil
+        }
+
+        let binaryBytes = Array(bitsString).chunked(into: byteLength)
+
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(bitsString.count / byteLength)
+
+        for binaryByte in binaryBytes {
+            guard let byte = UInt8(String(binaryByte), radix: 2) else {
+                return nil
+            }
+
+            bytes.append(byte)
+        }
+
+        self = Data(bytes)
+    }
+
     @available(iOS 13.0, *)
     public func getSha256() -> Data {
         let digest = SHA256.hash(data: self)
@@ -149,8 +172,13 @@ extension Data {
     }
     
     @available(iOS 13.0, *)
-    public func pbkdf2sha256(salt: Data, rounds: Int) throws -> Data {
-        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
+    public func pbkdf2sha256(salt: Data, rounds: Int, keyByteCount: Int = 32) throws -> Data {
+        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
+    }
+
+    @available(iOS 13.0, *)
+    public func pbkdf2sha512(salt: Data, rounds: Int, keyByteCount: Int = 64) throws -> Data {
+        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA512), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
     }
     
     //SO14443A

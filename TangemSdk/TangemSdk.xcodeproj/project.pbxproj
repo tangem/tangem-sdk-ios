@@ -296,7 +296,9 @@
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
 		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
 		DC1244B929B610550037BC05 /* MnemonicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* MnemonicTests.swift */; };
-		DC1244BD29B61DCB0037BC05 /* seed_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */; };
+		DC1244C129B766920037BC05 /* seed_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C029B766920037BC05 /* seed_test_vectors.json */; };
+		DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */; };
+		DC1244C529B769400037BC05 /* mnemonic_invalid_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
@@ -616,7 +618,9 @@
 		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
 		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
 		DC1244B829B610550037BC05 /* MnemonicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicTests.swift; sourceTree = "<group>"; };
-		DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed_test_vectors.json; sourceTree = "<group>"; };
+		DC1244C029B766920037BC05 /* seed_test_vectors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed_test_vectors.json; sourceTree = "<group>"; };
+		DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mnemonic_valid_test_vectors.json; sourceTree = "<group>"; };
+		DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mnemonic_invalid_test_vectors.json; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
@@ -1401,7 +1405,9 @@
 			isa = PBXGroup;
 			children = (
 				DC1244B829B610550037BC05 /* MnemonicTests.swift */,
-				DC1244BC29B61DCB0037BC05 /* seed_test_vectors.json */,
+				DC1244C029B766920037BC05 /* seed_test_vectors.json */,
+				DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */,
+				DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */,
 			);
 			path = Seed;
 			sourceTree = "<group>";
@@ -1587,8 +1593,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC1244BD29B61DCB0037BC05 /* seed_test_vectors.json in Resources */,
 				5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */,
+				DC1244C529B769400037BC05 /* mnemonic_invalid_test_vectors.json in Resources */,
 				5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
 				5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */,
@@ -1601,8 +1607,10 @@
 				5D544094268243F700F7D05B /* Card.json in Resources */,
 				5D5440982682497100F7D05B /* v4.json in Resources */,
 				5D4B127726D3CEE7006E173C /* ReadFiles.json in Resources */,
+				DC1244C129B766920037BC05 /* seed_test_vectors.json in Resources */,
 				5D3B9F0326BD678500532CC7 /* SignHashes.json in Resources */,
 				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
+				DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
 				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,

@@ -295,10 +295,14 @@
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
 		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
-		DC1244B929B610550037BC05 /* MnemonicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* MnemonicTests.swift */; };
+		DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* BIP39Tests.swift */; };
 		DC1244C129B766920037BC05 /* seed_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C029B766920037BC05 /* seed_test_vectors.json */; };
 		DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */; };
 		DC1244C529B769400037BC05 /* mnemonic_invalid_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */; };
+		DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */; };
+		DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C829B778750037BC05 /* BIP32Tests.swift */; };
+		DC1244CB29B9ECAA0037BC05 /* UInt64+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */; };
+		DC1244CD29B9F6D70037BC05 /* Secp256r1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
@@ -617,10 +621,14 @@
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
 		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
-		DC1244B829B610550037BC05 /* MnemonicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicTests.swift; sourceTree = "<group>"; };
+		DC1244B829B610550037BC05 /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
 		DC1244C029B766920037BC05 /* seed_test_vectors.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed_test_vectors.json; sourceTree = "<group>"; };
 		DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mnemonic_valid_test_vectors.json; sourceTree = "<group>"; };
 		DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mnemonic_invalid_test_vectors.json; sourceTree = "<group>"; };
+		DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPrivateKey.swift; sourceTree = "<group>"; };
+		DC1244C829B778750037BC05 /* BIP32Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BIP32Tests.swift; sourceTree = "<group>"; };
+		DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+.swift"; sourceTree = "<group>"; };
+		DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256r1Utils.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
@@ -710,6 +718,7 @@
 				5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */,
 				5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */,
 				5D14091F26BAABD400B811A1 /* BIP32.swift */,
+				DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */,
 			);
 			path = BIP32;
 			sourceTree = "<group>";
@@ -792,6 +801,7 @@
 		5D38D0672679040C0052F67C /* Jsons */ = {
 			isa = PBXGroup;
 			children = (
+				DC1244BB29B61DAC0037BC05 /* BIP39 */,
 				5D4B127426D3CCE5006E173C /* Files */,
 				5D3217442684B193000C3AAF /* Personalize */,
 				5D46F15E26811D4000DC6447 /* SignHash.json */,
@@ -1203,7 +1213,6 @@
 		5DA80CA7231D247A00A50A10 /* TangemSdkTests */ = {
 			isa = PBXGroup;
 			children = (
-				DC1244BB29B61DAC0037BC05 /* Seed */,
 				5D38D0672679040C0052F67C /* Jsons */,
 				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
@@ -1211,6 +1220,8 @@
 				5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */,
 				5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */,
 				5DA79429236C64D100B33DB5 /* IntUtilsTests.swift */,
+				DC1244B829B610550037BC05 /* BIP39Tests.swift */,
+				DC1244C829B778750037BC05 /* BIP32Tests.swift */,
 				5D149479268625A400C0D923 /* CommonTests.swift */,
 				5D6795B1237AEFB60075A330 /* ApduTests.swift */,
 				5D437EEA237BE980009C82A8 /* TlvTests.swift */,
@@ -1286,6 +1297,7 @@
 				5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */,
 				5D27C8A727736F190095409C /* Secp256k1Key.swift */,
 				5D27C8A927737D200095409C /* Secp256k1Signature.swift */,
+				DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1328,6 +1340,7 @@
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
 				DA6C7529292682650070EEFD /* LAContext+.swift */,
+				DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1401,15 +1414,14 @@
 			path = Deserialization;
 			sourceTree = "<group>";
 		};
-		DC1244BB29B61DAC0037BC05 /* Seed */ = {
+		DC1244BB29B61DAC0037BC05 /* BIP39 */ = {
 			isa = PBXGroup;
 			children = (
-				DC1244B829B610550037BC05 /* MnemonicTests.swift */,
 				DC1244C029B766920037BC05 /* seed_test_vectors.json */,
 				DC1244C229B766B70037BC05 /* mnemonic_valid_test_vectors.json */,
 				DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */,
 			);
-			path = Seed;
+			path = BIP39;
 			sourceTree = "<group>";
 		};
 		DC59CB0129AF582800EC14E1 /* BIP39 */ = {
@@ -1671,7 +1683,9 @@
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
 				5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */,
+				DC1244CD29B9F6D70037BC05 /* Secp256r1Utils.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
+				DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */,
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
@@ -1741,6 +1755,7 @@
 				5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */,
 				5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */,
 				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
+				DC1244CB29B9ECAA0037BC05 /* UInt64+.swift in Sources */,
 				5D379C2B268FA4D200C7F473 /* CompletionResult.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				B0D3C48B26088ECD0038A5C9 /* Array+Tlv.swift in Sources */,
@@ -1849,7 +1864,8 @@
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
-				DC1244B929B610550037BC05 /* MnemonicTests.swift in Sources */,
+				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,

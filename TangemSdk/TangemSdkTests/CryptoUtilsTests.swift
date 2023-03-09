@@ -152,6 +152,23 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertEqual(unmarshalled?.s.hexString, "4D5A1F20E671A6CC57D2A46FC28488C833B4337B5C37089B99BBC16707459BA1")
         XCTAssertEqual(unmarshalled?.v.hexString, "1C")
     }
+
+    func testSecp256k1PrivateKeyValidation() {
+        let utils = Secp256k1Utils()
+
+        XCTAssertFalse(utils.isPrivateKeyValid(Data()))
+        XCTAssertFalse(utils.isPrivateKeyValid(Data(repeating: UInt8(0), count: 32)))
+    }
+
+    func testSecp256r1PrivateKeyValidation() {
+        let utils = Secp256r1Utils()
+
+        XCTAssertFalse(utils.isPrivateKeyValid(Data()))
+        XCTAssertFalse(utils.isPrivateKeyValid(Data(repeating: UInt8(0), count: 32)))
+        XCTAssertFalse(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFFFE92BF972115EB5008573E60811CA5A79B40EAAF9036189360F47413")))
+        XCTAssertFalse(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC4FC632551")))
+        XCTAssertTrue(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550")))
+    }
 }
 
 

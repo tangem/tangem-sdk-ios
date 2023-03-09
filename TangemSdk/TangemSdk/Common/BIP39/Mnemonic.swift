@@ -9,8 +9,21 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public enum Mnemonic {
-    public static func generateMnemonic(entropyLength: EntropyLength, wordlist: Wordlist) throws {
+public struct Mnemonic {
+    public let mnemonicComponents: [String]
+    public let wordlist: Wordlist
 
+    public var mnemonic: String { bip39.convertToMnemonicString(mnemonicComponents) }
+
+    private let bip39 = BIP39()
+
+    public init(with entropy: EntropyLength = .bits128, wordList: Wordlist = .en) throws {
+        mnemonicComponents = try bip39.generateMnemonic(entropyLength: entropy, wordlist: wordList)
+        self.wordlist = wordList
+    }
+
+    public init(with mnemonic: String) throws {
+        mnemonicComponents = try bip39.parse(mnemonicString: mnemonic)
+        self.wordlist = try bip39.parseWordlist(from: mnemonicComponents)
     }
 }

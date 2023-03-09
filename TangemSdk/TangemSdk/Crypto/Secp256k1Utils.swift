@@ -117,6 +117,13 @@ public final class Secp256k1Utils {
         
         return try serializePublicKey(&publicKey, compressed: compressed)
     }
+
+    func isPrivateKeyValid(_ privateKey: Data) -> Bool {
+        guard !privateKey.isEmpty else { return false }
+
+        let privateKey = privateKey.toBytes
+        return secp256k1_ec_seckey_verify(context, privateKey) == 1
+    }
     
     func serializeDer(_ signature: inout secp256k1_ecdsa_signature) throws -> Data {
         var length: Int = 128

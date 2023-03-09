@@ -9,13 +9,13 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public struct BIP39 {
+struct BIP39 {
     /// Generate a mnemonic.
     /// - Parameters:
     ///   - entropyLength: The  entropy length to use. Default is 128 bit.
     ///   - wordlist: The wordlist to use. Default is english.
     /// - Returns: The generated mnemonic splitted to components
-    public func generateMnemonic(entropyLength: EntropyLength = .bits128, wordlist: Wordlist = .en) throws -> [String] {
+    func generateMnemonic(entropyLength: EntropyLength = .bits128, wordlist: Wordlist = .en) throws -> [String] {
         guard entropyLength.rawValue % 32 == 0 else {
             throw MnemonicError.mnenmonicCreationFailed
         }
@@ -30,7 +30,7 @@ public struct BIP39 {
     ///   - mnemonic: The mnemonic to use
     ///   - passphrase: The passphrase to use. Default is no passphrase (empty).
     /// - Returns: The generated seed
-    public func generateSeed(from mnemonicComponents: [String], passphrase: String = "") throws -> Data {
+    func generateSeed(from mnemonicComponents: [String], passphrase: String = "") throws -> Data {
         try validate(mnemonicComponents: mnemonicComponents)
 
         let mnemonicString = convertToMnemonicString(mnemonicComponents)
@@ -40,11 +40,11 @@ public struct BIP39 {
         return seed
     }
 
-    public func convertToMnemonicString(_ mnemonicComponents: [String]) -> String {
+    func convertToMnemonicString(_ mnemonicComponents: [String]) -> String {
         return mnemonicComponents.joined(separator: " ")
     }
 
-    public func parse(mnemonicString: String) throws -> [String] {
+    func parse(mnemonicString: String) throws -> [String] {
         let regex = try NSRegularExpression(pattern: "[a-zA-Z]+")
         let range = NSRange(location: 0, length: mnemonicString.count)
         let matches = regex.matches(in: mnemonicString, range: range)
@@ -77,7 +77,7 @@ public struct BIP39 {
             return String(text[stringRange])
         }
 
-    public func validate(mnemonicComponents: [String]) throws {
+    func validate(mnemonicComponents: [String]) throws {
         // Validate words count
         guard !mnemonicComponents.isEmpty else {
             throw MnemonicError.wrongWordCount
@@ -88,7 +88,7 @@ public struct BIP39 {
         }
 
         // Validate wordlist by the first word
-        let wordlist = try getWordlist(by: mnemonicComponents[0])
+        let wordlist = try getWordlist(by: mnemonicComponents[0]).1
 
         // Validate all the words
         var invalidWords = Set<String>()
@@ -134,6 +134,11 @@ public struct BIP39 {
         guard calculatedChecksumBits == checksumBits else {
             throw MnemonicError.invalidCheksum
         }
+    }
+
+    // Validate wordlist by the first word
+    func parseWordlist(from mnemonicComponents: [String]) throws -> Wordlist {
+        return try getWordlist(by: mnemonicComponents[0]).0
     }
 
     /// Generate a mnemonic from data. Useful for testing purposes.
@@ -183,12 +188,12 @@ public struct BIP39 {
         return data
     }
 
-    private func getWordlist(by word: String) throws -> [String] {
+    private func getWordlist(by word: String) throws -> (Wordlist, [String]) {
         for list in Wordlist.allCases {
             let words = list.words
 
             if words.contains(word) {
-                return words
+                return (list, words)
             }
         }
 

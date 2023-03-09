@@ -1,5 +1,5 @@
 //
-//  MnemonicTests.swift
+//  BIP39Tests.swift
 //  TangemSdkTests
 //
 //  Created by Alexander Osokin on 06.03.2023.
@@ -11,7 +11,7 @@ import XCTest
 @testable import TangemSdk
 
 @available(iOS 13.0, *)
-class MnemonicTests: XCTestCase {
+class BIP39Tests: XCTestCase {
     func testReadWords() {
         let langs = Wordlist.allCases
 
@@ -101,7 +101,7 @@ class MnemonicTests: XCTestCase {
     }
 
     private func getTestVectors(from filename: String) throws -> [String: Any]? {
-        guard let url = Bundle(for: MnemonicTests.self).url(forResource: filename, withExtension: "json") else {
+        guard let url = Bundle(for: type(of: self)).url(forResource: filename, withExtension: "json") else {
             return nil
         }
 
@@ -116,7 +116,7 @@ class MnemonicTests: XCTestCase {
 }
 
 @available(iOS 13.0, *)
-private extension MnemonicTests {
+private extension BIP39Tests {
     enum Constants {
         static let englishTestVectors = "english"
         static let passphrase = "TREZOR"

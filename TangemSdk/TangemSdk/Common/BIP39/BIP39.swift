@@ -61,22 +61,6 @@ struct BIP39 {
         return components
     }
 
-    private static func extractCaptureGroupString(
-            from result: NSTextCheckingResult,
-            at index: Int,
-            in text: String
-        ) -> String? {
-            guard index < result.numberOfRanges,
-                let stringRange = Range(
-                    result.range(at: index),
-                    in: text
-                ) else {
-                    return nil
-            }
-
-            return String(text[stringRange])
-        }
-
     func validate(mnemonicComponents: [String]) throws {
         // Validate words count
         guard !mnemonicComponents.isEmpty else {

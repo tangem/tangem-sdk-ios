@@ -1443,6 +1443,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5DA80CAE231D247A00A50A10 /* Build configuration list for PBXNativeTarget "TangemSdk" */;
 			buildPhases = (
+				DA35AFF72996CAA000C33CA6 /* Sort localization strings */,
 				5DA80C95231D247A00A50A10 /* Headers */,
 				5DA80C96231D247A00A50A10 /* Sources */,
 				5DA80C97231D247A00A50A10 /* Frameworks */,
@@ -1560,6 +1561,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DA35AFF72996CAA000C33CA6 /* Sort localization strings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Sort localization strings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find . -name 'Localizable.strings' -not -path './Pods/*' -exec sort {} -o {} \\;\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5DA80C96231D247A00A50A10 /* Sources */ = {

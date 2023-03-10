@@ -27,25 +27,13 @@ struct BIP32 {
         let iL = Data(i.prefix(32))
         let iR = Data(i.suffix(32))
 
-        if !isPrivateKeyValid(iL, curve: curve) {
+        // Verify the key
+        // https://github.com/satoshilabs/slips/blob/master/slip-0010.md
+        if curve != .ed25519, !(try CryptoUtils.isPrivateKeyValid(iL, curve: curve)) {
             return try makeMasterKey(from: i, curve: curve)
         }
 
         return ExtendedPrivateKey(privateKey: iL, chainCode: iR)
-    }
-
-    // Verify the key
-    // https://github.com/satoshilabs/slips/blob/master/slip-0010.md
-    @available(iOS 13.0, *)
-    private func isPrivateKeyValid(_ privateKey: Data, curve: EllipticCurve) -> Bool {
-        switch curve {
-        case .secp256k1:
-            return Secp256k1Utils().isPrivateKeyValid(privateKey)
-        case .secp256r1:
-            return Secp256r1Utils().isPrivateKeyValid(privateKey)
-        default:
-            return true
-        }
     }
 }
 

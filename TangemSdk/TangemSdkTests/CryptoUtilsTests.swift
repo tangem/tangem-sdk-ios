@@ -160,16 +160,11 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertFalse(utils.isPrivateKeyValid(Data(repeating: UInt8(0), count: 32)))
     }
 
-    func testSecp256r1PrivateKeyValidation() {
-        let utils = Secp256r1Utils()
-
-        XCTAssertFalse(utils.isPrivateKeyValid(Data()))
-        XCTAssertFalse(utils.isPrivateKeyValid(Data(repeating: UInt8(0), count: 32)))
-        XCTAssertFalse(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFFFE92BF972115EB5008573E60811CA5A79B40EAAF9036189360F47413")))
-        XCTAssertFalse(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC4FC632551")))
-        XCTAssertTrue(utils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550")))
+    func testSecp256r1PrivateKeyValidation() throws {
+        XCTAssertFalse(try CryptoUtils.isPrivateKeyValid(Data(), curve: .secp256r1))
+        XCTAssertFalse(try CryptoUtils.isPrivateKeyValid(Data(repeating: UInt8(0), count: 32), curve: .secp256r1))
+        XCTAssertFalse(try CryptoUtils.isPrivateKeyValid(Data(hexString: "FFFFFFFFFE92BF972115EB5008573E60811CA5A79B40EAAF9036189360F47413"), curve: .secp256r1))
+        XCTAssertFalse(try CryptoUtils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC4FC632551"), curve: .secp256r1))
+        XCTAssertTrue(try CryptoUtils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550"), curve: .secp256r1))
     }
 }
-
-
-

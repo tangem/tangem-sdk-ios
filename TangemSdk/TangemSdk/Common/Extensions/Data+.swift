@@ -38,6 +38,20 @@ extension Data {
         let calendar = Calendar.current
         return calendar.date(from: components)
     }
+
+    @available(iOS 13.0, *)
+    public var sha256Ripemd160: Data {
+        var md = RIPEMD160()
+        let hash = getSha256()
+        md.update(data: hash)
+        return md.finalize()
+    }
+
+    public var ripemd160: Data {
+        var md = RIPEMD160()
+        md.update(data: self)
+        return md.finalize()
+    }
     
     public init(hexString: String) {
         self = Data()
@@ -116,6 +130,11 @@ extension Data {
     public func getSha512() -> Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
+    }
+
+    @available(iOS 13.0, *)
+    public func getDoubleSha256() -> Data {
+        return getSha256().getSha256()
     }
     
     public var toBytes: [Byte] {

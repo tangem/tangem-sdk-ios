@@ -47,6 +47,7 @@ class BIP39Tests: XCTestCase {
             let entropy = vector[0]
             let expectedMnemonic = vector[1]
             let expectedSeed = vector[2]
+            let expectedExtendedKey = vector[3]
 
             let mnemonic = try bip39.generateMnemonic(from: Data(hexString: entropy), wordlist: .en)
             let mnemonicString = bip39.convertToMnemonicString(mnemonic)
@@ -54,6 +55,10 @@ class BIP39Tests: XCTestCase {
 
             let seed = try bip39.generateSeed(from: mnemonic, passphrase: Constants.passphrase)
             XCTAssertEqual(seed.hexString.lowercased(), expectedSeed)
+
+            let key = try BIP32().makeMasterKey(from: seed, curve: .secp256k1)
+            let extendedKey = try key.serialize(for: .mainnet)
+            XCTAssertEqual(extendedKey, expectedExtendedKey)
         }
     }
 

@@ -51,8 +51,85 @@ class BIP32Tests: XCTestCase {
         XCTAssertEqual(masterKey.privateKey.hexString.lowercased(), "3b8c18469a4634517d6d0b65448f8e6c62091b45540a1743c5846be55d47d88f".lowercased())
         XCTAssertEqual(masterKey.chainCode.hexString.lowercased(), "7762f9729fed06121fd13f326884c82f59aa95c57ac492ce8c9654e60efd130c".lowercased())
     }
-}
 
-@available(iOS 13.0, *)
-private extension BIP32Tests {
+    func testMetaMaskTWCompatible() throws {
+        let mnemonicPhrase = "scale wave venue cloth fruit empower afford one domain blouse romance artist"
+        let mnemonic = try Mnemonic(with: mnemonicPhrase)
+        let seed = try mnemonic.generateSeed()
+        XCTAssertEqual(seed.hexString.lowercased(), "d3eea633215dc4cb8ec2acd0d413adec1ebccb597ecf279886e584e9cb9ceb0788eb6f17a585acc12bc58fd586df6bbbdf39af955656f24215cceab174344e62")
+
+        let extendedPrivateKey = try BIP32().makeMasterKey(from: seed, curve: .secp256k1)
+
+        let pk = extendedPrivateKey.privateKey.hexString.lowercased()
+        XCTAssertEqual(pk, "589aeb596710f33d7ac31598ec10440a7df8808cf2c3d69ba670ff3fae66aafb")
+
+        XCTAssertEqual(extendedPrivateKey.serializeToWIFCompressed(for: .mainnet), "KzBwvPW6L5iwJSiE5vgS52Y69bUxfwizW3wF4C4Xa3ba3pdd7j63")
+    }
+
+    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
+    func testMasterVector1() throws {
+        let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
+        let bip32 = BIP32()
+
+        let mPriv = try bip32.makeMasterKey(from: seed, curve: .secp256k1)
+        let mPub = try mPriv.makePublicKey(for: .secp256k1)
+
+        let xpriv = try mPriv.serialize(for: .mainnet)
+        XCTAssertEqual(xpriv, "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi")
+
+        let xpub = try mPub.serialize(for: .mainnet)
+        XCTAssertEqual(xpub, "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8")
+    }
+
+    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
+    func testMasterVector2() throws {
+        let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
+        let bip32 = BIP32()
+
+        let mPriv = try bip32.makeMasterKey(from: seed, curve: .secp256k1)
+        let mPub = try mPriv.makePublicKey(for: .secp256k1)
+
+        let xpriv = try mPriv.serialize(for: .mainnet)
+        XCTAssertEqual(xpriv, "xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U")
+
+        let xpub = try mPub.serialize(for: .mainnet)
+        XCTAssertEqual(xpub, "xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB")
+
+
+        // Chain m/0
+        let derivedPub = try mPub.derivePublicKey(node: .nonHardened(0))
+        let derivedXPub = try derivedPub.serialize(for: .mainnet)
+        // ext prv: xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt
+        XCTAssertEqual(derivedXPub, "xpub69H7F5d8KSRgmmdJg2KhpAK8SR3DjMwAdkxj3ZuxV27CprR9LgpeyGmXUbC6wb7ERfvrnKZjXoUmmDznezpbZb7ap6r1D3tgFxHmwMkQTPH")
+    }
+
+    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
+    func testMasterVector3() throws {
+        let seed = Data(hexString: "4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be")
+        let bip32 = BIP32()
+
+        let mPriv = try bip32.makeMasterKey(from: seed, curve: .secp256k1)
+        let mPub = try mPriv.makePublicKey(for: .secp256k1)
+
+        let xpriv = try mPriv.serialize(for: .mainnet)
+        XCTAssertEqual(xpriv, "xprv9s21ZrQH143K25QhxbucbDDuQ4naNntJRi4KUfWT7xo4EKsHt2QJDu7KXp1A3u7Bi1j8ph3EGsZ9Xvz9dGuVrtHHs7pXeTzjuxBrCmmhgC6")
+
+        let xpub = try mPub.serialize(for: .mainnet)
+        XCTAssertEqual(xpub, "xpub661MyMwAqRbcEZVB4dScxMAdx6d4nFc9nvyvH3v4gJL378CSRZiYmhRoP7mBy6gSPSCYk6SzXPTf3ND1cZAceL7SfJ1Z3GC8vBgp2epUt13")
+    }
+
+    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
+    func testMasterVector4() throws {
+        let seed = Data(hexString: "3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678")
+        let bip32 = BIP32()
+
+        let mPriv = try bip32.makeMasterKey(from: seed, curve: .secp256k1)
+        let mPub = try mPriv.makePublicKey(for: .secp256k1)
+
+        let xpriv = try mPriv.serialize(for: .mainnet)
+        XCTAssertEqual(xpriv, "xprv9s21ZrQH143K48vGoLGRPxgo2JNkJ3J3fqkirQC2zVdk5Dgd5w14S7fRDyHH4dWNHUgkvsvNDCkvAwcSHNAQwhwgNMgZhLtQC63zxwhQmRv")
+
+        let xpub = try mPub.serialize(for: .mainnet)
+        XCTAssertEqual(xpub, "xpub661MyMwAqRbcGczjuMoRm6dXaLDEhW1u34gKenbeYqAix21mdUKJyuyu5F1rzYGVxyL6tmgBUAEPrEz92mBXjByMRiJdba9wpnN37RLLAXa")
+    }
 }

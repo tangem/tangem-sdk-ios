@@ -62,6 +62,43 @@ public enum CryptoUtils {
             throw TangemSdkError.unsupportedCurve
         }
     }
+
+    public static func isPrivateKeyValid(_ privateKey: Data, curve: EllipticCurve) throws -> Bool {
+        switch curve {
+        case .secp256k1:
+            return Secp256k1Utils().isPrivateKeyValid(privateKey)
+        case .ed25519:
+            let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key != nil
+        case .secp256r1:
+            let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key != nil
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            // TODO: Add support for BLS keys.
+            throw TangemSdkError.unsupportedCurve
+        }
+    }
+
+    public static func makePublicKey(from privateKey: Data, curve: EllipticCurve) throws -> Data {
+        switch curve {
+        case .secp256k1:
+            return try Secp256k1Utils().createPublicKey(privateKey: privateKey, compressed: true)
+        case .ed25519:
+            let key = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key.publicKey.rawRepresentation
+        case .secp256r1:
+            let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key.publicKey.rawRepresentation
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            // TODO: Add support for BLS keys.
+            throw TangemSdkError.unsupportedCurve
+        }
+    }
+
+    func createPublicKey(privateKey: Data) throws -> Data {
+        let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
+        return key.publicKey.rawRepresentation
+    }
     
     /**
      * Helper function to verify that the data was signed with a private key that corresponds

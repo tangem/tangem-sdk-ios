@@ -302,7 +302,15 @@
 		DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */; };
 		DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C829B778750037BC05 /* BIP32Tests.swift */; };
 		DC1244CB29B9ECAA0037BC05 /* UInt64+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */; };
-		DC1244CD29B9F6D70037BC05 /* Secp256r1Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */; };
+		DC1244D829BB65970037BC05 /* ExtendedKeySerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244D429BB65970037BC05 /* ExtendedKeySerializationError.swift */; };
+		DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244D629BB65970037BC05 /* ExtendedKeySerializable.swift */; };
+		DC1244DC29BB66840037BC05 /* ExtendedKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244DB29BB66840037BC05 /* ExtendedKeyTests.swift */; };
+		DC1244DE29BB677C0037BC05 /* Ripemd160.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244DD29BB677C0037BC05 /* Ripemd160.swift */; };
+		DC1244E029BB6D460037BC05 /* Base58.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244DF29BB6D460037BC05 /* Base58.swift */; };
+		DC1244E229BB7B390037BC05 /* WIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E129BB7B390037BC05 /* WIF.swift */; };
+		DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E329BB806E0037BC05 /* WIFTests.swift */; };
+		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
+		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
@@ -628,7 +636,15 @@
 		DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPrivateKey.swift; sourceTree = "<group>"; };
 		DC1244C829B778750037BC05 /* BIP32Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BIP32Tests.swift; sourceTree = "<group>"; };
 		DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+.swift"; sourceTree = "<group>"; };
-		DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secp256r1Utils.swift; sourceTree = "<group>"; };
+		DC1244D429BB65970037BC05 /* ExtendedKeySerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializationError.swift; sourceTree = "<group>"; };
+		DC1244D629BB65970037BC05 /* ExtendedKeySerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializable.swift; sourceTree = "<group>"; };
+		DC1244DB29BB66840037BC05 /* ExtendedKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeyTests.swift; sourceTree = "<group>"; };
+		DC1244DD29BB677C0037BC05 /* Ripemd160.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ripemd160.swift; sourceTree = "<group>"; };
+		DC1244DF29BB6D460037BC05 /* Base58.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58.swift; sourceTree = "<group>"; };
+		DC1244E129BB7B390037BC05 /* WIF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WIF.swift; sourceTree = "<group>"; };
+		DC1244E329BB806E0037BC05 /* WIFTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WIFTests.swift; sourceTree = "<group>"; };
+		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
+		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
@@ -714,6 +730,7 @@
 		5D2B798426BBED1D002A78D4 /* BIP32 */ = {
 			isa = PBXGroup;
 			children = (
+				DC1244D229BB65970037BC05 /* ExtendedKeySerialization */,
 				5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */,
 				5D73FC2826B8140200DF1BB4 /* DerivationPath.swift */,
 				5D73FC2C26B8261400DF1BB4 /* DerivationNode.swift */,
@@ -1222,6 +1239,8 @@
 				5DA79429236C64D100B33DB5 /* IntUtilsTests.swift */,
 				DC1244B829B610550037BC05 /* BIP39Tests.swift */,
 				DC1244C829B778750037BC05 /* BIP32Tests.swift */,
+				DC1244DB29BB66840037BC05 /* ExtendedKeyTests.swift */,
+				DC1244E329BB806E0037BC05 /* WIFTests.swift */,
 				5D149479268625A400C0D923 /* CommonTests.swift */,
 				5D6795B1237AEFB60075A330 /* ApduTests.swift */,
 				5D437EEA237BE980009C82A8 /* TlvTests.swift */,
@@ -1263,8 +1282,6 @@
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				DC59CB0129AF582800EC14E1 /* BIP39 */,
-				5D170AEF26B42C88000D4F36 /* HDWallet */,
 				B0A9436525651E2600A7958E /* Card */,
 				5D6508242673935700A8D45B /* OptionSet */,
 				5D650820266E387C00A8D45B /* Core */,
@@ -1291,13 +1308,18 @@
 		5DFFC1A2234DC969001C2F35 /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
+				DC59CB0129AF582800EC14E1 /* BIP39 */,
+				5D170AEF26B42C88000D4F36 /* HDWallet */,
 				5D83F36E247EC275005E7A35 /* secp256k1 */,
 				5DFFC1A0234DC715001C2F35 /* CryptoUtils.swift */,
 				5D26CEE4243C902C00994CC0 /* Secp256k1Utils.swift */,
 				5DF5FB1B244F2C15002DB244 /* IssuerDataVerifier.swift */,
 				5D27C8A727736F190095409C /* Secp256k1Key.swift */,
 				5D27C8A927737D200095409C /* Secp256k1Signature.swift */,
-				DC1244CC29B9F6D70037BC05 /* Secp256r1Utils.swift */,
+				DC1244DD29BB677C0037BC05 /* Ripemd160.swift */,
+				DC1244DF29BB6D460037BC05 /* Base58.swift */,
+				DC1244E129BB7B390037BC05 /* WIF.swift */,
+				DC1244E529BB8E580037BC05 /* NetworkType.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1422,6 +1444,16 @@
 				DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */,
 			);
 			path = BIP39;
+			sourceTree = "<group>";
+		};
+		DC1244D229BB65970037BC05 /* ExtendedKeySerialization */ = {
+			isa = PBXGroup;
+			children = (
+				DC1244D429BB65970037BC05 /* ExtendedKeySerializationError.swift */,
+				DC1244D629BB65970037BC05 /* ExtendedKeySerializable.swift */,
+				DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */,
+			);
+			path = ExtendedKeySerialization;
 			sourceTree = "<group>";
 		};
 		DC59CB0129AF582800EC14E1 /* BIP39 */ = {
@@ -1705,7 +1737,6 @@
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
 				5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */,
-				DC1244CD29B9F6D70037BC05 /* Secp256r1Utils.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */,
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
@@ -1733,6 +1764,7 @@
 				DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */,
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
+				DC1244E029BB6D460037BC05 /* Base58.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
@@ -1752,16 +1784,19 @@
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
 				DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */,
 				5D8666622731687A0095CC82 /* ResetCodesViewModel.swift in Sources */,
+				DC1244DE29BB677C0037BC05 /* Ripemd160.swift in Sources */,
 				5D6831D423DB31AB0095BB1D /* PurgeWalletCommand.swift in Sources */,
 				DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */,
 				5DCAA7872383DDC200249F42 /* ReadIssuerDataCommand.swift in Sources */,
 				B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */,
+				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
 				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
+				DC1244E229BB7B390037BC05 /* WIF.swift in Sources */,
 				5D539ECB276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift in Sources */,
 				DA6C752A292682650070EEFD /* LAContext+.swift in Sources */,
 				5DE43A6026D511CE00ECA36A /* LinkBackupCardsCommand.swift in Sources */,
@@ -1864,16 +1899,19 @@
 				5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */,
 				5D4B128326D40C77006E173C /* StartPrimaryCardLinkingCommand.swift in Sources */,
 				5D14092026BAABD400B811A1 /* BIP32.swift in Sources */,
+				DC1244D829BB65970037BC05 /* ExtendedKeySerializationError.swift in Sources */,
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
+				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
 				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				5D86665C273166810095CC82 /* ResetCodesViewState.swift in Sources */,
+				DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
 				5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */,
 			);
@@ -1887,8 +1925,10 @@
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
+				DC1244DC29BB66840037BC05 /* ExtendedKeyTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,

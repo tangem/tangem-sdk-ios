@@ -26,4 +26,8 @@ public struct Mnemonic {
         mnemonicComponents = try bip39.parse(mnemonicString: mnemonic)
         self.wordlist = try bip39.parseWordlist(from: mnemonicComponents)
     }
+
+    public func generateSeed(with passphrase: String = "") throws -> Data {
+        return try bip39.generateSeed(from: mnemonicComponents, passphrase: passphrase)
+    }
 }

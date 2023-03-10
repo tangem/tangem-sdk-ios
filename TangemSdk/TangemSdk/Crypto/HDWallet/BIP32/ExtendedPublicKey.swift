@@ -12,7 +12,6 @@ import CryptoKit
 @available(iOS 13.0, *)
 /// BIP32 extended public key for `secp256k1`.
 public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Codable {
-    /// Compressed `secp256k1` key
     public let publicKey: Data
     public let chainCode: Data
 

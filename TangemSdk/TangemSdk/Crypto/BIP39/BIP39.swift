@@ -59,7 +59,7 @@ struct BIP39 {
         let bitIndexes = concatenatedBits.chunked(into: 11)
         let indexes = bitIndexes.compactMap { Int($0.joined(), radix: 2) }
 
-        guard indexes.count == entropyLength.wordsCount else {
+        guard indexes.count == entropyLength.wordCount else {
             throw MnemonicError.mnenmonicCreationFailed
         }
 
@@ -86,7 +86,7 @@ struct BIP39 {
             throw MnemonicError.wrongWordCount
         }
 
-        guard let entropyLength = EntropyLength.allCases.first(where: { $0.wordsCount == mnemonicComponents.count }) else {
+        guard let entropyLength = EntropyLength.allCases.first(where: { $0.wordCount == mnemonicComponents.count }) else {
             throw MnemonicError.wrongWordCount
         }
 

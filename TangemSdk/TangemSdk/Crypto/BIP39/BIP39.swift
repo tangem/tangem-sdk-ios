@@ -82,7 +82,7 @@ struct BIP39 {
     /// - Parameter mnemonicComponents: Menemonic components to use
     func validate(mnemonicComponents: [String]) throws {
         // Validate words count
-        guard !mnemonicComponents.isEmpty else {
+        if mnemonicComponents.isEmpty {
             throw MnemonicError.wrongWordCount
         }
 

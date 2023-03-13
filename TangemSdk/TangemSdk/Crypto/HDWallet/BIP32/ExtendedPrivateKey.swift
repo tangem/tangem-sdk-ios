@@ -72,7 +72,7 @@ extension ExtendedPrivateKey: ExtendedKeySerializable {
             throw ExtendedKeySerializationError.wrongLength
         }
 
-        let decodedVersion = UInt32(data.prefix(4).toInt())
+        let decodedVersion = UInt32(data.prefix(4).toInt()!) // it's safe to force unwrap here, because of size
 
         let version = ExtendedKeySerializer.Version.private
 
@@ -80,9 +80,9 @@ extension ExtendedPrivateKey: ExtendedKeySerializable {
             throw ExtendedKeySerializationError.wrongVersion
         }
 
-        let depth = data.dropFirst(4).prefix(1).toInt()
+        let depth = data.dropFirst(4).prefix(1).toInt()! // it's safe to force unwrap here, because of size
         let parentFingerprint = data.dropFirst(5).prefix(4)
-        let childNumber = UInt32(data.dropFirst(9).prefix(4).toInt())
+        let childNumber = UInt32(data.dropFirst(9).prefix(4).toInt()!) // it's safe to force unwrap here, because of size
         let chainCode = data.dropFirst(13).prefix(32)
         let privateKey = data.suffix(32)
         let prefix = data.dropFirst(45).prefix(1)

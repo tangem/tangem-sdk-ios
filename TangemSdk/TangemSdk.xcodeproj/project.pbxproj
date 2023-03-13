@@ -301,7 +301,7 @@
 		DC1244C529B769400037BC05 /* mnemonic_invalid_test_vectors.json in Resources */ = {isa = PBXBuildFile; fileRef = DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */; };
 		DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */; };
 		DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244C829B778750037BC05 /* BIP32Tests.swift */; };
-		DC1244CB29B9ECAA0037BC05 /* UInt64+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */; };
+		DC1244CB29B9ECAA0037BC05 /* HexConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244CA29B9ECAA0037BC05 /* HexConvertible.swift */; };
 		DC1244D829BB65970037BC05 /* ExtendedKeySerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244D429BB65970037BC05 /* ExtendedKeySerializationError.swift */; };
 		DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244D629BB65970037BC05 /* ExtendedKeySerializable.swift */; };
 		DC1244DC29BB66840037BC05 /* ExtendedKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244DB29BB66840037BC05 /* ExtendedKeyTests.swift */; };
@@ -636,7 +636,7 @@
 		DC1244C429B769400037BC05 /* mnemonic_invalid_test_vectors.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mnemonic_invalid_test_vectors.json; sourceTree = "<group>"; };
 		DC1244C629B776D40037BC05 /* ExtendedPrivateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPrivateKey.swift; sourceTree = "<group>"; };
 		DC1244C829B778750037BC05 /* BIP32Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BIP32Tests.swift; sourceTree = "<group>"; };
-		DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UInt64+.swift"; sourceTree = "<group>"; };
+		DC1244CA29B9ECAA0037BC05 /* HexConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexConvertible.swift; sourceTree = "<group>"; };
 		DC1244D429BB65970037BC05 /* ExtendedKeySerializationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializationError.swift; sourceTree = "<group>"; };
 		DC1244D629BB65970037BC05 /* ExtendedKeySerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializable.swift; sourceTree = "<group>"; };
 		DC1244DB29BB66840037BC05 /* ExtendedKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedKeyTests.swift; sourceTree = "<group>"; };
@@ -1365,7 +1365,7 @@
 				5DDA5DA226E95F2F00199274 /* Result+RAPDU.swift */,
 				5D04F9E126EF731B00D15F75 /* Publisher+.swift */,
 				DA6C7529292682650070EEFD /* LAContext+.swift */,
-				DC1244CA29B9ECAA0037BC05 /* UInt64+.swift */,
+				DC1244CA29B9ECAA0037BC05 /* HexConvertible.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1815,7 +1815,7 @@
 				5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */,
 				5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */,
 				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
-				DC1244CB29B9ECAA0037BC05 /* UInt64+.swift in Sources */,
+				DC1244CB29B9ECAA0037BC05 /* HexConvertible.swift in Sources */,
 				5D379C2B268FA4D200C7F473 /* CompletionResult.swift in Sources */,
 				5D86CBDD24A1105A00FB5BA7 /* Manufacturer.swift in Sources */,
 				B0D3C48B26088ECD0038A5C9 /* Array+Tlv.swift in Sources */,

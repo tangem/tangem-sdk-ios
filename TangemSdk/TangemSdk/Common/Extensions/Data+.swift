@@ -23,7 +23,7 @@ extension Data {
         return hexString
     }
     
-    public func toInt() -> Int {
+    public func toInt() -> Int? {
         return Int(hexData: self)
     }
     

@@ -43,7 +43,7 @@ struct BIP39 {
 
     /// Generate a mnemonic from data. Useful for testing purposes.
     /// - Parameters:
-    ///   - data: The entropy data in hex format
+    ///   - entropyData: The entropy data in hex format
     ///   - wordlist: The wordlist to use.
     /// - Returns: The generated mnemonic
     func generateMnemonic(from entropyData: Data, wordlist: Wordlist) throws -> [String] {
@@ -91,7 +91,7 @@ struct BIP39 {
         }
 
         // Validate wordlist by the first word
-        let wordlist = try getWordlist(by: mnemonicComponents[0]).1
+        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
 
         // Validate all the words
         var invalidWords = Set<String>()
@@ -100,12 +100,12 @@ struct BIP39 {
         var concatenatedBits = ""
 
         for word in mnemonicComponents {
-            guard let wordIndex = wordlist.firstIndex(of: word) else {
+            guard let wordIndex = wordlistDictionary.firstIndex(of: word) else {
                 invalidWords.insert(word)
                 continue
             }
 
-            let indexBits = String(wordIndex, radix: 2).zeroPadding(toLength: 11)
+            let indexBits = String(wordIndex, radix: 2).leadingZeroPadding(toLength: 11)
             concatenatedBits.append(contentsOf: indexBits)
         }
 
@@ -164,7 +164,7 @@ struct BIP39 {
     /// - Parameter mnemonicComponents: Menemonic components to use
     /// - Returns: The Wordlist, selected by the first word
     func parseWordlist(from mnemonicComponents: [String]) throws -> Wordlist {
-        return try getWordlist(by: mnemonicComponents[0]).0
+        return try getWordlist(by: mnemonicComponents[0]).wordlist
     }
 
 
@@ -185,7 +185,7 @@ struct BIP39 {
         return data
     }
 
-    private func getWordlist(by word: String) throws -> (Wordlist, [String]) {
+    private func getWordlist(by word: String) throws -> (wordlist: Wordlist, dictionary: [String]) {
         for list in Wordlist.allCases {
             let words = list.words
 

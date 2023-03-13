@@ -13,7 +13,7 @@ import XCTest
 @available(iOS 13.0, *)
 class BIP39Tests: XCTestCase {
     func testReadWords() {
-        let langs = Wordlist.allCases
+        let langs = BIP39.Wordlist.allCases
 
         for lang in langs {
             XCTAssertTrue(lang.words.count == 2048)
@@ -22,7 +22,7 @@ class BIP39Tests: XCTestCase {
 
     func testMnemonicGenerationBase() throws  {
         let entropyLengthArray = EntropyLength.allCases
-        let wordLists = Wordlist.allCases
+        let wordLists = BIP39.Wordlist.allCases
 
         let bip39 = BIP39()
 
@@ -99,6 +99,8 @@ class BIP39Tests: XCTestCase {
     func testSwapWords() throws {
         let bip39 = BIP39()
         let valid = "legal winner thank year wave sausage worth useful legal winner thank yellow"
+        XCTAssertNoThrow(try bip39.parse(mnemonicString: valid))
+
         var components = valid.split(separator: " ")
         components.swapAt(3, 4)
         let invalid = components.joined(separator: " ")

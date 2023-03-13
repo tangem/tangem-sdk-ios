@@ -116,14 +116,14 @@ fileprivate enum Base58 {
 
 // MARK: - Data+
 
-extension Data {
-    public var base58EncodedString: String {
+public extension Data {
+    var base58EncodedString: String {
         let bytes = Array(self)
         return bytes.base58EncodedString
     }
 
     @available(iOS 13.0, *)
-    public var base58CheckEncodedString: String {
+    var base58CheckEncodedString: String {
         let bytes = Array(self)
         return bytes.base58CheckEncodedString
     }
@@ -131,15 +131,15 @@ extension Data {
 
 // MARK: - Array+
 
-extension Array where Element == UInt8 {
-    public var base58EncodedString: String {
+public extension Array where Element == UInt8 {
+    var base58EncodedString: String {
         guard !self.isEmpty else { return "" }
 
         return Base58.base58FromBytes(self)
     }
 
     @available(iOS 13.0, *)
-    public var base58CheckEncodedString: String {
+    var base58CheckEncodedString: String {
         guard !self.isEmpty else { return "" }
 
         let checksum = self.getDoubleSha256().prefix(4)
@@ -150,22 +150,24 @@ extension Array where Element == UInt8 {
 
 // MARK: - String+
 
-extension String {
-    public var base58DecodedData: Data {
-        let bytes = Base58.bytesFromBase58(self)
+public extension String {
+    var base58DecodedData: Data {
+        Data(base58DecodedBytes)
+    }
 
-        return Data(bytes)
+    var base58DecodedBytes: [UInt8] {
+        return Base58.bytesFromBase58(self)
     }
 
     @available(iOS 13.0, *)
-    public var base58CheckDecodedData: Data? {
+    var base58CheckDecodedData: Data? {
         guard let bytes = base58CheckDecodedBytes else { return nil }
 
         return Data(bytes)
     }
 
     @available(iOS 13.0, *)
-    public var base58CheckDecodedBytes: [UInt8]? {
+    var base58CheckDecodedBytes: [UInt8]? {
         let bytes = Base58.bytesFromBase58(self)
 
         guard bytes.count >= 4 else { return nil }

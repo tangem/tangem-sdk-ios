@@ -12,7 +12,7 @@ import Foundation
 /// The `BIP-39` facade
 public struct Mnemonic {
     public let mnemonicComponents: [String]
-    public let wordlist: Wordlist
+    public let wordlist: BIP39.Wordlist
 
     public var mnemonic: String { bip39.convertToMnemonicString(mnemonicComponents) }
 
@@ -22,7 +22,7 @@ public struct Mnemonic {
     /// - Parameters:
     ///   - entropy: The entropy length to use. Default is 128 bit (12 words).
     ///   - wordList: The Wordlist length to use. Default is en.
-    public init(with entropy: EntropyLength = .bits128, wordList: Wordlist = .en) throws {
+    public init(with entropy: EntropyLength = .bits128, wordList: BIP39.Wordlist = .en) throws {
         mnemonicComponents = try bip39.generateMnemonic(entropyLength: entropy, wordlist: wordList)
         self.wordlist = wordList
     }

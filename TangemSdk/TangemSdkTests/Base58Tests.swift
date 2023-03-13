@@ -21,4 +21,10 @@ class Base58Tests: XCTestCase {
         XCTAssertEqual(array.base58CheckEncodedString.base58CheckDecodedBytes, array)
         XCTAssertEqual(array.base58EncodedString.base58DecodedBytes, array)
     }
+
+    func testBase58() {
+        let ethalonString = "1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L"
+        let testData = Data(hexString: "00eb15231dfceb60925886b67d065299925915aeb172c06647")
+        XCTAssertEqual(ethalonString, testData.base58EncodedString)
+    }
 }

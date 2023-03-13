@@ -61,7 +61,7 @@ public extension String {
 
     internal func leadingZeroPadding(toLength newLength: Int) -> String {
         guard count < newLength else { return self }
-
+            
         let prefix = String(repeating: "0", count: newLength - count)
         return prefix + self
     }

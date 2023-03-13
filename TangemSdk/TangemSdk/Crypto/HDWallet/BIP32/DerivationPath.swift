@@ -77,8 +77,8 @@ extension DerivationPath {
         }
         
         let chunks = 0..<tlvData.count/4
-        let dataChunks = chunks.map {  tlvData.dropFirst($0 * 4).prefix(4) }
-        let path = dataChunks.map { DerivationNode.deserialize(from: $0) }
+        let dataChunks = chunks.map { tlvData.dropFirst($0 * 4).prefix(4) }
+        let path = dataChunks.compactMap { DerivationNode.deserialize(from: $0) } // compactMap is safe here because of a small chunks size
         self.init(nodes: path)
     }
     

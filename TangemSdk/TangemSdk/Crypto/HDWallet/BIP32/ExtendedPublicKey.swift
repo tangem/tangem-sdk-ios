@@ -89,7 +89,7 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Cod
 
 @available(iOS 13.0, *)
 extension ExtendedPublicKey: ExtendedKeySerializable {
-    init(from extendedKeyString: String, networkType: NetworkType) throws {
+    public init(from extendedKeyString: String, networkType: NetworkType) throws {
         guard let data = extendedKeyString.base58CheckDecodedData else {
             throw ExtendedKeySerializationError.decodingFailed
         }
@@ -125,7 +125,7 @@ extension ExtendedPublicKey: ExtendedKeySerializable {
         )
     }
 
-    func serialize(for networkType: NetworkType) throws -> String {
+    public func serialize(for networkType: NetworkType) throws -> String {
         guard let secpKey = try? Secp256k1Key(with: publicKey) else {
             throw TangemSdkError.unsupportedCurve
         }

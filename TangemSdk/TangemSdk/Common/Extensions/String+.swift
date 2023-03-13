@@ -59,10 +59,10 @@ public extension String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    internal func zeroPadding(toLength newLength: Int) -> String {
+    internal func leadingZeroPadding(toLength newLength: Int) -> String {
         guard count < newLength else { return self }
 
-        let prefix = Array(repeating: "0", count: newLength - count).joined()
+        let prefix = String(repeating: "0", count: newLength - count)
         return prefix + self
     }
 }

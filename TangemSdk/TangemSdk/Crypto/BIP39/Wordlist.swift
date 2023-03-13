@@ -9,9 +9,14 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public enum Wordlist: CaseIterable {
-    case en
+extension BIP39 {
+    public enum Wordlist: CaseIterable {
+        case en
+    }
+}
 
+@available(iOS 13.0, *)
+extension BIP39.Wordlist {
     /// This var reads a big array from a file
     public var words: [String] {
         (try? readWords(from: fileName)) ?? []
@@ -31,7 +36,7 @@ public enum Wordlist: CaseIterable {
 
         let content = try String(contentsOfFile: path, encoding: .utf8)
         let words = content.trim().components(separatedBy: "\n")
-        
+
         guard words.count == 2048 else {
             throw MnemonicError.invalidWordCount
         }

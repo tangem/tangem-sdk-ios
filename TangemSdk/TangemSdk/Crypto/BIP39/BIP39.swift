@@ -10,7 +10,7 @@ import Foundation
 
 // https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 @available(iOS 13.0, *)
-struct BIP39 {
+public struct BIP39 {
     /// Generate a mnemonic.
     /// - Parameters:
     ///   - entropyLength: The  entropy length to use. Default is 128 bit.
@@ -21,7 +21,7 @@ struct BIP39 {
             throw MnemonicError.mnenmonicCreationFailed
         }
 
-        let entropyBytesCount = entropyLength.rawValue / 8
+        let entropyBytesCount = entropyLength.rawValue / 8 // convert bits to bytes
         let entropyData = try CryptoUtils.generateRandomBytes(count: entropyBytesCount)
         return try generateMnemonic(from: entropyData, wordlist: wordlist)
     }

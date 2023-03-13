@@ -29,7 +29,7 @@ class BIP39Tests: XCTestCase {
         for entropyLength in entropyLengthArray {
             for wordlist in wordLists {
                 let mnemonic = try bip39.generateMnemonic(entropyLength: entropyLength, wordlist: wordlist)
-                XCTAssertEqual(mnemonic.count, entropyLength.wordsCount)
+                XCTAssertEqual(mnemonic.count, entropyLength.wordCount)
             }
         }
     }

@@ -63,7 +63,7 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
 
 @available(iOS 13.0, *)
 extension ExtendedPrivateKey: ExtendedKeySerializable {
-    init(from extendedKeyString: String, networkType: NetworkType) throws {
+    public init(from extendedKeyString: String, networkType: NetworkType) throws {
         guard let data = extendedKeyString.base58CheckDecodedData else {
             throw ExtendedKeySerializationError.decodingFailed
         }
@@ -104,7 +104,7 @@ extension ExtendedPrivateKey: ExtendedKeySerializable {
         )
     }
 
-    func serialize(for networkType: NetworkType) throws -> String {
+    public func serialize(for networkType: NetworkType) throws -> String {
         var data = Data(capacity: ExtendedKeySerializer.Constants.dataLength)
 
         let version = ExtendedKeySerializer.Version.private

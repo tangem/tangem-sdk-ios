@@ -94,11 +94,6 @@ public enum CryptoUtils {
             throw TangemSdkError.unsupportedCurve
         }
     }
-
-    func createPublicKey(privateKey: Data) throws -> Data {
-        let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
-        return key.publicKey.rawRepresentation
-    }
     
     /**
      * Helper function to verify that the data was signed with a private key that corresponds

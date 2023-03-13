@@ -8,6 +8,7 @@
 
 import Foundation
 
+// https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 @available(iOS 13.0, *)
 struct BIP39 {
     /// Generate a mnemonic.
@@ -40,27 +41,45 @@ struct BIP39 {
         return seed
     }
 
-    func convertToMnemonicString(_ mnemonicComponents: [String]) -> String {
-        return mnemonicComponents.joined(separator: " ")
-    }
-
-    func parse(mnemonicString: String) throws -> [String] {
-        let regex = try NSRegularExpression(pattern: "[a-zA-Z]+")
-        let range = NSRange(location: 0, length: mnemonicString.count)
-        let matches = regex.matches(in: mnemonicString, range: range)
-        let components = matches.compactMap { result -> String? in
-            guard result.numberOfRanges > 0,
-                  let stringRange = Range(result.range(at: 0), in: mnemonicString) else {
-                return nil
-            }
-
-            return String(mnemonicString[stringRange]).trim().lowercased()
+    /// Generate a mnemonic from data. Useful for testing purposes.
+    /// - Parameters:
+    ///   - data: The entropy data in hex format
+    ///   - wordlist: The wordlist to use.
+    /// - Returns: The generated mnemonic
+    func generateMnemonic(from entropyData: Data, wordlist: Wordlist) throws -> [String] {
+        guard let entropyLength = EntropyLength(rawValue: entropyData.count * 8) else {
+            throw MnemonicError.invalidEntropyLength
         }
 
-        try validate(mnemonicComponents: components)
-        return components
+        let entropyHashBits = entropyData.getSha256().toBits()
+        let entropyChecksumBits = entropyHashBits.prefix(entropyLength.cheksumBitsCount)
+
+        let entropyBits = entropyData.toBits()
+        let concatenatedBits = entropyBits + entropyChecksumBits
+        let bitIndexes = concatenatedBits.chunked(into: 11)
+        let indexes = bitIndexes.compactMap { Int($0.joined(), radix: 2) }
+
+        guard indexes.count == entropyLength.wordsCount else {
+            throw MnemonicError.mnenmonicCreationFailed
+        }
+
+        let allWords = wordlist.words
+        let maxWordIndex = allWords.count
+
+        let words = try indexes.map { index in
+            guard index < maxWordIndex else {
+                throw MnemonicError.mnenmonicCreationFailed
+            }
+
+            return allWords[index]
+
+        }
+
+        return words
     }
 
+    /// Validate  a mnemonic.
+    /// - Parameter mnemonicComponents: Menemonic components to use
     func validate(mnemonicComponents: [String]) throws {
         // Validate words count
         guard !mnemonicComponents.isEmpty else {
@@ -120,46 +139,40 @@ struct BIP39 {
         }
     }
 
-    // Validate wordlist by the first word
+    /// Parse  a mnemonic.
+    /// - Parameter mnemonicString: The mnemonic to parse
+    /// - Returns: Menemonic components
+    func parse(mnemonicString: String) throws -> [String] {
+        let regex = try NSRegularExpression(pattern: "[a-zA-Z]+")
+        let range = NSRange(location: 0, length: mnemonicString.count)
+        let matches = regex.matches(in: mnemonicString, range: range)
+        let components = matches.compactMap { result -> String? in
+            guard result.numberOfRanges > 0,
+                  let stringRange = Range(result.range(at: 0), in: mnemonicString) else {
+                return nil
+            }
+
+            return String(mnemonicString[stringRange]).trim().lowercased()
+        }
+
+        try validate(mnemonicComponents: components)
+        return components
+    }
+
+
+    /// Validate wordlist by the first word
+    /// - Parameter mnemonicComponents: Menemonic components to use
+    /// - Returns: The Wordlist, selected by the first word
     func parseWordlist(from mnemonicComponents: [String]) throws -> Wordlist {
         return try getWordlist(by: mnemonicComponents[0]).0
     }
 
-    /// Generate a mnemonic from data. Useful for testing purposes.
-    /// - Parameters:
-    ///   - data: The entropy data in hex format
-    ///   - wordlist: The wordlist to use.
-    /// - Returns: The generated mnemonic
-    func generateMnemonic(from entropyData: Data, wordlist: Wordlist) throws -> [String] {
-        guard let entropyLength = EntropyLength(rawValue: entropyData.count * 8) else {
-            throw MnemonicError.invalidEntropyLength
-        }
 
-        let entropyHashBits = entropyData.getSha256().toBits()
-        let entropyChecksumBits = entropyHashBits.prefix(entropyLength.cheksumBitsCount)
-
-        let entropyBits = entropyData.toBits()
-        let concatenatedBits = entropyBits + entropyChecksumBits
-        let bitIndexes = concatenatedBits.chunked(into: 11)
-        let indexes = bitIndexes.compactMap { Int($0.joined(), radix: 2) }
-
-        guard indexes.count == entropyLength.wordsCount else {
-            throw MnemonicError.mnenmonicCreationFailed
-        }
-
-        let allWords = wordlist.words
-        let maxWordIndex = allWords.count
-
-        let words = try indexes.map { index in
-            guard index < maxWordIndex else {
-                throw MnemonicError.mnenmonicCreationFailed
-            }
-
-            return allWords[index]
-
-        }
-
-        return words
+    /// Convert mnemonic componets to a sungle string, splitted by spaces
+    /// - Parameter mnemonicComponents: Menemonic components to use
+    /// - Returns: The mnemonic string
+    func convertToMnemonicString(_ mnemonicComponents: [String]) -> String {
+        return mnemonicComponents.joined(separator: " ")
     }
 
     private func normalizedData(from string: String) throws -> Data {

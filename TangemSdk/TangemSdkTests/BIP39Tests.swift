@@ -16,7 +16,7 @@ class BIP39Tests: XCTestCase {
         let langs = Wordlist.allCases
 
         for lang in langs {
-            XCTAssertTrue(lang.words.count > 0)
+            XCTAssertTrue(lang.words.count == 2048)
         }
     }
 

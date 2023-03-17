@@ -11,6 +11,67 @@ import Foundation
 // https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 @available(iOS 13.0, *)
 public struct BIP39 {
+    /// Validate  a mnemonic.
+    /// - Parameter mnemonicComponents: Menemonic components to use
+    public func validate(mnemonicComponents: [String]) throws {
+        // Validate words count
+        if mnemonicComponents.isEmpty {
+            throw MnemonicError.wrongWordCount
+        }
+
+        guard let entropyLength = EntropyLength.allCases.first(where: { $0.wordCount == mnemonicComponents.count }) else {
+            throw MnemonicError.wrongWordCount
+        }
+
+        // Validate wordlist by the first word
+        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
+
+        // Validate all the words
+        var invalidWords = Set<String>()
+
+        // Generate an indices array inplace
+        var concatenatedBits = ""
+
+        for word in mnemonicComponents {
+            guard let wordIndex = wordlistDictionary.firstIndex(of: word) else {
+                invalidWords.insert(word)
+                continue
+            }
+
+            let indexBits = String(wordIndex, radix: 2).leadingZeroPadding(toLength: 11)
+            concatenatedBits.append(contentsOf: indexBits)
+        }
+
+        guard invalidWords.isEmpty else {
+            throw MnemonicError.invalidWords(words: Array(invalidWords))
+        }
+
+        // Validate checksum
+
+        let checksumBitsCount = mnemonicComponents.count / 3
+        guard checksumBitsCount == entropyLength.cheksumBitsCount else {
+            throw MnemonicError.invalidCheksum
+        }
+
+        let entropyBitsCount = concatenatedBits.count - checksumBitsCount
+        let entropyBits = String(concatenatedBits.prefix(entropyBitsCount))
+        let checksumBits = String(concatenatedBits.suffix(checksumBitsCount))
+
+        guard let entropyData = Data(bitsString: entropyBits) else {
+            throw MnemonicError.invalidCheksum
+        }
+
+        let calculatedChecksumBits = entropyData
+            .getSha256()
+            .toBits()
+            .prefix(entropyLength.cheksumBitsCount)
+            .joined()
+
+        guard calculatedChecksumBits == checksumBits else {
+            throw MnemonicError.invalidCheksum
+        }
+    }
+
     /// Generate a mnemonic.
     /// - Parameters:
     ///   - entropyLength: The  entropy length to use. Default is 128 bit.
@@ -78,72 +139,13 @@ public struct BIP39 {
         return words
     }
 
-    /// Validate  a mnemonic.
-    /// - Parameter mnemonicComponents: Menemonic components to use
-    func validate(mnemonicComponents: [String]) throws {
-        // Validate words count
-        if mnemonicComponents.isEmpty {
-            throw MnemonicError.wrongWordCount
-        }
 
-        guard let entropyLength = EntropyLength.allCases.first(where: { $0.wordCount == mnemonicComponents.count }) else {
-            throw MnemonicError.wrongWordCount
-        }
-
-        // Validate wordlist by the first word
-        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
-
-        // Validate all the words
-        var invalidWords = Set<String>()
-
-        // Generate an indices array inplace
-        var concatenatedBits = ""
-
-        for word in mnemonicComponents {
-            guard let wordIndex = wordlistDictionary.firstIndex(of: word) else {
-                invalidWords.insert(word)
-                continue
-            }
-
-            let indexBits = String(wordIndex, radix: 2).leadingZeroPadding(toLength: 11)
-            concatenatedBits.append(contentsOf: indexBits)
-        }
-
-        guard invalidWords.isEmpty else {
-            throw MnemonicError.invalidWords(words: Array(invalidWords))
-        }
-
-        // Validate checksum
-
-        let checksumBitsCount = mnemonicComponents.count / 3
-        guard checksumBitsCount == entropyLength.cheksumBitsCount else {
-            throw MnemonicError.invalidCheksum
-        }
-
-        let entropyBitsCount = concatenatedBits.count - checksumBitsCount
-        let entropyBits = String(concatenatedBits.prefix(entropyBitsCount))
-        let checksumBits = String(concatenatedBits.suffix(checksumBitsCount))
-
-        guard let entropyData = Data(bitsString: entropyBits) else {
-            throw MnemonicError.invalidCheksum
-        }
-
-        let calculatedChecksumBits = entropyData
-            .getSha256()
-            .toBits()
-            .prefix(entropyLength.cheksumBitsCount)
-            .joined()
-
-        guard calculatedChecksumBits == checksumBits else {
-            throw MnemonicError.invalidCheksum
-        }
-    }
 
     /// Parse  a mnemonic.
     /// - Parameter mnemonicString: The mnemonic to parse
     /// - Returns: Menemonic components
     func parse(mnemonicString: String) throws -> [String] {
-        let regex = try NSRegularExpression(pattern: "[a-zA-Z]+")
+        let regex = try NSRegularExpression(pattern: "\\p{L}+")
         let range = NSRange(location: 0, length: mnemonicString.count)
         let matches = regex.matches(in: mnemonicString, range: range)
         let components = matches.compactMap { result -> String? in
@@ -159,14 +161,12 @@ public struct BIP39 {
         return components
     }
 
-
     /// Validate wordlist by the first word
     /// - Parameter mnemonicComponents: Menemonic components to use
     /// - Returns: The Wordlist, selected by the first word
     func parseWordlist(from mnemonicComponents: [String]) throws -> Wordlist {
         return try getWordlist(by: mnemonicComponents[0]).wordlist
     }
-
 
     /// Convert mnemonic componets to a sungle string, splitted by spaces
     /// - Parameter mnemonicComponents: Menemonic components to use

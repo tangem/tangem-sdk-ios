@@ -13,7 +13,7 @@ import Foundation
 public struct BIP39 {
 
     public init() {}
-    
+
     /// Validate  a mnemonic.
     /// - Parameter mnemonicComponents: Menemonic components to use
     public func validate(mnemonicComponents: [String]) throws {
@@ -141,8 +141,6 @@ public struct BIP39 {
 
         return words
     }
-
-
 
     /// Parse  a mnemonic.
     /// - Parameter mnemonicString: The mnemonic to parse

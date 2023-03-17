@@ -11,6 +11,9 @@ import Foundation
 // https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 @available(iOS 13.0, *)
 public struct BIP39 {
+
+    public init() {}
+    
     /// Validate  a mnemonic.
     /// - Parameter mnemonicComponents: Menemonic components to use
     public func validate(mnemonicComponents: [String]) throws {

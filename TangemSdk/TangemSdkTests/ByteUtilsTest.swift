@@ -30,4 +30,14 @@ class ByteUtilsTests: XCTestCase {
         XCTAssertEqual(oneMoreByte!, UInt8(0x04))
         inputStream.close()
     }
+
+    func testParseBits() throws {
+        let testCases = ["10110111", "00000000", "11111111", "10000000", "00000001"]
+
+        for testcase in testCases {
+            let byte = try XCTUnwrap(UInt8(testcase, radix: 2))
+            let bits = byte.toBits().joined()
+            XCTAssertEqual(bits, testcase)
+        }
+    }
 }

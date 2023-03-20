@@ -9,15 +9,6 @@
 import Foundation
 
 extension Int {
-    /// Convert hex data  to Integer
-    /// - Parameter hexData: length bytes
-    public init(hexData: Data) {
-        let value = hexData.reduce(0) { v, byte in
-            return v << 8 | Int(byte)
-        }
-        self = value
-    }
-    
     /// Convert int to byte, truncatingIfNeeded
     public var byte: Data {
         return Data([Byte(truncatingIfNeeded: self)])

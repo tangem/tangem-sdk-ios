@@ -136,30 +136,38 @@ public final class TlvDecoder {
         case .settingsMask:
             do {
                 try typeCheck(CardSettingsMask.self, T.self, for: tag)
-                let intValue = tagValue.toInt()
+                guard let intValue = tagValue.toInt() else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to SettingsMask")
+                }
+
                 let settingsMask = CardSettingsMask(rawValue: intValue)
                 return settingsMask as! T
             } catch TangemSdkError.decodingFailedTypeMismatch {
                 try typeCheck(WalletSettingsMask.self, T.self, for: tag)
-                let intValue = tagValue.toInt()
+                guard let intValue = tagValue.toInt() else {
+                    throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to WalletSettingsMask")
+                }
+
                 let settingsMask = WalletSettingsMask(rawValue: intValue)
                 return settingsMask as! T
             }
         case .status:
             do {
                 try typeCheck(Card.Status.self, T.self, for: tag)
-                let intValue = tagValue.toInt()
-                guard let cardStatus = Card.Status(rawValue: intValue) else {
+                guard let intValue = tagValue.toInt(),
+                      let cardStatus = Card.Status(rawValue: intValue) else {
                     throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and CardStatus")
                 }
-                
+
                 return cardStatus as! T
             } catch TangemSdkError.decodingFailedTypeMismatch {
                 try typeCheck(Card.Wallet.Status.self, T.self, for: tag)
-                let intValue = tagValue.toInt()
-                guard let walletStatus = Card.Wallet.Status(rawValue: intValue) else {
+
+                guard let intValue = tagValue.toInt(),
+                      let walletStatus = Card.Wallet.Status(rawValue: intValue) else {
                     throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to int and WalletStatus")
                 }
+
                 return walletStatus as! T
             }
         case .signingMethod:
@@ -195,10 +203,11 @@ public final class TlvDecoder {
             try typeCheck(DerivationPath.self, T.self, for: tag)
             return try DerivationPath(from: tagValue) as! T
         case .backupStatus:
-            let intValue = tagValue.toInt()
+
             try typeCheck(Card.BackupRawStatus.self, T.self, for: tag)
-            guard let status = Card.BackupRawStatus.make(from: intValue) else {
-                throw TangemSdkError.decodingFailed("Decoding error. Unknown iBackupStatus")
+            guard let intValue = tagValue.toInt(),
+                  let status = Card.BackupRawStatus.make(from: intValue) else {
+                throw TangemSdkError.decodingFailed("Decoding error. Unknown BackupRawStatus")
             }
             return status as! T
         }

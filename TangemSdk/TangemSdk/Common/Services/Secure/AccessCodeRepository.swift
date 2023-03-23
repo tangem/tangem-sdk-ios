@@ -129,10 +129,11 @@ public class AccessCodeRepository {
                     for cardId in self.getCards() {
                         let accessCode = try self.biometricsStorage.get(SecureStorageKey.accessCode(for: cardId), context: context)
                         fetchedAccessCodes[cardId] = accessCode
-                        Log.debug("The access code for cardId \(cardId) was fetched successfully")
+                        Log.debug("Fetch the access code for the \(cardId). Result is \(accessCode != nil)")
                     }
                     
                     self.accessCodes = fetchedAccessCodes
+                    self.saveCards(cardIds: Set(fetchedAccessCodes.keys)) // Actualize all the cards. E.g. if biometrics was changed.
                     completion(.success(()))
                 } catch {
                     Log.error(error)

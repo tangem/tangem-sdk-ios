@@ -10,13 +10,13 @@ import Foundation
 import CryptoKit
 
 @available(iOS 13.0, *)
-public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Codable {
+public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
     public let publicKey: Data
     public let chainCode: Data
 
-    public private(set) var depth: Int = 0
-    public private(set) var parentFingerprint: Data = Data(hexString: "0x00000000")
-    public private(set) var childNumber: UInt32 = 0
+    public let depth: Int
+    public let parentFingerprint: Data
+    public let childNumber: UInt32
 
     public init(publicKey: Data, chainCode: Data, depth: Int, parentFingerprint: Data, childNumber: UInt32) throws {
         self.depth = depth
@@ -35,8 +35,11 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible, Cod
     ///   - publicKey: publicKey
     ///   - chainCode: chainCode
     public init(publicKey: Data, chainCode: Data) {
-        self.publicKey = publicKey
-        self.chainCode = chainCode
+        try! self.init(publicKey: publicKey,
+                       chainCode: chainCode,
+                       depth: 0,
+                       parentFingerprint: Data(hexString: "0x00000000"),
+                       childNumber: 0)
     }
     
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
@@ -149,5 +152,29 @@ extension ExtendedPublicKey: ExtendedKeySerializable {
 
         let resultString = Array(data).base58CheckEncodedString
         return resultString
+    }
+}
+
+// MARK: - Decodable
+@available(iOS 13.0, *)
+extension ExtendedPublicKey: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let publicKey = try container.decode(Data.self, forKey: .publicKey)
+        let chainCode = try container.decode(Data.self, forKey: .chainCode)
+
+        guard let depth = try container.decodeIfPresent(Int.self, forKey: .depth),
+              let parentFingerprint = try container.decodeIfPresent(Data.self, forKey: .parentFingerprint),
+              let childNumber = try container.decodeIfPresent(UInt32.self, forKey: .childNumber) else {
+            self.init(publicKey: publicKey, chainCode: chainCode)
+            return
+        }
+
+        try self.init(publicKey: publicKey,
+                      chainCode: chainCode,
+                      depth: depth,
+                      parentFingerprint: parentFingerprint,
+                      childNumber: childNumber)
     }
 }

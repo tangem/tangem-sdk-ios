@@ -18,6 +18,43 @@ class JSONRPCTests: XCTestCase {
         XCTAssertNotNil(data)
         return try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
     }
+
+    func testDecodeMasterExtendedPublicKey() throws {
+        let json =
+        """
+        {
+            "publicKey": "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962",
+            "chainCode": "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB",
+        }
+        """
+
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
+        XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
+        XCTAssertEqual(decoded.depth, 0)
+        XCTAssertEqual(decoded.childNumber, 0)
+        XCTAssertEqual(decoded.parentFingerprint.hexString, "00000000")
+    }
+
+    func testDecodeExtendedPublicKey() throws {
+        let json =
+        """
+        {
+            "publicKey": "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962",
+            "chainCode": "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB",
+            "depth" : 1,
+            "parentFingerprint" : "00000001",
+            "childNumber" : 2
+        }
+        """
+
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
+        XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
+        XCTAssertEqual(decoded.depth, 1)
+        XCTAssertEqual(decoded.childNumber, 2)
+        XCTAssertEqual(decoded.parentFingerprint.hexString, "00000001")
+    }
     
     func testJsonRPCRequestParse() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": {\"subtrahend\": 23, \"minuend\": 42}, \"id\": 3}"

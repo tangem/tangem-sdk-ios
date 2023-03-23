@@ -163,18 +163,24 @@ extension ExtendedPublicKey: Decodable {
 
         let publicKey = try container.decode(Data.self, forKey: .publicKey)
         let chainCode = try container.decode(Data.self, forKey: .chainCode)
+        let depth = try container.decodeIfPresent(Int.self, forKey: .depth)
+        let parentFingerprint = try container.decodeIfPresent(Data.self, forKey: .parentFingerprint)
+        let childNumber = try container.decodeIfPresent(UInt32.self, forKey: .childNumber)
 
-        guard let depth = try container.decodeIfPresent(Int.self, forKey: .depth),
-              let parentFingerprint = try container.decodeIfPresent(Data.self, forKey: .parentFingerprint),
-              let childNumber = try container.decodeIfPresent(UInt32.self, forKey: .childNumber) else {
+        if let depth, let parentFingerprint, let childNumber {
+            try self.init(publicKey: publicKey,
+                          chainCode: chainCode,
+                          depth: depth,
+                          parentFingerprint: parentFingerprint,
+                          childNumber: childNumber)
+            return
+        }
+
+        if depth == nil, parentFingerprint == nil, childNumber == nil {
             self.init(publicKey: publicKey, chainCode: chainCode)
             return
         }
 
-        try self.init(publicKey: publicKey,
-                      chainCode: chainCode,
-                      depth: depth,
-                      parentFingerprint: parentFingerprint,
-                      childNumber: childNumber)
+        throw TangemSdkError.decodingFailed("Missing data in the ExtendedPublicKey")
     }
 }

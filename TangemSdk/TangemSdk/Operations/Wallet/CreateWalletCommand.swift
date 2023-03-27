@@ -32,15 +32,19 @@ final class CreateWalletCommand: Command {
     var walletIndex: Int = 0
     
     private let curve: EllipticCurve
-    private let seed: Data?
+    private let externalKey: ExtendedPrivateKey?
     private let signingMethod = SigningMethod.signHash
     
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     /// - Parameter seed: An optional BIP39 seed to create wallet from. COS v6.10+.
-    init(curve: EllipticCurve, seed: Data?) {
+    init(curve: EllipticCurve, seed: Data?) throws {
         self.curve = curve
-        self.seed = seed
+        if let seed {
+            self.externalKey = try BIP32().makeMasterKey(from: seed, curve: curve)
+        } else {
+            self.externalKey = nil
+        }
     }
     
     deinit {
@@ -64,13 +68,23 @@ final class CreateWalletCommand: Command {
             }
         }
 
-        if seed != nil {
+        if externalKey != nil {
             if card.firmwareVersion < .isExternalWalletsAvailable {
                 return TangemSdkError.notSupportedFirmwareVersion
             }
 
             if !card.settings.isExternalWalletsAllowed {
                 return TangemSdkError.externalWalletsDisabled
+            }
+
+            do {
+                // This check will fail for compressed secp256r1 keys
+                if let extendedKey = try externalKey?.makePublicKey(for: curve),
+                   card.wallets[extendedKey.publicKey] != nil {
+                    return TangemSdkError.walletAlreadyCreated
+                }
+            } catch {
+                return error.toTangemSdkError()
             }
         }
 
@@ -130,11 +144,9 @@ final class CreateWalletCommand: Command {
                 .append(.walletIndex, value: walletIndex)
         }
 
-        if let seed {
-            let key = try BIP32().makeMasterKey(from: seed, curve: curve)
-            
-            try tlvBuilder.append(.walletPrivateKey, value: key.privateKey)
-            try tlvBuilder.append(.walletHDChain, value: key.chainCode)
+        if let externalKey {
+            try tlvBuilder.append(.walletPrivateKey, value: externalKey.privateKey)
+            try tlvBuilder.append(.walletHDChain, value: externalKey.chainCode)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

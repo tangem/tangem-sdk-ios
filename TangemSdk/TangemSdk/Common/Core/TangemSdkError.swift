@@ -248,6 +248,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletNotFound
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
+    case walletAlreadyCreated
     
     // MARK: Backup errors
     case backupFailedCardNotLinked
@@ -344,6 +345,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeRequired: return 40401
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
+        case .walletAlreadyCreated: return 40405
             
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502

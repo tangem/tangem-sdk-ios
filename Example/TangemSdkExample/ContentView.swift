@@ -140,6 +140,10 @@ struct ContentView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
+
+                TextField("Optional mnemonic", text: $model.mnemonicString)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocapitalization(.none)
             }
             .padding()
             .cornerRadius(8)

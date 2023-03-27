@@ -161,7 +161,7 @@ public final class AttestWalletKeyCommand: Command {
             message += walletStatus.rawValue.byte
         }
 
-        return try CryptoUtils.verify(curve: curve,
+        return try CryptoUtils.verify(curve: .secp256k1,
                                       publicKey: cardPublicKey,
                                       message: message,
                                       signature: cardSignature)

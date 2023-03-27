@@ -69,6 +69,36 @@ extension Card.Wallet {
 }
 
 @available(iOS 13.0, *)
+extension Card.Wallet.Status {
+    var isBackuped: Bool {
+        switch self {
+        case .backuped, .backupedAndPurged:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isExternal: Bool {
+        switch self {
+        case .external, .backupedExternal:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isLoaded: Bool {
+        switch self {
+        case .empty, .purged, .backupedAndPurged:
+            return false
+        default:
+            return true
+        }
+    }
+}
+
+@available(iOS 13.0, *)
 extension Card.Wallet.Settings {
     /// Stores and maps Wallet settings
     /// - Note: Available only for cards with COS v.4.0

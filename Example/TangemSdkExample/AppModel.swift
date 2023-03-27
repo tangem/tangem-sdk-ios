@@ -17,6 +17,7 @@ class AppModel: ObservableObject {
     
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
+    @Published var mnemonicString: String = ""
     //Sign
     @Published var derivationPath: String = ""
     //Attestation
@@ -285,9 +286,23 @@ extension AppModel {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
+
+        var seed: Data? = nil
+
+        if !mnemonicString.isEmpty {
+            do {
+                let mnemonic = try Mnemonic(with: mnemonicString)
+                seed = try mnemonic.generateSeed()
+            }
+            catch {
+                self.complete(with: error)
+                return
+            }
+        }
         
         tangemSdk.createWallet(curve: curve,
                                cardId: cardId,
+                               seed: seed,
                                completion: handleCompletion)
     }
     

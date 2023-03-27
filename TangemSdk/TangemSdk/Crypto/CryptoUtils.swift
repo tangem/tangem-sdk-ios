@@ -79,6 +79,7 @@ public enum CryptoUtils {
         }
     }
 
+    // We can create only decompressed secp256r1 key here.
     public static func makePublicKey(from privateKey: Data, curve: EllipticCurve) throws -> Data {
         switch curve {
         case .secp256k1:

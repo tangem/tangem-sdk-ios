@@ -20,11 +20,14 @@ import Foundation
 @available(iOS 13.0, *)
 public class CreateWalletTask: CardSessionRunnable {
     private let curve: EllipticCurve
+    private let seed: Data?
     private var derivationTask: DeriveWalletPublicKeysTask? = nil
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    public init(curve: EllipticCurve) {
+    /// - Parameter seed: An optional BIP39 seed to create wallet from. COS v6.10+. Nil by default.
+    public init(curve: EllipticCurve, seed: Data? = nil) {
         self.curve = curve
+        self.seed = seed
     }
     
     deinit {
@@ -32,7 +35,7 @@ public class CreateWalletTask: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let command = CreateWalletCommand(curve: curve)
+        let command = CreateWalletCommand(curve: curve, seed: seed)
         command.run(in: session) { result in
             switch result {
             case .success(let response):

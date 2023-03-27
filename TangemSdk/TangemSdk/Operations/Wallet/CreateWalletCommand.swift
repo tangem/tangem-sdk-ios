@@ -32,12 +32,15 @@ final class CreateWalletCommand: Command {
     var walletIndex: Int = 0
     
     private let curve: EllipticCurve
+    private let seed: Data?
     private let signingMethod = SigningMethod.signHash
     
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    init(curve: EllipticCurve) {
+    /// - Parameter seed: An optional BIP39 seed to create wallet from. COS v6.10+.
+    init(curve: EllipticCurve, seed: Data?) {
         self.curve = curve
+        self.seed = seed
     }
     
     deinit {
@@ -54,13 +57,23 @@ final class CreateWalletCommand: Command {
             return TangemSdkError.unsupportedCurve
         }
         
-        if card.firmwareVersion < FirmwareVersion.multiwalletAvailable {
+        if card.firmwareVersion < .multiwalletAvailable {
             if let cardSigningMethods = card.settings.defaultSigningMethods,
                !signingMethod.isSubset(of: cardSigningMethods) {
                 return TangemSdkError.unsupportedWalletConfig
             }
         }
-        
+
+        if seed != nil {
+            if card.firmwareVersion < .isExternalWalletsAvailable {
+                return TangemSdkError.notSupportedFirmwareVersion
+            }
+
+            if !card.settings.isExternalWalletsAllowed {
+                return TangemSdkError.externalWalletsDisabled
+            }
+        }
+
         return nil
     }
     
@@ -116,6 +129,13 @@ final class CreateWalletCommand: Command {
                 .append(.signingMethod, value: signingMethod)
                 .append(.walletIndex, value: walletIndex)
         }
+
+        if let seed {
+            let key = try BIP32().makeMasterKey(from: seed, curve: curve)
+            
+            try tlvBuilder.append(.walletPrivateKey, value: key.privateKey)
+            try tlvBuilder.append(.walletHDChain, value: key.chainCode)
+        }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
     }
@@ -165,6 +185,7 @@ final class CreateWalletCommand: Command {
                            remainingSignatures: remainingSignatures,
                            index: index,
                            proof: nil,
+                           isExternal: false,
                            hasBackup: false)
     }
     

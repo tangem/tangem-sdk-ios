@@ -61,7 +61,8 @@ class CreateWalletHandler: JSONRPCHandler {
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
-        let command = CreateWalletTask(curve: curve)
+        let seed: Data? = try parameters.value(for: "seed")
+        let command = CreateWalletTask(curve: curve, seed: seed)
         return command.eraseToAnyRunnable()
     }
 }

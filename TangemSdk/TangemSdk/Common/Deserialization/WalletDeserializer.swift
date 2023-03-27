@@ -45,7 +45,7 @@ class WalletDeserializer {
     func deserializeWallet(from decoder: TlvDecoder) throws -> Card.Wallet {
         let status: Card.Wallet.Status = try decoder.decode(.status)
 
-        if status == .empty || status == .purged || status == .backupedAndPurged  { //We need only loaded wallets
+        if !status.isLoaded { //We need only loaded wallets
             throw TangemSdkError.walletNotFound
         }
         
@@ -65,7 +65,7 @@ class WalletDeserializer {
                            remainingSignatures: nil,
                            index: try decoder.decode(.walletIndex),
                            proof: try decoder.decode(.proof),
-                           isExternal: status == .external || status == .backupedExternal,
-                           hasBackup: status == .backuped || status == .backupedExternal)
+                           isExternal: status.isExternal,
+                           hasBackup: status.isBackuped)
     }
 }

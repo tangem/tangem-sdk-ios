@@ -140,12 +140,14 @@ public extension TangemSdk {
     ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - seed: An optional BIP39 seed to create wallet from. COS v.6.10+. Nil by default.
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     func createWallet(curve: EllipticCurve,
                       cardId: String,
+                      seed: Data? = nil,
                       initialMessage: Message? = nil,
                       completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let command = CreateWalletTask(curve: curve)
+        let command = CreateWalletTask(curve: curve, seed: seed)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

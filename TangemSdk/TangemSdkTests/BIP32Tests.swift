@@ -8,6 +8,7 @@
 
 import Foundation
 import XCTest
+import CryptoKit
 @testable import TangemSdk
 
 @available(iOS 13.0, *)
@@ -131,5 +132,47 @@ class BIP32Tests: XCTestCase {
 
         let xpub = try mPub.serialize(for: .mainnet)
         XCTAssertEqual(xpub, "xpub661MyMwAqRbcGczjuMoRm6dXaLDEhW1u34gKenbeYqAix21mdUKJyuyu5F1rzYGVxyL6tmgBUAEPrEz92mBXjByMRiJdba9wpnN37RLLAXa")
+    }
+
+    // MARK: - Test that keys uploaded to a card are equal to locally computed
+    
+    func testExternalWalletSecp256k1() throws {
+        let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+        let mnemonic = try Mnemonic(with: mnemonicString)
+        let seed = try mnemonic.generateSeed()
+        let privKey = try BIP32().makeMasterKey(from: seed, curve: .secp256k1)
+        let pubKey = try privKey.makePublicKey(for: .secp256k1)
+
+        let publicKeyFromCard = "03D902F35F560E0470C63313C7369168D9D7DF2D49BF295FD9FB7CB109CCEE0494"
+        let chainCodeFromCard = "7923408DADD3C7B56EED15567707AE5E5DCA089DE972E07F3B860450E2A3B70E"
+        XCTAssertEqual(pubKey.publicKey.hexString, publicKeyFromCard)
+        XCTAssertEqual(pubKey.chainCode.hexString, chainCodeFromCard)
+    }
+
+    func testExternalWalletEd25519() throws {
+        let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+        let mnemonic = try Mnemonic(with: mnemonicString)
+        let seed = try mnemonic.generateSeed()
+        let privKey = try BIP32().makeMasterKey(from: seed, curve: .ed25519)
+        let pubKey = try privKey.makePublicKey(for: .ed25519)
+
+        let publicKeyFromCard = "E96B1C6B8769FDB0B34FBECFDF85C33B053CECAD9517E1AB88CBA614335775C1"
+        let chainCodeFromCard = "DDFA71109701BBF7C126C8C7AB5880B0DEC3D167A8FE6AFA7A9597DF0BBEE72B"
+        XCTAssertEqual(pubKey.publicKey.hexString, publicKeyFromCard)
+        XCTAssertEqual(pubKey.chainCode.hexString, chainCodeFromCard)
+    }
+
+    @available(iOS 16.0, *)
+    func testExternalWalletSecp256r1() throws {
+        let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+        let mnemonic = try Mnemonic(with: mnemonicString)
+        let seed = try mnemonic.generateSeed()
+        let privKey = try BIP32().makeMasterKey(from: seed, curve: .secp256r1)
+        let pubKey = (try P256.Signing.PrivateKey(rawRepresentation: privKey.privateKey)).publicKey.compressedRepresentation
+
+        let publicKeyFromCard = "029983A77B155ED3B3B9E1DDD223BD5AA073834C8F61113B2F1B883AAA70971B5F"
+        let chainCodeFromCard = "C7A888C4C670406E7AAEB6E86555CE0C4E738A337F9A9BC239F6D7E475110A4E"
+        XCTAssertEqual(pubKey.hexString, publicKeyFromCard)
+        XCTAssertEqual(privKey.chainCode.hexString, chainCodeFromCard)
     }
 }

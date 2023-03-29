@@ -135,7 +135,7 @@ class JSONRPCTests: XCTestCase {
                                                               remainingSignatures: 100,
                                                               index: 1,
                                                               proof: nil,
-                                                              isExternal: false,
+                                                              isImported: false,
                                                               hasBackup: false))
         testMethod(name: "CreateWallet", result: result)
     }

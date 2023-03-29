@@ -72,7 +72,7 @@ extension Card.Wallet {
 extension Card.Wallet.Status {
     var isBackuped: Bool {
         switch self {
-        case .backuped, .backupedAndPurged:
+        case .backuped, .backupedAndPurged, .backupedExternal:
             return true
         default:
             return false

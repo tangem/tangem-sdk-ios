@@ -32,8 +32,6 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
-        /// Is allowed to reset user codes
-        public internal(set) var isResettingUserCodesAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
@@ -55,7 +53,7 @@ public extension Card {
 
 @available(iOS 13.0, *)
 extension Card.Settings {
-    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask, userSettings: UserSettings,
+    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
          defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
         self.securityDelay = securityDelay
         self.maxWalletsCount = maxWalletsCount
@@ -83,24 +81,14 @@ extension Card.Settings {
         }
         
         self.supportedEncryptionModes = encryptionModes
-
-        // user settings
-        self.isResettingUserCodesAllowed = userSettings.isResettingUserCodesAllowed
     }
     
     func updated(with mask: CardSettingsMask) -> Card.Settings {
         return .init(securityDelay: self.securityDelay,
                      maxWalletsCount: self.maxWalletsCount,
                      mask: mask,
-                     userSettings: .init(isResettingUserCodesAllowed: self.isResettingUserCodesAllowed),
                      defaultSigningMethods: self.defaultSigningMethods,
                      defaultCurve: self.defaultCurve)
-    }
-
-    func updated(with userSettings: UserSettings) -> Card.Settings {
-        var copy = self
-        copy.isResettingUserCodesAllowed = userSettings.isResettingUserCodesAllowed
-        return copy
     }
 }
 

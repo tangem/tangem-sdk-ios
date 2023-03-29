@@ -8,11 +8,16 @@
 
 import Foundation
 
-// MARK: - UserSettings
 @available(iOS 13.0, *)
-struct UserSettings: JSONStringConvertible {
-    var isResettingUserCodesAllowed: Bool
+public extension Card {
+    struct UserSettings: Codable {
+        /// Is allowed to reset user codes
+        public internal(set) var isResettingUserCodesAllowed: Bool
+    }
+}
 
+@available(iOS 13.0, *)
+extension Card.UserSettings {
     var mask: UserSettingsMask {
         let builder = MaskBuilder<UserSettingsMask>()
 
@@ -22,16 +27,9 @@ struct UserSettings: JSONStringConvertible {
 
         return builder.build()
     }
-}
 
-@available(iOS 13.0, *)
-extension UserSettings {
     init(from mask: UserSettingsMask) {
         self.isResettingUserCodesAllowed = !mask.contains(.forbidResetPIN)
-    }
-
-    init(from cardSettings: Card.Settings) {
-        self.isResettingUserCodesAllowed = cardSettings.isResettingUserCodesAllowed
     }
 }
 

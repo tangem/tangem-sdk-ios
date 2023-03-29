@@ -225,6 +225,20 @@ public extension TangemSdk {
                         completion: @escaping CompletionResult<SuccessResponse>) {
         startSession(with: SetUserCodeCommand.resetUserCodes, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
+
+    /// Set if card allowed to reset user code
+    /// - Parameters:
+    ///   - isResettingUserCodesAllowed:Is this card can reset user codes on tte other linked card or not
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
+    func setResettingUserCodesAllowed(_ isResettingUserCodesAllowed: Bool,
+                                      cardId: String,
+                                      initialMessage: Message? = nil,
+                                      completion: @escaping CompletionResult<SuccessResponse>) {
+        let task = SetResettingUserCodesAllowedTask(isResettingUserCodesAllowed: isResettingUserCodesAllowed)
+        startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
     
     /// Derive public key according to BIP32 (Private parent key → public child key)
     /// - Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported

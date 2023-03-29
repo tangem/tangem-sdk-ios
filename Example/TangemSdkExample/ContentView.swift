@@ -194,7 +194,10 @@ struct ContentView: View {
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
             .onAppear(perform: model.onAppear)
-            
+        case .setResettingUserCodesAllowed:
+            Toggle(isOn: $model.isResettingUserCodesAllowed) {
+                Text("Is resetting user codes allowed")
+            }
         default:
             EmptyView()
         }

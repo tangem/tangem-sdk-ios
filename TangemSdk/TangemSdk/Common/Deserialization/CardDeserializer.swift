@@ -77,18 +77,9 @@ struct CardDeserializer {
 
         let securityDelayMs = securityDelay.map { $0 * 10 } ?? 0
 
-        var userSettings: UserSettings
-        let userSettingsMask: UserSettingsMask? = try decoder.decode(.userSettingsMask)
-        if let userSettingsMask {
-            userSettings = .init(from: userSettingsMask)
-        } else {
-            userSettings = .init(isResettingUserCodesAllowed: firmware >= .backupAvailable)
-        }
-
         let settings = Card.Settings(securityDelay: securityDelayMs,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      mask: cardSettingsMask,
-                                     userSettings: userSettings,
                                      defaultSigningMethods: try decoder.decode(.signingMethod),
                                      defaultCurve: defaultCurve)
         
@@ -97,7 +88,15 @@ struct CardDeserializer {
         let backupRawStatus: Card.BackupRawStatus? = try decoder.decode(.backupStatus)
         let backupCardsCount: Int? = try decoder.decode(.backupCount)
         let backupStatus: Card.BackupStatus? = try backupRawStatus.map { try Card.BackupStatus(from: $0, cardsCount: backupCardsCount) }
-        
+
+        var userSettings: Card.UserSettings
+        let userSettingsMask: UserSettingsMask? = try decoder.decode(.userSettingsMask)
+        if let userSettingsMask {
+            userSettings = .init(from: userSettingsMask)
+        } else {
+            userSettings = .init(isResettingUserCodesAllowed: firmware >= .backupAvailable)
+        }
+
         let card = Card(cardId: try decoder.decode(.cardId),
                         batchId: try cardDataDecoder.decode(.batchId),
                         cardPublicKey: try decoder.decode(.cardPublicKey),
@@ -105,6 +104,7 @@ struct CardDeserializer {
                         manufacturer: manufacturer,
                         issuer: issuer,
                         settings: settings,
+                        userSettings: userSettings,
                         linkedTerminalStatus: terminalIsLinked ? .current : .none,
                         isAccessCodeSet: isAccessCodeSet ?? isAccessCodeSetLegacy,
                         isPasscodeSet: isPasscodeSet,

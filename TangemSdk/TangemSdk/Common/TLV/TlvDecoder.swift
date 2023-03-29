@@ -151,6 +151,14 @@ public final class TlvDecoder {
                 let settingsMask = WalletSettingsMask(rawValue: intValue)
                 return settingsMask as! T
             }
+        case .userSettingsMask:
+            try typeCheck(UserSettingsMask.self, T.self, for: tag)
+            guard let intValue = tagValue.toInt() else {
+                throw TangemSdkError.decodingFailed("Decoding error. Failed convert \(tag) to UserSettingsMask")
+            }
+
+            let settingsMask = UserSettingsMask(rawValue: intValue)
+            return settingsMask as! T
         case .status:
             do {
                 try typeCheck(Card.Status.self, T.self, for: tag)

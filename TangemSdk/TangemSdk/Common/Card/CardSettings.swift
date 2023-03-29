@@ -21,7 +21,7 @@ public extension Card {
         /// Is  allowed to change passcode
         public internal(set) var isSettingPasscodeAllowed: Bool
         /// Is allowed to remove access code
-        public internal(set) var isResettingUserCodesAllowed: Bool
+        public internal(set) var isRemovingUserCodesAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card
@@ -32,6 +32,8 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
+        /// Is allowed to reset user codes
+        public internal(set) var isResettingUserCodesAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
@@ -53,7 +55,7 @@ public extension Card {
 
 @available(iOS 13.0, *)
 extension Card.Settings {
-    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
+    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask, userSettings: UserSettings,
          defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
         self.securityDelay = securityDelay
         self.maxWalletsCount = maxWalletsCount
@@ -62,7 +64,7 @@ extension Card.Settings {
         
         self.isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
         self.isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
-        self.isResettingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
+        self.isRemovingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
         self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
         self.isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
         self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
@@ -81,19 +83,29 @@ extension Card.Settings {
         }
         
         self.supportedEncryptionModes = encryptionModes
+
+        // user settings
+        self.isResettingUserCodesAllowed = userSettings.isResettingUserCodesAllowed
     }
     
     func updated(with mask: CardSettingsMask) -> Card.Settings {
         return .init(securityDelay: self.securityDelay,
                      maxWalletsCount: self.maxWalletsCount,
                      mask: mask,
+                     userSettings: .init(isResettingUserCodesAllowed: self.isResettingUserCodesAllowed),
                      defaultSigningMethods: self.defaultSigningMethods,
                      defaultCurve: self.defaultCurve)
     }
-    
+
+    func updated(with userSettings: UserSettings) -> Card.Settings {
+        var copy = self
+        copy.isResettingUserCodesAllowed = userSettings.isResettingUserCodesAllowed
+        return copy
+    }
 }
 
-//MARK:- CardSettingsMask
+// MARK: - CardSettingsMask
+
 @available(iOS 13.0, *)
 typealias CardSettingsMask = Card.Settings.Mask
 
@@ -116,7 +128,8 @@ extension CardSettingsMask {
     }
 }
 
-//MARK:- CardSettingsMask Constants
+// MARK: - CardSettingsMask Constants
+
 @available(iOS 13.0, *)
 extension CardSettingsMask {
     static let useActivation = CardSettingsMask(rawValue: 0x0002)
@@ -147,7 +160,8 @@ extension CardSettingsMask {
     static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
 }
 
-//MARK:- CardSettingsMask OptionSetCodable conformance
+// MARK: - CardSettingsMask OptionSetCodable conformance
+
 @available(iOS 13.0, *)
 extension CardSettingsMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {

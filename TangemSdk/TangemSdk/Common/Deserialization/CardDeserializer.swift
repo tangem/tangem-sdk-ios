@@ -60,7 +60,7 @@ struct CardDeserializer {
                                      remainingSignatures: remainingSignatures,
                                      index: 0,
                                      proof: nil,
-                                     isExternal: false,
+                                     isImported: false,
                                      hasBackup: false)
             
             wallets.append(wallet)

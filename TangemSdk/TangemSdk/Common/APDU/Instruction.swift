@@ -41,4 +41,5 @@ public enum Instruction: Byte {
     case authorize = 0xD3
     case backupReset = 0xEE
     case generateOTP = 0xE2
+    case setUserSettings = 0xD5
 }

@@ -14,7 +14,7 @@ struct SetUserSettingsCommandResponse: JSONStringConvertible {
     /// Unique Tangem card ID number.
     let cardId: String
     /// The mask was set
-    let settings: UserSettings
+    let settings: Card.UserSettings
 }
 
 /// Set user serrings on a card. COS v.6.10+
@@ -22,9 +22,9 @@ struct SetUserSettingsCommandResponse: JSONStringConvertible {
 class SetUserSettingsCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
 
-    private let settings: UserSettings
+    private let settings: Card.UserSettings
 
-    init(settings: UserSettings) {
+    init(settings: Card.UserSettings) {
         self.settings = settings
     }
 
@@ -44,10 +44,7 @@ class SetUserSettingsCommand: Command {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
-                if let settings = session.environment.card?.settings {
-                    session.environment.card?.settings = settings.updated(with: response.settings)
-                }
-
+                session.environment.card?.userSettings = response.settings
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))

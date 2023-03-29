@@ -30,7 +30,7 @@ public final class SetResettingUserCodesAllowedTask: CardSessionRunnable {
             return
         }
         
-        var userSettings = UserSettings(from: card.settings)
+        var userSettings = card.userSettings
         userSettings.isResettingUserCodesAllowed = isResettingUserCodesAllowed
         
         let setUserSettingsCommand = SetUserSettingsCommand(settings: userSettings)

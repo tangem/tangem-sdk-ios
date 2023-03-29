@@ -30,7 +30,7 @@ struct CardDeserializer {
         
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
         let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
-        
+
         let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
         
@@ -74,10 +74,21 @@ struct CardDeserializer {
                                  publicKey: try decoder.decode(.issuerPublicKey))
         
         let securityDelay: Int? = try decoder.decode(.pauseBeforePin2)
+
         let securityDelayMs = securityDelay.map { $0 * 10 } ?? 0
+
+        var userSettings: UserSettings
+        let userSettingsMask: UserSettingsMask? = try decoder.decode(.userSettingsMask)
+        if let userSettingsMask {
+            userSettings = .init(from: userSettingsMask)
+        } else {
+            userSettings = .init(isResettingUserCodesAllowed: firmware >= .backupAvailable)
+        }
+
         let settings = Card.Settings(securityDelay: securityDelayMs,
                                      maxWalletsCount: try decoder.decode(.walletsCount) ?? 1, //Cos before v4 always has 1 wallet
                                      mask: cardSettingsMask,
+                                     userSettings: userSettings,
                                      defaultSigningMethods: try decoder.decode(.signingMethod),
                                      defaultCurve: defaultCurve)
         

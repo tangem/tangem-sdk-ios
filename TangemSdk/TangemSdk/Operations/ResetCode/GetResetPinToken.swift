@@ -27,7 +27,7 @@ final class GetResetPinTokenCommand: Command {
             return TangemSdkError.noActiveBackup
         }
 
-        guard card.settings.isResettingUserCodesAllowed else {
+        guard card.userSettings.isResettingUserCodesAllowed else {
             return TangemSdkError.userCodeResettingDisabled
         }
         

@@ -32,7 +32,7 @@ final class CreateWalletCommand: Command {
     var walletIndex: Int = 0
     
     private let curve: EllipticCurve
-    private let externalKey: ExtendedPrivateKey?
+    private let keyToImport: ExtendedPrivateKey?
     private let signingMethod = SigningMethod.signHash
     
     /// Default initializer
@@ -41,9 +41,9 @@ final class CreateWalletCommand: Command {
     init(curve: EllipticCurve, seed: Data?) throws {
         self.curve = curve
         if let seed {
-            self.externalKey = try BIP32().makeMasterKey(from: seed, curve: curve)
+            self.keyToImport = try BIP32().makeMasterKey(from: seed, curve: curve)
         } else {
-            self.externalKey = nil
+            self.keyToImport = nil
         }
     }
     
@@ -68,18 +68,18 @@ final class CreateWalletCommand: Command {
             }
         }
 
-        if externalKey != nil {
-            if card.firmwareVersion < .isExternalWalletsAvailable {
+        if keyToImport != nil {
+            if card.firmwareVersion < .keysImportAvailable {
                 return TangemSdkError.notSupportedFirmwareVersion
             }
 
-            if !card.settings.isExternalWalletsAllowed {
-                return TangemSdkError.externalWalletsDisabled
+            if !card.settings.isKeysImportAllowed {
+                return TangemSdkError.keysImportDisabled
             }
 
             do {
                 // This check will fail for compressed secp256r1 keys
-                if let extendedKey = try externalKey?.makePublicKey(for: curve),
+                if let extendedKey = try keyToImport?.makePublicKey(for: curve),
                    card.wallets[extendedKey.publicKey] != nil {
                     return TangemSdkError.walletAlreadyCreated
                 }
@@ -144,9 +144,9 @@ final class CreateWalletCommand: Command {
                 .append(.walletIndex, value: walletIndex)
         }
 
-        if let externalKey {
-            try tlvBuilder.append(.walletPrivateKey, value: externalKey.privateKey)
-            try tlvBuilder.append(.walletHDChain, value: externalKey.chainCode)
+        if let keyToImport {
+            try tlvBuilder.append(.walletPrivateKey, value: keyToImport.privateKey)
+            try tlvBuilder.append(.walletHDChain, value: keyToImport.chainCode)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -197,7 +197,7 @@ final class CreateWalletCommand: Command {
                            remainingSignatures: remainingSignatures,
                            index: index,
                            proof: nil,
-                           isExternal: false,
+                           isImported: false,
                            hasBackup: false)
     }
     

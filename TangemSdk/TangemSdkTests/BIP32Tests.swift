@@ -136,7 +136,7 @@ class BIP32Tests: XCTestCase {
 
     // MARK: - Test that keys uploaded to a card are equal to locally computed
     
-    func testExternalWalletSecp256k1() throws {
+    func testKeyImportSecp256k1() throws {
         let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
         let mnemonic = try Mnemonic(with: mnemonicString)
         let seed = try mnemonic.generateSeed()
@@ -149,7 +149,7 @@ class BIP32Tests: XCTestCase {
         XCTAssertEqual(pubKey.chainCode.hexString, chainCodeFromCard)
     }
 
-    func testExternalWalletEd25519() throws {
+    func testKeyImportEd25519() throws {
         let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
         let mnemonic = try Mnemonic(with: mnemonicString)
         let seed = try mnemonic.generateSeed()
@@ -163,7 +163,7 @@ class BIP32Tests: XCTestCase {
     }
 
     @available(iOS 16.0, *)
-    func testExternalWalletSecp256r1() throws {
+    func testKeyImportSecp256r1() throws {
         let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
         let mnemonic = try Mnemonic(with: mnemonicString)
         let seed = try mnemonic.generateSeed()

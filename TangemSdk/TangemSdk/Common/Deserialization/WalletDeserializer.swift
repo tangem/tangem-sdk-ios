@@ -65,7 +65,7 @@ class WalletDeserializer {
                            remainingSignatures: nil,
                            index: try decoder.decode(.walletIndex),
                            proof: try decoder.decode(.proof),
-                           isExternal: status.isExternal,
+                           isImported: status.isImported,
                            hasBackup: status.isBackuped)
     }
 }

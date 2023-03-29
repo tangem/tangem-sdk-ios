@@ -48,7 +48,7 @@ extension AppModel {
         "disableFiles": false,
         "allowHDWallets": true,
         "allowBackup": true,
-        "allowExternalWallets": true,
+        "allowKeysImport": true,
         "NDEF": [],
         "cardData": {
             "date": "2021-03-15",

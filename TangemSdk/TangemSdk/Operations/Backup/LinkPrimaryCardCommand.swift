@@ -89,7 +89,7 @@ final class LinkPrimaryCardCommand: Command {
         session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
         session.environment.card?.settings.isSettingAccessCodeAllowed = true
         session.environment.card?.settings.isSettingPasscodeAllowed = true
-        session.environment.card?.settings.isResettingUserCodesAllowed = false
+        session.environment.card?.settings.isRemovingUserCodesAllowed = false
         completion(.success(response))
     }
     

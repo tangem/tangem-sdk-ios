@@ -25,6 +25,8 @@ class AppModel: ObservableObject {
     @Published var json: String =  ""
     //Personalization
     @Published var personalizationConfig: String =  ""
+    //Set resetting user codes
+    @Published var isResettingUserCodesAllowed: Bool = false
     
     //MARK:-  Outputs
     @Published var logText: String = DebugLogger.logPlaceholder
@@ -579,6 +581,15 @@ extension AppModel {
     func resetToFactory() {
         tangemSdk.startSession(with: ResetToFactorySettingsTask(), completion: handleCompletion)
     }
+
+    func setResettingUserCodesAllowed() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Please, scan card before")
+            return
+        }
+
+        tangemSdk.setResettingUserCodesAllowed(isResettingUserCodesAllowed, cardId: cardId, completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -674,6 +685,7 @@ extension AppModel {
         case personalize
         case resetBackup
         case resetToFactory
+        case setResettingUserCodesAllowed
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -706,6 +718,7 @@ extension AppModel {
         case .personalize: personalize()
         case .resetBackup: resetBackup()
         case .resetToFactory: resetToFactory()
+        case .setResettingUserCodesAllowed: setResettingUserCodesAllowed()
         }
     }
 }

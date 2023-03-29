@@ -30,8 +30,8 @@ public extension Card {
         public let index: Int
         /// Proof for BLS Proof of possession scheme (POP)
         public let proof: Data?
-        ///  Does this wallet has an external copy. E.g. seed phrase
-        public let isExternal: Bool
+        /// Has this key been imported to a card. E.g. from seed phrase
+        public let isImported: Bool
         /// Does this wallet has a backup
         public var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
@@ -61,10 +61,10 @@ extension Card.Wallet {
         case backuped = 0x82
         /// Wallet was purged and can't be recreated or used for signing, but backup data read and wallet can be usable on backup card
         case backupedAndPurged = 0x83
-        /// Wallet was loaded externally
-        case external = 0x42
-        /// Wallet was loaded externally and backuped
-        case backupedExternal = 0xC2
+        /// Wallet was imported
+        case imported = 0x42
+        /// Wallet was imported and backuped
+        case backupedImported = 0xC2
     }
 }
 
@@ -72,16 +72,16 @@ extension Card.Wallet {
 extension Card.Wallet.Status {
     var isBackuped: Bool {
         switch self {
-        case .backuped, .backupedAndPurged, .backupedExternal:
+        case .backuped, .backupedAndPurged, .backupedImported:
             return true
         default:
             return false
         }
     }
 
-    var isExternal: Bool {
+    var isImported: Bool {
         switch self {
-        case .external, .backupedExternal:
+        case .imported, .backupedImported:
             return true
         default:
             return false

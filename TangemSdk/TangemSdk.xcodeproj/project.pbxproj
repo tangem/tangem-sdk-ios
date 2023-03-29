@@ -311,6 +311,7 @@
 		DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E329BB806E0037BC05 /* WIFTests.swift */; };
 		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
+		DC22228729D431AB001129F8 /* SetResettingUserCodesAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetResettingUserCodesAllowed.json */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
@@ -318,6 +319,9 @@
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
+		DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */; };
+		DCC0A21429D3201300C45B13 /* SetResettingUserCodesAllowedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21329D3201300C45B13 /* SetResettingUserCodesAllowedTask.swift */; };
+		DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21529D3216100C45B13 /* UserSettings.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17628F5629F0037586C /* FocusableTextField.swift */; };
@@ -646,6 +650,7 @@
 		DC1244E329BB806E0037BC05 /* WIFTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WIFTests.swift; sourceTree = "<group>"; };
 		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
+		DC22228629D431AB001129F8 /* SetResettingUserCodesAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetResettingUserCodesAllowed.json; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
@@ -653,6 +658,9 @@
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
+		DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserSettingsCommand.swift; sourceTree = "<group>"; };
+		DCC0A21329D3201300C45B13 /* SetResettingUserCodesAllowedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetResettingUserCodesAllowedTask.swift; sourceTree = "<group>"; };
+		DCC0A21529D3216100C45B13 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
@@ -828,6 +836,7 @@
 				5D3B9F0226BD678500532CC7 /* SignHashes.json */,
 				5D38D06D26790B1A0052F67C /* Scan.json */,
 				5D5440892682260000F7D05B /* SetAccessCode.json */,
+				DC22228629D431AB001129F8 /* SetResettingUserCodesAllowed.json */,
 				5D46F536274D68010004681F /* DeriveWalletPublicKey.json */,
 				5D46F53B274E41100004681F /* DeriveWalletPublicKeys.json */,
 				5D54408B2682269400F7D05B /* SetPasscode.json */,
@@ -982,6 +991,7 @@
 		5D6A92E12345F28F00158457 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				DCC0A21229D31FDD00C45B13 /* UserSettings */,
 				5D445B6E26E2944300F6F0FE /* ResetCode */,
 				5D4B128126D40C67006E173C /* Backup */,
 				5D46F538274E29490004681F /* Derivation */,
@@ -1404,6 +1414,7 @@
 				5D6508222672755600A8D45B /* Wallet.swift */,
 				5D379C26268FA47600C7F473 /* EncryptionMode.swift */,
 				5D270F2426A0199100D2EDC1 /* WalletData.swift */,
+				DCC0A21529D3216100C45B13 /* UserSettings.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -1478,6 +1489,15 @@
 				DC1244B429B60E480037BC05 /* english.txt */,
 			);
 			path = Wordlists;
+			sourceTree = "<group>";
+		};
+		DCC0A21229D31FDD00C45B13 /* UserSettings */ = {
+			isa = PBXGroup;
+			children = (
+				DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */,
+				DCC0A21329D3201300C45B13 /* SetResettingUserCodesAllowedTask.swift */,
+			);
+			path = UserSettings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1644,6 +1664,7 @@
 				5D54408A2682260000F7D05B /* SetAccessCode.json in Resources */,
 				DC1244C529B769400037BC05 /* mnemonic_invalid_test_vectors.json in Resources */,
 				5D46F537274D68010004681F /* DeriveWalletPublicKey.json in Resources */,
+				DC22228729D431AB001129F8 /* SetResettingUserCodesAllowed.json in Resources */,
 				5D54408E268226B600F7D05B /* Depersonalize.json in Resources */,
 				5D3217462684B1DB000C3AAF /* v3.05ada.json in Resources */,
 				5D544090268226BC00F7D05B /* PurgeWallet.json in Resources */,
@@ -1732,6 +1753,7 @@
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
+				DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */,
 				DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */,
 				DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */,
 				DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */,
@@ -1769,6 +1791,7 @@
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				DC1244E029BB6D460037BC05 /* Base58.swift in Sources */,
+				DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,
@@ -1814,6 +1837,7 @@
 				5D86665627315F050095CC82 /* ResetCodesViewDelegate.swift in Sources */,
 				5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */,
 				5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */,
+				DCC0A21429D3201300C45B13 /* SetResettingUserCodesAllowedTask.swift in Sources */,
 				5D445B7226E295A700F6F0FE /* AuthorizeResetPinToken.swift in Sources */,
 				B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */,
 				DC1244CB29B9ECAA0037BC05 /* HexConvertible.swift in Sources */,

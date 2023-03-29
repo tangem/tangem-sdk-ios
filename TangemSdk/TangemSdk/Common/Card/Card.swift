@@ -26,6 +26,8 @@ public struct Card: Codable, JSONStringConvertible {
     public let issuer: Issuer
     /// Card setting, that were set during the personalization process
     public var settings: Settings
+    /// Card settings, that were set during the personalization process anc can be changed by user directly
+    public internal(set) var userSettings: UserSettings
     /// When this value is `current`, it means that the application is linked to the card,
     /// and COS will not enforce security delay if `SignCommand` will be called
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data

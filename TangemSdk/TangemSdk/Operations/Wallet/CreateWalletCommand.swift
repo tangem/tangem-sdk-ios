@@ -32,7 +32,7 @@ final class CreateWalletCommand: Command {
     var walletIndex: Int = 0
     
     private let curve: EllipticCurve
-    private let keyToImport: ExtendedPrivateKey?
+    private let privateKey: ExtendedPrivateKey?
     private let signingMethod = SigningMethod.signHash
     
     /// Default initializer
@@ -41,9 +41,9 @@ final class CreateWalletCommand: Command {
     init(curve: EllipticCurve, seed: Data?) throws {
         self.curve = curve
         if let seed {
-            self.keyToImport = try BIP32().makeMasterKey(from: seed, curve: curve)
+            self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)
         } else {
-            self.keyToImport = nil
+            self.privateKey = nil
         }
     }
     
@@ -68,7 +68,7 @@ final class CreateWalletCommand: Command {
             }
         }
 
-        if keyToImport != nil {
+        if privateKey != nil {
             if card.firmwareVersion < .keysImportAvailable {
                 return TangemSdkError.notSupportedFirmwareVersion
             }
@@ -79,7 +79,7 @@ final class CreateWalletCommand: Command {
 
             do {
                 // This check will fail for compressed secp256r1 keys
-                if let extendedKey = try keyToImport?.makePublicKey(for: curve),
+                if let extendedKey = try privateKey?.makePublicKey(for: curve),
                    card.wallets[extendedKey.publicKey] != nil {
                     return TangemSdkError.walletAlreadyCreated
                 }
@@ -144,9 +144,9 @@ final class CreateWalletCommand: Command {
                 .append(.walletIndex, value: walletIndex)
         }
 
-        if let keyToImport {
-            try tlvBuilder.append(.walletPrivateKey, value: keyToImport.privateKey)
-            try tlvBuilder.append(.walletHDChain, value: keyToImport.chainCode)
+        if let privateKey {
+            try tlvBuilder.append(.walletPrivateKey, value: privateKey.privateKey)
+            try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
@@ -203,9 +203,9 @@ final class CreateWalletCommand: Command {
     
     private func calculateWalletIndex(for card: Card) throws -> Int {
         let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck because of correct error mapping. Run fires only before precheck. And precheck will not fire if error handling disabled
-        let occupiedIndexes = card.wallets.map { $0.index }
-        let allIndexes = 0..<maxIndex
-        if let firstAvailableIndex = allIndexes.filter({ !occupiedIndexes.contains($0) }).sorted().first {
+        let occupiedIndices = card.wallets.map { $0.index }
+        let allIndices = 0..<maxIndex
+        if let firstAvailableIndex = allIndices.filter({ !occupiedIndices.contains($0) }).sorted().first {
             return firstAvailableIndex
         } else {
             if maxIndex == 1 {

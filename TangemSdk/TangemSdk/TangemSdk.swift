@@ -325,10 +325,10 @@ public extension TangemSdk {
     /// This command deletes selected files from card. This operation can't be undone.
     ///
     /// To perform file deletion you should initially read all files (`readFiles` command) and add them to `indices` array. When files deleted from card, other files change their indexies.
-    /// After deleting files you should additionally perform `readFiles` command to actualize files indexes
+    /// After deleting files you should additionally perform `readFiles` command to actualize files indices
     /// - Warning: This command available for COS 3.29 and higher
     /// - Parameters:
-    ///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
+    ///   - indices: indices of files that should be deleteled. If nil - deletes all files from card
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`

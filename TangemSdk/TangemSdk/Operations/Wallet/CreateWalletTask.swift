@@ -22,10 +22,18 @@ public class CreateWalletTask: CardSessionRunnable {
     private let curve: EllipticCurve
     private let seed: Data?
     private var derivationTask: DeriveWalletPublicKeysTask? = nil
+
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    /// - Parameter seed: An optional BIP39 seed to create wallet from. COS v6.10+. Nil by default.
-    public init(curve: EllipticCurve, seed: Data? = nil) {
+    public init(curve: EllipticCurve) {
+        self.curve = curve
+        self.seed = nil
+    }
+
+    /// Default initializer
+    /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
+    /// - Parameter seed: BIP39 seed to create wallet from. COS v6.10+.
+    public init(curve: EllipticCurve, seed: Data) {
         self.curve = curve
         self.seed = seed
     }
@@ -36,7 +44,7 @@ public class CreateWalletTask: CardSessionRunnable {
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         do {
-            let command = try CreateWalletCommand(curve: curve, seed: seed)
+            let command = try makeCommand()
             command.run(in: session) { result in
                 switch result {
                 case .success(let response):
@@ -122,5 +130,13 @@ public class CreateWalletTask: CardSessionRunnable {
                 completion(.failure(error))
             }
         }
+    }
+
+    private func makeCommand() throws -> CreateWalletCommand {
+        if let seed {
+            return try .init(curve: curve, seed: seed)
+        }
+
+        return .init(curve: curve)
     }
 }

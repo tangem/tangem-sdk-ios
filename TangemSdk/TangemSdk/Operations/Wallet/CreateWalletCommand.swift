@@ -37,14 +37,17 @@ final class CreateWalletCommand: Command {
     
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    /// - Parameter seed: An optional BIP39 seed to create wallet from. COS v6.10+.
-    init(curve: EllipticCurve, seed: Data?) throws {
+    init(curve: EllipticCurve) {
         self.curve = curve
-        if let seed {
-            self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)
-        } else {
-            self.privateKey = nil
-        }
+        self.privateKey = nil
+    }
+
+    /// Default initializer
+    /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
+    /// - Parameter seed: BIP39 seed to create wallet from. COS v6.10+.
+    init(curve: EllipticCurve, seed: Data) throws {
+        self.curve = curve
+        self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)
     }
     
     deinit {

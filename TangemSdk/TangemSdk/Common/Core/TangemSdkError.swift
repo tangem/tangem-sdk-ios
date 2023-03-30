@@ -265,7 +265,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
     case noActiveBackup
-    case resetBackupFailedHasBackupedWallets
+    case resetBackupFailedHasBackedUpWallets
     case backupServiceInvalidState
     case noBackupCardForIndex
     case emptyBackupCards
@@ -382,7 +382,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .certificateSignatureRequired: return 41211
         case .accessCodeOrPasscodeRequired: return 41212
         case .noActiveBackup: return 41220
-        case .resetBackupFailedHasBackupedWallets: return 41221
+        case .resetBackupFailedHasBackedUpWallets: return 41221
         case .backupServiceInvalidState: return 41222
         case .noBackupCardForIndex: return 41223
         case .emptyBackupCards: return 41224

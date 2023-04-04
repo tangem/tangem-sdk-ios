@@ -154,7 +154,7 @@ public extension TangemSdk {
     ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - seed: BIP39 seed to create wallet from. COS v.6.10+.
+    ///   - seed: BIP39 seed to create wallet from. COS v.6.11+.
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
     func importWallet(curve: EllipticCurve,
                       cardId: String,

@@ -75,7 +75,6 @@ public final class AttestWalletKeyCommand: Command {
                 do {
                     let isWalletSignatureValid = try self.verifyWalletSignature(response: checkWalletResponse, curve: curve)
                     let isCardSignatureValid = try self.verifyCardSignature(response: checkWalletResponse,
-                                                                            curve: curve,
                                                                             cardPublicKey: card.cardPublicKey)
                     if isWalletSignatureValid && isCardSignatureValid {
                         completion(.success(checkWalletResponse))
@@ -145,7 +144,7 @@ public final class AttestWalletKeyCommand: Command {
                                       signature: response.walletSignature)
     }
 
-    private func verifyCardSignature(response: AttestWalletKeyResponse, curve: EllipticCurve, cardPublicKey: Data) throws -> Bool {
+    private func verifyCardSignature(response: AttestWalletKeyResponse, cardPublicKey: Data) throws -> Bool {
         guard let cardSignature = response.cardSignature else {
             return true
         }

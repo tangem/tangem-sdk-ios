@@ -136,6 +136,7 @@ public enum TlvTag: Byte {
     // MARK: - HDWallet
     case walletHDPath = 0x6A
     case walletHDChain = 0x6B
+    case walletPrivateKey = 0x6F
     
     // MARK: - Backup
     case certificate = 0x55

@@ -17,7 +17,7 @@ public struct GetEntropyResponse: JSONStringConvertible {
     public let data: Data
 }
 
-/// Generate OTP on the card.
+/// Get entropy from the card
 @available(iOS 13.0, *)
 public class GetEntropyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readCardOnly }
@@ -29,9 +29,9 @@ public class GetEntropyCommand: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-//        guard card.firmwareVersion >= .isExternalWalletsAllowed else {
-//            return TangemSdkError.walletNotFound
-//        }
+        guard card.firmwareVersion >= .keysImportAvailable else {
+            return TangemSdkError.walletNotFound
+        }
 
         return nil
     }

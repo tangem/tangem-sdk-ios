@@ -120,17 +120,17 @@ public struct BIP39 {
 
         let entropyBits = entropyData.toBits()
         let concatenatedBits = entropyBits + entropyChecksumBits
-        let bitIndexes = concatenatedBits.chunked(into: 11)
-        let indexes = bitIndexes.compactMap { Int($0.joined(), radix: 2) }
+        let bitIndices = concatenatedBits.chunked(into: 11)
+        let indices = bitIndices.compactMap { Int($0.joined(), radix: 2) }
 
-        guard indexes.count == entropyLength.wordCount else {
+        guard indices.count == entropyLength.wordCount else {
             throw MnemonicError.mnenmonicCreationFailed
         }
 
         let allWords = wordlist.words
         let maxWordIndex = allWords.count
 
-        let words = try indexes.map { index in
+        let words = try indices.map { index in
             guard index < maxWordIndex else {
                 throw MnemonicError.mnenmonicCreationFailed
             }

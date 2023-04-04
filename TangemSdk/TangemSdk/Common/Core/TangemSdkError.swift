@@ -248,6 +248,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletNotFound
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
+    case walletAlreadyCreated
     
     // MARK: Backup errors
     case backupFailedCardNotLinked
@@ -264,7 +265,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
     case noActiveBackup
-    case resetBackupFailedHasBackupedWallets
+    case resetBackupFailedHasBackedUpWallets
     case backupServiceInvalidState
     case noBackupCardForIndex
     case emptyBackupCards
@@ -278,6 +279,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     //MARK: Settings
     case filesDisabled
     case hdWalletDisabled
+    case keysImportDisabled
     
     case resetPinNoCardToReset
     case resetPinWrongCard(internalCode: Int? = nil)
@@ -343,6 +345,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeRequired: return 40401
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
+        case .walletAlreadyCreated: return 40405
             
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502
@@ -379,7 +382,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .certificateSignatureRequired: return 41211
         case .accessCodeOrPasscodeRequired: return 41212
         case .noActiveBackup: return 41220
-        case .resetBackupFailedHasBackupedWallets: return 41221
+        case .resetBackupFailedHasBackedUpWallets: return 41221
         case .backupServiceInvalidState: return 41222
         case .noBackupCardForIndex: return 41223
         case .emptyBackupCards: return 41224
@@ -399,6 +402,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .filesDisabled: return 42002
         case .hdWalletDisabled: return 42003
+        case .keysImportDisabled: return 42004
             
             // MARK: 5xxxx Errors
             // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.

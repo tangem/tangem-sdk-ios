@@ -48,9 +48,9 @@ public extension Card.Wallet {
 }
 
 @available(iOS 13.0, *)
-extension Card.Wallet {
+public extension Card.Wallet {
     /// Status of the wallet. 
-    enum Status: Int, StatusType { //TODO: Specify
+    enum Status: Int, StatusType, JSONStringConvertible { //TODO: Specify
         /// Wallet not created
         case empty = 1
         /// Wallet created and can be used for signing

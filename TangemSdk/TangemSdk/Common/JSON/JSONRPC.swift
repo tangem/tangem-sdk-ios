@@ -28,6 +28,7 @@ public final class JSONRPCConverter {
         converter.register(ChangeFileSettingsHandler())
         converter.register(DeriveWalletPublicKeyHandler())
         converter.register(DeriveWalletPublicKeysHandler())
+        converter.register(ImportWalletHandler())
         converter.register(SetResettingUserCodesAllowedHandler())
         return converter
     }()

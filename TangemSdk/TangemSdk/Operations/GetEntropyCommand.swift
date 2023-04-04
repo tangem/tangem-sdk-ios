@@ -30,7 +30,7 @@ public class GetEntropyCommand: Command {
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard card.firmwareVersion >= .keysImportAvailable else {
-            return TangemSdkError.walletNotFound
+            return TangemSdkError.notSupportedFirmwareVersion
         }
 
         return nil

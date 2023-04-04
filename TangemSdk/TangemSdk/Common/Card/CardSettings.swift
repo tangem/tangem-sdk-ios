@@ -32,6 +32,8 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
+        /// Is allowed to import  keys. COS. v6.11+
+        public let isKeysImportAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
@@ -71,6 +73,7 @@ extension Card.Settings {
         self.isHDWalletAllowed = mask.contains(.allowHDWallets)
         self.isFilesAllowed = !mask.contains(.disableFiles)
         self.isBackupAllowed = mask.contains(.allowBackup)
+        self.isKeysImportAllowed = mask.contains(.allowKeysImport)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {
@@ -146,6 +149,7 @@ extension CardSettingsMask {
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
     static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
     static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
+    static let allowKeysImport = CardSettingsMask(rawValue: 0x00800000)
 }
 
 // MARK: - CardSettingsMask OptionSetCodable conformance

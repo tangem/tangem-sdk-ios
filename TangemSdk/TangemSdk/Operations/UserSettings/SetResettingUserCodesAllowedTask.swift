@@ -15,7 +15,7 @@ public final class SetResettingUserCodesAllowedTask: CardSessionRunnable {
     private let isResettingUserCodesAllowed: Bool
     
     /// Default initializer
-    /// - Parameter isResettingUserCodesAllowed: Is this card can reset user codes on tte other linked card or not
+    /// - Parameter isResettingUserCodesAllowed: Is this card can reset user codes on the other linked card or not
     public init(isResettingUserCodesAllowed: Bool) {
         self.isResettingUserCodesAllowed = isResettingUserCodesAllowed
     }

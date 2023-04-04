@@ -58,10 +58,22 @@ class SignHashHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class CreateWalletHandler: JSONRPCHandler {
     var method: String { "CREATE_WALLET" }
-    
+
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
         let command = CreateWalletTask(curve: curve)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class ImportWalletHandler: JSONRPCHandler {
+    var method: String { "IMPORT_WALLET" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let curve: EllipticCurve = try parameters.value(for: "curve")
+        let seed: Data = try parameters.value(for: "seed")
+        let command = CreateWalletTask(curve: curve, seed: seed)
         return command.eraseToAnyRunnable()
     }
 }

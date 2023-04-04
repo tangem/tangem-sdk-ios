@@ -2,9 +2,10 @@
     "request" : {
         "jsonrpc": "2.0",
         "id": 1,
-        "method": "create_wallet",
+        "method": "import_wallet",
         "params": {
-            "curve": "secp256r1"
+            "curve": "secp256r1",
+            "seed": "00000000000000000000000000000000"
         }
     },
     "response" : {

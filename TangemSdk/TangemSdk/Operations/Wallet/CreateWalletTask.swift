@@ -30,7 +30,7 @@ public class CreateWalletTask: CardSessionRunnable {
         self.seed = nil
     }
 
-    /// Use this initializer to import a key from the seed. COS v6.10+.
+    /// Use this initializer to import a key from the seed. COS v6.11+.
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     /// - Parameter seed: BIP39 seed to create wallet from.
     public init(curve: EllipticCurve, seed: Data) {

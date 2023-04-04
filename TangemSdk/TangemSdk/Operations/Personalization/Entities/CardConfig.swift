@@ -53,6 +53,7 @@ public struct CardConfig: Decodable {
     let disableFiles: Bool?
     let allowHDWallets: Bool? //TODO: add precheck to specific commands
     let allowBackup: Bool?
+    let allowKeysImport: Bool?
     let createWallet: Int
     let cardData: CardConfigData
     let ndefRecords: [NdefRecord]
@@ -68,7 +69,7 @@ public struct CardConfig: Decodable {
              useActivation, useBlock, allowSelectBlockchain, skipSecurityDelayIfValidatedByIssuer, skipSecurityDelayIfValidatedByLinkedTerminal, disableIssuerData,
              disableUserData, disableFiles, createWallet, cardData, walletsCount,
              useDynamicNDEF, useOneCommandAtTime, protectIssuerDataAgainstReplay,
-             disablePrecomputedNDEF, allowHDWallets, allowBackup, isReusable
+             disablePrecomputedNDEF, allowHDWallets, allowBackup, isReusable, allowKeysImport
         case pin = "PIN"
         case pin2 = "PIN2"
         case pin3 = "PIN3"
@@ -170,6 +171,10 @@ public struct CardConfig: Decodable {
         }
         if allowBackup ?? false {
             builder.add(.allowBackup)
+        }
+
+        if allowKeysImport ?? false {
+            builder.add(.allowKeysImport)
         }
         
         return builder.build()

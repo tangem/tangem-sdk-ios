@@ -8,16 +8,16 @@
 
 import Foundation
 
-/// Deserialized response from the Tangem card after `SetUserSettingsCommand`. COS v.6.10+
+/// Deserialized response from the Tangem card after `SetUserSettingsCommand`. COS v.6.11+
 @available(iOS 13.0, *)
 struct SetUserSettingsCommandResponse: JSONStringConvertible {
     /// Unique Tangem card ID number.
     let cardId: String
-    /// The mask was set
+    /// The mask that was set
     let settings: Card.UserSettings
 }
 
-/// Set user serrings on a card. COS v.6.10+
+/// Set user serrings on a card. COS v.6.11+
 @available(iOS 13.0, *)
 class SetUserSettingsCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
@@ -33,9 +33,9 @@ class SetUserSettingsCommand: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        //        guard card.firmwareVersion >= .externalWalletsAvailable else {
-        //            return TangemSdkError.notSupportedFirmwareVersion
-        //        }
+        guard card.firmwareVersion >= .keysImportAvailable else {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
 
         return nil
     }

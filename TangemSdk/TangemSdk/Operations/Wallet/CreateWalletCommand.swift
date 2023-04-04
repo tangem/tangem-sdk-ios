@@ -42,9 +42,9 @@ final class CreateWalletCommand: Command {
         self.privateKey = nil
     }
 
-    /// Default initializer
+    /// Use this initializer to import a key from the seed. COS v6.11+.
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    /// - Parameter seed: BIP39 seed to create wallet from. COS v6.10+.
+    /// - Parameter seed: BIP39 seed to create wallet from.
     init(curve: EllipticCurve, seed: Data) throws {
         self.curve = curve
         self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)

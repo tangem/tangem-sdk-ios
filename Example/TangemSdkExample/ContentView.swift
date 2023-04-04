@@ -125,7 +125,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
-        case .createWallet:
+        case .createWallet, .importWallet:
             VStack {
                 Text("Create wallet configuration")
                     .font(.headline)
@@ -139,6 +139,12 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
+                }
+
+                if case .importWallet = model.method {
+                    TextField("Optional mnemonic", text: $model.mnemonicString)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
                 }
             }
             .padding()

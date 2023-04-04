@@ -27,7 +27,8 @@
     "isIssuerDataProtectedAgainstReplay" : true,
     "isHDWalletAllowed" : true,
     "isFilesAllowed" : true,
-    "isBackupAllowed" : true
+    "isBackupAllowed" : true,
+    "isKeysImportAllowed" : true
   },
   "issuer" : {
     "name" : "TANGEM AG",
@@ -63,6 +64,7 @@
       },
       "index" : 0,
       "hasBackup" : false,
+      "isImported": false,
       "derivedKeys" : []
     },
     {
@@ -74,6 +76,7 @@
       },
       "index" : 1,
       "hasBackup" : false,
+      "isImported": false,
       "derivedKeys" : []
     },
     {
@@ -85,6 +88,7 @@
       },
       "index" : 2,
       "hasBackup" : false,
+      "isImported": false,
       "derivedKeys" : []
     }
   ],

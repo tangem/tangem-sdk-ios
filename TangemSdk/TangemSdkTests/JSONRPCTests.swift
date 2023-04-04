@@ -135,8 +135,24 @@ class JSONRPCTests: XCTestCase {
                                                               remainingSignatures: 100,
                                                               index: 1,
                                                               proof: nil,
+                                                              isImported: false,
                                                               hasBackup: false))
         testMethod(name: "CreateWallet", result: result)
+    }
+
+    func testImportWallet() {
+        let result = CreateWalletResponse(cardId: "c000111122223333",
+                                          wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
+                                                              chainCode: nil,
+                                                              curve: .secp256r1,
+                                                              settings: Card.Wallet.Settings(isPermanent: true),
+                                                              totalSignedHashes: 10,
+                                                              remainingSignatures: 100,
+                                                              index: 1,
+                                                              proof: nil,
+                                                              isImported: false,
+                                                              hasBackup: false))
+        testMethod(name: "ImportWallet", result: result)
     }
     
     func testPurgeWallet() {

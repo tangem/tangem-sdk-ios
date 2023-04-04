@@ -318,6 +318,7 @@
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
+		DCE3281729D5DEE500AAC4AC /* ImportWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWallet.json */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17628F5629F0037586C /* FocusableTextField.swift */; };
@@ -653,6 +654,7 @@
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
+		DCE3281629D5DEE500AAC4AC /* ImportWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWallet.json; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
@@ -834,6 +836,7 @@
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
+				DCE3281629D5DEE500AAC4AC /* ImportWallet.json */,
 				5D544093268243F700F7D05B /* Card.json */,
 			);
 			path = Jsons;
@@ -1660,6 +1663,7 @@
 				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
 				DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
+				DCE3281729D5DEE500AAC4AC /* ImportWallet.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
 				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,
 			);

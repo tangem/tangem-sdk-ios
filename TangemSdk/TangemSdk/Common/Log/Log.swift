@@ -11,16 +11,18 @@ import Foundation
 private let logger = Log()
 
 public class Log {
-    public static var config: Log.Config = .verbose {
+    public static var config: Config = .default {
         didSet {
             logger.logLevel = config.logLevel
             logger.loggers = config.loggers
         }
     }
     
-    private(set) var logLevel: [Log.Level] = []
+    private(set) var logLevel: [Log.Level] = Log.config.logLevel
     
-    private(set) var loggers: [TangemSdkLogger] = []
+    private(set) var loggers: [TangemSdkLogger] = Log.config.loggers
+
+    fileprivate init() {}
     
     public static func warning<T>(_ message: @autoclosure () -> T) {
         logger.logInternal(message(), level: .warning)
@@ -136,6 +138,8 @@ public extension Log {
         case verbose
         case custom(logLevel: [Log.Level],
                     loggers: [TangemSdkLogger] = [ConsoleLogger()])
+
+        static var `default`: Log.Config = .debug
         
         internal var logLevel: [Log.Level] {
             switch self {

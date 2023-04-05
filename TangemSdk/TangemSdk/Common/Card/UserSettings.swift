@@ -11,8 +11,8 @@ import Foundation
 @available(iOS 13.0, *)
 public extension Card {
     struct UserSettings: Codable {
-        /// Is allowed to reset user codes
-        public internal(set) var isResettingUserCodesAllowed: Bool
+        /// Is allowed to recover user codes
+        public internal(set) var isUserCodeRecoveryAllowed: Bool
     }
 }
 
@@ -21,7 +21,7 @@ extension Card.UserSettings {
     var mask: UserSettingsMask {
         let builder = MaskBuilder<UserSettingsMask>()
 
-        if !isResettingUserCodesAllowed {
+        if !isUserCodeRecoveryAllowed {
             builder.add(.forbidResetPIN)
         }
 
@@ -29,7 +29,7 @@ extension Card.UserSettings {
     }
 
     init(from mask: UserSettingsMask) {
-        self.isResettingUserCodesAllowed = !mask.contains(.forbidResetPIN)
+        self.isUserCodeRecoveryAllowed = !mask.contains(.forbidResetPIN)
     }
 }
 

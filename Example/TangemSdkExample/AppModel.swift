@@ -26,8 +26,8 @@ class AppModel: ObservableObject {
     @Published var json: String =  ""
     //Personalization
     @Published var personalizationConfig: String =  ""
-    //Set resetting user codes
-    @Published var isResettingUserCodesAllowed: Bool = false
+    //Set user code recovery allowed
+    @Published var isUserCodeRecoveryAllowed: Bool = false
     
     //MARK:-  Outputs
     @Published var logText: String = DebugLogger.logPlaceholder
@@ -607,13 +607,13 @@ extension AppModel {
         tangemSdk.startSession(with: GetEntropyCommand(), completion: handleCompletion)
     }
 
-    func setResettingUserCodesAllowed() {
+    func setUserCodeRecoveryAllowed() {
         guard let cardId = card?.cardId else {
             self.complete(with: "Please, scan card before")
             return
         }
 
-        tangemSdk.setResettingUserCodesAllowed(isResettingUserCodesAllowed, cardId: cardId, completion: handleCompletion)
+        tangemSdk.setUserCodeRecoveryAllowed(isUserCodeRecoveryAllowed, cardId: cardId, completion: handleCompletion)
     }
 }
 
@@ -712,7 +712,7 @@ extension AppModel {
         case resetBackup
         case resetToFactory
         case getEntropy
-        case setResettingUserCodesAllowed
+        case setUserCodeRecoveryAllowed
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -747,7 +747,7 @@ extension AppModel {
         case .resetBackup: resetBackup()
         case .resetToFactory: resetToFactory()
         case .getEntropy: getEntropy()
-        case .setResettingUserCodesAllowed: setResettingUserCodesAllowed()
+        case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         }
     }
 }

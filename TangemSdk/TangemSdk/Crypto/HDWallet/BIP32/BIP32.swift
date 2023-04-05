@@ -10,14 +10,16 @@ import Foundation
 import CryptoKit
 
 // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
-struct BIP32 {
+public struct BIP32 {
+    public init() {}
+    
     @available(iOS 13.0, *)
     /// Generate an extended private key from the seed.
     /// - Parameters:
     ///   - seed: The seed to use
     ///   - curve: The curve to use
     /// - Returns: The `ExtendedPrivateKey`
-    func makeMasterKey(from seed: Data, curve: EllipticCurve) throws -> ExtendedPrivateKey {
+    public func makeMasterKey(from seed: Data, curve: EllipticCurve) throws -> ExtendedPrivateKey {
         // The seed must be between 128 and 512 bits
         guard 16...64 ~= seed.count else {
             throw HDWalletError.invalidSeed

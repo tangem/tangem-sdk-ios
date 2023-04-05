@@ -215,10 +215,10 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "DeriveWalletPublicKeys", result: result)
     }
 
-    func testSetResettingUserCodesAllowed() {
+    func testUserCodeRecoveryAllowed() {
         let result = SuccessResponse(cardId: "c000111122223333")
 
-        testMethod(name: "SetResettingUserCodesAllowed", result: result)
+        testMethod(name: "SetUserCodeRecoveryAllowed", result: result)
     }
 
     func testFiles() {

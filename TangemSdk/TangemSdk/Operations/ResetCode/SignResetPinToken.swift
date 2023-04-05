@@ -36,8 +36,8 @@ final class SignResetPinTokenCommand: Command {
             return .resetPinWrongCard()
         }
 
-        guard card.userSettings.isResettingUserCodesAllowed else {
-            return TangemSdkError.userCodeResettingDisabled
+        guard card.userSettings.isUserCodeRecoveryAllowed else {
+            return TangemSdkError.userCodeRecoveryDisabled
         }
 
         return nil

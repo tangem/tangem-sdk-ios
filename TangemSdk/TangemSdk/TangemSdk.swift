@@ -244,15 +244,15 @@ public extension TangemSdk {
 
     /// Set if card allowed to reset user code
     /// - Parameters:
-    ///   - isResettingUserCodesAllowed:Is this card can reset user codes on tte other linked card or not
+    ///   - isAllowed:Is this card can reset user codes on tte other linked card or not
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
-    func setResettingUserCodesAllowed(_ isResettingUserCodesAllowed: Bool,
-                                      cardId: String,
-                                      initialMessage: Message? = nil,
-                                      completion: @escaping CompletionResult<SuccessResponse>) {
-        let task = SetResettingUserCodesAllowedTask(isResettingUserCodesAllowed: isResettingUserCodesAllowed)
+    func setUserCodeRecoveryAllowed(_ isAllowed: Bool,
+                                    cardId: String,
+                                    initialMessage: Message? = nil,
+                                    completion: @escaping CompletionResult<SuccessResponse>) {
+        let task = SetUserCodeRecoveryAllowedTask(isAllowed: isAllowed)
         startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     

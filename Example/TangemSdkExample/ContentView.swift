@@ -200,7 +200,10 @@ struct ContentView: View {
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
             .onAppear(perform: model.onAppear)
-            
+        case .setUserCodeRecoveryAllowed:
+            Toggle(isOn: $model.isUserCodeRecoveryAllowed) {
+                Text("Is user code recovery allowed")
+            }
         default:
             EmptyView()
         }

@@ -26,6 +26,8 @@ class AppModel: ObservableObject {
     @Published var json: String =  ""
     //Personalization
     @Published var personalizationConfig: String =  ""
+    //Set user code recovery allowed
+    @Published var isUserCodeRecoveryAllowed: Bool = false
     
     //MARK:-  Outputs
     @Published var logText: String = DebugLogger.logPlaceholder
@@ -604,6 +606,15 @@ extension AppModel {
     func getEntropy() {
         tangemSdk.startSession(with: GetEntropyCommand(), completion: handleCompletion)
     }
+
+    func setUserCodeRecoveryAllowed() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Please, scan card before")
+            return
+        }
+
+        tangemSdk.setUserCodeRecoveryAllowed(isUserCodeRecoveryAllowed, cardId: cardId, completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -701,6 +712,7 @@ extension AppModel {
         case resetBackup
         case resetToFactory
         case getEntropy
+        case setUserCodeRecoveryAllowed
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -735,6 +747,7 @@ extension AppModel {
         case .resetBackup: resetBackup()
         case .resetToFactory: resetToFactory()
         case .getEntropy: getEntropy()
+        case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         }
     }
 }

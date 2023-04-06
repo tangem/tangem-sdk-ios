@@ -226,3 +226,16 @@ class DeriveWalletPublicKeysHandler: JSONRPCHandler {
         return command.eraseToAnyRunnable()
     }
 }
+
+@available(iOS 13.0, *)
+class SetUserCodeRecoveryAllowedHandler: JSONRPCHandler {
+    var method: String { "SET_USERCODE_RECOVERY_ALLOWED" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let isAllowed: Bool = try parameters.value(for: "isAllowed")
+
+        let command = SetUserCodeRecoveryAllowedTask(isAllowed: isAllowed)
+        return command.eraseToAnyRunnable()
+    }
+}
+

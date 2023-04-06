@@ -19,6 +19,7 @@ public enum TlvValueType: String {
     case dateTime
     case productMask
     case settingsMask
+    case userSettingsMask
     case status
     case signingMethod
     case byte
@@ -50,6 +51,7 @@ public enum TlvTag: Byte {
     case maxSignatures = 0x08
     case pauseBeforePin2 = 0x09
     case settingsMask = 0x0A
+    case userSettingsMask = 0x2F
     case cardData = 0x0C
     case ndefData = 0x0D
     case createWalletAtPersonalize = 0x0E
@@ -183,6 +185,8 @@ public enum TlvTag: Byte {
             return .derivationPath
         case .backupStatus:
             return .backupStatus
+        case .userSettingsMask:
+            return .userSettingsMask
         default:
             return .data
         }

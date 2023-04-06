@@ -280,6 +280,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case filesDisabled
     case hdWalletDisabled
     case keysImportDisabled
+    case userCodeRecoveryDisabled
     
     case resetPinNoCardToReset
     case resetPinWrongCard(internalCode: Int? = nil)
@@ -403,6 +404,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .filesDisabled: return 42002
         case .hdWalletDisabled: return 42003
         case .keysImportDisabled: return 42004
+        case .userCodeRecoveryDisabled: return 42005
             
             // MARK: 5xxxx Errors
             // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.

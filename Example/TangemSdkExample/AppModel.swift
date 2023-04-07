@@ -20,6 +20,7 @@ class AppModel: ObservableObject {
     @Published var mnemonicString: String = ""
     //Sign
     @Published var derivationPath: String = ""
+    @Published var signHashesCount: String = "15"
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
@@ -251,10 +252,15 @@ extension AppModel {
             self.complete(with: "Failed to parse hd path")
             return
         }
+
+        guard let hashesCount = Int(signHashesCount, radix: 10) else {
+            self.complete(with: "Failed to signed hashes count")
+            return
+        }
         
         UIApplication.shared.endEditing()
         
-        let hashes = (0..<5).map {_ -> Data in getRandomHash()}
+        let hashes = (0..<hashesCount).map {_ -> Data in getRandomHash()}
         
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,

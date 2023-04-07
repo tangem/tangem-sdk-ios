@@ -161,6 +161,16 @@ struct ContentView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+
+                if case .signHashes = model.method {
+                    Text("Sign hashes count")
+                        .font(.headline)
+                        .bold()
+
+                    TextField("", text: $model.signHashesCount)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
+                }
             }
             .padding()
             .cornerRadius(8)

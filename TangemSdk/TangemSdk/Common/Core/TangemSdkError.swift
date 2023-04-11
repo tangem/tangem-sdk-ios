@@ -508,6 +508,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")
         case .oldCard: return "error_old_card".localized
+        case .userCodeRecoveryDisabled: return "error_user_code_recovery_disabled".localized
             
         default:
             if let message = self.message {

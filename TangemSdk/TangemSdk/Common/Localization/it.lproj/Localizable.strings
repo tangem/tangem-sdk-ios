@@ -33,6 +33,7 @@
 "error_purge_prohibited" = "La configurazione di questa carta non consente la cancellazione del portafoglio";
 "error_reset_wrong_card" = "This card can't be used for code recovery. Error code: %@.";
 "error_user_cancelled" = "L'utente ha annullato l'operazione";
+"error_user_code_recovery_disabled" = "Unable to reset the access code using this card";
 "error_wrong_card_number_with_card_id" = "You tapped a different card. Please tap card %@.";
 "error_wrong_card_number_without_card_id" = "You tapped a different card";
 "error_wrong_card_type" = "Questa carta è creata per un'altra applicazione. Controlla le informazioni sulla mappa e scarica l'apposita applicazione.";

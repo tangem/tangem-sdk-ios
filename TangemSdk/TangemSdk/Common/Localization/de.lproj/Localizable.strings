@@ -33,6 +33,7 @@
 "error_purge_prohibited" = "Die Konfiguration der Karte erlaubt nicht, das Wallet zu löschen";
 "error_reset_wrong_card" = "This card can't be used for code recovery. Error code: %@.";
 "error_user_cancelled" = "Der Benutzer hat den Vorgang unterbrochen";
+"error_user_code_recovery_disabled" = "Unable to reset the access code using this card";
 "error_wrong_card_number_with_card_id" = "You tapped a different card. Please tap card %@.";
 "error_wrong_card_number_without_card_id" = "You tapped a different card";
 "error_wrong_card_type" = "Diese Karte ist für eine andere App konfiguriert. Sehen Sie sich die Informationen auf Ihrer Karte an und laden Sie die entsprechende App herunter.";

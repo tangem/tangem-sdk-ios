@@ -65,7 +65,7 @@ public final class StartPrimaryCardLinkingCommand: Command {
                               issuer: card.issuer,
                               walletCurves: card.wallets.map { $0.curve },
                               batchId: card.batchId,
-                              fimwareVersion: card.firmwareVersion,
+                              firmwareVersion: card.firmwareVersion,
                               isKeysImportAllowed: card.settings.isKeysImportAllowed)
     }
 }

@@ -64,6 +64,8 @@ public final class StartPrimaryCardLinkingCommand: Command {
                               isHDWalletAllowed: card.settings.isHDWalletAllowed,
                               issuer: card.issuer,
                               walletCurves: card.wallets.map { $0.curve },
-                              batchId: card.batchId)
+                              batchId: card.batchId,
+                              firmwareVersion: card.firmwareVersion,
+                              isKeysImportAllowed: card.settings.isKeysImportAllowed)
     }
 }

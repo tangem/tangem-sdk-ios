@@ -221,6 +221,16 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "SetUserCodeRecoveryAllowed", result: result)
     }
 
+    func testAttestCardKey() {
+        let result = AttestCardKeyResponse(cardId: "c000111122223333",
+                                           salt: Data(hexString: "BBBBBBBBBBBB"),
+                                           cardSignature: Data(hexString: "AAAAAAAAAAAA"),
+                                           challenge: Data(hexString: "000000000000"))
+
+        testMethod(name: "AttestCardKey", result: result)
+    }
+
+
     func testFiles() {
         testMethod(name: "ReadFiles", result: [File(data: Data(hexString: "00AABBCCDD"),
                                                     index: 0,

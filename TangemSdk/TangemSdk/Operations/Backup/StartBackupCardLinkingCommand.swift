@@ -31,6 +31,10 @@ final class StartBackupCardLinkingCommand: Command {
         if !card.settings.isBackupAllowed {
             return .backupNotAllowed
         }
+
+        if let backupStatus = card.backupStatus, backupStatus.isActive {
+            return .backupFailedAlreadyCreated
+        }
         
         if !card.wallets.isEmpty {
             return .backupFailedNotEmptyWallets

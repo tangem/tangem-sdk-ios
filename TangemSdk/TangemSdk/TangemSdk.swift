@@ -71,6 +71,23 @@ public extension TangemSdk {
                   completion: @escaping CompletionResult<Card>) {
         startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
+
+    /// Perform a card's key attestation
+    /// - Parameters:
+    ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
+    ///   - cardId: CID, Unique Tangem card ID number
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns  `Swift.Result<AttestCardKeyResponse,TangemSdkError>`
+    func attestCardKey(challenge: Data? = nil,
+                       cardId: String? = nil,
+                       initialMessage: Message? = nil,
+                       completion: @escaping CompletionResult<AttestCardKeyResponse>) {
+        let command = AttestCardKeyCommand(challenge: challenge)
+        startSession(with: command,
+                     cardId: cardId,
+                     initialMessage: initialMessage,
+                     completion: completion)
+    }
     
     /// This method allows you to sign one hash and will return a corresponding signature.
     /// Please note that Tangem cards usually protect the signing with a security delay

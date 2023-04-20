@@ -145,6 +145,10 @@ struct ContentView: View {
                     TextField("Optional mnemonic", text: $model.mnemonicString)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .autocapitalization(.none)
+
+                    TextField("Optional passphrase", text: $model.passphrase)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
                 }
             }
             .padding()

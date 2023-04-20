@@ -72,7 +72,19 @@ class ImportWalletHandler: JSONRPCHandler {
 
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
-        let seed: Data = try parameters.value(for: "seed")
+
+        let seedParam: Data? = try parameters.value(for: "seed")
+
+        let mnemonicString: String? = try parameters.value(for: "mnemonic")
+        let passphrase: String = try parameters.value(for: "passphrase") ?? ""
+        let seedFromMnemonic = try mnemonicString.map { try Mnemonic(with: $0).generateSeed(with: passphrase) }
+
+        let seed: Data? = seedParam ?? seedFromMnemonic
+        guard let seed else {
+            throw JSONRPCError(.invalidParams,
+                               data: JSONRPCErrorData(.invalidParams, message: "You should pass a seed or a mnemonic and an optional passphrase"))
+        }
+
         let command = CreateWalletTask(curve: curve, seed: seed)
         return command.eraseToAnyRunnable()
     }

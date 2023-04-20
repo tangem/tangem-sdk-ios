@@ -326,6 +326,7 @@
 		DCE3281729D5DEE500AAC4AC /* ImportWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWallet.json */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
+		DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */ = {isa = PBXBuildFile; fileRef = DCF6188329F069DB001BE133 /* AttestCardKey.json */; };
 		DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17628F5629F0037586C /* FocusableTextField.swift */; };
 /* End PBXBuildFile section */
 
@@ -667,6 +668,7 @@
 		DCE3281629D5DEE500AAC4AC /* ImportWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWallet.json; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
+		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
 		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -848,6 +850,7 @@
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
 				DCE3281629D5DEE500AAC4AC /* ImportWallet.json */,
+				DCF6188329F069DB001BE133 /* AttestCardKey.json */,
 				5D544093268243F700F7D05B /* Card.json */,
 			);
 			path = Jsons;
@@ -1677,6 +1680,7 @@
 				5D46F53C274E41100004681F /* DeriveWalletPublicKeys.json in Resources */,
 				5D46F15F26811D4000DC6447 /* SignHash.json in Resources */,
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
+				DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */,
 				5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */,
 				5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */,
 				5D544094268243F700F7D05B /* Card.json in Resources */,

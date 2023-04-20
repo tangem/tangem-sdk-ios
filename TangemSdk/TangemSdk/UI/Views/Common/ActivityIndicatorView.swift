@@ -15,14 +15,14 @@ struct ActivityIndicatorView: UIViewRepresentable {
     private var style: UIActivityIndicatorView.Style
     private var color: UIColor
     
-    init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: UIColor = .white) {
+    init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: UIColor) {
         self.isAnimating = isAnimating
         self.style = style
         self.color = color
     }
     
     @available(iOS 14.0, *)
-    init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: Color = .white) {
+    init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: Color) {
         self.isAnimating = isAnimating
         self.style = style
         self.color = UIColor(color)

@@ -239,3 +239,14 @@ class SetUserCodeRecoveryAllowedHandler: JSONRPCHandler {
     }
 }
 
+@available(iOS 13.0, *)
+class AttestCardKeyHandler: JSONRPCHandler {
+    var method: String { "ATTEST_CARD_KEY" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let challenge: Data? = try parameters.value(for: "challenge")
+
+        let command = AttestCardKeyCommand(challenge: challenge)
+        return command.eraseToAnyRunnable()
+    }
+}

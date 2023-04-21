@@ -142,8 +142,12 @@ class SignCommand: Command {
                     
                     return
                 }
-                
-                session.restartPolling(silent: true)
+
+                if let firmwareVersion = session.environment.card?.firmwareVersion,
+                   firmwareVersion < .keysImportAvailable {
+                    session.restartPolling(silent: true)
+                }
+
                 self.sign(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

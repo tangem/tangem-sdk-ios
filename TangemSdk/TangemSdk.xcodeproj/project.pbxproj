@@ -312,6 +312,7 @@
 		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
 		DC22228729D431AB001129F8 /* SetUserCodeRecoveryAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */; };
+		DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */ = {isa = PBXBuildFile; fileRef = DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
@@ -323,7 +324,7 @@
 		DCC0A21429D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */; };
 		DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21529D3216100C45B13 /* UserSettings.swift */; };
 		DCC6A64829D212E8007BA5B7 /* GetEntropyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */; };
-		DCE3281729D5DEE500AAC4AC /* ImportWallet.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWallet.json */; };
+		DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */ = {isa = PBXBuildFile; fileRef = DCF6188329F069DB001BE133 /* AttestCardKey.json */; };
@@ -654,6 +655,7 @@
 		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
 		DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetUserCodeRecoveryAllowed.json; sourceTree = "<group>"; };
+		DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletMnemonic.json; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
@@ -665,7 +667,7 @@
 		DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserCodeRecoveryAllowedTask.swift; sourceTree = "<group>"; };
 		DCC0A21529D3216100C45B13 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetEntropyCommand.swift; sourceTree = "<group>"; };
-		DCE3281629D5DEE500AAC4AC /* ImportWallet.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWallet.json; sourceTree = "<group>"; };
+		DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletSeed.json; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
@@ -849,7 +851,8 @@
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
-				DCE3281629D5DEE500AAC4AC /* ImportWallet.json */,
+				DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */,
+				DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */,
 				DCF6188329F069DB001BE133 /* AttestCardKey.json */,
 				5D544093268243F700F7D05B /* Card.json */,
 			);
@@ -1682,6 +1685,7 @@
 				5D38D06E26790B1A0052F67C /* Scan.json in Resources */,
 				DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */,
 				5D4B127B26D3D32E006E173C /* ChangeFileSettings.json in Resources */,
+				DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */,
 				5D4B127926D3CF4F006E173C /* DeleteFiles.json in Resources */,
 				5D544094268243F700F7D05B /* Card.json in Resources */,
 				5D5440982682497100F7D05B /* v4.json in Resources */,
@@ -1691,7 +1695,7 @@
 				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
 				DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
-				DCE3281729D5DEE500AAC4AC /* ImportWallet.json in Resources */,
+				DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
 				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,
 			);

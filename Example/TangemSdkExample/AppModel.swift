@@ -18,6 +18,7 @@ class AppModel: ObservableObject {
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
     @Published var mnemonicString: String = ""
+    @Published var passphrase: String = ""
     //Sign
     @Published var derivationPath: String = ""
     @Published var signHashesCount: String = "15"
@@ -306,18 +307,11 @@ extension AppModel {
             return
         }
 
-        do {
-            let mnemonic = try Mnemonic(with: mnemonicString)
-            let seed = try mnemonic.generateSeed()
-
-            tangemSdk.importWallet(curve: curve,
-                                   cardId: cardId,
-                                   seed: seed,
-                                   completion: handleCompletion)
-        }
-        catch {
-            self.complete(with: error)
-        }
+        tangemSdk.importWallet(curve: curve,
+                               cardId: cardId,
+                               mnemonic: mnemonicString,
+                               passphrase: passphrase,
+                               completion: handleCompletion)
     }
     
     func purgeWallet(walletPublicKey: Data) {

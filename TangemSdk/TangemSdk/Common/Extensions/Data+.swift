@@ -23,7 +23,7 @@ extension Data {
         return hexString
     }
     
-    public func toInt() -> Int {
+    public func toInt() -> Int? {
         return Int(hexData: self)
     }
     
@@ -37,6 +37,20 @@ extension Data {
         let components = DateComponents(timeZone: TimeZone(secondsFromGMT: 0), year: year, month: month, day: day)
         let calendar = Calendar.current
         return calendar.date(from: components)
+    }
+
+    @available(iOS 13.0, *)
+    public var sha256Ripemd160: Data {
+        var md = RIPEMD160()
+        let hash = getSha256()
+        md.update(data: hash)
+        return md.finalize()
+    }
+
+    public var ripemd160: Data {
+        var md = RIPEMD160()
+        md.update(data: self)
+        return md.finalize()
     }
     
     public init(hexString: String) {
@@ -82,7 +96,30 @@ extension Data {
     public init(_ byte: Byte) {
         self = Data([byte])
     }
-    
+
+    init?(bitsString: String) {
+        let byteLength = 8
+        
+        guard bitsString.count % byteLength == 0 else {
+            return nil
+        }
+
+        let binaryBytes = Array(bitsString).chunked(into: byteLength)
+
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(bitsString.count / byteLength)
+
+        for binaryByte in binaryBytes {
+            guard let byte = UInt8(String(binaryByte), radix: 2) else {
+                return nil
+            }
+
+            bytes.append(byte)
+        }
+
+        self = Data(bytes)
+    }
+
     @available(iOS 13.0, *)
     public func getSha256() -> Data {
         let digest = SHA256.hash(data: self)
@@ -94,9 +131,18 @@ extension Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
     }
+
+    @available(iOS 13.0, *)
+    public func getDoubleSha256() -> Data {
+        return getSha256().getSha256()
+    }
     
     public var toBytes: [Byte] {
         return Array(self)
+    }
+
+    func toBits() -> [String] {
+        return flatMap { $0.toBits() }
     }
     
     @available(iOS 13.0, *)
@@ -145,8 +191,13 @@ extension Data {
     }
     
     @available(iOS 13.0, *)
-    public func pbkdf2sha256(salt: Data, rounds: Int) throws -> Data {
-        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: 32, rounds: rounds)
+    public func pbkdf2sha256(salt: Data, rounds: Int, keyByteCount: Int = 32) throws -> Data {
+        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
+    }
+
+    @available(iOS 13.0, *)
+    public func pbkdf2sha512(salt: Data, rounds: Int, keyByteCount: Int = 64) throws -> Data {
+        return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA512), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
     }
     
     //SO14443A

@@ -21,6 +21,9 @@ public struct CardFilter {
     
     /// Use this filter to configure issuers allowed to work with your app
     public var issuerFilter: ItemFilter? = nil
+
+    /// Use this filter to configure the highest firmware version allowed to work with your app. Nil to allow all versions.
+    public var maxFirmwareVersion: FirmwareVersion? = nil
     
     /// Custom error localized description
     public var localizedDescription: String? = nil
@@ -32,6 +35,11 @@ public struct CardFilter {
     }
     
     public func verifyCard(_ card: Card) throws {
+        if let maxFirmwareVersion = maxFirmwareVersion,
+           card.firmwareVersion > maxFirmwareVersion {
+            throw wrongCardError
+        }
+
         if !allowedCardTypes.contains(card.firmwareVersion.type) {
             throw wrongCardError
         }

@@ -54,8 +54,11 @@ extension DerivationNode {
         index.bytes4
     }
     
-    static func deserialize(from data: Data) -> DerivationNode {
-        let index = UInt32(data.toInt())
+    static func deserialize(from data: Data) -> DerivationNode? {
+        guard let intValue = data.toInt() else { return nil }
+
+        let index = UInt32(intValue)
+
         if index >= BIP32.Constants.hardenedOffset {
             return .hardened(index - BIP32.Constants.hardenedOffset)
         }

@@ -30,6 +30,7 @@ public enum StatusWord: UInt16 {
     case walletNotFound = 0x6A88
     case invalidAccessCode = 0x6AF1
     case invalidPascode = 0x6AF2
+    case walletAlreadyExists = 0x6A89
     //case pinsNotChanged = 0x9000 //equal to processCompleted
     
     func toTangemSdkError() -> TangemSdkError? {
@@ -54,6 +55,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.accessCodeRequired
         case .invalidPascode:
             return TangemSdkError.passcodeRequired
+        case .walletAlreadyExists:
+            return TangemSdkError.walletAlreadyCreated
         default:
             return nil
         }

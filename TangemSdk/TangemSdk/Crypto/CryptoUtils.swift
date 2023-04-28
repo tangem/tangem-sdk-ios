@@ -11,7 +11,7 @@ import CommonCrypto
 import CryptoKit
 
 @available(iOS 13.0, *)
-public final class CryptoUtils {
+public enum CryptoUtils {
     
     /**
      * Generates array of random bytes.
@@ -48,12 +48,50 @@ public final class CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
+            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
+            if publicKey.count == Constants.p256CompressedKeySize {
+                throw TangemSdkError.unsupportedCurve
+            }
+
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             
             return pubKey.isValidSignature(sig, for: message)
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            assertionFailure("Not implemented")
+            // TODO: Add support for BLS keys.
+            throw TangemSdkError.unsupportedCurve
+        }
+    }
+
+    public static func isPrivateKeyValid(_ privateKey: Data, curve: EllipticCurve) throws -> Bool {
+        switch curve {
+        case .secp256k1:
+            return Secp256k1Utils().isPrivateKeyValid(privateKey)
+        case .ed25519:
+            let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key != nil
+        case .secp256r1:
+            let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key != nil
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            // TODO: Add support for BLS keys.
+            throw TangemSdkError.unsupportedCurve
+        }
+    }
+
+    // We can create only decompressed secp256r1 key here.
+    public static func makePublicKey(from privateKey: Data, curve: EllipticCurve) throws -> Data {
+        switch curve {
+        case .secp256k1:
+            return try Secp256k1Utils().createPublicKey(privateKey: privateKey, compressed: true)
+        case .ed25519:
+            let key = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key.publicKey.rawRepresentation
+        case .secp256r1:
+            let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
+            return key.publicKey.rawRepresentation
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            // TODO: Add support for BLS keys.
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -75,11 +113,17 @@ public final class CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
+            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
+            if publicKey.count == Constants.p256CompressedKeySize {
+                throw TangemSdkError.unsupportedCurve
+            }
+
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            fatalError("not implemented")
+            // TODO: Add support for BLS keys.
+            throw TangemSdkError.unsupportedCurve
         }
     }
 
@@ -113,5 +157,13 @@ fileprivate struct CustomSha256Digest: Digest {
     
     func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
        try hash.withUnsafeBytes(body)
+    }
+}
+
+// MARK: - Constants
+@available(iOS 13.0, *)
+private extension CryptoUtils {
+    enum Constants {
+        static let p256CompressedKeySize = 33
     }
 }

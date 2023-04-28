@@ -55,6 +55,16 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
                     completion(.failure(.backupFailedIncompatibleBatch))
                     return
                 }
+
+                if let firmwareVersion = primaryCard.firmwareVersion, firmwareVersion != card.firmwareVersion {
+                    completion(.failure(.backupFailedIncompatibleFirmware))
+                    return
+                }
+            }
+
+            if let isKeysImportAllowed = primaryCard.isKeysImportAllowed, isKeysImportAllowed != card.settings.isKeysImportAllowed {
+                completion(.failure(.backupFailedKeysImportSettings))
+                return
             }
             
             if !primaryWalletCurves.isSubset(of: backupCardSupportedCurves) {

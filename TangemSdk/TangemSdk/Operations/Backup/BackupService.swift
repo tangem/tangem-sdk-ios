@@ -386,7 +386,9 @@ public struct RawPrimaryCard {
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
-    public let batchId: String? //for compatibility with interrupted backups
+    public let batchId: String? // Optional for compatibility with interrupted backups
+    public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
+    public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
 }
 
 @available(iOS 13.0, *)
@@ -401,7 +403,9 @@ public struct PrimaryCard: Codable, CertificateProvider {
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
     public let walletCurves: [EllipticCurve]
-    public let batchId: String? //for compatibility with interrupted backups
+    public let batchId: String? // Optional for compatibility with interrupted backups
+    public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
+    public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
     
     public init(_ rawPrimaryCard: RawPrimaryCard, issuerSignature: Data) {
         self.cardId = rawPrimaryCard.cardId
@@ -413,6 +417,8 @@ public struct PrimaryCard: Codable, CertificateProvider {
         self.issuer = rawPrimaryCard.issuer
         self.walletCurves = rawPrimaryCard.walletCurves
         self.batchId = rawPrimaryCard.batchId
+        self.firmwareVersion = rawPrimaryCard.firmwareVersion
+        self.isKeysImportAllowed = rawPrimaryCard.isKeysImportAllowed
     }
 }
 

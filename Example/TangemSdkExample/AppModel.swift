@@ -339,20 +339,23 @@ extension AppModel {
                 switch result {
                 case .success:
                     session.resume()
-                    let createWallet = CreateWalletTask(curve: .secp256k1)
-                    createWallet.run(in: session) { result2 in
-                        switch result2 {
-                        case .success(let response):
-                            self.logger.log(response)
-                        case .failure:
-                            break
+                    let secondTaskDelay: TimeInterval = 3
+                    DispatchQueue.main.asyncAfter(deadline: .now() + secondTaskDelay) {
+                        let createWallet = CreateWalletTask(curve: .secp256k1)
+                        createWallet.run(in: session) { result2 in
+                            switch result2 {
+                            case .success(let response):
+                                self.logger.log(response)
+                            case .failure:
+                                break
+                            }
+                            
+                            DispatchQueue.main.async {
+                                self.handleCompletion(result)
+                            }
+                            
+                            session.stop()
                         }
-                        
-                        DispatchQueue.main.async {
-                            self.handleCompletion(result)
-                        }
-                        
-                        session.stop()
                     }
                     
                 case .failure(let error):

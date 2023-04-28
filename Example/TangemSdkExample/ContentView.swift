@@ -125,7 +125,7 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
-        case .createWallet:
+        case .createWallet, .importWallet:
             VStack {
                 Text("Create wallet configuration")
                     .font(.headline)
@@ -139,6 +139,16 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
+                }
+
+                if case .importWallet = model.method {
+                    TextField("Optional mnemonic", text: $model.mnemonicString)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
+
+                    TextField("Optional passphrase", text: $model.passphrase)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
                 }
             }
             .padding()
@@ -155,6 +165,16 @@ struct ContentView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+
+                if case .signHashes = model.method {
+                    Text("Sign hashes count")
+                        .font(.headline)
+                        .bold()
+
+                    TextField("", text: $model.signHashesCount)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .autocapitalization(.none)
+                }
             }
             .padding()
             .cornerRadius(8)
@@ -194,7 +214,10 @@ struct ContentView: View {
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
             .onAppear(perform: model.onAppear)
-            
+        case .setUserCodeRecoveryAllowed:
+            Toggle(isOn: $model.isUserCodeRecoveryAllowed) {
+                Text("Is user code recovery allowed")
+            }
         default:
             EmptyView()
         }

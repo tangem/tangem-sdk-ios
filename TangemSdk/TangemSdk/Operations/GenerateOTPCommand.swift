@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// /// Deserialized response from the Tangem card after `GenerateOTPCommand`.
+/// Deserialized response from the Tangem card after `GenerateOTPCommand`.
 @available(iOS 13.0, *)
 public struct GenerateOTPResponse: JSONStringConvertible {
     /// Unique Tangem card ID number.

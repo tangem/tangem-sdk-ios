@@ -21,7 +21,7 @@ public extension Card {
         /// Is  allowed to change passcode
         public internal(set) var isSettingPasscodeAllowed: Bool
         /// Is allowed to remove access code
-        public internal(set) var isResettingUserCodesAllowed: Bool
+        public internal(set) var isRemovingUserCodesAllowed: Bool
         /// Is LinkedTerminal feature enabled
         public let isLinkedTerminalEnabled: Bool
         /// All  encryption modes supported by the card
@@ -32,6 +32,8 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
+        /// Is allowed to import  keys. COS. v6.16+
+        public let isKeysImportAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding
         var isPermanentWallet: Bool
@@ -62,7 +64,7 @@ extension Card.Settings {
         
         self.isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
         self.isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
-        self.isResettingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
+        self.isRemovingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
         self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
         self.isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
         self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
@@ -71,6 +73,7 @@ extension Card.Settings {
         self.isHDWalletAllowed = mask.contains(.allowHDWallets)
         self.isFilesAllowed = !mask.contains(.disableFiles)
         self.isBackupAllowed = mask.contains(.allowBackup)
+        self.isKeysImportAllowed = mask.contains(.allowKeysImport)
         
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {
@@ -90,10 +93,10 @@ extension Card.Settings {
                      defaultSigningMethods: self.defaultSigningMethods,
                      defaultCurve: self.defaultCurve)
     }
-    
 }
 
-//MARK:- CardSettingsMask
+// MARK: - CardSettingsMask
+
 @available(iOS 13.0, *)
 typealias CardSettingsMask = Card.Settings.Mask
 
@@ -116,7 +119,8 @@ extension CardSettingsMask {
     }
 }
 
-//MARK:- CardSettingsMask Constants
+// MARK: - CardSettingsMask Constants
+
 @available(iOS 13.0, *)
 extension CardSettingsMask {
     static let useActivation = CardSettingsMask(rawValue: 0x0002)
@@ -145,9 +149,11 @@ extension CardSettingsMask {
     static let isReusable = CardSettingsMask(rawValue: 0x0001)
     static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
     static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
+    static let allowKeysImport = CardSettingsMask(rawValue: 0x00800000)
 }
 
-//MARK:- CardSettingsMask OptionSetCodable conformance
+// MARK: - CardSettingsMask OptionSetCodable conformance
+
 @available(iOS 13.0, *)
 extension CardSettingsMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {

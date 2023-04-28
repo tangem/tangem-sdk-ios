@@ -32,7 +32,7 @@ struct RoundedButton: ButtonStyle {
                 if #available(iOS 14.0, *) {
                     ActivityIndicatorView(color: colors.foregroundColor)
                 } else {
-                    ActivityIndicatorView()
+                    ActivityIndicatorView(color: UIColor.white)
                 }
             }
         } else {

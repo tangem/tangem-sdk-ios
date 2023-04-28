@@ -81,6 +81,10 @@ public final class TlvEncoder {
             try typeCheck(value, ProductMask.self, for: tag)
             let mask = value as! ProductMask
             return Data([mask.rawValue])
+        case .userSettingsMask:
+            try typeCheck(value, UserSettingsMask.self, for: tag)
+            let userMask = value as! UserSettingsMask
+            return userMask.rawValue.bytes4
         case .settingsMask:
             do {
                 try typeCheck(value, CardSettingsMask.self, for: tag)

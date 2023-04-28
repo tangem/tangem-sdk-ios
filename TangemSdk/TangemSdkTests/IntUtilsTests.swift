@@ -16,6 +16,21 @@ class IntUtilsTests: XCTestCase {
         let testData = Data(hexString: "9569")
         XCTAssertEqual(38249, Int(hexData: testData))
     }
+
+    func testFromHexConversionOverflow() {
+        let testData = Data(hexString: "FFFFFFFFFFFFFFFF")
+        XCTAssertNil(Int(hexData: testData))
+    }
+
+    func testUInt64FromHexConversion() {
+        let testData = Data(hexString: "FFFFFFFFFFFFFFFF")
+        XCTAssertEqual(18446744073709551615, UInt64(hexData: testData))
+    }
+
+    func testUInt64FromHexConversionOverflow() {
+        let testData = Data(hexString: "FFFFFFFFFFFFFFFF01")
+        XCTAssertNil(Int(hexData: testData))
+    }
     
     func testToByteConversion() {
         XCTAssertEqual(15.byte, Data(hexString: "0F"))

@@ -26,6 +26,10 @@ public final class StartPrimaryCardLinkingCommand: Command {
         if !card.settings.isBackupAllowed {
             return .backupNotAllowed
         }
+
+        if let backupStatus = card.backupStatus, backupStatus.isActive {
+            return .backupFailedAlreadyCreated
+        }
         
         if card.wallets.isEmpty {
             return .backupFailedEmptyWallets
@@ -64,6 +68,8 @@ public final class StartPrimaryCardLinkingCommand: Command {
                               isHDWalletAllowed: card.settings.isHDWalletAllowed,
                               issuer: card.issuer,
                               walletCurves: card.wallets.map { $0.curve },
-                              batchId: card.batchId)
+                              batchId: card.batchId,
+                              firmwareVersion: card.firmwareVersion,
+                              isKeysImportAllowed: card.settings.isKeysImportAllowed)
     }
 }

@@ -58,10 +58,34 @@ class SignHashHandler: JSONRPCHandler {
 @available(iOS 13.0, *)
 class CreateWalletHandler: JSONRPCHandler {
     var method: String { "CREATE_WALLET" }
-    
+
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
         let command = CreateWalletTask(curve: curve)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class ImportWalletHandler: JSONRPCHandler {
+    var method: String { "IMPORT_WALLET" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let curve: EllipticCurve = try parameters.value(for: "curve")
+
+        let seedParam: Data? = try parameters.value(for: "seed")
+
+        let mnemonicString: String? = try parameters.value(for: "mnemonic")
+        let passphrase: String = try parameters.value(for: "passphrase") ?? ""
+        let seedFromMnemonic = try mnemonicString.map { try Mnemonic(with: $0).generateSeed(with: passphrase) }
+
+        let seed: Data? = seedParam ?? seedFromMnemonic
+        guard let seed else {
+            throw JSONRPCError(.invalidParams,
+                               data: JSONRPCErrorData(.invalidParams, message: "You should pass a seed or a mnemonic and an optional passphrase"))
+        }
+
+        let command = CreateWalletTask(curve: curve, seed: seed)
         return command.eraseToAnyRunnable()
     }
 }
@@ -211,6 +235,30 @@ class DeriveWalletPublicKeysHandler: JSONRPCHandler {
         
         let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey,
                                                  derivationPaths: derivationPaths)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class SetUserCodeRecoveryAllowedHandler: JSONRPCHandler {
+    var method: String { "SET_USERCODE_RECOVERY_ALLOWED" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let isAllowed: Bool = try parameters.value(for: "isAllowed")
+
+        let command = SetUserCodeRecoveryAllowedTask(isAllowed: isAllowed)
+        return command.eraseToAnyRunnable()
+    }
+}
+
+@available(iOS 13.0, *)
+class AttestCardKeyHandler: JSONRPCHandler {
+    var method: String { "ATTEST_CARD_KEY" }
+
+    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let challenge: Data? = try parameters.value(for: "challenge")
+
+        let command = AttestCardKeyCommand(challenge: challenge)
         return command.eraseToAnyRunnable()
     }
 }

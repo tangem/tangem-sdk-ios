@@ -18,6 +18,56 @@ class JSONRPCTests: XCTestCase {
         XCTAssertNotNil(data)
         return try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
     }
+
+    func testDecodeMasterExtendedPublicKey() throws {
+        let json =
+        """
+        {
+            "publicKey": "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962",
+            "chainCode": "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB",
+        }
+        """
+
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
+        XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
+        XCTAssertEqual(decoded.depth, 0)
+        XCTAssertEqual(decoded.childNumber, 0)
+        XCTAssertEqual(decoded.parentFingerprint.hexString, "00000000")
+    }
+
+    func testDecodeInvalidExtendedPublicKey() throws {
+        let json =
+        """
+        {
+            "publicKey": "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962",
+            "chainCode": "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB",
+            "depth" : 1,
+        }
+        """
+
+        XCTAssertThrowsError(try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!))
+    }
+
+    func testDecodeExtendedPublicKey() throws {
+        let json =
+        """
+        {
+            "publicKey": "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962",
+            "chainCode": "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB",
+            "depth" : 1,
+            "parentFingerprint" : "00000001",
+            "childNumber" : 2
+        }
+        """
+
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
+        XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
+        XCTAssertEqual(decoded.depth, 1)
+        XCTAssertEqual(decoded.childNumber, 2)
+        XCTAssertEqual(decoded.parentFingerprint.hexString, "00000001")
+    }
     
     func testJsonRPCRequestParse() {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": {\"subtrahend\": 23, \"minuend\": 42}, \"id\": 3}"
@@ -85,8 +135,39 @@ class JSONRPCTests: XCTestCase {
                                                               remainingSignatures: 100,
                                                               index: 1,
                                                               proof: nil,
+                                                              isImported: false,
                                                               hasBackup: false))
         testMethod(name: "CreateWallet", result: result)
+    }
+
+    func testImportWalletSeed() {
+        let result = CreateWalletResponse(cardId: "c000111122223333",
+                                          wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
+                                                              chainCode: nil,
+                                                              curve: .secp256r1,
+                                                              settings: Card.Wallet.Settings(isPermanent: true),
+                                                              totalSignedHashes: 10,
+                                                              remainingSignatures: 100,
+                                                              index: 1,
+                                                              proof: nil,
+                                                              isImported: false,
+                                                              hasBackup: false))
+        testMethod(name: "ImportWalletSeed", result: result)
+    }
+
+    func testImportWalletMnemonic() {
+        let result = CreateWalletResponse(cardId: "c000111122223333",
+                                          wallet: Card.Wallet(publicKey: Data(hexString: "029983A77B155ED3B3B9E1DDD223BD5AA073834C8F61113B2F1B883AAA70971B5F"),
+                                                              chainCode: Data(hexString: "C7A888C4C670406E7AAEB6E86555CE0C4E738A337F9A9BC239F6D7E475110A4E"),
+                                                              curve: .secp256k1,
+                                                              settings: Card.Wallet.Settings(isPermanent: true),
+                                                              totalSignedHashes: 10,
+                                                              remainingSignatures: 100,
+                                                              index: 1,
+                                                              proof: nil,
+                                                              isImported: false,
+                                                              hasBackup: false))
+        testMethod(name: "ImportWalletMnemonic", result: result)
     }
     
     func testPurgeWallet() {
@@ -148,7 +229,23 @@ class JSONRPCTests: XCTestCase {
         
         testMethod(name: "DeriveWalletPublicKeys", result: result)
     }
-    
+
+    func testUserCodeRecoveryAllowed() {
+        let result = SuccessResponse(cardId: "c000111122223333")
+
+        testMethod(name: "SetUserCodeRecoveryAllowed", result: result)
+    }
+
+    func testAttestCardKey() {
+        let result = AttestCardKeyResponse(cardId: "c000111122223333",
+                                           salt: Data(hexString: "BBBBBBBBBBBB"),
+                                           cardSignature: Data(hexString: "AAAAAAAAAAAA"),
+                                           challenge: Data(hexString: "000000000000"))
+
+        testMethod(name: "AttestCardKey", result: result)
+    }
+
+
     func testFiles() {
         testMethod(name: "ReadFiles", result: [File(data: Data(hexString: "00AABBCCDD"),
                                                     index: 0,

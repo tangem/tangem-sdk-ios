@@ -17,14 +17,19 @@ class AppModel: ObservableObject {
     
     //Wallet creation
     @Published var curve: EllipticCurve = .secp256k1
+    @Published var mnemonicString: String = ""
+    @Published var passphrase: String = ""
     //Sign
     @Published var derivationPath: String = ""
+    @Published var signHashesCount: String = "15"
     //Attestation
     @Published var attestationMode: AttestationTask.Mode = .normal
     //JSON-RPC
     @Published var json: String =  ""
     //Personalization
     @Published var personalizationConfig: String =  ""
+    //Set user code recovery allowed
+    @Published var isUserCodeRecoveryAllowed: Bool = false
     
     //MARK:-  Outputs
     @Published var logText: String = DebugLogger.logPlaceholder
@@ -248,10 +253,15 @@ extension AppModel {
             self.complete(with: "Failed to parse hd path")
             return
         }
+
+        guard let hashesCount = Int(signHashesCount, radix: 10) else {
+            self.complete(with: "Failed to signed hashes count")
+            return
+        }
         
         UIApplication.shared.endEditing()
         
-        let hashes = (0..<5).map {_ -> Data in getRandomHash()}
+        let hashes = (0..<hashesCount).map {_ -> Data in getRandomHash()}
         
         tangemSdk.sign(hashes: hashes,
                        walletPublicKey: walletPublicKey,
@@ -285,9 +295,22 @@ extension AppModel {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
-        
+
         tangemSdk.createWallet(curve: curve,
                                cardId: cardId,
+                               completion: handleCompletion)
+    }
+
+    func importWallet() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Scan card to retrieve cardId")
+            return
+        }
+
+        tangemSdk.importWallet(curve: curve,
+                               cardId: cardId,
+                               mnemonic: mnemonicString,
+                               passphrase: passphrase,
                                completion: handleCompletion)
     }
     
@@ -579,6 +602,19 @@ extension AppModel {
     func resetToFactory() {
         tangemSdk.startSession(with: ResetToFactorySettingsTask(), completion: handleCompletion)
     }
+
+    func getEntropy() {
+        tangemSdk.startSession(with: GetEntropyCommand(), completion: handleCompletion)
+    }
+
+    func setUserCodeRecoveryAllowed() {
+        guard let cardId = card?.cardId else {
+            self.complete(with: "Please, scan card before")
+            return
+        }
+
+        tangemSdk.setUserCodeRecoveryAllowed(isUserCodeRecoveryAllowed, cardId: cardId, completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -652,6 +688,7 @@ extension AppModel {
         case setPasscode
         case resetUserCodes
         case createWallet
+        case importWallet
         case purgeWallet
         //files
         case readFiles
@@ -674,6 +711,8 @@ extension AppModel {
         case personalize
         case resetBackup
         case resetToFactory
+        case getEntropy
+        case setUserCodeRecoveryAllowed
     }
     
     private func chooseMethod(walletPublicKey: Data? = nil) {
@@ -688,6 +727,7 @@ extension AppModel {
         case .signHash: runWithPublicKey(signHash, walletPublicKey)
         case .signHashes: runWithPublicKey(signHashes, walletPublicKey)
         case .createWallet: createWallet()
+        case .importWallet: importWallet()
         case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
         case .readFiles: readFiles()
         case .writeUserFile: writeUserFile()
@@ -706,6 +746,8 @@ extension AppModel {
         case .personalize: personalize()
         case .resetBackup: resetBackup()
         case .resetToFactory: resetToFactory()
+        case .getEntropy: getEntropy()
+        case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         }
     }
 }

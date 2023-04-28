@@ -71,6 +71,23 @@ public extension TangemSdk {
                   completion: @escaping CompletionResult<Card>) {
         startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
+
+    /// Perform a card's key attestation
+    /// - Parameters:
+    ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
+    ///   - cardId: CID, Unique Tangem card ID number
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns  `Swift.Result<AttestCardKeyResponse,TangemSdkError>`
+    func attestCardKey(challenge: Data? = nil,
+                       cardId: String? = nil,
+                       initialMessage: Message? = nil,
+                       completion: @escaping CompletionResult<AttestCardKeyResponse>) {
+        let command = AttestCardKeyCommand(challenge: challenge)
+        startSession(with: command,
+                     cardId: cardId,
+                     initialMessage: initialMessage,
+                     completion: completion)
+    }
     
     /// This method allows you to sign one hash and will return a corresponding signature.
     /// Please note that Tangem cards usually protect the signing with a security delay
@@ -148,6 +165,45 @@ public extension TangemSdk {
         let command = CreateWalletTask(curve: curve)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
+
+    /// This command will import an esisting wallet
+    /// - Parameters:
+    ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - seed: BIP39 seed to create wallet from. COS v.6.16+.
+    ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
+    func importWallet(curve: EllipticCurve,
+                      cardId: String,
+                      seed: Data,
+                      initialMessage: Message? = nil,
+                      completion: @escaping CompletionResult<CreateWalletResponse>) {
+        let command = CreateWalletTask(curve: curve, seed: seed)
+        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+
+    /// This command will import an esisting wallet
+    /// - Parameters:
+    ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - mnemonic: BIP39 mnemonic to create wallet from. COS v.6.16+.
+    ///   - passphrase: BIP39 passphrase to create wallet from. COS v.6.16+.  Empty passphrase by default.
+    ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
+    func importWallet(curve: EllipticCurve,
+                      cardId: String,
+                      mnemonic: String,
+                      passphrase: String = "",
+                      initialMessage: Message? = nil,
+                      completion: @escaping CompletionResult<CreateWalletResponse>) {
+        do {
+            let seed = try Mnemonic(with: mnemonic).generateSeed(with: passphrase)
+            let command = CreateWalletTask(curve: curve, seed: seed)
+            startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
+        } catch {
+            completion(.failure(error.toTangemSdkError()))
+        }
+    }
     
     /// This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
     /// the card changes state to ‘Empty’ and a new wallet can be created by `CREATE_WALLET` command.
@@ -224,6 +280,20 @@ public extension TangemSdk {
                         initialMessage: Message? = nil,
                         completion: @escaping CompletionResult<SuccessResponse>) {
         startSession(with: SetUserCodeCommand.resetUserCodes, cardId: cardId, initialMessage: initialMessage, completion: completion)
+    }
+
+    /// Set if card allowed to reset user code
+    /// - Parameters:
+    ///   - isAllowed:Is this card can reset user codes on tte other linked card or not
+    ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
+    func setUserCodeRecoveryAllowed(_ isAllowed: Bool,
+                                    cardId: String,
+                                    initialMessage: Message? = nil,
+                                    completion: @escaping CompletionResult<SuccessResponse>) {
+        let task = SetUserCodeRecoveryAllowedTask(isAllowed: isAllowed)
+        startSession(with: task, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     /// Derive public key according to BIP32 (Private parent key → public child key)
@@ -323,10 +393,10 @@ public extension TangemSdk {
     /// This command deletes selected files from card. This operation can't be undone.
     ///
     /// To perform file deletion you should initially read all files (`readFiles` command) and add them to `indices` array. When files deleted from card, other files change their indexies.
-    /// After deleting files you should additionally perform `readFiles` command to actualize files indexes
+    /// After deleting files you should additionally perform `readFiles` command to actualize files indices
     /// - Warning: This command available for COS 3.29 and higher
     /// - Parameters:
-    ///   - indices: Indexes of files that should be deleteled. If nil - deletes all files from card
+    ///   - indices: indices of files that should be deleteled. If nil - deletes all files from card
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse, TangemSdkError>`

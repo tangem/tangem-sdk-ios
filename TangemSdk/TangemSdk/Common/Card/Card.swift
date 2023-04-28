@@ -26,6 +26,8 @@ public struct Card: Codable, JSONStringConvertible {
     public let issuer: Issuer
     /// Card setting, that were set during the personalization process
     public var settings: Settings
+    /// Card settings, that were set during the personalization process and can be changed by user directly
+    public internal(set) var userSettings: UserSettings
     /// When this value is `current`, it means that the application is linked to the card,
     /// and COS will not enforce security delay if `SignCommand` will be called
     /// with `TlvTag.TerminalTransactionSignature` parameter containing a correct signature of raw data
@@ -36,7 +38,7 @@ public struct Card: Codable, JSONStringConvertible {
     /// Passcode (aka PIN2) is set.
     /// COS v. 4.33 and higher - always available
     /// COS v. 1.19 and lower - always unavailable
-    /// COS  v > 1.19 &&  v < 4.33 - available only if `isResettingUserCodesAllowed` set to true
+    /// COS  v > 1.19 &&  v < 4.33 - available only if `isRemovingUserCodesAllowed` set to true
     public var isPasscodeSet: Bool?
     /// Array of ellipctic curves, supported by this card. Only wallets with these curves can be created.
     public let supportedCurves: [EllipticCurve]

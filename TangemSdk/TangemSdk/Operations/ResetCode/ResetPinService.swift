@@ -45,7 +45,10 @@ public class ResetPinService: ObservableObject {
         }
         
         repo.accessCode = code.sha256()
-        currentState = currentState.next()
+        
+        if currentState == .needCode {
+            currentState = currentState.next()
+        }
     }
     
     public func setPasscode(_ code: String) throws {
@@ -65,8 +68,12 @@ public class ResetPinService: ObservableObject {
                 throw TangemSdkError.passcodeTooShort
             }
         }
+
         repo.passcode = code.sha256()
-        currentState = currentState.next()
+
+        if currentState == .needCode {
+            currentState = currentState.next()
+        }
     }
     
     public func proceed(with resetCardId: String? = nil) {

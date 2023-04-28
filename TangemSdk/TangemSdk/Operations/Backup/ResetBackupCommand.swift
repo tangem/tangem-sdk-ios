@@ -39,7 +39,7 @@ public final class ResetBackupCommand: Command {
               }
         
         guard !card.wallets.contains(where: { $0.hasBackup } ) else {
-            return TangemSdkError.resetBackupFailedHasBackupedWallets
+            return TangemSdkError.resetBackupFailedHasBackedUpWallets
         }
         
         return nil

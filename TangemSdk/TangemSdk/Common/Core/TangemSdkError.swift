@@ -248,6 +248,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case walletNotFound
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
+    case walletAlreadyCreated
     
     // MARK: Backup errors
     case backupFailedCardNotLinked
@@ -264,7 +265,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
     case noActiveBackup
-    case resetBackupFailedHasBackupedWallets
+    case resetBackupFailedHasBackedUpWallets
     case backupServiceInvalidState
     case noBackupCardForIndex
     case emptyBackupCards
@@ -274,10 +275,15 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupFailedNotEnoughWallets
     case backupFailedFirmware
     case backupFailedIncompatibleBatch
-    
+    case backupFailedIncompatibleFirmware
+    case backupFailedKeysImportSettings
+    case backupFailedAlreadyCreated
+
     //MARK: Settings
     case filesDisabled
     case hdWalletDisabled
+    case keysImportDisabled
+    case userCodeRecoveryDisabled
     
     case resetPinNoCardToReset
     case resetPinWrongCard(internalCode: Int? = nil)
@@ -343,6 +349,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .accessCodeRequired: return 40401
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
+        case .walletAlreadyCreated: return 40405
             
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502
@@ -379,7 +386,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .certificateSignatureRequired: return 41211
         case .accessCodeOrPasscodeRequired: return 41212
         case .noActiveBackup: return 41220
-        case .resetBackupFailedHasBackupedWallets: return 41221
+        case .resetBackupFailedHasBackedUpWallets: return 41221
         case .backupServiceInvalidState: return 41222
         case .noBackupCardForIndex: return 41223
         case .emptyBackupCards: return 41224
@@ -390,6 +397,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .issuerSignatureLoadingFailed: return 41229
         case .backupFailedFirmware: return 41230
         case .backupFailedIncompatibleBatch: return 41231
+        case .backupFailedIncompatibleFirmware: return 41232
+        case .backupFailedKeysImportSettings: return 41233
+        case .backupFailedAlreadyCreated: return 41234
             
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard(let internalCode): return internalCode ?? 41301
@@ -399,6 +409,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
         case .filesDisabled: return 42002
         case .hdWalletDisabled: return 42003
+        case .keysImportDisabled: return 42004
+        case .userCodeRecoveryDisabled: return 42005
             
             // MARK: 5xxxx Errors
             // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
@@ -496,12 +508,15 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .issuerSignatureLoadingFailed: return "issuer_signature_loading_failed".localized
         case .backupCardRequired, .backupCardAlreadyAdded: return "error_backup_card_already_added".localized
         case .backupFailedNotEmptyWallets: return "error_backup_not_empty_wallets".localized
-        case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves, .backupFailedNotEnoughWallets,
-                .backupFailedFirmware, .backupNotAllowed, .backupFailedIncompatibleBatch:
+        case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves,
+                .backupFailedNotEnoughWallets, .backupFailedFirmware, .backupNotAllowed,
+                .backupFailedIncompatibleBatch, .backupFailedIncompatibleFirmware, .backupFailedKeysImportSettings,
+                .backupFailedAlreadyCreated:
             return "error_backup_wrong_card".localized("\(self.code)")
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")
         case .oldCard: return "error_old_card".localized
+        case .userCodeRecoveryDisabled: return "error_user_code_recovery_disabled".localized
             
         default:
             if let message = self.message {

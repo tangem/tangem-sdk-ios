@@ -14,7 +14,7 @@ public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
     public var indicatorWidth: Float = 12
-    public var readViewTag: ReadViewTag = .genericCard
+    public var nfcTag: NFCTag = .genericCard
     
     public static var `default`: TangemSdkStyle = .init()
 }
@@ -71,7 +71,7 @@ public extension TangemSdkStyle {
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
     /// Options for displaying different tags on the scanning screen
-    enum ReadViewTag {
+    enum NFCTag {
         /// Generic card provided by the SDK
         case genericCard
         

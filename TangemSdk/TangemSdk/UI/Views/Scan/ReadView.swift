@@ -42,7 +42,7 @@ struct ReadView: View {
     
     @ViewBuilder
     private var tagView: some View {
-        switch style.readViewTag {
+        switch style.nfcTag {
         case .genericCard:
             CardView(cardColor: style.colors.cardColor, starsColor: style.colors.starsColor)
         case .image(let name, let verticalOffset, let bundle):

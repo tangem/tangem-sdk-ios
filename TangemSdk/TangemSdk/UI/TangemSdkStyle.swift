@@ -21,8 +21,15 @@ public class TangemSdkStyle: ObservableObject {
 
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
+    /// Options for displaying different tags on the scanning screen
     enum ReadViewTag {
+        /// Generic card provided by the SDK
         case genericCard
+        
+        /// A custom image with a name `name` that resides in an Asset Catalog in a `bundle` bundle.
+        /// The image can be shifted vertically from the standard position by specifying `verticalOffset`.
+        /// Note that the width of the image will be limited to a certain size, while the height will be determined by the aspect ratio of the image.
+        /// The value of the width can be found in ReadView.swift and is 210 points at the time of the writing.
         case image(name: String, verticalOffset: Double, bundle: Bundle)
     }
 }

@@ -10,7 +10,6 @@ import Foundation
 
 @available(iOS 13.0, *)
 public class DeriveWalletPublicKeysTask: CardSessionRunnable {
-    public typealias Response = [DerivationPath:ExtendedPublicKey]
     private let walletPublicKey: Data
     private let derivationPaths: [DerivationPath]
     
@@ -28,11 +27,11 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
         Log.debug("DeriveWalletPublicKeysTask deinit")
     }
     
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Response>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<DerivedKeys>) {
         runDerivation(at: 0, keys: [:], in: session, completion: completion)
     }
     
-    private func runDerivation(at index: Int, keys: [DerivationPath:ExtendedPublicKey], in session: CardSession, completion: @escaping CompletionResult<Response>) {
+    private func runDerivation(at index: Int, keys: DerivedKeys, in session: CardSession, completion: @escaping CompletionResult<DerivedKeys>) {
         guard index < derivationPaths.count else {
             completion(.success(keys))
             return
@@ -51,6 +50,3 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
         }
     }
 }
-
-@available(iOS 13.0, *)
-extension DeriveWalletPublicKeysTask.Response: JSONStringConvertible {}

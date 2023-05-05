@@ -14,8 +14,17 @@ public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
     public var indicatorWidth: Float = 12
+    public var readViewTag: ReadViewTag = .genericCard
     
     public static var `default`: TangemSdkStyle = .init()
+}
+
+@available(iOS 13.0, *)
+public extension TangemSdkStyle {
+    enum ReadViewTag {
+        case genericCard
+        case image(name: String, verticalOffset: Double, bundle: Bundle)
+    }
 }
 
 @available(iOS 13.0, *)

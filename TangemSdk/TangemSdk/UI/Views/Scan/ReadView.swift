@@ -20,7 +20,7 @@ struct ReadView: View {
                 NFCFieldView(isAnimationOn: true)
                     .frame(width: 240, height: 240)
                     .offset(y: -160)
-
+                
                 tagView
                     .frame(minWidth: 210, maxWidth: 210)
                     .offset(cardOffset)

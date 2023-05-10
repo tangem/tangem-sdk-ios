@@ -318,6 +318,7 @@
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
+		DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
 		DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */; };
@@ -661,6 +662,7 @@
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
+		DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedKeys.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
 		DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserSettingsCommand.swift; sourceTree = "<group>"; };
@@ -1427,6 +1429,7 @@
 				5D379C26268FA47600C7F473 /* EncryptionMode.swift */,
 				5D270F2426A0199100D2EDC1 /* WalletData.swift */,
 				DCC0A21529D3216100C45B13 /* UserSettings.swift */,
+				DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -1838,6 +1841,7 @@
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
+				DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */,
 				DC1244E229BB7B390037BC05 /* WIF.swift in Sources */,
 				5D539ECB276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift in Sources */,
 				DA6C752A292682650070EEFD /* LAContext+.swift in Sources */,

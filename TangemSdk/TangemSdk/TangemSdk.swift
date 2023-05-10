@@ -320,12 +320,12 @@ public extension TangemSdk {
     ///   - walletPublicKey: Seed public key.
     ///   - derivationPaths: Derivation paths. Repeated items will be ignored.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - completion: Returns `Swift.Result<[ExtendedPublicKey],TangemSdkError>`. All derived keys are unique and will be returned in arbitrary order.
+    ///   - completion: Returns `Swift.Result<DerivedKeys,TangemSdkError>`. All derived keys are unique and will be returned in arbitrary order.
     func deriveWalletPublicKeys(cardId: String,
                                 walletPublicKey: Data,
                                 derivationPaths: [DerivationPath],
                                 initialMessage: Message? = nil,
-                                completion: @escaping CompletionResult<[DerivationPath:ExtendedPublicKey]>) {
+                                completion: @escaping CompletionResult<DerivedKeys>) {
         let command = DeriveWalletPublicKeysTask(walletPublicKey: walletPublicKey, derivationPaths: derivationPaths)
         startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
     }

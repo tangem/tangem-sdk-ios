@@ -45,8 +45,8 @@ struct ReadView: View {
         switch style.nfcTag {
         case .genericCard:
             CardView(cardColor: style.colors.cardColor, starsColor: style.colors.starsColor)
-        case .image(let name, let verticalOffset, let bundle):
-            Image(name, bundle: bundle)
+        case .image(let uiImage, let verticalOffset):
+            Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .offset(y: verticalOffset)

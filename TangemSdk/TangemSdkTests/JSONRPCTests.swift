@@ -222,11 +222,11 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testDerivePublicKeys() {
-        let result = ["m/44'/0'" : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+        let keys = [try! DerivationPath(rawPath: "m/44'/0'") : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")),
-                      "m/44'/1'" : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+                    try! DerivationPath(rawPath: "m/44'/1'")  : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"))]
-        
+        let result = DerivedKeys(keys: keys)
         testMethod(name: "DeriveWalletPublicKeys", result: result)
     }
 

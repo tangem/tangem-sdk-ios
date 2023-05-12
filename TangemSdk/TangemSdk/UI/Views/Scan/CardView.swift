@@ -17,6 +17,7 @@ struct CardView: View {
         RoundedRectangle(cornerRadius: 10)
             .fill(cardColor)
             .overlay(overlay)
+            .aspectRatio(CGSize(width: 210, height: 130), contentMode: .fit)
     }
     
     @ViewBuilder

@@ -21,9 +21,8 @@ struct ReadView: View {
                     .frame(width: 240, height: 240)
                     .offset(y: -160)
                 
-                CardView(cardColor: style.colors.cardColor,
-                         starsColor: style.colors.starsColor)
-                    .frame(width: 210, height: 130)
+                tagView
+                    .frame(minWidth: 210, maxWidth: 210)
                     .offset(cardOffset)
                     .animation(Animation
                                 .easeInOut(duration: 1)
@@ -38,6 +37,19 @@ struct ReadView: View {
         }
         .onAppear {
             cardOffset.width = 0
+        }
+    }
+    
+    @ViewBuilder
+    private var tagView: some View {
+        switch style.nfcTag {
+        case .genericCard:
+            CardView(cardColor: style.colors.cardColor, starsColor: style.colors.starsColor)
+        case .image(let uiImage, let verticalOffset):
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .offset(y: verticalOffset)
         }
     }
 }

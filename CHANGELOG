@@ -1,13 +1,9 @@
-*   7c0c3ef - (HEAD -> release/3.6.0, tag: develop-228, origin/develop, develop) Merge pull request #279 from tangem/IOS-3574_derivedkeys_serialization
-|\  
-| * 2a2d69d - IOS-3574 Serialize derivedKeys as object
-|/  
-*   c2b460c - (tag: develop-227) Merge pull request #277 from tangem/IOS-3533-sdk-chaining-example-command-does-not-execute
-|\  
-| *   b632a9d - Merge branch 'develop' into IOS-3533-sdk-chaining-example-command-does-not-execute
-| |\  
-| |/  
-|/|   
-* | 0f6b2c4 - (tag: develop-226) Merge pull request #278 from tangem/master
- /  
-* f22dcfd - IOS-3533 Added a hack to delay the execution of the second command in chaining example
+* 36a3eb9 - (HEAD -> release/3.7.0, tag: develop-230, origin/develop, develop) Merge pull request #283 from tangem/master
+* 134866c - (tag: develop-229, tag: 29) Merge pull request #280 from tangem/IOS-3575-sdk-research-implement-custom-card-image
+* 4751c9c - Merge branch 'develop' into IOS-3575-sdk-research-implement-custom-card-image
+* b6fabd2 - IOS-3575 Displaying UIImage as an NFC tag for more flexibility
+* 15cfa9a - IOS-3575 Renamed the type
+* e3d7b78 - IOS-3575 Changed the code order
+* 69bf337 - IOS-3575 Added some docs
+* 83fe4f6 - IOS-3575 Whitespace
+* 3f9e59c - IOS-3575 Added a way to show an image in the ReadView

@@ -74,6 +74,9 @@ fileprivate extension EllipticCurve {
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // https://eips.ethereum.org/EIPS/eip-2333#derive_master_sk
             fatalError("not applicable for this curve")
+        case .bip0340:
+            // [REDACTED_TODO_COMMENT]
+            fatalError("not applicable for this curve")
         }
     }
 }

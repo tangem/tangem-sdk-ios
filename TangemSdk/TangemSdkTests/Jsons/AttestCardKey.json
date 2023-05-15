@@ -13,7 +13,8 @@
             "cardId": "c000111122223333",
             "salt": "BBBBBBBBBBBB",
             "cardSignature": "AAAAAAAAAAAA",
-            "challenge": "000000000000"
+            "challenge": "000000000000",
+            "linkedCards": []
         },
         "id" : 1
     }

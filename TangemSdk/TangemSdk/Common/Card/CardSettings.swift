@@ -32,7 +32,7 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
-        /// Is allowed to import  keys. COS. v6.16+
+        /// Is allowed to import  keys. COS. v6+
         public let isKeysImportAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
         @SkipEncoding

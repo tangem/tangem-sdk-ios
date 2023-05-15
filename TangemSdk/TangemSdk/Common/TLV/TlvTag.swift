@@ -146,6 +146,7 @@ public enum TlvTag: Byte {
     case backupCardLinkingKey = 0xD3
     case backupCardLink = 0xD4
     case backupAttestSignature = 0xD5
+    case backupCardPublicKey = 0xD6
     
     case proof = 0xAA
     

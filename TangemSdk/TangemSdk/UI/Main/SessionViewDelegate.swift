@@ -43,7 +43,7 @@ public enum SessionViewState {
     case progress(percent: Int)
     case `default`
     case empty
-    case scan(scanTagImage: ScanTagImage)
+    case scan
     case requestCode(_ type: UserCodeType, cardId: String?, showForgotButton: Bool, completion: CompletionResult<String>)
     case requestCodeChange(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
 

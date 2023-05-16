@@ -1,9 +1,13 @@
-* 36a3eb9 - (HEAD -> release/3.7.0, tag: develop-230, origin/develop, develop) Merge pull request #283 from tangem/master
-* 134866c - (tag: develop-229, tag: 29) Merge pull request #280 from tangem/IOS-3575-sdk-research-implement-custom-card-image
-* 4751c9c - Merge branch 'develop' into IOS-3575-sdk-research-implement-custom-card-image
-* b6fabd2 - IOS-3575 Displaying UIImage as an NFC tag for more flexibility
-* 15cfa9a - IOS-3575 Renamed the type
-* e3d7b78 - IOS-3575 Changed the code order
-* 69bf337 - IOS-3575 Added some docs
-* 83fe4f6 - IOS-3575 Whitespace
-* 3f9e59c - IOS-3575 Added a way to show an image in the ReadView
+*   8fc17cbf - (HEAD -> release/3.8.0, tag: develop-233, origin/develop, develop) Merge pull request #288 from tangem/IOS-3632-refactor-the-way-nfc-tag-is-used-in-the-sdk
+|\  
+| * ee3bf439 - IOS-3632 Renamed the NFCTag enum
+| * 9c2b4d77 - IOS-3632 Revert "IOS-3632 Renamed NFCTag -> ScanTagImage. Moved it out of style into config"
+| * b38f991c - IOS-3632 Revert "IOS-3632 Grammar"
+| * 560d5ae8 - IOS-3632 Grammar
+| * 83385d67 - IOS-3632 Renamed NFCTag -> ScanTagImage. Moved it out of style into config
+|/  
+*   4d94be84 - (tag: develop-232) Merge pull request #286 from tangem/IOS-3604_add_schnorr
+|\  
+| * c8c63b70 - IOS-3604 Add support for schnorr wallet creation
+|/  
+* 057dc40d - (tag: develop-231) Merge pull request #285 from tangem/master

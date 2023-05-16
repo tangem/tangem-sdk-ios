@@ -38,16 +38,18 @@ public struct AttestCardKeyResponse: JSONStringConvertible {
 
 @available(iOS 13.0, *)
 public class AttestCardKeyCommand: Command {
+    public var preflightReadMode: PreflightReadMode { .readCardOnly }
+    
     private var challenge: Data?
-    private let attestationMode: AttestationMode
+    private let mode: Mode
 
     /// Default initializer
     /// - Parameters:
-    ///   - attestationMode: Attestation mode to use. COS v6+
+    ///   - mode: Full attestation available only for COS v6+. Usefull to getting all public keys of linked cards.
     ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
-    public init(attestationMode: AttestationMode = .default, challenge: Data? = nil) {
+    public init(mode: AttestCardKeyCommand.Mode = .default, challenge: Data? = nil) {
         self.challenge = challenge
-        self.attestationMode = attestationMode
+        self.mode = mode
     }
     
     deinit {
@@ -55,7 +57,7 @@ public class AttestCardKeyCommand: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if case .full = attestationMode, card.firmwareVersion < .keysImportAvailable {
+        if case .full = mode, card.firmwareVersion < .keysImportAvailable {
             return .notSupportedFirmwareVersion
         }
 
@@ -107,7 +109,7 @@ public class AttestCardKeyCommand: Command {
             .append(.challenge, value: challenge)
 
         if let backupStatus = card.backupStatus, backupStatus.isActive,
-           case .full = attestationMode {
+           let attestationMode = mode.rawMode {
             try tlvBuilder.append(.interactionMode, value: attestationMode)
         }
 
@@ -144,11 +146,20 @@ public class AttestCardKeyCommand: Command {
 
 @available(iOS 13.0, *)
 public extension AttestCardKeyCommand {
-    enum AttestationMode: Byte, InteractionMode {
+    enum Mode: String, StringCodable {
         /// Attest only current card
-        case `default` = 0x00
+        case `default`
         /// Attest linked cards
-        case full = 0x01
+        case full
+
+        fileprivate var rawMode: RawMode? {
+            switch self {
+            case .default:
+                return nil
+            case .full:
+                return .full
+            }
+        }
     }
 }
 
@@ -156,5 +167,12 @@ public extension AttestCardKeyCommand {
 public extension AttestCardKeyResponse {
     enum Constants {
         static let linkedCardsPrefix = "BACKUP_CARDS"
+    }
+}
+
+@available(iOS 13.0, *)
+private extension AttestCardKeyCommand.Mode {
+    enum RawMode: Byte, InteractionMode {
+        case full = 0x01
     }
 }

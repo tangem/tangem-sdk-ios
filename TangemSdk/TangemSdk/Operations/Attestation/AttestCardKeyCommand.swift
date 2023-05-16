@@ -126,26 +126,19 @@ public class AttestCardKeyCommand: Command {
             salt: try decoder.decode(.salt),
             cardSignature: try decoder.decode(.cardSignature),
             challenge: self.challenge!,
-            linkedCards: try decodeLinkedCards(with: environment, decoder))
+            linkedCards: try decodeLinkedCards(from: tlv))
     }
 
-    private func decodeLinkedCards(with environment: SessionEnvironment, _ decoder: TlvDecoder) throws -> [Data] {
-        guard let card = environment.card else {
-            throw TangemSdkError.missingPreflightRead
+    private func decodeLinkedCards(from tlv: [Tlv]) throws -> [Data] {
+        let linkedCardsTlv = tlv.filter { $0.tag == .backupCardPublicKey }
+
+        let linkedCards = try linkedCardsTlv.map { tlv in
+            let decoder = TlvDecoder(tlv: [tlv])
+            let linkedCard: Data = try decoder.decode(.backupCardPublicKey)
+            return linkedCard
         }
 
-        guard let backupStatus = card.backupStatus, backupStatus.linkedCardsCount > 0 else {
-            return []
-        }
-
-        let linkedCardsJoined: Data? = try decoder.decode(.backupCardPublicKey)
-        guard let linkedCardsJoined else {
-            return []
-        }
-
-        return Array(linkedCardsJoined)
-            .chunked(into: backupStatus.linkedCardsCount)
-            .map { Data($0) }
+        return linkedCards
     }
 }
 

@@ -67,9 +67,6 @@ public struct Config {
     
     /// Localized reason for Touch ID. DO NOT leave it empty.
     public var biometricsLocalizedReason: String = "touch_id_localized_reason".localized
-    
-    /// Image to be displayed as a scan tag on the scanning screen
-    public var scanTagImage: ScanTagImage = .genericCard
 }
 
 public enum CardIdDisplayFormat {

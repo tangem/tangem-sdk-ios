@@ -57,8 +57,8 @@ public enum CryptoUtils {
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             
             return pubKey.isValidSignature(sig, for: message)
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: Add support for BLS keys.
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+            // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -73,8 +73,8 @@ public enum CryptoUtils {
         case .secp256r1:
             let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: Add support for BLS keys.
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+            // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -90,8 +90,8 @@ public enum CryptoUtils {
         case .secp256r1:
             let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key.publicKey.rawRepresentation
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: Add support for BLS keys.
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+            // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -121,8 +121,8 @@ public enum CryptoUtils {
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: Add support for BLS keys.
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+            // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
     }

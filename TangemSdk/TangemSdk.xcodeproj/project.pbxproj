@@ -291,6 +291,7 @@
 		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
+		DA11B1802A13876200C4604B /* ScanTagImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA11B17F2A13876200C4604B /* ScanTagImage.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
@@ -634,6 +635,7 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		DA11B17F2A13876200C4604B /* ScanTagImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTagImage.swift; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -979,6 +981,7 @@
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D379C28268FA4AC00C7F473 /* CardSessionRunnable.swift */,
+				DA11B17F2A13876200C4604B /* ScanTagImage.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1810,6 +1813,7 @@
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				DC1244E029BB6D460037BC05 /* Base58.swift in Sources */,
 				DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */,
+				DA11B1802A13876200C4604B /* ScanTagImage.swift in Sources */,
 				5DDD6C5625D2D14000E48D7B /* TlvLogging.swift in Sources */,
 				5D58202024221E060057EF40 /* CardSession.swift in Sources */,
 				B0390F92256590250061E5ED /* EllipticCurve.swift in Sources */,

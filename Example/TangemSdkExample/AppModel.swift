@@ -223,7 +223,7 @@ extension AppModel {
     }
 
     func attestCard() {
-        tangemSdk.startSession(with: AttestCardKeyCommand(attestationMode: .full), completion: handleCompletion)
+        tangemSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
     }
     
     func signHash(walletPublicKey: Data) {

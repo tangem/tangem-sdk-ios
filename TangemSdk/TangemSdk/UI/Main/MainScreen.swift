@@ -24,8 +24,8 @@ struct MainScreen: View {
     @ViewBuilder
     private var mainView: some View {
         switch viewModel.viewState {
-        case .scan:
-            ReadView()
+        case .scan(let scanTagImage):
+            ReadView(scanTagImage: scanTagImage)
             
         case .requestCode(let type, cardId: let cardId, let showForgotButton, completion: let completion):
             EnterUserCodeView(title: type.enterCodeTitle,
@@ -84,7 +84,7 @@ private extension MainScreen {
 struct MainScreen_Preview: PreviewProvider {
     static var previews: some View {
         MainScreen()
-            .environmentObject(MainViewModel(viewState: .scan))
+            .environmentObject(MainViewModel(viewState: .scan(scanTagImage: .genericCard)))
             .environmentObject(TangemSdkStyle())
     }
 }

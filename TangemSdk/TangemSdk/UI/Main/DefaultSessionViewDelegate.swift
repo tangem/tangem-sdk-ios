@@ -16,7 +16,7 @@ final class DefaultSessionViewDelegate: BaseViewDelegate {
     private let engine: HapticsEngine
     private var pinnedMessage: String?
     private var style: TangemSdkStyle
-    private let viewModel: MainViewModel = .init(viewState: .empty)
+    private let viewModel: MainViewModel = .init(viewState: .scan)
     
     init(reader: CardReader, style: TangemSdkStyle) {
         self.reader = reader

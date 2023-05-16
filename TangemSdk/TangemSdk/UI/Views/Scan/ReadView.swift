@@ -12,7 +12,6 @@ import SwiftUI
 struct ReadView: View {
     @EnvironmentObject var style: TangemSdkStyle
     
-    @State var scanTagImage: ScanTagImage
     @State private var cardOffset: CGSize = .init(width: -220, height: -160)
     
     var body: some View {
@@ -43,7 +42,7 @@ struct ReadView: View {
     
     @ViewBuilder
     private var tagView: some View {
-        switch scanTagImage {
+        switch style.nfcTag {
         case .genericCard:
             CardView(cardColor: style.colors.cardColor, starsColor: style.colors.starsColor)
         case .image(let uiImage, let verticalOffset):
@@ -59,8 +58,8 @@ struct ReadView: View {
 struct ReadView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ReadView(scanTagImage: .genericCard)
-            ReadView(scanTagImage: .genericCard)
+            ReadView()
+            ReadView()
                 .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())

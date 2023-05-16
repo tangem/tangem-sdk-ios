@@ -171,7 +171,7 @@ public class CardSession {
                     break
                 case .sessionStarted:
                     self.viewDelegate.sessionStarted()
-                    self.viewDelegate.setState(.scan(scanTagImage: environment.config.scanTagImage))
+                    self.viewDelegate.setState(.scan)
                 case .sessionStopped:
                     self.viewDelegate.sessionStopped(completion: nil)
                 case .tagConnected:
@@ -179,7 +179,7 @@ public class CardSession {
                     self.viewDelegate.setState(.default)
                 case .tagLost:
                     self.viewDelegate.tagLost()
-                    self.viewDelegate.setState(.scan(scanTagImage: environment.config.scanTagImage))
+                    self.viewDelegate.setState(.scan)
                 }
             })
             .store(in: &nfcReaderSubscriptions)

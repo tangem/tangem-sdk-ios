@@ -14,7 +14,7 @@ public class TangemSdkStyle: ObservableObject {
     public var colors: Colors = .default
     public var textSizes: TextSizes = .default
     public var indicatorWidth: Float = 12
-    public var nfcTag: NFCTag = .genericCard
+    public var scanTagImage: ScanTagImage = .genericCard
     
     public static var `default`: TangemSdkStyle = .init()
 }
@@ -71,11 +71,11 @@ public extension TangemSdkStyle {
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
     /// Options for displaying different tags on the scanning screen
-    enum NFCTag {
+    enum ScanTagImage {
         /// Generic card provided by the SDK
         case genericCard
         
-        /// A custom tag made out of an UIImage instance.
+        /// A custom tag made out of a UIImage instance.
         /// The image can be shifted vertically from the standard position by specifying `verticalOffset`.
         /// Note that the width of the image will be limited to a certain size, while the height will be determined by the aspect ratio of the image.
         /// The value of the width can be found in ReadView.swift and is 210 points at the time of the writing.

@@ -256,9 +256,10 @@ class AttestCardKeyHandler: JSONRPCHandler {
     var method: String { "ATTEST_CARD_KEY" }
 
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let attestationMode: AttestCardKeyCommand.Mode? = try parameters.value(for: "attestationMode")
         let challenge: Data? = try parameters.value(for: "challenge")
 
-        let command = AttestCardKeyCommand(challenge: challenge)
+        let command = AttestCardKeyCommand(mode: attestationMode ?? .default, challenge: challenge)
         return command.eraseToAnyRunnable()
     }
 }

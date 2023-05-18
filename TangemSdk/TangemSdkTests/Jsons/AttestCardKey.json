@@ -15,7 +15,7 @@
             "salt": "BBBBBBBBBBBB",
             "cardSignature": "AAAAAAAAAAAA",
             "challenge": "000000000000",
-            "linkedCards": []
+            "linkedCardPublicKeys": []
         },
         "id" : 1
     }

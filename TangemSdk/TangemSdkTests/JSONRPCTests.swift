@@ -240,7 +240,8 @@ class JSONRPCTests: XCTestCase {
         let result = AttestCardKeyResponse(cardId: "c000111122223333",
                                            salt: Data(hexString: "BBBBBBBBBBBB"),
                                            cardSignature: Data(hexString: "AAAAAAAAAAAA"),
-                                           challenge: Data(hexString: "000000000000"))
+                                           challenge: Data(hexString: "000000000000"),
+                                           linkedCardPublicKeys: [])
 
         testMethod(name: "AttestCardKey", result: result)
     }

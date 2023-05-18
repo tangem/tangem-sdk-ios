@@ -74,15 +74,17 @@ public extension TangemSdk {
 
     /// Perform a card's key attestation
     /// - Parameters:
+    ///   - attestationMode: Attestation mode to use. Full attestation available only for COS v6+. Usefull to getting all public keys of linked cards.
     ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
     ///   - cardId: CID, Unique Tangem card ID number
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns  `Swift.Result<AttestCardKeyResponse,TangemSdkError>`
-    func attestCardKey(challenge: Data? = nil,
+    func attestCardKey(attestationMode: AttestCardKeyCommand.Mode = .default,
+                       challenge: Data? = nil,
                        cardId: String? = nil,
                        initialMessage: Message? = nil,
                        completion: @escaping CompletionResult<AttestCardKeyResponse>) {
-        let command = AttestCardKeyCommand(challenge: challenge)
+        let command = AttestCardKeyCommand(mode: attestationMode, challenge: challenge)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,

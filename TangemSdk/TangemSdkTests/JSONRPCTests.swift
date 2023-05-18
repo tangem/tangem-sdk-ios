@@ -241,7 +241,7 @@ class JSONRPCTests: XCTestCase {
                                            salt: Data(hexString: "BBBBBBBBBBBB"),
                                            cardSignature: Data(hexString: "AAAAAAAAAAAA"),
                                            challenge: Data(hexString: "000000000000"),
-                                           linkedCards: [])
+                                           linkedCardPublicKeys: [])
 
         testMethod(name: "AttestCardKey", result: result)
     }

@@ -221,6 +221,10 @@ extension AppModel {
     func attest() {
         tangemSdk.startSession(with: AttestationTask(mode: attestationMode), completion: handleCompletion)
     }
+
+    func attestCard() {
+        tangemSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
+    }
     
     func signHash(walletPublicKey: Data) {
         let path = try? DerivationPath(rawPath: derivationPath)
@@ -686,6 +690,7 @@ extension AppModel {
         case signHashes
         case derivePublicKey
         case attest
+        case attestCard
         case chainingExample
         case setAccessCode
         case setPasscode
@@ -721,6 +726,7 @@ extension AppModel {
     private func chooseMethod(walletPublicKey: Data? = nil) {
         switch method {
         case .attest: attest()
+        case .attestCard: attestCard()
         case .chainingExample: chainingExample()
         case .setAccessCode: setAccessCode()
         case .setPasscode: setPasscode()

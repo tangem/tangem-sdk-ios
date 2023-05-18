@@ -259,7 +259,14 @@ class AttestCardKeyHandler: JSONRPCHandler {
         let attestationMode: AttestCardKeyCommand.Mode? = try parameters.value(for: "attestationMode")
         let challenge: Data? = try parameters.value(for: "challenge")
 
-        let command = AttestCardKeyCommand(mode: attestationMode ?? .default, challenge: challenge)
+        let command: AttestCardKeyCommand
+
+        if let attestationMode {
+            command = AttestCardKeyCommand(mode: attestationMode, challenge: challenge)
+        } else {
+            command = AttestCardKeyCommand(challenge: challenge)
+        }
+
         return command.eraseToAnyRunnable()
     }
 }

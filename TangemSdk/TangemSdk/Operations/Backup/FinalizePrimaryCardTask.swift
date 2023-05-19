@@ -72,31 +72,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
                 switch linkResult {
                 case .success(let linkResponse):
                     self.onLink(linkResponse.attestSignature)
-                    command.run(in: session) { linkResult in
-                        switch linkResult {
-                        case .success(let linkResponse):
-                            self.onLink(linkResponse.attestSignature)
-                            command.run(in: session) { linkResult in
-                                switch linkResult {
-                                case .success(let linkResponse):
-                                    self.onLink(linkResponse.attestSignature)
-                                    command.run(in: session) { linkResult in
-                                        switch linkResult {
-                                        case .success(let linkResponse):
-                                            self.onLink(linkResponse.attestSignature)
-                                            self.readBackupData(session: session, index: 0, completion: completion)
-                                        case .failure(let error):
-                                            completion(.failure(error))
-                                        }
-                                    }
-                                case .failure(let error):
-                                    completion(.failure(error))
-                                }
-                            }
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
+                    self.readBackupData(session: session, index: 0, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -118,7 +94,79 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
             switch result {
             case .success(let response):
                 self.onRead((currentBackupCard.cardId, response.data))
-                self.readBackupData(session: session, index: index + 1, completion: completion)
+                command.run(in: session) { result in
+                    switch result {
+                    case .success(let response):
+                        self.onRead((currentBackupCard.cardId, response.data))
+                        command.run(in: session) { result in
+                            switch result {
+                            case .success(let response):
+                                self.onRead((currentBackupCard.cardId, response.data))
+                                command.run(in: session) { result in
+                                    switch result {
+                                    case .success(let response):
+                                        self.onRead((currentBackupCard.cardId, response.data))
+                                        command.run(in: session) { result in
+                                            switch result {
+                                            case .success(let response):
+                                                self.onRead((currentBackupCard.cardId, response.data))
+                                                command.run(in: session) { result in
+                                                    switch result {
+                                                    case .success(let response):
+                                                        self.onRead((currentBackupCard.cardId, response.data))
+                                                        command.run(in: session) { result in
+                                                            switch result {
+                                                            case .success(let response):
+                                                                self.onRead((currentBackupCard.cardId, response.data))
+                                                                command.run(in: session) { result in
+                                                                    switch result {
+                                                                    case .success(let response):
+                                                                        self.onRead((currentBackupCard.cardId, response.data))
+                                                                        command.run(in: session) { result in
+                                                                            switch result {
+                                                                            case .success(let response):
+                                                                                self.onRead((currentBackupCard.cardId, response.data))
+                                                                                command.run(in: session) { result in
+                                                                                    switch result {
+                                                                                    case .success(let response):
+                                                                                        self.onRead((currentBackupCard.cardId, response.data))
+                                                                                        self.readBackupData(session: session, index: index + 1, completion: completion)
+                                                                                    case .failure(let error):
+                                                                                        completion(.failure(error))
+                                                                                    }
+                                                                                }
+                                                                            case .failure(let error):
+                                                                                completion(.failure(error))
+                                                                            }
+                                                                        }
+                                                                    case .failure(let error):
+                                                                        completion(.failure(error))
+                                                                    }
+                                                                }
+                                                            case .failure(let error):
+                                                                completion(.failure(error))
+                                                            }
+                                                        }
+                                                    case .failure(let error):
+                                                        completion(.failure(error))
+                                                    }
+                                                }
+                                            case .failure(let error):
+                                                completion(.failure(error))
+                                            }
+                                        }
+                                    case .failure(let error):
+                                        completion(.failure(error))
+                                    }
+                                }
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
             case .failure(let error):
                 completion(.failure(error))
             }

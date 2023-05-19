@@ -94,7 +94,7 @@ final class LinkBackupCardsCommand: Command {
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
-                .append(.backupCardLinkingKey, value: Data(card.linkingKey.reversed()))
+                .append(.backupCardLinkingKey, value: card.linkingKey)
                 .append(.certificate, value: try card.generateCertificate())
                 .append(.cardSignature, value: card.attestSignature)
             

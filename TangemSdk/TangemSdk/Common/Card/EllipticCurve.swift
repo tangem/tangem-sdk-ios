@@ -19,3 +19,15 @@ public enum EllipticCurve: String, StringCodable, CaseIterable {
     case bls12381_G2_POP
     case bip0340
 }
+
+@available(iOS 13.0, *)
+extension EllipticCurve {
+    public var supportsDerivation: Bool {
+        switch self {
+        case .secp256k1, .ed25519, .secp256r1, .bip0340:
+            return true
+        default:
+            return false
+        }
+    }
+}

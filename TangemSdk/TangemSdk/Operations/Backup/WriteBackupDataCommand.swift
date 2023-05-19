@@ -84,7 +84,7 @@ final class WriteBackupDataCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: accessCode)
             .append(.salt, value: backupData[index].salt)
-            .append(.issuerData, value: backupData[index].data)
+            .append(.issuerData, value: Data(backupData[index].data.reversed()))
         
         return CommandApdu(.writeBackupData, tlv: tlvBuilder.serialize())
     }

@@ -70,22 +70,35 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         self.commandsBag.append(writeCommand)
         
         writeCommand.run(in: session) { writeResult in
-            switch writeResult {
-            case .success(let writeResponse):
+            writeCommand.run(in: session) { writeResult in
                 writeCommand.run(in: session) { writeResult in
-                    switch writeResult {
-                    case .success(let writeResponse):
-                        if writeResponse.backupStatus == .active {
-                            self.readWallets(in: session, completion: completion)
-                        } else {
-                            completion(.failure(TangemSdkError.unknownError))
+                    writeCommand.run(in: session) { writeResult in
+                        writeCommand.run(in: session) { writeResult in
+                            writeCommand.run(in: session) { writeResult in
+                                writeCommand.run(in: session) { writeResult in
+                                    writeCommand.run(in: session) { writeResult in
+                                        writeCommand.run(in: session) { writeResult in
+                                            writeCommand.run(in: session) { writeResult in
+                                                writeCommand.run(in: session) { writeResult in
+                                                    switch writeResult {
+                                                    case .success(let writeResponse):
+                                                        if writeResponse.backupStatus == .active {
+                                                            self.readWallets(in: session, completion: completion)
+                                                        } else {
+                                                            completion(.failure(TangemSdkError.unknownError))
+                                                        }
+                                                    case .failure(let error):
+                                                        completion(.failure(error))
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    case .failure(let error):
-                        completion(.failure(error))
                     }
                 }
-            case .failure(let error):
-                completion(.failure(error))
             }
         }
     }

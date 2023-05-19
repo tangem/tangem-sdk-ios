@@ -108,7 +108,7 @@ final class LinkPrimaryCardCommand: Command {
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
-                .append(.backupCardLinkingKey, value: Data(card.linkingKey.reversed()))
+                .append(.backupCardLinkingKey, value: card.linkingKey)
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())
         }

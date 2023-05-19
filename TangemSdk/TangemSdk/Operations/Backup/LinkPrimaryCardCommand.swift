@@ -99,7 +99,7 @@ final class LinkPrimaryCardCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
-            .append(.primaryCardLinkingKey, value: Data(primaryCard.linkingKey.reversed()))
+            .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
             .append(.certificate, value: try primaryCard.generateCertificate())
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
@@ -108,7 +108,7 @@ final class LinkPrimaryCardCommand: Command {
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
-                .append(.backupCardLinkingKey, value: card.linkingKey)
+                .append(.backupCardLinkingKey, value: Data(card.linkingKey.reversed()))
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())
         }

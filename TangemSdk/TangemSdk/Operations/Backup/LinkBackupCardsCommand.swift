@@ -95,7 +95,7 @@ final class LinkBackupCardsCommand: Command {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
                 .append(.backupCardLinkingKey, value: card.linkingKey)
-                .append(.certificate, value: try card.generateCertificate())
+                .append(.certificate, value: Data(try! card.generateCertificate().reversed()))
                 .append(.cardSignature, value: card.attestSignature)
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())

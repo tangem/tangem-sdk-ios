@@ -54,21 +54,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             command.run(in: session) { linkResult in
                 switch linkResult {
                 case .success:
-                    command.run(in: session) { linkResult in
-                        switch linkResult {
-                        case .success:
-                            command.run(in: session) { linkResult in
-                                switch linkResult {
-                                case .success:
-                                    self.writeBackupData(in: session, completion: completion)
-                                case .failure(let error):
-                                    completion(.failure(error))
-                                }
-                            }
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
+                    self.writeBackupData(in: session, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -86,10 +72,17 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         writeCommand.run(in: session) { writeResult in
             switch writeResult {
             case .success(let writeResponse):
-                if writeResponse.backupStatus == .active {
-                    self.readWallets(in: session, completion: completion)
-                } else {
-                    completion(.failure(TangemSdkError.unknownError))
+                writeCommand.run(in: session) { writeResult in
+                    switch writeResult {
+                    case .success(let writeResponse):
+                        if writeResponse.backupStatus == .active {
+                            self.readWallets(in: session, completion: completion)
+                        } else {
+                            completion(.failure(TangemSdkError.unknownError))
+                        }
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
                 }
             case .failure(let error):
                 completion(.failure(error))

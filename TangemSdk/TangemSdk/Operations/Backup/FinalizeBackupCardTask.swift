@@ -54,7 +54,21 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             command.run(in: session) { linkResult in
                 switch linkResult {
                 case .success:
-                    self.writeBackupData(in: session, completion: completion)
+                    command.run(in: session) { linkResult in
+                        switch linkResult {
+                        case .success:
+                            command.run(in: session) { linkResult in
+                                switch linkResult {
+                                case .success:
+                                    self.writeBackupData(in: session, completion: completion)
+                                case .failure(let error):
+                                    completion(.failure(error))
+                                }
+                            }
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
                 case .failure(let error):
                     completion(.failure(error))
                 }

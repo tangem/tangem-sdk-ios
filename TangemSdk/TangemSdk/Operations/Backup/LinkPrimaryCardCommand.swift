@@ -99,9 +99,9 @@ final class LinkPrimaryCardCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
-            .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
+            .append(.primaryCardLinkingKey, value: Data(primaryCard.linkingKey.reversed()))
             .append(.certificate, value: try primaryCard.generateCertificate())
-            .append(.backupAttestSignature, value: Data(attestSignature.reversed()))
+            .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)
         

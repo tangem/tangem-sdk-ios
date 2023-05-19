@@ -100,7 +100,7 @@ final class LinkPrimaryCardCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
-            .append(.certificate, value: try primaryCard.generateCertificate())
+            .append(.certificate, value: Data(try! primaryCard.generateCertificate().reversed()))
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)

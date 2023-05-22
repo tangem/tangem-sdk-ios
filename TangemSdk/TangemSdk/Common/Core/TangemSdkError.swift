@@ -544,7 +544,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             case .readerErrorInvalidParameterLength:
                 return .readerErrorInvalidParameterLength
             case .readerErrorParameterOutOfBound:
-                return readerErrorParameterOutOfBound
+                return .readerErrorParameterOutOfBound
             case .readerTransceiveErrorTagConnectionLost:
                 return .readerTransceiveErrorTagConnectionLost
             case .readerTransceiveErrorRetryExceeded:
@@ -556,7 +556,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             case .readerTransceiveErrorTagNotConnected:
                 return .readerTransceiveErrorTagNotConnected
             case .readerSessionInvalidationErrorSessionTimeout:
-                return readerSessionInvalidationErrorSessionTimeout
+                return .readerSessionInvalidationErrorSessionTimeout
             case .readerSessionInvalidationErrorSessionTerminatedUnexpectedly:
                 return .readerSessionInvalidationErrorSessionTerminatedUnexpectedly
             case .readerSessionInvalidationErrorFirstNDEFTagRead:

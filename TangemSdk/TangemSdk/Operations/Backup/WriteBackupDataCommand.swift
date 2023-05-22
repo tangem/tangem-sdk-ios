@@ -48,7 +48,7 @@ final class WriteBackupDataCommand: Command {
         }
         
         if !card.wallets.isEmpty {
-            return .backupFailedNotEmptyWallets
+            return .backupFailedNotEmptyWallets(cardId: card.cardId)
         }
 
         return nil

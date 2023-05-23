@@ -37,7 +37,7 @@ final class StartBackupCardLinkingCommand: Command {
         }
         
         if !card.wallets.isEmpty {
-            return .backupFailedNotEmptyWallets
+            return .backupFailedNotEmptyWallets(cardId: card.cardId)
         }
         
         return nil

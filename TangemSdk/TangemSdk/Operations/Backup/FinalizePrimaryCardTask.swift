@@ -84,7 +84,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
     
     private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Card>) {
         if index >= backupCards.count {
-            completion(.success(session.environment.card!))
+            finalizeBackupData(session: session, completion: completion)
             return
         }
         
@@ -98,6 +98,31 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+    
+    private func finalizeBackupData(session: CardSession, completion: @escaping CompletionResult<Card>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+        
+        guard card.firmwareVersion >= .keysImportAvailable else {
+            completion(.success(card))
+            return
+        }
+        
+        var command: FinalizeReadBackupDataCommand? = .init(accessCode: accessCode)
+        
+        command?.run(in: session) { result in
+            switch result {
+            case .success:
+                completion(.success(card))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+            
+            command = nil
         }
     }
     

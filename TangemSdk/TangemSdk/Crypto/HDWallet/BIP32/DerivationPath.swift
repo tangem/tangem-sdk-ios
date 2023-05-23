@@ -44,7 +44,7 @@ public struct DerivationPath: Equatable, Hashable {
             derivationPath.append(node)
         }
         
-        self.init(rawPath: rawPath, nodes: derivationPath)
+        self.init(nodes: derivationPath)
     }
     
     /// Init with nodes

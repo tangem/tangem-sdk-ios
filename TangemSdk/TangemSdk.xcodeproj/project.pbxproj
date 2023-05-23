@@ -325,6 +325,7 @@
 		DCC0A21429D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */; };
 		DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21529D3216100C45B13 /* UserSettings.swift */; };
 		DCC6A64829D212E8007BA5B7 /* GetEntropyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */; };
+		DCD2D5BC2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */; };
 		DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
@@ -669,6 +670,7 @@
 		DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserCodeRecoveryAllowedTask.swift; sourceTree = "<group>"; };
 		DCC0A21529D3216100C45B13 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetEntropyCommand.swift; sourceTree = "<group>"; };
+		DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizeReadBackupDataCommand.swift; sourceTree = "<group>"; };
 		DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletSeed.json; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
@@ -945,6 +947,7 @@
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
 				5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */,
+				DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -1804,6 +1807,7 @@
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
+				DCD2D5BC2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
 				DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */,
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,

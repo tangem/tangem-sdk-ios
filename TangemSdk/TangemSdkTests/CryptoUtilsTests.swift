@@ -167,4 +167,17 @@ class CryptoUtilsTests: XCTestCase {
         XCTAssertFalse(try CryptoUtils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC4FC632551"), curve: .secp256r1))
         XCTAssertTrue(try CryptoUtils.isPrivateKeyValid(Data(hexString: "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550"), curve: .secp256r1))
     }
+
+    func testSchnorr() throws {
+        let publicKey = Data(hexString: "208BDB9C192B5DE5DDEBA9CA8500EEC10DECB9A0980C4664F5B168F6B37EB92A")
+        let hash = Data(hexString: "0000000000000000000000000000000000000000000000000000000000000000")
+        let signature = Data(hexString: "735951D8481B99777AB0ABADEFDA903E485756DE3599E75AF655B7F26CB7634956DEDEB89DB3E40A7B9ED095E5855290F8EB85C22E57A001A4A64385AB11A5B3")
+
+        let ut = Secp256k1Utils()
+     //   ut.verifySchnorrSignature(signature, publicKey: publicKey, hash: hash)
+      //  let verify = try CryptoUtils.verify(curve: .bip0340, publicKey: publicKey, message: message, signature: signature)
+     //   let verifyByHash = try CryptoUtils.verify(curve: .bip0340, publicKey: publicKey, hash: hash, signature: signature)
+    //    XCTAssertEqual(verify, true)
+        XCTAssertEqual(try ut.verifySchnorrSignature(signature, publicKey: publicKey, hash: hash), true)
+    }
 }

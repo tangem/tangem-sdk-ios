@@ -43,4 +43,5 @@ public enum Instruction: Byte {
     case generateOTP = 0xE2
     case getEntropy = 0xE7
     case setUserSettings = 0xD5
+    case finalizeReadBackupData = 0xEF
 }

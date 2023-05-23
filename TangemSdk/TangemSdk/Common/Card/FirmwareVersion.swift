@@ -126,7 +126,7 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     /// Wallet ownership confirmation available
     static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
     /// Keys import support
-    static let keysImportAvailable = FirmwareVersion(major: 6, minor: 19)
+    static let keysImportAvailable = FirmwareVersion(major: 6, minor: 21)
     /// Tmp range for visa cards
     static let visaRange = 5.25...5.30
 }

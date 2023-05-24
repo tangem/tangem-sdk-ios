@@ -23,6 +23,7 @@
 "error_backup_wrong_card" = "This card can't be used as a backup card. Error code: %@.";
 "error_card_verification_failed" = "Die Kartenverifizierung ist fehlgeschlagen";
 "error_file_not_found" = "File not found";
+"error_no_remaining_signatures" = "Sie können die Daten mit diesem Wallet nicht signieren, weil die Karte die Unterschriftsbeschränkung erreicht hat";
 "error_not_activated" = "Diese Karte ist nicht aktiviert worden";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_old_firmware" = "The command requires a card with a different firmware version";
@@ -52,6 +53,8 @@
 "pin_set_code_confirm_format" = "Bestätigen %@";
 "pin_set_code_format" = "Ändern %@";
 "reset_codes_btn_forgot_your_code" = "Forgot your code?";
+"reset_codes_current_card" = "Current card";
+"reset_codes_linked_card" = "Linked card";
 "reset_codes_message_body_backup" = "Tap the linked card";
 "reset_codes_message_body_restore" = "First, prepare the card for restore process";
 "reset_codes_message_body_restore_final" = "Tap the restore card again";

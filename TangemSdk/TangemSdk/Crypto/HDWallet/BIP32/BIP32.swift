@@ -65,7 +65,7 @@ extension BIP32 {
 fileprivate extension EllipticCurve {
     var hmacKey: BIP32.HMACKey {
         switch self {
-        case .secp256k1:
+        case .secp256k1, .bip0340:
             return .secp256k1
         case .ed25519:
             return .ed25519
@@ -73,9 +73,6 @@ fileprivate extension EllipticCurve {
             return .secp256r1
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // https://eips.ethereum.org/EIPS/eip-2333#derive_master_sk
-            fatalError("not applicable for this curve")
-        case .bip0340:
-            // TODO: https://tangem.atlassian.net/browse/IOS-3606
             fatalError("not applicable for this curve")
         }
     }

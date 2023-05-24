@@ -105,7 +105,7 @@ public final class Secp256k1Utils {
 
     func verifySchnorrSignature(_ signature: Data, publicKey: Data, hash: Data) throws -> Bool {
         var pubKey = try parseXOnlyPublicKey(publicKey)
-        var sig = signature
+        var sig = signature.toBytes
 
         guard secp256k1_schnorrsig_verify(context, &sig, hash.toBytes, hash.count, &pubKey) == 1 else {
             return false

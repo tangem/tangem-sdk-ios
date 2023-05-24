@@ -87,6 +87,8 @@ public enum CryptoUtils {
         switch curve {
         case .secp256k1:
             return try Secp256k1Utils().createPublicKey(privateKey: privateKey, compressed: true)
+        case .bip0340:
+            return try Secp256k1Utils().createXOnlyPublicKey(privateKey: privateKey)
         case .ed25519:
             let key = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
             return key.publicKey.rawRepresentation

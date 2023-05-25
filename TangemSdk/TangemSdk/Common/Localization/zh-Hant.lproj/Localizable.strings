@@ -34,7 +34,7 @@
 "error_purge_prohibited" = "此卡的配置不允許您清除錢包";
 "error_reset_wrong_card" = "此卡不能用於代碼恢復。錯誤代碼：%@。";
 "error_user_cancelled" = "用戶取消了操作";
-"error_user_code_recovery_disabled" = "Unable to reset the access code using this card";
+"error_user_code_recovery_disabled" = "無法使用此卡重置訪問密碼";
 "error_wrong_card_number_with_card_id" = "您掃了另一張卡片。 請點擊卡片 %@";
 "error_wrong_card_number_without_card_id" = "你掃了另一張牌";
 "error_wrong_card_type" = "此卡不適用於此應用";

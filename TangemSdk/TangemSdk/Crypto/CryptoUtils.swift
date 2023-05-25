@@ -43,6 +43,9 @@ public enum CryptoUtils {
         case .secp256k1:
             let signature = try Secp256k1Signature(with: signature)
             return try signature.verify(with: publicKey, message: message)
+        case .bip0340:
+            let signature = try SchnorrSignature(with: signature)
+            return try signature.verify(with: publicKey, message: message)
         case .ed25519:
             let hash = message.getSha512()
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
@@ -57,7 +60,7 @@ public enum CryptoUtils {
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             
             return pubKey.isValidSignature(sig, for: message)
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
@@ -65,7 +68,7 @@ public enum CryptoUtils {
 
     public static func isPrivateKeyValid(_ privateKey: Data, curve: EllipticCurve) throws -> Bool {
         switch curve {
-        case .secp256k1:
+        case .secp256k1, .bip0340:
             return Secp256k1Utils().isPrivateKeyValid(privateKey)
         case .ed25519:
             let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
@@ -73,7 +76,7 @@ public enum CryptoUtils {
         case .secp256r1:
             let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
@@ -109,6 +112,9 @@ public enum CryptoUtils {
         case .secp256k1:
             let signature = try Secp256k1Signature(with: signature)
             return try signature.verify(with: publicKey, hash: hash)
+        case .bip0340:
+            let signature = try SchnorrSignature(with: signature)
+            return try signature.verify(with: publicKey, hash: hash)
         case .ed25519:
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
@@ -121,7 +127,7 @@ public enum CryptoUtils {
             let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
-        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP, .bip0340:
+        case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }

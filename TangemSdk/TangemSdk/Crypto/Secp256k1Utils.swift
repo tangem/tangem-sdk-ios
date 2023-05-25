@@ -14,7 +14,7 @@ public final class Secp256k1Utils {
     private let context: OpaquePointer
     
     public init() {
-        context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY))
+        context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_NONE))
     }
     
     deinit {
@@ -100,6 +100,17 @@ public final class Secp256k1Utils {
             return false
         }
         
+        return true
+    }
+
+    func verifySchnorrSignature(_ signature: Data, publicKey: Data, hash: Data) throws -> Bool {
+        var pubKey = try parseXOnlyPublicKey(publicKey)
+        var sig = signature.toBytes
+
+        guard secp256k1_schnorrsig_verify(context, &sig, hash.toBytes, hash.count, &pubKey) == 1 else {
+            return false
+        }
+
         return true
     }
     
@@ -205,6 +216,16 @@ public final class Secp256k1Utils {
             throw TangemSdkError.cryptoUtilsError("Failed to parse the key")
         }
         
+        return pubkey
+    }
+
+    func parseXOnlyPublicKey(_ publicKey: Data) throws -> secp256k1_xonly_pubkey {
+        var pubkey = secp256k1_xonly_pubkey()
+
+        guard secp256k1_xonly_pubkey_parse(context, &pubkey, publicKey.toBytes) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to parse the key")
+        }
+
         return pubkey
     }
     

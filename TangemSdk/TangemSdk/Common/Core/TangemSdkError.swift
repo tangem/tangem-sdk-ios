@@ -253,7 +253,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupCardRequired
     case noBackupDataForCard
     case backupFailedEmptyWallets
-    case backupFailedNotEmptyWallets
+    case backupFailedNotEmptyWallets(cardId: String)
     case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
     case noActiveBackup

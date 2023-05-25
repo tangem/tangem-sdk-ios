@@ -32,22 +32,16 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
 
   s.source_files = 'TangemSdk/TangemSdk/**/*.{swift}', 
 		   'TangemSdk/TangemSdk/TangemSdk.h',
-   		   'TangemSdk/TangemSdk/Crypto/secp256k1/src/*.{h,c}',
-	           'TangemSdk/TangemSdk/Crypto/secp256k1/src/include/*.{h,c}',
-  		   'TangemSdk/TangemSdk/Crypto/secp256k1/src/modules/{recovery,ecdh}/*.{h,c}'
-
-  s.exclude_files = 'TangemSdk/TangemSdk/Crypto/secp256k1/src/*test*.{c,h}', 
-		    'TangemSdk/TangemSdk/Crypto/secp256k1/src/gen_context.c', 
-		    'TangemSdk/TangemSdk/Crypto/secp256k1/src/*bench*.{c,h}', 
-                    'TangemSdk/TangemSdk/Crypto/secp256k1/contrib/*',
-		    'TangemSdk/TangemSdk/Crypto/secp256k1/src/modules/{recovery,ecdh}/*test*.{c,h}'
+   		   'TangemSdk/TangemSdk/Crypto/secp256k1/*/*.{h,c}'
 
  
-  s.preserve_path = 'TangemSdk/TangemSdk/module.modulemap'
+  s.preserve_paths = 'TangemSdk/TangemSdk/module.modulemap',
+	'TangemSdk/TangemSdk/Crypto/*'
+
   s.public_header_files = 'TangemSdk/TangemSdk/TangemSdk.h'
   s.pod_target_xcconfig = {
     'SWIFT_INCLUDE_PATHS' => '$(PODS_TARGET_SRCROOT)/TangemSdk/**',
-    'OTHER_CFLAGS' => '-pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-shorten-64-to-32 -Wno-conditional-uninitialized -Wno-unused-function -Wno-long-long -Wno-overlength-strings -O3',
+    'OTHER_CFLAGS' => '-pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-shorten-64-to-32 -Wno-conditional-uninitialized -Wno-unused-function -Wno-long-long -Wno-overlength-strings -O3 -Wundef -Wreserved-identifier -fvisibility=hidden',
   }
 
   s.weak_frameworks = 'CoreNFC', 'CryptoKit', 'Combine', 'SwiftUI'

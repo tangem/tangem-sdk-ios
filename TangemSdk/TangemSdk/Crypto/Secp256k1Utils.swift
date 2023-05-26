@@ -129,6 +129,34 @@ public final class Secp256k1Utils {
         return try serializePublicKey(&publicKey, compressed: compressed)
     }
 
+    func createXOnlyPublicKey(privateKey: Data) throws -> Data {
+        let privateKey = privateKey.toBytes
+
+        guard secp256k1_ec_seckey_verify(context, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to verify the private key")
+        }
+
+        var publicKey = secp256k1_pubkey()
+
+        guard secp256k1_ec_pubkey_create(context, &publicKey, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        var xOnlyPublicKey = secp256k1_xonly_pubkey()
+
+        guard secp256k1_xonly_pubkey_from_pubkey(context, &xOnlyPublicKey, nil, &publicKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        var serializedXOnlyPublicKey = Array(repeating: UInt8(0), count: 32)
+
+        guard secp256k1_xonly_pubkey_serialize(context, &serializedXOnlyPublicKey, &xOnlyPublicKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        return Data(serializedXOnlyPublicKey)
+    }
+
     func isPrivateKeyValid(_ privateKey: Data) -> Bool {
         guard !privateKey.isEmpty else { return false }
 

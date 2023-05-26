@@ -23,6 +23,7 @@
 "error_backup_wrong_card" = "Эту карту нельзя использовать для резервного копирования. Код ошибки: %@.";
 "error_card_verification_failed" = "Ошибка проверки карты";
 "error_file_not_found" = "Файл не найден";
+"error_no_remaining_signatures" = "Вы не можете подписывать данные с помощью этого кошелька, так как лимит подписей на карте исчерпан.";
 "error_not_activated" = "Эта карта не активирована";
 "error_old_card" = "Карты Tangem, выпущенные до сентября 2019 года, не могут подписывать данные с помощью iPhone из-за ограничений iOS.";
 "error_old_firmware" = "Эта команда не поддерживается данной картой";
@@ -52,6 +53,8 @@
 "pin_set_code_confirm_format" = "Подтвердить %@";
 "pin_set_code_format" = "Установить %@";
 "reset_codes_btn_forgot_your_code" = "Забыли код?";
+"reset_codes_current_card" = "Текущая карта";
+"reset_codes_linked_card" = "Связанная карта";
 "reset_codes_message_body_backup" = "Приложите связанную карту";
 "reset_codes_message_body_restore" = "Сначала подготовьте карту к процессу восстановления";
 "reset_codes_message_body_restore_final" = "Приложите еще раз карту, которую хотите восстановить";

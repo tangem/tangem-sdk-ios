@@ -70,13 +70,13 @@ struct ResetUserCodesView: View {
         
         let cards: [BadgedCardView] = [ .init(cardColor: Color(UIColor.systemGray5),
                                               starsColor: .gray,
-                                              name: "Linked card",
+                                              name: "reset_codes_linked_card".localized,
                                               badgeBackground: .gray.opacity(0.25),
                                               badgeForeground: .gray),
                                         
                                         .init(cardColor: style.colors.tint,
                                               starsColor: .white,
-                                              name: "Current card",
+                                              name: "reset_codes_current_card".localized,
                                               badgeBackground: .white.opacity(0.25),
                                               badgeForeground: .white)]
         ZStack {

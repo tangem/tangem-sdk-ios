@@ -23,6 +23,7 @@
 "error_backup_wrong_card" = "此卡不能作為備用卡使用。錯誤代碼：%@。";
 "error_card_verification_failed" = "卡驗證失敗";
 "error_file_not_found" = "文件未找到";
+"error_no_remaining_signatures" = "您無法使用此錢包簽署數據，因為該卡已達到其簽名限制";
 "error_not_activated" = "此卡尚未激活";
 "error_old_card" = "由於 iOS 限制，2019 年 9 月之前發行的 Tangem 卡無法使用 iPhone 簽署數據";
 "error_old_firmware" = "該命令需要具有不同固件版本的卡";
@@ -52,6 +53,8 @@
 "pin_set_code_confirm_format" = "確認 %@";
 "pin_set_code_format" = "設置 %@";
 "reset_codes_btn_forgot_your_code" = "忘記您的密碼?";
+"reset_codes_current_card" = "當前卡片";
+"reset_codes_linked_card" = "連接卡片";
 "reset_codes_message_body_backup" = "掃描連接的卡片";
 "reset_codes_message_body_restore" = "首先，為恢復過程準備卡片";
 "reset_codes_message_body_restore_final" = "再次掃描恢復卡片";

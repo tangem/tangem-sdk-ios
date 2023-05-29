@@ -1000,7 +1000,14 @@ where Word.Magnitude == Word
 
     /// A string representation of this instance's value in base 16.
     var hexString: String {
-        return toString(radix: 16, lowercase: false)
+        let string = toString(radix: 16, lowercase: false)
+
+        let isEven = string.count % 2 == 0
+        if isEven {
+            return string
+        } else {
+            return "0" + string
+        }
     }
 
     /// A string representation of this instance's value in base 36.

@@ -47,7 +47,7 @@ final class CreateWalletCommand: Command {
     /// - Parameter seed: BIP39 seed to create wallet from.
     init(curve: EllipticCurve, seed: Data) throws {
         self.curve = curve
-        self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)
+        self.privateKey = try MasterKeyFactory().makePrivateKey(from: seed, curve: curve)
     }
     
     deinit {
@@ -80,14 +80,11 @@ final class CreateWalletCommand: Command {
                 return TangemSdkError.keysImportDisabled
             }
 
-            do {
-                // This check will fail for compressed secp256r1 keys
-                if let extendedKey = try privateKey?.makePublicKey(for: curve),
-                   card.wallets[extendedKey.publicKey] != nil {
-                    return TangemSdkError.walletAlreadyCreated
-                }
-            } catch {
-                return error.toTangemSdkError()
+            // Checking the existence of the key in advance. The next level of this check is in a card.
+            // This check will fail for compressed secp256r1 keys and bls keys
+            if let extendedKey = try? privateKey?.makePublicKey(for: curve),
+               card.wallets[extendedKey.publicKey] != nil {
+                return TangemSdkError.walletAlreadyCreated
             }
         }
 
@@ -149,7 +146,9 @@ final class CreateWalletCommand: Command {
 
         if let privateKey {
             try tlvBuilder.append(.walletPrivateKey, value: privateKey.privateKey)
-            try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
+            if !privateKey.chainCode.isEmpty {
+                try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
+            }
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

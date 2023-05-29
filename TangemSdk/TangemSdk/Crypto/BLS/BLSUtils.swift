@@ -25,23 +25,19 @@ struct BLSUtils {
 
         let info = keyInfo ?? Data() + Constants.count.bytes2
         let okm = HKDFUtil<SHA256>.expand(pseudoRandomKey: prk, info: info, outputByteCount: Constants.count)
-        let keyData = okm.dataRepresentation
 
-        guard let intKey = BigInt(keyData.hexString, radix: 16) else {
+        guard let intKey = BigInt(okm.hexString, radix: 16) else {
             throw BLSError.keyGenerationFailed
         }
 
         let sk  = intKey % Constants.curveOrder
+        
         if sk != 0 {
-            guard let serializedKey = sk.decimalString.data(using: .utf8) else {
-                throw BLSError.keyGenerationFailed
-            }
-
-            return serializedKey
+            return Data(hexString: sk.hexString)
         }
 
         let salt = salt.getSha256()
-
+        
         return try generateKey(inputKeyMaterial: inputKeyMaterial, salt: salt, keyInfo: keyInfo)
     }
 }

@@ -33,18 +33,27 @@ enum HKDFUtil<H: HashFunction> {
     /// - Returns: output keying material (of L octets)
     static func expand(pseudoRandomKey: Data, info: Data? = nil, outputByteCount: Int) -> Data {
         let hashSize = H.Digest.byteCount
+
+        let maxOutputByteCount = 255 * hashSize
+        let outputByteCount = min(outputByteCount, maxOutputByteCount)
+
         let iterations = Int(ceil(Double(outputByteCount) / Double(hashSize)))
-        
+
         var result = Data()
         result.reserveCapacity(iterations*hashSize)
-        
+
+        let infoData = info ?? Data()
+        let key = SymmetricKey(data: pseudoRandomKey)
+
+        var mixin = Data()
+
         for iteration in 1...iterations {
-            var hmac = HMAC<H>(key: SymmetricKey(data: pseudoRandomKey))
-            hmac.update(data: result)
-            hmac.update(data: info ?? Data())
+            var hmac = HMAC<H>(key: key)
+            hmac.update(data: mixin)
+            hmac.update(data: infoData)
             hmac.update(data: iteration.byte)
-            let code = hmac.finalize()
-            result.append(contentsOf: code)
+            mixin = Data(hmac.finalize())
+            result += mixin
         }
         
         return result.prefix(outputByteCount)

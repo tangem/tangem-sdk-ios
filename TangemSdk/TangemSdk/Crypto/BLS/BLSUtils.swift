@@ -23,8 +23,8 @@ struct BLSUtils {
         let inputKeyMaterialData = inputKeyMaterial + Data([0x00])
         let prk = HKDFUtil<SHA256>.extract(inputKeyMaterial: inputKeyMaterialData, salt: salt)
 
-        let info = keyInfo ?? Data() + Constants.count.bytes2
-        let okm = HKDFUtil<SHA256>.expand(pseudoRandomKey: prk, info: info, outputByteCount: Constants.count)
+        let info = keyInfo ?? Data() + Constants.okmCount.bytes2
+        let okm = HKDFUtil<SHA256>.expand(pseudoRandomKey: prk, info: info, outputByteCount: Constants.okmCount)
 
         guard let intKey = BigInt(okm.hexString, radix: 16) else {
             throw BLSError.keyGenerationFailed
@@ -51,11 +51,11 @@ extension BLSUtils {
         /// Actual version of  keygen algorithm
         static let salt: Data = saltPreV4.getSha256()
         
-        /// l, Calculated as ceil((3 * ceil(log2(r))) / 16). where r is s the order of the BLS 12-381
-        fileprivate static let count = 48
+        /// L, Calculated as ceil((3 * ceil(log2(r))) / 16). where r is s the order of the BLS 12-381
+        fileprivate static let okmCount: Int = 48
 
         /// r, defined in  https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-bls-signature-04
-        fileprivate static let curveOrder = BigInt("52435875175126190479447740508185965837690552500527637822603658699938581184513", radix: 10)!
+        fileprivate static let curveOrder: BigInt = .init("52435875175126190479447740508185965837690552500527637822603658699938581184513", radix: 10)!
     }
 
     enum BLSError: Error {

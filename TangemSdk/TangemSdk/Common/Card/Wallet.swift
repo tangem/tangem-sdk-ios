@@ -57,7 +57,7 @@ public extension Card.Wallet {
         case loaded = 2
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
-        /// Wallet created and can be used for signing, backup data read
+        /// Empty wallet created because of error durung backup
         case emptyBackedUp = 0x81
         /// Wallet created and can be used for signing, backup data read
         case backedUp = 0x82

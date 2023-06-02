@@ -58,6 +58,8 @@ public extension Card.Wallet {
         /// Wallet was purged and can't be recreated or used for signing
         case purged = 3
         /// Wallet created and can be used for signing, backup data read
+        case emptyBackedUp = 0x81
+        /// Wallet created and can be used for signing, backup data read
         case backedUp = 0x82
         /// Wallet was purged and can't be recreated or used for signing, but backup data read and wallet can be usable on backup card
         case backedUpAndPurged = 0x83
@@ -90,7 +92,7 @@ extension Card.Wallet.Status {
 
     var isAvailable: Bool {
         switch self {
-        case .empty, .purged, .backedUpAndPurged:
+        case .empty, .purged, .backedUpAndPurged, .emptyBackedUp:
             return false
         default:
             return true

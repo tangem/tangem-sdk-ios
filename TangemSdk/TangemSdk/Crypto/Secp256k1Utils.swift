@@ -225,15 +225,15 @@ public final class Secp256k1Utils {
         secp256k1_ecdsa_signature_serialize_compact(context, &serialized, &signature)
         return Data(serialized)
     }
-    
+
+    /// returns x-only part of secret without hashing
     func getSharedSecret(privateKey: Data, publicKey: Data) throws -> Data {
         let privkey = privateKey.toBytes
         var pubkey = try parsePublicKey(publicKey)
         var sharedSecret = Array(repeating: UInt8(0), count: 32)
-        guard secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, nil, nil) == 1 else {
+        guard secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, secp256k1_ecdh_tangem, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to compute an EC Diffie-Hellman secret ")
         }
-        
         return Data(sharedSecret)
     }
     

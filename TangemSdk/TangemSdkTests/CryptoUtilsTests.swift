@@ -185,4 +185,13 @@ class CryptoUtilsTests: XCTestCase {
         let verify = try CryptoUtils.verify(curve: .bip0340, publicKey: publicKey, message: message, signature: signature)
         XCTAssertEqual(verify, true)
     }
+
+    func testECDHbyX() throws {
+        let u = Secp256k1Utils()
+        let keyPair1 = try u.generateKeyPair()
+        let keyPair2 = try u.generateKeyPair()
+        let sharedSecret1 = try u.getSharedSecret(privateKey: keyPair1.privateKey, publicKey: keyPair2.publicKey)
+        let sharedSecret2 = try u.getSharedSecret(privateKey: keyPair2.privateKey, publicKey: keyPair1.publicKey)
+        XCTAssertEqual(sharedSecret1, sharedSecret2)
+    }
 }

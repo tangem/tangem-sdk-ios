@@ -33,6 +33,10 @@ SECP256K1_API_VAR const secp256k1_ecdh_hash_function secp256k1_ecdh_hash_functio
  * Populates the output parameter with 32 bytes. */
 SECP256K1_API_VAR const secp256k1_ecdh_hash_function secp256k1_ecdh_hash_function_default;
 
+// TANGEM
+/** An implementation of secp256k1_ecdh_hash_function */
+SECP256K1_API_VAR const secp256k1_ecdh_hash_function secp256k1_ecdh_tangem;
+
 /** Compute an EC Diffie-Hellman secret in constant time
  *
  *  Returns: 1: exponentiation was successful

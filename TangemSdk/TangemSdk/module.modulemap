@@ -5,6 +5,5 @@ module TangemSdk_secp256k1 [system] {
   header "Crypto/secp256k1/include/secp256k1_schnorrsig.h"
   header "Crypto/secp256k1/include/secp256k1_extrakeys.h"
   header "Crypto/secp256k1/include/secp256k1.h"
-  header "Crypto/secp256k1/include/tangem_ecdh.h"
   export *
 }

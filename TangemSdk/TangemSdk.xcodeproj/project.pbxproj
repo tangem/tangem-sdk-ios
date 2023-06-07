@@ -731,7 +731,6 @@
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
-		DCFC5F582A2F8998009881E7 /* tangem_ecdh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tangem_ecdh.h; sourceTree = "<group>"; };
 		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1509,7 +1508,6 @@
 		DCD2D7802A1CE66000AB00B6 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				DCFC5F582A2F8998009881E7 /* tangem_ecdh.h */,
 				DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */,
 				DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */,
 				DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */,

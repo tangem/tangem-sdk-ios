@@ -34,9 +34,9 @@ public final class ResetBackupCommand: Command {
         }
         
         guard let backupStatus = card.backupStatus,
-              backupStatus.isActive else {
-                  return TangemSdkError.noActiveBackup
-              }
+              backupStatus.canReset else {
+            return TangemSdkError.noActiveBackup
+        }
         
         guard !card.wallets.contains(where: { $0.hasBackup } ) else {
             return TangemSdkError.resetBackupFailedHasBackedUpWallets

@@ -111,15 +111,6 @@ public extension Card {
             }
         }
 
-        public var canReset: Bool {
-            switch self {
-            case .active, .cardLinked:
-                return true
-            default:
-                return false
-            }
-        }
-
         public var linkedCardsCount: Int {
             switch self {
             case .active(let cardsCount):

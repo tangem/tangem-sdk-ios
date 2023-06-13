@@ -95,6 +95,24 @@ public extension Card {
         
         public var isActive: Bool {
             switch self {
+            case .active:
+                return true
+            default:
+                return false
+            }
+        }
+
+        public var canBackup: Bool {
+            switch self {
+            case .noBackup:
+                return true
+            default:
+                return false
+            }
+        }
+
+        public var canReset: Bool {
+            switch self {
             case .active, .cardLinked:
                 return true
             default:

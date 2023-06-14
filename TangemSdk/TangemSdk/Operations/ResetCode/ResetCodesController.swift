@@ -59,8 +59,8 @@ public class ResetCodesController {
                     if let codeType = self.codeType {
                         self.viewDelegate.setState(.resetCodes(codeType,
                                                                state: newState,
-                                                               cardId: formattedCardId,
-                                                               completion: handleContinue))
+                                                               cardId: self.formattedCardId,
+                                                               completion: self.handleContinue))
                     }
                 }
             }

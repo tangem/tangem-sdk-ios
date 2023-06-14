@@ -124,7 +124,9 @@ extension NFCReader: CardReader {
             .publisher(for: UIApplication.didBecomeActiveNotification)
             .receive(on: queue)
             .map { _ in return true }
-            .filter{[unowned self] _ in
+            .filter{[weak self] _ in
+                guard let self else { return false }
+
                 let distanceToSessionActive = self.sessionDidBecomeActiveTimestamp.distance(to: Date())
                 if !self.isSessionReady || distanceToSessionActive < 1 {
                     Log.nfc("Filter out cancelled event")
@@ -132,24 +134,26 @@ extension NFCReader: CardReader {
                 }
                 return true
             }
-            .assign (to: \.cancelled, on: self)
+            .weakAssign(to: \.cancelled, on: self)
             .store(in: &bag)
         
         $cancelled //speed up cancellation if no tag interaction
             .receive(on: queue)
             .dropFirst()
             .filter { $0 }
-            .filter {[unowned self] _ in self.idleTimerCancellable == nil }
+            .filter {[weak self] _ in self?.idleTimerCancellable == nil }
             .map { _ in return TangemSdkError.userCancelled }
-            .assign(to: \.invalidatedWithError, on: self)
+            .weakAssign(to: \.invalidatedWithError, on: self)
             .store(in: &bag)
         
         $invalidatedWithError //speed up cancellation if no tag interaction
             .receive(on: queue)
             .dropFirst()
             .compactMap { $0 }
-            .filter {[unowned self] _ in self.isSessionReady }
-            .sink {[unowned self] error in
+            .filter {[weak self] _ in self?.isSessionReady ?? false }
+            .sink {[weak self] error in
+                guard let self else { return }
+
                 Log.nfc("Invalidated event received")
                 if !self.isPaused { //skip completion event for paused session.
                     //Actually we need this stuff for immediate cancel(or error) handling only,
@@ -168,7 +172,9 @@ extension NFCReader: CardReader {
             .receive(on: queue)
             .dropFirst()
             .removeDuplicates()
-            .sink {[unowned self] isReady in
+            .sink {[weak self] isReady in
+                guard let self else { return }
+
                 Log.nfc("NFC session is active: \(isReady)")
                 if isReady {
                     self.nfcStuckTimerCancellable = nil
@@ -186,8 +192,8 @@ extension NFCReader: CardReader {
         restartPollingPublisher //handle restart polling events
             .receive(on: queue)
             .dropFirst()
-            .sink {[unowned self] isSilent in
-                guard let session = self.readerSession,
+            .sink {[weak self] isSilent in
+                guard let self, let session = self.readerSession,
                       session.isReady else {
                     return
                 }
@@ -320,7 +326,9 @@ extension NFCReader: CardReader {
             .TimerPublisher(interval: Constants.nfcStuckTimeout, runLoop: RunLoop.main, mode: .common)
             .autoconnect()
             .receive(on: queue)
-            .sink {[unowned self] _ in
+            .sink {[weak self] _ in
+                guard let self else { return }
+
                 Log.nfc("Stop by stuck timer")
                 startRetryCount -= 1
                 if startRetryCount == 0 {
@@ -338,8 +346,10 @@ extension NFCReader: CardReader {
             .TimerPublisher(interval: Constants.tagTimeout, tolerance: 0, runLoop: RunLoop.main, mode: .common)
             .autoconnect()
             .receive(on: queue)
-            .filter {[unowned self] _ in self.idleTimerCancellable != nil }
-            .sink {[unowned self] _ in
+            .filter {[weak self] _ in self?.idleTimerCancellable != nil }
+            .sink {[weak self] _ in
+                guard let self else { return }
+
                 Log.nfc("Stop by tag timer")
                 self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.tagTimerCancellable = nil
@@ -351,7 +361,9 @@ extension NFCReader: CardReader {
             .TimerPublisher(interval: Constants.sessionTimeout, runLoop: RunLoop.main, mode: .common)
             .autoconnect()
             .receive(on: queue)
-            .sink {[unowned self] _ in
+            .sink {[weak self] _ in
+                guard let self else { return }
+
                 Log.nfc("Stop by session timer")
                 self.stopSession(with: TangemSdkError.nfcTimeout.localizedDescription)
                 self.sessionTimerCancellable = nil
@@ -363,7 +375,9 @@ extension NFCReader: CardReader {
             .TimerPublisher(interval: Constants.idleTimeout, runLoop: RunLoop.main, mode: .common)
             .autoconnect()
             .receive(on: queue)
-            .sink {[unowned self] _ in
+            .sink {[weak self] _ in
+                guard let self else { return }
+
                 Log.nfc("Restart by idle timer")
                 self.restartPolling(silent: true)
                 self.idleTimerCancellable = nil
@@ -375,8 +389,10 @@ extension NFCReader: CardReader {
             .TimerPublisher(interval: Constants.searchTagTimeout, tolerance: 0, runLoop: RunLoop.main, mode: .common)
             .autoconnect()
             .receive(on: queue)
-            .filter {[unowned self] _ in self.connectedTag == nil }
-            .sink {[unowned self] _ in
+            .filter {[weak self] _ in self?.connectedTag == nil }
+            .sink {[weak self] _ in
+                guard let self else { return }
+
                 Log.nfc("Send tag lost view event due timeout")
                 self.isSilentRestartPolling = false
                 self.viewEventsPublisher.send(.tagLost)

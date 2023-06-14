@@ -47,7 +47,9 @@ public class ResetCodesController {
         self.resetService
             .$currentState
             .dropFirst()
-            .sink {[unowned self] newState in
+            .sink {[weak self] newState in
+                guard let self else { return }
+
                 switch newState {
                 case .finished:
                     self.viewDelegate.showAlert(newState.messageTitle,

@@ -32,8 +32,8 @@ final class StartBackupCardLinkingCommand: Command {
             return .backupNotAllowed
         }
 
-        if let backupStatus = card.backupStatus, backupStatus.isActive {
-            return .backupFailedAlreadyCreated
+        guard let backupStatus = card.backupStatus, backupStatus.canBackup else {
+            return TangemSdkError.backupFailedAlreadyCreated
         }
         
         if !card.wallets.isEmpty {

@@ -183,8 +183,8 @@ extension NFCReader: CardReader {
                     self.stopTimers()
                 }
                 
-                if !isPaused {
-                    viewEventsPublisher.send(isReady ? .sessionStarted : .sessionStopped)
+                if !self.isPaused {
+                    self.viewEventsPublisher.send(isReady ? .sessionStarted : .sessionStopped)
                 }
             }
             .store(in: &bag)
@@ -330,8 +330,8 @@ extension NFCReader: CardReader {
                 guard let self else { return }
 
                 Log.nfc("Stop by stuck timer")
-                startRetryCount -= 1
-                if startRetryCount == 0 {
+                self.startRetryCount -= 1
+                if self.startRetryCount == 0 {
                     self.tag.send(completion: .failure(.nfcStuck))
                     self.tag = .init(.none)
                     self.stopSession()

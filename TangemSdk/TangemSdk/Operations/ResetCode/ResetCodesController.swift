@@ -47,7 +47,9 @@ public class ResetCodesController {
         self.resetService
             .$currentState
             .dropFirst()
-            .sink {[unowned self] newState in
+            .sink {[weak self] newState in
+                guard let self else { return }
+
                 switch newState {
                 case .finished:
                     self.viewDelegate.showAlert(newState.messageTitle,
@@ -57,8 +59,8 @@ public class ResetCodesController {
                     if let codeType = self.codeType {
                         self.viewDelegate.setState(.resetCodes(codeType,
                                                                state: newState,
-                                                               cardId: formattedCardId,
-                                                               completion: handleContinue))
+                                                               cardId: self.formattedCardId,
+                                                               completion: self.handleContinue))
                     }
                 }
             }

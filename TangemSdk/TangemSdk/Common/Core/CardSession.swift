@@ -165,7 +165,9 @@ public class CardSession {
         reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
             .removeDuplicates()
-            .sink(receiveValue: { [unowned self] event in
+            .sink(receiveValue: { [weak self] event in
+                guard let self else { return }
+
                 switch event {
                 case .none:
                     break
@@ -188,20 +190,24 @@ public class CardSession {
             .dropFirst()
             .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
-                  receiveValue: {[unowned self] tag in
-                self.environment.encryptionKey = nil
+                  receiveValue: {[weak self] tag in
+                self?.environment.encryptionKey = nil
             })
             .store(in: &nfcReaderSubscriptions)
         
         reader.tag //Subscription for session initialization and handling any error before session is activated
             .filter { $0 != .none }
             .first()
-            .sink(receiveCompletion: { [unowned self] readerCompletion in
+            .sink(receiveCompletion: { [weak self] readerCompletion in
+                guard let self else { return }
+
                 if case let .failure(error) = readerCompletion {
                     self.stop(error: error) {
                         onSessionStarted(self, error)
                     }
-                }}, receiveValue: { [unowned self] tag in
+                }}, receiveValue: { [weak self] tag in
+                    guard let self else { return }
+
                     if case .tag = tag, self.preflightReadMode != .none {
                         self.preflightCheck(onSessionStarted)
                     } else {
@@ -277,12 +283,14 @@ public class CardSession {
         
         reader.tag
             .filter { $0 != .none }
-            .filter {[unowned self] tag in
-                guard currentTag != .none else { return true } //Skip filtration because we have nothing to compare with
+            .filter {[weak self] tag in
+                guard let self else { return false }
+
+                guard self.currentTag != .none else { return true } //Skip filtration because we have nothing to compare with
                 
-                if tag != currentTag { //handle wrong tag connection during any operation
-                    let formatter = CardIdFormatter(style: environment.config.cardIdDisplayFormat)
-                    let cardId = environment.card?.cardId
+                if tag != self.currentTag { //handle wrong tag connection during any operation
+                    let formatter = CardIdFormatter(style: self.environment.config.cardIdDisplayFormat)
+                    let cardId = self.environment.card?.cardId
                     let cardIdFormatted = cardId.flatMap {
                         formatter.string(from: $0)
                     }
@@ -299,14 +307,14 @@ public class CardSession {
             .flatMap { apdu.encryptPublisher(encryptionMode: self.environment.encryptionMode, encryptionKey: self.environment.encryptionKey) }
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(encryptionKey: self.environment.encryptionKey) }
-            .sink(receiveCompletion: {[unowned self] readerCompletion in
-                self.sendSubscription = []
+            .sink(receiveCompletion: {[weak self] readerCompletion in
+                self?.sendSubscription = []
                 if case let .failure(error) = readerCompletion {
                     Log.error(error)
                     completion(.failure(error))
                 }
-            }, receiveValue: {[unowned self] responseApdu in
-                self.sendSubscription = []
+            }, receiveValue: {[weak self] responseApdu in
+                self?.sendSubscription = []
                 completion(.success(responseApdu))
             })
             .store(in: &sendSubscription)

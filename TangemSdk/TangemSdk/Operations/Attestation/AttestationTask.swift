@@ -176,7 +176,9 @@ public final class AttestationTask: CardSessionRunnable {
         
         onlineAttestationPublisher
             .compactMap { $0 }
-            .sink(receiveValue: {[unowned self] attestResult in
+            .sink(receiveValue: {[weak self] attestResult in
+                guard let self else { return }
+                
                 switch attestResult {
                 case .verified:
                     self.currentAttestationStatus.cardKeyAttestation = .verified

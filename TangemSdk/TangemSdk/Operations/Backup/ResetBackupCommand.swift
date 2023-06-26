@@ -32,7 +32,11 @@ public final class ResetBackupCommand: Command {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
+        guard let backupStatus = card.backupStatus, backupStatus.canResetBackup else {
+            return TangemSdkError.noActiveBackup
+        }
+
         guard !card.wallets.contains(where: { $0.hasBackup } ) else {
             return TangemSdkError.resetBackupFailedHasBackedUpWallets
         }
@@ -86,5 +90,17 @@ public final class ResetBackupCommand: Command {
                                    settingsMask: try decoder.decode(.settingsMask),
                                    isDefaultAccessCode: try decoder.decode(.pinIsDefault),
                                    isDefaultPasscode: try decoder.decode(.pin2IsDefault))
+    }
+}
+
+@available(iOS 13.0, *)
+fileprivate extension Card.BackupStatus {
+    var canResetBackup: Bool {
+        switch self {
+        case .active, .cardLinked:
+            return true
+        case .noBackup:
+            return false
+        }
     }
 }

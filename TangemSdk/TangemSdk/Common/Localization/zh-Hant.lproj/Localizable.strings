@@ -24,7 +24,6 @@
 "error_card_verification_failed" = "卡驗證失敗";
 "error_file_not_found" = "文件未找到";
 "error_no_remaining_signatures" = "您無法使用此錢包簽署數據，因為該卡已達到其簽名限制";
-"error_not_activated" = "此卡尚未激活";
 "error_old_card" = "由於 iOS 限制，2019 年 9 月之前發行的 Tangem 卡無法使用 iPhone 簽署數據";
 "error_old_firmware" = "該命令需要具有不同固件版本的卡";
 "error_pin_cannot_be_changed_format" = "%@ 無法更改";

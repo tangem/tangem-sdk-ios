@@ -23,7 +23,6 @@
 "error_backup_wrong_card" = "This card can't be used as a backup card. Error code: %@.";
 "error_card_verification_failed" = "Non è stata eseguita la verifica della carta";
 "error_file_not_found" = "File not found";
-"error_no_remaining_signatures" = "Non puoi firmare dati con questo portafoglio perché la carta ha raggiunto il limite di firma";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_old_firmware" = "The command requires a card with a different firmware version";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";

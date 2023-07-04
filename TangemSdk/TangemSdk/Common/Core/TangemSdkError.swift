@@ -478,7 +478,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .nfcTimeout: return "nfc_session_timeout".localized
         case .nfcStuck: return "nfc_stuck_error".localized
         case .alreadyCreated: return "error_already_created".localized
-        case .noRemainingSignatures: return "error_no_remaining_signatures".localized
         case .accessCodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.accessCode.name)
         case .passcodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.passcode.name)
         case .accessCodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.accessCode.name)

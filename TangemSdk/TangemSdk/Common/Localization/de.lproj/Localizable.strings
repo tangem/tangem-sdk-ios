@@ -23,7 +23,6 @@
 "error_backup_wrong_card" = "This card can't be used as a backup card. Error code: %@.";
 "error_card_verification_failed" = "Die Kartenverifizierung ist fehlgeschlagen";
 "error_file_not_found" = "File not found";
-"error_no_remaining_signatures" = "Sie können die Daten mit diesem Wallet nicht signieren, weil die Karte die Unterschriftsbeschränkung erreicht hat";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_old_firmware" = "The command requires a card with a different firmware version";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";

@@ -24,7 +24,6 @@
 "error_card_verification_failed" = "Die Kartenverifizierung ist fehlgeschlagen";
 "error_file_not_found" = "File not found";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
-"error_old_firmware" = "The command requires a card with a different firmware version";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";
 "error_pin_cannot_be_default_format" = "%@ cannot be changed to this value. Please, enter another one.";
 "error_pin_required_format" = "%@ is required";

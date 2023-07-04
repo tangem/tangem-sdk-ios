@@ -24,7 +24,6 @@
 "error_card_verification_failed" = "Erreur de validation de la carte";
 "error_file_not_found" = "File not found";
 "error_no_remaining_signatures" = "Vous ne pouvez pas signer les données avec ce portefeuille car la carte a atteint sa limite de signatures ";
-"error_not_activated" = "Cette carte n'a pas été activée";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_old_firmware" = "The command requires a card with a different firmware version";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";

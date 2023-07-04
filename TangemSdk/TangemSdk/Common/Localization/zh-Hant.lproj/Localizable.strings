@@ -24,7 +24,6 @@
 "error_card_verification_failed" = "卡驗證失敗";
 "error_file_not_found" = "文件未找到";
 "error_old_card" = "由於 iOS 限制，2019 年 9 月之前發行的 Tangem 卡無法使用 iPhone 簽署數據";
-"error_old_firmware" = "該命令需要具有不同固件版本的卡";
 "error_pin_cannot_be_changed_format" = "%@ 無法更改";
 "error_pin_cannot_be_default_format" = "%@ 不能更改為此值。 請輸入另一個";
 "error_pin_required_format" = "%@ 是必須的";

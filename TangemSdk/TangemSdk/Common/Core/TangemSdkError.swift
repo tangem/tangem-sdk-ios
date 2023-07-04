@@ -498,7 +498,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)
         case .underlying(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
-        case .notSupportedFirmwareVersion: return "error_old_firmware".localized
         case .walletNotFound: return "wallet_not_found".localized
         case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)
         case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)

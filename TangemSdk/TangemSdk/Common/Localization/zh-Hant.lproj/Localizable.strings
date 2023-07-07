@@ -1,10 +1,10 @@
-"attestation_failed_card" = "此卡可能是生產樣本或偽造品。您繼續操作的話請自擔風險";
+"attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk.";
 "attestation_failed_dev_card" = "這是一張開發卡。其真實性無從考證。不接受此卡作為付款方式。";
-"attestation_online_failed_body" = "目前無法完成卡的在線認證。您可以自行承擔風險並稍後重試、立即重試或取消操作";
+"attestation_online_failed_body" = "At the moment, online attestation of the card cannot be performed. You can continue at your own risk or try again later.";
 "attestation_online_failed_title" = "在線認證失敗";
-"attestation_warning_attest_wallets" = "運行太多的 Attest Wallet 或 Sign 看起來很可疑。";
+"attestation_warning_attest_wallets" = "Suspicious use of the wallet on the card has been detected.";
 "backup_add_backup_card_message" = "完全按照上圖所示連接手機和要用作備份的卡";
-"backup_finalize_backup_card_message_format" = "完全按照上面顯示的方式連接您的手機和編號為 %@ 的備用卡";
+"backup_finalize_backup_card_message_format" = "Tap the card with number %@ to your phone exactly as shown above.";
 "backup_finalize_primary_card_message_format" = "完全按照上面顯示的方式連接您的手機和編號為 %@ 的主卡";
 "backup_prepare_primary_card_message" = "完全按照上圖所示連接手機和主卡";
 "backup_prepare_primary_card_message_format" = "完全按照上面顯示的方式連接您的手機和編號為 %@ 的主卡";
@@ -28,7 +28,7 @@
 "error_pin_cannot_be_default_format" = "%@ 不能更改為此值。 請輸入另一個";
 "error_pin_required_format" = "%@ 是必須的";
 "error_pin_too_short_format" = "%1$@ 必須至少有 %2$li 個字符長";
-"error_purge_prohibited" = "此卡的配置不允許您清除錢包";
+"error_purge_prohibited" = "The wallet cannot be erased";
 "error_reset_wrong_card" = "此卡不能用於代碼恢復。錯誤代碼：%@。";
 "error_user_cancelled" = "用戶取消了操作";
 "error_user_code_recovery_disabled" = "無法使用此卡重置訪問密碼";
@@ -40,7 +40,7 @@
 "issuer_signature_loading_failed" = "無法從服務器加載卡的認證。稍後再試";
 "nfc_alert_default_done" = "完畢";
 "nfc_session_timeout" = "會話超時。請再試一遍";
-"nfc_stuck_error" = "NFC 似乎無法在您的 iPhone 上正常工作";
+"nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone. Try to reboot your phone.";
 "pin1" = "訪問密碼";
 "pin2" = "密碼";
 "pin_change_new_code_format" = "新 %@";
@@ -54,7 +54,7 @@
 "reset_codes_linked_card" = "連接卡片";
 "reset_codes_message_body_backup" = "掃描連接的卡片";
 "reset_codes_message_body_restore" = "首先，為恢復過程準備卡片";
-"reset_codes_message_body_restore_final" = "再次掃描恢復卡片";
+"reset_codes_message_body_restore_final" = "Tap again the card on which you want to restore the access code";
 "reset_codes_message_title_backup" = "掃描備用卡片";
 "reset_codes_message_title_restore" = "點按要恢復的卡片";
 "reset_codes_scan_confirmation_card" = "掃描另一張鏈接的卡片";
@@ -65,4 +65,4 @@
 "touch_id_localized_reason" = "使用 Touch ID 在應用程序中保存訪問密碼";
 "view_delegate_scan_description" = "如上圖觸碰卡片並按住直到操作結束";
 "view_delegate_security_delay_description" = "為確保安全，請持有卡直至操作完成";
-"wallet_not_found" = "此卡不包含當前錢包";
+"wallet_not_found" = "Looks like you got the wrong card. The operation cannot be performed with this card.";

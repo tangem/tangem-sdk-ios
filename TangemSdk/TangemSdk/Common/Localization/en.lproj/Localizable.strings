@@ -1,10 +1,10 @@
-"attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk";
+"attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk.";
 "attestation_failed_dev_card" = "This is a development card. Its authenticity cannot be verified. Do not accept this card as a means of payment.";
-"attestation_online_failed_body" = "We cannot finish card's online attestation at this time. You can continue at your own risk and try again later, retry now or cancel the operation";
+"attestation_online_failed_body" = "At the moment, online attestation of the card cannot be performed. You can continue at your own risk or try again later.";
 "attestation_online_failed_title" = "Online attestation failed";
-"attestation_warning_attest_wallets" = "Too many runs of Attest Wallet or Sign looks suspicious.";
+"attestation_warning_attest_wallets" = "Suspicious use of the wallet on the card has been detected.";
 "backup_add_backup_card_message" = "Connect your phone and the card you want to use as a backup exactly as it shown above.";
-"backup_finalize_backup_card_message_format" = "Connect your phone and the backup card with number %@ exactly as it shown above.";
+"backup_finalize_backup_card_message_format" = "Tap the card with number %@ to your phone exactly as shown above.";
 "backup_finalize_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
 "backup_prepare_primary_card_message" = "Connect your phone and the primary card exactly as it shown above.";
 "backup_prepare_primary_card_message_format" = "Connect your phone and the primary card with number %@ exactly as it shown above.";
@@ -28,7 +28,7 @@
 "error_pin_cannot_be_default_format" = "%@ cannot be changed to this value. Please, enter another one.";
 "error_pin_required_format" = "%@ is required";
 "error_pin_too_short_format" = "%1$@ must be at least %2$li characters long";
-"error_purge_prohibited" = "This card's configuration does not allow you to erase the wallet";
+"error_purge_prohibited" = "The wallet cannot be erased";
 "error_reset_wrong_card" = "This card can't be used for code recovery. Error code: %@.";
 "error_user_cancelled" = "The user cancelled the operation";
 "error_user_code_recovery_disabled" = "Unable to reset the access code using this card";
@@ -37,10 +37,10 @@
 "error_wrong_card_type" = "This card is not designed to work with this app";
 "error_wrong_pin_format" = "Wrong %@";
 "generic_error_code" = "An error occurred during the operation. Code: %@.";
-"issuer_signature_loading_failed" = "Couldn't load the card's certificate from the server. Please try again later.";
+"issuer_signature_loading_failed" = "Couldn't load the card's certificate. Please try again later.";
 "nfc_alert_default_done" = "Done";
 "nfc_session_timeout" = "Session timeout. Please, try again.";
-"nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone";
+"nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone. Try to reboot your phone.";
 "pin1" = "Access code";
 "pin2" = "Passcode";
 "pin_change_new_code_format" = "New %@";
@@ -54,7 +54,7 @@
 "reset_codes_linked_card" = "Linked card";
 "reset_codes_message_body_backup" = "Tap the linked card";
 "reset_codes_message_body_restore" = "First, prepare the card for restore process";
-"reset_codes_message_body_restore_final" = "Tap the restore card again";
+"reset_codes_message_body_restore_final" = "Tap again the card on which you want to restore the access code";
 "reset_codes_message_title_backup" = "Tap a backup card";
 "reset_codes_message_title_restore" = "Tap the card you want to restore";
 "reset_codes_scan_confirmation_card" = "Scan another linked card";
@@ -65,4 +65,4 @@
 "touch_id_localized_reason" = "Use Touch ID to save access codes in the app";
 "view_delegate_scan_description" = "Tap the card as shown above and hold until the end of the operation";
 "view_delegate_security_delay_description" = "To ensure security please hold the card until the operation complete";
-"wallet_not_found" = "This card does not contain the current wallet";
+"wallet_not_found" = "Looks like you got the wrong card. The operation cannot be performed with this card.";

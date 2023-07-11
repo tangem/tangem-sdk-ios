@@ -38,8 +38,29 @@ public struct Secp256k1Signature {
         return try secp256k1.verifySignature(&sig, publicKey: publicKey, hash: hash)
     }
     
-    public func unmarshal(with publicKey: Data, hash: Data) throws -> (v: Data, r: Data, s: Data) {
+    public func unmarshal(with publicKey: Data, hash: Data) throws -> Extended {
         var sig = rawSig
-        return try secp256k1.unmarshalSignature(&sig, publicKey: publicKey, hash: hash)
+        let (r, s, v) = try secp256k1.unmarshalSignature(&sig, publicKey: publicKey, hash: hash)
+        return Extended(r: r, s: s, v: v)
+    }
+}
+
+@available(iOS 13.0, *)
+extension Secp256k1Signature {
+    public struct Extended {
+        public let r: Data
+        public let s: Data
+        public let v: Data
+        
+        /// The sum by `r + s + v`
+        public var data: Data {
+            return r + s + v
+        }
+        
+        public init(r: Data, s: Data, v: Data) {
+            self.r = r
+            self.s = s
+            self.v = v
+        }
     }
 }

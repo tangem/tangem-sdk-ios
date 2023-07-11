@@ -174,7 +174,7 @@ public final class Secp256k1Utils {
         return Data(der[0..<Int(length)])
     }
     
-    func unmarshalSignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> (v: Data, r: Data, s: Data) {
+    func unmarshalSignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> (r: Data, s: Data, v: Data) {
         guard hash.count == 32 else { throw TangemSdkError.cryptoUtilsError("Hash size must be 32 bytes length") }
         
         guard try verifySignature(&signature, publicKey: publicKey, hash: hash) else {
@@ -201,10 +201,10 @@ public final class Secp256k1Utils {
             throw TangemSdkError.cryptoUtilsError("Failed to recover the signature")
         }
         
-        let v = Data([recovered[64]])
         let r = Data(recovered[0..<32])
         let s = Data(recovered[32..<64])
-        return (v: v, r: r, s: s)
+        let v = Data([recovered[64]])
+        return (r: r, s: s, v: v)
     }
     
     func serializePublicKey(_ publicKey: inout secp256k1_pubkey, compressed: Bool) throws -> Data {

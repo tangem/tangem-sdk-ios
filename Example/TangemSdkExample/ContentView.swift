@@ -65,13 +65,13 @@ struct ContentView: View {
                                         .tag(AppModel.Method.allCases[index])
                                 }
                             }
+                            .frame(minHeight: 110)
                             .labelsHidden()
                             .pickerStyle(WheelPickerStyle())
                             
                             Button("Start") { model.start() }
                                 .buttonStyle(ExampleButton(isLoading: model.isScanning))
                                 .frame(width: 100)
-                                .padding()
                             
                         }
                         .padding(.horizontal, 8)
@@ -209,7 +209,7 @@ struct ContentView: View {
             }
             .autocapitalization(.none)
             .disableAutocorrection(true)
-            .padding()
+            .padding(.vertical, 8)
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))

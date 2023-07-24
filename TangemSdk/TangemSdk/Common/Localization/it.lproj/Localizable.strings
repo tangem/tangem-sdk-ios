@@ -34,7 +34,7 @@
 "error_user_code_recovery_disabled" = "Unable to reset the access code using this card";
 "error_wrong_card_number_with_card_id" = "You tapped a different card. Please tap card %@.";
 "error_wrong_card_number_without_card_id" = "You tapped a different card";
-"error_wrong_card_type" = "Questa carta è creata per un'altra applicazione. Controlla le informazioni sulla mappa e scarica l'apposita applicazione.";
+"error_wrong_card_type" = "This application is not designed to work with this card or needs to be updated";
 "error_wrong_pin_format" = "Wrong %@";
 "generic_error_code" = "Si è verificato un errore durante l'operazione. Codice: %@.";
 "issuer_signature_loading_failed" = "Couldn't load the card's certificate. Please try again later.";

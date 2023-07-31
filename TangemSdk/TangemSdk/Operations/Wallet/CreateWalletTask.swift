@@ -20,22 +20,22 @@ import Foundation
 @available(iOS 13.0, *)
 public class CreateWalletTask: CardSessionRunnable {
     private let curve: EllipticCurve
-    private let seed: Data?
+    private let privateKey: ExtendedPrivateKey?
     private var derivationTask: DeriveWalletPublicKeysTask? = nil
 
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     public init(curve: EllipticCurve) {
         self.curve = curve
-        self.seed = nil
+        self.privateKey = nil
     }
 
-    /// Use this initializer to import a key from the seed. COS v6+.
+    /// Use this initializer to import a key. COS v6+.
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    /// - Parameter seed: BIP39 seed to create wallet from.
-    public init(curve: EllipticCurve, seed: Data) {
+    /// - Parameter privateKey: A private key to import
+    public init(curve: EllipticCurve, privateKey: ExtendedPrivateKey) {
         self.curve = curve
-        self.seed = seed
+        self.privateKey = privateKey
     }
     
     deinit {
@@ -43,23 +43,19 @@ public class CreateWalletTask: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
-        do {
-            let command = try makeCommand()
-            command.run(in: session) { result in
-                switch result {
-                case .success(let response):
-                    self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
-                case .failure(let error):
-                    if case .invalidState = error { //Wallet already created but we didn't get the proper response from the card. Rescan and retrieve the wallet
-                        Log.debug("Received wallet creation error. Try rescan and retrieve created wallet")
-                        self.scanAndRetrieveCreatedWallet(at: command.walletIndex, in: session, completion: completion)
-                    } else {
-                        completion(.failure(error))
-                    }
+        let command = makeCommand()
+        command.run(in: session) { result in
+            switch result {
+            case .success(let response):
+                self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
+            case .failure(let error):
+                if case .invalidState = error { //Wallet already created but we didn't get the proper response from the card. Rescan and retrieve the wallet
+                    Log.debug("Received wallet creation error. Try rescan and retrieve created wallet")
+                    self.scanAndRetrieveCreatedWallet(at: command.walletIndex, in: session, completion: completion)
+                } else {
+                    completion(.failure(error))
                 }
             }
-        } catch {
-            completion(.failure(error.toTangemSdkError()))
         }
     }
     
@@ -132,9 +128,9 @@ public class CreateWalletTask: CardSessionRunnable {
         }
     }
 
-    private func makeCommand() throws -> CreateWalletCommand {
-        if let seed {
-            return try .init(curve: curve, seed: seed)
+    private func makeCommand() -> CreateWalletCommand {
+        if let privateKey {
+            return .init(curve: curve, privateKey: privateKey)
         }
 
         return .init(curve: curve)

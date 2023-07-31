@@ -92,6 +92,10 @@ class AppModel: ObservableObject {
     func copy() {
         UIPasteboard.general.string = logText
     }
+
+    func hideKeyboard() {
+        UIApplication.shared.endEditing()
+    }
     
     func start(walletPublicKey: Data? = nil) {
         isScanning = true

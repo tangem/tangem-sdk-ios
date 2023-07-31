@@ -13,6 +13,7 @@ import Foundation
 public enum EllipticCurve: String, StringCodable, CaseIterable {
     case secp256k1
     case ed25519
+    case ed25519slip0010 = "ed25519-slip0010" // TODO: tmp. To be changed to ed25519_slip0010
     case secp256r1
     case bls12381_G2
     case bls12381_G2_AUG
@@ -24,7 +25,7 @@ public enum EllipticCurve: String, StringCodable, CaseIterable {
 extension EllipticCurve {
     public var supportsDerivation: Bool {
         switch self {
-        case .secp256k1, .ed25519, .secp256r1, .bip0340:
+        case .secp256k1, .ed25519, .ed25519slip0010, .secp256r1, .bip0340:
             return true
         default:
             return false

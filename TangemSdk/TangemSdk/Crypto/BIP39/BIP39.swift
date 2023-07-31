@@ -61,7 +61,7 @@ public struct BIP39 {
         let checksumBits = String(concatenatedBits.suffix(checksumBitsCount))
 
         guard let entropyData = Data(bitsString: entropyBits) else {
-            throw MnemonicError.invalidCheksum
+            throw MnemonicError.invalidMnemonic
         }
 
         let calculatedChecksumBits = entropyData
@@ -174,6 +174,31 @@ public struct BIP39 {
     /// - Returns: The mnemonic string
     func convertToMnemonicString(_ mnemonicComponents: [String]) -> String {
         return mnemonicComponents.joined(separator: " ")
+    }
+
+    /// Calculate initial entropy from mnemonic components.
+    /// - Parameter mnemonicComponents: Menemonic components to use
+    /// - Returns: The initial entropy
+    func getEntropy(from mnemonicComponents: [String]) throws -> Data {
+        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
+
+        let concatenatedBits = try mnemonicComponents.map {
+            guard let wordIndex = wordlistDictionary.firstIndex(of: $0) else {
+                throw MnemonicError.invalidMnemonic
+            }
+
+            return String(wordIndex, radix: 2).leadingZeroPadding(toLength: 11)
+        }.joined()
+
+        let checksumBitsCount = mnemonicComponents.count / 3
+        let entropyBitsCount = concatenatedBits.count - checksumBitsCount
+        let entropyBits = String(concatenatedBits.prefix(entropyBitsCount))
+
+        guard let entropyData = Data(bitsString: entropyBits) else {
+            throw MnemonicError.invalidMnemonic
+        }
+
+        return entropyData
     }
 
     private func normalizedData(from string: String) throws -> Data {

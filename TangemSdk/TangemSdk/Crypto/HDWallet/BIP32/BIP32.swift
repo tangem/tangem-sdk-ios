@@ -20,12 +20,16 @@ public struct BIP32 {
     ///   - curve: The curve to use
     /// - Returns: The `ExtendedPrivateKey`
     public func makeMasterKey(from seed: Data, curve: EllipticCurve) throws -> ExtendedPrivateKey {
+        guard let hmacKey = curve.hmacKey else {
+            throw TangemSdkError.unsupportedCurve
+        }
+
         // The seed must be between 128 and 512 bits
         guard 16...64 ~= seed.count else {
             throw HDWalletError.invalidSeed
         }
 
-        guard let keyData = curve.hmacKey.rawValue.data(using: .utf8) else {
+        guard let keyData = hmacKey.rawValue.data(using: .utf8) else {
             throw HDWalletError.invalidHMACKey
         }
 
@@ -37,7 +41,7 @@ public struct BIP32 {
 
         // Verify the key
         // https://github.com/satoshilabs/slips/blob/master/slip-0010.md
-        if curve != .ed25519, !(try CryptoUtils.isPrivateKeyValid(iL, curve: curve)) {
+        if curve != .ed25519slip0010, !(try CryptoUtils.isPrivateKeyValid(iL, curve: curve)) {
             return try makeMasterKey(from: i, curve: curve)
         }
 
@@ -63,17 +67,24 @@ extension BIP32 {
 
 @available(iOS 13.0, *)
 fileprivate extension EllipticCurve {
-    var hmacKey: BIP32.HMACKey {
+    var hmacKey: BIP32.HMACKey? {
         switch self {
         case .secp256k1, .bip0340:
             return .secp256k1
-        case .ed25519:
+        case .ed25519slip0010:
             return .ed25519
         case .secp256r1:
             return .secp256r1
+        case .ed25519:
+            // we use ikarus master key generation scheme for this curve
+            // https://github.com/satoshilabs/slips/blob/master/slip-0023.md
+            assertionFailure("not applicable for this curve")
+            return nil
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
+            // Use BLSUtils.generateKey instead
             // https://eips.ethereum.org/EIPS/eip-2333#derive_master_sk
-            fatalError("not applicable for this curve")
+            assertionFailure("not applicable for this curve")
+            return nil
         }
     }
 }

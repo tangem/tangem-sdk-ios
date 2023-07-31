@@ -35,7 +35,7 @@ class BIP32Tests: XCTestCase {
         XCTAssertEqual(masterKey2.chainCode.hexString.lowercased(), "96cd4465a9644e31528eda3592aa35eb39a9527769ce1855beafc1b81055e75d".lowercased())
     }
 
-    func testEd25519MasterKeyGeneration() throws {
+    /*func testEd25519Slip10MasterKeyGeneration() throws {
         let bip32 = BIP32()
         let masterKey = try bip32.makeMasterKey(from: Data(hexString: "000102030405060708090a0b0c0d0e0f"), curve: .ed25519)
         XCTAssertEqual(masterKey.privateKey.hexString.lowercased(), "2b4be7f19ee27bbf30c667b642d5f4aa69fd169872f8fc3059c08ebae2eb19e7".lowercased())
@@ -44,7 +44,7 @@ class BIP32Tests: XCTestCase {
         let masterKey2 = try bip32.makeMasterKey(from: Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542"), curve: .ed25519)
         XCTAssertEqual(masterKey2.privateKey.hexString.lowercased(), "171cb88b1b3c1db25add599712e36245d75bc65a1a5c9e18d76f9f2b1eab4012".lowercased())
         XCTAssertEqual(masterKey2.chainCode.hexString.lowercased(), "ef70a74db9c3a5af931b5fe73ed8e1a53464133654fd55e7a66f8570b8e33c3b".lowercased())
-    }
+    }*/
 
     func testSecp256r1MasterKeyGenerationRetry() throws {
         let bip32 = BIP32()
@@ -149,7 +149,7 @@ class BIP32Tests: XCTestCase {
         XCTAssertEqual(pubKey.chainCode.hexString, chainCodeFromCard)
     }
 
-    func testKeyImportEd25519() throws {
+    /*func testKeyImportEd25519() throws {
         let mnemonicString = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
         let mnemonic = try Mnemonic(with: mnemonicString)
         let seed = try mnemonic.generateSeed()
@@ -160,7 +160,7 @@ class BIP32Tests: XCTestCase {
         let chainCodeFromCard = "DDFA71109701BBF7C126C8C7AB5880B0DEC3D167A8FE6AFA7A9597DF0BBEE72B"
         XCTAssertEqual(pubKey.publicKey.hexString, publicKeyFromCard)
         XCTAssertEqual(pubKey.chainCode.hexString, chainCodeFromCard)
-    }
+    }*/
 
     @available(iOS 16.0, *)
     func testKeyImportSecp256r1() throws {

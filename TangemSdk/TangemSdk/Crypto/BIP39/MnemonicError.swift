@@ -13,6 +13,7 @@ public enum MnemonicError: Error {
     case invalidWordCount
     case invalidWordsFile
     case invalidCheksum
+    case invalidMnemonic
     case mnenmonicCreationFailed
     case normalizationFailed
     case wrongWordCount

@@ -72,10 +72,10 @@ public enum CryptoUtils {
             return Secp256k1Utils().isPrivateKeyValid(privateKey)
         case .ed25519, .ed25519slip0010:
             // Extended private keys don't supported by CryptoKit
-            if privateKey.count > 32 {
+            if privateKey.count > Constants.ed25519PrivateKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
-            
+
             let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
         case .secp256r1:
@@ -96,7 +96,7 @@ public enum CryptoUtils {
             return try Secp256k1Utils().createXOnlyPublicKey(privateKey: privateKey)
         case .ed25519, .ed25519slip0010:
             // Extended private keys don't supported by CryptoKit
-            if privateKey.count > 32 {
+            if privateKey.count > Constants.ed25519PrivateKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
 
@@ -183,5 +183,6 @@ fileprivate struct CustomSha256Digest: Digest {
 private extension CryptoUtils {
     enum Constants {
         static let p256CompressedKeySize = 33
+        static let ed25519PrivateKeySize = 32
     }
 }

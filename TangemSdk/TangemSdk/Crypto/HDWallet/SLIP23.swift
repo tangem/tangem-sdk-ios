@@ -18,7 +18,6 @@ public struct SLIP23 {
     /// - Parameter entropy: Initial entropy used to create mnemonic
     /// - Parameter passphrase: Passphrase for mnemonic.  Empty string if not set.
     /// - Returns: `ExtendedPrivateKey`
-    /// - throws: `SLIP23Error`
     public func makeIkarusMasterKey(entropy: Data, passphrase: String) throws -> ExtendedPrivateKey {
         guard let passphraseData = passphrase.data(using: .utf8) else {
             throw SLIP23Error.passphraseToUTF8Failed

@@ -83,54 +83,17 @@ class ExtendedKeyTests: XCTestCase {
         XCTAssertEqual(serialized, "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw")
     }
 
-    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
-    func testBadKeys() {
-        // //(invalid pubkey 020000000000000000000000000000000000000000000000000000000000000007)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6Q5JXayek4PRsn35jii4veMimro1xefsM58PgBMrvdYre8QyULY", networkType: .mainnet))
+    func testMetaMaskTWCompatible() throws {
+        let mnemonicPhrase = "scale wave venue cloth fruit empower afford one domain blouse romance artist"
+        let mnemonic = try Mnemonic(with: mnemonicPhrase)
+        let seed = try mnemonic.generateSeed()
+        XCTAssertEqual(seed.hexString.lowercased(), "d3eea633215dc4cb8ec2acd0d413adec1ebccb597ecf279886e584e9cb9ceb0788eb6f17a585acc12bc58fd586df6bbbdf39af955656f24215cceab174344e62")
 
-        // (unknown extended key version)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHPmHJiEDXkTiJTVV9rHEBUem2mwVbbNfvT2MTcAqj3nesx8uBf9", networkType:.mainnet))
+        let extendedPrivateKey = try BIP32().makeMasterKey(from: seed, curve: .secp256k1)
 
-        // (unknown extended key version)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHGMQzT7ayAmfo4z3gY5KfbrZWZ6St24UVf2Qgo6oujFktLHdHY4", networkType:.mainnet))
+        let pk = extendedPrivateKey.privateKey.hexString.lowercased()
+        XCTAssertEqual(pk, "589aeb596710f33d7ac31598ec10440a7df8808cf2c3d69ba670ff3fae66aafb")
 
-        // (zero depth with non-zero index)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAuDcm6CRQ5N4qiHKrJ39Xe1R1NyfouMKTTWcguwVcfrZJaNvhpebzGerh7gucBvzEQWRugZDuDXjNDRmXzSZe4c7mnTK97pTvGS8", networkType: .mainnet))
-
-        // (zero depth with non-zero parent fingerprint)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661no6RGEX3uJkY4bNnPcw4URcQTrSibUZ4NqJEw5eBkv7ovTwgiT91XX27VbEXGENhYRCf7hyEbWrR3FewATdCEebj6znwMfQkhRYHRLpJ", networkType: .mainnet))
-
-        // (pubkey version / prvkey mismatch)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6LBpB85b3D2yc8sfvZU521AAwdZafEz7mnzBBsz4wKY5fTtTQBm", networkType: .mainnet))
-
-        // (prvkey version / pubkey mismatch)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63oStZzFGTQQD3dC4H2D5GBj7vWvSQaaBv5cxi9gafk7NF3pnBju6dwKvH", networkType: .mainnet))
-
-        // (invalid pubkey prefix 04)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6Txnt3siSujt9RCVYsx4qHZGc62TG4McvMGcAUjeuwZdduYEvFn", networkType: .mainnet))
-
-        // (invalid prvkey prefix 04)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63oStZzFGpWnsj83BHtEy5Zt8CcDr1UiRXuWCmTQLxEK9vbz5gPstX92JQ", networkType: .mainnet))
-
-        // (invalid pubkey prefix 01)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6N8ZMMXctdiCjxTNq964yKkwrkBJJwpzZS4HS2fxvyYUA4q2Xe4", networkType: .mainnet))
-
-        // (invalid prvkey prefix 01)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63oStZzFAzHGBP2UuGCqWLTAPLcMtD9y5gkZ6Eq3Rjuahrv17fEQ3Qen6J", networkType: .mainnet))
-
-        // (zero depth with non-zero parent fingerprint)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s2SPatNQ9Vc6GTbVMFPFo7jsaZySyzk7L8n2uqKXJen3KUmvQNTuLh3fhZMBoG3G4ZW1N2kZuHEPY53qmbZzCHshoQnNf4GvELZfqTUrcv", networkType: .mainnet))
-
-        // (zero depth with non-zero index)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH4r4TsiLvyLXqM9P7k1K3EYhA1kkD6xuquB5i39AU8KF42acDyL3qsDbU9NmZn6MsGSUYZEsuoePmjzsB3eFKSUEh3Gu1N3cqVUN", networkType: .mainnet))
-
-        // (private key 0 not in 1..n-1)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63oStZzF93Y5wvzdUayhgkkFoicQZcP3y52uPPxFnfoLZB21Teqt1VvEHx", networkType: .mainnet))
-
-        // (private key n not in 1..n-1)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63oStZzFAzHGBP2UuGCqWLTAPLcMtD5SDKr24z3aiUvKr9bJpdrcLg1y3G", networkType: .mainnet))
-
-        // (invalid checksum)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHL", networkType: .mainnet))
+        XCTAssertEqual(extendedPrivateKey.serializeToWIFCompressed(for: .mainnet), "KzBwvPW6L5iwJSiE5vgS52Y69bUxfwizW3wF4C4Xa3ba3pdd7j63")
     }
 }

@@ -38,6 +38,12 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
             completion(.failure(TangemSdkError.unsupportedCurve))
             return
         }
+
+        if case .ed25519slip0010 = wallet.curve,
+           derivationPath.nodes.contains(where: { !$0.isHardened }) {
+            completion(.failure(TangemSdkError.nonHardenedDerivationNotSupported))
+            return
+        }
         
         let readWallet = ReadWalletCommand(walletIndex: wallet.index, derivationPath: derivationPath)
         readWallet.run(in: session) { result in

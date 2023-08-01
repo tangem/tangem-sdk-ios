@@ -272,6 +272,8 @@
 		DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */; };
 		DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */; };
 		DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */; };
+		DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */; };
+		DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98092A792804001EEE7A /* KeysImportTests.swift */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
@@ -650,6 +652,8 @@
 		DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP2333MasterKeyFactory.swift; sourceTree = "<group>"; };
 		DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IkarusMasterKeyFactory.swift; sourceTree = "<group>"; };
 		DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyMasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP10Tests.swift; sourceTree = "<group>"; };
+		DC3D98092A792804001EEE7A /* KeysImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysImportTests.swift; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
@@ -1263,6 +1267,8 @@
 				DCB5A4E42A1FAC190021E12D /* BLSTests.swift */,
 				DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */,
 				DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */,
+				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
+				DC3D98092A792804001EEE7A /* KeysImportTests.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -2134,12 +2140,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */,
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
 				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
 				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,

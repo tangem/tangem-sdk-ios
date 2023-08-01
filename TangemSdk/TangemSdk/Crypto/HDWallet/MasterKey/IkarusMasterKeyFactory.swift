@@ -18,7 +18,8 @@ struct IkarusMasterKeyFactory: MasterKeyFactory {
         self.passphrase = passphrase
     }
 
+    /// TrustWallet ignores passphrase https://github.com/trustwallet/wallet-core/blob/master/src/HDWallet.cpp
     func makePrivateKey() throws -> ExtendedPrivateKey {
-      return try SLIP23().makeIkarusMasterKey(entropy: entropy, passphrase: passphrase)
+      return try SLIP23().makeIkarusMasterKey(entropy: entropy, passphrase: "")
     }
 }

@@ -10,6 +10,7 @@ import Foundation
 import XCTest
 @testable import TangemSdk
 
+/// testcases from https://eips.ethereum.org/EIPS/eip-2333#hkdf_mod_r-1
 @available(iOS 13.0, *)
 class BLSTests: XCTestCase {
     func testCase0() throws {

@@ -246,6 +246,7 @@
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
+		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
 		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
 		DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* BIP39Tests.swift */; };
@@ -626,6 +627,7 @@
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ed25519Slip0010Tests.swift; sourceTree = "<group>"; };
 		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
 		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
 		DC1244B829B610550037BC05 /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
@@ -1269,6 +1271,7 @@
 				DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */,
 				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
 				DC3D98092A792804001EEE7A /* KeysImportTests.swift */,
+				DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -2156,6 +2159,7 @@
 				DCB5A4E92A20EB1F0021E12D /* HKDFTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
+				DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,
 				5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */,
 				5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */,

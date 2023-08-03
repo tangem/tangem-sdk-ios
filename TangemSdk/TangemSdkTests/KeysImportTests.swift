@@ -60,8 +60,8 @@ class KeysImportTests: XCTestCase {
     }
 
     func testKeyImportEd25519Slip0010() throws {
-        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .ed25519slip0010).makePrivateKey()
-        let pubKey = try prvKey.makePublicKey(for: .ed25519slip0010)
+        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .ed25519_slip0010).makePrivateKey()
+        let pubKey = try prvKey.makePublicKey(for: .ed25519_slip0010)
 
         // validate with WalletCore
         XCTAssertEqual(prvKey.privateKey.hexString, "0CD28B28383FAF7FDDBE79E34919BCB9FCDA3F505CC3360C2DEADF01C88412FF")

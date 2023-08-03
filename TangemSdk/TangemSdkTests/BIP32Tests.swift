@@ -11,12 +11,31 @@ import XCTest
 import CryptoKit
 @testable import TangemSdk
 
-/// 6.31 fw card used for derived keys
+/// Tests for firmware 6.31
 /// https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
 @available(iOS 13.0, *)
 class BIP32Tests: XCTestCase {
 
     // MARK: - Test vector 1
+
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.secp256k1: [
+     try! DerivationPath(rawPath: "m/0'"),
+     try! DerivationPath(rawPath: "m/0'/1"),
+     try! DerivationPath(rawPath: "m/0'/1/2'"),
+     try! DerivationPath(rawPath: "m/0'/1/2'/2"),
+     try! DerivationPath(rawPath: "m/0'/1/2'/2/1000000000"),
+     ]]
+
+     let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256k1)
+
+     let iw = CreateWalletTask(curve: .secp256k1, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
 
     /// Chain m
     func testVector1Master() throws {
@@ -78,6 +97,25 @@ class BIP32Tests: XCTestCase {
 
     // MARK: - Test vector 2
 
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.secp256k1: [
+     try! DerivationPath(rawPath: "m/0"),
+     try! DerivationPath(rawPath: "m/0/2147483647'"),
+     try! DerivationPath(rawPath: "m/0/2147483647'/1"),
+     try! DerivationPath(rawPath: "m/0/2147483647'/1/2147483646'"),
+     try! DerivationPath(rawPath: "m/0/2147483647'/1/2147483646'/2"),
+     ]]
+
+     let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256k1)
+
+     let iw = CreateWalletTask(curve: .secp256k1, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
+
     func testVector2Master() throws {
         let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
         let bip32 = BIP32()
@@ -137,6 +175,21 @@ class BIP32Tests: XCTestCase {
 
     // MARK: - Test vector 3
 
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.secp256k1: [
+     try! DerivationPath(rawPath: "m/0'"),
+     ]]
+
+     let seed = Data(hexString: "4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256k1)
+
+     let iw = CreateWalletTask(curve: .secp256k1, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
+
     func testVector3Master() throws {
         let seed = Data(hexString: "4b381541583be4423346c643850da4b320e46a87ae3d2a4e6da11eba819cd4acba45d239319ac14f863b8d5ab5a0d0c64d2e8a1e7d1457df2e5a3c51c73235be")
         let bip32 = BIP32()
@@ -163,6 +216,22 @@ class BIP32Tests: XCTestCase {
     }
 
     // MARK: - Test vector 4
+
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.secp256k1: [
+     try! DerivationPath(rawPath: "m/0'"),
+     try! DerivationPath(rawPath: "m/0'/1'"),
+     ]]
+
+     let seed = Data(hexString: "3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256k1)
+
+     let iw = CreateWalletTask(curve: .secp256k1, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
 
     func testVector4Master() throws {
         let seed = Data(hexString: "3ddd5602285899a946114506157c7997e5444528f3003f6134712147db19b678")

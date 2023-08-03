@@ -73,23 +73,10 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             switch writeResult {
             case .success(let writeResponse):
                 if writeResponse.backupStatus == .active {
-                    self.readBackupData(session: session, index: 0, completion: completion)
+                    self.readWallets(in: session, completion: completion)
                 } else {
                     completion(.failure(TangemSdkError.unknownError))
                 }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Card>) {
-        let currentBackupCard = backupCards[index]
-        let command = ReadBackupDataCommand(backupCardLinkingKey: currentBackupCard.linkingKey, accessCode: accessCode)
-        command.run(in: session) { result in
-            switch result {
-            case .success(let response):
-                self.readWallets(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -41,7 +41,7 @@ public struct BIP32 {
 
         // Verify the key
         // https://github.com/satoshilabs/slips/blob/master/slip-0010.md
-        if curve != .ed25519slip0010, !(try CryptoUtils.isPrivateKeyValid(iL, curve: curve)) {
+        if curve != .ed25519_slip0010, !(try CryptoUtils.isPrivateKeyValid(iL, curve: curve)) {
             return try makeMasterKey(from: i, curve: curve)
         }
 
@@ -71,7 +71,7 @@ fileprivate extension EllipticCurve {
         switch self {
         case .secp256k1, .bip0340:
             return .secp256k1
-        case .ed25519slip0010:
+        case .ed25519_slip0010:
             return .ed25519
         case .secp256r1:
             return .secp256r1

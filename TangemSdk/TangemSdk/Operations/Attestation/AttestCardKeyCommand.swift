@@ -108,10 +108,10 @@ public class AttestCardKeyCommand: Command {
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
 
-        if let backupStatus = card.backupStatus, backupStatus.isActive,
-           let attestationMode = mode.rawMode {
-            try tlvBuilder.append(.interactionMode, value: attestationMode)
-        }
+      //  if let backupStatus = card.backupStatus, backupStatus.isActive,
+      //     let attestationMode = mode.rawMode {
+            try tlvBuilder.append(.interactionMode, value: Mode.full)
+      //  }
 
         return CommandApdu(.attestCardKey, tlv: tlvBuilder.serialize())
     }

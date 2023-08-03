@@ -11,12 +11,31 @@ import XCTest
 import CryptoKit
 @testable import TangemSdk
 
-/// Firmware 6.31
+/// Tests for firmware 6.31
 /// test vectors for secp356k1 are equal to BIP32 test vectors
 @available(iOS 13.0, *)
 class SLIP10Tests: XCTestCase {
 
     // MARK: - Test vector 1 for nist256p1
+
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.secp256r1: [
+     try! DerivationPath(rawPath: "m/0'"),
+     try! DerivationPath(rawPath: "m/0'/1"),
+     try! DerivationPath(rawPath: "m/0'/1/2'"),
+     try! DerivationPath(rawPath: "m/0'/1/2'/2"),
+     try! DerivationPath(rawPath: "m/0'/1/2'/2/1000000000"),
+     ]]
+
+     let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256r1)
+
+     let iw = CreateWalletTask(curve: .secp256r1, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
 
     /// Chain m
     @available(iOS 16.0, *)
@@ -82,6 +101,25 @@ class SLIP10Tests: XCTestCase {
 
     // MARK: Test vector 1 for ed25519_slip0010
 
+    /**
+     let sdk = tangemSdk
+     sdk.config.defaultDerivationPaths = [.ed25519_slip0010: [
+     try! DerivationPath(rawPath: "m/0'"),
+     try! DerivationPath(rawPath: "m/0'/1'"),
+     try! DerivationPath(rawPath: "m/0'/1'/2'"),
+     try! DerivationPath(rawPath: "m/0'/1'/2'/2'"),
+     try! DerivationPath(rawPath: "m/0'/1'/2'/2'/1000000000'"),
+     ]]
+
+     let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
+     let bip32 = BIP32()
+
+     let mPriv = try! bip32.makeMasterKey(from: seed, curve: .ed25519_slip0010)
+
+     let iw = CreateWalletTask(curve: .ed25519_slip0010, privateKey: mPriv)
+     sdk.startSession(with: iw, completion: handleCompletion)
+     **/
+
     /// Chain m
     func testVector11ed25519() throws {
         let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
@@ -144,6 +182,25 @@ class SLIP10Tests: XCTestCase {
     }
 
     // MARK: - Test vector 2 for nist256p1
+
+    /**
+    let sdk = tangemSdk
+    sdk.config.defaultDerivationPaths = [.secp256r1: [
+    try! DerivationPath(rawPath: "m/0"),
+    try! DerivationPath(rawPath: "m/0/2147483647'"),
+    try! DerivationPath(rawPath: "m/0/2147483647'/1"),
+    try! DerivationPath(rawPath: "m/0/2147483647'/1/2147483646'"),
+    try! DerivationPath(rawPath: "m/0/2147483647'/1/2147483646'/2"),
+    ]]
+
+    let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
+    let bip32 = BIP32()
+
+    let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256r1)
+
+    let iw = CreateWalletTask(curve: .secp256r1, privateKey: mPriv)
+    sdk.startSession(with: iw, completion: handleCompletion)
+    */
 
     /// Chain m
     @available(iOS 16.0, *)
@@ -208,6 +265,25 @@ class SLIP10Tests: XCTestCase {
     }
 
     // MARK: Test vector 2 for ed25519_slip0010
+
+    /**
+    let sdk = tangemSdk
+    sdk.config.defaultDerivationPaths = [.secp256r1: [
+    try! DerivationPath(rawPath: "m/0'"),
+    try! DerivationPath(rawPath: "m/0'/2147483647'"),
+    try! DerivationPath(rawPath: "m/0'/2147483647'/1'"),
+    try! DerivationPath(rawPath: "m/0'/2147483647'/1'/2147483646'"),
+    try! DerivationPath(rawPath: "m/0'/2147483647'/1'/2147483646'/2'"),
+    ]]
+
+    let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
+    let bip32 = BIP32()
+
+    let mPriv = try! bip32.makeMasterKey(from: seed, curve: .secp256r1)
+
+    let iw = CreateWalletTask(curve: .secp256r1, privateKey: mPriv)
+    sdk.startSession(with: iw, completion: handleCompletion)
+    */
 
     /// Chain m
     func testVector21ed25519() throws {

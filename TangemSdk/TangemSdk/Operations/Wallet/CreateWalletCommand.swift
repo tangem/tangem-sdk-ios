@@ -210,12 +210,7 @@ final class CreateWalletCommand: Command {
         if let firstAvailableIndex = allIndices.filter({ !occupiedIndices.contains($0) }).sorted().first {
             return firstAvailableIndex
         } else {
-            if maxIndex == 1 {
-                //already created for old cards mostly
-                throw TangemSdkError.alreadyCreated
-            } else {
-                throw TangemSdkError.maxNumberOfWalletsCreated
-            }
+            return maxIndex
         }
     }
 }

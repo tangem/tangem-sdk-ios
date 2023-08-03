@@ -72,7 +72,8 @@ class KeysImportTests: XCTestCase {
     }
 
     func testKeyImportEd25519() throws {
-        let prvKey = try IkarusMasterKeyFactory(entropy: entropy, passphrase: passphrase).makePrivateKey()
+        /// TrustWallet ignores passphrase https://github.com/trustwallet/wallet-core/blob/master/src/HDWallet.cpp
+        let prvKey = try IkarusMasterKeyFactory(entropy: entropy, passphrase: "").makePrivateKey()
 
         // validate with WalletCore
         XCTAssertEqual(prvKey.privateKey.hexString.lowercased(), "58b41cb27297be1fbf192a65e526179f43b779a383f5d72f14e5db8a82bd77525f65dbfe80724cd61254ec14b351312b63b51c87238ebd3c880a6ad158a161cb")

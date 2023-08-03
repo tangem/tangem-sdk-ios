@@ -50,15 +50,15 @@ public final class PurgeWalletCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
-            throw TangemSdkError.walletNotFound
-        }
-        
+//        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
+//            throw TangemSdkError.walletNotFound
+//        }
+//
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.walletPublicKey, value: walletPublicKey)
+            .append(.walletIndex, value: 0)
         
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }

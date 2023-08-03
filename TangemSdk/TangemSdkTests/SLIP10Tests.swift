@@ -125,8 +125,8 @@ class SLIP10Tests: XCTestCase {
         let seed = Data(hexString: "000102030405060708090a0b0c0d0e0f")
         let bip32 = BIP32()
 
-        let mPrv = try bip32.makeMasterKey(from: seed, curve: .ed25519slip0010)
-        let mPub = try mPrv.makePublicKey(for: .ed25519slip0010)
+        let mPrv = try bip32.makeMasterKey(from: seed, curve: .ed25519_slip0010)
+        let mPub = try mPrv.makePublicKey(for: .ed25519_slip0010)
 
         XCTAssertEqual(mPrv.privateKey.hexString.lowercased(), "2b4be7f19ee27bbf30c667b642d5f4aa69fd169872f8fc3059c08ebae2eb19e7")
         XCTAssertEqual(mPrv.chainCode.hexString.lowercased(), "90046a93de5380a72b5e45010748567d5ea02bbf6522f979e05c0d8d8ca9fffb")
@@ -290,8 +290,8 @@ class SLIP10Tests: XCTestCase {
         let seed = Data(hexString: "fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542")
         let bip32 = BIP32()
 
-        let mPrv = try bip32.makeMasterKey(from: seed, curve: .ed25519slip0010)
-        let mPub = try mPrv.makePublicKey(for: .ed25519slip0010)
+        let mPrv = try bip32.makeMasterKey(from: seed, curve: .ed25519_slip0010)
+        let mPub = try mPrv.makePublicKey(for: .ed25519_slip0010)
 
         XCTAssertEqual(mPrv.privateKey.hexString.lowercased(), "171cb88b1b3c1db25add599712e36245d75bc65a1a5c9e18d76f9f2b1eab4012")
         XCTAssertEqual(mPrv.chainCode.hexString.lowercased(), "ef70a74db9c3a5af931b5fe73ed8e1a53464133654fd55e7a66f8570b8e33c3b")

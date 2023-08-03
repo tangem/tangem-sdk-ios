@@ -270,7 +270,7 @@ class BIP32Tests: XCTestCase {
 
     // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
     func testVector5() {
-        // //(invalid pubkey 020000000000000000000000000000000000000000000000000000000000000007)
+        // (invalid pubkey 020000000000000000000000000000000000000000000000000000000000000007)
         XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6Q5JXayek4PRsn35jii4veMimro1xefsM58PgBMrvdYre8QyULY", networkType: .mainnet))
 
         // (unknown extended key version)

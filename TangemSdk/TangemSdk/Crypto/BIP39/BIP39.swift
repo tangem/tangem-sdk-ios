@@ -27,7 +27,8 @@ public struct BIP39 {
         }
 
         // Validate wordlist by the first word
-        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
+        let wordlist = try getWordlist(by: mnemonicComponents[0]).dictionary
+        let wordlistDictionary = Dictionary(uniqueKeysWithValues: wordlist.enumerated().map { ($1, $0) })
 
         // Validate all the words
         var invalidWords = Set<String>()
@@ -36,7 +37,7 @@ public struct BIP39 {
         var concatenatedBits = ""
 
         for word in mnemonicComponents {
-            guard let wordIndex = wordlistDictionary.firstIndex(of: word) else {
+            guard let wordIndex = wordlistDictionary[word] else {
                 invalidWords.insert(word)
                 continue
             }
@@ -180,10 +181,11 @@ public struct BIP39 {
     /// - Parameter mnemonicComponents: Menemonic components to use
     /// - Returns: The initial entropy
     func getEntropy(from mnemonicComponents: [String]) throws -> Data {
-        let wordlistDictionary = try getWordlist(by: mnemonicComponents[0]).dictionary
+        let wordlist = try getWordlist(by: mnemonicComponents[0]).dictionary
+        let wordlistDictionary = Dictionary(uniqueKeysWithValues: wordlist.enumerated().map { ($1, $0) })
 
         let concatenatedBits = try mnemonicComponents.map {
-            guard let wordIndex = wordlistDictionary.firstIndex(of: $0) else {
+            guard let wordIndex = wordlistDictionary[$0] else {
                 throw MnemonicError.invalidMnemonic
             }
 

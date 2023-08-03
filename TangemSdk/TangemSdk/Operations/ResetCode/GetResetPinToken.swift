@@ -33,6 +33,11 @@ final class GetResetPinTokenCommand: Command {
         
         return nil
     }
+    func run(in session: CardSession, completion: @escaping CompletionResult<ResetPinCard>) {
+        transceive(in: session) { _ in
+            self.transceive(in: session, completion: completion)
+        }
+    }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)

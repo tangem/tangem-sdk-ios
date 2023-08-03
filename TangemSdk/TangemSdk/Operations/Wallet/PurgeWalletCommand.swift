@@ -58,7 +58,7 @@ public final class PurgeWalletCommand: Command {
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.walletIndex, value: walletIndex)
+            .append(.walletPublicKey, value: walletPublicKey)
         
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }

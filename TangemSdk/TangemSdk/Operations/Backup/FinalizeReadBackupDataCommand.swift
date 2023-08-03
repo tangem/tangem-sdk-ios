@@ -43,8 +43,10 @@ final class FinalizeReadBackupDataCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        let cardId = environment.card?.cardId
+        let brokenCardId = cardId.map { String($0.reversed()) }
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
+            .append(.cardId, value: brokenCardId)
             .append(.pin, value: accessCode)
 
         return CommandApdu(.finalizeReadBackupData, tlv: tlvBuilder.serialize())

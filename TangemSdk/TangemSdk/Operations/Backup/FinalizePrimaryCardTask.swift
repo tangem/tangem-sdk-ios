@@ -117,7 +117,7 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
         command?.run(in: session) { result in
             switch result {
             case .success:
-                self.readBackupData(session: session, index: 0, completion: completion)
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }

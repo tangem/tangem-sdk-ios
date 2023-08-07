@@ -280,6 +280,8 @@
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
+		DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */; };
+		DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD662A8115BB00928836 /* FWTestCase.swift */; };
 		DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
@@ -661,6 +663,8 @@
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
+		DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFirmwareTests.swift; sourceTree = "<group>"; };
+		DC70AD662A8115BB00928836 /* FWTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FWTestCase.swift; sourceTree = "<group>"; };
 		DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedKeys.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
@@ -1272,6 +1276,8 @@
 				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
 				DC3D98092A792804001EEE7A /* KeysImportTests.swift */,
 				DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */,
+				DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */,
+				DC70AD662A8115BB00928836 /* FWTestCase.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -2150,6 +2156,7 @@
 				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
 				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */,
 				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
@@ -2158,6 +2165,7 @@
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				DCB5A4E92A20EB1F0021E12D /* HKDFTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
+				DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
 				DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,

@@ -11,7 +11,7 @@ import XCTest
 import CryptoKit
 @testable import TangemSdk
 
-/// Test that keys uploaded to a card are equal to locally computed
+/// Test that keys uploaded to a card are equal to locally computed. Firmware 6.31
 @available(iOS 13.0, *)
 class KeysImportTests: XCTestCase {
     private let entropy = Data(hexString: "6610b25967cdcca9d59875f5cb50b0ea75433311869e930b")
@@ -110,4 +110,3 @@ class KeysImportTests: XCTestCase {
         // A73E200D8FA36522EBBBBD285EFCC9E9F173E9AE7284E42E91FE13D7D7514204E92813AB8082878EAB45867C32EBAA0B106E98FC8DFEB8D3CDA3E1130B8E17AC99BCFC005513F73BB8A17135D78923169BD9567C33C6E9D69D382E018B33FFC1
     }
 }
-

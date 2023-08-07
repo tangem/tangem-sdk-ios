@@ -84,7 +84,18 @@ class FinalizePrimaryCardTask: CardSessionRunnable {
     
     private func readBackupData(session: CardSession, index: Int, completion: @escaping CompletionResult<Card>) {
         if index >= backupCards.count {
-            finalizeBackupData(session: session, completion: completion)
+            let command = LinkBackupCardsCommand(backupCards: backupCards,
+                                                 accessCode: accessCode,
+                                                 passcode: passcode)
+
+            command.run(in: session) { linkResult in
+                switch linkResult {
+                case .success(let linkResponse):
+                    self.finalizeBackupData(session: session, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
             return
         }
         

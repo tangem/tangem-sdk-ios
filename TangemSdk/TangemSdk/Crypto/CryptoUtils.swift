@@ -145,6 +145,18 @@ public enum CryptoUtils {
         }
     }
 
+    /// Verify secp256r1 signature
+    @available(iOS 16.0, *)
+    public static func verifySecp256r1Signature(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
+        if publicKey.count == Constants.p256CompressedKeySize {
+            let pubKey = try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+            let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
+            return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
+        }
+
+        return try verify(curve: .secp256r1, publicKey: publicKey, hash: hash, signature: signature)
+    }
+
     public static func crypt(operation: Int, algorithm: Int, options: Int, key: Data, dataIn: Data) throws -> Data {
         return try key.withUnsafeBytes { keyUnsafeRawBufferPointer in
             return try dataIn.withUnsafeBytes { dataInUnsafeRawBufferPointer in

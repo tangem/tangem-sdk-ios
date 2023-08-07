@@ -9,16 +9,16 @@
 import Foundation
 
 @available(iOS 13.0, *)
-struct AnyMasterKeyFactory {
+public struct AnyMasterKeyFactory {
     private let mnemonic: Mnemonic
     private let passphrase: String
 
-    init(mnemonic: Mnemonic, passphrase: String) {
+    public init(mnemonic: Mnemonic, passphrase: String) {
         self.mnemonic = mnemonic
         self.passphrase = passphrase
     }
-
-    func makeMasterKey(for curve: EllipticCurve) throws -> ExtendedPrivateKey {
+    
+    public func makeMasterKey(for curve: EllipticCurve) throws -> ExtendedPrivateKey {
         let factory = try makeFactory(for: curve)
         return try factory.makePrivateKey()
     }

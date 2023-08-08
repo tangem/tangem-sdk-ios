@@ -55,6 +55,7 @@ struct ContentView: View {
                                 Button("Copy", action: model.copy)
                                 Button("Backup", action: model.onBackup)
                                 Button("Reset", action: model.onResetService)
+                                Button("Hide kb", action: model.hideKeyboard)
                             }
                             
                             additionalView
@@ -139,7 +140,7 @@ struct ContentView: View {
                                 .tag(supportedCurves[index])
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle())
+                    .pickerStyle(WheelPickerStyle())
                 }
 
                 if case .importWallet = model.method {

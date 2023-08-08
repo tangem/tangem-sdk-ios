@@ -53,6 +53,9 @@ class BIP39Tests: XCTestCase {
             let mnemonicString = bip39.convertToMnemonicString(mnemonic)
             XCTAssertEqual(mnemonicString, expectedMnemonic)
 
+            let calculatedEntropy = try bip39.getEntropy(from: mnemonic)
+            XCTAssertEqual(calculatedEntropy.hexString.lowercased(), entropy)
+
             let seed = try bip39.generateSeed(from: mnemonic, passphrase: Constants.passphrase)
             XCTAssertEqual(seed.hexString.lowercased(), expectedSeed)
 

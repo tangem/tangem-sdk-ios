@@ -173,22 +173,6 @@ public extension TangemSdk {
     ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - seed: BIP39 seed to create wallet from. COS v.6.16+.
-    ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
-    func importWallet(curve: EllipticCurve,
-                      cardId: String,
-                      seed: Data,
-                      initialMessage: Message? = nil,
-                      completion: @escaping CompletionResult<CreateWalletResponse>) {
-        let command = CreateWalletTask(curve: curve, seed: seed)
-        startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
-    }
-
-    /// This command will import an esisting wallet
-    /// - Parameters:
-    ///   - curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
-    ///   - cardId: CID, Unique Tangem card ID number.
     ///   - mnemonic: BIP39 mnemonic to create wallet from. COS v.6.16+.
     ///   - passphrase: BIP39 passphrase to create wallet from. COS v.6.16+.  Empty passphrase by default.
     ///   - completion: Returns `Swift.Result<CreateWalletResponse,TangemSdkError>`
@@ -199,8 +183,10 @@ public extension TangemSdk {
                       initialMessage: Message? = nil,
                       completion: @escaping CompletionResult<CreateWalletResponse>) {
         do {
-            let seed = try Mnemonic(with: mnemonic).generateSeed(with: passphrase)
-            let command = CreateWalletTask(curve: curve, seed: seed)
+            let mnemonic = try Mnemonic(with: mnemonic)
+            let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase)
+            let privateKey = try factory.makeMasterKey(for: curve)
+            let command = CreateWalletTask(curve: curve, privateKey: privateKey)
             startSession(with: command, cardId: cardId, initialMessage: initialMessage, completion: completion)
         } catch {
             completion(.failure(error.toTangemSdkError()))

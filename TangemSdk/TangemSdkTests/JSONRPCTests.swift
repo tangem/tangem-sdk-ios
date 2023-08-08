@@ -140,21 +140,6 @@ class JSONRPCTests: XCTestCase {
         testMethod(name: "CreateWallet", result: result)
     }
 
-    func testImportWalletSeed() {
-        let result = CreateWalletResponse(cardId: "c000111122223333",
-                                          wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
-                                                              chainCode: nil,
-                                                              curve: .secp256r1,
-                                                              settings: Card.Wallet.Settings(isPermanent: true),
-                                                              totalSignedHashes: 10,
-                                                              remainingSignatures: 100,
-                                                              index: 1,
-                                                              proof: nil,
-                                                              isImported: false,
-                                                              hasBackup: false))
-        testMethod(name: "ImportWalletSeed", result: result)
-    }
-
     func testImportWalletMnemonic() {
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "029983A77B155ED3B3B9E1DDD223BD5AA073834C8F61113B2F1B883AAA70971B5F"),

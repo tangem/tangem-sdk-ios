@@ -11,7 +11,7 @@ import XCTest
 import CryptoKit
 @testable import TangemSdk
 
-/// Tests for firmware 6.31
+/// Tests for firmware 6.33
 /// test vectors for secp356k1 are equal to BIP32 test vectors
 @available(iOS 13.0, *)
 class SLIP10Tests: XCTestCase {

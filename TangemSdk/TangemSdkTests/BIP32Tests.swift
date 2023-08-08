@@ -11,7 +11,7 @@ import XCTest
 import CryptoKit
 @testable import TangemSdk
 
-/// Tests for firmware 6.31
+/// Tests for firmware 6.33
 /// https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
 @available(iOS 13.0, *)
 class BIP32Tests: XCTestCase {

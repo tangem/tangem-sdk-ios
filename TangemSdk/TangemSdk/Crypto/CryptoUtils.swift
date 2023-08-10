@@ -46,7 +46,7 @@ public enum CryptoUtils {
         case .bip0340:
             let signature = try SchnorrSignature(with: signature)
             return try signature.verify(with: publicKey, message: message)
-        case .ed25519:
+        case .ed25519, .ed25519_slip0010:
             let hash = message.getSha512()
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
@@ -70,7 +70,12 @@ public enum CryptoUtils {
         switch curve {
         case .secp256k1, .bip0340:
             return Secp256k1Utils().isPrivateKeyValid(privateKey)
-        case .ed25519:
+        case .ed25519, .ed25519_slip0010:
+            // Extended private keys not supported by CryptoKit
+            if privateKey.count > Constants.ed25519PrivateKeySize {
+                throw TangemSdkError.unsupportedCurve
+            }
+
             let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
         case .secp256r1:
@@ -89,7 +94,12 @@ public enum CryptoUtils {
             return try Secp256k1Utils().createPublicKey(privateKey: privateKey, compressed: true)
         case .bip0340:
             return try Secp256k1Utils().createXOnlyPublicKey(privateKey: privateKey)
-        case .ed25519:
+        case .ed25519, .ed25519_slip0010:
+            // Extended private keys not supported by CryptoKit
+            if privateKey.count > Constants.ed25519PrivateKeySize {
+                throw TangemSdkError.unsupportedCurve
+            }
+
             let key = try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey)
             return key.publicKey.rawRepresentation
         case .secp256r1:
@@ -117,7 +127,7 @@ public enum CryptoUtils {
         case .bip0340:
             let signature = try SchnorrSignature(with: signature)
             return try signature.verify(with: publicKey, hash: hash)
-        case .ed25519:
+        case .ed25519, .ed25519_slip0010:
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
@@ -133,6 +143,18 @@ public enum CryptoUtils {
             // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
+    }
+
+    /// Verify secp256r1 signature
+    @available(iOS 16.0, *)
+    public static func verifySecp256r1Signature(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
+        if publicKey.count == Constants.p256CompressedKeySize {
+            let pubKey = try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+            let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
+            return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
+        }
+
+        return try verify(curve: .secp256r1, publicKey: publicKey, hash: hash, signature: signature)
     }
 
     public static func crypt(operation: Int, algorithm: Int, options: Int, key: Data, dataIn: Data) throws -> Data {
@@ -173,5 +195,6 @@ fileprivate struct CustomSha256Digest: Digest {
 private extension CryptoUtils {
     enum Constants {
         static let p256CompressedKeySize = 33
+        static let ed25519PrivateKeySize = 32
     }
 }

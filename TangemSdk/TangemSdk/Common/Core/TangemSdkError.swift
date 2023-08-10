@@ -102,6 +102,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     // Read Errors
     case accessCodeRequired
+    case nonHardenedDerivationNotSupported
     
     // CreateWallet Errors
     case alreadyCreated
@@ -347,6 +348,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cannotBeDepersonalized: return 40201
             
         case .accessCodeRequired: return 40401
+        case .nonHardenedDerivationNotSupported: return 40402
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
         case .walletAlreadyCreated: return 40405

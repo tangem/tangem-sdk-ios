@@ -64,6 +64,14 @@ class AppModel: ObservableObject {
         } else {
             config.logConfig = .verbose
         }
+
+        config.defaultDerivationPaths = [
+            .secp256k1: [try! DerivationPath(rawPath: "m/0'/1")],
+            .secp256r1: [try! DerivationPath(rawPath: "m/0'/1")],
+            .ed25519: [try! DerivationPath(rawPath: "m/0'/1")],
+            .ed25519_slip0010: [try! DerivationPath(rawPath: "m/0'/1'")],
+            .bip0340: [try! DerivationPath(rawPath: "m/0'/1")]
+        ]
         _tangemSdk.config = config
         return _tangemSdk
     }
@@ -91,6 +99,10 @@ class AppModel: ObservableObject {
     
     func copy() {
         UIPasteboard.general.string = logText
+    }
+
+    func hideKeyboard() {
+        UIApplication.shared.endEditing()
     }
     
     func start(walletPublicKey: Data? = nil) {
@@ -239,6 +251,8 @@ extension AppModel {
             self.complete(with: "Scan card before")
             return
         }
+
+        let verifyKey = (path.flatMap { wallet.derivedKeys[$0] })?.publicKey ?? walletPublicKey
         
         let hashSize = wallet.curve == .ed25519 ? 64 : 32
         let hash = getRandomHash(size: hashSize)
@@ -247,8 +261,20 @@ extension AppModel {
                        walletPublicKey: walletPublicKey,
                        cardId: nil,
                        derivationPath: path,
-                       initialMessage: Message(header: "Signing hash"),
-                       completion: handleCompletion)
+                       initialMessage: Message(header: "Signing hash")) { result in
+
+            if case .success(let response) = result {
+                if #available(iOS 16.0, *), wallet.curve == .secp256r1 {
+                    let isValid = try? CryptoUtils.verifySecp256r1Signature(publicKey: verifyKey, hash: hash, signature: response.signature)
+                    self.logger.log("signature status: \(String(describing: isValid))")
+                } else  {
+                    let isValid = try? CryptoUtils.verify(curve: wallet.curve, publicKey: verifyKey, hash: hash, signature: response.signature)
+                    self.logger.log("signature status: \(String(describing: isValid))")
+                }
+            }
+
+            self.handleCompletion(result)
+        }
     }
     
     func signHashes(walletPublicKey: Data) {

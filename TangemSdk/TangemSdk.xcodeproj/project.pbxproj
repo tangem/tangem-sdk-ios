@@ -246,6 +246,7 @@
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
+		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
 		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
 		DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* BIP39Tests.swift */; };
@@ -266,11 +267,21 @@
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
 		DC22228729D431AB001129F8 /* SetUserCodeRecoveryAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */; };
 		DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */ = {isa = PBXBuildFile; fileRef = DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */; };
+		DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */; };
+		DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */; };
+		DC3D97FE2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */; };
+		DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */; };
+		DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */; };
+		DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */; };
+		DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */; };
+		DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98092A792804001EEE7A /* KeysImportTests.swift */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
+		DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */; };
+		DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD662A8115BB00928836 /* FWTestCase.swift */; };
 		DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
@@ -354,7 +365,6 @@
 		DCD2D9222A1CFA8400AB00B6 /* precompute_ecmult.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */; };
 		DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */; };
 		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
-		DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */ = {isa = PBXBuildFile; fileRef = DCF6188329F069DB001BE133 /* AttestCardKey.json */; };
@@ -619,6 +629,7 @@
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ed25519Slip0010Tests.swift; sourceTree = "<group>"; };
 		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
 		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
 		DC1244B829B610550037BC05 /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
@@ -639,11 +650,21 @@
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
 		DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetUserCodeRecoveryAllowed.json; sourceTree = "<group>"; };
 		DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletMnemonic.json; sourceTree = "<group>"; };
+		DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP23.swift; sourceTree = "<group>"; };
+		DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP23Tests.swift; sourceTree = "<group>"; };
+		DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP32MasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP2333MasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IkarusMasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyMasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP10Tests.swift; sourceTree = "<group>"; };
+		DC3D98092A792804001EEE7A /* KeysImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysImportTests.swift; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
+		DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFirmwareTests.swift; sourceTree = "<group>"; };
+		DC70AD662A8115BB00928836 /* FWTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FWTestCase.swift; sourceTree = "<group>"; };
 		DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedKeys.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
@@ -727,7 +748,6 @@
 		DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = precompute_ecmult.c; sourceTree = "<group>"; };
 		DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
 		DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchnorrSignature.swift; sourceTree = "<group>"; };
-		DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletSeed.json; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
@@ -798,9 +818,11 @@
 		5D170AEF26B42C88000D4F36 /* HDWallet */ = {
 			isa = PBXGroup;
 			children = (
+				DC3D97FC2A77F3E0001EEE7A /* MasterKey */,
 				5D2B798426BBED1D002A78D4 /* BIP32 */,
 				5D14091B26B9692500B811A1 /* BIP44.swift */,
 				5D14091D26B9886800B811A1 /* HDWalletError.swift */,
+				DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */,
 			);
 			path = HDWallet;
 			sourceTree = "<group>";
@@ -911,7 +933,6 @@
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
-				DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */,
 				DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */,
 				DCF6188329F069DB001BE133 /* AttestCardKey.json */,
 				5D544093268243F700F7D05B /* Card.json */,
@@ -1251,6 +1272,12 @@
 				DC4E442829BF42630088617C /* Base58Tests.swift */,
 				DCB5A4E42A1FAC190021E12D /* BLSTests.swift */,
 				DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */,
+				DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */,
+				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
+				DC3D98092A792804001EEE7A /* KeysImportTests.swift */,
+				DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */,
+				DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */,
+				DC70AD662A8115BB00928836 /* FWTestCase.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -1305,7 +1332,6 @@
 				5D379C2C268FA53D00C7F473 /* KeyPair.swift */,
 				5D379C2E268FA57500C7F473 /* UserCode.swift */,
 				5DE7DD2F2695DCD300472205 /* CardFilter.swift */,
-				DCB5A4EA2A20F47B0021E12D /* MasterKeyFactory.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1463,6 +1489,18 @@
 				DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */,
 			);
 			path = ExtendedKeySerialization;
+			sourceTree = "<group>";
+		};
+		DC3D97FC2A77F3E0001EEE7A /* MasterKey */ = {
+			isa = PBXGroup;
+			children = (
+				DCB5A4EA2A20F47B0021E12D /* MasterKeyFactory.swift */,
+				DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */,
+				DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */,
+				DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */,
+				DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */,
+			);
+			path = MasterKey;
 			sourceTree = "<group>";
 		};
 		DC59CB0129AF582800EC14E1 /* BIP39 */ = {
@@ -1827,7 +1865,6 @@
 				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
 				DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
-				DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
 				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,
 			);
@@ -1877,6 +1914,8 @@
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
 				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
+				DC3D97FE2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift in Sources */,
+				DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */,
 				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
 				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */,
@@ -1898,6 +1937,7 @@
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D60CA63272C472F00A1DF0B /* ResetCodesController.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
+				DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
 				DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */,
@@ -2032,6 +2072,7 @@
 				5D5242672727FE37007FEB03 /* ResetUserCodesView.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D5A67FA272830C00002EDA9 /* BadgedCardView.swift in Sources */,
+				DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */,
 				5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
@@ -2096,6 +2137,7 @@
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
+				DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */,
 				5D86665C273166810095CC82 /* ResetCodesViewState.swift in Sources */,
 				DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
@@ -2107,11 +2149,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */,
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
 				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */,
+				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
@@ -2119,7 +2165,9 @@
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
 				DCB5A4E92A20EB1F0021E12D /* HKDFTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
+				DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
+				DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,
 				5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */,
 				5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */,

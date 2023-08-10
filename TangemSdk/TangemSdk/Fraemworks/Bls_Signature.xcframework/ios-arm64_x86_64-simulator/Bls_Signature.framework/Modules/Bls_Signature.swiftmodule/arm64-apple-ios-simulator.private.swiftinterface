@@ -8,7 +8,23 @@ import Swift
 import _Concurrency
 import _StringProcessing
 public struct BlsSignatureSwift {
-  public static func augSchemeMplG2Map(publicKeyHash: Swift.String, messageHash: Swift.String) throws -> Swift.String
+  public static func augSchemeMplG2Map(publicKey: Swift.String, message: Swift.String) throws -> Swift.String
   public static func aggregate(signatures: [Swift.String]) throws -> Swift.String
   public static func publicKey(from privateKey: Swift.String) throws -> Swift.String
+  public static func verify(signatures: [Swift.String], with publicKey: Swift.String, message: Swift.String) throws -> Swift.Bool
 }
+extension Bls_Signature.BlsSignatureSwift {
+  public enum ErrorList : Swift.Error {
+    case errorAggregate
+    case errorAugScheme
+    case errorPublicKeyFromPrivateKey
+    case errorVerify
+    public static func == (a: Bls_Signature.BlsSignatureSwift.ErrorList, b: Bls_Signature.BlsSignatureSwift.ErrorList) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+}
+extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Equatable {}
+extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Hashable {}

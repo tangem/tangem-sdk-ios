@@ -1,0 +1,475 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Bls_Signature",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "BlsSignatureSwift",
+        "printedName": "BlsSignatureSwift",
+        "children": [
+          {
+            "kind": "Function",
+            "name": "augSchemeMplG2Map",
+            "printedName": "augSchemeMplG2Map(publicKey:message:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV17augSchemeMplG2Map9publicKey7messageS2S_SStKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV17augSchemeMplG2Map9publicKey7messageS2S_SStKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "aggregate",
+            "printedName": "aggregate(signatures:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[Swift.String]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV9aggregate10signaturesSSSaySSG_tKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV9aggregate10signaturesSSSaySSG_tKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "publicKey",
+            "printedName": "publicKey(from:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV9publicKey4fromS2S_tKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV9publicKey4fromS2S_tKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "verify",
+            "printedName": "verify(signatures:with:message:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[Swift.String]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "usr": "s:Sa"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV6verify10signatures4with7messageSbSaySSG_S2StKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV6verify10signatures4with7messageSbSaySSG_S2StKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "ErrorList",
+            "printedName": "ErrorList",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "errorAggregate",
+                "printedName": "errorAggregate",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ErrorList",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO14errorAggregateyA2EmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO14errorAggregateyA2EmF",
+                "moduleName": "Bls_Signature"
+              },
+              {
+                "kind": "Var",
+                "name": "errorAugScheme",
+                "printedName": "errorAugScheme",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ErrorList",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO14errorAugSchemeyA2EmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO14errorAugSchemeyA2EmF",
+                "moduleName": "Bls_Signature"
+              },
+              {
+                "kind": "Var",
+                "name": "errorPublicKeyFromPrivateKey",
+                "printedName": "errorPublicKeyFromPrivateKey",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ErrorList",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yA2EmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yA2EmF",
+                "moduleName": "Bls_Signature"
+              },
+              {
+                "kind": "Var",
+                "name": "errorVerify",
+                "printedName": "errorVerify",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ErrorList",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO11errorVerifyyA2EmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO11errorVerifyyA2EmF",
+                "moduleName": "Bls_Signature"
+              },
+              {
+                "kind": "Function",
+                "name": "==",
+                "printedName": "==(_:_:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ErrorList",
+                    "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ErrorList",
+                    "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO2eeoiySbAE_AEtFZ",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO2eeoiySbAE_AEtFZ",
+                "moduleName": "Bls_Signature",
+                "static": true,
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              },
+              {
+                "kind": "Var",
+                "name": "hashValue",
+                "printedName": "hashValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivp",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivp",
+                "moduleName": "Bls_Signature",
+                "implicit": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int",
+                        "printedName": "Swift.Int",
+                        "usr": "s:Si"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivg",
+                    "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivg",
+                    "moduleName": "Bls_Signature",
+                    "implicit": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Function",
+                "name": "hash",
+                "printedName": "hash(into:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Hasher",
+                    "printedName": "Swift.Hasher",
+                    "paramValueOwnership": "InOut",
+                    "usr": "s:s6HasherV"
+                  }
+                ],
+                "declKind": "Func",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO4hash4intoys6HasherVz_tF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO4hash4intoys6HasherVz_tF",
+                "moduleName": "Bls_Signature",
+                "implicit": true,
+                "funcSelfKind": "NonMutating"
+              }
+            ],
+            "declKind": "Enum",
+            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO",
+            "moduleName": "Bls_Signature",
+            "isFromExtension": true,
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Equatable",
+                "printedName": "Equatable",
+                "usr": "s:SQ",
+                "mangledName": "$sSQ"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Hashable",
+                "printedName": "Hashable",
+                "usr": "s:SH",
+                "mangledName": "$sSH"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Error",
+                "printedName": "Error",
+                "usr": "s:s5ErrorP",
+                "mangledName": "$ss5ErrorP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Sendable",
+                "printedName": "Sendable",
+                "usr": "s:s8SendableP",
+                "mangledName": "$ss8SendableP"
+              }
+            ]
+          }
+        ],
+        "declKind": "Struct",
+        "usr": "s:13Bls_Signature0aB5SwiftV",
+        "mangledName": "$s13Bls_Signature0aB5SwiftV",
+        "moduleName": "Bls_Signature",
+        "declAttributes": [
+          "AccessControl"
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}

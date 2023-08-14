@@ -275,6 +275,7 @@ class SignCommand: Command {
 @available(iOS 13.0, *)
 private extension SignCommand {
     enum Constants {
+        /// The max answer is 1152 bytes (unencrypted) and 1120 (encrypted). The worst case is 8 hashes * 64 bytes for ed + 512 bytes of signatures + cardId, SignedHashes + TLV + SW is ok.
         static let packageSize = 512
         static let maxChunkSize = 10
         static let maxChunkSizePoorNfcQualityDevice = 2

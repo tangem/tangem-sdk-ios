@@ -277,7 +277,11 @@ private extension SignCommand {
     enum Constants {
         /// The max answer is 1152 bytes (unencrypted) and 1120 (encrypted). The worst case is 8 hashes * 64 bytes for ed + 512 bytes of signatures + cardId, SignedHashes + TLV + SW is ok.
         static let packageSize = 512
+
+        /// Card limitation
         static let maxChunkSize = 10
+
+        /// Empirical value
         static let maxChunkSizePoorNfcQualityDevice = 2
     }
 }

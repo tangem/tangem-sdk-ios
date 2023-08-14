@@ -39,8 +39,8 @@ class SignCommand: Command {
         }
 
         if let hashSize = hashes.first?.count, hashSize > 0 {
-            let estimatedChunkSize = Int((Double(Constants.packageSize) / Double(hashSize)).rounded(.down))
-            let chunkSize = min(estimatedChunkSize, Constants.maxChunkSize)
+            let estimatedChunkSize = Constants.packageSize / hashSize
+            let chunkSize = max(1, min(estimatedChunkSize, Constants.maxChunkSize))
             return chunkSize
         }
 

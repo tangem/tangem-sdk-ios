@@ -33,7 +33,18 @@ class SignCommand: Command {
     }
     
     private lazy var chunkSize: Int = {
-        return NFCUtils.isPoorNfcQualityDevice ? 2 : 10
+        /// These devices are not able to sign long hashes.
+        if NFCUtils.isPoorNfcQualityDevice {
+            return Constants.maxChunkSizePoorNfcQualityDevice
+        }
+
+        if let hashSize = hashes.first?.count, hashSize > 0 {
+            let estimatedChunkSize = Int((Double(Constants.packageSize) / Double(hashSize)).rounded(.down))
+            let chunkSize = min(estimatedChunkSize, Constants.maxChunkSize)
+            return chunkSize
+        }
+
+        return Constants.maxChunkSize
     }()
     
     private lazy var numberOfChunks: Int = {
@@ -257,5 +268,15 @@ class SignCommand: Command {
               }
         
         return environment.terminalKeys
+    }
+}
+
+
+@available(iOS 13.0, *)
+private extension SignCommand {
+    enum Constants {
+        static let packageSize = 512
+        static let maxChunkSize = 10
+        static let maxChunkSizePoorNfcQualityDevice = 2
     }
 }

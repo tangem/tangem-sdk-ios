@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D62F3CB2A8BBC7000B6409B /* Bls_Signature.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */; };
 		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
 		5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04F9E126EF731B00D15F75 /* Publisher+.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
@@ -382,6 +383,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Bls_Signature.xcframework; sourceTree = "<group>"; };
 		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0243BD26CACACD00B76F37 /* IndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorView.swift; sourceTree = "<group>"; };
 		5D04F9E126EF731B00D15F75 /* Publisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+.swift"; sourceTree = "<group>"; };
@@ -759,6 +761,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D62F3CB2A8BBC7000B6409B /* Bls_Signature.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -773,6 +776,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2D62F3C92A8BBC7000B6409B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */,
+			);
+			path = Frameworks;
+			sourceTree = "<group>";
+		};
 		5D06F6AE2756676C006A15B9 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -1245,6 +1256,7 @@
 				5DF7CFCA233D034E00461F4D /* Common */,
 				5DFFC1A2234DC969001C2F35 /* Crypto */,
 				5DD536882476B3FA00F5DE88 /* Haptics */,
+				2D62F3C92A8BBC7000B6409B /* Frameworks */,
 			);
 			path = TangemSdk;
 			sourceTree = "<group>";

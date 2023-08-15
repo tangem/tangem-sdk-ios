@@ -93,7 +93,7 @@ public extension BLSUtils {
     /// Obtain public key from private key
     /// - Parameter privateKey: Private key hash string
     /// - Returns: Public key hash
-    func publicKey(from privateKey: String) throws -> String {
+    func makePublicKey(from privateKey: String) throws -> String {
         try BlsSignatureSwift.publicKey(from: privateKey)
     }
 

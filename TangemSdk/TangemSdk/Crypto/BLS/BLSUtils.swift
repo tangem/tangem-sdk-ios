@@ -73,27 +73,27 @@ extension BLSUtils {
 // MARK: - Bls_Signature Implementation
 
 @available(iOS 13.0, *)
-extension BLSUtils {
+public extension BLSUtils {
     /// Obtain G2 point for bls curve
     /// - Parameters:
     ///   - publicKey: Public key hash
     ///   - message: Message hash
     /// - Returns: Hash of G2Element point
-    public func augSchemeMplG2Map(publicKey: String, message: String) throws -> String {
+    func augSchemeMplG2Map(publicKey: String, message: String) throws -> String {
         try BlsSignatureSwift.augSchemeMplG2Map(publicKey: publicKey, message: message)
     }
 
     /// Perform Aggregate hash signatures
     /// - Parameter signatures: Signatures hash's
     /// - Returns: Hash of result aggreate signature at bls-signature library
-    public func aggregate(signatures: [String]) throws -> String {
+    func aggregate(signatures: [String]) throws -> String {
         try BlsSignatureSwift.aggregate(signatures: signatures)
     }
 
     /// Obtain public key from private key
     /// - Parameter privateKey: Private key hash string
     /// - Returns: Public key hash
-    public func publicKey(from privateKey: String) throws -> String {
+    func publicKey(from privateKey: String) throws -> String {
         try BlsSignatureSwift.publicKey(from: privateKey)
     }
 
@@ -103,7 +103,7 @@ extension BLSUtils {
     ///   - publicKey: Hash public key
     ///   - message: Has payload message
     /// - Returns: Bool result of valid or no
-    public func verify(signatures: [String], with publicKey: String, message: String) throws -> Bool {
+    func verify(signatures: [String], with publicKey: String, message: String) throws -> Bool {
         try BlsSignatureSwift.verify(signatures: signatures, with: publicKey, message: message)
     }
 }

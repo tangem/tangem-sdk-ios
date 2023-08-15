@@ -11,7 +11,7 @@ import CryptoKit
 import Bls_Signature
 
 @available(iOS 13.0, *)
-struct BLSUtils {
+public struct BLSUtils {
     // MARK: - Init
     
     public init() {}

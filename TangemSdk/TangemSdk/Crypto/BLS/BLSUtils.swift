@@ -8,9 +8,16 @@
 
 import Foundation
 import CryptoKit
+import Bls_Signature
 
 @available(iOS 13.0, *)
-struct BLSUtils {
+public struct BLSUtils {
+    // MARK: - Init
+    
+    public init() {}
+    
+    // MARK: - Implementation
+    
     /// hkdf_mod_r() implementaion (KeyGen)
     /// https://eips.ethereum.org/EIPS/eip-2333#hkdf_mod_r-1
     /// https://www.ietf.org/archive/id/draft-irtf-cfrg-bls-signature-05.html#name-keygen
@@ -60,5 +67,43 @@ extension BLSUtils {
 
     enum BLSError: Error {
         case keyGenerationFailed
+    }
+}
+
+// MARK: - Bls_Signature Implementation
+
+@available(iOS 13.0, *)
+public extension BLSUtils {
+    /// Obtain G2 point for bls curve
+    /// - Parameters:
+    ///   - publicKey: Public key hash
+    ///   - message: Message hash
+    /// - Returns: Hash of G2Element point
+    func augSchemeMplG2Map(publicKey: String, message: String) throws -> String {
+        try BlsSignatureSwift.augSchemeMplG2Map(publicKey: publicKey, message: message)
+    }
+
+    /// Perform Aggregate hash signatures
+    /// - Parameter signatures: Signatures hash's
+    /// - Returns: Hash of result aggreate signature at bls-signature library
+    func aggregate(signatures: [String]) throws -> String {
+        try BlsSignatureSwift.aggregate(signatures: signatures)
+    }
+
+    /// Obtain public key from private key
+    /// - Parameter privateKey: Private key hash string
+    /// - Returns: Public key hash
+    func makePublicKey(from privateKey: String) throws -> String {
+        try BlsSignatureSwift.publicKey(from: privateKey)
+    }
+
+    /// Verify message payload for signatures
+    /// - Parameters:
+    ///   - signatures: Hash signatures
+    ///   - publicKey: Hash public key
+    ///   - message: Has payload message
+    /// - Returns: Bool result of valid or no
+    func verify(signatures: [String], with publicKey: String, message: String) throws -> Bool {
+        try BlsSignatureSwift.verify(signatures: signatures, with: publicKey, message: message)
     }
 }

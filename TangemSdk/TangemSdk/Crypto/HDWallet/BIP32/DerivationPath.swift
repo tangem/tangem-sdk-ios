@@ -21,21 +21,44 @@ public struct DerivationPath: Equatable, Hashable {
     /// Parse derivation path.
     /// - Parameter rawPath: Path. E.g. "m/0'/0/1/0"
     public init(rawPath: String) throws {
-        let splittedPath = rawPath.lowercased().split(separator: BIP32.Constants.separatorSymbol)
+        let splittedPath = rawPath
+            .lowercased()
+            .split(separator: BIP32.Constants.separatorSymbol, omittingEmptySubsequences: false)
+            .map {
+                $0.trim()
+            }
+            .map {
+                $0.replacingOccurrences(of: BIP32.Constants.alternativeHardenedSymbol, with: BIP32.Constants.hardenedSymbol)
+            }
         
         guard splittedPath.count >= 2 else {
             throw HDWalletError.wrongPath
         }
         
-        guard splittedPath[0].trim() == BIP32.Constants.masterKeySymbol else {
+        guard splittedPath[0] == BIP32.Constants.masterKeySymbol else {
             throw HDWalletError.wrongPath
         }
         
         var derivationPath: [DerivationNode] = []
         
         for pathItem in splittedPath.suffix(from: 1) {
-            let isHardened = pathItem.contains(BIP32.Constants.hardenedSymbol) || pathItem.contains(BIP32.Constants.alternativeHardenedSymbol)
-            let cleanedPathItem = pathItem.trim().remove(BIP32.Constants.hardenedSymbol).remove(BIP32.Constants.alternativeHardenedSymbol)
+            if pathItem.isEmpty {
+                throw HDWalletError.wrongPath
+            }
+            
+            let isHardened: Bool
+            let cleanedPathItem: String
+            if pathItem.hasPrefix(BIP32.Constants.hardenedSymbol) {
+                isHardened = true
+                cleanedPathItem = String(pathItem.dropFirst(1))
+            } else if pathItem.hasSuffix(BIP32.Constants.hardenedSymbol) {
+                isHardened = true
+                cleanedPathItem = String(pathItem.dropLast(1))
+            } else {
+                isHardened = false
+                cleanedPathItem = pathItem
+            }
+
             guard let index = UInt32(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }

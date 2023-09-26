@@ -35,7 +35,10 @@ public struct DerivationPath: Equatable, Hashable {
             throw HDWalletError.wrongPath
         }
         
-        guard splittedPath[0] == BIP32.Constants.masterKeySymbol else {
+        let firstLevel = splittedPath[0]
+        guard firstLevel == BIP32.Constants.masterKeySymbol ||
+                firstLevel == (BIP32.Constants.masterKeySymbol + BIP32.Constants.hardenedSymbol)
+        else {
             throw HDWalletError.wrongPath
         }
         

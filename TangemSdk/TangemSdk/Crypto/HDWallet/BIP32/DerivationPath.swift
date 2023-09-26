@@ -51,12 +51,9 @@ public struct DerivationPath: Equatable, Hashable {
             
             let isHardened: Bool
             let cleanedPathItem: String
-            if pathItem.hasPrefix(BIP32.Constants.hardenedSymbol) {
+            if pathItem.hasSuffix(BIP32.Constants.hardenedSymbol) {
                 isHardened = true
-                cleanedPathItem = String(pathItem.dropFirst(1))
-            } else if pathItem.hasSuffix(BIP32.Constants.hardenedSymbol) {
-                isHardened = true
-                cleanedPathItem = String(pathItem.dropLast(1))
+                cleanedPathItem = String(pathItem.dropLast())
             } else {
                 isHardened = false
                 cleanedPathItem = pathItem

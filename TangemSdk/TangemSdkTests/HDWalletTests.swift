@@ -74,6 +74,8 @@ class HDWalletTests: XCTestCase {
         XCTAssertNil(derivationPathWrong5)
         let derivationPathWrong6 = try? DerivationPath(rawPath: "m/44'/0'/0'//1/0")
         XCTAssertNil(derivationPathWrong6)
+        let derivationPathWrong7 = try? DerivationPath(rawPath: "m'/44'/0'/0'/1/0")
+        XCTAssertNil(derivationPathWrong7)
         
         let derivationPathNormalized = try! DerivationPath(rawPath: "m/44'/0'/0/1'/1/5/5'/9/9'")
         let derivationPathNotNormalized = try! DerivationPath(rawPath: "m/044'/00'/00/001'/001/00005/00005'/00000000000000000000000000009/00000000000000000000000000009'")

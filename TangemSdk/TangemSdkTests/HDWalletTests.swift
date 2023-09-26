@@ -43,9 +43,8 @@ class HDWalletTests: XCTestCase {
         let derivationPath1 = try? DerivationPath(rawPath: "m/44'/0'/0'/1/0")
         let derivationPath2 = try? DerivationPath(rawPath: "M/44'/0'/0'/1/0")
         let derivationPath3 = DerivationPath(nodes: [.hardened(44), .hardened(0), .hardened(0), .nonHardened(1), .nonHardened(0)])
-        let derivationPath4 = try? DerivationPath(rawPath: "m/'44/'0/'0/1/0")
-        let derivationPath5 = try? DerivationPath(rawPath: "m/'44/’0/’0/1/0") // alternative quotes
-        let derivationPath6 = try? DerivationPath(rawPath: "m'/44'/0'/0'/1/0") // m with a quotation mark
+        let derivationPath4 = try? DerivationPath(rawPath: "m/44'/0’/0’/1/0") // alternative quotes
+        let derivationPath5 = try? DerivationPath(rawPath: "m'/44'/0'/0'/1/0") // m with a quotation mark
         XCTAssertNotNil(derivationPath)
         XCTAssertNotNil(derivationPath1)
         XCTAssertNotNil(derivationPath2)
@@ -54,7 +53,6 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(derivationPath?.nodes, derivationPath3.nodes)
         XCTAssertEqual(derivationPath?.nodes, derivationPath4?.nodes)
         XCTAssertEqual(derivationPath?.nodes, derivationPath5?.nodes)
-        XCTAssertEqual(derivationPath?.nodes, derivationPath6?.nodes)
         
         XCTAssertEqual(derivationPath?.nodes[0], DerivationNode.hardened(44))
         XCTAssertEqual(derivationPath?.nodes[1], DerivationNode.hardened(0))
@@ -76,6 +74,8 @@ class HDWalletTests: XCTestCase {
         XCTAssertNil(derivationPathWrong5)
         let derivationPathWrong6 = try? DerivationPath(rawPath: "m/44'/0'/0'//1/0")
         XCTAssertNil(derivationPathWrong6)
+        let derivationPathWrong7 = try? DerivationPath(rawPath: "m/'44/’0/’0/1/0")
+        XCTAssertNil(derivationPathWrong7)
         
         let derivationPathNormalized = try! DerivationPath(rawPath: "m/44'/0'/0/1'/1/5/5'/9/9'")
         let derivationPathNotNormalized = try! DerivationPath(rawPath: "m/044'/00'/00/001'/001/00005/00005'/00000000000000000000000000009/00000000000000000000000000009'")

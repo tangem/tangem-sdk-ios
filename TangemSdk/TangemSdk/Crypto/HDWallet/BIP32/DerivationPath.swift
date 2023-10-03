@@ -25,19 +25,21 @@ public struct DerivationPath: Equatable, Hashable {
             .lowercased()
             .split(separator: BIP32.Constants.separatorSymbol, omittingEmptySubsequences: false)
             .map {
-                $0.trim()
-            }
-            .map {
-                $0.replacingOccurrences(of: BIP32.Constants.alternativeHardenedSymbol, with: BIP32.Constants.hardenedSymbol)
+                $0
+                    .trim()
+                    .replacingOccurrences(
+                        of: BIP32.Constants.alternativeHardenedSymbol,
+                        with: BIP32.Constants.hardenedSymbol
+                    )
             }
         
         guard splittedPath.count >= 2 else {
             throw HDWalletError.wrongPath
         }
         
-        let firstLevel = splittedPath[0]
-        guard firstLevel == BIP32.Constants.masterKeySymbol ||
-                firstLevel == (BIP32.Constants.masterKeySymbol + BIP32.Constants.hardenedSymbol)
+        let masterNode = splittedPath[0]
+        guard masterNode == BIP32.Constants.masterKeySymbol ||
+                masterNode == (BIP32.Constants.masterKeySymbol + BIP32.Constants.hardenedSymbol)
         else {
             throw HDWalletError.wrongPath
         }
@@ -49,16 +51,9 @@ public struct DerivationPath: Equatable, Hashable {
                 throw HDWalletError.wrongPath
             }
             
-            let isHardened: Bool
-            let cleanedPathItem: String
-            if pathItem.hasSuffix(BIP32.Constants.hardenedSymbol) {
-                isHardened = true
-                cleanedPathItem = String(pathItem.dropLast())
-            } else {
-                isHardened = false
-                cleanedPathItem = pathItem
-            }
-
+            let isHardened = pathItem.hasSuffix(BIP32.Constants.hardenedSymbol)
+            let cleanedPathItem = isHardened ? String(pathItem.dropLast()) : pathItem
+            
             guard let index = UInt32(cleanedPathItem) else {
                 throw HDWalletError.wrongPath
             }

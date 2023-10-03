@@ -59,24 +59,27 @@ public enum SessionViewState {
 
 @available(iOS 13.0, *)
 extension UIAlertController {
-    static func showShouldContinue(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+    static func showShouldContinue(from controller: UIViewController, title: String, message: String, tint: UIColor, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "common_understand".localized, style: .destructive) { _ in onContinue() })
         alert.addAction(UIAlertAction(title: "common_cancel".localized, style: .cancel) { _ in onCancel() } )
+        alert.view.tintColor = tint
         controller.present(alert, animated: true)
     }
     
-    static func showShouldContinue(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
+    static func showShouldContinue(from controller: UIViewController, title: String, message: String, tint: UIColor, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "common_understand".localized, style: .destructive) { _ in onContinue() })
         alert.addAction(UIAlertAction(title: "common_retry".localized, style: .default) { _ in onRetry() })
         alert.addAction(UIAlertAction(title: "common_cancel".localized, style: .cancel) { _ in onCancel() } )
+        alert.view.tintColor = tint
         controller.present(alert, animated: true)
     }
     
-    static func showAlert(from controller: UIViewController, title: String, message: String, onContinue: @escaping () -> Void) {
+    static func showAlert(from controller: UIViewController, title: String, message: String, tint: UIColor, onContinue: @escaping () -> Void) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "common_ok".localized, style: .default) { _ in onContinue() })
+        alert.view.tintColor = tint
         controller.present(alert, animated: true)
     }
 }

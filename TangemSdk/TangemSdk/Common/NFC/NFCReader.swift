@@ -34,7 +34,7 @@ final class NFCReader: NSObject {
     @Published private var invalidatedWithError: TangemSdkError? = nil
     
     @Published private var isSessionReady: Bool = false
-    
+
     /// Session cancellation publisher. Transforms cancellation to error
     private var cancellationPublisher: AnyPublisher<Void, TangemSdkError> {
         $cancelled
@@ -77,7 +77,10 @@ final class NFCReader: NSObject {
     private var startRetryCount = Constants.startRetryCount
     private let pollingOption: NFCTagReaderSession.PollingOption
     private var sessionDidBecomeActiveTimestamp: Date = .init()
-    
+
+    /// Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection. Bug?
+    private var firstConnectionDate: Date? = nil
+
     init(pollingOption: NFCTagReaderSession.PollingOption = [.iso14443]) {
         self.pollingOption = pollingOption
     }
@@ -197,7 +200,19 @@ extension NFCReader: CardReader {
                       session.isReady else {
                     return
                 }
-                
+
+                // Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection. Bug?
+                if #available(iOS 17.0.3, *), let firstConnectionDate {
+                    let interval = Date().timeIntervalSince(firstConnectionDate)
+                    Log.nfc("Restart polling interval is: \(interval)")
+
+                    // 20 is too much because of time inaccuracy
+                    if interval >= 19 {
+                        Log.nfc("Ignore restart polling")
+                        return
+                    }
+                }
+
                 self.isSilentRestartPolling = isSilent
                 Log.nfc("Restart polling invoked")
                 self.tagDidDisconnect()
@@ -313,6 +328,7 @@ extension NFCReader: CardReader {
     }
     
     private func start() {
+        firstConnectionDate = nil
         readerSession?.invalidate() //Important! We must keep invalidate/begin in balance after start retries
         readerSession = NFCTagReaderSession(pollingOption: self.pollingOption, delegate: self, queue: queue)!
         readerSession!.alertMessage = _alertMessage!
@@ -458,6 +474,11 @@ extension NFCReader: NFCTagReaderSessionDelegate {
     
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
         Log.nfc("NFC tag detected: \(tags)")
+
+        if firstConnectionDate == nil {
+            firstConnectionDate = Date()
+        }
+
         let nfcTag = tags.first!
         
         sessionConnectCancellable = session.connectPublisher(tag: nfcTag)

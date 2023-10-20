@@ -202,7 +202,7 @@ extension NFCReader: CardReader {
                 }
 
                 // Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection. Bug?
-                if #available(iOS 17.0.3, *), let firstConnectionDate {
+                if #available(iOS 17.0.3, *), let firstConnectionDate = self.firstConnectionDate {
                     let interval = Date().timeIntervalSince(firstConnectionDate)
                     Log.nfc("Restart polling interval is: \(interval)")
 

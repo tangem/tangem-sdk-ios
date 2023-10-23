@@ -78,8 +78,18 @@ final class NFCReader: NSObject {
     private let pollingOption: NFCTagReaderSession.PollingOption
     private var sessionDidBecomeActiveTimestamp: Date = .init()
 
-    /// Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection. Bug?
+    /// Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection on some devices
+    private lazy var shouldReduceRestartPolling: Bool = {
+        if #available(iOS 17.0.3, *), NFCUtils.isBrokenRestartPollingDevice {
+            return true
+        }
+
+        return false
+    }()
+
     private var firstConnectionDate: Date? = nil
+
+    private lazy var nfcUtils: NFCUtils = .init()
 
     init(pollingOption: NFCTagReaderSession.PollingOption = [.iso14443]) {
         self.pollingOption = pollingOption
@@ -201,8 +211,7 @@ extension NFCReader: CardReader {
                     return
                 }
 
-                // Starting from iOS 17.0.3 is no longer possible to invoke restart polling after 20 seconds from first connection. Bug?
-                if #available(iOS 17.0.3, *), let firstConnectionDate = self.firstConnectionDate {
+                if shouldReduceRestartPolling, let firstConnectionDate = self.firstConnectionDate {
                     let interval = Date().timeIntervalSince(firstConnectionDate)
                     Log.nfc("Restart polling interval is: \(interval)")
 

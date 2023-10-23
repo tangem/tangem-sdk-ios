@@ -78,7 +78,7 @@ final class NFCReader: NSObject {
     private let pollingOption: NFCTagReaderSession.PollingOption
     private var sessionDidBecomeActiveTimestamp: Date = .init()
 
-    /// Starting from iOS 17  is no longer possible to invoke restart polling after 20 seconds from first connection on some devices
+    /// Starting from iOS  is no longer possible to invoke restart polling after 20 seconds from first connection on some devices
     private lazy var shouldReduceRestartPolling: Bool = {
         if #available(iOS 17, *), NFCUtils.isBrokenRestartPollingDevice {
             return true
@@ -87,7 +87,7 @@ final class NFCReader: NSObject {
         return false
     }()
 
-    private var firstConnectionDate: Date? = nil
+    private var firstConnectionTimestamp: Date? = nil
 
     private lazy var nfcUtils: NFCUtils = .init()
 
@@ -211,8 +211,8 @@ extension NFCReader: CardReader {
                     return
                 }
 
-                if shouldReduceRestartPolling, let firstConnectionDate = self.firstConnectionDate {
-                    let interval = Date().timeIntervalSince(firstConnectionDate)
+                if self.shouldReduceRestartPolling, let firstConnectionTimestamp = self.firstConnectionTimestamp {
+                    let interval = Date().timeIntervalSince(firstConnectionTimestamp)
                     Log.nfc("Restart polling interval is: \(interval)")
 
                     // 20 is too much because of time inaccuracy
@@ -337,7 +337,7 @@ extension NFCReader: CardReader {
     }
     
     private func start() {
-        firstConnectionDate = nil
+        firstConnectionTimestamp = nil
         readerSession?.invalidate() //Important! We must keep invalidate/begin in balance after start retries
         readerSession = NFCTagReaderSession(pollingOption: self.pollingOption, delegate: self, queue: queue)!
         readerSession!.alertMessage = _alertMessage!
@@ -484,8 +484,8 @@ extension NFCReader: NFCTagReaderSessionDelegate {
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
         Log.nfc("NFC tag detected: \(tags)")
 
-        if firstConnectionDate == nil {
-            firstConnectionDate = Date()
+        if firstConnectionTimestamp == nil {
+            firstConnectionTimestamp = Date()
         }
 
         let nfcTag = tags.first!

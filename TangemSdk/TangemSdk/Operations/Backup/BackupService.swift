@@ -28,7 +28,16 @@ public class BackupService: ObservableObject {
             return false
         }
     }
-    
+
+    public var config: Config {
+        get {
+            sdk.config
+        }
+        set {
+            sdk.config = newValue
+        }
+    }
+
     public var addedBackupCardsCount: Int { repo.data.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }

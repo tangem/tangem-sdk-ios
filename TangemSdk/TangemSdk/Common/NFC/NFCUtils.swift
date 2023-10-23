@@ -25,9 +25,18 @@ public class NFCUtils {
     public static var isPoorNfcQualityDevice: Bool {
         return poorNFCQualityDevices.contains(identifier)
     }
-    
+
+    static var isBrokenRestartPollingDevice: Bool {
+        return brokenRestartPollingDevices.contains(identifier)
+    }
+
+    // iPhone 7 family
     private static let poorNFCQualityDevices = ["iPhone9,1", "iPhone9,3", "iPhone9,2", "iPhone9,4"]
-    
+
+    // iPhone 14 Pro/Pro Max has issues with restart polling after 20 seconds from first connection on iOS 17+.
+    // We have no confirmed cases for iPhone 14/14 Plus ("iPhone14,7", "iPhone14,8")
+    private static let brokenRestartPollingDevices = ["iPhone15,2", "iPhone15,3"]
+
     private static var identifier: String = {
         var systemInfo = utsname()
         uname(&systemInfo)

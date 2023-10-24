@@ -104,10 +104,12 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         let title = TangemSdkError.cardVerificationFailed.localizedDescription
         let message = isDevelopmentCard ? "attestation_failed_dev_card".localized
             : "attestation_failed_card".localized
+        let tint = style.colors.tintUIColor
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,
                                                              message: message,
+                                                             tint: tint,
                                                              onContinue: onContinue,
                                                              onCancel: onCancel))
     }
@@ -121,10 +123,12 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         
         let title =  "attestation_online_failed_title".localized
         let message = "attestation_online_failed_body".localized
+        let tint = style.colors.tintUIColor
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
                                                              title: title,
                                                              message: message,
+                                                             tint: tint,
                                                              onContinue: onContinue,
                                                              onCancel: onCancel,
                                                              onRetry: onRetry))
@@ -139,9 +143,11 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         
         let title = "common_warning".localized
         let message = "attestation_warning_attest_wallets".localized
+        let tint = style.colors.tintUIColor
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,
                                                     message: message,
+                                                    tint: tint,
                                                     onContinue: onContinue))
     }
 }

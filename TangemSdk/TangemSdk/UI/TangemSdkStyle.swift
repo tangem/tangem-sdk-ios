@@ -22,7 +22,9 @@ public class TangemSdkStyle: ObservableObject {
 @available(iOS 13.0, *)
 public extension TangemSdkStyle {
     struct Colors {
+        /// Tint color of the interface. Note that due to the inability to convert SwiftUI.Color to UIKit.UIColor you have to set the two separately
         public var tint: Color = .blue
+        public var tintUIColor: UIColor = .blue
         
         public var errorTint: Color = .red
         

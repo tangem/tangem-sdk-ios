@@ -20,7 +20,12 @@ public extension JSONStringConvertible {
         let data = (try? JSONEncoder.tangemSdkEncoder.encode(self)) ?? Data()
         return String(data: data, encoding: .utf8)!
     }
-    
+
+    var testJson: String {
+        let data = (try? JSONEncoder.tangemSdkTestEncoder.encode(self)) ?? Data()
+        return String(data: data, encoding: .utf8)!
+    }
+
     func eraseToAnyResponse() -> AnyJSONRPCResponse {
         AnyJSONRPCResponse(self)
     }

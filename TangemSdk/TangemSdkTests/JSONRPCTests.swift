@@ -92,17 +92,8 @@ class JSONRPCTests: XCTestCase {
     func testJsonResponse() {
         let response = SuccessResponse(cardId: "c000111122223333")
         let result: Result<SuccessResponse, TangemSdkError> = .success(response)
-        let jsonResponse = result.toJsonResponse(id: 1).json
-        let testResponse =
-            """
-            {
-              "jsonrpc" : "2.0",
-              "result" : {
-                "cardId" : "c000111122223333"
-              },
-              "id" : 1
-            }
-            """
+        let jsonResponse = result.toJsonResponse(id: 1).testJson
+        let testResponse = "{\"id\":1,\"jsonrpc\":\"2.0\",\"result\":{\"cardId\":\"c000111122223333\"}}"
         XCTAssertEqual(jsonResponse, testResponse)
     }
     

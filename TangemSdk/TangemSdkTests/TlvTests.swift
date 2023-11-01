@@ -177,7 +177,7 @@ class TlvTests: XCTestCase {
         
         //test dateTime
         let date: Date = try! cardDataDecoder.decode(.manufactureDateTime)
-        let dateString =  date.toString(style: .short)
+        let dateString =  date.toString(style: .short, locale: Locale(identifier: "en_US"))
         XCTAssertEqual(dateString, "7/27/18")
         
         let dateWrong: Int? = try? cardDataDecoder.decode(.manufactureDateTime)

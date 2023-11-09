@@ -109,7 +109,7 @@ public class ResetPinService: ObservableObject {
         }
         
         self.session = TangemSdk().makeSession(with: config,
-                                               cardId: resetCardId,
+                                               sessionFilter: .init(from: resetCardId),
                                                initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()])))
 
         let command = GetResetPinTokenCommand()
@@ -137,7 +137,7 @@ public class ResetPinService: ObservableObject {
         }
         
         self.session = TangemSdk().makeSession(with: config,
-                                               cardId: nil,
+                                               sessionFilter: nil,
                                                initialMessage: Message(header: "reset_codes_scan_confirmation_card".localized))
 
         let command = SignResetPinTokenCommand(resetPinCard: resetPinCard)
@@ -193,7 +193,7 @@ public class ResetPinService: ObservableObject {
         }
         
         self.session = TangemSdk().makeSession(with: config,
-                                               cardId: resetPinCard.cardId,
+                                               sessionFilter: .cardId(resetPinCard.cardId),
                                                initialMessage: Message(header: "reset_codes_scan_to_reset".localized))
 
         let command = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)

@@ -39,11 +39,12 @@ public enum PreflightReadMode: Decodable, Equatable {
 @available(iOS 13.0, *)
 final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
-    private let cardId: String?
-    
-    init(readMode: PreflightReadMode, cardId: String?) {
+    private let filterFactory: PreflightReadFilterFactory?
+    private var filter: PreflightReadFilter?
+
+    init(readMode: PreflightReadMode, filterFactory: PreflightReadFilterFactory?) {
         self.readMode = readMode
-        self.cardId = cardId
+        self.filterFactory = filterFactory
     }
     
     deinit {
@@ -55,19 +56,12 @@ final class PreflightReadTask: CardSessionRunnable {
         ReadCommand().run(in: session) { result in
             switch result {
             case .success(let readResponse):
-                if session.environment.config.handleErrors {
-                    if let expectedCardId = self.cardId?.uppercased(),
-                       expectedCardId != readResponse.cardId.uppercased() {
-                        let formatter = CardIdFormatter(style: session.environment.config.cardIdDisplayFormat)
-                        let expectedCardIdFormatted = formatter.string(from: expectedCardId)
-                        completion(.failure(.wrongCardNumber(expectedCardId: expectedCardIdFormatted)))
-                        return
-                    }
-                }
-                
                 do {
-                    let filter = session.environment.config.filter
-                    try filter.verifyCard(readResponse)
+                    let permanentFilter = session.environment.config.filter
+                    try permanentFilter.verifyCard(readResponse)
+
+                    let preflightFilter = self.getFilter(for: readResponse)
+                    try preflightFilter?.onCardRead(readResponse, environment: session.environment)
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
                     return
@@ -110,7 +104,15 @@ final class PreflightReadTask: CardSessionRunnable {
                     completion(.failure(.missingPreflightRead))
                     return
                 }
-                
+
+                do {
+                    let preflightFilter = self.getFilter(for: card)
+                    try preflightFilter?.onFullCardRead(card, environment: session.environment)
+                } catch {
+                    completion(.failure(error.toTangemSdkError()))
+                    return
+                }
+
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
@@ -122,5 +124,13 @@ final class PreflightReadTask: CardSessionRunnable {
         if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
             session.environment.config.cardIdDisplayFormat = .none
         }
+    }
+
+    private func getFilter(for card: Card) -> PreflightReadFilter? {
+        if filter == nil {
+            filter = filterFactory?.makePreflightReadFilter(for: card)
+        }
+
+        return filter
     }
 }

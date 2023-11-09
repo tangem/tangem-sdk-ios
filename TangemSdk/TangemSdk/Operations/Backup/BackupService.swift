@@ -222,6 +222,7 @@ public class BackupService: ObservableObject {
         currentCommand = command
 
         sdk.startSession(with: command,
+                         sessionFilter: nil,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }

@@ -607,12 +607,36 @@ extension TangemSdk {
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
-    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
+    public func startSession<T>(with runnable: T,
+                                completion: @escaping CompletionResult<T.Response>)
+    where T : CardSessionRunnable {
+        do {
+            try checkSession()
+        } catch {
+            completion(.failure(error.toTangemSdkError()))
+            return
+        }
+
+        configure()
+        cardSession = makeSession(with: config,
+                                  sessionFilter: nil,
+                                  initialMessage: nil,
+                                  accessCode: nil)
+        cardSession!.start(with: runnable, completion: completion)
+    }
+
+    /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
+    /// invoke the `run ` method of `CardSessionRunnable` and close the session.
+    /// You can find the current card in the `environment` property of the `CardSession`
+    /// - Parameters:
+    ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
+    ///   - sessionFilter: Filters card to be read. Optional.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used.
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
-                                cardId: String? = nil,
+                                sessionFilter: SessionFilter?,
                                 initialMessage: Message? = nil,
                                 accessCode: String? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
@@ -623,13 +647,35 @@ extension TangemSdk {
             completion(.failure(error.toTangemSdkError()))
             return
         }
-        
+
         configure()
         cardSession = makeSession(with: config,
-                                  cardId: cardId,
+                                  sessionFilter: sessionFilter,
                                   initialMessage: initialMessage,
                                   accessCode: accessCode)
         cardSession!.start(with: runnable, completion: completion)
+    }
+
+    /// Allows running a custom bunch of commands in one NFC Session by creating a custom task. Tangem SDK will start a card session, perform preflight `Read` command,
+    /// invoke the `run ` method of `CardSessionRunnable` and close the session.
+    /// You can find the current card in the `environment` property of the `CardSession`
+    /// - Parameters:
+    ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
+    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used.
+    ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
+    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
+    public func startSession<T>(with runnable: T,
+                                cardId: String? = nil,
+                                initialMessage: Message? = nil,
+                                accessCode: String? = nil,
+                                completion: @escaping CompletionResult<T.Response>)
+    where T : CardSessionRunnable {
+        startSession(with: runnable,
+                     sessionFilter: .init(from: cardId),
+                     initialMessage: initialMessage,
+                     accessCode: accessCode,
+                     completion: completion)
     }
     
     /// Allows running  a custom bunch of commands in one NFC Session with lightweight closure syntax. Tangem SDK will start a card sesion and perform preflight `Read` command.
@@ -653,7 +699,7 @@ extension TangemSdk {
         
         configure()
         cardSession = makeSession(with: config,
-                                  cardId: cardId,
+                                  sessionFilter: .init(from: cardId),
                                   initialMessage: initialMessage,
                                   accessCode: accessCode)
         cardSession?.start(callback)
@@ -673,8 +719,7 @@ extension TangemSdk {
                              initialMessage: String? = nil,
                              accessCode: String? = nil,
                              completion: @escaping (String) -> Void) {
-        
-        
+
         do {
             let parseResult = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
             let runnables = try parseResult.requests.map { try jsonConverter.convert(request: $0) }
@@ -682,7 +727,7 @@ extension TangemSdk {
             try checkSession()
             configure()
             cardSession = makeSession(with: config,
-                                      cardId: cardId,
+                                      sessionFilter: .init(from: cardId),
                                       initialMessage: initialMessage.flatMap { Message($0) },
                                       accessCode: accessCode)
             
@@ -735,7 +780,7 @@ extension TangemSdk {
     }
     
     func makeSession(with config: Config,
-                     cardId: String?,
+                     sessionFilter: SessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
@@ -745,7 +790,7 @@ extension TangemSdk {
         }
         
         return CardSession(environment: env,
-                           cardId: cardId,
+                           sessionFilter: sessionFilter,
                            initialMessage: initialMessage,
                            cardReader: reader,
                            viewDelegate: viewDelegate,

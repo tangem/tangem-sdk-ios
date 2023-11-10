@@ -9,16 +9,15 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public struct CardIdPreflightReadFilter: PreflightReadFilter {
-    public let expectedCardId: String
+struct CardIdPreflightReadFilter: PreflightReadFilter {
+    private let expectedCardId: String
 
-    public init(cardId: String) {
+    init(cardId: String) {
         expectedCardId = cardId
     }
 
-    public func onCardRead(_ card: Card, environment: SessionEnvironment) throws {
-        guard environment.config.handleErrors,
-              expectedCardId.caseInsensitiveCompare(card.cardId) != .orderedSame else {
+    func onCardRead(_ card: Card, environment: SessionEnvironment) throws {
+        if expectedCardId.caseInsensitiveCompare(card.cardId) == .orderedSame {
             return
         }
 
@@ -27,5 +26,5 @@ public struct CardIdPreflightReadFilter: PreflightReadFilter {
         throw TangemSdkError.wrongCardNumber(expectedCardId: expectedCardIdFormatted)
     }
 
-    public func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws {}
+    func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws {}
 }

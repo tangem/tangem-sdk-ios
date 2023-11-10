@@ -9,18 +9,17 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public struct PublicKeyPreflightReadFilter: PreflightReadFilter {
+struct PublicKeyPreflightReadFilter: PreflightReadFilter {
     private let expectedPublicKeyId: Data
 
-    public init(publicKeyId: Data) {
+    init(publicKeyId: Data) {
         expectedPublicKeyId = publicKeyId
     }
 
-    public func onCardRead(_ card: Card, environment: SessionEnvironment) throws {}
+    func onCardRead(_ card: Card, environment: SessionEnvironment) throws {}
 
-    public func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws {
-        guard environment.config.handleErrors,
-              let firstPublicKey = card.wallets.first?.publicKey else {
+    func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws {
+        guard let firstPublicKey = card.wallets.first?.publicKey else {
             return
         }
 

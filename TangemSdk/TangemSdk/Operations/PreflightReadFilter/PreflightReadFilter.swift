@@ -10,17 +10,16 @@ import Foundation
 
 @available(iOS 13.0, *)
 /// Use this filter to filter out cards on preflight read stage. If preflight mode is set to `readCardOnly` or `fullCardRead`
-public protocol PreflightReadFilter {
+protocol PreflightReadFilter {
     /// This method calls right after public information is read. User code is not required.  If preflight mode is set to `readCardOnly` or `fullCardRead`
     /// - Parameter card: The card that was read
     /// - Parameter environment: Current environment
-    /// - Throws: Throw an error with a localized message to the user, if the card should not be worked with.
+    /// - Throws: Throw `wrongCardNumber` with a localized message to the user, if the card should not be worked with.
     func onCardRead(_ card: Card, environment: SessionEnvironment) throws
 
     /// This method calls right after full card information is read. User code is required.  If preflight mode is set to `fullCardRead`
     /// - Parameter card: The card that was read
     /// - Parameter environment: Current environment
-    /// - Throws: Throw an error with a localized message to the user, if the card should not be worked with.
+    /// - Throws: Throw `walletNotFound` with a localized message to the user, if the card should not be worked with.
     func onFullCardRead(_ card: Card, environment: SessionEnvironment) throws
 }
-

@@ -60,8 +60,11 @@ final class PreflightReadTask: CardSessionRunnable {
                     let permanentFilter = session.environment.config.filter
                     try permanentFilter.verifyCard(readResponse)
 
-                    let preflightFilter = self.getFilter(for: readResponse)
-                    try preflightFilter?.onCardRead(readResponse, environment: session.environment)
+                    if session.environment.config.handleErrors {
+                        let preflightFilter = self.getFilter(for: readResponse)
+                        try preflightFilter?.onCardRead(readResponse, environment: session.environment)
+                    }
+
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
                     return
@@ -105,12 +108,14 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
 
-                do {
-                    let preflightFilter = self.getFilter(for: card)
-                    try preflightFilter?.onFullCardRead(card, environment: session.environment)
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                    return
+                if session.environment.config.handleErrors {
+                    do {
+                        let preflightFilter = self.getFilter(for: card)
+                        try preflightFilter?.onFullCardRead(card, environment: session.environment)
+                    } catch {
+                        completion(.failure(error.toTangemSdkError()))
+                        return
+                    }
                 }
 
                 completion(.success(card))

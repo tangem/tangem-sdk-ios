@@ -417,7 +417,7 @@ public class CardSession {
                 onSessionStarted(self, nil)
             case .failure(let error):
                 switch error {
-                case .wrongCardType, .wrongCardNumber:
+                case .wrongCardType, .wrongCardNumber, .walletNotFound:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {

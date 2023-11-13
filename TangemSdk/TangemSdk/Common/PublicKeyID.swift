@@ -1,5 +1,5 @@
 //
-//  PublicKeyId.swift
+//  PublicKeyID.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 09.11.2023.
@@ -10,7 +10,7 @@ import Foundation
 import CryptoKit
 
 @available(iOS 13.0, *)
-public struct PublicKeyId {
+public struct PublicKeyID {
     public private (set) var value: Data
 
     public init(value: Data) {
@@ -26,7 +26,7 @@ public struct PublicKeyId {
 }
 
 @available(iOS 13.0, *)
-private extension PublicKeyId {
+private extension PublicKeyID {
     enum Constants {
         static let message = "UserWalletID".data(using: .utf8)!
     }

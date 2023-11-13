@@ -23,7 +23,7 @@ struct PublicKeyPreflightReadFilter: PreflightReadFilter {
             return
         }
 
-        let publicKeyId = PublicKeyId(walletPublicKey: firstPublicKey)
+        let publicKeyId = PublicKeyID(walletPublicKey: firstPublicKey)
         if publicKeyId.value != expectedPublicKeyId {
             throw TangemSdkError.walletNotFound
         }

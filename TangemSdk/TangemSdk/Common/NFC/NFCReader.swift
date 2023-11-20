@@ -216,7 +216,7 @@ extension NFCReader: CardReader {
                     Log.nfc("Restart polling interval is: \(interval)")
 
                     // 20 is too much because of time inaccuracy
-                    if interval >= 19 {
+                    if interval >= 18 {
                         Log.nfc("Ignore restart polling")
                         return
                     }

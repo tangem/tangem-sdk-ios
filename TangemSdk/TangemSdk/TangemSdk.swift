@@ -636,7 +636,7 @@ extension TangemSdk {
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
-                                sessionFilter: SessionFilter?,
+                                sessionFilter: CardSessionFilter?,
                                 initialMessage: Message? = nil,
                                 accessCode: String? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
@@ -780,7 +780,7 @@ extension TangemSdk {
     }
     
     func makeSession(with config: Config,
-                     sessionFilter: SessionFilter?,
+                     sessionFilter: CardSessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)

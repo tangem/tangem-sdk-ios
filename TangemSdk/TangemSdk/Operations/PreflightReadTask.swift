@@ -39,12 +39,11 @@ public enum PreflightReadMode: Decodable, Equatable {
 @available(iOS 13.0, *)
 final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
-    private let filterFactory: PreflightReadFilterFactory?
-    private var filter: PreflightReadFilter?
+    private let preflightFilter: PreflightReadFilter?
 
-    init(readMode: PreflightReadMode, filterFactory: PreflightReadFilterFactory?) {
+    init(readMode: PreflightReadMode, filter: PreflightReadFilter?) {
         self.readMode = readMode
-        self.filterFactory = filterFactory
+        self.preflightFilter = filter
     }
     
     deinit {
@@ -61,12 +60,11 @@ final class PreflightReadTask: CardSessionRunnable {
                     try permanentFilter.verifyCard(readResponse)
 
                     if session.environment.config.handleErrors {
-                        let preflightFilter = self.getFilter(for: readResponse)
-                        try preflightFilter?.onCardRead(readResponse, environment: session.environment)
+                        try self.preflightFilter?.onCardRead(readResponse, environment: session.environment)
                     }
 
                 } catch {
-                    completion(.failure(error.toTangemSdkError()))
+                    completion(.failure(.preflightFiltered(error)))
                     return
                 }
                 
@@ -110,10 +108,9 @@ final class PreflightReadTask: CardSessionRunnable {
 
                 if session.environment.config.handleErrors {
                     do {
-                        let preflightFilter = self.getFilter(for: card)
-                        try preflightFilter?.onFullCardRead(card, environment: session.environment)
+                        try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
                     } catch {
-                        completion(.failure(error.toTangemSdkError()))
+                        completion(.failure(.preflightFiltered(error)))
                         return
                     }
                 }
@@ -129,13 +126,5 @@ final class PreflightReadTask: CardSessionRunnable {
         if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
             session.environment.config.cardIdDisplayFormat = .none
         }
-    }
-
-    private func getFilter(for card: Card) -> PreflightReadFilter? {
-        if filter == nil {
-            filter = filterFactory?.makePreflightReadFilter(for: card)
-        }
-
-        return filter
     }
 }

@@ -46,7 +46,7 @@ public class CardSession {
     private var resetCodesController: ResetCodesController? = nil
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository? = nil
-    private let sessionFilter: SessionFilter?
+    private let sessionFilter: CardSessionFilter?
 
     private var shouldRequestBiometrics: Bool {
         guard let accessCodeRepository = self.accessCodeRepository else {
@@ -70,7 +70,7 @@ public class CardSession {
     ///   - jsonConverter: JSONRPCConverter
     ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
     init(environment: SessionEnvironment,
-         sessionFilter: SessionFilter? = nil,
+         sessionFilter: CardSessionFilter? = nil,
          initialMessage: Message? = nil,
          cardReader: CardReader,
          viewDelegate: SessionViewDelegate,
@@ -407,8 +407,7 @@ public class CardSession {
     // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        let filterFactory = sessionFilter.map { CommonPreflightReadFilterFactory(with: $0) }
-        let preflightTask = PreflightReadTask(readMode: preflightReadMode, filterFactory: filterFactory)
+        let preflightTask = PreflightReadTask(readMode: preflightReadMode, filter: sessionFilter?.preflightReadFilter)
         preflightTask.run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
@@ -417,7 +416,7 @@ public class CardSession {
                 onSessionStarted(self, nil)
             case .failure(let error):
                 switch error {
-                case .wrongCardType, .wrongCardNumber, .walletNotFound:
+                case .preflightFiltered:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {

@@ -199,7 +199,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].
     case wrongCardType(_ localizedDescription: String?)
-    
+
+    case preflightFiltered(_ error: Error)
+
     /// This error is returned when the scanned card doesn't have some essential fields.
     case cardError
     
@@ -429,7 +431,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .underlying: return 50012
         case .userForgotTheCode: return 50013
         case .biometricsUnavailable: return 50014
-            
+        case .preflightFiltered: return 50015
+
         case .wrongInteractionMode: return 50027
             
             // MARK: 9xxxx Errors
@@ -498,7 +501,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardType(let localizedDescription): return localizedDescription ?? "error_wrong_card_type".localized
         case .accessCodeRequired: return "error_pin_required_format".localized(UserCodeType.accessCode.name)
         case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)
-        case .underlying(let error): return error.localizedDescription
+        case .underlying(let error), .preflightFiltered(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
         case .walletNotFound: return "wallet_not_found".localized
         case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)

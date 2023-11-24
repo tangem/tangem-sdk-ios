@@ -620,7 +620,7 @@ extension TangemSdk {
 
         configure()
         cardSession = makeSession(with: config,
-                                  sessionFilter: nil,
+                                  filter: nil,
                                   initialMessage: nil,
                                   accessCode: nil)
         cardSession!.start(with: runnable, completion: completion)
@@ -631,12 +631,12 @@ extension TangemSdk {
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
-    ///   - sessionFilter: Filters card to be read. Optional.
+    ///   - filter: Filters card to be read. Optional.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used.
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
-                                sessionFilter: CardSessionFilter?,
+                                filter: SessionFilter?,
                                 initialMessage: Message? = nil,
                                 accessCode: String? = nil,
                                 completion: @escaping CompletionResult<T.Response>)
@@ -650,7 +650,7 @@ extension TangemSdk {
 
         configure()
         cardSession = makeSession(with: config,
-                                  sessionFilter: sessionFilter,
+                                  filter: filter,
                                   initialMessage: initialMessage,
                                   accessCode: accessCode)
         cardSession!.start(with: runnable, completion: completion)
@@ -672,7 +672,7 @@ extension TangemSdk {
                                 completion: @escaping CompletionResult<T.Response>)
     where T : CardSessionRunnable {
         startSession(with: runnable,
-                     sessionFilter: .init(from: cardId),
+                     filter: .init(from: cardId),
                      initialMessage: initialMessage,
                      accessCode: accessCode,
                      completion: completion)
@@ -699,7 +699,7 @@ extension TangemSdk {
         
         configure()
         cardSession = makeSession(with: config,
-                                  sessionFilter: .init(from: cardId),
+                                  filter: .init(from: cardId),
                                   initialMessage: initialMessage,
                                   accessCode: accessCode)
         cardSession?.start(callback)
@@ -727,7 +727,7 @@ extension TangemSdk {
             try checkSession()
             configure()
             cardSession = makeSession(with: config,
-                                      sessionFilter: .init(from: cardId),
+                                      filter: .init(from: cardId),
                                       initialMessage: initialMessage.flatMap { Message($0) },
                                       accessCode: accessCode)
             
@@ -780,7 +780,7 @@ extension TangemSdk {
     }
     
     func makeSession(with config: Config,
-                     sessionFilter: CardSessionFilter?,
+                     filter: SessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
@@ -790,7 +790,7 @@ extension TangemSdk {
         }
         
         return CardSession(environment: env,
-                           sessionFilter: sessionFilter,
+                           filter: filter,
                            initialMessage: initialMessage,
                            cardReader: reader,
                            viewDelegate: viewDelegate,

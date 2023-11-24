@@ -85,6 +85,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
         
         if card.firmwareVersion < .multiwalletAvailable {
+            filterOnReadWalletsList(card: card, session, completion)
             completion(.success(card))
             return
         }
@@ -106,22 +107,26 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
 
-                if session.environment.config.handleErrors {
-                    do {
-                        try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
-                    } catch {
-                        completion(.failure(.preflightFiltered(error)))
-                        return
-                    }
-                }
-
+                self.filterOnReadWalletsList(card: card, session, completion)
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
-    
+
+    private func filterOnReadWalletsList(card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+        guard session.environment.config.handleErrors else {
+            return
+        }
+
+        do {
+            try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
+        } catch {
+            completion(.failure(.preflightFiltered(error)))
+        }
+    }
+
     private func updateEnvironmentIfNeeded(for card: Card, in session: CardSession) {
         if FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) {
             session.environment.config.cardIdDisplayFormat = .none

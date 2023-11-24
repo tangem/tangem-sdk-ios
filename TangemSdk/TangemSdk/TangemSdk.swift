@@ -661,10 +661,10 @@ extension TangemSdk {
     /// You can find the current card in the `environment` property of the `CardSession`
     /// - Parameters:
     ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
-    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the card with this cardID and will return the `wrongCard` error otherwise
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used.
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
-    ///   - completion: Standart completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
+    ///   - completion: Standard completion handler. Invoked on the main thread. `(Swift.Result<CardSessionRunnable.Response, TangemSdkError>) -> Void`.
     public func startSession<T>(with runnable: T,
                                 cardId: String? = nil,
                                 initialMessage: Message? = nil,

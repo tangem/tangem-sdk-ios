@@ -33,8 +33,10 @@ public class CardSession {
         }
     }
 
+    // initial environment to be able to reset a current one
+    private let _environment: SessionEnvironment
     public internal(set) var environment: SessionEnvironment
-    
+
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter
     private let initialMessage: Message?
@@ -78,6 +80,7 @@ public class CardSession {
          accessCodeRepository: AccessCodeRepository?) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
+        self._environment = environment
         self.environment = environment
         self.initialMessage = initialMessage
         self.sessionFilter = sessionFilter
@@ -418,6 +421,8 @@ public class CardSession {
                 switch error {
                 case .preflightFiltered:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
+                    // We have to return environment to initial state to reset all the changes
+                    environment = _environment
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)

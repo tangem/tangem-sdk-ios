@@ -422,7 +422,7 @@ public class CardSession {
                 case .preflightFiltered:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     // We have to return environment to initial state to reset all the changes
-                    environment = _environment
+                    self.environment = self._environment
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)

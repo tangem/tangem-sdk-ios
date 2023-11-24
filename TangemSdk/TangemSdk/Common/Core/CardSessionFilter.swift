@@ -1,5 +1,5 @@
 //
-//  CardSessionFilter.swift
+//  SessionFilter.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 09.11.2023.
@@ -9,13 +9,13 @@
 import Foundation
 
 @available(iOS 13.0, *)
-public enum CardSessionFilter {
+public enum SessionFilter {
     case cardId(String)
     case custom(PreflightReadFilter)
 }
 
 @available(iOS 13.0, *)
-extension CardSessionFilter {
+extension SessionFilter {
     var preflightReadFilter: PreflightReadFilter {
         switch self {
         case .cardId(let cardId):

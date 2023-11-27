@@ -85,7 +85,14 @@ final class PreflightReadTask: CardSessionRunnable {
         }
         
         if card.firmwareVersion < .multiwalletAvailable {
-            filterOnReadWalletsList(card: card, session, completion)
+
+            do {
+                try self.filterOnReadWalletsList(card: card, session)
+            } catch {
+                completion(.failure(.preflightFiltered(error)))
+                return
+            }
+
             completion(.success(card))
             return
         }
@@ -107,7 +114,13 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
 
-                self.filterOnReadWalletsList(card: card, session, completion)
+                do {
+                    try self.filterOnReadWalletsList(card: card, session)
+                } catch {
+                    completion(.failure(.preflightFiltered(error)))
+                    return
+                }
+
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
@@ -115,7 +128,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
     }
 
-    private func filterOnReadWalletsList(card: Card, _ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+    private func filterOnReadWalletsList(card: Card, _ session: CardSession) throws {
         guard session.environment.config.handleErrors else {
             return
         }
@@ -123,7 +136,7 @@ final class PreflightReadTask: CardSessionRunnable {
         do {
             try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
         } catch {
-            completion(.failure(.preflightFiltered(error)))
+            throw TangemSdkError.preflightFiltered(error)
         }
     }
 

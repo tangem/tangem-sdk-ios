@@ -21,13 +21,22 @@ public class CardSession {
     public let viewDelegate: SessionViewDelegate
     
     var state: CardSessionState = .inactive
+
     /// Contains data relating to the current Tangem card. It is used in constructing all the commands,
     /// and commands can modify `SessionEnvironment`.
-    
-    private(set) var cardId: String?
-    
+    var cardId: String? {
+        switch filter {
+        case .cardId(let cardId):
+            return cardId
+        default:
+            return nil
+        }
+    }
+
+    // initial environment to be able to reset a current one
+    private let _environment: SessionEnvironment
     public internal(set) var environment: SessionEnvironment
-    
+
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter
     private let initialMessage: Message?
@@ -39,7 +48,8 @@ public class CardSession {
     private var resetCodesController: ResetCodesController? = nil
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository? = nil
-    
+    private let filter: SessionFilter?
+
     private var shouldRequestBiometrics: Bool {
         guard let accessCodeRepository = self.accessCodeRepository else {
             return false
@@ -55,14 +65,14 @@ public class CardSession {
     /// Main initializer
     /// - Parameters:
     ///   - environment: Contains data relating to a Tangem card
-    ///   - cardId: CID, Unique Tangem card ID number. If not nil, the SDK will check that you tapped the  card with this cardID and will return the `wrongCard` error' otherwise
+    ///   - filter: Filters card to be read. Optional.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
     ///   - jsonConverter: JSONRPCConverter
     ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
     init(environment: SessionEnvironment,
-         cardId: String? = nil,
+         filter: SessionFilter? = nil,
          initialMessage: Message? = nil,
          cardReader: CardReader,
          viewDelegate: SessionViewDelegate,
@@ -70,9 +80,10 @@ public class CardSession {
          accessCodeRepository: AccessCodeRepository?) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
+        self._environment = environment
         self.environment = environment
         self.initialMessage = initialMessage
-        self.cardId = cardId
+        self.filter = filter
         self.jsonConverter = jsonConverter
         self.accessCodeRepository = accessCodeRepository
     }
@@ -399,7 +410,7 @@ public class CardSession {
     // MARK: - Preflight check
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
-        let preflightTask = PreflightReadTask(readMode: preflightReadMode, cardId: cardId)
+        let preflightTask = PreflightReadTask(readMode: preflightReadMode, filter: filter?.preflightReadFilter)
         preflightTask.run(in: self) { [weak self] readResult in
             guard let self = self else { return }
             
@@ -408,8 +419,10 @@ public class CardSession {
                 onSessionStarted(self, nil)
             case .failure(let error):
                 switch error {
-                case .wrongCardType, .wrongCardNumber:
+                case .preflightFiltered:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
+                    // We have to return environment to initial state to reset all the changes
+                    self.environment = self._environment
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)

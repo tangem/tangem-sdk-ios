@@ -17,7 +17,7 @@
 
 #define SECP256K1_BUILD
 
-#include "../include/secp256k1.h"
+#include "../include/secp256k1_tangem.h"
 #include "../include/secp256k1_preallocated.h"
 
 #include "assumptions.h"

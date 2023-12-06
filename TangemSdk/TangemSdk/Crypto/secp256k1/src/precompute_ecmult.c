@@ -7,7 +7,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#include "../include/secp256k1.h"
+#include "../include/secp256k1_tangem.h"
 
 #include "assumptions.h"
 #include "util.h"

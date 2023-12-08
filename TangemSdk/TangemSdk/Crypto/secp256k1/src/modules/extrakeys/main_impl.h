@@ -7,7 +7,7 @@
 #ifndef SECP256K1_MODULE_EXTRAKEYS_MAIN_H
 #define SECP256K1_MODULE_EXTRAKEYS_MAIN_H
 
-#include "../../../include/secp256k1.h"
+#include "../../../include/secp256k1_tangem.h"
 #include "../../../include/secp256k1_extrakeys.h"
 #include "../../util.h"
 

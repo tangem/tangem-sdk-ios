@@ -1,7 +1,7 @@
 #ifndef SECP256K1_EXTRAKEYS_H
 #define SECP256K1_EXTRAKEYS_H
 
-#include "secp256k1.h"
+#include "secp256k1_tangem.h"
 
 #ifdef __cplusplus
 extern "C" {

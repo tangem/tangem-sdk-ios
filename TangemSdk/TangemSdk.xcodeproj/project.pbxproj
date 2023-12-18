@@ -631,6 +631,8 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		B6B958982B2FCA8600E7B74E /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Gemfile; path = ../Gemfile; sourceTree = "<group>"; };
+		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -1236,6 +1238,8 @@
 		5DA80C90231D247A00A50A10 = {
 			isa = PBXGroup;
 			children = (
+				B6B958982B2FCA8600E7B74E /* Gemfile */,
+				B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */,
 				5DDF4F89235F06F600E46EAB /* Info.plist */,
 				5DA80C9C231D247A00A50A10 /* TangemSdk */,
 				5DA80CA7231D247A00A50A10 /* TangemSdkTests */,

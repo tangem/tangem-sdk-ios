@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  TangemSdk: f3adf8d0c18bf7a76406462fa31c0efa9f2efa93
+  TangemSdk: 61e07ff112d4095cfa688fa7d4694e59fa29f76d
 
 PODFILE CHECKSUM: fb4745483d8583db4c8ae8aa3ccbde86ca112a6b
 

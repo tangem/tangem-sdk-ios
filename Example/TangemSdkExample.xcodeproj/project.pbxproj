@@ -598,7 +598,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(inherited) /Users/alexander.osokin/repos/tangem/tangem-ios/TangemSdk/TangemSdk/TangemSdk/Crypto/Ed25519/CEd25519";
+				SWIFT_INCLUDE_PATHS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -620,7 +620,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = "$(inherited) /Users/alexander.osokin/repos/tangem/tangem-ios/TangemSdk/TangemSdk/TangemSdk/Crypto/Ed25519/CEd25519";
+				SWIFT_INCLUDE_PATHS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -634,7 +634,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = "TangemSdkExample copy-Info.plist";
+				INFOPLIST_FILE = "TangemSdkExample/Info-Development.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -654,7 +654,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = "TangemSdkExample copy-Info.plist";
+				INFOPLIST_FILE = "TangemSdkExample/Info-Development.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

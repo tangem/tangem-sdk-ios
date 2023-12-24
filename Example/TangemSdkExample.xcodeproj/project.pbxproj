@@ -139,10 +139,10 @@
 				5D032008266A8523008472EC /* ExampleButton.swift */,
 				5DDCEC7425C957930002090D /* UI+.swift */,
 				B00A67B2253D8CAC002D7D53 /* Utils.swift */,
-				5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */,
-				5D78C1C2234F435C008D7478 /* Assets.xcassets */,
 				5D78C1B9234F435B008D7478 /* AppDelegate.swift */,
 				5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */,
+				5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */,
+				5D78C1C2234F435C008D7478 /* Assets.xcassets */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -185,12 +185,12 @@
 		5D78C1B8234F435B008D7478 /* TangemSdkExample */ = {
 			isa = PBXGroup;
 			children = (
+				5D03200C266A8548008472EC /* Common */,
 				5D2BDF7E26DCE000002F7E19 /* Developer */,
 				5D032000266A6A15008472EC /* AppModel.swift */,
 				5D031FFC266A6960008472EC /* ContentView.swift */,
-				5D03200C266A8548008472EC /* Common */,
-				5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */,
 				5D1C6C7127214EA900E04A8B /* SettingsView.swift */,
+				5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */,
 			);
 			path = TangemSdkExample;
 			sourceTree = "<group>";

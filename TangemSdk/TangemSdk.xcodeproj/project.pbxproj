@@ -245,6 +245,7 @@
 		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
+		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
@@ -305,7 +306,6 @@
 		DCD2D7F42A1CE66000AB00B6 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */; };
 		DCD2D7F52A1CE66000AB00B6 /* secp256k1_extrakeys.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */; };
 		DCD2D7F62A1CE66000AB00B6 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */; };
-		DCD2D7F72A1CE66000AB00B6 /* secp256k1.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7862A1CE66000AB00B6 /* secp256k1.h */; };
 		DCD2D8BA2A1CF64A00AB00B6 /* scalar_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */; };
 		DCD2D8BD2A1CF64A00AB00B6 /* field_10x26_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */; };
 		DCD2D8BE2A1CF64A00AB00B6 /* testrand_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */; };
@@ -631,6 +631,7 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		B6936A662B387B040024826A /* secp256k1_tangem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_tangem.h; sourceTree = "<group>"; };
 		B6B958982B2FCA8600E7B74E /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Gemfile; path = ../Gemfile; sourceTree = "<group>"; };
 		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
@@ -694,7 +695,6 @@
 		DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
 		DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_extrakeys.h; sourceTree = "<group>"; };
 		DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
-		DCD2D7862A1CE66000AB00B6 /* secp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1.h; sourceTree = "<group>"; };
 		DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_impl.h; sourceTree = "<group>"; };
 		DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26_impl.h; sourceTree = "<group>"; };
 		DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testrand_impl.h; sourceTree = "<group>"; };
@@ -790,13 +790,6 @@
 				2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */,
 			);
 			path = Frameworks;
-			sourceTree = "<group>";
-		};
-		5D06F6AE2756676C006A15B9 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		5D0BAAEA25CD87DF00E6A2B6 /* Log */ = {
@@ -1030,7 +1023,6 @@
 		5D4B128126D40C67006E173C /* Backup */ = {
 			isa = PBXGroup;
 			children = (
-				5D06F6AE2756676C006A15B9 /* Entities */,
 				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
 				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
 				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
@@ -1579,12 +1571,12 @@
 		DCD2D7802A1CE66000AB00B6 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				B6936A662B387B040024826A /* secp256k1_tangem.h */,
 				DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */,
 				DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */,
 				DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */,
 				DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */,
 				DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */,
-				DCD2D7862A1CE66000AB00B6 /* secp256k1.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -1761,12 +1753,12 @@
 				DCD2D8F62A1CF64A00AB00B6 /* assumptions.h in Headers */,
 				DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */,
 				DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */,
-				DCD2D7F72A1CE66000AB00B6 /* secp256k1.h in Headers */,
 				DCD2D8CD2A1CF64A00AB00B6 /* field_5x52.h in Headers */,
 				DCD2D9012A1CF64A00AB00B6 /* int128_struct_impl.h in Headers */,
 				DCD2D8D72A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h in Headers */,
 				DCD2D8FF2A1CF64A00AB00B6 /* ecmult_const.h in Headers */,
 				DCD2D8D22A1CF64A00AB00B6 /* scalar_4x64.h in Headers */,
+				B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */,
 				DCD2D8C82A1CF64A00AB00B6 /* selftest.h in Headers */,
 				DCD2D8EE2A1CF64A00AB00B6 /* int128_struct.h in Headers */,
 			);

@@ -366,7 +366,6 @@
 		DCD2D91C2A1CF64A00AB00B6 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */; };
 		DCD2D91D2A1CF64A00AB00B6 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B82A1CF64A00AB00B6 /* eckey.h */; };
 		DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */; };
-		DCD2D9222A1CFA8400AB00B6 /* precompute_ecmult.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */; };
 		DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */; };
 		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
@@ -755,7 +754,6 @@
 		DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low.h; sourceTree = "<group>"; };
 		DCD2D8B82A1CF64A00AB00B6 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
 		DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
-		DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = precompute_ecmult.c; sourceTree = "<group>"; };
 		DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
 		DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchnorrSignature.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
@@ -1584,7 +1582,6 @@
 		DCD2D84C2A1CF64900AB00B6 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */,
 				DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */,
 				DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */,
 				DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */,
@@ -2038,7 +2035,6 @@
 				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
-				DCD2D9222A1CFA8400AB00B6 /* precompute_ecmult.c in Sources */,
 				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,

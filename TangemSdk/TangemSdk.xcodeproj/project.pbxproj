@@ -1087,7 +1087,7 @@
 		5D6A92D52344E2B400158457 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+				B67A9C132B38D79500EE9ED8 /* Resources */,
 				5D6A92DB2344E3A500158457 /* Localization.swift */,
 			);
 			path = Localization;
@@ -1486,6 +1486,14 @@
 				5D270F2626A020DA00D2EDC1 /* WalletDataDeserializer.swift */,
 			);
 			path = Deserialization;
+			sourceTree = "<group>";
+		};
+		B67A9C132B38D79500EE9ED8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		B6CA42212B38B5A700C9A5C9 /* Extensions */ = {

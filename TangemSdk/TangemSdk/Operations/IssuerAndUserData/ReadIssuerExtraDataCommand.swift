@@ -1,11 +1,13 @@
-////
-////  ReadIssuerExtraDataCommand.swift
-////  TangemSdk
-////
-////  Created by Alexander Osokin on 26.02.2020.
-////  Copyright © 2020 Tangem AG. All rights reserved.
-////
 //
+//  ReadIssuerExtraDataCommand.swift
+//  TangemSdk
+//
+//  Created by Alexander Osokin on 26.02.2020.
+//  Copyright © 2020 Tangem AG. All rights reserved.
+//
+
+import Foundation
+
 /// This enum specifies modes for `ReadIssuerExtraDataCommand` and  `WriteIssuerExtraDataCommand`.
 public enum IssuerExtraDataMode: Byte, InteractionMode {
     ///This mode is required to read issuer extra data from the card. This mode is required to initiate writing issuer extra data to the card.

@@ -17,7 +17,7 @@
                BlueprintIdentifier = "5D78C1B5234F435B008D7478"
                BuildableName = "TangemSdkExample.app"
                BlueprintName = "TangemSdkExample"
-               ReferencedContainer = "container:TangemSDKExample.xcodeproj">
+               ReferencedContainer = "container:TangemSdkExample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,7 +47,7 @@
             BlueprintIdentifier = "5D78C1B5234F435B008D7478"
             BuildableName = "TangemSdkExample.app"
             BlueprintName = "TangemSdkExample"
-            ReferencedContainer = "container:TangemSDKExample.xcodeproj">
+            ReferencedContainer = "container:TangemSdkExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "5D78C1B5234F435B008D7478"
             BuildableName = "TangemSdkExample.app"
             BlueprintName = "TangemSdkExample"
-            ReferencedContainer = "container:TangemSDKExample.xcodeproj">
+            ReferencedContainer = "container:TangemSdkExample.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

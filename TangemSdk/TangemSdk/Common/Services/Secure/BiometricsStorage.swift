@@ -64,7 +64,7 @@ public class BiometricsStorage {
         Log.debug("BiometricsStorage set - status \(status.message) \(status)")
         
         if status == errSecDuplicateItem && overwrite {
-            var searchQuery: [CFString: Any] = [
+            let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,

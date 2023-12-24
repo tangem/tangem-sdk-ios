@@ -35,13 +35,8 @@ let package = Package(
                 "TangemSdk.h",
             ],
             resources: [
-                .process("Common/Localization/de.lproj"),
-                .process("Common/Localization/en.lproj"),
-                .process("Common/Localization/fr.lproj"),
-                .process("Common/Localization/it.lproj"),
-                .process("Common/Localization/ru.lproj"),
-                .process("Common/Localization/zh-Hant.lproj"),
-                .copy("Haptics/"),
+                .process("Common/Localization/Resources"),
+                .copy("Haptics"),
                 .copy("Crypto/BIP39/Wordlists/english.txt"),
             ]
         ),
@@ -60,7 +55,7 @@ let package = Package(
             ],
             path: "TangemSdk/TangemSdkTests",
             resources: [
-                .copy("Jsons/"),
+                .copy("Jsons"),
             ]
         ),
     ]

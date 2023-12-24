@@ -13,10 +13,12 @@ import XCTest
 @available(iOS 13.0, *)
 class JSONRPCTests: XCTestCase {
     var testCard: Card {
-        let json = readFile(name: "Card")
-        let data = json.data(using: .utf8)
-        XCTAssertNotNil(data)
-        return try! JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
+        get throws {
+            let json = try Bundle.readFileAsString(name: "Card", in: .root)
+            let data = json.data(using: .utf8)
+            XCTAssertNotNil(data)
+            return try JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
+        }
     }
 
     func testDecodeMasterExtendedPublicKey() throws {
@@ -112,11 +114,11 @@ class JSONRPCTests: XCTestCase {
         XCTAssert(data[1] == Data(hexString: "AABBCCDDEEFFGG"))
     }
     
-    func testScan() {
-        testMethod(name: "Scan", result: testCard)
+    func testScan() throws {
+        try testMethod(name: "Scan", in: .root, result: testCard)
     }
     
-    func testCreateWallet() {
+    func testCreateWallet() throws {
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "5130869115a2ff91959774c99d4dc2873f0c41af3e0bb23d027ab16d39de1348"),
                                                               chainCode: nil,
@@ -128,10 +130,10 @@ class JSONRPCTests: XCTestCase {
                                                               proof: nil,
                                                               isImported: false,
                                                               hasBackup: false))
-        testMethod(name: "CreateWallet", result: result)
+        try testMethod(name: "CreateWallet", in: .root, result: result)
     }
 
-    func testImportWalletMnemonic() {
+    func testImportWalletMnemonic() throws {
         let result = CreateWalletResponse(cardId: "c000111122223333",
                                           wallet: Card.Wallet(publicKey: Data(hexString: "029983A77B155ED3B3B9E1DDD223BD5AA073834C8F61113B2F1B883AAA70971B5F"),
                                                               chainCode: Data(hexString: "C7A888C4C670406E7AAEB6E86555CE0C4E738A337F9A9BC239F6D7E475110A4E"),
@@ -143,95 +145,95 @@ class JSONRPCTests: XCTestCase {
                                                               proof: nil,
                                                               isImported: false,
                                                               hasBackup: false))
-        testMethod(name: "ImportWalletMnemonic", result: result)
+        try testMethod(name: "ImportWalletMnemonic", in: .root, result: result)
     }
     
-    func testPurgeWallet() {
+    func testPurgeWallet() throws {
         let result = PurgeWalletCommand.Response(cardId: "c000111122223333")
-        testMethod(name: "PurgeWallet", result: result)
+        try testMethod(name: "PurgeWallet", in: .root, result: result)
     }
     
-    func testDepersonalize() {
+    func testDepersonalize() throws {
         let result = DepersonalizeResponse(success: true)
-        testMethod(name: "Depersonalize", result: result)
+        try testMethod(name: "Depersonalize", in: .root, result: result)
     }
     
-    func testPersonalize() {
-        testPersonalizeConfig(name: "v4")
-        testPersonalizeConfig(name: "v3.05ada")
+    func testPersonalize() throws {
+        try testPersonalizeConfig(name: "v4")
+        try testPersonalizeConfig(name: "v3.05ada")
     }
     
-    func testSetPin1() {
+    func testSetPin1() throws {
         let result = SuccessResponse(cardId: "c000111122223333")
         
-        testMethod(name: "SetAccessCode", result: result)
+        try testMethod(name: "SetAccessCode", in: .root, result: result)
     }
     
-    func testSetPin2() {
+    func testSetPin2() throws {
         let result = SuccessResponse(cardId: "c000111122223333")
         
-        testMethod(name: "SetPasscode", result: result)
+        try testMethod(name: "SetPasscode", in: .root, result: result)
     }
     
-    func testSignHashes() {
+    func testSignHashes() throws {
         let result = SignHashesResponse(cardId: "c000111122223333",
                                         signatures: [Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
                                                      Data(hexString: "33443bd93f350b62a90a0c23d30c6d4e9bb164606e809ccace60cf0e2591e58c")],
                                         totalSignedHashes: 2)
         
-        testMethod(name: "SignHashes", result: result)
+        try testMethod(name: "SignHashes", in: .root, result: result)
     }
     
-    func testSignHash() {
+    func testSignHash() throws {
         let result = SignHashResponse(cardId: "c000111122223333",
                                       signature: Data(hexString: "eb7411c2b7d871c06dad51e58e44746583ad134f4e214e4899f2fc84802232a1"),
                                       totalSignedHashes: 2)
         
-        testMethod(name: "SignHash", result: result)
+        try testMethod(name: "SignHash", in: .root, result: result)
     }
     
-    func testDerivePublicKey() {
+    func testDerivePublicKey() throws {
         let result = ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                        chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"))
         
-        testMethod(name: "DeriveWalletPublicKey", result: result)
+        try testMethod(name: "DeriveWalletPublicKey", in: .root, result: result)
     }
     
-    func testDerivePublicKeys() {
+    func testDerivePublicKeys() throws {
         let keys = [try! DerivationPath(rawPath: "m/44'/0'") : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")),
                     try! DerivationPath(rawPath: "m/44'/1'")  : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"))]
         let result = DerivedKeys(keys: keys)
-        testMethod(name: "DeriveWalletPublicKeys", result: result)
+        try testMethod(name: "DeriveWalletPublicKeys", in: .root, result: result)
     }
 
-    func testUserCodeRecoveryAllowed() {
+    func testUserCodeRecoveryAllowed() throws {
         let result = SuccessResponse(cardId: "c000111122223333")
 
-        testMethod(name: "SetUserCodeRecoveryAllowed", result: result)
+        try testMethod(name: "SetUserCodeRecoveryAllowed", in: .root, result: result)
     }
 
-    func testAttestCardKey() {
+    func testAttestCardKey() throws {
         let result = AttestCardKeyResponse(cardId: "c000111122223333",
                                            salt: Data(hexString: "BBBBBBBBBBBB"),
                                            cardSignature: Data(hexString: "AAAAAAAAAAAA"),
                                            challenge: Data(hexString: "000000000000"),
                                            linkedCardPublicKeys: [])
 
-        testMethod(name: "AttestCardKey", result: result)
+        try testMethod(name: "AttestCardKey", in: .root, result: result)
     }
 
 
-    func testFiles() {
-        testMethod(name: "ReadFiles", result: [File(data: Data(hexString: "00AABBCCDD"),
+    func testFiles() throws {
+        try testMethod(name: "ReadFiles", in: .files, result: [File(data: Data(hexString: "00AABBCCDD"),
                                                     index: 0,
                                                     settings: FileSettings(isPermanent: false,
                                                                            visibility: .public))])
 
-        testMethod(name: "DeleteFiles", result: DeleteFilesTask.Response(cardId: "c000111122223333"))
-        testMethod(name: "WriteFiles", result: WriteFilesTask.Response(cardId: "c000111122223333", filesIndices: [0,1]))
-        testMethod(name: "ChangeFileSettings", result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
+        try testMethod(name: "DeleteFiles", in: .files, result: DeleteFilesTask.Response(cardId: "c000111122223333"))
+        try testMethod(name: "WriteFiles", in: .files, result: WriteFilesTask.Response(cardId: "c000111122223333", filesIndices: [0,1]))
+        try testMethod(name: "ChangeFileSettings", in: .files, result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
     }
     
     func testMethodNotFound() {
@@ -248,9 +250,9 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
-    func testParseRequest() {
+    func testParseRequest() throws {
         let name = "TestParseRequest"
-        let fileText = readFile(name: name)
+        let fileText = try Bundle.readFileAsString(name: name, in: .root)
         let jsonData = fileText.data(using: .utf8)!
         
         do {
@@ -299,8 +301,8 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
-    private func testPersonalizeConfig(name: String) {
-        guard let testData = getTestData(for: name) else {
+    private func testPersonalizeConfig(name: String) throws {
+        guard let testData = try getTestData(for: name, in: .personalize) else {
             XCTAssert(false, "Failed to create test data \(name)")
             return
         }
@@ -316,8 +318,8 @@ class JSONRPCTests: XCTestCase {
         }
     }
     
-    private func testMethod<TResult: Encodable>(name: String, result: TResult) {
-        guard let testData = getTestData(for: name) else {
+    private func testMethod<TResult: Encodable>(name: String, in folder: Bundle.Folder, result: TResult) throws {
+        guard let testData = try getTestData(for: name, in: folder) else {
             XCTAssert(false, "Failed to create test data \(name)")
             return
         }
@@ -345,25 +347,8 @@ class JSONRPCTests: XCTestCase {
         XCTAssertEqual(resultData.utf8String!.lowercased(), resultJsonData.utf8String!.lowercased())
     }
     
-    private func testMethodRequest(name: String) {
-        guard let testData = getTestData(for: name) else {
-            XCTAssert(false, "Failed to create test data \(name)")
-            return
-        }
-        
-        //test request
-        do {
-           let request = try JSONRPCRequest(jsonString: testData.request)
-            //test convert request
-            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
-        } catch {
-            XCTAssert(false, "Failed to create request for \(name)")
-            return
-        }
-    }
-    
-    private func getTestData(for method: String) -> (request: String, response: Data)? {
-        let fileText = readFile(name: method)
+    private func getTestData(for method: String, in folder: Bundle.Folder) throws -> (request: String, response: Data)? {
+        let fileText = try Bundle.readFileAsString(name: method, in: folder)
         let jsonData = fileText.data(using: .utf8)!
         
         do {
@@ -379,7 +364,7 @@ class JSONRPCTests: XCTestCase {
             if let response = json["response"] {
                 responseData = try JSONSerialization.data(withJSONObject: response, options: .prettyPrinted)
             } else {
-                let cardResponse = "{\"result\": \(testCard.json)}"
+                let cardResponse = "{\"result\": \(try testCard.json)}"
                 responseData = cardResponse.data(using: .utf8)!
             }
 
@@ -394,11 +379,5 @@ class JSONRPCTests: XCTestCase {
             XCTAssert(false, "Failed to parse test json \(name)")
             return nil
         }
-    }
-    
-    private func readFile(name: String) -> String {
-        let bundle = Bundle(for: type(of: self))
-        let path = bundle.path(forResource: name, ofType: "json")!
-        return try! String(contentsOfFile: path)
     }
 }

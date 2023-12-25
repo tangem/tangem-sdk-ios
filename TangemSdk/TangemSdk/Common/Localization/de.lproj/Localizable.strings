@@ -39,7 +39,7 @@
 "generic_error_code" = "Während des Vorgangs ist ein Fehler aufgetreten. Code: %@.";
 "issuer_signature_loading_failed" = "Couldn't load the card's certificate. Please try again later.";
 "nfc_alert_default_done" = "Erledigt";
-"nfc_session_timeout" = "Die Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.";
+"nfc_session_timeout" = "Incomplete process. To finalize the operation, kindly tap the card again";
 "nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone. Try to reboot your phone.";
 "pin1" = "Zugangscode";
 "pin2" = "Passcode";

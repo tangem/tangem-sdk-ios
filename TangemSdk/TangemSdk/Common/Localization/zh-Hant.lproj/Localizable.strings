@@ -39,7 +39,7 @@
 "generic_error_code" = "操作過程中發生錯誤。代碼: %@";
 "issuer_signature_loading_failed" = "無法從服務器加載卡的認證。稍後再試";
 "nfc_alert_default_done" = "完畢";
-"nfc_session_timeout" = "會話超時。請再試一遍";
+"nfc_session_timeout" = "Incomplete process. To finalize the operation, kindly tap the card again";
 "nfc_stuck_error" = "It seems that NFC does not work properly on your iPhone. Try to reboot your phone.";
 "pin1" = "訪問密碼";
 "pin2" = "密碼";

@@ -26,7 +26,7 @@ public final class StartPrimaryCardLinkingCommand: Command {
         if !card.settings.isBackupAllowed {
             return .backupNotAllowed
         }
-
+        
         guard let backupStatus = card.backupStatus, backupStatus.canBackup else {
             return TangemSdkError.backupFailedAlreadyCreated
         }
@@ -46,7 +46,7 @@ public final class StartPrimaryCardLinkingCommand: Command {
         return CommandApdu(.startPrimaryCardLinking, tlv: tlvBuilder.serialize())
     }
     
-    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> RawPrimaryCard {
+    func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PrimaryCard {
         guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
             throw TangemSdkError.deserializeApduFailed
         }
@@ -61,15 +61,15 @@ public final class StartPrimaryCardLinkingCommand: Command {
             throw TangemSdkError.missingPreflightRead
         }
         
-        return RawPrimaryCard(cardId: try decoder.decode(.cardId),
-                              cardPublicKey: cardPublicKey,
-                              linkingKey: try decoder.decode(.primaryCardLinkingKey),
-                              existingWalletsCount: card.wallets.count,
-                              isHDWalletAllowed: card.settings.isHDWalletAllowed,
-                              issuer: card.issuer,
-                              walletCurves: card.wallets.map { $0.curve },
-                              batchId: card.batchId,
-                              firmwareVersion: card.firmwareVersion,
-                              isKeysImportAllowed: card.settings.isKeysImportAllowed)
+        return PrimaryCard(cardId: try decoder.decode(.cardId),
+                           cardPublicKey: cardPublicKey,
+                           linkingKey: try decoder.decode(.primaryCardLinkingKey),
+                           existingWalletsCount: card.wallets.count,
+                           isHDWalletAllowed: card.settings.isHDWalletAllowed,
+                           issuer: card.issuer,
+                           walletCurves: card.wallets.map { $0.curve },
+                           batchId: card.batchId,
+                           firmwareVersion: card.firmwareVersion,
+                           isKeysImportAllowed: card.settings.isKeysImportAllowed)
     }
 }

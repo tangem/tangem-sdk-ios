@@ -77,6 +77,27 @@ public class BackupService: ObservableObject {
             }
         }
 
+        if primaryCard.certificate == nil {
+            fetchCertificate(
+                for: primaryCard.cardId,
+                cardPublicKey: primaryCard.cardPublicKey,
+                firmwareVersion: primaryCard.firmwareVersion) { [weak self] result in
+                    guard let self else { return }
+
+                    switch result {
+                    case .success(let certificate):
+                        var primaryCard = primaryCard
+                        primaryCard.certificate = certificate
+                        self.repo.data.primaryCard = primaryCard
+                        self.readBackupCard(primaryCard, completion: completion)
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+
+            return
+        }
+
         readBackupCard(primaryCard, completion: completion)
     }
 
@@ -160,7 +181,7 @@ public class BackupService: ObservableObject {
                     body: "backup_prepare_primary_card_message_format".localized($0)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
 
-        let command = StartPrimaryCardLinkingTask()
+        let command = StartPrimaryCardLinkingCommand()
         currentCommand = command
         sdk.startSession(with: command,
                          cardId: cardId,
@@ -206,13 +227,27 @@ public class BackupService: ObservableObject {
         return currentState
     }
 
-    private func addBackupCard(_ backupCard: BackupCard) {
+    private func addBackupCard(_ backupCard: BackupCard, completion: @escaping CompletionResult<Void>) {
         if let existingIndex = repo.data.backupCards.firstIndex(where: { $0.cardId == backupCard.cardId }) {
             repo.data.backupCards.remove(at: existingIndex)
         }
 
-        repo.data.backupCards.append(backupCard)
-        updateState()
+        fetchCertificate(for: backupCard.cardId,
+                         cardPublicKey: backupCard.cardPublicKey,
+                         firmwareVersion: backupCard.firmwareVersion) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let certificate):
+                var backupCard = backupCard
+                backupCard.certificate = certificate
+                self.repo.data.backupCards.append(backupCard)
+                self.updateState()
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
@@ -229,8 +264,7 @@ public class BackupService: ObservableObject {
 
             switch result {
             case .success(let response):
-                self.addBackupCard(response)
-                completion(.success(()))
+                self.addBackupCard(response, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -369,7 +403,24 @@ public class BackupService: ObservableObject {
     private func onBackupCompleted() {
         repo.reset()
     }
+
+    private func fetchCertificate(
+        for cardId: String,
+        cardPublicKey: Data,
+        firmwareVersion: FirmwareVersion?,
+        completion: @escaping CompletionResult<Data>) {
+            // FirmwareVersion is optional because of compatibility with old stored data format. But in case of non-upgraded users we can safely assume, that fw version type is release.
+            let firmwareVersionType = firmwareVersion?.type ?? .release
+            let developmentMode = firmwareVersionType == .sdk
+            let certificateProvider = BackupCertificateProvider(developmentMode: developmentMode)
+            certificateProvider.getCertificate(for: cardId, cardPublicKey: cardPublicKey) { result in
+                completion(result)
+                withExtendedLifetime(certificateProvider) {}
+            }
+        }
 }
+
+// MARK: - State
 
 @available(iOS 13.0, *)
 extension BackupService {
@@ -381,8 +432,10 @@ extension BackupService {
     }
 }
 
+// MARK: - Storage entities
+
 @available(iOS 13.0, *)
-public struct RawPrimaryCard {
+public struct PrimaryCard: Codable {
     public let cardId: String
     public let cardPublicKey: Data
     public let linkingKey: Data
@@ -395,62 +448,19 @@ public struct RawPrimaryCard {
     public let batchId: String? // Optional for compatibility with interrupted backups
     public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
     public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
+
+    var certificate: Data?
 }
 
 @available(iOS 13.0, *)
-public struct PrimaryCard: Codable, CertificateProvider {
-    public let cardId: String
-    public let cardPublicKey: Data
-    public let linkingKey: Data
-    public let issuerSignature: Data
-
-    //For compatibility check with backup card
-    public let existingWalletsCount: Int
-    public let isHDWalletAllowed: Bool
-    public let issuer: Card.Issuer
-    public let walletCurves: [EllipticCurve]
-    public let batchId: String? // Optional for compatibility with interrupted backups
-    public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
-    public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
-
-    public init(_ rawPrimaryCard: RawPrimaryCard, issuerSignature: Data) {
-        self.cardId = rawPrimaryCard.cardId
-        self.cardPublicKey = rawPrimaryCard.cardPublicKey
-        self.linkingKey = rawPrimaryCard.linkingKey
-        self.issuerSignature = issuerSignature
-        self.existingWalletsCount = rawPrimaryCard.existingWalletsCount
-        self.isHDWalletAllowed = rawPrimaryCard.isHDWalletAllowed
-        self.issuer = rawPrimaryCard.issuer
-        self.walletCurves = rawPrimaryCard.walletCurves
-        self.batchId = rawPrimaryCard.batchId
-        self.firmwareVersion = rawPrimaryCard.firmwareVersion
-        self.isKeysImportAllowed = rawPrimaryCard.isKeysImportAllowed
-    }
-}
-
-@available(iOS 13.0, *)
-struct RawBackupCard {
+struct BackupCard: Codable {
     let cardId: String
     let cardPublicKey: Data
     let linkingKey: Data
     let attestSignature: Data
-}
+    let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
 
-@available(iOS 13.0, *)
-struct BackupCard: Codable, CertificateProvider {
-    let cardId: String
-    let cardPublicKey: Data
-    let linkingKey: Data
-    let attestSignature: Data
-    let issuerSignature: Data
-
-    init(_ rawCard: RawBackupCard, issuerSignature: Data) {
-        self.cardId = rawCard.cardId
-        self.cardPublicKey = rawCard.cardPublicKey
-        self.linkingKey = rawCard.linkingKey
-        self.attestSignature = rawCard.attestSignature
-        self.issuerSignature = issuerSignature
-    }
+    var certificate: Data?
 }
 
 struct EncryptedBackupData: Codable {
@@ -472,6 +482,8 @@ struct BackupServiceData: Codable {
         attestSignature != nil || !backupData.isEmpty
     }
 }
+
+// MARK: - BackupRepo
 
 @available(iOS 13.0, *)
 class BackupRepo {
@@ -507,23 +519,5 @@ class BackupRepo {
         if let savedData = try storage.get(.backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-protocol CertificateProvider {
-    var cardPublicKey: Data { get }
-    var issuerSignature: Data { get }
-
-    func generateCertificate() throws -> Data
-}
-
-@available(iOS 13.0, *)
-extension CertificateProvider {
-    func generateCertificate() throws -> Data {
-        return try TlvBuilder()
-            .append(.cardPublicKey, value: cardPublicKey)
-            .append(.issuerDataSignature, value: issuerSignature)
-            .serialize()
     }
 }

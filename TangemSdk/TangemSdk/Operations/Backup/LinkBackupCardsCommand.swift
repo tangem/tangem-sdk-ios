@@ -92,10 +92,14 @@ final class LinkBackupCardsCommand: Command {
             .append(.newPin2, value: passcode)
         
         for (index, card) in backupCards.enumerated() {
+            guard let certificate = card.certificate else {
+                throw TangemSdkError.certificateSignatureRequired
+            }
+
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
                 .append(.backupCardLinkingKey, value: card.linkingKey)
-                .append(.certificate, value: try card.generateCertificate())
+                .append(.certificate, value: certificate)
                 .append(.cardSignature, value: card.attestSignature)
             
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())

@@ -111,11 +111,7 @@ class BIP39Tests: XCTestCase {
     }
 
     private func getTestVectors(from filename: String) throws -> [String: Any]? {
-        guard let url = Bundle(for: type(of: self)).url(forResource: filename, withExtension: "json") else {
-            return nil
-        }
-
-        let data = try Data(contentsOf: url)
+        let data = try Bundle.readFileAsData(name: filename, in: .bip39)
 
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             return nil

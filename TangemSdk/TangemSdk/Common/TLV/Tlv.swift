@@ -77,13 +77,13 @@ public struct Tlv: Equatable {
     /// - Parameter dataStream: dataStream initialized with raw tlv
     private static func readTagLength(_ dataStream: InputStream) -> Int? {
         guard let shortLengthBytes = dataStream.readByte() else {
-            Log.error("Failed to read tag lenght")
+            Log.error("Failed to read tag length")
             return nil
         }
         
         if (shortLengthBytes == 0xFF) {
             guard let longLengthBytes = dataStream.readBytes(count: 2) else {
-                Log.error("Failed to read tag long lenght")
+                Log.error("Failed to read tag long length")
                 return nil
             }
             

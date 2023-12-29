@@ -10,6 +10,9 @@ import Foundation
 @available(iOS 13.0, *)
 extension Bundle {
     static var sdkBundle: Bundle {
+#if SWIFT_PACKAGE
+        return Bundle.module
+#else
         let selfBundle = Bundle(for: TangemSdk.self)
         if let path = selfBundle.path(forResource: "TangemSdk", ofType: "bundle"), //for pods
            let bundle = Bundle(path: path) {
@@ -17,5 +20,6 @@ extension Bundle {
         } else {
             return selfBundle
         }
+#endif  // SWIFT_PACKAGE
     }
 }

@@ -9,16 +9,16 @@
 import Foundation
 
 @available(iOS 13.0, *)
-struct ReadWalletsListResponse: JSONStringConvertible {
-    let cardId: String
-    let wallets: [Card.Wallet]
+public struct ReadWalletsListResponse: JSONStringConvertible {
+    public let cardId: String
+    public let wallets: [Card.Wallet]
 }
 
 /// Read all wallets on card.
 @available(iOS 13.0, *)
-class ReadWalletsListCommand: Command {
-    var preflightReadMode: PreflightReadMode { .readCardOnly }
-    
+public class ReadWalletsListCommand: Command {
+    public var preflightReadMode: PreflightReadMode { .readCardOnly }
+
     private var loadedWallets: [Card.Wallet] = []
     private var receivedWalletsCount: Int = 0
     
@@ -36,7 +36,7 @@ class ReadWalletsListCommand: Command {
         return nil
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):

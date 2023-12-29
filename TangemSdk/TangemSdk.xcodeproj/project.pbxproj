@@ -244,6 +244,8 @@
 		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
+		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
+		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
@@ -305,7 +307,6 @@
 		DCD2D7F42A1CE66000AB00B6 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */; };
 		DCD2D7F52A1CE66000AB00B6 /* secp256k1_extrakeys.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */; };
 		DCD2D7F62A1CE66000AB00B6 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */; };
-		DCD2D7F72A1CE66000AB00B6 /* secp256k1.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7862A1CE66000AB00B6 /* secp256k1.h */; };
 		DCD2D8BA2A1CF64A00AB00B6 /* scalar_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */; };
 		DCD2D8BD2A1CF64A00AB00B6 /* field_10x26_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */; };
 		DCD2D8BE2A1CF64A00AB00B6 /* testrand_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */; };
@@ -366,7 +367,6 @@
 		DCD2D91C2A1CF64A00AB00B6 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */; };
 		DCD2D91D2A1CF64A00AB00B6 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B82A1CF64A00AB00B6 /* eckey.h */; };
 		DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */; };
-		DCD2D9222A1CFA8400AB00B6 /* precompute_ecmult.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */; };
 		DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */; };
 		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
@@ -630,6 +630,10 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		B6936A662B387B040024826A /* secp256k1_tangem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_tangem.h; sourceTree = "<group>"; };
+		B6B958982B2FCA8600E7B74E /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Gemfile; path = ../Gemfile; sourceTree = "<group>"; };
+		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
+		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -692,7 +696,6 @@
 		DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
 		DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_extrakeys.h; sourceTree = "<group>"; };
 		DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
-		DCD2D7862A1CE66000AB00B6 /* secp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1.h; sourceTree = "<group>"; };
 		DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_impl.h; sourceTree = "<group>"; };
 		DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26_impl.h; sourceTree = "<group>"; };
 		DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testrand_impl.h; sourceTree = "<group>"; };
@@ -753,7 +756,6 @@
 		DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low.h; sourceTree = "<group>"; };
 		DCD2D8B82A1CF64A00AB00B6 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
 		DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
-		DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = precompute_ecmult.c; sourceTree = "<group>"; };
 		DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
 		DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchnorrSignature.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
@@ -788,13 +790,6 @@
 				2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */,
 			);
 			path = Frameworks;
-			sourceTree = "<group>";
-		};
-		5D06F6AE2756676C006A15B9 /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		5D0BAAEA25CD87DF00E6A2B6 /* Log */ = {
@@ -1028,7 +1023,6 @@
 		5D4B128126D40C67006E173C /* Backup */ = {
 			isa = PBXGroup;
 			children = (
-				5D06F6AE2756676C006A15B9 /* Entities */,
 				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
 				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
 				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
@@ -1093,7 +1087,7 @@
 		5D6A92D52344E2B400158457 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+				B67A9C132B38D79500EE9ED8 /* Resources */,
 				5D6A92DB2344E3A500158457 /* Localization.swift */,
 			);
 			path = Localization;
@@ -1236,6 +1230,8 @@
 		5DA80C90231D247A00A50A10 = {
 			isa = PBXGroup;
 			children = (
+				B6B958982B2FCA8600E7B74E /* Gemfile */,
+				B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */,
 				5DDF4F89235F06F600E46EAB /* Info.plist */,
 				5DA80C9C231D247A00A50A10 /* TangemSdk */,
 				5DA80CA7231D247A00A50A10 /* TangemSdkTests */,
@@ -1272,6 +1268,7 @@
 		5DA80CA7231D247A00A50A10 /* TangemSdkTests */ = {
 			isa = PBXGroup;
 			children = (
+				B6CA42212B38B5A700C9A5C9 /* Extensions */,
 				5D38D0672679040C0052F67C /* Jsons */,
 				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
@@ -1491,6 +1488,22 @@
 			path = Deserialization;
 			sourceTree = "<group>";
 		};
+		B67A9C132B38D79500EE9ED8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B6CA42212B38B5A700C9A5C9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		DC1244BB29B61DAC0037BC05 /* BIP39 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1575,12 +1588,12 @@
 		DCD2D7802A1CE66000AB00B6 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				B6936A662B387B040024826A /* secp256k1_tangem.h */,
 				DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */,
 				DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */,
 				DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */,
 				DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */,
 				DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */,
-				DCD2D7862A1CE66000AB00B6 /* secp256k1.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -1588,7 +1601,6 @@
 		DCD2D84C2A1CF64900AB00B6 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				DCD2D9202A1CFA8400AB00B6 /* precompute_ecmult.c */,
 				DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */,
 				DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */,
 				DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */,
@@ -1757,12 +1769,12 @@
 				DCD2D8F62A1CF64A00AB00B6 /* assumptions.h in Headers */,
 				DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */,
 				DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */,
-				DCD2D7F72A1CE66000AB00B6 /* secp256k1.h in Headers */,
 				DCD2D8CD2A1CF64A00AB00B6 /* field_5x52.h in Headers */,
 				DCD2D9012A1CF64A00AB00B6 /* int128_struct_impl.h in Headers */,
 				DCD2D8D72A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h in Headers */,
 				DCD2D8FF2A1CF64A00AB00B6 /* ecmult_const.h in Headers */,
 				DCD2D8D22A1CF64A00AB00B6 /* scalar_4x64.h in Headers */,
+				B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */,
 				DCD2D8C82A1CF64A00AB00B6 /* selftest.h in Headers */,
 				DCD2D8EE2A1CF64A00AB00B6 /* int128_struct.h in Headers */,
 			);
@@ -1816,8 +1828,9 @@
 		5DA80C91231D247A00A50A10 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "Tangem AG";
 				TargetAttributes = {
 					5DA80C99231D247A00A50A10 = {
@@ -2042,7 +2055,7 @@
 				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
-				DCD2D9222A1CFA8400AB00B6 /* precompute_ecmult.c in Sources */,
+				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
@@ -2185,6 +2198,7 @@
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */,
 				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
 				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
@@ -2274,6 +2288,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2288,7 +2303,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -2353,6 +2368,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2361,7 +2377,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2391,16 +2407,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2412,6 +2430,8 @@
 				);
 				MODULEMAP_FILE = "";
 				MODULEMAP_PRIVATE_FILE = "";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					Combine,
@@ -2436,16 +2456,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2457,6 +2479,8 @@
 				);
 				MODULEMAP_FILE = "";
 				MODULEMAP_PRIVATE_FILE = "";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					Combine,

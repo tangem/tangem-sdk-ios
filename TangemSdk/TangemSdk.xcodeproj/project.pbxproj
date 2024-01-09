@@ -279,6 +279,7 @@
 		DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */; };
 		DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */; };
 		DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98092A792804001EEE7A /* KeysImportTests.swift */; };
+		DC44C58B2B4DC48000888BED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
@@ -668,6 +669,7 @@
 		DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyMasterKeyFactory.swift; sourceTree = "<group>"; };
 		DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP10Tests.swift; sourceTree = "<group>"; };
 		DC3D98092A792804001EEE7A /* KeysImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysImportTests.swift; sourceTree = "<group>"; };
+		DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
@@ -1254,6 +1256,7 @@
 			children = (
 				5DA80C9D231D247A00A50A10 /* TangemSdk.h */,
 				5D5369D124461F62002886E0 /* module.modulemap */,
+				DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */,
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
 				5D7F4E3F248FCEFB00A1700D /* UI */,
 				5D6A92E12345F28F00158457 /* Operations */,
@@ -1873,6 +1876,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC44C58B2B4DC48000888BED /* PrivacyInfo.xcprivacy in Resources */,
 				DC1244B529B60E480037BC05 /* english.txt in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
@@ -2055,7 +2059,6 @@
 				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
-				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,

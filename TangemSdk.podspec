@@ -47,6 +47,7 @@ Tangem is a Swiss-based secure hardware wallet manufacturer that enables blockch
       'TangemSdk/TangemSdk/**/*.lproj/*.strings', 
       'TangemSdk/TangemSdk/Haptics/*.ahap',
       'TangemSdk/TangemSdk/**/Wordlists/*.txt',
+      'TangemSdk/TangemSdk/PrivacyInfo.xcprivacy',
     ]
   }
 

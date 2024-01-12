@@ -38,6 +38,7 @@ let package = Package(
                 .process("Common/Localization/Resources"),
                 .copy("Haptics"),
                 .copy("Crypto/BIP39/Wordlists/english.txt"),
+                .copy("PrivacyInfo.xcprivacy"),
             ]
         ),
         .target(

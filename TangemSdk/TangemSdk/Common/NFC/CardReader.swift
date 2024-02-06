@@ -40,6 +40,7 @@ public protocol CardReader: AnyObject {
     func resumeSession()
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
+    func stopSession(with error: Error)
     func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
     func restartPolling(silent: Bool)
 }

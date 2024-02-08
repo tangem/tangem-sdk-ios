@@ -34,8 +34,14 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
             return
         }
         
-        guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
+        guard wallet.curve.supportsDerivation else {
             completion(.failure(TangemSdkError.unsupportedCurve))
+            return
+        }
+
+        if case .ed25519_slip0010 = wallet.curve,
+           derivationPath.nodes.contains(where: { !$0.isHardened }) {
+            completion(.failure(TangemSdkError.nonHardenedDerivationNotSupported))
             return
         }
         

@@ -47,6 +47,7 @@ struct ContentView: View {
                         .overlay(RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.orange, lineWidth: 2)
                                     .padding(.horizontal, 8))
+                        .layoutPriority(-1)
                         
                         VStack(spacing: 4) {
                             HStack {
@@ -54,6 +55,7 @@ struct ContentView: View {
                                 Button("Copy", action: model.copy)
                                 Button("Backup", action: model.onBackup)
                                 Button("Reset", action: model.onResetService)
+                                Button("Hide kb", action: model.hideKeyboard)
                             }
                             
                             additionalView
@@ -65,13 +67,13 @@ struct ContentView: View {
                                         .tag(AppModel.Method.allCases[index])
                                 }
                             }
+                            .frame(minHeight: 110)
                             .labelsHidden()
                             .pickerStyle(WheelPickerStyle())
                             
                             Button("Start") { model.start() }
                                 .buttonStyle(ExampleButton(isLoading: model.isScanning))
                                 .frame(width: 100)
-                                .padding()
                             
                         }
                         .padding(.horizontal, 8)
@@ -138,7 +140,7 @@ struct ContentView: View {
                                 .tag(supportedCurves[index])
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle())
+                    .pickerStyle(WheelPickerStyle())
                 }
 
                 if case .importWallet = model.method {
@@ -209,7 +211,7 @@ struct ContentView: View {
             }
             .autocapitalization(.none)
             .disableAutocorrection(true)
-            .padding()
+            .padding(.vertical, 8)
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))

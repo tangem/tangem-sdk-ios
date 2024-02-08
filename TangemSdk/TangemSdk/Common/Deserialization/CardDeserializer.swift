@@ -159,6 +159,10 @@ struct CardDeserializer {
         if fwVersion < .blsAvailable {
             return [.secp256k1, .ed25519, .secp256r1]
         }
+
+        if fwVersion < .ed25519Slip0010Available {
+            return [.secp256k1, .ed25519, .secp256r1, .bip0340, .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP]
+        }
         
         return EllipticCurve.allCases
     }

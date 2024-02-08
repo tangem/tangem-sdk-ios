@@ -72,20 +72,13 @@ class ImportWalletHandler: JSONRPCHandler {
 
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let curve: EllipticCurve = try parameters.value(for: "curve")
-
-        let seedParam: Data? = try parameters.value(for: "seed")
-
-        let mnemonicString: String? = try parameters.value(for: "mnemonic")
+        let mnemonicString: String = try parameters.value(for: "mnemonic")
         let passphrase: String = try parameters.value(for: "passphrase") ?? ""
-        let seedFromMnemonic = try mnemonicString.map { try Mnemonic(with: $0).generateSeed(with: passphrase) }
 
-        let seed: Data? = seedParam ?? seedFromMnemonic
-        guard let seed else {
-            throw JSONRPCError(.invalidParams,
-                               data: JSONRPCErrorData(.invalidParams, message: "You should pass a seed or a mnemonic and an optional passphrase"))
-        }
-
-        let command = CreateWalletTask(curve: curve, seed: seed)
+        let mnemonic = try Mnemonic(with: mnemonicString)
+        let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase)
+        let privateKey = try factory.makeMasterKey(for: curve)
+        let command = CreateWalletTask(curve: curve, privateKey: privateKey)
         return command.eraseToAnyRunnable()
     }
 }
@@ -256,9 +249,17 @@ class AttestCardKeyHandler: JSONRPCHandler {
     var method: String { "ATTEST_CARD_KEY" }
 
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
+        let attestationMode: AttestCardKeyCommand.Mode? = try parameters.value(for: "attestationMode")
         let challenge: Data? = try parameters.value(for: "challenge")
 
-        let command = AttestCardKeyCommand(challenge: challenge)
+        let command: AttestCardKeyCommand
+
+        if let attestationMode {
+            command = AttestCardKeyCommand(mode: attestationMode, challenge: challenge)
+        } else {
+            command = AttestCardKeyCommand(challenge: challenge)
+        }
+
         return command.eraseToAnyRunnable()
     }
 }

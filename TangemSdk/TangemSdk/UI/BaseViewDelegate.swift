@@ -22,13 +22,11 @@ class BaseViewDelegate {
     }
     
     func presentScreenIfNeeded() {
-        if screen == nil {
-            screen = makeScreen()
+        guard self.screen == nil else {
+            return
         }
         
-        guard !self.screen!.isBeingPresented, self.screen!.presentingViewController == nil,
-              let topmostViewController = UIApplication.shared.topMostViewController
-        else { return }
+        guard let topmostViewController = UIApplication.shared.topMostViewController else { return }
         
         if let presentedController = topmostViewController.presentedViewController { //dismiss alert
             presentedController.dismiss(animated: false) {
@@ -40,7 +38,10 @@ class BaseViewDelegate {
             return
         }
         
-        topmostViewController.present(self.screen!, animated: true, completion: nil)
+        let screen = makeScreen()
+        self.screen = screen
+        
+        topmostViewController.present(screen, animated: true, completion: nil)
     }
     
     

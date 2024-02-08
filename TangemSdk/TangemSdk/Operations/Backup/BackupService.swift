@@ -29,6 +29,11 @@ public class BackupService: ObservableObject {
         }
     }
     
+    public var config: Config {
+        get { sdk.config }
+        set { sdk.config = newValue }
+    }
+    
     public var addedBackupCardsCount: Int { repo.data.backupCards.count }
     public var canProceed: Bool { currentState != .preparing && currentState != .finished }
     public var accessCodeIsSet: Bool { repo.data.accessCode != nil }
@@ -72,7 +77,27 @@ public class BackupService: ObservableObject {
             }
         }
         
-        readBackupCard(primaryCard, completion: completion)
+        if primaryCard.certificate != nil {
+            readBackupCard(primaryCard, completion: completion)
+            return
+        }
+        
+        fetchCertificate(
+            for: primaryCard.cardId,
+            cardPublicKey: primaryCard.cardPublicKey,
+            firmwareVersion: primaryCard.firmwareVersion) { [weak self] result in
+                guard let self else { return }
+                
+                switch result {
+                case .success(let certificate):
+                    var primaryCard = primaryCard
+                    primaryCard.certificate = certificate
+                    self.repo.data.primaryCard = primaryCard
+                    self.readBackupCard(primaryCard, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
     }
     
     public func setAccessCode(_ code: String) throws {
@@ -154,8 +179,8 @@ public class BackupService: ObservableObject {
             Message(header: nil,
                     body: "backup_prepare_primary_card_message_format".localized($0)) }
         ?? Message(header: "backup_prepare_primary_card_message".localized)
-         
-        let command = StartPrimaryCardLinkingTask()
+        
+        let command = StartPrimaryCardLinkingCommand()
         currentCommand = command
         sdk.startSession(with: command,
                          cardId: cardId,
@@ -201,13 +226,27 @@ public class BackupService: ObservableObject {
         return currentState
     }
     
-    private func addBackupCard(_ backupCard: BackupCard) {
+    private func addBackupCard(_ backupCard: BackupCard, completion: @escaping CompletionResult<Void>) {
         if let existingIndex = repo.data.backupCards.firstIndex(where: { $0.cardId == backupCard.cardId }) {
             repo.data.backupCards.remove(at: existingIndex)
         }
         
-        repo.data.backupCards.append(backupCard)
-        updateState()
+        fetchCertificate(for: backupCard.cardId,
+                         cardPublicKey: backupCard.cardPublicKey,
+                         firmwareVersion: backupCard.firmwareVersion) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let certificate):
+                var backupCard = backupCard
+                backupCard.certificate = certificate
+                self.repo.data.backupCards.append(backupCard)
+                self.updateState()
+                completion(.success(()))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Void>) {
@@ -217,14 +256,14 @@ public class BackupService: ObservableObject {
         currentCommand = command
         
         sdk.startSession(with: command,
+                         filter: nil,
                          initialMessage: Message(header: nil,
                                                  body: "backup_add_backup_card_message".localized)) {[weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                self.addBackupCard(response)
-                completion(.success(()))
+                self.addBackupCard(response, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -258,12 +297,12 @@ public class BackupService: ObservableObject {
             }
             
             let task = FinalizePrimaryCardTask(backupCards: repo.data.backupCards,
-                                              accessCode: accessCode,
-                                              passcode: passcode,
-                                              readBackupStartIndex: repo.data.backupData.count,
-                                              attestSignature: repo.data.attestSignature,
-                                              onLink: { self.repo.data.attestSignature = $0 },
-                                              onRead: { self.repo.data.backupData[$0.0] = $0.1 })
+                                               accessCode: accessCode,
+                                               passcode: passcode,
+                                               readBackupStartIndex: repo.data.backupData.count,
+                                               attestSignature: repo.data.attestSignature,
+                                               onLink: { self.repo.data.attestSignature = $0 },
+                                               onRead: { self.repo.data.backupData[$0.0] = $0.1 })
             
             let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: primaryCard.cardId)
             
@@ -271,7 +310,7 @@ public class BackupService: ObservableObject {
                 Message(header: nil,
                         body: "backup_finalize_primary_card_message_format".localized($0))
             }
-
+            
             currentCommand = task
             
             sdk.startSession(with: task,
@@ -336,14 +375,14 @@ public class BackupService: ObservableObject {
                 Message(header: nil,
                         body: "backup_finalize_backup_card_message_format".localized($0))
             }
-
+            
             currentCommand = command
             
             sdk.startSession(with: command,
                              cardId: backupCard.cardId,
                              initialMessage: initialMessage) {[weak self] result in
                 guard let self = self else { return }
-
+                
                 switch result {
                 case .success(let card):
                     self.repo.data.finalizedBackupCardsCount += 1
@@ -351,7 +390,7 @@ public class BackupService: ObservableObject {
                 case .failure(let error):
                     completion(.failure(error))
                 }
-
+                
                 self.currentCommand = nil
             }
             
@@ -363,7 +402,25 @@ public class BackupService: ObservableObject {
     private func onBackupCompleted() {
         repo.reset()
     }
+    
+    private func fetchCertificate(
+        for cardId: String,
+        cardPublicKey: Data,
+        firmwareVersion: FirmwareVersion?,
+        completion: @escaping CompletionResult<Data>
+    ) {
+        // FirmwareVersion is optional because of compatibility with old stored data format. But in case of non-upgraded users we can safely assume, that fw version type is release.
+        let firmwareVersionType = firmwareVersion?.type ?? .release
+        let developmentMode = firmwareVersionType == .sdk
+        let certificateProvider = BackupCertificateProvider(developmentMode: developmentMode)
+        certificateProvider.getCertificate(for: cardId, cardPublicKey: cardPublicKey) { result in
+            completion(result)
+            withExtendedLifetime(certificateProvider) {}
+        }
+    }
 }
+
+// MARK: - State
 
 @available(iOS 13.0, *)
 extension BackupService {
@@ -375,8 +432,10 @@ extension BackupService {
     }
 }
 
+// MARK: - Storage entities
+
 @available(iOS 13.0, *)
-public struct RawPrimaryCard {
+public struct PrimaryCard: Codable {
     public let cardId: String
     public let cardPublicKey: Data
     public let linkingKey: Data
@@ -389,62 +448,19 @@ public struct RawPrimaryCard {
     public let batchId: String? // Optional for compatibility with interrupted backups
     public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
     public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
+    
+    var certificate: Data?
 }
 
 @available(iOS 13.0, *)
-public struct PrimaryCard: Codable, CertificateProvider {
-    public let cardId: String
-    public let cardPublicKey: Data
-    public let linkingKey: Data
-    public let issuerSignature: Data
-    
-    //For compatibility check with backup card
-    public let existingWalletsCount: Int
-    public let isHDWalletAllowed: Bool
-    public let issuer: Card.Issuer
-    public let walletCurves: [EllipticCurve]
-    public let batchId: String? // Optional for compatibility with interrupted backups
-    public let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
-    public let isKeysImportAllowed: Bool? // Optional for compatibility with interrupted backups
-    
-    public init(_ rawPrimaryCard: RawPrimaryCard, issuerSignature: Data) {
-        self.cardId = rawPrimaryCard.cardId
-        self.cardPublicKey = rawPrimaryCard.cardPublicKey
-        self.linkingKey = rawPrimaryCard.linkingKey
-        self.issuerSignature = issuerSignature
-        self.existingWalletsCount = rawPrimaryCard.existingWalletsCount
-        self.isHDWalletAllowed = rawPrimaryCard.isHDWalletAllowed
-        self.issuer = rawPrimaryCard.issuer
-        self.walletCurves = rawPrimaryCard.walletCurves
-        self.batchId = rawPrimaryCard.batchId
-        self.firmwareVersion = rawPrimaryCard.firmwareVersion
-        self.isKeysImportAllowed = rawPrimaryCard.isKeysImportAllowed
-    }
-}
-
-@available(iOS 13.0, *)
-struct RawBackupCard {
+struct BackupCard: Codable {
     let cardId: String
     let cardPublicKey: Data
     let linkingKey: Data
     let attestSignature: Data
-}
-
-@available(iOS 13.0, *)
-struct BackupCard: Codable, CertificateProvider {
-    let cardId: String
-    let cardPublicKey: Data
-    let linkingKey: Data
-    let attestSignature: Data
-    let issuerSignature: Data
+    let firmwareVersion: FirmwareVersion? // Optional for compatibility with interrupted backups
     
-    init(_ rawCard: RawBackupCard, issuerSignature: Data) {
-        self.cardId = rawCard.cardId
-        self.cardPublicKey = rawCard.cardPublicKey
-        self.linkingKey = rawCard.linkingKey
-        self.attestSignature = rawCard.attestSignature
-        self.issuerSignature = issuerSignature
-    }
+    var certificate: Data?
 }
 
 struct EncryptedBackupData: Codable {
@@ -463,9 +479,11 @@ struct BackupServiceData: Codable {
     var finalizedBackupCardsCount: Int = 0
     
     var shouldSave: Bool {
-         attestSignature != nil || !backupData.isEmpty
+        attestSignature != nil || !backupData.isEmpty
     }
 }
+
+// MARK: - BackupRepo
 
 @available(iOS 13.0, *)
 class BackupRepo {
@@ -477,7 +495,7 @@ class BackupRepo {
             try? save()
         }
     }
-   
+    
     init () {
         try? fetch()
     }
@@ -501,23 +519,5 @@ class BackupRepo {
         if let savedData = try storage.get(.backupData) {
             self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
-    }
-}
-
-@available(iOS 13.0, *)
-protocol CertificateProvider {
-    var cardPublicKey: Data { get }
-    var issuerSignature: Data { get }
-    
-    func generateCertificate() throws -> Data
-}
-
-@available(iOS 13.0, *)
-extension CertificateProvider {
-    func generateCertificate() throws -> Data {
-        return try TlvBuilder()
-            .append(.cardPublicKey, value: cardPublicKey)
-            .append(.issuerDataSignature, value: issuerSignature)
-            .serialize()
     }
 }

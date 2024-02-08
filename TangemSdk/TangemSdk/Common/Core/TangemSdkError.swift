@@ -102,6 +102,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     // Read Errors
     case accessCodeRequired
+    case nonHardenedDerivationNotSupported
     
     // CreateWallet Errors
     case alreadyCreated
@@ -198,7 +199,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].
     case wrongCardType(_ localizedDescription: String?)
-    
+
+    case preflightFiltered(_ error: Error)
+
     /// This error is returned when the scanned card doesn't have some essential fields.
     case cardError
     
@@ -260,7 +263,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupCardRequired
     case noBackupDataForCard
     case backupFailedEmptyWallets
-    case backupFailedNotEmptyWallets
+    case backupFailedNotEmptyWallets(cardId: String)
     case certificateSignatureRequired
     case issuerSignatureLoadingFailed
     case accessCodeOrPasscodeRequired
@@ -347,6 +350,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cannotBeDepersonalized: return 40201
             
         case .accessCodeRequired: return 40401
+        case .nonHardenedDerivationNotSupported: return 40402
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
         case .walletAlreadyCreated: return 40405
@@ -427,7 +431,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .underlying: return 50012
         case .userForgotTheCode: return 50013
         case .biometricsUnavailable: return 50014
-            
+        case .preflightFiltered: return 50015
+
         case .wrongInteractionMode: return 50027
             
             // MARK: 9xxxx Errors
@@ -478,8 +483,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .nfcTimeout: return "nfc_session_timeout".localized
         case .nfcStuck: return "nfc_stuck_error".localized
         case .alreadyCreated: return "error_already_created".localized
-        case .noRemainingSignatures: return "error_no_remaining_signatures".localized
-        case .notActivated: return "error_not_activated".localized
         case .accessCodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.accessCode.name)
         case .passcodeCannotBeChanged: return "error_pin_cannot_be_changed_format".localized(UserCodeType.passcode.name)
         case .accessCodeCannotBeDefault: return "error_pin_cannot_be_default_format".localized(UserCodeType.accessCode.name)
@@ -498,11 +501,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardType(let localizedDescription): return localizedDescription ?? "error_wrong_card_type".localized
         case .accessCodeRequired: return "error_pin_required_format".localized(UserCodeType.accessCode.name)
         case .passcodeRequired: return "error_pin_required_format".localized(UserCodeType.passcode.name)
-        case .underlying(let error): return error.localizedDescription
+        case .underlying(let error), .preflightFiltered(let error): return error.localizedDescription
         case .fileNotFound: return "error_file_not_found".localized
-        case .notSupportedFirmwareVersion: return "error_old_firmware".localized
         case .walletNotFound: return "wallet_not_found".localized
-        case .walletCannotBeCreated: return "Failed to create wallet. AllowSelectBlockchain flag must be set to true"
         case .wrongAccessCode: return "error_wrong_pin_format".localized(UserCodeType.accessCode.name)
         case .wrongPasscode: return "error_wrong_pin_format".localized(UserCodeType.passcode.name)
         case .issuerSignatureLoadingFailed: return "issuer_signature_loading_failed".localized

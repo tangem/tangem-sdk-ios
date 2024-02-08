@@ -42,12 +42,12 @@ final class CreateWalletCommand: Command {
         self.privateKey = nil
     }
 
-    /// Use this initializer to import a key from the seed. COS v6.16+.
+    /// Use this initializer to import a key. COS v6+.
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
-    /// - Parameter seed: BIP39 seed to create wallet from.
-    init(curve: EllipticCurve, seed: Data) throws {
+    /// - Parameter privateKey: A private key to import
+    init(curve: EllipticCurve, privateKey: ExtendedPrivateKey) {
         self.curve = curve
-        self.privateKey = try BIP32().makeMasterKey(from: seed, curve: curve)
+        self.privateKey = privateKey
     }
     
     deinit {
@@ -80,14 +80,11 @@ final class CreateWalletCommand: Command {
                 return TangemSdkError.keysImportDisabled
             }
 
-            do {
-                // This check will fail for compressed secp256r1 keys
-                if let extendedKey = try privateKey?.makePublicKey(for: curve),
-                   card.wallets[extendedKey.publicKey] != nil {
-                    return TangemSdkError.walletAlreadyCreated
-                }
-            } catch {
-                return error.toTangemSdkError()
+            // Checking the existence of the key in advance. The next level of this check is in a card.
+            // This check will fail for compressed secp256r1 keys and bls keys
+            if let extendedKey = try? privateKey?.makePublicKey(for: curve),
+               card.wallets[extendedKey.publicKey] != nil {
+                return TangemSdkError.walletAlreadyCreated
             }
         }
 
@@ -149,7 +146,9 @@ final class CreateWalletCommand: Command {
 
         if let privateKey {
             try tlvBuilder.append(.walletPrivateKey, value: privateKey.privateKey)
-            try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
+            if !privateKey.chainCode.isEmpty {
+                try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
+            }
         }
         
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())

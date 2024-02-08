@@ -48,7 +48,7 @@ final class LinkPrimaryCardCommand: Command {
         }
         
         if !card.wallets.isEmpty {
-            return .backupFailedNotEmptyWallets
+            return .backupFailedNotEmptyWallets(cardId: card.cardId)
         }
         
         return nil
@@ -95,12 +95,16 @@ final class LinkPrimaryCardCommand: Command {
     
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let certificate = primaryCard.certificate else {
+            throw TangemSdkError.certificateSignatureRequired
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
-            .append(.certificate, value: try primaryCard.generateCertificate())
+            .append(.certificate, value: certificate)
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
             .append(.newPin2, value: passcode)

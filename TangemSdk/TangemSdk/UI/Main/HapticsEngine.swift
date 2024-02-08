@@ -23,8 +23,9 @@ class HapticsEngine {
     func playSuccess() {
         if supportsHaptics {
             do {
-                
-                guard let path = Bundle.sdkBundle.path(forResource: "Success", ofType: "ahap") else {
+                let filePath = filePath(forResource: "Success")
+
+                guard let path = Bundle.sdkBundle.path(forResource: filePath, ofType: "ahap") else {
                     return
                 }
                 
@@ -40,7 +41,9 @@ class HapticsEngine {
     func playError() {
         if supportsHaptics {
             do {
-                guard let path = Bundle.sdkBundle.path(forResource: "Error", ofType: "ahap") else {
+                let filePath = filePath(forResource: "Error")
+
+                guard let path = Bundle.sdkBundle.path(forResource: filePath, ofType: "ahap") else {
                     return
                 }
                 
@@ -138,5 +141,18 @@ class HapticsEngine {
         } catch {
             Log.error("CHHapticEngine error: \(error)")
         }
+    }
+
+    /// SPM preserves folder structure for resources, unlike Cocoapods.
+    /// Therefore, a full file path with all intermediate directories must be constructed.
+    private func filePath(forResource resource: String) -> String {
+#if SWIFT_PACKAGE
+        return [
+            "Haptics",
+            resource,
+        ].joined(separator: "/")
+#else
+        return resource
+#endif  // SWIFT_PACKAGE
     }
 }

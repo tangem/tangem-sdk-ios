@@ -14,7 +14,7 @@ public final class Secp256k1Utils {
     private let context: OpaquePointer
     
     public init() {
-        context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_SIGN|SECP256K1_CONTEXT_VERIFY))
+        context = secp256k1_context_create(UInt32(SECP256K1_CONTEXT_NONE))
     }
     
     deinit {
@@ -102,6 +102,17 @@ public final class Secp256k1Utils {
         
         return true
     }
+
+    func verifySchnorrSignature(_ signature: Data, publicKey: Data, hash: Data) throws -> Bool {
+        var pubKey = try parseXOnlyPublicKey(publicKey)
+        var sig = signature.toBytes
+
+        guard secp256k1_schnorrsig_verify(context, &sig, hash.toBytes, hash.count, &pubKey) == 1 else {
+            return false
+        }
+
+        return true
+    }
     
     func createPublicKey(privateKey: Data, compressed: Bool) throws -> Data {
         let privateKey = privateKey.toBytes
@@ -116,6 +127,34 @@ public final class Secp256k1Utils {
         }
         
         return try serializePublicKey(&publicKey, compressed: compressed)
+    }
+
+    func createXOnlyPublicKey(privateKey: Data) throws -> Data {
+        let privateKey = privateKey.toBytes
+
+        guard secp256k1_ec_seckey_verify(context, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to verify the private key")
+        }
+
+        var publicKey = secp256k1_pubkey()
+
+        guard secp256k1_ec_pubkey_create(context, &publicKey, privateKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        var xOnlyPublicKey = secp256k1_xonly_pubkey()
+
+        guard secp256k1_xonly_pubkey_from_pubkey(context, &xOnlyPublicKey, nil, &publicKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        var serializedXOnlyPublicKey = Array(repeating: UInt8(0), count: 32)
+
+        guard secp256k1_xonly_pubkey_serialize(context, &serializedXOnlyPublicKey, &xOnlyPublicKey) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to create the public key")
+        }
+
+        return Data(serializedXOnlyPublicKey)
     }
 
     func isPrivateKeyValid(_ privateKey: Data) -> Bool {
@@ -135,7 +174,7 @@ public final class Secp256k1Utils {
         return Data(der[0..<Int(length)])
     }
     
-    func unmarshalSignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> (v: Data, r: Data, s: Data) {
+    func unmarshalSignature(_ signature: inout secp256k1_ecdsa_signature, publicKey: Data, hash: Data) throws -> (r: Data, s: Data, v: Data) {
         guard hash.count == 32 else { throw TangemSdkError.cryptoUtilsError("Hash size must be 32 bytes length") }
         
         guard try verifySignature(&signature, publicKey: publicKey, hash: hash) else {
@@ -162,10 +201,10 @@ public final class Secp256k1Utils {
             throw TangemSdkError.cryptoUtilsError("Failed to recover the signature")
         }
         
-        let v = Data([recovered[64]])
         let r = Data(recovered[0..<32])
         let s = Data(recovered[32..<64])
-        return (v: v, r: r, s: s)
+        let v = Data([recovered[64]])
+        return (r: r, s: s, v: v)
     }
     
     func serializePublicKey(_ publicKey: inout secp256k1_pubkey, compressed: Bool) throws -> Data {
@@ -186,15 +225,15 @@ public final class Secp256k1Utils {
         secp256k1_ecdsa_signature_serialize_compact(context, &serialized, &signature)
         return Data(serialized)
     }
-    
+
+    /// returns x-only part of secret without hashing
     func getSharedSecret(privateKey: Data, publicKey: Data) throws -> Data {
         let privkey = privateKey.toBytes
         var pubkey = try parsePublicKey(publicKey)
         var sharedSecret = Array(repeating: UInt8(0), count: 32)
-        guard secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, nil, nil) == 1 else {
+        guard secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, secp256k1_ecdh_tangem, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to compute an EC Diffie-Hellman secret ")
         }
-        
         return Data(sharedSecret)
     }
     
@@ -205,6 +244,16 @@ public final class Secp256k1Utils {
             throw TangemSdkError.cryptoUtilsError("Failed to parse the key")
         }
         
+        return pubkey
+    }
+
+    func parseXOnlyPublicKey(_ publicKey: Data) throws -> secp256k1_xonly_pubkey {
+        var pubkey = secp256k1_xonly_pubkey()
+
+        guard secp256k1_xonly_pubkey_parse(context, &pubkey, publicKey.toBytes) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to parse the key")
+        }
+
         return pubkey
     }
     

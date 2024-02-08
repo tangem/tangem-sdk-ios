@@ -1,0 +1,30 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target x86_64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name Bls_Signature
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+@_exported import Bls_Signature
+import Foundation
+import Swift
+import _Concurrency
+import _StringProcessing
+public struct BlsSignatureSwift {
+  public static func augSchemeMplG2Map(publicKey: Swift.String, message: Swift.String) throws -> Swift.String
+  public static func aggregate(signatures: [Swift.String]) throws -> Swift.String
+  public static func publicKey(from privateKey: Swift.String) throws -> Swift.String
+  public static func verify(signatures: [Swift.String], with publicKey: Swift.String, message: Swift.String) throws -> Swift.Bool
+}
+extension Bls_Signature.BlsSignatureSwift {
+  public enum ErrorList : Swift.Error {
+    case errorAggregate
+    case errorAugScheme
+    case errorPublicKeyFromPrivateKey
+    case errorVerify
+    public static func == (a: Bls_Signature.BlsSignatureSwift.ErrorList, b: Bls_Signature.BlsSignatureSwift.ErrorList) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+}
+extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Equatable {}
+extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Hashable {}

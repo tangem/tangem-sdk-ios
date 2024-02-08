@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D62F3CB2A8BBC7000B6409B /* Bls_Signature.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */; };
 		5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0243BD26CACACD00B76F37 /* IndicatorView.swift */; };
 		5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D04F9E126EF731B00D15F75 /* Publisher+.swift */; };
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
-		5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
 		5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0E56022757C11F00D46F54 /* CardDataResponse.swift */; };
@@ -125,53 +125,6 @@
 		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
 		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
 		5D81348426D62F8900494A71 /* StringCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D81348326D62F8900494A71 /* StringCodable.swift */; };
-		5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */; };
-		5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F378247EC275005E7A35 /* secp256k1_recovery.h */; };
-		5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */; };
-		5D83F3D4247EC276005E7A35 /* tangem_secp256k1.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */; };
-		5D83F3E5247EC276005E7A35 /* scalar_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F38E247EC276005E7A35 /* scalar_impl.h */; };
-		5D83F3E6247EC276005E7A35 /* field_10x26_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F38F247EC276005E7A35 /* field_10x26_impl.h */; };
-		5D83F3E9247EC276005E7A35 /* scratch.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F393247EC276005E7A35 /* scratch.h */; };
-		5D83F3EA247EC276005E7A35 /* ecmult_gen_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */; };
-		5D83F3EB247EC276005E7A35 /* field_10x26.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F395247EC276005E7A35 /* field_10x26.h */; };
-		5D83F3EC247EC276005E7A35 /* scalar_8x32_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */; };
-		5D83F3ED247EC276005E7A35 /* field_5x52.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F397247EC276005E7A35 /* field_5x52.h */; };
-		5D83F3EE247EC276005E7A35 /* num_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F398247EC276005E7A35 /* num_impl.h */; };
-		5D83F3F0247EC276005E7A35 /* field.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39A247EC276005E7A35 /* field.h */; };
-		5D83F3F2247EC276005E7A35 /* field_5x52_asm_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */; };
-		5D83F3F4247EC276005E7A35 /* field_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39E247EC276005E7A35 /* field_impl.h */; };
-		5D83F3F5247EC276005E7A35 /* scalar_4x64.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F39F247EC276005E7A35 /* scalar_4x64.h */; };
-		5D83F3F6247EC276005E7A35 /* basic-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A0247EC276005E7A35 /* basic-config.h */; };
-		5D83F3F7247EC276005E7A35 /* num.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A1247EC276005E7A35 /* num.h */; };
-		5D83F3F8247EC276005E7A35 /* field_5x52_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */; };
-		5D83F3F9247EC276005E7A35 /* ecmult_const_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */; };
-		5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F3A4247EC276005E7A35 /* secp256k1.c */; };
-		5D83F3FB247EC276005E7A35 /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A5247EC276005E7A35 /* ecdsa.h */; };
-		5D83F3FD247EC276005E7A35 /* scalar.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A7247EC276005E7A35 /* scalar.h */; };
-		5D83F3FE247EC276005E7A35 /* ecdsa_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */; };
-		5D83F3FF247EC276005E7A35 /* ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3A9247EC276005E7A35 /* ecmult_gen.h */; };
-		5D83F400247EC276005E7A35 /* scalar_low_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */; };
-		5D83F401247EC276005E7A35 /* hash_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AB247EC276005E7A35 /* hash_impl.h */; };
-		5D83F402247EC276005E7A35 /* ecmult.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AC247EC276005E7A35 /* ecmult.h */; };
-		5D83F403247EC276005E7A35 /* scratch_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AD247EC276005E7A35 /* scratch_impl.h */; };
-		5D83F405247EC276005E7A35 /* ecmult_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3AF247EC276005E7A35 /* ecmult_impl.h */; };
-		5D83F406247EC276005E7A35 /* group.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B0247EC276005E7A35 /* group.h */; };
-		5D83F40A247EC276005E7A35 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B4247EC276005E7A35 /* util.h */; };
-		5D83F40B247EC276005E7A35 /* field_5x52_int128_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */; };
-		5D83F40C247EC276005E7A35 /* scalar_4x64_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */; };
-		5D83F40E247EC276005E7A35 /* group_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B8247EC276005E7A35 /* group_impl.h */; };
-		5D83F40F247EC276005E7A35 /* ecmult_const.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3B9247EC276005E7A35 /* ecmult_const.h */; };
-		5D83F413247EC276005E7A35 /* recovery_main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */; };
-		5D83F416247EC276005E7A35 /* ecdh_main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */; };
-		5D83F417247EC276005E7A35 /* num_gmp.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C4247EC276005E7A35 /* num_gmp.h */; };
-		5D83F418247EC276005E7A35 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C5247EC276005E7A35 /* hash.h */; };
-		5D83F419247EC276005E7A35 /* eckey_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C6247EC276005E7A35 /* eckey_impl.h */; };
-		5D83F41C247EC276005E7A35 /* num_gmp_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */; };
-		5D83F41D247EC276005E7A35 /* scalar_8x32.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CA247EC276005E7A35 /* scalar_8x32.h */; };
-		5D83F41E247EC276005E7A35 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CB247EC276005E7A35 /* scalar_low.h */; };
-		5D83F41F247EC276005E7A35 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F3CC247EC276005E7A35 /* eckey.h */; };
-		5D83F421247EC9DF005E7A35 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */; };
-		5D83F423247ECA27005E7A35 /* ecmult_static_context.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D83F422247ECA27005E7A35 /* ecmult_static_context.h */; };
 		5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */; };
 		5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */; };
 		5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */; };
@@ -291,8 +244,11 @@
 		B0EC6500260110530088F03D /* WalletDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC64FF260110530088F03D /* WalletDeserializer.swift */; };
 		B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */; };
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
+		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
+		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
+		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
 		DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B229B60B6F0037BC05 /* BIP39.swift */; };
 		DC1244B529B60E480037BC05 /* english.txt in Resources */ = {isa = PBXBuildFile; fileRef = DC1244B429B60E480037BC05 /* english.txt */; };
 		DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244B829B610550037BC05 /* BIP39Tests.swift */; };
@@ -311,21 +267,109 @@
 		DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E329BB806E0037BC05 /* WIFTests.swift */; };
 		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
+		DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */; };
 		DC22228729D431AB001129F8 /* SetUserCodeRecoveryAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */; };
 		DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */ = {isa = PBXBuildFile; fileRef = DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */; };
+		DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */; };
+		DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */; };
+		DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */; };
+		DC3D97FE2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */; };
+		DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */; };
+		DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */; };
+		DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */; };
+		DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */; };
+		DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98092A792804001EEE7A /* KeysImportTests.swift */; };
+		DC44C58B2B4DC48000888BED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
 		DC59CB0E29AF70C700EC14E1 /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */; };
+		DC612D6C2AFD58A3005A547F /* CardIdPreflightReadFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC612D6B2AFD58A3005A547F /* CardIdPreflightReadFilter.swift */; };
+		DC612D722AFD60C2005A547F /* SessionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC612D712AFD60C2005A547F /* SessionFilter.swift */; };
+		DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */; };
+		DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD662A8115BB00928836 /* FWTestCase.swift */; };
 		DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
+		DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */; };
+		DCB5A4E32A1FAB330021E12D /* BLSUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4E22A1FAB330021E12D /* BLSUtils.swift */; };
+		DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4E42A1FAC190021E12D /* BLSTests.swift */; };
+		DCB5A4E72A1FBA8B0021E12D /* BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4E62A1FBA8B0021E12D /* BigInt.swift */; };
+		DCB5A4E92A20EB1F0021E12D /* HKDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */; };
+		DCB5A4EB2A20F47B0021E12D /* MasterKeyFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4EA2A20F47B0021E12D /* MasterKeyFactory.swift */; };
 		DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */; };
 		DCC0A21429D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */; };
 		DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC0A21529D3216100C45B13 /* UserSettings.swift */; };
 		DCC6A64829D212E8007BA5B7 /* GetEntropyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */; };
-		DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */ = {isa = PBXBuildFile; fileRef = DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */; };
+		DCD2D5BC2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */; };
+		DCD2D7F22A1CE66000AB00B6 /* secp256k1_ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */; };
+		DCD2D7F32A1CE66000AB00B6 /* secp256k1_schnorrsig.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */; };
+		DCD2D7F42A1CE66000AB00B6 /* secp256k1_recovery.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */; };
+		DCD2D7F52A1CE66000AB00B6 /* secp256k1_extrakeys.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */; };
+		DCD2D7F62A1CE66000AB00B6 /* secp256k1_preallocated.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */; };
+		DCD2D8BA2A1CF64A00AB00B6 /* scalar_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */; };
+		DCD2D8BD2A1CF64A00AB00B6 /* field_10x26_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */; };
+		DCD2D8BE2A1CF64A00AB00B6 /* testrand_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */; };
+		DCD2D8BF2A1CF64A00AB00B6 /* precomputed_ecmult_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D8532A1CF64900AB00B6 /* precomputed_ecmult_gen.c */; };
+		DCD2D8C02A1CF64A00AB00B6 /* ecmult_compute_table.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8542A1CF64900AB00B6 /* ecmult_compute_table.h */; };
+		DCD2D8C12A1CF64A00AB00B6 /* modinv32_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8552A1CF64900AB00B6 /* modinv32_impl.h */; };
+		DCD2D8C32A1CF64A00AB00B6 /* scratch.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8582A1CF64900AB00B6 /* scratch.h */; };
+		DCD2D8C42A1CF64A00AB00B6 /* ecmult_gen_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8592A1CF64900AB00B6 /* ecmult_gen_impl.h */; };
+		DCD2D8C82A1CF64A00AB00B6 /* selftest.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D85D2A1CF64900AB00B6 /* selftest.h */; };
+		DCD2D8C92A1CF64A00AB00B6 /* field_10x26.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D85E2A1CF64900AB00B6 /* field_10x26.h */; };
+		DCD2D8CB2A1CF64A00AB00B6 /* modinv32.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8602A1CF64900AB00B6 /* modinv32.h */; };
+		DCD2D8CC2A1CF64A00AB00B6 /* scalar_8x32_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8612A1CF64900AB00B6 /* scalar_8x32_impl.h */; };
+		DCD2D8CD2A1CF64A00AB00B6 /* field_5x52.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8622A1CF64900AB00B6 /* field_5x52.h */; };
+		DCD2D8CE2A1CF64A00AB00B6 /* field.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8632A1CF64900AB00B6 /* field.h */; };
+		DCD2D8D02A1CF64A00AB00B6 /* field_5x52_asm_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8652A1CF64900AB00B6 /* field_5x52_asm_impl.h */; };
+		DCD2D8D12A1CF64A00AB00B6 /* field_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8662A1CF64900AB00B6 /* field_impl.h */; };
+		DCD2D8D22A1CF64A00AB00B6 /* scalar_4x64.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8672A1CF64900AB00B6 /* scalar_4x64.h */; };
+		DCD2D8D32A1CF64A00AB00B6 /* field_5x52_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8682A1CF64900AB00B6 /* field_5x52_impl.h */; };
+		DCD2D8D52A1CF64A00AB00B6 /* ecmult_const_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D86A2A1CF64900AB00B6 /* ecmult_const_impl.h */; };
+		DCD2D8D62A1CF64A00AB00B6 /* secp256k1.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D86B2A1CF64900AB00B6 /* secp256k1.c */; };
+		DCD2D8D72A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D86C2A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h */; };
+		DCD2D8D82A1CF64A00AB00B6 /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D86D2A1CF64A00AB00B6 /* ecdsa.h */; };
+		DCD2D8DA2A1CF64A00AB00B6 /* precomputed_ecmult.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D86F2A1CF64A00AB00B6 /* precomputed_ecmult.h */; };
+		DCD2D8DC2A1CF64A00AB00B6 /* scalar.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8712A1CF64A00AB00B6 /* scalar.h */; };
+		DCD2D8DD2A1CF64A00AB00B6 /* ecdsa_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8722A1CF64A00AB00B6 /* ecdsa_impl.h */; };
+		DCD2D8DF2A1CF64A00AB00B6 /* modinv64.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8742A1CF64A00AB00B6 /* modinv64.h */; };
+		DCD2D8E02A1CF64A00AB00B6 /* ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8752A1CF64A00AB00B6 /* ecmult_gen.h */; };
+		DCD2D8E22A1CF64A00AB00B6 /* int128_native_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8772A1CF64A00AB00B6 /* int128_native_impl.h */; };
+		DCD2D8E62A1CF64A00AB00B6 /* scalar_low_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D87C2A1CF64A00AB00B6 /* scalar_low_impl.h */; };
+		DCD2D8E72A1CF64A00AB00B6 /* hash_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D87D2A1CF64A00AB00B6 /* hash_impl.h */; };
+		DCD2D8E82A1CF64A00AB00B6 /* ecmult.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D87E2A1CF64A00AB00B6 /* ecmult.h */; };
+		DCD2D8E92A1CF64A00AB00B6 /* scratch_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D87F2A1CF64A00AB00B6 /* scratch_impl.h */; };
+		DCD2D8EA2A1CF64A00AB00B6 /* ecmult_compute_table_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8802A1CF64A00AB00B6 /* ecmult_compute_table_impl.h */; };
+		DCD2D8EC2A1CF64A00AB00B6 /* ecmult_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8822A1CF64A00AB00B6 /* ecmult_impl.h */; };
+		DCD2D8ED2A1CF64A00AB00B6 /* group.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8832A1CF64A00AB00B6 /* group.h */; };
+		DCD2D8EE2A1CF64A00AB00B6 /* int128_struct.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8842A1CF64A00AB00B6 /* int128_struct.h */; };
+		DCD2D8F02A1CF64A00AB00B6 /* checkmem.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8862A1CF64A00AB00B6 /* checkmem.h */; };
+		DCD2D8F32A1CF64A00AB00B6 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8892A1CF64A00AB00B6 /* util.h */; };
+		DCD2D8F52A1CF64A00AB00B6 /* int128.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D88B2A1CF64A00AB00B6 /* int128.h */; };
+		DCD2D8F62A1CF64A00AB00B6 /* assumptions.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D88C2A1CF64A00AB00B6 /* assumptions.h */; };
+		DCD2D8F72A1CF64A00AB00B6 /* field_5x52_int128_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D88D2A1CF64A00AB00B6 /* field_5x52_int128_impl.h */; };
+		DCD2D8F82A1CF64A00AB00B6 /* modinv64_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D88E2A1CF64A00AB00B6 /* modinv64_impl.h */; };
+		DCD2D8F92A1CF64A00AB00B6 /* scalar_4x64_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D88F2A1CF64A00AB00B6 /* scalar_4x64_impl.h */; };
+		DCD2D8FA2A1CF64A00AB00B6 /* int128_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8902A1CF64A00AB00B6 /* int128_impl.h */; };
+		DCD2D8FB2A1CF64A00AB00B6 /* ecmult_gen_compute_table.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8912A1CF64A00AB00B6 /* ecmult_gen_compute_table.h */; };
+		DCD2D8FC2A1CF64A00AB00B6 /* group_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8922A1CF64A00AB00B6 /* group_impl.h */; };
+		DCD2D8FD2A1CF64A00AB00B6 /* int128_native.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8932A1CF64A00AB00B6 /* int128_native.h */; };
+		DCD2D8FF2A1CF64A00AB00B6 /* ecmult_const.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8952A1CF64A00AB00B6 /* ecmult_const.h */; };
+		DCD2D9012A1CF64A00AB00B6 /* int128_struct_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8972A1CF64A00AB00B6 /* int128_struct_impl.h */; };
+		DCD2D9062A1CF64A00AB00B6 /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D89E2A1CF64A00AB00B6 /* main_impl.h */; };
+		DCD2D90A2A1CF64A00AB00B6 /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8A32A1CF64A00AB00B6 /* main_impl.h */; };
+		DCD2D90E2A1CF64A00AB00B6 /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8A82A1CF64A00AB00B6 /* main_impl.h */; };
+		DCD2D9132A1CF64A00AB00B6 /* main_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8AE2A1CF64A00AB00B6 /* main_impl.h */; };
+		DCD2D9162A1CF64A00AB00B6 /* precomputed_ecmult.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D8B12A1CF64A00AB00B6 /* precomputed_ecmult.c */; };
+		DCD2D9172A1CF64A00AB00B6 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B22A1CF64A00AB00B6 /* hash.h */; };
+		DCD2D9182A1CF64A00AB00B6 /* eckey_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B32A1CF64A00AB00B6 /* eckey_impl.h */; };
+		DCD2D91B2A1CF64A00AB00B6 /* scalar_8x32.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B62A1CF64A00AB00B6 /* scalar_8x32.h */; };
+		DCD2D91C2A1CF64A00AB00B6 /* scalar_low.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */; };
+		DCD2D91D2A1CF64A00AB00B6 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B82A1CF64A00AB00B6 /* eckey.h */; };
+		DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */; };
+		DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */; };
+		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */ = {isa = PBXBuildFile; fileRef = DCF6188329F069DB001BE133 /* AttestCardKey.json */; };
@@ -343,12 +387,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Bls_Signature.xcframework; sourceTree = "<group>"; };
 		5D011A252530BC2F00758010 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0243BD26CACACD00B76F37 /* IndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorView.swift; sourceTree = "<group>"; };
 		5D04F9E126EF731B00D15F75 /* Publisher+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+.swift"; sourceTree = "<group>"; };
 		5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSessionCommand.swift; sourceTree = "<group>"; };
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartPrimaryCardLinkingTask.swift; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		5D0E56022757C11F00D46F54 /* CardDataResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataResponse.swift; sourceTree = "<group>"; };
@@ -464,53 +508,6 @@
 		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		5D81348326D62F8900494A71 /* StringCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCodable.swift; sourceTree = "<group>"; };
-		5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
-		5D83F378247EC275005E7A35 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
-		5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
-		5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tangem_secp256k1.h; sourceTree = "<group>"; };
-		5D83F38E247EC276005E7A35 /* scalar_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_impl.h; sourceTree = "<group>"; };
-		5D83F38F247EC276005E7A35 /* field_10x26_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26_impl.h; sourceTree = "<group>"; };
-		5D83F393247EC276005E7A35 /* scratch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch.h; sourceTree = "<group>"; };
-		5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen_impl.h; sourceTree = "<group>"; };
-		5D83F395247EC276005E7A35 /* field_10x26.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26.h; sourceTree = "<group>"; };
-		5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32_impl.h; sourceTree = "<group>"; };
-		5D83F397247EC276005E7A35 /* field_5x52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52.h; sourceTree = "<group>"; };
-		5D83F398247EC276005E7A35 /* num_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_impl.h; sourceTree = "<group>"; };
-		5D83F39A247EC276005E7A35 /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field.h; sourceTree = "<group>"; };
-		5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_asm_impl.h; sourceTree = "<group>"; };
-		5D83F39E247EC276005E7A35 /* field_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_impl.h; sourceTree = "<group>"; };
-		5D83F39F247EC276005E7A35 /* scalar_4x64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64.h; sourceTree = "<group>"; };
-		5D83F3A0247EC276005E7A35 /* basic-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "basic-config.h"; sourceTree = "<group>"; };
-		5D83F3A1247EC276005E7A35 /* num.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num.h; sourceTree = "<group>"; };
-		5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_impl.h; sourceTree = "<group>"; };
-		5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const_impl.h; sourceTree = "<group>"; };
-		5D83F3A4247EC276005E7A35 /* secp256k1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = secp256k1.c; sourceTree = "<group>"; };
-		5D83F3A5247EC276005E7A35 /* ecdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
-		5D83F3A7247EC276005E7A35 /* scalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar.h; sourceTree = "<group>"; };
-		5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa_impl.h; sourceTree = "<group>"; };
-		5D83F3A9247EC276005E7A35 /* ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen.h; sourceTree = "<group>"; };
-		5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low_impl.h; sourceTree = "<group>"; };
-		5D83F3AB247EC276005E7A35 /* hash_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_impl.h; sourceTree = "<group>"; };
-		5D83F3AC247EC276005E7A35 /* ecmult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult.h; sourceTree = "<group>"; };
-		5D83F3AD247EC276005E7A35 /* scratch_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch_impl.h; sourceTree = "<group>"; };
-		5D83F3AF247EC276005E7A35 /* ecmult_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_impl.h; sourceTree = "<group>"; };
-		5D83F3B0247EC276005E7A35 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
-		5D83F3B4247EC276005E7A35 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
-		5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_int128_impl.h; sourceTree = "<group>"; };
-		5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64_impl.h; sourceTree = "<group>"; };
-		5D83F3B8247EC276005E7A35 /* group_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group_impl.h; sourceTree = "<group>"; };
-		5D83F3B9247EC276005E7A35 /* ecmult_const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const.h; sourceTree = "<group>"; };
-		5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = recovery_main_impl.h; sourceTree = "<group>"; };
-		5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdh_main_impl.h; sourceTree = "<group>"; };
-		5D83F3C4247EC276005E7A35 /* num_gmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_gmp.h; sourceTree = "<group>"; };
-		5D83F3C5247EC276005E7A35 /* hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
-		5D83F3C6247EC276005E7A35 /* eckey_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey_impl.h; sourceTree = "<group>"; };
-		5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = num_gmp_impl.h; sourceTree = "<group>"; };
-		5D83F3CA247EC276005E7A35 /* scalar_8x32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32.h; sourceTree = "<group>"; };
-		5D83F3CB247EC276005E7A35 /* scalar_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low.h; sourceTree = "<group>"; };
-		5D83F3CC247EC276005E7A35 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
-		5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
-		5D83F422247ECA27005E7A35 /* ecmult_static_context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_static_context.h; sourceTree = "<group>"; };
 		5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CCCCryptorStatus+Error.swift"; sourceTree = "<group>"; };
 		5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
 		5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
@@ -634,9 +631,14 @@
 		B0EC64FF260110530088F03D /* WalletDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDeserializer.swift; sourceTree = "<group>"; };
 		B0EC6507260110CC0088F03D /* ReadWalletCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletCommand.swift; sourceTree = "<group>"; };
 		B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadWalletsListCommand.swift; sourceTree = "<group>"; };
+		B6936A662B387B040024826A /* secp256k1_tangem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_tangem.h; sourceTree = "<group>"; };
+		B6B958982B2FCA8600E7B74E /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Gemfile; path = ../Gemfile; sourceTree = "<group>"; };
+		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
+		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ed25519Slip0010Tests.swift; sourceTree = "<group>"; };
 		DC1244B229B60B6F0037BC05 /* BIP39.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39.swift; sourceTree = "<group>"; };
 		DC1244B429B60E480037BC05 /* english.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = english.txt; sourceTree = "<group>"; };
 		DC1244B829B610550037BC05 /* BIP39Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP39Tests.swift; sourceTree = "<group>"; };
@@ -655,21 +657,109 @@
 		DC1244E329BB806E0037BC05 /* WIFTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WIFTests.swift; sourceTree = "<group>"; };
 		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
+		DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCertificateProvider.swift; sourceTree = "<group>"; };
 		DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetUserCodeRecoveryAllowed.json; sourceTree = "<group>"; };
 		DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletMnemonic.json; sourceTree = "<group>"; };
+		DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreflightReadFilter.swift; sourceTree = "<group>"; };
+		DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP23.swift; sourceTree = "<group>"; };
+		DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP23Tests.swift; sourceTree = "<group>"; };
+		DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP32MasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP2333MasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IkarusMasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyMasterKeyFactory.swift; sourceTree = "<group>"; };
+		DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLIP10Tests.swift; sourceTree = "<group>"; };
+		DC3D98092A792804001EEE7A /* KeysImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeysImportTests.swift; sourceTree = "<group>"; };
+		DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
 		DC59CB0D29AF70C700EC14E1 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
+		DC612D6B2AFD58A3005A547F /* CardIdPreflightReadFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardIdPreflightReadFilter.swift; sourceTree = "<group>"; };
+		DC612D712AFD60C2005A547F /* SessionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFilter.swift; sourceTree = "<group>"; };
+		DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFirmwareTests.swift; sourceTree = "<group>"; };
+		DC70AD662A8115BB00928836 /* FWTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FWTestCase.swift; sourceTree = "<group>"; };
 		DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedKeys.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
+		DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKDFUtil.swift; sourceTree = "<group>"; };
+		DCB5A4E22A1FAB330021E12D /* BLSUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLSUtils.swift; sourceTree = "<group>"; };
+		DCB5A4E42A1FAC190021E12D /* BLSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLSTests.swift; sourceTree = "<group>"; };
+		DCB5A4E62A1FBA8B0021E12D /* BigInt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigInt.swift; sourceTree = "<group>"; };
+		DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKDFTests.swift; sourceTree = "<group>"; };
+		DCB5A4EA2A20F47B0021E12D /* MasterKeyFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterKeyFactory.swift; sourceTree = "<group>"; };
 		DCC0A21029D3146100C45B13 /* SetUserSettingsCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserSettingsCommand.swift; sourceTree = "<group>"; };
 		DCC0A21329D3201300C45B13 /* SetUserCodeRecoveryAllowedTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUserCodeRecoveryAllowedTask.swift; sourceTree = "<group>"; };
 		DCC0A21529D3216100C45B13 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		DCC6A64729D212E8007BA5B7 /* GetEntropyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetEntropyCommand.swift; sourceTree = "<group>"; };
-		DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletSeed.json; sourceTree = "<group>"; };
+		DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizeReadBackupDataCommand.swift; sourceTree = "<group>"; };
+		DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_ecdh.h; sourceTree = "<group>"; };
+		DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_schnorrsig.h; sourceTree = "<group>"; };
+		DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_recovery.h; sourceTree = "<group>"; };
+		DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_extrakeys.h; sourceTree = "<group>"; };
+		DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = secp256k1_preallocated.h; sourceTree = "<group>"; };
+		DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_impl.h; sourceTree = "<group>"; };
+		DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26_impl.h; sourceTree = "<group>"; };
+		DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testrand_impl.h; sourceTree = "<group>"; };
+		DCD2D8532A1CF64900AB00B6 /* precomputed_ecmult_gen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = precomputed_ecmult_gen.c; sourceTree = "<group>"; };
+		DCD2D8542A1CF64900AB00B6 /* ecmult_compute_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_compute_table.h; sourceTree = "<group>"; };
+		DCD2D8552A1CF64900AB00B6 /* modinv32_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modinv32_impl.h; sourceTree = "<group>"; };
+		DCD2D8582A1CF64900AB00B6 /* scratch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch.h; sourceTree = "<group>"; };
+		DCD2D8592A1CF64900AB00B6 /* ecmult_gen_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen_impl.h; sourceTree = "<group>"; };
+		DCD2D85D2A1CF64900AB00B6 /* selftest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = selftest.h; sourceTree = "<group>"; };
+		DCD2D85E2A1CF64900AB00B6 /* field_10x26.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_10x26.h; sourceTree = "<group>"; };
+		DCD2D8602A1CF64900AB00B6 /* modinv32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modinv32.h; sourceTree = "<group>"; };
+		DCD2D8612A1CF64900AB00B6 /* scalar_8x32_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32_impl.h; sourceTree = "<group>"; };
+		DCD2D8622A1CF64900AB00B6 /* field_5x52.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52.h; sourceTree = "<group>"; };
+		DCD2D8632A1CF64900AB00B6 /* field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field.h; sourceTree = "<group>"; };
+		DCD2D8652A1CF64900AB00B6 /* field_5x52_asm_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_asm_impl.h; sourceTree = "<group>"; };
+		DCD2D8662A1CF64900AB00B6 /* field_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_impl.h; sourceTree = "<group>"; };
+		DCD2D8672A1CF64900AB00B6 /* scalar_4x64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64.h; sourceTree = "<group>"; };
+		DCD2D8682A1CF64900AB00B6 /* field_5x52_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_impl.h; sourceTree = "<group>"; };
+		DCD2D86A2A1CF64900AB00B6 /* ecmult_const_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const_impl.h; sourceTree = "<group>"; };
+		DCD2D86B2A1CF64900AB00B6 /* secp256k1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = secp256k1.c; sourceTree = "<group>"; };
+		DCD2D86C2A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen_compute_table_impl.h; sourceTree = "<group>"; };
+		DCD2D86D2A1CF64A00AB00B6 /* ecdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
+		DCD2D86F2A1CF64A00AB00B6 /* precomputed_ecmult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult.h; sourceTree = "<group>"; };
+		DCD2D8712A1CF64A00AB00B6 /* scalar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar.h; sourceTree = "<group>"; };
+		DCD2D8722A1CF64A00AB00B6 /* ecdsa_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa_impl.h; sourceTree = "<group>"; };
+		DCD2D8742A1CF64A00AB00B6 /* modinv64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modinv64.h; sourceTree = "<group>"; };
+		DCD2D8752A1CF64A00AB00B6 /* ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen.h; sourceTree = "<group>"; };
+		DCD2D8772A1CF64A00AB00B6 /* int128_native_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128_native_impl.h; sourceTree = "<group>"; };
+		DCD2D87C2A1CF64A00AB00B6 /* scalar_low_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low_impl.h; sourceTree = "<group>"; };
+		DCD2D87D2A1CF64A00AB00B6 /* hash_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash_impl.h; sourceTree = "<group>"; };
+		DCD2D87E2A1CF64A00AB00B6 /* ecmult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult.h; sourceTree = "<group>"; };
+		DCD2D87F2A1CF64A00AB00B6 /* scratch_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scratch_impl.h; sourceTree = "<group>"; };
+		DCD2D8802A1CF64A00AB00B6 /* ecmult_compute_table_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_compute_table_impl.h; sourceTree = "<group>"; };
+		DCD2D8822A1CF64A00AB00B6 /* ecmult_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_impl.h; sourceTree = "<group>"; };
+		DCD2D8832A1CF64A00AB00B6 /* group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group.h; sourceTree = "<group>"; };
+		DCD2D8842A1CF64A00AB00B6 /* int128_struct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128_struct.h; sourceTree = "<group>"; };
+		DCD2D8862A1CF64A00AB00B6 /* checkmem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checkmem.h; sourceTree = "<group>"; };
+		DCD2D8892A1CF64A00AB00B6 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		DCD2D88B2A1CF64A00AB00B6 /* int128.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128.h; sourceTree = "<group>"; };
+		DCD2D88C2A1CF64A00AB00B6 /* assumptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = assumptions.h; sourceTree = "<group>"; };
+		DCD2D88D2A1CF64A00AB00B6 /* field_5x52_int128_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = field_5x52_int128_impl.h; sourceTree = "<group>"; };
+		DCD2D88E2A1CF64A00AB00B6 /* modinv64_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modinv64_impl.h; sourceTree = "<group>"; };
+		DCD2D88F2A1CF64A00AB00B6 /* scalar_4x64_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_4x64_impl.h; sourceTree = "<group>"; };
+		DCD2D8902A1CF64A00AB00B6 /* int128_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128_impl.h; sourceTree = "<group>"; };
+		DCD2D8912A1CF64A00AB00B6 /* ecmult_gen_compute_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_gen_compute_table.h; sourceTree = "<group>"; };
+		DCD2D8922A1CF64A00AB00B6 /* group_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = group_impl.h; sourceTree = "<group>"; };
+		DCD2D8932A1CF64A00AB00B6 /* int128_native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128_native.h; sourceTree = "<group>"; };
+		DCD2D8952A1CF64A00AB00B6 /* ecmult_const.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecmult_const.h; sourceTree = "<group>"; };
+		DCD2D8972A1CF64A00AB00B6 /* int128_struct_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = int128_struct_impl.h; sourceTree = "<group>"; };
+		DCD2D89E2A1CF64A00AB00B6 /* main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main_impl.h; sourceTree = "<group>"; };
+		DCD2D8A32A1CF64A00AB00B6 /* main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main_impl.h; sourceTree = "<group>"; };
+		DCD2D8A82A1CF64A00AB00B6 /* main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main_impl.h; sourceTree = "<group>"; };
+		DCD2D8AE2A1CF64A00AB00B6 /* main_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main_impl.h; sourceTree = "<group>"; };
+		DCD2D8B12A1CF64A00AB00B6 /* precomputed_ecmult.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = precomputed_ecmult.c; sourceTree = "<group>"; };
+		DCD2D8B22A1CF64A00AB00B6 /* hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
+		DCD2D8B32A1CF64A00AB00B6 /* eckey_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey_impl.h; sourceTree = "<group>"; };
+		DCD2D8B62A1CF64A00AB00B6 /* scalar_8x32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_8x32.h; sourceTree = "<group>"; };
+		DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scalar_low.h; sourceTree = "<group>"; };
+		DCD2D8B82A1CF64A00AB00B6 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
+		DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
+		DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
+		DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchnorrSignature.swift; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
 		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
@@ -681,6 +771,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D62F3CB2A8BBC7000B6409B /* Bls_Signature.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,11 +786,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5D06F6AE2756676C006A15B9 /* Entities */ = {
+		2D62F3C92A8BBC7000B6409B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2D62F3CA2A8BBC7000B6409B /* Bls_Signature.xcframework */,
 			);
-			path = Entities;
+			path = Frameworks;
 			sourceTree = "<group>";
 		};
 		5D0BAAEA25CD87DF00E6A2B6 /* Log */ = {
@@ -740,9 +832,11 @@
 		5D170AEF26B42C88000D4F36 /* HDWallet */ = {
 			isa = PBXGroup;
 			children = (
+				DC3D97FC2A77F3E0001EEE7A /* MasterKey */,
 				5D2B798426BBED1D002A78D4 /* BIP32 */,
 				5D14091B26B9692500B811A1 /* BIP44.swift */,
 				5D14091D26B9886800B811A1 /* HDWalletError.swift */,
+				DC3D97F82A77D3C6001EEE7A /* SLIP23.swift */,
 			);
 			path = HDWallet;
 			sourceTree = "<group>";
@@ -853,7 +947,6 @@
 				5D54408D268226B600F7D05B /* Depersonalize.json */,
 				5D54408F268226BC00F7D05B /* PurgeWallet.json */,
 				5D5440912682297A00F7D05B /* CreateWallet.json */,
-				DCE3281629D5DEE500AAC4AC /* ImportWalletSeed.json */,
 				DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */,
 				DCF6188329F069DB001BE133 /* AttestCardKey.json */,
 				5D544093268243F700F7D05B /* Card.json */,
@@ -932,7 +1025,6 @@
 		5D4B128126D40C67006E173C /* Backup */ = {
 			isa = PBXGroup;
 			children = (
-				5D06F6AE2756676C006A15B9 /* Entities */,
 				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
 				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
 				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
@@ -944,7 +1036,8 @@
 				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
-				5D06F6AC27565441006A15B9 /* StartPrimaryCardLinkingTask.swift */,
+				DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */,
+				DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -976,6 +1069,7 @@
 			children = (
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
+				DC612D712AFD60C2005A547F /* SessionFilter.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
 				5D379C28268FA4AC00C7F473 /* CardSessionRunnable.swift */,
@@ -995,7 +1089,7 @@
 		5D6A92D52344E2B400158457 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+				B67A9C132B38D79500EE9ED8 /* Resources */,
 				5D6A92DB2344E3A500158457 /* Localization.swift */,
 			);
 			path = Localization;
@@ -1016,6 +1110,7 @@
 				5D3F77B424B9B8E700E8695B /* Attestation */,
 				5D86CBD624A10F3D00FB5BA7 /* Personalization */,
 				B0BD1C8E255E58BE00119D82 /* Wallet */,
+				DC612D6A2AFD585B005A547F /* PreflightReadFilter */,
 				5D7D5FB323449F2300058D69 /* Command.swift */,
 				5D6A92ED23463D1200158457 /* ScanTask.swift */,
 				B006971325FFA4420040D203 /* PreflightReadTask.swift */,
@@ -1042,95 +1137,11 @@
 		5D83F36E247EC275005E7A35 /* secp256k1 */ = {
 			isa = PBXGroup;
 			children = (
-				5D83F38D247EC276005E7A35 /* src */,
+				DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */,
+				DCD2D84C2A1CF64900AB00B6 /* src */,
+				DCD2D7802A1CE66000AB00B6 /* include */,
 			);
 			path = secp256k1;
-			sourceTree = "<group>";
-		};
-		5D83F376247EC275005E7A35 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				5D83F377247EC275005E7A35 /* secp256k1_ecdh.h */,
-				5D83F378247EC275005E7A35 /* secp256k1_recovery.h */,
-				5D83F379247EC275005E7A35 /* secp256k1_preallocated.h */,
-				5D83F37A247EC275005E7A35 /* tangem_secp256k1.h */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		5D83F38D247EC276005E7A35 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				5D83F3A0247EC276005E7A35 /* basic-config.h */,
-				5D83F3A8247EC276005E7A35 /* ecdsa_impl.h */,
-				5D83F3A5247EC276005E7A35 /* ecdsa.h */,
-				5D83F3C6247EC276005E7A35 /* eckey_impl.h */,
-				5D83F3CC247EC276005E7A35 /* eckey.h */,
-				5D83F3A3247EC276005E7A35 /* ecmult_const_impl.h */,
-				5D83F3B9247EC276005E7A35 /* ecmult_const.h */,
-				5D83F394247EC276005E7A35 /* ecmult_gen_impl.h */,
-				5D83F3A9247EC276005E7A35 /* ecmult_gen.h */,
-				5D83F3AF247EC276005E7A35 /* ecmult_impl.h */,
-				5D83F422247ECA27005E7A35 /* ecmult_static_context.h */,
-				5D83F3AC247EC276005E7A35 /* ecmult.h */,
-				5D83F39C247EC276005E7A35 /* field_5x52_asm_impl.h */,
-				5D83F3A2247EC276005E7A35 /* field_5x52_impl.h */,
-				5D83F3B5247EC276005E7A35 /* field_5x52_int128_impl.h */,
-				5D83F397247EC276005E7A35 /* field_5x52.h */,
-				5D83F38F247EC276005E7A35 /* field_10x26_impl.h */,
-				5D83F395247EC276005E7A35 /* field_10x26.h */,
-				5D83F39E247EC276005E7A35 /* field_impl.h */,
-				5D83F39A247EC276005E7A35 /* field.h */,
-				5D83F3B8247EC276005E7A35 /* group_impl.h */,
-				5D83F3B0247EC276005E7A35 /* group.h */,
-				5D83F3AB247EC276005E7A35 /* hash_impl.h */,
-				5D83F3C5247EC276005E7A35 /* hash.h */,
-				5D83F376247EC275005E7A35 /* include */,
-				5D83F420247EC9DF005E7A35 /* libsecp256k1-config.h */,
-				5D83F3BB247EC276005E7A35 /* modules */,
-				5D83F3C9247EC276005E7A35 /* num_gmp_impl.h */,
-				5D83F3C4247EC276005E7A35 /* num_gmp.h */,
-				5D83F398247EC276005E7A35 /* num_impl.h */,
-				5D83F3A1247EC276005E7A35 /* num.h */,
-				5D83F3B6247EC276005E7A35 /* scalar_4x64_impl.h */,
-				5D83F39F247EC276005E7A35 /* scalar_4x64.h */,
-				5D83F396247EC276005E7A35 /* scalar_8x32_impl.h */,
-				5D83F3CA247EC276005E7A35 /* scalar_8x32.h */,
-				5D83F38E247EC276005E7A35 /* scalar_impl.h */,
-				5D83F3AA247EC276005E7A35 /* scalar_low_impl.h */,
-				5D83F3CB247EC276005E7A35 /* scalar_low.h */,
-				5D83F3A7247EC276005E7A35 /* scalar.h */,
-				5D83F3AD247EC276005E7A35 /* scratch_impl.h */,
-				5D83F393247EC276005E7A35 /* scratch.h */,
-				5D83F3A4247EC276005E7A35 /* secp256k1.c */,
-				5D83F3B4247EC276005E7A35 /* util.h */,
-			);
-			path = src;
-			sourceTree = "<group>";
-		};
-		5D83F3BB247EC276005E7A35 /* modules */ = {
-			isa = PBXGroup;
-			children = (
-				5D83F3BC247EC276005E7A35 /* recovery */,
-				5D83F3C0247EC276005E7A35 /* ecdh */,
-			);
-			path = modules;
-			sourceTree = "<group>";
-		};
-		5D83F3BC247EC276005E7A35 /* recovery */ = {
-			isa = PBXGroup;
-			children = (
-				5D83F3BF247EC276005E7A35 /* recovery_main_impl.h */,
-			);
-			path = recovery;
-			sourceTree = "<group>";
-		};
-		5D83F3C0247EC276005E7A35 /* ecdh */ = {
-			isa = PBXGroup;
-			children = (
-				5D83F3C3247EC276005E7A35 /* ecdh_main_impl.h */,
-			);
-			path = ecdh;
 			sourceTree = "<group>";
 		};
 		5D8666592731642D0095CC82 /* Main */ = {
@@ -1221,6 +1232,8 @@
 		5DA80C90231D247A00A50A10 = {
 			isa = PBXGroup;
 			children = (
+				B6B958982B2FCA8600E7B74E /* Gemfile */,
+				B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */,
 				5DDF4F89235F06F600E46EAB /* Info.plist */,
 				5DA80C9C231D247A00A50A10 /* TangemSdk */,
 				5DA80CA7231D247A00A50A10 /* TangemSdkTests */,
@@ -1243,12 +1256,14 @@
 			children = (
 				5DA80C9D231D247A00A50A10 /* TangemSdk.h */,
 				5D5369D124461F62002886E0 /* module.modulemap */,
+				DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */,
 				5D6A92EB2346069700158457 /* TangemSdk.swift */,
 				5D7F4E3F248FCEFB00A1700D /* UI */,
 				5D6A92E12345F28F00158457 /* Operations */,
 				5DF7CFCA233D034E00461F4D /* Common */,
 				5DFFC1A2234DC969001C2F35 /* Crypto */,
 				5DD536882476B3FA00F5DE88 /* Haptics */,
+				2D62F3C92A8BBC7000B6409B /* Frameworks */,
 			);
 			path = TangemSdk;
 			sourceTree = "<group>";
@@ -1256,6 +1271,7 @@
 		5DA80CA7231D247A00A50A10 /* TangemSdkTests */ = {
 			isa = PBXGroup;
 			children = (
+				B6CA42212B38B5A700C9A5C9 /* Extensions */,
 				5D38D0672679040C0052F67C /* Jsons */,
 				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
@@ -1274,6 +1290,14 @@
 				5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */,
 				5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */,
 				DC4E442829BF42630088617C /* Base58Tests.swift */,
+				DCB5A4E42A1FAC190021E12D /* BLSTests.swift */,
+				DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */,
+				DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */,
+				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
+				DC3D98092A792804001EEE7A /* KeysImportTests.swift */,
+				DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */,
+				DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */,
+				DC70AD662A8115BB00928836 /* FWTestCase.swift */,
 			);
 			path = TangemSdkTests;
 			sourceTree = "<group>";
@@ -1335,6 +1359,7 @@
 		5DFFC1A2234DC969001C2F35 /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
+				DCB5A4E12A1FAB190021E12D /* BLS */,
 				DC59CB0129AF582800EC14E1 /* BIP39 */,
 				5D170AEF26B42C88000D4F36 /* HDWallet */,
 				5D83F36E247EC275005E7A35 /* secp256k1 */,
@@ -1347,6 +1372,7 @@
 				DC1244DF29BB6D460037BC05 /* Base58.swift */,
 				DC1244E129BB7B390037BC05 /* WIF.swift */,
 				DC1244E529BB8E580037BC05 /* NetworkType.swift */,
+				DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */,
 			);
 			path = Crypto;
 			sourceTree = "<group>";
@@ -1465,6 +1491,22 @@
 			path = Deserialization;
 			sourceTree = "<group>";
 		};
+		B67A9C132B38D79500EE9ED8 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5D6A92DA2344E2D700158457 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B6CA42212B38B5A700C9A5C9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		DC1244BB29B61DAC0037BC05 /* BIP39 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1483,6 +1525,18 @@
 				DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */,
 			);
 			path = ExtendedKeySerialization;
+			sourceTree = "<group>";
+		};
+		DC3D97FC2A77F3E0001EEE7A /* MasterKey */ = {
+			isa = PBXGroup;
+			children = (
+				DCB5A4EA2A20F47B0021E12D /* MasterKeyFactory.swift */,
+				DC3D98032A77FA7F001EEE7A /* AnyMasterKeyFactory.swift */,
+				DC3D97FD2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift */,
+				DC3D97FF2A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift */,
+				DC3D98012A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift */,
+			);
+			path = MasterKey;
 			sourceTree = "<group>";
 		};
 		DC59CB0129AF582800EC14E1 /* BIP39 */ = {
@@ -1506,6 +1560,25 @@
 			path = Wordlists;
 			sourceTree = "<group>";
 		};
+		DC612D6A2AFD585B005A547F /* PreflightReadFilter */ = {
+			isa = PBXGroup;
+			children = (
+				DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */,
+				DC612D6B2AFD58A3005A547F /* CardIdPreflightReadFilter.swift */,
+			);
+			path = PreflightReadFilter;
+			sourceTree = "<group>";
+		};
+		DCB5A4E12A1FAB190021E12D /* BLS */ = {
+			isa = PBXGroup;
+			children = (
+				DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */,
+				DCB5A4E22A1FAB330021E12D /* BLSUtils.swift */,
+				DCB5A4E62A1FBA8B0021E12D /* BigInt.swift */,
+			);
+			path = BLS;
+			sourceTree = "<group>";
+		};
 		DCC0A21229D31FDD00C45B13 /* UserSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1515,6 +1588,126 @@
 			path = UserSettings;
 			sourceTree = "<group>";
 		};
+		DCD2D7802A1CE66000AB00B6 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				B6936A662B387B040024826A /* secp256k1_tangem.h */,
+				DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */,
+				DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */,
+				DCD2D7832A1CE66000AB00B6 /* secp256k1_recovery.h */,
+				DCD2D7842A1CE66000AB00B6 /* secp256k1_extrakeys.h */,
+				DCD2D7852A1CE66000AB00B6 /* secp256k1_preallocated.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		DCD2D84C2A1CF64900AB00B6 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D9212A1CFA8400AB00B6 /* precomputed_ecmult_gen.h */,
+				DCD2D84E2A1CF64900AB00B6 /* scalar_impl.h */,
+				DCD2D8512A1CF64900AB00B6 /* field_10x26_impl.h */,
+				DCD2D8522A1CF64900AB00B6 /* testrand_impl.h */,
+				DCD2D8532A1CF64900AB00B6 /* precomputed_ecmult_gen.c */,
+				DCD2D8542A1CF64900AB00B6 /* ecmult_compute_table.h */,
+				DCD2D8552A1CF64900AB00B6 /* modinv32_impl.h */,
+				DCD2D8582A1CF64900AB00B6 /* scratch.h */,
+				DCD2D8592A1CF64900AB00B6 /* ecmult_gen_impl.h */,
+				DCD2D85D2A1CF64900AB00B6 /* selftest.h */,
+				DCD2D85E2A1CF64900AB00B6 /* field_10x26.h */,
+				DCD2D8602A1CF64900AB00B6 /* modinv32.h */,
+				DCD2D8612A1CF64900AB00B6 /* scalar_8x32_impl.h */,
+				DCD2D8622A1CF64900AB00B6 /* field_5x52.h */,
+				DCD2D8632A1CF64900AB00B6 /* field.h */,
+				DCD2D8652A1CF64900AB00B6 /* field_5x52_asm_impl.h */,
+				DCD2D8662A1CF64900AB00B6 /* field_impl.h */,
+				DCD2D8672A1CF64900AB00B6 /* scalar_4x64.h */,
+				DCD2D8682A1CF64900AB00B6 /* field_5x52_impl.h */,
+				DCD2D86A2A1CF64900AB00B6 /* ecmult_const_impl.h */,
+				DCD2D86B2A1CF64900AB00B6 /* secp256k1.c */,
+				DCD2D86C2A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h */,
+				DCD2D86D2A1CF64A00AB00B6 /* ecdsa.h */,
+				DCD2D86F2A1CF64A00AB00B6 /* precomputed_ecmult.h */,
+				DCD2D8712A1CF64A00AB00B6 /* scalar.h */,
+				DCD2D8722A1CF64A00AB00B6 /* ecdsa_impl.h */,
+				DCD2D8742A1CF64A00AB00B6 /* modinv64.h */,
+				DCD2D8752A1CF64A00AB00B6 /* ecmult_gen.h */,
+				DCD2D8772A1CF64A00AB00B6 /* int128_native_impl.h */,
+				DCD2D87C2A1CF64A00AB00B6 /* scalar_low_impl.h */,
+				DCD2D87D2A1CF64A00AB00B6 /* hash_impl.h */,
+				DCD2D87E2A1CF64A00AB00B6 /* ecmult.h */,
+				DCD2D87F2A1CF64A00AB00B6 /* scratch_impl.h */,
+				DCD2D8802A1CF64A00AB00B6 /* ecmult_compute_table_impl.h */,
+				DCD2D8822A1CF64A00AB00B6 /* ecmult_impl.h */,
+				DCD2D8832A1CF64A00AB00B6 /* group.h */,
+				DCD2D8842A1CF64A00AB00B6 /* int128_struct.h */,
+				DCD2D8862A1CF64A00AB00B6 /* checkmem.h */,
+				DCD2D8892A1CF64A00AB00B6 /* util.h */,
+				DCD2D88B2A1CF64A00AB00B6 /* int128.h */,
+				DCD2D88C2A1CF64A00AB00B6 /* assumptions.h */,
+				DCD2D88D2A1CF64A00AB00B6 /* field_5x52_int128_impl.h */,
+				DCD2D88E2A1CF64A00AB00B6 /* modinv64_impl.h */,
+				DCD2D88F2A1CF64A00AB00B6 /* scalar_4x64_impl.h */,
+				DCD2D8902A1CF64A00AB00B6 /* int128_impl.h */,
+				DCD2D8912A1CF64A00AB00B6 /* ecmult_gen_compute_table.h */,
+				DCD2D8922A1CF64A00AB00B6 /* group_impl.h */,
+				DCD2D8932A1CF64A00AB00B6 /* int128_native.h */,
+				DCD2D8952A1CF64A00AB00B6 /* ecmult_const.h */,
+				DCD2D8972A1CF64A00AB00B6 /* int128_struct_impl.h */,
+				DCD2D8982A1CF64A00AB00B6 /* modules */,
+				DCD2D8B12A1CF64A00AB00B6 /* precomputed_ecmult.c */,
+				DCD2D8B22A1CF64A00AB00B6 /* hash.h */,
+				DCD2D8B32A1CF64A00AB00B6 /* eckey_impl.h */,
+				DCD2D8B62A1CF64A00AB00B6 /* scalar_8x32.h */,
+				DCD2D8B72A1CF64A00AB00B6 /* scalar_low.h */,
+				DCD2D8B82A1CF64A00AB00B6 /* eckey.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		DCD2D8982A1CF64A00AB00B6 /* modules */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D8992A1CF64A00AB00B6 /* recovery */,
+				DCD2D89F2A1CF64A00AB00B6 /* ecdh */,
+				DCD2D8A42A1CF64A00AB00B6 /* extrakeys */,
+				DCD2D8A92A1CF64A00AB00B6 /* schnorrsig */,
+			);
+			path = modules;
+			sourceTree = "<group>";
+		};
+		DCD2D8992A1CF64A00AB00B6 /* recovery */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D89E2A1CF64A00AB00B6 /* main_impl.h */,
+			);
+			path = recovery;
+			sourceTree = "<group>";
+		};
+		DCD2D89F2A1CF64A00AB00B6 /* ecdh */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D8A32A1CF64A00AB00B6 /* main_impl.h */,
+			);
+			path = ecdh;
+			sourceTree = "<group>";
+		};
+		DCD2D8A42A1CF64A00AB00B6 /* extrakeys */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D8A82A1CF64A00AB00B6 /* main_impl.h */,
+			);
+			path = extrakeys;
+			sourceTree = "<group>";
+		};
+		DCD2D8A92A1CF64A00AB00B6 /* schnorrsig */ = {
+			isa = PBXGroup;
+			children = (
+				DCD2D8AE2A1CF64A00AB00B6 /* main_impl.h */,
+			);
+			path = schnorrsig;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1522,53 +1715,71 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5D83F421247EC9DF005E7A35 /* libsecp256k1-config.h in Headers */,
-				5D83F3F6247EC276005E7A35 /* basic-config.h in Headers */,
-				5D83F401247EC276005E7A35 /* hash_impl.h in Headers */,
-				5D83F40C247EC276005E7A35 /* scalar_4x64_impl.h in Headers */,
-				5D83F41F247EC276005E7A35 /* eckey.h in Headers */,
-				5D83F3FF247EC276005E7A35 /* ecmult_gen.h in Headers */,
-				5D83F40F247EC276005E7A35 /* ecmult_const.h in Headers */,
-				5D83F40B247EC276005E7A35 /* field_5x52_int128_impl.h in Headers */,
-				5D83F3D2247EC276005E7A35 /* secp256k1_recovery.h in Headers */,
-				5D83F419247EC276005E7A35 /* eckey_impl.h in Headers */,
-				5D83F3ED247EC276005E7A35 /* field_5x52.h in Headers */,
-				5D83F3EA247EC276005E7A35 /* ecmult_gen_impl.h in Headers */,
-				5D83F417247EC276005E7A35 /* num_gmp.h in Headers */,
-				5D83F406247EC276005E7A35 /* group.h in Headers */,
-				5D83F418247EC276005E7A35 /* hash.h in Headers */,
-				5D83F3E9247EC276005E7A35 /* scratch.h in Headers */,
-				5D83F41D247EC276005E7A35 /* scalar_8x32.h in Headers */,
-				5D83F413247EC276005E7A35 /* recovery_main_impl.h in Headers */,
-				5D83F3D1247EC276005E7A35 /* secp256k1_ecdh.h in Headers */,
+				DCD2D90E2A1CF64A00AB00B6 /* main_impl.h in Headers */,
+				DCD2D8ED2A1CF64A00AB00B6 /* group.h in Headers */,
+				DCD2D8FB2A1CF64A00AB00B6 /* ecmult_gen_compute_table.h in Headers */,
+				DCD2D8E72A1CF64A00AB00B6 /* hash_impl.h in Headers */,
+				DCD2D8C02A1CF64A00AB00B6 /* ecmult_compute_table.h in Headers */,
+				DCD2D8E02A1CF64A00AB00B6 /* ecmult_gen.h in Headers */,
+				DCD2D9172A1CF64A00AB00B6 /* hash.h in Headers */,
+				DCD2D8D32A1CF64A00AB00B6 /* field_5x52_impl.h in Headers */,
+				DCD2D8FC2A1CF64A00AB00B6 /* group_impl.h in Headers */,
+				DCD2D91D2A1CF64A00AB00B6 /* eckey.h in Headers */,
+				DCD2D8EC2A1CF64A00AB00B6 /* ecmult_impl.h in Headers */,
+				DCD2D9182A1CF64A00AB00B6 /* eckey_impl.h in Headers */,
+				DCD2D8F32A1CF64A00AB00B6 /* util.h in Headers */,
+				DCD2D8CE2A1CF64A00AB00B6 /* field.h in Headers */,
+				DCD2D8CC2A1CF64A00AB00B6 /* scalar_8x32_impl.h in Headers */,
+				DCD2D91C2A1CF64A00AB00B6 /* scalar_low.h in Headers */,
+				DCD2D8FD2A1CF64A00AB00B6 /* int128_native.h in Headers */,
+				DCD2D8DC2A1CF64A00AB00B6 /* scalar.h in Headers */,
+				DCD2D8D02A1CF64A00AB00B6 /* field_5x52_asm_impl.h in Headers */,
+				DCD2D7F52A1CE66000AB00B6 /* secp256k1_extrakeys.h in Headers */,
 				5DA80CAB231D247A00A50A10 /* TangemSdk.h in Headers */,
-				5D83F40E247EC276005E7A35 /* group_impl.h in Headers */,
-				5D83F416247EC276005E7A35 /* ecdh_main_impl.h in Headers */,
-				5D83F3FE247EC276005E7A35 /* ecdsa_impl.h in Headers */,
-				5D83F405247EC276005E7A35 /* ecmult_impl.h in Headers */,
-				5D83F41C247EC276005E7A35 /* num_gmp_impl.h in Headers */,
-				5D83F3F5247EC276005E7A35 /* scalar_4x64.h in Headers */,
-				5D83F3F7247EC276005E7A35 /* num.h in Headers */,
-				5D83F402247EC276005E7A35 /* ecmult.h in Headers */,
-				5D83F3F9247EC276005E7A35 /* ecmult_const_impl.h in Headers */,
-				5D83F3F2247EC276005E7A35 /* field_5x52_asm_impl.h in Headers */,
-				5D83F3FB247EC276005E7A35 /* ecdsa.h in Headers */,
-				5D83F3D3247EC276005E7A35 /* secp256k1_preallocated.h in Headers */,
-				5D83F423247ECA27005E7A35 /* ecmult_static_context.h in Headers */,
-				5D83F3F0247EC276005E7A35 /* field.h in Headers */,
-				5D83F3FD247EC276005E7A35 /* scalar.h in Headers */,
-				5D83F41E247EC276005E7A35 /* scalar_low.h in Headers */,
-				5D83F400247EC276005E7A35 /* scalar_low_impl.h in Headers */,
-				5D83F3D4247EC276005E7A35 /* tangem_secp256k1.h in Headers */,
-				5D83F3F8247EC276005E7A35 /* field_5x52_impl.h in Headers */,
-				5D83F3EE247EC276005E7A35 /* num_impl.h in Headers */,
-				5D83F40A247EC276005E7A35 /* util.h in Headers */,
-				5D83F3E5247EC276005E7A35 /* scalar_impl.h in Headers */,
-				5D83F403247EC276005E7A35 /* scratch_impl.h in Headers */,
-				5D83F3EC247EC276005E7A35 /* scalar_8x32_impl.h in Headers */,
-				5D83F3F4247EC276005E7A35 /* field_impl.h in Headers */,
-				5D83F3EB247EC276005E7A35 /* field_10x26.h in Headers */,
-				5D83F3E6247EC276005E7A35 /* field_10x26_impl.h in Headers */,
+				DCD2D8BA2A1CF64A00AB00B6 /* scalar_impl.h in Headers */,
+				DCD2D8C32A1CF64A00AB00B6 /* scratch.h in Headers */,
+				DCD2D8E82A1CF64A00AB00B6 /* ecmult.h in Headers */,
+				DCD2D8C12A1CF64A00AB00B6 /* modinv32_impl.h in Headers */,
+				DCD2D9132A1CF64A00AB00B6 /* main_impl.h in Headers */,
+				DCD2D8DD2A1CF64A00AB00B6 /* ecdsa_impl.h in Headers */,
+				DCD2D90A2A1CF64A00AB00B6 /* main_impl.h in Headers */,
+				DCD2D7F62A1CE66000AB00B6 /* secp256k1_preallocated.h in Headers */,
+				DCD2D8F52A1CF64A00AB00B6 /* int128.h in Headers */,
+				DCD2D8DA2A1CF64A00AB00B6 /* precomputed_ecmult.h in Headers */,
+				DCD2D8F72A1CF64A00AB00B6 /* field_5x52_int128_impl.h in Headers */,
+				DCD2D8C92A1CF64A00AB00B6 /* field_10x26.h in Headers */,
+				DCD2D8CB2A1CF64A00AB00B6 /* modinv32.h in Headers */,
+				DCD2D8FA2A1CF64A00AB00B6 /* int128_impl.h in Headers */,
+				DCD2D91B2A1CF64A00AB00B6 /* scalar_8x32.h in Headers */,
+				DCD2D9062A1CF64A00AB00B6 /* main_impl.h in Headers */,
+				DCD2D8E62A1CF64A00AB00B6 /* scalar_low_impl.h in Headers */,
+				DCD2D8BD2A1CF64A00AB00B6 /* field_10x26_impl.h in Headers */,
+				DCD2D7F42A1CE66000AB00B6 /* secp256k1_recovery.h in Headers */,
+				DCD2D8C42A1CF64A00AB00B6 /* ecmult_gen_impl.h in Headers */,
+				DCD2D7F22A1CE66000AB00B6 /* secp256k1_ecdh.h in Headers */,
+				DCD2D8EA2A1CF64A00AB00B6 /* ecmult_compute_table_impl.h in Headers */,
+				DCD2D8D82A1CF64A00AB00B6 /* ecdsa.h in Headers */,
+				DCD2D8D12A1CF64A00AB00B6 /* field_impl.h in Headers */,
+				DCD2D8F92A1CF64A00AB00B6 /* scalar_4x64_impl.h in Headers */,
+				DCD2D8E92A1CF64A00AB00B6 /* scratch_impl.h in Headers */,
+				DCD2D8DF2A1CF64A00AB00B6 /* modinv64.h in Headers */,
+				DCD2D8BE2A1CF64A00AB00B6 /* testrand_impl.h in Headers */,
+				DCD2D8F02A1CF64A00AB00B6 /* checkmem.h in Headers */,
+				DCD2D8F82A1CF64A00AB00B6 /* modinv64_impl.h in Headers */,
+				DCD2D8D52A1CF64A00AB00B6 /* ecmult_const_impl.h in Headers */,
+				DCD2D8E22A1CF64A00AB00B6 /* int128_native_impl.h in Headers */,
+				DCD2D7F32A1CE66000AB00B6 /* secp256k1_schnorrsig.h in Headers */,
+				DCD2D8F62A1CF64A00AB00B6 /* assumptions.h in Headers */,
+				DCD2D9232A1CFA8400AB00B6 /* precomputed_ecmult_gen.h in Headers */,
+				DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */,
+				DCD2D8CD2A1CF64A00AB00B6 /* field_5x52.h in Headers */,
+				DCD2D9012A1CF64A00AB00B6 /* int128_struct_impl.h in Headers */,
+				DCD2D8D72A1CF64A00AB00B6 /* ecmult_gen_compute_table_impl.h in Headers */,
+				DCD2D8FF2A1CF64A00AB00B6 /* ecmult_const.h in Headers */,
+				DCD2D8D22A1CF64A00AB00B6 /* scalar_4x64.h in Headers */,
+				B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */,
+				DCD2D8C82A1CF64A00AB00B6 /* selftest.h in Headers */,
+				DCD2D8EE2A1CF64A00AB00B6 /* int128_struct.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1620,8 +1831,9 @@
 		5DA80C91231D247A00A50A10 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "Tangem AG";
 				TargetAttributes = {
 					5DA80C99231D247A00A50A10 = {
@@ -1664,6 +1876,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC44C58B2B4DC48000888BED /* PrivacyInfo.xcprivacy in Resources */,
 				DC1244B529B60E480037BC05 /* english.txt in Resources */,
 				5DD5368C2476B3FB00F5DE88 /* Error.ahap in Resources */,
 				5D5369D224461F62002886E0 /* module.modulemap in Resources */,
@@ -1698,7 +1911,6 @@
 				5D2BDF8626DD4869002F7E19 /* TestParseRequest.json in Resources */,
 				DC1244C329B766B70037BC05 /* mnemonic_valid_test_vectors.json in Resources */,
 				5D5440922682297A00F7D05B /* CreateWallet.json in Resources */,
-				DCE3281729D5DEE500AAC4AC /* ImportWalletSeed.json in Resources */,
 				5D54408C2682269400F7D05B /* SetPasscode.json in Resources */,
 				5D4B127D26D3D351006E173C /* WriteFiles.json in Resources */,
 			);
@@ -1748,6 +1960,8 @@
 				5DC62D3E23506CF300195A51 /* TlvDecoder.swift in Sources */,
 				5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */,
 				5D86CBE124A113C900FB5BA7 /* CardConfig.swift in Sources */,
+				DC3D97FE2A77F5C6001EEE7A /* BIP32MasterKeyFactory.swift in Sources */,
+				DC3D98042A77FA7F001EEE7A /* AnyMasterKeyFactory.swift in Sources */,
 				5D86CBE524A220C400FB5BA7 /* PersonalizeCommand.swift in Sources */,
 				5D86CBE324A2051F00FB5BA7 /* NdefEncoder.swift in Sources */,
 				5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */,
@@ -1755,6 +1969,8 @@
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
 				5DFCE40524B30589007B95AF /* Storage.swift in Sources */,
 				5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */,
+				DCD2D9162A1CF64A00AB00B6 /* precomputed_ecmult.c in Sources */,
+				DC612D6C2AFD58A3005A547F /* CardIdPreflightReadFilter.swift in Sources */,
 				5D81348426D62F8900494A71 /* StringCodable.swift in Sources */,
 				B091C0F8253EF3EE003D57E7 /* FileHashData.swift in Sources */,
 				5DF5FB1C244F2C15002DB244 /* IssuerDataVerifier.swift in Sources */,
@@ -1767,9 +1983,12 @@
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D60CA63272C472F00A1DF0B /* ResetCodesController.swift in Sources */,
+				DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
+				DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
+				DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */,
 				DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */,
@@ -1780,6 +1999,7 @@
 				B0390F8325658F3B0061E5ED /* ProductMask.swift in Sources */,
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
+				DCB5A4E32A1FAB330021E12D /* BLSUtils.swift in Sources */,
 				5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */,
@@ -1787,9 +2007,9 @@
 				5DDD6C7925D30C2D00E48D7B /* ConsoleLogger.swift in Sources */,
 				5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */,
 				DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */,
+				DCD2D8D62A1CF64A00AB00B6 /* secp256k1.c in Sources */,
 				5DE43A6426D5158300ECA36A /* WriteBackupDataCommand.swift in Sources */,
 				5D492E9A26EA8EE600F489F5 /* StartBackupCardLinkingTask.swift in Sources */,
-				5D83F3FA247EC276005E7A35 /* secp256k1.c in Sources */,
 				B00B333B252EED5000A9FE96 /* FileDataMode.swift in Sources */,
 				5DDD6D4C25D5880200E48D7B /* NFCTag+.swift in Sources */,
 				5D2FE06724DDA3080086B5E8 /* NetworkService.swift in Sources */,
@@ -1804,6 +2024,7 @@
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
 				5D94475E2652F0D400EA9CD2 /* AnyJSONRPCRunnable.swift in Sources */,
 				5D38D075267A442B0052F67C /* TrustedCardsRepo.swift in Sources */,
+				DCD2D5BC2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift in Sources */,
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
 				DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */,
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
@@ -1819,6 +2040,7 @@
 				5D6508232672755600A8D45B /* Wallet.swift in Sources */,
 				B0918FA625341ADB001E8B34 /* WriteFilesTask.swift in Sources */,
 				B0EC6508260110CC0088F03D /* ReadWalletCommand.swift in Sources */,
+				DCB5A4EB2A20F47B0021E12D /* MasterKeyFactory.swift in Sources */,
 				B0B398162539DC4700573220 /* DeleteAllFilesTask.swift in Sources */,
 				5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */,
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
@@ -1837,7 +2059,6 @@
 				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
 				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
-				5D06F6AD27565441006A15B9 /* StartPrimaryCardLinkingTask.swift in Sources */,
 				5D2F3EE526CBDAA100779CAC /* KeyboardAdaptive.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
@@ -1846,6 +2067,7 @@
 				5D539ECB276CDD8600AB8B53 /* DeriveMultipleWalletPublicKeysTask.swift in Sources */,
 				DA6C752A292682650070EEFD /* LAContext+.swift in Sources */,
 				DCC6A64829D212E8007BA5B7 /* GetEntropyCommand.swift in Sources */,
+				DCB5A4E72A1FBA8B0021E12D /* BigInt.swift in Sources */,
 				5DE43A6026D511CE00ECA36A /* LinkBackupCardsCommand.swift in Sources */,
 				5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */,
 				5D270F2726A020DA00D2EDC1 /* WalletDataDeserializer.swift in Sources */,
@@ -1870,6 +2092,7 @@
 				5D379C2F268FA57500C7F473 /* UserCode.swift in Sources */,
 				B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */,
 				5DBD7325249122C9000DF4BD /* SetUserCodeCommand.swift in Sources */,
+				DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */,
 				5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */,
 				5D23C42626CEDDD000A1A280 /* Array+.swift in Sources */,
 				5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */,
@@ -1895,6 +2118,7 @@
 				5D5242672727FE37007FEB03 /* ResetUserCodesView.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D5A67FA272830C00002EDA9 /* BadgedCardView.swift in Sources */,
+				DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */,
 				5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
@@ -1914,6 +2138,7 @@
 				5D58202224221E2B0057EF40 /* TangemSdkError.swift in Sources */,
 				5D2B798626BC3DBF002A78D4 /* DeriveWalletPublicKeyTask.swift in Sources */,
 				5D86CBD524A10BA400FB5BA7 /* DepersonalizeCommand.swift in Sources */,
+				DCD2D8BF2A1CF64A00AB00B6 /* precomputed_ecmult_gen.c in Sources */,
 				5DAAF3A026E2668500187AA9 /* UIApplication+.swift in Sources */,
 				5D0F8D0626C6C363002E84A4 /* Binding+.swift in Sources */,
 				5D2F3EE426CBDAA100779CAC /* KeyboardHeightPublisher.swift in Sources */,
@@ -1939,6 +2164,7 @@
 				B006971425FFA4420040D203 /* PreflightReadTask.swift in Sources */,
 				5DA3A2EF251CA507009A8E08 /* CheckUserCodesCommand.swift in Sources */,
 				5D705B5B23DAF2BB002CCD7A /* Config.swift in Sources */,
+				DC612D722AFD60C2005A547F /* SessionFilter.swift in Sources */,
 				5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */,
 				DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
@@ -1951,6 +2177,7 @@
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
+				DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
@@ -1958,6 +2185,7 @@
 				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
+				DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */,
 				5D86665C273166810095CC82 /* ResetCodesViewState.swift in Sources */,
 				DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */,
 				5D46F158268105BF00DC6447 /* SignHashesCommand.swift in Sources */,
@@ -1969,17 +2197,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3D98062A7927A2001EEE7A /* SLIP10Tests.swift in Sources */,
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */,
+				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
+				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,
 				DC1244C929B778750037BC05 /* BIP32Tests.swift in Sources */,
+				DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */,
+				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,
 				DC1244DC29BB66840037BC05 /* ExtendedKeyTests.swift in Sources */,
 				5DAD449E236B2435006C38F8 /* DataExtensionTests.swift in Sources */,
+				DCB5A4E92A20EB1F0021E12D /* HKDFTests.swift in Sources */,
 				5D6795B2237AEFB60075A330 /* ApduTests.swift in Sources */,
+				DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */,
 				5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */,
+				DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */,
 				5D713B2F236C53E300E4F6FC /* ByteUtilsTest.swift in Sources */,
 				5D437EEB237BE980009C82A8 /* TlvTests.swift in Sources */,
 				5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */,
@@ -2054,6 +2291,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2068,7 +2306,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -2081,6 +2319,8 @@
 					CoreNFC,
 					"-weak_framework",
 					CryptoKit,
+					"-weak_framework",
+					SwiftUI,
 				);
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -2131,6 +2371,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2139,7 +2380,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MODULEMAP_FILE = "$(SRCROOT)/TangemSdk/module.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2151,6 +2392,8 @@
 					CoreNFC,
 					"-weak_framework",
 					CryptoKit,
+					"-weak_framework",
+					SwiftUI,
 				);
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2167,23 +2410,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TangemSdk/Crypto/secp256k1",
+				);
 				MODULEMAP_FILE = "";
 				MODULEMAP_PRIVATE_FILE = "";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					Combine,
@@ -2208,23 +2459,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TangemSdk/Crypto/secp256k1",
+				);
 				MODULEMAP_FILE = "";
 				MODULEMAP_PRIVATE_FILE = "";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					Combine,

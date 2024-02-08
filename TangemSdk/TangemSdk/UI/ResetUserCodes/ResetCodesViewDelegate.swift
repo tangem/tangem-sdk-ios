@@ -44,9 +44,11 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
     func showError(_ error: TangemSdkError) {
         guard let screen = screen else { return }
         
+        let tint = style.colors.tintUIColor
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: "common_error".localized,
                                                     message: error.localizedDescription,
+                                                    tint: tint,
                                                     onContinue: {}))
     }
     
@@ -56,9 +58,11 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
             return
         }
         
+        let tint = style.colors.tintUIColor
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,
                                                     message: message,
+                                                    tint: tint,
                                                     onContinue: onContinue))
     }
 }

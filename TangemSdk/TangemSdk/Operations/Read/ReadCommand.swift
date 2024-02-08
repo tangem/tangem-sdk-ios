@@ -11,14 +11,14 @@ import Foundation
 /// This command receives from the Tangem Card all the data about the card and the wallet,
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 @available(iOS 13.0, *)
-final class ReadCommand: Command {
-    var preflightReadMode: PreflightReadMode { .none }
+public final class ReadCommand: Command {
+    public var preflightReadMode: PreflightReadMode { .none }
     
     deinit {
         Log.debug("ReadCommand deinit")
     }
     
-    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):

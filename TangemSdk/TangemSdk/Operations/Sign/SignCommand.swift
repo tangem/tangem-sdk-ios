@@ -33,7 +33,18 @@ class SignCommand: Command {
     }
     
     private lazy var chunkSize: Int = {
-        return NFCUtils.isPoorNfcQualityDevice ? 2 : 10
+        /// These devices are not able to sign long hashes.
+        if NFCUtils.isPoorNfcQualityDevice {
+            return Constants.maxChunkSizePoorNfcQualityDevice
+        }
+
+        if let hashSize = hashes.first?.count, hashSize > 0 {
+            let estimatedChunkSize = Constants.packageSize / hashSize
+            let chunkSize = max(1, min(estimatedChunkSize, Constants.maxChunkSize))
+            return chunkSize
+        }
+
+        return Constants.maxChunkSize
     }()
     
     private lazy var numberOfChunks: Int = {
@@ -65,7 +76,7 @@ class SignCommand: Command {
                 return .notSupportedFirmwareVersion
             }
             
-            guard wallet.curve == .secp256k1 || wallet.curve == .ed25519 else {
+            guard wallet.curve.supportsDerivation else {
                 return .unsupportedCurve
             }
             
@@ -257,5 +268,20 @@ class SignCommand: Command {
               }
         
         return environment.terminalKeys
+    }
+}
+
+
+@available(iOS 13.0, *)
+private extension SignCommand {
+    enum Constants {
+        /// The max answer is 1152 bytes (unencrypted) and 1120 (encrypted). The worst case is 8 hashes * 64 bytes for ed + 512 bytes of signatures + cardId, SignedHashes + TLV + SW is ok.
+        static let packageSize = 512
+
+        /// Card limitation
+        static let maxChunkSize = 10
+
+        /// Empirical value
+        static let maxChunkSizePoorNfcQualityDevice = 2
     }
 }

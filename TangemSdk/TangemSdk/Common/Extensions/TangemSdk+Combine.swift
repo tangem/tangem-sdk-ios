@@ -41,7 +41,7 @@ extension CommandApdu {
 @available(iOS 13.0, *)
 extension NFCISO7816Tag {
     func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> {
-        return Deferred { Future() {[unowned self] promise in
+        return Deferred { Future() { promise in
             let requestDate = Date()
             
             guard let apdu = NFCISO7816APDU(data: cApdu.serialize()) else {
@@ -68,7 +68,7 @@ extension NFCISO7816Tag {
 @available(iOS 13.0, *)
 extension NFCTagReaderSession {
     func connectPublisher(tag: NFCTag) -> AnyPublisher<Void, TangemSdkError> {
-        return Deferred { Future() {[unowned self] promise in
+        return Deferred { Future() { promise in
             self.connect(to: tag) { error in
                 if let error = error {
                     promise(.failure(error.toTangemSdkError()))

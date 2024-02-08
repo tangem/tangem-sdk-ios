@@ -44,7 +44,7 @@ public class PersonalizeCommand: Command {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let read = PreflightReadTask(readMode: .readCardOnly, cardId: nil) //We have to run preflight read ourseleves to catch the notPersonalized error
+        let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) //We have to run preflight read ourseleves to catch the notPersonalized error
         read.run(in: session) { readResult in
             switch readResult {
             case .success:

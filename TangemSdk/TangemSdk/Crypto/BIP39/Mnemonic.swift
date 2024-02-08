@@ -40,4 +40,10 @@ public struct Mnemonic {
     public func generateSeed(with passphrase: String = "") throws -> Data {
         return try bip39.generateSeed(from: mnemonicComponents, passphrase: passphrase)
     }
+
+    /// Returns initial entropy
+    /// - Returns: entropy data
+    public func getEntropy() throws -> Data {
+        return try bip39.getEntropy(from: mnemonicComponents)
+    }
 }

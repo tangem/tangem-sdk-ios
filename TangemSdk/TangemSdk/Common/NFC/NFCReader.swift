@@ -110,7 +110,7 @@ extension NFCReader: CardReader {
     var alertMessage: String {
         get { return _alertMessage ?? "" }
         set {
-            guard !isBeingStopped else {
+            if isBeingStopped {
                 Log.nfc("Session is being stopped. Skip alert message.")
                 return
             }
@@ -260,7 +260,11 @@ extension NFCReader: CardReader {
     }
 
     func stopSession(with errorMessage: String? = nil) {
-        guard !isBeingStopped || (readerSession?.isReady ?? false) else {
+        guard (readerSession?.isReady == true) else {
+            return
+        }
+
+        if isBeingStopped {
             return
         }
 

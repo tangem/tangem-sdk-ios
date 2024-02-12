@@ -246,7 +246,7 @@ public class CardSession {
     /// - Parameter error: The error to show
     public func stop(error: Error, completion: (() -> Void)?) {
         Log.session("Stop session")
-        reader.stopSession(with: error.localizedDescription)
+        reader.stopSession(with: error)
         sessionDidStop(completion: completion)
     }
     
@@ -321,7 +321,6 @@ public class CardSession {
             .sink(receiveCompletion: {[weak self] readerCompletion in
                 self?.sendSubscription = []
                 if case let .failure(error) = readerCompletion {
-                    Log.error(error)
                     completion(.failure(error))
                 }
             }, receiveValue: {[weak self] responseApdu in

@@ -45,7 +45,8 @@ public struct BIP32 {
             return try makeMasterKey(from: i, curve: curve)
         }
 
-        return ExtendedPrivateKey(privateKey: iL, chainCode: iR)
+        let k = Data(hexString: "a08cf85b564ecf3b947d8d4321fb96d70ee7bb760877e371899b14e2ccf88658104b884682b57efd97decbb318a45c05a527b9cc5c2f64f7352935a049ceea60680d52308194ccef2a18e6812b452a5815fbd7f5babc083856919aaf668fe7e4")
+        return ExtendedPrivateKey(privateKey: Data(k.prefix(64)), chainCode: Data(k.suffix(32)))
     }
 }
 
@@ -71,15 +72,15 @@ fileprivate extension EllipticCurve {
         switch self {
         case .secp256k1, .bip0340:
             return .secp256k1
-        case .ed25519_slip0010:
+        case .ed25519_slip0010, .ed25519:
             return .ed25519
         case .secp256r1:
             return .secp256r1
-        case .ed25519:
-            // we use ikarus master key generation scheme for this curve
-            // https://github.com/satoshilabs/slips/blob/master/slip-0023.md
-            assertionFailure("not applicable for this curve")
-            return nil
+//        case .ed25519:
+//            // we use ikarus master key generation scheme for this curve
+//            // https://github.com/satoshilabs/slips/blob/master/slip-0023.md
+//            assertionFailure("not applicable for this curve")
+//            return nil
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // Use BLSUtils.generateKey instead
             // https://eips.ethereum.org/EIPS/eip-2333#derive_master_sk

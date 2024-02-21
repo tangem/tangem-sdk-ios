@@ -25,12 +25,12 @@ public struct AnyMasterKeyFactory {
 
     private func makeFactory(for curve: EllipticCurve) throws -> MasterKeyFactory {
         switch curve {
-        case .bip0340, .ed25519_slip0010, .secp256k1, .secp256r1:
+        case .bip0340, .ed25519_slip0010, .secp256k1, .secp256r1, .ed25519:
             return BIP32MasterKeyFactory(seed: try getSeed(), curve: curve)
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             return EIP2333MasterKeyFactory(seed: try getSeed())
-        case .ed25519:
-            return IkarusMasterKeyFactory(entropy: try mnemonic.getEntropy(), passphrase: passphrase)
+//        case .ed25519:
+//            return IkarusMasterKeyFactory(entropy: try mnemonic.getEntropy(), passphrase: passphrase)
         }
     }
 

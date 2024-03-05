@@ -40,12 +40,18 @@ public class DeriveWalletPublicKeysTask: CardSessionRunnable {
         let task = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: path)
         task.run(in: session) { result in
             var keys = keys
-            
+
             switch result {
             case .success(let key):
                 keys[path] = key
             case .failure(let error):
-                Log.error(error)
+                switch error {
+                case .nonHardenedDerivationNotSupported, .walletNotFound, .unsupportedCurve:
+                    Log.error(error)
+                default:
+                    completion(.failure(error))
+                    return
+                }
             }
 
             self.runDerivation(at: index + 1, keys: keys, in: session, completion: completion)

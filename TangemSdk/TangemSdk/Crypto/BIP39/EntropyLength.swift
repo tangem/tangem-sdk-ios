@@ -15,7 +15,7 @@ public enum EntropyLength: Int, CaseIterable {
     case bits224 = 224
     case bits256 = 256
 
-    var wordCount: Int {
+    public var wordCount: Int {
         switch self {
         case .bits128: return 12
         case .bits160: return 15

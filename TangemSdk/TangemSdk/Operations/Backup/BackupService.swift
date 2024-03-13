@@ -492,16 +492,30 @@ class BackupRepo {
     
     var data: BackupServiceData = .init() {
         didSet {
-            try? save()
+            do {
+                try save()
+            } catch {
+                Log.debug(error)
+            }
+
+            Log.debug("BackupRepo updated")
         }
     }
     
     init () {
-        try? fetch()
+        do {
+            try fetch()
+        } catch {
+            Log.debug(error)
+        }
     }
     
     func reset() {
-        try? storage.delete(.backupData)
+        do {
+            try storage.delete(.backupData)
+        } catch {
+            Log.debug(error)
+        }
         data = .init()
     }
     

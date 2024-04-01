@@ -19,10 +19,12 @@
 "common_warning" = "Warning";
 "error_already_created" = "Le portefeuille a déjà été créé";
 "error_backup_card_already_added" = "This card has already been added to the list";
+"error_backup_failed_already_created" = "This card cannot be used as a backup because it already contains a wallet. Ensure that no funds are stored on the card by scanning it in the app. Then, reset it to factory settings.";
 "error_backup_not_empty_wallets" = "This card already has a wallet. If you want to proceed you have to reset it to factory settings first.";
 "error_backup_wrong_card" = "This card can't be used as a backup card. Error code: %@.";
 "error_card_verification_failed" = "Erreur de validation de la carte";
 "error_file_not_found" = "File not found";
+"error_no_active_backup" = "The selected card cannot be used to reset the card access code, because there is no backup on it. Please contact support team.";
 "error_old_card" = "Tangem cards issued before September 2019 cannot sign data using an iPhone due to iOS restrictions";
 "error_pin_cannot_be_changed_format" = "%@ cannot be changed";
 "error_pin_cannot_be_default_format" = "%@ cannot be changed to this value. Please, enter another one.";

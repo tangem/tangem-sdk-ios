@@ -97,4 +97,20 @@ extension TangemSdk {
             self.startSession(with: runnable, cardId: cardId, initialMessage: initialMessage, accessCode: accessCode, completion: $0)
         }}.eraseToAnyPublisher()
     }
+
+    /// Combine wrapper for `startSession` method.
+    /// - Parameters:
+    ///   - runnable: A custom task, adopting `CardSessionRunnable` protocol
+    ///   - filter: Filters card to be read. Optional.
+    ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
+    /// - Returns: `AnyPublisher<T.Response, TangemSdkError>`
+    public func startSessionPublisher<T: CardSessionRunnable>(with runnable: T,
+                                                              filter: SessionFilter?,
+                                                              initialMessage: Message? = nil,
+                                                              accessCode: String? = nil) -> AnyPublisher<T.Response, TangemSdkError> {
+        return Deferred { Future() {
+            self.startSession(with: runnable, filter: filter, initialMessage: initialMessage, accessCode: accessCode, completion: $0)
+        }}.eraseToAnyPublisher()
+    }
 }

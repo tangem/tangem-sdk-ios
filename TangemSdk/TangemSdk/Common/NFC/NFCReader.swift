@@ -514,6 +514,8 @@ extension NFCReader: NFCTagReaderSessionDelegate {
             invalidatedWithError = stoppedError ?? TangemSdkError.parse(error as! NFCReaderError)
         }
 
+        isBeingStopped = false
+
         if let tagConnectionTS {
             let currentTS = Date()
             Log.nfc("Session time is: \(currentTS.timeIntervalSince(sessionDidBecomeActiveTS))")

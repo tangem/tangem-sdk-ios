@@ -70,7 +70,6 @@ public class NetworkService {
     
     private func requestDataPublisher(request: URLRequest, configuration: URLSessionConfiguration) -> AnyPublisher<Data, NetworkServiceError> {
         Log.network("request to: \(request)")
-        Log.network("request to: \(String(describing: request.allHTTPHeaderFields))")
         
         return URLSession(configuration: configuration)
             .dataTaskPublisher(for: request)

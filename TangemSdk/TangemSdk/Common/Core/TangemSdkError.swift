@@ -515,10 +515,13 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return "error_backup_wrong_card".localized("\(self.code)")
         case .backupFailedAlreadyCreated:
             return "error_backup_failed_already_created".localized
-        case .noActiveBackup:
-            return "error_no_active_backup".localized
-        case .resetPinWrongCard:
-            return "error_reset_wrong_card".localized("\(self.code)")
+        case .resetPinWrongCard(let internalCode):
+            switch internalCode {
+            case TangemSdkError.noActiveBackup.code:
+                return "error_no_active_backup".localized
+            default:
+                return "error_reset_wrong_card".localized("\(self.code)")
+            }
         case .oldCard: return "error_old_card".localized
         case .userCodeRecoveryDisabled: return "error_user_code_recovery_disabled".localized
             

@@ -516,7 +516,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedAlreadyCreated:
             return "error_backup_failed_already_created".localized
         case .resetPinWrongCard(let internalCode):
-            return localizedMessageForResetPinWrongCard(code: internalCode)
+            switch internalCode {
+            case TangemSdkError.noActiveBackup.code:
+                return "error_no_active_backup".localized
+            default:
+                return "error_reset_wrong_card".localized("\(self.code)")
+            }
         case .oldCard: return "error_old_card".localized
         case .userCodeRecoveryDisabled: return "error_user_code_recovery_disabled".localized
             
@@ -527,15 +532,6 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             
             //let description = "\(self)".capitalizingFirst()
             return "generic_error_code".localized("\(self.code)")
-        }
-    }
-    
-    private func localizedMessageForResetPinWrongCard(code: Int?) -> String {
-        switch code {
-        case TangemSdkError.noActiveBackup.code:
-            return "error_no_active_backup".localized
-        default:
-            return "error_reset_wrong_card".localized("\(self.code)")
         }
     }
     

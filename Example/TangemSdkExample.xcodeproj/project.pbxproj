@@ -47,6 +47,8 @@
 		DC23EDA02912DD520023E626 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */; };
 		DC28E0F22877F84B00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
 		DC28E0F32877F9BA00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
+		DC4512802BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */; };
+		DC4512822BD17F9D00DE6F94 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,7 @@
 		B6B9589B2B2FCA9900E7B74E /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactorySettingsTask.swift; sourceTree = "<group>"; };
 		DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
+		DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E53EB3E423F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemSdkExampleDevelopmentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkExampleDevelopmentUITests.swift; sourceTree = "<group>"; };
 		E53EB3EE23F2CD860079CC11 /* RobotApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotApi.swift; sourceTree = "<group>"; };
@@ -162,6 +165,7 @@
 		5D78C1AD234F435B008D7478 = {
 			isa = PBXGroup;
 			children = (
+				DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */,
 				B6B9589A2B2FCA9900E7B74E /* Gemfile */,
 				B6B9589B2B2FCA9900E7B74E /* Podfile */,
 				5D78C1B8234F435B008D7478 /* TangemSdkExample */,
@@ -301,7 +305,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */;
+			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -329,6 +333,7 @@
 				B6B9589C2B2FCA9900E7B74E /* Gemfile in Resources */,
 				5D78C1C6234F435C008D7478 /* LaunchScreen.storyboard in Resources */,
 				B6B9589D2B2FCA9900E7B74E /* Podfile in Resources */,
+				DC4512822BD17F9D00DE6F94 /* PrivacyInfo.xcprivacy in Resources */,
 				5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -337,6 +342,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC4512802BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy in Resources */,
 				5DBC25BF235F053F005F0C79 /* LaunchScreen.storyboard in Resources */,
 				5DBC25C0235F053F005F0C79 /* Assets.xcassets in Resources */,
 			);
@@ -641,6 +647,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -661,6 +671,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -709,7 +723,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */ = {
+		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D78C1C8234F435C008D7478 /* Debug */,

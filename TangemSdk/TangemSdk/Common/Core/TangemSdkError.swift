@@ -511,9 +511,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedNotEmptyWallets: return "error_backup_not_empty_wallets".localized
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves,
                 .backupFailedNotEnoughWallets, .backupFailedFirmware, .backupNotAllowed,
-                .backupFailedIncompatibleBatch, .backupFailedIncompatibleFirmware, .backupFailedKeysImportSettings,
-                .backupFailedAlreadyCreated:
+                .backupFailedIncompatibleBatch, .backupFailedIncompatibleFirmware, .backupFailedKeysImportSettings:
             return "error_backup_wrong_card".localized("\(self.code)")
+        case .backupFailedAlreadyCreated:
+            return "error_backup_failed_already_created".localized
+        case .noActiveBackup:
+            return "error_no_active_backup".localized
         case .resetPinWrongCard:
             return "error_reset_wrong_card".localized("\(self.code)")
         case .oldCard: return "error_old_card".localized

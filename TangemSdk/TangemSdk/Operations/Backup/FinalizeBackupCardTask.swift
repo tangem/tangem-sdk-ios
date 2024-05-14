@@ -60,7 +60,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
                     completion(.failure(error))
                 }
             }
-        case .active: // Inconsistence case. The card status is ok, but sdk status is incompleted. We shoul check all wallets later on the app side.
+        case .active: // Inconsistence case. The card status is ok, but sdk status is incompleted. We should check all wallets later on the app side.
             readWallets(in: session, completion: completion)
         default: // only an interrupted case is possible
             writeBackupData(in: session, completion: completion)

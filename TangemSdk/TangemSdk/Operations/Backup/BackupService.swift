@@ -214,7 +214,7 @@ public class BackupService: ObservableObject {
             || repo.data.primaryCard == nil
             || repo.data.backupCards.isEmpty {
             currentState = .preparing
-        } else if repo.data.attestSignature == nil || repo.data.backupData.isEmpty {
+        } else if repo.data.attestSignature == nil || repo.data.backupData.count < repo.data.backupCards.count {
             currentState = .finalizingPrimaryCard
         } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
             currentState = .finalizingBackupCard(index: repo.data.finalizedBackupCardsCount + 1)

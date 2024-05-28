@@ -121,7 +121,16 @@ public extension Card {
                 return 0
             }
         }
-        
+
+        public var backupCardsCount: Int {
+            switch self {
+            case .active(let cardsCount):
+                return cardsCount
+            default:
+                return 0
+            }
+        }
+
         public init(from decoder: Decoder) throws {
             let codableStruct = try BackupStatusCodable(from: decoder)
             try self.init(from: codableStruct.status, cardsCount: codableStruct.cardsCount )

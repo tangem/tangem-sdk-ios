@@ -1,5 +1,5 @@
 PODS:
-  - TangemSdk (3.10.0)
+  - TangemSdk (3.11.0)
 
 DEPENDENCIES:
   - TangemSdk (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  TangemSdk: 943099314a07e448307f994dca6217bb27366b66
+  TangemSdk: 6c3c73f63d7adab1bfd1e87668502f2bfa52c677
 
 PODFILE CHECKSUM: 2d95b9bdd729cea3714086cfd92024ae5b1bb1af
 

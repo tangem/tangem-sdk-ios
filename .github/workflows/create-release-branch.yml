@@ -35,10 +35,10 @@ jobs:
        git config user.email mobile@tangem.com
    
     - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
-      
+      shell: bash
+      run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+
     - name: Bump version in Podspec file
       run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ github.event.inputs.versionName }}
    

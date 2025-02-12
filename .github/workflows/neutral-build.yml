@@ -18,7 +18,11 @@ jobs:
     - name: Extract branch name
       id: extract_branch
       shell: bash
-      run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+      run: |
+        VERSION_NUMBER_OFFSET=329
+        VERSION_NUMBER=$(expr "${VERSION_NUMBER_OFFSET}" + "${{ github.run_number }}")
+        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
+        echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
     - name: Create tag
       uses: actions/github-script@v3
@@ -28,7 +32,7 @@ jobs:
           github.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: "refs/tags/${{ steps.extract_branch.outputs.branch }}-${{ github.run_number }}",
+            ref: "refs/tags/${{ steps.extract_branch.outputs.branch }}-${{ steps.extract_branch.outputs.version_number }}",
             sha: context.sha
           })
 

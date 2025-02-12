@@ -3,7 +3,8 @@ name: Neutral Build
 on:
   push:
     branches: 
-    - 'develop'
+    #- 'develop'
+    - 'feature/IOS-9112_gh_enterprise_fixes'
   workflow_dispatch:
 
 env:
@@ -15,14 +16,13 @@ jobs:
     runs-on: macOS-latest
     steps:
     - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
-    
+      shell: bash
+      run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+
     - name: Create tag
       uses: actions/github-script@v3
       with:
-        xcode-version: latest-stable
         github-token: ${{ github.token }}
         script: |
           github.git.createRef({
@@ -31,7 +31,7 @@ jobs:
             ref: "refs/tags/${{ steps.extract_branch.outputs.branch }}-${{ github.run_number }}",
             sha: context.sha
           })
-          
+
     - name: Build notification
       if: always()
       uses: adamkdean/simple-slack-notify@master

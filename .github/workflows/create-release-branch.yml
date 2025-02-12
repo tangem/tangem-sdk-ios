@@ -27,7 +27,7 @@ jobs:
       run: bundle install
       
     - name: Create release branch
-      run: git checkout -b release/${{ github.event.inputs.versionName }}
+      run: git checkout -b test/rc/${{ github.event.inputs.versionName }}
       
     - name: Initialize mandatory git config
       run: |
@@ -53,7 +53,7 @@ jobs:
     - name: Commit and push changes
       run: |
        git commit -am "Prepare release version ${{ github.event.inputs.versionName }}"
-       git push origin release/${{ github.event.inputs.versionName }}
+       git push origin test/rc/${{ github.event.inputs.versionName }}
   
     - uses: actions/github-script@v4
       with:
@@ -62,7 +62,7 @@ jobs:
           github.pulls.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            head: "release/${{ github.event.inputs.versionName }}",
+            head: "test/rc/${{ github.event.inputs.versionName }}",
             base: "master",
             title: "Release version ${{ github.event.inputs.versionName }}",
           });

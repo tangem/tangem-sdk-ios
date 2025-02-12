@@ -3,8 +3,7 @@ name: Neutral Build
 on:
   push:
     branches: 
-    #- 'develop'
-    - 'feature/IOS-9112_gh_enterprise_fixes'
+    - 'develop'
   workflow_dispatch:
 
 env:
@@ -19,7 +18,7 @@ jobs:
       id: extract_branch
       shell: bash
       run: |
-        VERSION_NUMBER_OFFSET=329
+        VERSION_NUMBER_OFFSET=328
         VERSION_NUMBER=$(expr "${VERSION_NUMBER_OFFSET}" + "${{ github.run_number }}")
         echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
         echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT

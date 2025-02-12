@@ -10,6 +10,9 @@ on:
         type: string
         default: "en,fr,de,ja,ru,es,uk_UA,zh_TW,it"
 
+env:
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
 jobs:
   update-localizations:
     runs-on: macos-14
@@ -18,6 +21,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Authorize SSH session
+        env:
+          SSH_KEY: ${{ secrets.IOS_DEPENDENCIES_READ_ONLY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com > ~/.ssh/known_hosts
+          echo "${SSH_KEY}" > ~/.ssh/ios_dependencies_ssh_key
+          chmod 600 ~/.ssh/ios_dependencies_ssh_key
+          ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
+          ssh-add ~/.ssh/ios_dependencies_ssh_key
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4  # v6.1.0

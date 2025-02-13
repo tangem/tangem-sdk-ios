@@ -463,7 +463,6 @@ extension NFCReader: CardReader {
     }
 
     private func tagDidDisconnect() {
-        let tag = self.tag
         Log.nfc("Handle tag lost, cleaning resources: \(String(describing: tag))")
 
         tag.send(.none)

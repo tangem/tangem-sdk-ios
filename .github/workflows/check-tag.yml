@@ -33,8 +33,8 @@ jobs:
         TAG: ${{ steps.read-version-file.outputs.version_number }}
       run: |
         if [ $(git tag -l "${TAG}") ]; then
-          echo "Tag ${TAG} exists. Please upgrade version in the 'VERSION' file"
+          echo "Tag ${TAG} already exists. Please upgrade version in the 'VERSION' file"
           exit 1
         else
-          echo "Tag ${TAG} does not exit"
+          echo "Tag ${TAG} does not exist"
         fi

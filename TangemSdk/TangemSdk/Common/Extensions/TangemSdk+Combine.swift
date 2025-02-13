@@ -39,21 +39,21 @@ extension CommandApdu {
 extension NFCISO7816Tag {
     func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> {
         return Deferred { Future() { promise in
-            let requestDate = Date()
-            
             guard let apdu = NFCISO7816APDU(data: cApdu.serialize()) else {
                 promise(.failure(TangemSdkError.failedToBuildCommandApdu))
                 return
             }
-            
+
+            let requestDate = Date()
             self.sendCommand(apdu: apdu) { data, sw1, sw2, error in
+                
+                let dateDiff = Calendar.current.dateComponents([.nanosecond], from: requestDate, to: Date())
+                Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
+
                 if let sdkError = error?.toTangemSdkError() {
                     Log.error(sdkError)
                     promise(.failure(sdkError))
                 } else {
-                    let dateDiff = Calendar.current.dateComponents([.nanosecond], from: requestDate, to: Date())
-                    Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
-                    
                     let rApdu = ResponseApdu(data, sw1, sw2)
                     promise(.success(.success(rApdu)))
                 }

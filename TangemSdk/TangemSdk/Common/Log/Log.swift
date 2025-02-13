@@ -26,57 +26,58 @@ public class Log {
 
     fileprivate init() {}
     
-    public static func warning<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .warning)
+    public static func warning<T>(_ message: T) {
+        logger.logInternal(message, level: .warning)
     }
     
-    public static func error<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .error)
+    public static func error<T>(_ message: T) {
+        logger.logInternal(message, level: .error)
     }
     
-    public static func nfc<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .nfc)
+    public static func nfc<T>(_ message: T) {
+        logger.logInternal(message, level: .nfc)
     }
     
-    public static func apdu<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .apdu)
+    public static func apdu<T>(_ message: T) {
+        logger.logInternal(message, level: .apdu)
     }
     
-    public static func command<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .command)
+    public static func command<T>(_ message: T) {
+        logger.logInternal(message, level: .command)
     }
     
-    public static func session<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .session)
+    public static func session<T>(_ message: T) {
+        logger.logInternal(message, level: .session)
     }
     
-    public static func tlv<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .tlv)
+    public static func tlv<T>(_ message: T) {
+        logger.logInternal(message, level: .tlv)
     }
     
-    public static func debug<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .debug)
+    public static func debug<T>(_ message: T) {
+        logger.logInternal(message, level: .debug)
     }
     
-    public static func network<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .network)
+    public static func network<T>(_ message: T) {
+        logger.logInternal(message, level: .network)
     }
     
-    public static func view<T>(_ message: @escaping @autoclosure () -> T) {
-        logger.logInternal(message(), level: .view)
+    public static func view<T>(_ message: T) {
+        logger.logInternal(message, level: .view)
     }
     
     public static func filter(_ level: Log.Level) -> Bool {
        return logger.logLevel.contains(level)
     }
     
-    private func logInternal<T>(_ message: @escaping @autoclosure () -> T, level: Log.Level) {
+    private func logInternal<T>(_ message: T, level: Log.Level) {
         queue.async { [weak self] in
             guard let self else { return }
 
             guard !loggers.isEmpty else { return }
 
-            let msg = String(describing: message())
+            let msg = String(describing: message)
+
             for logger in loggers {
                 logger.log(msg, level: level)
             }

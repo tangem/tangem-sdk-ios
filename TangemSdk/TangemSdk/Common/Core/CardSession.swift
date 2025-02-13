@@ -364,7 +364,6 @@ public class CardSession {
         preflightReadMode = runnable.preflightReadMode
         environment.encryptionMode = runnable.encryptionMode
 
-        let environment = self.environment
         Log.session("Access code policy is \(environment.config.accessCodeRequestPolicy)")
         Log.session("Encryption mode is \(environment.encryptionMode)")
 

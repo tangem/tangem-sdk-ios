@@ -22,45 +22,47 @@ public class Log {
     
     private(set) var loggers: [TangemSdkLogger] = Log.config.loggers
 
+    private var queue: DispatchQueue = .init(label: "tangem_sdk_log_queue")
+
     fileprivate init() {}
     
-    public static func warning<T>(_ message: @autoclosure () -> T) {
+    public static func warning<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .warning)
     }
     
-    public static func error<T>(_ message: @autoclosure () -> T) {
+    public static func error<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .error)
     }
     
-    public static func nfc<T>(_ message: @autoclosure () -> T) {
+    public static func nfc<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .nfc)
     }
     
-    public static func apdu<T>(_ message: @autoclosure () -> T) {
+    public static func apdu<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .apdu)
     }
     
-    public static func command<T>(_ message: @autoclosure () -> T) {
+    public static func command<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .command)
     }
     
-    public static func session<T>(_ message: @autoclosure () -> T) {
+    public static func session<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .session)
     }
     
-    public static func tlv<T>(_ message: @autoclosure () -> T) {
+    public static func tlv<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .tlv)
     }
     
-    public static func debug<T>(_ message: @autoclosure () -> T) {
+    public static func debug<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .debug)
     }
     
-    public static func network<T>(_ message: @autoclosure () -> T) {
+    public static func network<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .network)
     }
     
-    public static func view<T>(_ message: @autoclosure () -> T) {
+    public static func view<T>(_ message: @escaping @autoclosure () -> T) {
         logger.logInternal(message(), level: .view)
     }
     
@@ -68,12 +70,16 @@ public class Log {
        return logger.logLevel.contains(level)
     }
     
-    private func logInternal<T>(_ message: @autoclosure () -> T, level: Log.Level) {
-        guard !loggers.isEmpty else { return }
-        
-        let msg = String(describing: message())
-        for logger in loggers {
-            logger.log(msg, level: level)
+    private func logInternal<T>(_ message: @escaping @autoclosure () -> T, level: Log.Level) {
+        queue.async { [weak self] in
+            guard let self else { return }
+
+            guard !loggers.isEmpty else { return }
+
+            let msg = String(describing: message())
+            for logger in loggers {
+                logger.log(msg, level: level)
+            }
         }
     }
 }

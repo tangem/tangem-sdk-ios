@@ -1,4 +1,4 @@
-name: Jira - Set tag version for the merged Jira task
+name: Assign the tag on push
 
 on:
   push:

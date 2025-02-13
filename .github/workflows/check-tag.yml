@@ -1,4 +1,4 @@
-name: Check if tag exists
+name: Check if tag exists on PR to develop
 
 on:
   pull_request:

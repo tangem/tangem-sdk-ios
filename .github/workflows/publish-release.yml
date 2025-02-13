@@ -7,7 +7,7 @@ on:
 
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-     
+
 jobs:
   merges:
     name: Publish release
@@ -39,7 +39,7 @@ jobs:
         run: |
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
-    
+
       - name: Create a release
         uses: actions/create-release@v1
         env:
@@ -51,7 +51,7 @@ jobs:
           body_path: CHANGELOG
           draft: false
           prerelease: false    
-            
+
       - name: Deploy to Cocoapods
         run: |
           set -eo pipefail
@@ -59,7 +59,7 @@ jobs:
           pod trunk push --allow-warnings
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-        
+
       - name: Create Pull request to master
         uses: actions/github-script@v4
         with:

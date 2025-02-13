@@ -1,4 +1,4 @@
-name: Assign the tag on push
+name: Assign the tag on push to develop
 
 on:
   push:

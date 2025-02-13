@@ -1,4 +1,4 @@
-name: Jira - Set tag version for the merged Jira task
+name: Assign the tag on push
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
           github.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: ${{ steps.read-version-file.outputs.version_number }},
+            ref: "${{ steps.read-version-file.outputs.version_number }}",
             sha: context.sha
           })
 

@@ -34,7 +34,7 @@ jobs:
           github.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: ${{ steps.read-version-file.outputs.version_number }},
+            ref: "refs/tags/${{ steps.read-version-file.outputs.version_number }}",
             sha: context.sha
           })
 

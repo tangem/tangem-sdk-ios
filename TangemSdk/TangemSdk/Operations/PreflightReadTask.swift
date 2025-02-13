@@ -49,6 +49,7 @@ final class PreflightReadTask: CardSessionRunnable {
     }
     
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        let readMode = self.readMode
         Log.debug("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
             switch result {

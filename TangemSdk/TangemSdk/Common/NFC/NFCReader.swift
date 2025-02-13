@@ -463,7 +463,9 @@ extension NFCReader: CardReader {
     }
 
     private func tagDidDisconnect() {
+        let tag = self.tag
         Log.nfc("Handle tag lost, cleaning resources: \(String(describing: tag))")
+
         tag.send(.none)
         connectedTag = nil
         tagTimerCancellable = nil
@@ -505,17 +507,19 @@ extension NFCReader: NFCTagReaderSessionDelegate {
 
     func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
         Log.nfc("NFC Session did invalidate with NFC error: \(error.localizedDescription)")
+
+        if let tagConnectionTS {
+            let currentTS = Date()
+            let sessionDidBecomeActiveTS = self.sessionDidBecomeActiveTS
+            Log.nfc("Session time is: \(currentTS.timeIntervalSince(sessionDidBecomeActiveTS))")
+            Log.nfc("Tag time is: \(currentTS.timeIntervalSince(tagConnectionTS))")
+        }
+
         if nfcStuckTimerCancellable == nil { //handle stuck retries ios14
             invalidatedWithError = stoppedError ?? TangemSdkError.parse(error as! NFCReaderError)
         }
 
         isBeingStopped = false
-
-        if let tagConnectionTS {
-            let currentTS = Date()
-            Log.nfc("Session time is: \(currentTS.timeIntervalSince(sessionDidBecomeActiveTS))")
-            Log.nfc("Tag time is: \(currentTS.timeIntervalSince(tagConnectionTS))")
-        }
     }
 
     func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {

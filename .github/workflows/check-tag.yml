@@ -1,0 +1,40 @@
+name: Check if tag exists
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+  # TODO: Test only
+  push:
+    branches:
+      - 'feature/IOS-9112_gh_enterprise_fixes'
+
+jobs:
+  check-tag:
+    name: Check if tag exists
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Read VERSION file
+      id: read-version-file
+      run: |
+        VERSION_NUMBER=$(cat VERSION)
+        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
+
+    - name: Echo version.properties
+      run: echo ${{ steps.version.outputs.tangem }}
+
+    - name: Check for Tag
+      env:
+        TAG: ${{ steps.read-version-file.outputs.version_number }}
+      run: |
+        if [ $(git tag -l "${TAG}") ]; then
+          echo "Tag ${TAG} exists. Please upgrade version in the 'VERSION' file"
+          exit 1
+        else
+          echo "Tag ${TAG} does not exit"
+        fi

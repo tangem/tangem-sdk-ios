@@ -27,8 +27,6 @@ public struct SecureStorage {
         
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         
-        Log.debug("SecureStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
-        
         switch status {
         case errSecSuccess:
             guard let data = result as? Data else { return nil }

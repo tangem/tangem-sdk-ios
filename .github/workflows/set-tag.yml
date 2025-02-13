@@ -1,9 +1,10 @@
-name: Neutral Build
+name: Jira - Set tag version for the merged Jira task
 
 on:
   push:
     branches: 
-    - 'develop'
+      #- 'develop'
+      - 'test/IOS-9112_gh_enterprise_fixes'  # TODO: Test only
   workflow_dispatch:
 
 env:
@@ -12,18 +13,20 @@ env:
 jobs:
   tag:
     name: Create tag
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     steps:
-    - name: Extract branch name
-      id: extract_branch
-      shell: bash
-      run: |
-        VERSION_NUMBER_OFFSET=328
-        VERSION_NUMBER=$(expr "${VERSION_NUMBER_OFFSET}" + "${{ github.run_number }}")
-        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
-        echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    - name: Create tag
+    - name: Read VERSION file
+      id: read-version-file
+      run: |
+        VERSION_NUMBER=$(cat VERSION)
+        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
+
+    - name: Create tag if needed
       uses: actions/github-script@v3
       with:
         github-token: ${{ github.token }}
@@ -31,7 +34,7 @@ jobs:
           github.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: "refs/tags/${{ steps.extract_branch.outputs.branch }}-${{ steps.extract_branch.outputs.version_number }}",
+            ref: ${{ steps.read-version-file.outputs.version_number }},
             sha: context.sha
           })
 
@@ -41,9 +44,9 @@ jobs:
       with:
         channel: '#development-ios'
         status: ${{ job.status }}
-        success_text: 'Card SDK tag (${{ steps.extract_branch.outputs.branch }}-${{ github.run_number }}) has been created.'
-        failure_text: 'GitHub Action #${{ github.run_number }} failed. Tag has not been not created.'
+        success_text: 'Card SDK tag "${{ steps.read-version-file.outputs.version_number }}" has been created.'
+        failure_text: 'GitHub Action #${{ github.run_number }} failed. Tag "${{ steps.read-version-file.outputs.version_number }}" has not been not created.'
         cancelled_text: 'GitHub Action #${{ github.run_number }} was cancelled'
         fields: |
-          [{"title": "TAG", "value": "${{ steps.extract_branch.outputs.branch }}-${{ github.run_number }}"},
+          [{"title": "TAG", "value": "${{ steps.read-version-file.outputs.version_number }}"},
           {"title": "Action URL", "value": "${env.GITHUB_SERVER_URL}/${env.GITHUB_REPOSITORY}/actions/runs/${env.GITHUB_RUN_ID}"}]

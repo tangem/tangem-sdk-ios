@@ -1,4 +1,5 @@
 name: Create release branch
+
 on:
   workflow_dispatch:
     inputs:
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     #if: contains(github.ref, 'develop') # Only for develop branch
     steps:
-        
+
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -36,18 +37,18 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.6
-        
+
     - name: Bundle Install
       run: bundle install
-      
+
     - name: Create release branch
       run: git checkout -b test/rc/${{ github.event.inputs.versionName }}
-      
+
     - name: Initialize mandatory git config
       run: |
        git config user.name "Tangem Bot"
        git config user.email mobile@tangem.com
-   
+
     - name: Extract branch name
       id: extract_branch
       shell: bash
@@ -55,20 +56,20 @@ jobs:
 
     - name: Bump version in Podspec file
       run: bundle exec fastlane run version_bump_podspec path:"TangemSdk.podspec" version_number:${{ github.event.inputs.versionName }}
-   
+
     - name: Change version
       run: echo ${{ github.event.inputs.versionName }} > VERSION
-      
+
     - name: Create Changelog
       run: |
        git fetch origin master:master
        git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s' --abbrev-commit --date=relative origin/master..${{ steps.extract_branch.outputs.branch }} > CHANGELOG
-     
+
     - name: Commit and push changes
       run: |
        git commit -am "Prepare release version ${{ github.event.inputs.versionName }}"
        git push origin test/rc/${{ github.event.inputs.versionName }}
-  
+
     - uses: actions/github-script@v4
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
@@ -80,7 +81,7 @@ jobs:
             base: "master",
             title: "Release version ${{ github.event.inputs.versionName }}",
           });
-  
+
     - name: Slack notification
       if: always()
       uses: adamkdean/simple-slack-notify@master

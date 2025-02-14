@@ -9,6 +9,7 @@ on:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DVELOPMENT_IOS }}
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
 
 jobs:
   test:
@@ -17,10 +18,24 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Authorize SSH session
+      env:
+        SSH_KEY: ${{ secrets.IOS_DEPENDENCIES_READ_ONLY_SSH_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan github.com > ~/.ssh/known_hosts
+        echo "${SSH_KEY}" > ~/.ssh/ios_dependencies_ssh_key
+        chmod 600 ~/.ssh/ios_dependencies_ssh_key
+        ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
+        ssh-add ~/.ssh/ios_dependencies_ssh_key
+
     - name: Bundle Install
       run: bundle install
+
     - name: Tests
       run: bundle exec fastlane test
+
     - name: Build notification
       if: failure()
       uses: adamkdean/simple-slack-notify@master

@@ -1,4 +1,4 @@
-[![Tests](https://github.com/tangem/tangem-sdk-ios/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/tangem/tangem-sdk-ios/actions/workflows/tests.yml)
+[![Tests](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml)
 [![Version](https://img.shields.io/cocoapods/v/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
 [![License](https://img.shields.io/cocoapods/l/TangemSdk.svg?style=flat)](LICENSE)
 ![Platform](https://img.shields.io/cocoapods/p/TangemSdk)
@@ -11,7 +11,7 @@ The Tangem card is a self-custodial hardware wallet that works via NFC. The main
 
 Tangem SDK is needed to facilitate support for Tangem cards in third-party applications.
 
-Supported platforms: **iOS** | [Android](https://github.com/tangem/tangem-sdk-android) | [JVM](https://github.com/tangem/tangem-sdk-android)
+Supported platforms: **iOS** | [Android](https://github.com/tangem-developments/tangem-sdk-android) | [JVM](https://github.com/tangem-developments/tangem-sdk-android)
  
 # License
 

@@ -171,7 +171,7 @@ public enum CryptoUtils {
                                      nil,
                                      dataInUnsafeRawBufferPointer.baseAddress, dataIn.count,
                                      dataOut, dataOutSize, &dataOutMoved)
-                guard status == kCCSuccess else { throw status }
+                guard status == kCCSuccess else { throw TangemSdkError.cryptoUtilsError("CCCryptor error. Code: \(status)") }
                 return Data(bytes: dataOut, count: dataOutMoved)
             }
         }

@@ -123,7 +123,6 @@
 		5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */; };
 		5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7F4E51249006DB00A1700D /* Bundle+.swift */; };
 		5D81348426D62F8900494A71 /* StringCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D81348326D62F8900494A71 /* StringCodable.swift */; };
-		5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */; };
 		5D85A80624069C840038A2D0 /* ReadIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */; };
 		5D85A80824069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */; };
 		5D86665627315F050095CC82 /* ResetCodesViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D86665527315F050095CC82 /* ResetCodesViewDelegate.swift */; };
@@ -509,7 +508,6 @@
 		5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		5D7F4E51249006DB00A1700D /* Bundle+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		5D81348326D62F8900494A71 /* StringCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringCodable.swift; sourceTree = "<group>"; };
-		5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CCCCryptorStatus+Error.swift"; sourceTree = "<group>"; };
 		5D85A80524069C840038A2D0 /* ReadIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
 		5D85A80724069C9A0038A2D0 /* WriteIssuerExtraDataCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteIssuerExtraDataCommand.swift; sourceTree = "<group>"; };
 		5D86665527315F050095CC82 /* ResetCodesViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetCodesViewDelegate.swift; sourceTree = "<group>"; };
@@ -1403,7 +1401,6 @@
 				5DB4406E234B750200AC39F1 /* String+.swift */,
 				5D974B7D237D672F00DCDF21 /* Date+.swift */,
 				5D0A6C5C2428CF3C0094FA83 /* Error+.swift */,
-				5D83F424247EDF45005E7A35 /* CCCCryptorStatus+Error.swift */,
 				5D7F4E3D2489456E00A1700D /* TangemSdk+Combine.swift */,
 				5D7F4E47248FD31700A1700D /* UIViewController.swift */,
 				5D7F4E4D248FFAAF00A1700D /* UIColor+.swift */,
@@ -2141,7 +2138,6 @@
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
-				5D83F425247EDF45005E7A35 /* CCCCryptorStatus+Error.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5DDD6C5A25D2DFA700E48D7B /* JSONStringConvertible.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,

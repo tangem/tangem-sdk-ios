@@ -292,6 +292,8 @@
 		DC77F2512CD426E3001B2929 /* SignDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F2502CD426E3001B2929 /* SignDTO.swift */; };
 		DC77F2532CD430A3001B2929 /* ChunkHashesUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F2522CD43099001B2929 /* ChunkHashesUtil.swift */; };
 		DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */; };
+		DC8BD72B2D79F28500BD2486 /* secp256k1_ellswift.h in Headers */ = {isa = PBXBuildFile; fileRef = DC8BD7292D79F28500BD2486 /* secp256k1_ellswift.h */; };
+		DC8BD72C2D79F28500BD2486 /* secp256k1_musig.h in Headers */ = {isa = PBXBuildFile; fileRef = DC8BD72A2D79F28500BD2486 /* secp256k1_musig.h */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
 		DCACA0402CB51FF400A3DD51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCACA03F2CB51FF400A3DD51 /* Assets.xcassets */; };
 		DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */; };
@@ -686,6 +688,8 @@
 		DC77F2502CD426E3001B2929 /* SignDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignDTO.swift; sourceTree = "<group>"; };
 		DC77F2522CD43099001B2929 /* ChunkHashesUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkHashesUtil.swift; sourceTree = "<group>"; };
 		DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsUtil.swift; sourceTree = "<group>"; };
+		DC8BD7292D79F28500BD2486 /* secp256k1_ellswift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = secp256k1_ellswift.h; sourceTree = "<group>"; };
+		DC8BD72A2D79F28500BD2486 /* secp256k1_musig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = secp256k1_musig.h; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
 		DCACA03F2CB51FF400A3DD51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKDFUtil.swift; sourceTree = "<group>"; };
@@ -1600,6 +1604,8 @@
 		DCD2D7802A1CE66000AB00B6 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				DC8BD7292D79F28500BD2486 /* secp256k1_ellswift.h */,
+				DC8BD72A2D79F28500BD2486 /* secp256k1_musig.h */,
 				B6936A662B387B040024826A /* secp256k1_tangem.h */,
 				DCD2D7812A1CE66000AB00B6 /* secp256k1_ecdh.h */,
 				DCD2D7822A1CE66000AB00B6 /* secp256k1_schnorrsig.h */,
@@ -1750,6 +1756,8 @@
 				DCD2D8E82A1CF64A00AB00B6 /* ecmult.h in Headers */,
 				DCD2D8C12A1CF64A00AB00B6 /* modinv32_impl.h in Headers */,
 				DCD2D9132A1CF64A00AB00B6 /* main_impl.h in Headers */,
+				DC8BD72B2D79F28500BD2486 /* secp256k1_ellswift.h in Headers */,
+				DC8BD72C2D79F28500BD2486 /* secp256k1_musig.h in Headers */,
 				DCD2D8DD2A1CF64A00AB00B6 /* ecdsa_impl.h in Headers */,
 				DCD2D90A2A1CF64A00AB00B6 /* main_impl.h in Headers */,
 				DCD2D7F62A1CE66000AB00B6 /* secp256k1_preallocated.h in Headers */,

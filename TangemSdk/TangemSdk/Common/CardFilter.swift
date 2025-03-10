@@ -60,38 +60,28 @@ public struct CardFilter {
     }
 }
 
-//TODO: Add tests
 public struct CardIdRange {
-    public let batch: String
-    public let start: Int
-    public let end: Int
-    
-    public init?(start: String, end: String) {
-        let startBatch = start.getBatchPrefix()
-        let endBatch = end.getBatchPrefix()
+    public let start: UInt64
+    public let end: UInt64
 
-        guard startBatch == endBatch,
-              let startValue = start.toInt(),
-              let endValue = end.toInt() else {
+    public init?(start: String, end: String) {
+        guard let startCardID = UInt64(start, radix: 16),
+              let endCardID = UInt64(end, radix: 16),
+              endCardID > startCardID else {
             return nil
         }
         
-        self.start = startValue
-        self.end = endValue
-        self.batch = startBatch
+        self.start = startCardID
+        self.end = endCardID
     }
     
     func contains(_ cardId: String) -> Bool {
-        guard cardId.getBatchPrefix() == batch else {
+        guard let value = UInt64(cardId, radix: 16) else {
             return false
         }
-        
-        guard let card = cardId.toInt() else {
-            return true //failed to convert, skip filtration
-        }
-        
+
         let range = start...end
-        return range.contains(card)
+        return range.contains(value)
     }
 }
 
@@ -122,20 +112,6 @@ public extension CardFilter {
                 return !(items.contains(item) || ranges.contains(item))
             }
         }
-    }
-}
-
-fileprivate extension String {
-    func getBatchPrefix() -> String {
-        String(self.prefix(4)).uppercased()
-    }
-    
-    func stripBatchPrefix() -> String {
-        String(self.dropFirst(4))
-    }
-    
-    func toInt() -> Int? {
-        Int(self.stripBatchPrefix())
     }
 }
 

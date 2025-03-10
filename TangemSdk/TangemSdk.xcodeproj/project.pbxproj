@@ -385,6 +385,7 @@
 		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
+		DCF53AD02D7F57FC00CC4634 /* CardFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF53ACF2D7F57FC00CC4634 /* CardFilterTests.swift */; };
 		DCF6188429F069DB001BE133 /* AttestCardKey.json in Resources */ = {isa = PBXBuildFile; fileRef = DCF6188329F069DB001BE133 /* AttestCardKey.json */; };
 		DCFCA17728F5629F0037586C /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCFCA17628F5629F0037586C /* FocusableTextField.swift */; };
 /* End PBXBuildFile section */
@@ -791,6 +792,7 @@
 		DCDECB8F2C88A81200E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
+		DCF53ACF2D7F57FC00CC4634 /* CardFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilterTests.swift; sourceTree = "<group>"; };
 		DCF6188329F069DB001BE133 /* AttestCardKey.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AttestCardKey.json; sourceTree = "<group>"; };
 		DCFCA17628F5629F0037586C /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1296,8 +1298,9 @@
 			children = (
 				B6CA42212B38B5A700C9A5C9 /* Extensions */,
 				5D38D0672679040C0052F67C /* Jsons */,
-				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
+				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
+				DCF53ACF2D7F57FC00CC4634 /* CardFilterTests.swift */,
 				5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */,
 				5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */,
 				5D713B2E236C53E300E4F6FC /* ByteUtilsTest.swift */,
@@ -2273,6 +2276,7 @@
 				DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */,
 				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC77F24D2CD42610001B2929 /* ChunkHashesTests.swift in Sources */,
+				DCF53AD02D7F57FC00CC4634 /* CardFilterTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,

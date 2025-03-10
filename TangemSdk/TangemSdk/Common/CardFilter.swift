@@ -75,7 +75,7 @@ public struct CardIdRange {
         self.end = endCardID
     }
     
-    func contains(_ cardId: String) -> Bool {
+    public func contains(_ cardId: String) -> Bool {
         guard let value = UInt64(cardId, radix: 16) else {
             return false
         }

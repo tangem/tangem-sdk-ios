@@ -67,7 +67,7 @@ class AppModel: ObservableObject {
 
         config.logConfig = .custom(
             logLevel: Log.Level.allCases,
-            loggers: [ConsoleLogger(), logger]
+            loggers: loggers
         )
 
         config.defaultDerivationPaths = [

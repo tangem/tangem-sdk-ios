@@ -24,19 +24,19 @@ struct SecureEnclaveService {
     }
     
     private func makeOrRestoreKey() throws -> SecureEnclave.P256.Signing.PrivateKey {
-        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(.secureEnclaveP256Key) {
+        if let restoredKey: SecureEnclave.P256.Signing.PrivateKey = try storage.readKey(.secureEnclaveSigningKey) {
             return restoredKey
         }
         
         let accessControl = SecAccessControlCreateWithFlags(nil,
                                                             kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-                                                            [],
+                                                            [.privateKeyUsage],
                                                             nil)!
         
         let key = try SecureEnclave.P256.Signing.PrivateKey(compactRepresentable: true,
                                                             accessControl: accessControl,
                                                             authenticationContext: nil)
-        try storage.storeKey(key, forKey: .secureEnclaveP256Key)
+        try storage.storeKey(key, forKey: .secureEnclaveSigningKey)
         return key
     }
 }

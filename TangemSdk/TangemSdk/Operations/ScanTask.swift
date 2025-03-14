@@ -12,8 +12,6 @@ import Foundation
 /// Returns data from a Tangem card after successful completion of `ReadCommand` and `AttestWalletKeyCommand`, subsequently.
 public final class ScanTask: CardSessionRunnable {
     public var shouldAskForAccessCode: Bool { false }
-    
-    private var attestationTask: AttestationTask? = nil
 
     public init() {}
     
@@ -40,7 +38,8 @@ public final class ScanTask: CardSessionRunnable {
     }
 
     private func checkUserCodes(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        CheckUserCodesCommand().run(in: session) { result in
+        let checkCodesCommand = CheckUserCodesCommand()
+        checkCodesCommand.run(in: session) { result in
             switch result {
             case .success(let response):
                 session.environment.card?.isPasscodeSet = response.isPasscodeSet
@@ -48,6 +47,8 @@ public final class ScanTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            withExtendedLifetime(checkCodesCommand) {}
         }
     }
     
@@ -82,12 +83,14 @@ public final class ScanTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            withExtendedLifetime(derivationTask) {}
         }
     }
     
     private func runAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        attestationTask = AttestationTask(mode: session.environment.config.attestationMode)
-        attestationTask!.run(in: session) { result in
+        let attestationTask = AttestationTask(mode: session.environment.config.attestationMode)
+        attestationTask.run(in: session) { result in
             switch result {
             case .success:
                 guard let card = session.environment.card  else {
@@ -99,6 +102,8 @@ public final class ScanTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+
+            withExtendedLifetime(attestationTask) {}
         }
     }
 }

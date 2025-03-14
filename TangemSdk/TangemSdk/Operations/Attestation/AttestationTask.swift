@@ -15,9 +15,10 @@ public final class AttestationTask: CardSessionRunnable {
     private let onlineCardVerifier = OnlineCardVerifier()
     
     private var currentAttestationStatus: Attestation = .empty
-    private var onlineAttestationPublisher = CurrentValueSubject<Attestation.Status?, Never>(nil)
+    private var onlineAttestationValue = CurrentValueSubject<Attestation.Status?, Never>(nil)
+    private var onlineAttestationCancellable: AnyCancellable?
     private var bag = Set<AnyCancellable>()
-    
+
     /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
     public var shouldKeepSessionOpened = false
     
@@ -39,7 +40,8 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func attestCard(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        AttestCardKeyCommand().run(in: session) { result in
+        let command = AttestCardKeyCommand()
+        command.run(in: session) { result in
             switch result {
             case .success:
                 //This card already attested with the current or more secured mode
@@ -61,6 +63,8 @@ public final class AttestationTask: CardSessionRunnable {
                 
                 completion(.failure(error))
             }
+
+            withExtendedLifetime(command) {}
         }
     }
     
@@ -146,11 +150,11 @@ public final class AttestationTask: CardSessionRunnable {
         //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
         //So, we can send the error to the publisher immediately
         if card.firmwareVersion.type == .sdk || currentAttestationStatus.cardKeyAttestation == .failed {
-            onlineAttestationPublisher.send(.failed)
+            onlineAttestationValue.send(.failed)
             return
         }
-        
-        onlineCardVerifier
+
+        onlineAttestationCancellable = onlineCardVerifier
             .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
             .map { _ in return Attestation.Status.verified } //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
             .catch { error -> Just<Attestation.Status> in
@@ -160,29 +164,31 @@ public final class AttestationTask: CardSessionRunnable {
 
                 return Just(.verifiedOffline)
             }
-            .sink(receiveValue: { self.onlineAttestationPublisher.send($0) })
-            .store(in: &bag)
+            .sink(receiveValue: { [weak self] in
+                self?.onlineAttestationValue.send($0)
+            })
     }
 
     private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         if !shouldKeepSessionOpened {
             session.pause() //Nothing to do with nfc anymore
         }
-        
-        onlineAttestationPublisher
+
+        onlineAttestationValue
             .compactMap { $0 }
-            .sink(receiveValue: {[weak self] attestResult in
+            .sink(receiveValue: { [weak self] attestResult in
                 guard let self else { return }
-                
+
                 switch attestResult {
                 case .verified:
                     self.currentAttestationStatus.cardKeyAttestation = .verified
                     self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
                 case .failed:
                     self.currentAttestationStatus.cardKeyAttestation = .failed
-                default: break
+                default:
+                    break
                 }
-                
+
                 self.processAttestationReport(session, completion)
             })
             .store(in: &bag)
@@ -201,7 +207,8 @@ public final class AttestationTask: CardSessionRunnable {
             if isDevelopmentCard || session.environment.config.allowUntrustedCards {
                 session.viewDelegate.attestationDidFail(isDevelopmentCard: isDevelopmentCard) {
                     self.complete(session, completion)
-                } onCancel: {
+                } onCancel: { [weak self] in
+                    self?.cleanResources()
                     completion(.failure(.userCancelled))
                 }
                 
@@ -222,7 +229,8 @@ public final class AttestationTask: CardSessionRunnable {
             session.viewDelegate.setState(.empty)
             session.viewDelegate.attestationCompletedOffline() {
                 self.complete(session, completion)
-            } onCancel: {
+            } onCancel: { [weak self] in
+                self?.cleanResources()
                 completion(.failure(.userCancelled))
             } onRetry: {
                 session.viewDelegate.setState(.default)
@@ -238,8 +246,15 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func complete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+        cleanResources()
         session.environment.card?.attestation = currentAttestationStatus
         completion(.success(currentAttestationStatus))
+    }
+
+    // deinit is not called
+    private func cleanResources() {
+        bag = []
+        onlineAttestationCancellable = nil
     }
 }
 

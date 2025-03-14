@@ -90,7 +90,7 @@ class AppModel: ObservableObject {
     init() {
         logger
             .logsPublisher
-            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.global())
+            .debounce(for: 1, scheduler: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
             .sink {[weak self] logs in
                 self?.logText = logs

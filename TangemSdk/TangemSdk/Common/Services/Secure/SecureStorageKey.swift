@@ -17,8 +17,8 @@ enum SecureStorageKey: String {
     case cardsWithSavedCodes
     
     //secure enclave service
-    case secureEnclaveP256Key
-    
+    case secureEnclaveSigningKey
+
     //terminal keys service
     case terminalPrivateKey //link card to terminal
     case terminalPublicKey

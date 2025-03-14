@@ -37,7 +37,11 @@ public class TrustedCardsRepo {
         
         let hash = cardPublicKey.getSha256()
         data[hash] = newAttestation
-        try? save()
+        do {
+            try save()
+        } catch {
+            Log.error(error)
+        }
     }
     
     func attestation(for cardPublicKey: Data) -> Attestation? {

@@ -14,9 +14,7 @@ class DebugLogger: TangemSdkLogger {
     var logsPublisher: CurrentValueSubject<String, Never> = .init("")
     
     static let logPlaceholder = "Logs will appear here"
-    
-    private let loggerSerialQueue = DispatchQueue(label: "com.tangem.tangemsdkexample.debugLogger.queue")
- 
+
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss:SSS"
@@ -26,32 +24,26 @@ class DebugLogger: TangemSdkLogger {
     func log(_ message: String, level: Log.Level) {
         guard Log.filter(level) else { return }
         
-        loggerSerialQueue.async {
-            let logString = "\(level.emoji) \(self.dateFormatter.string(from: Date())):\(level.prefix) \(message)"
-            self.log(text: logString)
-        }
+        let logString = "\(level.emoji) \(self.dateFormatter.string(from: Date())):\(level.prefix) \(message)"
+        log(text: logString)
     }
     
     func log(_ object: Any) {
-        loggerSerialQueue.async {
-            let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
-            self.log(text: text)
-        }
+        let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
+        log(text: text)
     }
     
     func clear() {
-        loggerSerialQueue.async {
-            self.logsPublisher.send("")
-        }
+        logsPublisher.send("")
     }
     
     private func log(text: String) {
-        if self.logsPublisher.value == DebugLogger.logPlaceholder {
-            self.logsPublisher.send("")
+        if logsPublisher.value == DebugLogger.logPlaceholder {
+            logsPublisher.send("")
         }
         
-        let currentLogs = self.logsPublisher.value
+        let currentLogs = logsPublisher.value
         let newLogs = "\(text)\n\n" + currentLogs
-        self.logsPublisher.send(newLogs)
+        logsPublisher.send(newLogs)
     }
 }

@@ -13,7 +13,7 @@
 		5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0631DA2477DAAA0056BF21 /* OpenSessionCommand.swift */; };
 		5D0A6C5D2428CF3C0094FA83 /* Error+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0A6C5C2428CF3C0094FA83 /* Error+.swift */; };
 		5D0BAAEC25CD87EA00E6A2B6 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */; };
-		5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0E56022757C11F00D46F54 /* CardDataResponse.swift */; };
+		5D0E56032757C11F00D46F54 /* OnlineAttestationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0E56022757C11F00D46F54 /* OnlineAttestationResponse.swift */; };
 		5D0F8D0026C6A29B002E84A4 /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */; };
 		5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */; };
 		5D0F8D0426C6AD52002E84A4 /* ChangeUserCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0F8D0326C6AD52002E84A4 /* ChangeUserCodeView.swift */; };
@@ -198,7 +198,7 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */; };
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
 		5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */; };
-		5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */; };
+		5DEBB2A625DC0FF400D1734F /* OnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */; };
 		5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DED473226D6A00D003CB1E7 /* BackupService.swift */; };
 		5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */; };
 		5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */; };
@@ -264,7 +264,7 @@
 		DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E329BB806E0037BC05 /* WIFTests.swift */; };
 		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
-		DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */; };
+		DC1682202B3C355600194DDE /* CardCertificateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */; };
 		DC22228729D431AB001129F8 /* SetUserCodeRecoveryAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */; };
 		DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */ = {isa = PBXBuildFile; fileRef = DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */; };
 		DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */; };
@@ -409,7 +409,7 @@
 		5D06DF6823D8A1EE0041DD2B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		5D0A6C5C2428CF3C0094FA83 /* Error+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+.swift"; sourceTree = "<group>"; };
 		5D0BAAEB25CD87EA00E6A2B6 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
-		5D0E56022757C11F00D46F54 /* CardDataResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataResponse.swift; sourceTree = "<group>"; };
+		5D0E56022757C11F00D46F54 /* OnlineAttestationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationResponse.swift; sourceTree = "<group>"; };
 		5D0F8CFD26C6A255002E84A4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		5D0F8CFF26C6A29B002E84A4 /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		5D0F8D0126C6A80F002E84A4 /* UserCodeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCodeHeaderView.swift; sourceTree = "<group>"; };
@@ -599,7 +599,7 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorage.swift; sourceTree = "<group>"; };
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
 		5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkStyle.swift; sourceTree = "<group>"; };
-		5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineCardVerifier.swift; sourceTree = "<group>"; };
+		5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationService.swift; sourceTree = "<group>"; };
 		5DED473226D6A00D003CB1E7 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
 		5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizeBackupCardTask.swift; sourceTree = "<group>"; };
 		5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsEngine.swift; sourceTree = "<group>"; };
@@ -668,7 +668,7 @@
 		DC1244E329BB806E0037BC05 /* WIFTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WIFTests.swift; sourceTree = "<group>"; };
 		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
-		DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCertificateProvider.swift; sourceTree = "<group>"; };
+		DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCertificateProvider.swift; sourceTree = "<group>"; };
 		DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetUserCodeRecoveryAllowed.json; sourceTree = "<group>"; };
 		DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletMnemonic.json; sourceTree = "<group>"; };
 		DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreflightReadFilter.swift; sourceTree = "<group>"; };
@@ -839,7 +839,7 @@
 		5D0E56012757C0FD00D46F54 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				5D0E56022757C11F00D46F54 /* CardDataResponse.swift */,
+				5D0E56022757C11F00D46F54 /* OnlineAttestationResponse.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -988,11 +988,12 @@
 		5D3F77B424B9B8E700E8695B /* Attestation */ = {
 			isa = PBXGroup;
 			children = (
+				DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */,
 				5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */,
 				5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */,
 				5D3F77B524B9B8F600E8695B /* Attestation.swift */,
 				5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */,
-				5DEBB2A525DC0FF400D1734F /* OnlineCardVerifier.swift */,
+				5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */,
 				5D38D077267A4B0C0052F67C /* AttestationTask.swift */,
 			);
 			path = Attestation;
@@ -1062,7 +1063,6 @@
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
 				DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */,
-				DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -2050,7 +2050,7 @@
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D60CA63272C472F00A1DF0B /* ResetCodesController.swift in Sources */,
-				DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */,
+				DC1682202B3C355600194DDE /* CardCertificateProvider.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
 				DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
@@ -2128,7 +2128,7 @@
 				B0390F7B25658EEE0061E5ED /* CardSettings.swift in Sources */,
 				DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */,
 				5DA5B61C233E12B30058C720 /* Tlv.swift in Sources */,
-				5D0E56032757C11F00D46F54 /* CardDataResponse.swift in Sources */,
+				5D0E56032757C11F00D46F54 /* OnlineAttestationResponse.swift in Sources */,
 				5D7D5FB223449D4000058D69 /* SessionEnvironment.swift in Sources */,
 				5D2FE06324DD82750086B5E8 /* AttestCardKeyCommand.swift in Sources */,
 				DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */,
@@ -2250,7 +2250,7 @@
 				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
 				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
-				5DEBB2A625DC0FF400D1734F /* OnlineCardVerifier.swift in Sources */,
+				5DEBB2A625DC0FF400D1734F /* OnlineAttestationService.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */,

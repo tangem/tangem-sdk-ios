@@ -12,7 +12,7 @@ import Combine
 public final class AttestationTask: CardSessionRunnable {
     private let mode: Mode
     private let trustedCardsRepo: TrustedCardsRepo = .init()
-    private let onlineCardVerifier = OnlineCardVerifier()
+    private let onlineAttestationService = OnlineAttestationService()
     
     private var currentAttestationStatus: Attestation = .empty
     private var onlineAttestationValue = CurrentValueSubject<Attestation.Status?, Never>(nil)
@@ -146,27 +146,32 @@ public final class AttestationTask: CardSessionRunnable {
     }
 
     private func runOnlineAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        let card = session.environment.card!
-        //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
-        //So, we can send the error to the publisher immediately
-        if card.firmwareVersion.type == .sdk || currentAttestationStatus.cardKeyAttestation == .failed {
-            onlineAttestationValue.send(.failed)
-            return
-        }
-
-        onlineAttestationCancellable = onlineCardVerifier
-            .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
-            .map { _ in return Attestation.Status.verified } //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
-            .catch { error -> Just<Attestation.Status> in
-                if case TangemSdkError.cardVerificationFailed = error {
-                    return Just(.failed)
-                }
-
-                return Just(.verifiedOffline)
+        if session.environment.config.newAttestaionService {
+            // TODO: implement
+            completion(.failure(.unknownError))
+        } else {
+            let card = session.environment.card!
+            //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
+            //So, we can send the error to the publisher immediately
+            if card.firmwareVersion.type == .sdk || currentAttestationStatus.cardKeyAttestation == .failed {
+                onlineAttestationValue.send(.failed)
+                return
             }
-            .sink(receiveValue: { [weak self] in
-                self?.onlineAttestationValue.send($0)
-            })
+
+            onlineAttestationCancellable = onlineAttestationService
+                .getAttestationDataLegacy(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
+                .map { _ in return Attestation.Status.verified } //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
+                .catch { error -> Just<Attestation.Status> in
+                    if case TangemSdkError.cardVerificationFailed = error {
+                        return Just(.failed)
+                    }
+
+                    return Just(.verifiedOffline)
+                }
+                .sink(receiveValue: { [weak self] in
+                    self?.onlineAttestationValue.send($0)
+                })
+        }
     }
 
     private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {

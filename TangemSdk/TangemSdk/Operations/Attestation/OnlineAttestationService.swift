@@ -10,15 +10,15 @@ import Foundation
 import Combine
 
 /// Online verification for Tangem cards. Do not use for developer cards
-public class OnlineCardVerifier {
+public class OnlineAttestationService {
     private let networkService: NetworkService
     
-    public init(with networkService: NetworkService = .init()) {
+    public init(networkService: NetworkService = .init()) {
         self.networkService = networkService
     }
     
     deinit {
-        Log.debug("OnlineCardVerifier deinit")
+        Log.debug("OnlineAttestationService deinit")
     }
     
     /// Online verification and get info for Tangem cards. Do not use for developer cards
@@ -26,7 +26,7 @@ public class OnlineCardVerifier {
     ///   - cardId: cardId to verify
     ///   - cardPublicKey: cardPublicKey of the card
     /// - Returns: `CardVerifyAndGetInfoResponse.Item`
-    public func getCardInfo(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
+    public func getAttestationDataLegacy(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
         let requestItem = CardVerifyAndGetInfoRequest.Item(cardId: cardId, publicKey: cardPublicKey.hexString)
         let request = CardVerifyAndGetInfoRequest(requests: [requestItem])
         let endpoint = TangemEndpoint.verifyAndGetInfo(request: request)
@@ -55,14 +55,14 @@ public class OnlineCardVerifier {
             .eraseToAnyPublisher()
     }
     
-    public func getCardData(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardDataResponse, Error> {
+    public func getAttestationData(cardId: String, cardPublicKey: Data) -> AnyPublisher<OnlineAttestationResponse, Error> {
         let endpoint = TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey)
 
         return networkService
             .requestPublisher(endpoint)
-            .tryMap { data -> CardDataResponse in
+            .tryMap { data -> OnlineAttestationResponse in
                 do {
-                    return try JSONDecoder.tangemSdkDecoder.decode(CardDataResponse.self, from: data)
+                    return try JSONDecoder.tangemSdkDecoder.decode(OnlineAttestationResponse.self, from: data)
                 }
                 catch {
                     throw NetworkServiceError.mappingError(error)

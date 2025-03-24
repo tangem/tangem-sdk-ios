@@ -70,6 +70,9 @@ public struct Config {
     /// Localized reason for Touch ID. DO NOT leave it empty.
     public var biometricsLocalizedReason: String = "touch_id_localized_reason".localized
 
+    /// Toggle for the new attestation service. To be removed
+    public var newAttestaionService: Bool = false
+
     public mutating func setupForProduct(_ product: ProductType) {
         switch product {
         case .card:

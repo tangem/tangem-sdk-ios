@@ -438,8 +438,8 @@ public class BackupService {
         // FirmwareVersion is optional because of compatibility with old stored data format. But in case of non-upgraded users we can safely assume, that fw version type is release.
         let firmwareVersionType = firmwareVersion?.type ?? .release
         let developmentMode = firmwareVersionType == .sdk
-        let certificateProvider = BackupCertificateProvider(developmentMode: developmentMode)
-        certificateProvider.getCertificate(for: cardId, cardPublicKey: cardPublicKey) { result in
+        let certificateProvider = CardCertificateProvider(developmentMode: developmentMode)
+        certificateProvider.getBackupCertificate(for: cardId, cardPublicKey: cardPublicKey) { result in
             completion(result)
             withExtendedLifetime(certificateProvider) {}
         }

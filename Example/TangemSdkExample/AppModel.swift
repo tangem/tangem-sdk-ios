@@ -66,7 +66,7 @@ class AppModel: ObservableObject {
         }
 
         config.logConfig = .custom(
-            logLevel: Log.Level.allCases,
+            logLevel: [.warning, .error, .command, .debug, .nfc, .session, .apdu, .network, .tlv, .view],
             loggers: loggers
         )
 

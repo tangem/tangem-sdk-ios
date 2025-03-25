@@ -39,7 +39,9 @@ public class Log {
     }
     
     public static func apdu<T>(_ message: T) {
-        logger.logInternal(message, level: .apdu)
+        if Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String == "com.tangem.TangemSDKExample" {
+            logger.logInternal(message, level: .apdu)
+        }
     }
     
     public static func command<T>(_ message: T) {
@@ -86,7 +88,7 @@ public class Log {
 }
 
 public extension Log {
-    enum Level: CaseIterable {
+    enum Level {
         case command
         case tlv
         case apdu

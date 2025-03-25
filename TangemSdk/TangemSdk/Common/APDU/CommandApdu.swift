@@ -70,7 +70,7 @@ public struct CommandApdu: Equatable {
         let crc = data.crc16()
         let tlvDataToEncrypt = data.count.bytes2 + crc + data
         let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
-        Log.apdu("C-APDU encrypted")
+        Log.debug("C-APDU encrypted")
 
         return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.byteValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
     }

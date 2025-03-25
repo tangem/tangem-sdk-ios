@@ -87,9 +87,9 @@ extension Command {
     
     private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
-            Log.apdu("C-APDU serialization start".titleFormatted)
+            Log.debug("C-APDU serialization start".titleFormatted)
             let commandApdu = try serialize(with: session.environment)
-            Log.apdu("C-APDU serialization finish".titleFormatted)
+            Log.debug("C-APDU serialization finish".titleFormatted)
 
             session.rememberTag()
 
@@ -98,9 +98,9 @@ extension Command {
                 case .success(let responseApdu):
                     do {
                         session.releaseTag()
-                        Log.apdu("R-APDU deserialization start".titleFormatted)
+                        Log.debug("R-APDU deserialization start".titleFormatted)
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
-                        Log.apdu("R-APDU deserialization finish".titleFormatted)
+                        Log.debug("R-APDU deserialization finish".titleFormatted)
                         
                         completion(.success(responseData))
                     } catch {

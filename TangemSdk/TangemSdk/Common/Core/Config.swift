@@ -73,6 +73,9 @@ public struct Config {
     /// Toggle for the new attestation service. To be removed
     public var newAttestaionService: Bool = false
 
+    /// Development API toggle
+    public static var useDevApi: Bool = false
+
     public mutating func setupForProduct(_ product: ProductType) {
         switch product {
         case .card:

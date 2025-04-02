@@ -16,7 +16,7 @@ public enum TangemEndpoint: NetworkEndpoint {
     public var baseUrl: String {
         switch self {
         case .cardData:
-            return "https://api.tangem-tech.com/"
+            return Config.useDevApi ? "https://api.tests-d.com/" : "https://api.tangem.org/"
         default:
             return "https://verify.tangem.com/"
         }

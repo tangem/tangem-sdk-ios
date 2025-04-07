@@ -16,7 +16,6 @@ public protocol NetworkEndpoint {
     var method: String {get}
     var body: Data? {get}
     var headers: [String:String] {get}
-    var configuration: URLSessionConfiguration? { get }
 }
 
 public enum NetworkServiceError: Error, LocalizedError {
@@ -27,7 +26,8 @@ public enum NetworkServiceError: Error, LocalizedError {
     case mappingError(Error)
     case underliying(Error)
     case failedToMakeRequest
-    
+    case ctDisabled
+
     public var errorDescription: String? {
         switch self {
         case .urlSessionError(let error):
@@ -47,11 +47,14 @@ public enum NetworkServiceError: Error, LocalizedError {
 }
 
 public class NetworkService {
-    private let configuration: URLSessionConfiguration?
-    
-    /// Pass configuration to override default configuration
-    public init (configuration: URLSessionConfiguration? = nil) {
-        self.configuration = configuration
+    private let session: URLSession
+
+    public init() {
+        session = ForcedCTURLSessionBuilder.makeSession(configuration: .defaultTangemSDKConfiguration)
+    }
+
+    public init(session: URLSession) {
+        self.session = session
     }
     
     deinit {
@@ -62,15 +65,14 @@ public class NetworkService {
         guard let request = prepareRequest(from: endpoint) else {
             return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
         }
-        
-        let configuration: URLSessionConfiguration = self.configuration ?? endpoint.configuration ?? .default
-        return requestDataPublisher(request: request, configuration: configuration)
+
+        return requestDataPublisher(request: request)
     }
     
-    private func requestDataPublisher(request: URLRequest, configuration: URLSessionConfiguration) -> AnyPublisher<Data, NetworkServiceError> {
+    private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
         Log.network("request to: \(request)")
         
-        return URLSession(configuration: configuration)
+        return session
             .dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
             .tryMap { data, response -> Data in
@@ -118,5 +120,15 @@ public class NetworkService {
     
     private func map<T: Decodable>(_ data: Data, type: T.Type) -> T? {
         try? JSONDecoder().decode(T.self, from: data)
+    }
+}
+
+
+fileprivate extension URLSessionConfiguration {
+    static var defaultTangemSDKConfiguration: URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 30
+        return configuration
     }
 }

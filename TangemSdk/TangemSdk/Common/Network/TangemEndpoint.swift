@@ -75,12 +75,5 @@ public enum TangemEndpoint: NetworkEndpoint {
         
         return headers
     }
-    
-    public var configuration: URLSessionConfiguration? {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 10
-        configuration.timeoutIntervalForResource = 30
-        return configuration
-    }
 }
 

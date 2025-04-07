@@ -383,6 +383,7 @@
 		DCD2D91D2A1CF64A00AB00B6 /* eckey.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D8B82A1CF64A00AB00B6 /* eckey.h */; };
 		DCD2D91F2A1CF87200AB00B6 /* libsecp256k1-config.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */; };
 		DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */; };
+		DCDCDD5F2DA426F9003D3CB9 /* ForcedCTServerTrust.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDCDD5E2DA426F9003D3CB9 /* ForcedCTServerTrust.swift */; };
 		DCEA3ABC2875AEBA00B0B0DA /* BiometricsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */; };
 		DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */; };
 		DCF53AD02D7F57FC00CC4634 /* CardFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF53ACF2D7F57FC00CC4634 /* CardFilterTests.swift */; };
@@ -789,6 +790,7 @@
 		DCD2D8B82A1CF64A00AB00B6 /* eckey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eckey.h; sourceTree = "<group>"; };
 		DCD2D91E2A1CF87200AB00B6 /* libsecp256k1-config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "libsecp256k1-config.h"; sourceTree = "<group>"; };
 		DCD2D9242A1D15A300AB00B6 /* SchnorrSignature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchnorrSignature.swift; sourceTree = "<group>"; };
+		DCDCDD5E2DA426F9003D3CB9 /* ForcedCTServerTrust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForcedCTServerTrust.swift; sourceTree = "<group>"; };
 		DCDECB8F2C88A81200E10564 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsStorage.swift; sourceTree = "<group>"; };
 		DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorageKey.swift; sourceTree = "<group>"; };
@@ -935,6 +937,7 @@
 		5D2FE06824DDA84F0086B5E8 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				DCDCDD5E2DA426F9003D3CB9 /* ForcedCTServerTrust.swift */,
 				5D0E56012757C0FD00D46F54 /* Entities */,
 				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 				5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */,
@@ -2194,6 +2197,7 @@
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
+				DCDCDD5F2DA426F9003D3CB9 /* ForcedCTServerTrust.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
 				5DDD6C5A25D2DFA700E48D7B /* JSONStringConvertible.swift in Sources */,
 				5D86CBD924A10FD800FB5BA7 /* Acquirer.swift in Sources */,

@@ -9,6 +9,6 @@
 import Foundation
 
 public struct OnlineAttestationResponse: Codable {
-    public let manufacturerSignature: Data
+    public let manufacturerSignature: Data?
     public let issuerSignature: Data
 }

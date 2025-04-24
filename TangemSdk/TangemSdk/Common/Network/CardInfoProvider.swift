@@ -10,10 +10,10 @@ import Foundation
 import Combine
 
 /// Online verification for Tangem cards.
-class CardInfoProvider {
+public class CardInfoProvider {
     private let networkService: NetworkService
     
-    init(networkService: NetworkService = .init()) {
+    public init(networkService: NetworkService = .init()) {
         self.networkService = networkService
     }
     
@@ -26,7 +26,7 @@ class CardInfoProvider {
     ///   - cardId: cardId to verify
     ///   - cardPublicKey: cardPublicKey of the card
     /// - Returns: `CardVerifyAndGetInfoResponse.Item`
-    func getCardInfo(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
+    public func getCardInfo(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
         let requestItem = CardVerifyAndGetInfoRequest.Item(cardId: cardId, publicKey: cardPublicKey.hexString)
         let request = CardVerifyAndGetInfoRequest(requests: [requestItem])
         let endpoint = TangemEndpoint.verifyAndGetInfo(request: request)

@@ -6,6 +6,8 @@
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 
+import Foundation
+
 struct OnlineAttestationVerifier {
     private let cardPublicKey: Data
     private let issuerPublicKey: Data

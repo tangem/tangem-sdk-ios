@@ -48,14 +48,13 @@ public class BiometricsStorage {
         }
     }
     
-    public func store(_ object: Data, forKey account: String, overwrite: Bool = true, context: LAContext? = nil) throws {
+    public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
             kSecUseDataProtectionKeychain: true,
             kSecValueData: object,
             kSecAttrAccessControl: self.makeBiometricAccessControl(),
-            kSecUseAuthenticationContext: context ?? self.context,
         ]
         
         var status = SecItemAdd(query as CFDictionary, nil)
@@ -68,7 +67,6 @@ public class BiometricsStorage {
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
                 kSecAttrAccessControl: self.makeBiometricAccessControl(),
-                kSecUseAuthenticationContext: context ?? self.context
             ]
             
             let attributes = [kSecValueData: object] as [String: Any]
@@ -112,8 +110,8 @@ public class BiometricsStorage {
         try get(storageKey.rawValue, context: context)
     }
     
-    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true, context: LAContext? = nil) throws {
-         try store(object, forKey: storageKey.rawValue, overwrite: overwrite, context: context)
+    func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) throws {
+         try store(object, forKey: storageKey.rawValue, overwrite: overwrite)
     }
     
     func delete(_ storageKey: SecureStorageKey) throws {

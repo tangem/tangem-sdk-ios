@@ -11,9 +11,9 @@ import Combine
 
 public class BackupService {
     public static let maxBackupCardsCount = 2
-    
+
     public private(set) var currentState: State = .preparing
-    
+
     public var canAddBackupCards: Bool {
         addedBackupCardsCount < BackupService.maxBackupCardsCount
         &&  repo.data.primaryCard?.linkingKey != nil
@@ -80,22 +80,30 @@ public class BackupService {
             return
         }
 
-        fetchCertificate(
-            for: primaryCard.cardId,
-            cardPublicKey: primaryCard.cardPublicKey,
-            firmwareVersion: primaryCard.firmwareVersion) { [weak self] result in
-                guard let self else { return }
+        /// Impossible case due to primaryCard compatible Codable implementation with older app versions.
+        guard let primaryCardFirmwareVersion = primaryCard.firmwareVersion else {
+            completion(.failure(.missingPrimaryCard))
+            return
+        }
 
-                switch result {
-                case .success(let certificate):
-                    var primaryCard = primaryCard
-                    primaryCard.certificate = certificate
-                    self.repo.data.primaryCard = primaryCard
-                    self.readBackupCard(primaryCard, completion: completion)
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+        fetchCertificate(
+            cardId: primaryCard.cardId,
+            cardPublicKey: primaryCard.cardPublicKey,
+            issuerPublicKey: primaryCard.issuer.publicKey,
+            firmwareVersion: primaryCardFirmwareVersion
+        ) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let certificate):
+                var primaryCard = primaryCard
+                primaryCard.certificate = certificate
+                self.repo.data.primaryCard = primaryCard
+                self.readBackupCard(primaryCard, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
             }
+        }
     }
 
     public func setAccessCode(_ code: String) throws {
@@ -233,9 +241,12 @@ public class BackupService {
             repo.data.backupCards.remove(at: existingIndex)
         }
 
-        fetchCertificate(for: backupCard.cardId,
-                         cardPublicKey: backupCard.cardPublicKey,
-                         firmwareVersion: backupCard.firmwareVersion) { [weak self] result in
+        fetchCertificate(
+            cardId: backupCard.cardId,
+            cardPublicKey: backupCard.cardPublicKey,
+            issuerPublicKey: backupCardResponse.card.issuer.publicKey,
+            firmwareVersion: backupCardResponse.card.firmwareVersion
+        ) { [weak self] result in
             guard let self else { return }
 
             switch result {
@@ -329,7 +340,7 @@ public class BackupService {
                     header: nil,
                     body: "backup_finalize_primary_card_message_format".localized(formattedCardId))
             }
-            
+
 
             currentCommand = task
 
@@ -388,7 +399,7 @@ public class BackupService {
                                                  attestSignature: attestSignature,
                                                  accessCode: accessCode,
                                                  passcode: passcode)
-            
+
             var initialMessage: Message? = nil
 
             if config.productType == .ring {
@@ -430,17 +441,23 @@ public class BackupService {
     }
 
     private func fetchCertificate(
-        for cardId: String,
+        cardId: String,
         cardPublicKey: Data,
-        firmwareVersion: FirmwareVersion?,
+        issuerPublicKey: Data,
+        firmwareVersion: FirmwareVersion,
         completion: @escaping CompletionResult<Data>
     ) {
-        // FirmwareVersion is optional because of compatibility with old stored data format. But in case of non-upgraded users we can safely assume, that fw version type is release.
-        let firmwareVersionType = firmwareVersion?.type ?? .release
-        let developmentMode = firmwareVersionType == .sdk
-        let certificateProvider = CardCertificateProvider(developmentMode: developmentMode)
-        certificateProvider.getBackupCertificate(for: cardId, cardPublicKey: cardPublicKey) { result in
-            completion(result)
+        let factory = BackupCertificateProviderFactory()
+
+        let certificateProvider = factory.makeBackupCertificateProvider(
+            cardId: cardId,
+            cardPublicKey: cardPublicKey,
+            issuerPublicKey: issuerPublicKey,
+            firmwareVersion: firmwareVersion
+        )
+
+        certificateProvider.getCertificate() {
+            completion($0)
             withExtendedLifetime(certificateProvider) {}
         }
     }

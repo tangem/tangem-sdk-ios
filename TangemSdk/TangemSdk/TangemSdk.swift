@@ -17,11 +17,10 @@ public final class TangemSdk {
     
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
-    private let onlineAttestationService = OnlineAttestationService()
+    private let cardInfoProvider = CardInfoProvider()
     private let terminalKeysService = TerminalKeysService()
     private var cardSession: CardSession? = nil
-    private var onlineAttestationCancellable: AnyCancellable? = nil
-    
+
     private lazy var jsonConverter: JSONRPCConverter = {
         return .shared
     }()
@@ -217,13 +216,17 @@ public extension TangemSdk {
     func loadCardInfo(cardPublicKey: Data,
                       cardId: String,
                       completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
-        onlineAttestationCancellable = onlineAttestationService
-            .getAttestationDataLegacy(cardId: cardId, cardPublicKey: cardPublicKey)
+        var subscription: AnyCancellable?
+
+        subscription = cardInfoProvider
+            .getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { receivedCompletion in
                 if case let .failure(error) = receivedCompletion {
                     completion(.failure(error.toTangemSdkError()))
                 }
+
+                withExtendedLifetime(subscription) {}
             }, receiveValue: { response in
                 completion(.success(response))
             })

@@ -49,9 +49,6 @@ public struct Config {
     /// ScanTask or scanCard method in TangemSdk class will use this mode to attest the card
     public var attestationMode: AttestationTask.Mode = .normal
     
-    /// If true, BAP cards will pass online attestation. Use only for debugging purposes and if you understand what to do
-    public var allowUntrustedCards: Bool = false
-    
     public var filter: CardFilter = .default
     
     public var style: TangemSdkStyle = .default
@@ -71,7 +68,7 @@ public struct Config {
     public var biometricsLocalizedReason: String = "touch_id_localized_reason".localized
 
     /// Toggle for the new attestation service. To be removed
-    public var newAttestaionService: Bool = false
+    public var newAttestaionService: Bool = true
 
     /// Development API toggle
     public static var useDevApi: Bool = false

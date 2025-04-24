@@ -11,13 +11,13 @@ import Foundation
 enum SecureStorageKey: String {
     //attestation
     case attestedCards
-    case signatureOfAttestedCards
-    
+    case attestedCardsEncryptionKey
+
+    case onlineAttestationResponses
+    case onlineAttestationResponsesEncryptionKey
+
     //access codes repo
     case cardsWithSavedCodes
-    
-    //secure enclave service
-    case secureEnclaveSigningKey
 
     //terminal keys service
     case terminalPrivateKey //link card to terminal

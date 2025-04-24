@@ -9,16 +9,16 @@
 import Foundation
 import Combine
 
-/// Online verification for Tangem cards. Do not use for developer cards
-public class OnlineAttestationService {
+/// Online verification for Tangem cards.
+class CardInfoProvider {
     private let networkService: NetworkService
     
-    public init(networkService: NetworkService = .init()) {
+    init(networkService: NetworkService = .init()) {
         self.networkService = networkService
     }
     
     deinit {
-        Log.debug("OnlineAttestationService deinit")
+        Log.debug("CardInfoProvider deinit")
     }
     
     /// Online verification and get info for Tangem cards. Do not use for developer cards
@@ -26,7 +26,7 @@ public class OnlineAttestationService {
     ///   - cardId: cardId to verify
     ///   - cardPublicKey: cardPublicKey of the card
     /// - Returns: `CardVerifyAndGetInfoResponse.Item`
-    public func getAttestationDataLegacy(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
+    func getCardInfo(cardId: String, cardPublicKey: Data) -> AnyPublisher<CardVerifyAndGetInfoResponse.Item, Error> {
         let requestItem = CardVerifyAndGetInfoRequest.Item(cardId: cardId, publicKey: cardPublicKey.hexString)
         let request = CardVerifyAndGetInfoRequest(requests: [requestItem])
         let endpoint = TangemEndpoint.verifyAndGetInfo(request: request)
@@ -51,22 +51,6 @@ public class OnlineAttestationService {
                 }
 
                 return firstResult
-            }
-            .eraseToAnyPublisher()
-    }
-    
-    public func getAttestationData(cardId: String, cardPublicKey: Data) -> AnyPublisher<OnlineAttestationResponse, Error> {
-        let endpoint = TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey)
-
-        return networkService
-            .requestPublisher(endpoint)
-            .tryMap { data -> OnlineAttestationResponse in
-                do {
-                    return try JSONDecoder.tangemSdkDecoder.decode(OnlineAttestationResponse.self, from: data)
-                }
-                catch {
-                    throw NetworkServiceError.mappingError(error)
-                }
             }
             .eraseToAnyPublisher()
     }

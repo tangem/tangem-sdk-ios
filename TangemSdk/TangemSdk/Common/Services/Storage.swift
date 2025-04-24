@@ -12,6 +12,7 @@ public class Storage {
     static let prefix = "tng_"
 
     enum Keys: String {
+        case refreshedOnlineAttestationCache
         case refreshedTrustedCardsRepo
         case hasClearedAccessCodeRepoOnFirstLaunch
     }

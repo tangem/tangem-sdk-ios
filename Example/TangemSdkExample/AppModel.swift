@@ -54,7 +54,6 @@ class AppModel: ObservableObject {
     private var tangemSdk: TangemSdk {
         var config = Config()
         config.linkedTerminal = false
-        config.allowUntrustedCards = true
         config.handleErrors = self.handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         config.accessCodeRequestPolicy = accessCodeRequestPolicy

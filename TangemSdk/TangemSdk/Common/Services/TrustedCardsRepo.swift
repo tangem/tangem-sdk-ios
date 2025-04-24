@@ -11,8 +11,8 @@ import Foundation
 public class TrustedCardsRepo {
     private let storage = Storage()
     private let secureStorage = SecureStorage()
-    private let secureEnclave = SecureEnclaveService()
-    
+    private let secureEnclave = SecureEnclaveService(config: .default)
+
     //Key is Hash of card's public key
     private var data: [Data: Attestation] = [:]
     
@@ -52,18 +52,16 @@ public class TrustedCardsRepo {
     private func save() throws {
         let convertedData = data.mapValues { $0.rawRepresentation }
         let encodedData = try JSONEncoder.tangemSdkEncoder.encode(convertedData)
-        let signature = try secureEnclave.sign(data: encodedData)
-        try secureStorage.store(encodedData, forKey: .attestedCards)
-        try secureStorage.store(signature, forKey: .signatureOfAttestedCards)
+        let encryptedData = try secureEnclave.encryptData(encodedData, storageKey: .attestedCardsEncryptionKey)
+        try secureStorage.store(encryptedData, forKey: .attestedCards)
     }
     
     private func fetch() throws {
-        if let data = try secureStorage.get(.attestedCards),
-           let signature = try secureStorage.get(.signatureOfAttestedCards),
-           try secureEnclave.verify(signature: signature, message: data) {
-            let decoded = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: data)
-            let converted = decoded.compactMapValues { Attestation(rawRepresentation: $0) }
-            self.data = converted
+        if let encryptedData = try secureStorage.get(.attestedCards) {
+            let encodedData = try secureEnclave.decryptData(encryptedData, storageKey: .attestedCardsEncryptionKey)
+            let convertedData = try JSONDecoder.tangemSdkDecoder.decode([Data: String].self, from: encodedData)
+            let data = convertedData.compactMapValues { Attestation(rawRepresentation: $0) }
+            self.data = data
         }
     }
     

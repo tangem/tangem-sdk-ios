@@ -94,26 +94,10 @@ public struct SecureStorage {
     }
     
     func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) throws  {
-       try store(object, forKey: storageKey.rawValue)
+        try store(object, forKey: storageKey.rawValue, overwrite: overwrite)
     }
     
     func delete(_ storageKey: SecureStorageKey) throws {
         try delete(storageKey.rawValue)
-    }
-}
-
-extension SecureStorage {
-    /// Stores a CryptoKit key in the keychain as a generic password.
-    func storeKey<T: GenericPasswordConvertible>(_ key: T, forKey storageKey: SecureStorageKey) throws {
-        try store(key.rawRepresentation, forKey: storageKey, overwrite: true)
-    }
-    
-    /// Reads a CryptoKit key from the keychain as a generic password.
-    func readKey<T: GenericPasswordConvertible>(_ storageKey: SecureStorageKey) throws -> T? {
-        if let data = try get(storageKey) {
-            return try T(rawRepresentation: data)
-        }
-        
-        return nil
     }
 }

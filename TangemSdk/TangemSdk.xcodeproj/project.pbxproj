@@ -23,7 +23,6 @@
 		5D14092026BAABD400B811A1 /* BIP32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14091F26BAABD400B811A1 /* BIP32.swift */; };
 		5D14947A268625A400C0D923 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D149479268625A400C0D923 /* CommonTests.swift */; };
 		5D14947D2686453C00C0D923 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947C2686453C00C0D923 /* KeyStoreError.swift */; };
-		5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */; };
 		5D1494812686488600C0D923 /* SecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1494802686488600C0D923 /* SecureEnclaveService.swift */; };
 		5D170AF126B42CA3000D4F36 /* ExtendedPublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */; };
 		5D170AF326B46DAC000D4F36 /* HDWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */; };
@@ -198,7 +197,7 @@
 		5DE59F2F23D9703A00312DA4 /* SecureStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */; };
 		5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7DD2F2695DCD300472205 /* CardFilter.swift */; };
 		5DE7EA1826C3EDDA00B551EF /* TangemSdkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */; };
-		5DEBB2A625DC0FF400D1734F /* OnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */; };
+		5DEBB2A625DC0FF400D1734F /* CardInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEBB2A525DC0FF400D1734F /* CardInfoProvider.swift */; };
 		5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DED473226D6A00D003CB1E7 /* BackupService.swift */; };
 		5DEFA99526D7F40300E5CDE4 /* FinalizeBackupCardTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */; };
 		5DF4388226B1A0CE0038D43E /* HapticsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */; };
@@ -264,7 +263,7 @@
 		DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E329BB806E0037BC05 /* WIFTests.swift */; };
 		DC1244E629BB8E580037BC05 /* NetworkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E529BB8E580037BC05 /* NetworkType.swift */; };
 		DC1244E829BB9E0C0037BC05 /* ExtendedKeySerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */; };
-		DC1682202B3C355600194DDE /* CardCertificateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */; };
+		DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */; };
 		DC22228729D431AB001129F8 /* SetUserCodeRecoveryAllowed.json in Resources */ = {isa = PBXBuildFile; fileRef = DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */; };
 		DC234CC629F1A3F100082063 /* ImportWalletMnemonic.json in Resources */ = {isa = PBXBuildFile; fileRef = DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */; };
 		DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */; };
@@ -306,6 +305,15 @@
 		DC8BD7472D79F61600BD2486 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DC8BD7442D79F61600BD2486 /* precomputed_ecmult_gen.h */; };
 		DC8BD7482D79F61600BD2486 /* precompute_ecmult_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = DC8BD7432D79F61600BD2486 /* precompute_ecmult_gen.c */; };
 		DC8BD7492D79F61600BD2486 /* precomputed_ecmult_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = DC8BD7452D79F61600BD2486 /* precomputed_ecmult_gen.c */; };
+		DC9E50F32D97288500F35850 /* ManufacturerKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50F22D97288400F35850 /* ManufacturerKey.swift */; };
+		DCA070762D91CFEA0036C371 /* OnlineAttestationServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070752D91CFDC0036C371 /* OnlineAttestationServiceFactory.swift */; };
+		DCA070782D91CFFE0036C371 /* OnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070772D91CFEF0036C371 /* OnlineAttestationService.swift */; };
+		DCA0707A2D91D2170036C371 /* CommonOnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070792D91D20F0036C371 /* CommonOnlineAttestationService.swift */; };
+		DCA0707C2D91D2300036C371 /* DevOnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA0707B2D91D21F0036C371 /* DevOnlineAttestationService.swift */; };
+		DCA070832D91E3FC0036C371 /* OnlineAttestationVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070822D91E3F50036C371 /* OnlineAttestationVerifier.swift */; };
+		DCA0708B2D91F9D90036C371 /* BackupCertificateProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA0708A2D91F9D50036C371 /* BackupCertificateProviderFactory.swift */; };
+		DCA0708D2D93163B0036C371 /* OnlineAttestationResponseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA0708C2D9316320036C371 /* OnlineAttestationResponseMapper.swift */; };
+		DCA0708F2D9325650036C371 /* OnlineAttestationCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA0708E2D93255C0036C371 /* OnlineAttestationCache.swift */; };
 		DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */; };
 		DCACA0402CB51FF400A3DD51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCACA03F2CB51FF400A3DD51 /* Assets.xcassets */; };
 		DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */; };
@@ -421,7 +429,6 @@
 		5D14091F26BAABD400B811A1 /* BIP32.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIP32.swift; sourceTree = "<group>"; };
 		5D149479268625A400C0D923 /* CommonTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
 		5D14947C2686453C00C0D923 /* KeyStoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
-		5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
 		5D1494802686488600C0D923 /* SecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveService.swift; sourceTree = "<group>"; };
 		5D170AF026B42CA3000D4F36 /* ExtendedPublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedPublicKey.swift; sourceTree = "<group>"; };
 		5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDWalletTests.swift; sourceTree = "<group>"; };
@@ -600,7 +607,7 @@
 		5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureStorage.swift; sourceTree = "<group>"; };
 		5DE7DD2F2695DCD300472205 /* CardFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFilter.swift; sourceTree = "<group>"; };
 		5DE7EA1726C3EDDA00B551EF /* TangemSdkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkStyle.swift; sourceTree = "<group>"; };
-		5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationService.swift; sourceTree = "<group>"; };
+		5DEBB2A525DC0FF400D1734F /* CardInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardInfoProvider.swift; sourceTree = "<group>"; };
 		5DED473226D6A00D003CB1E7 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
 		5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalizeBackupCardTask.swift; sourceTree = "<group>"; };
 		5DF4388126B1A0CE0038D43E /* HapticsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticsEngine.swift; sourceTree = "<group>"; };
@@ -669,7 +676,7 @@
 		DC1244E329BB806E0037BC05 /* WIFTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WIFTests.swift; sourceTree = "<group>"; };
 		DC1244E529BB8E580037BC05 /* NetworkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkType.swift; sourceTree = "<group>"; };
 		DC1244E729BB9E0C0037BC05 /* ExtendedKeySerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedKeySerializer.swift; sourceTree = "<group>"; };
-		DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCertificateProvider.swift; sourceTree = "<group>"; };
+		DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCertificateProvider.swift; sourceTree = "<group>"; };
 		DC22228629D431AB001129F8 /* SetUserCodeRecoveryAllowed.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SetUserCodeRecoveryAllowed.json; sourceTree = "<group>"; };
 		DC234CC529F1A3F100082063 /* ImportWalletMnemonic.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ImportWalletMnemonic.json; sourceTree = "<group>"; };
 		DC30D7092AF024D000744FA4 /* PreflightReadFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreflightReadFilter.swift; sourceTree = "<group>"; };
@@ -713,6 +720,15 @@
 		DC8BD7432D79F61600BD2486 /* precompute_ecmult_gen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = precompute_ecmult_gen.c; sourceTree = "<group>"; };
 		DC8BD7442D79F61600BD2486 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
 		DC8BD7452D79F61600BD2486 /* precomputed_ecmult_gen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = precomputed_ecmult_gen.c; sourceTree = "<group>"; };
+		DC9E50F22D97288400F35850 /* ManufacturerKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManufacturerKey.swift; sourceTree = "<group>"; };
+		DCA070752D91CFDC0036C371 /* OnlineAttestationServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationServiceFactory.swift; sourceTree = "<group>"; };
+		DCA070772D91CFEF0036C371 /* OnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationService.swift; sourceTree = "<group>"; };
+		DCA070792D91D20F0036C371 /* CommonOnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnlineAttestationService.swift; sourceTree = "<group>"; };
+		DCA0707B2D91D21F0036C371 /* DevOnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevOnlineAttestationService.swift; sourceTree = "<group>"; };
+		DCA070822D91E3F50036C371 /* OnlineAttestationVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationVerifier.swift; sourceTree = "<group>"; };
+		DCA0708A2D91F9D50036C371 /* BackupCertificateProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCertificateProviderFactory.swift; sourceTree = "<group>"; };
+		DCA0708C2D9316320036C371 /* OnlineAttestationResponseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationResponseMapper.swift; sourceTree = "<group>"; };
+		DCA0708E2D93255C0036C371 /* OnlineAttestationCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationCache.swift; sourceTree = "<group>"; };
 		DCA9706528E35EAD0046E62E /* GenerateOTPCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateOTPCommand.swift; sourceTree = "<group>"; };
 		DCACA03F2CB51FF400A3DD51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCB5A4DF2A1F969F0021E12D /* HKDFUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKDFUtil.swift; sourceTree = "<group>"; };
@@ -852,7 +868,6 @@
 				5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */,
 				5D14947C2686453C00C0D923 /* KeyStoreError.swift */,
 				5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */,
-				5D14947E2686458100C0D923 /* GenericPasswordConvertible.swift */,
 				5D1494802686488600C0D923 /* SecureEnclaveService.swift */,
 				DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */,
 				DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */,
@@ -941,6 +956,7 @@
 				5D0E56012757C0FD00D46F54 /* Entities */,
 				5D2FE06624DDA3080086B5E8 /* NetworkService.swift */,
 				5D2FE06924DDA85E0086B5E8 /* TangemEndpoint.swift */,
+				5DEBB2A525DC0FF400D1734F /* CardInfoProvider.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -991,12 +1007,12 @@
 		5D3F77B424B9B8E700E8695B /* Attestation */ = {
 			isa = PBXGroup;
 			children = (
-				DC16821F2B3C355600194DDE /* CardCertificateProvider.swift */,
+				DCA070812D91E3DF0036C371 /* Verification */,
+				DCA070742D91CFD30036C371 /* OnlineAttestationService */,
 				5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */,
 				5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */,
 				5D3F77B524B9B8F600E8695B /* Attestation.swift */,
 				5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */,
-				5DEBB2A525DC0FF400D1734F /* OnlineAttestationService.swift */,
 				5D38D077267A4B0C0052F67C /* AttestationTask.swift */,
 			);
 			path = Attestation;
@@ -1054,6 +1070,7 @@
 		5D4B128126D40C67006E173C /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				DCA0708A2D91F9D50036C371 /* BackupCertificateProviderFactory.swift */,
 				5D4B128226D40C77006E173C /* StartPrimaryCardLinkingCommand.swift */,
 				5DE43A5B26D4DC6400ECA36A /* StartBackupCardLinkingCommand.swift */,
 				5DE43A5F26D511CE00ECA36A /* LinkBackupCardsCommand.swift */,
@@ -1063,6 +1080,7 @@
 				5DE43A6326D5158300ECA36A /* WriteBackupDataCommand.swift */,
 				5DEFA99426D7F40300E5CDE4 /* FinalizeBackupCardTask.swift */,
 				5DED473226D6A00D003CB1E7 /* BackupService.swift */,
+				DC16821F2B3C355600194DDE /* BackupCertificateProvider.swift */,
 				5D8D257626EA66BD00146039 /* ResetBackupCommand.swift */,
 				5D492E9926EA8EE600F489F5 /* StartBackupCardLinkingTask.swift */,
 				DCD2D5BB2A1CA1EB00AB00B6 /* FinalizeReadBackupDataCommand.swift */,
@@ -1611,6 +1629,28 @@
 			path = musig;
 			sourceTree = "<group>";
 		};
+		DCA070742D91CFD30036C371 /* OnlineAttestationService */ = {
+			isa = PBXGroup;
+			children = (
+				DCA0708E2D93255C0036C371 /* OnlineAttestationCache.swift */,
+				DCA0708C2D9316320036C371 /* OnlineAttestationResponseMapper.swift */,
+				DCA070792D91D20F0036C371 /* CommonOnlineAttestationService.swift */,
+				DCA0707B2D91D21F0036C371 /* DevOnlineAttestationService.swift */,
+				DCA070772D91CFEF0036C371 /* OnlineAttestationService.swift */,
+				DCA070752D91CFDC0036C371 /* OnlineAttestationServiceFactory.swift */,
+			);
+			path = OnlineAttestationService;
+			sourceTree = "<group>";
+		};
+		DCA070812D91E3DF0036C371 /* Verification */ = {
+			isa = PBXGroup;
+			children = (
+				DCA070822D91E3F50036C371 /* OnlineAttestationVerifier.swift */,
+				DC9E50F22D97288400F35850 /* ManufacturerKey.swift */,
+			);
+			path = Verification;
+			sourceTree = "<group>";
+		};
 		DCACA03E2CB51FDF00A3DD51 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -2037,6 +2077,8 @@
 				5D908C5F26A7519500270FA3 /* NFCFieldView.swift in Sources */,
 				5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */,
 				5D86CBDF24A1109800FB5BA7 /* NdefRecord.swift in Sources */,
+				DCA070832D91E3FC0036C371 /* OnlineAttestationVerifier.swift in Sources */,
+				DCA0707A2D91D2170036C371 /* CommonOnlineAttestationService.swift in Sources */,
 				5DFCE40524B30589007B95AF /* Storage.swift in Sources */,
 				5DDD6C7325D30C1400E48D7B /* TangemSdkLogger.swift in Sources */,
 				DCD2D9162A1CF64A00AB00B6 /* precomputed_ecmult.c in Sources */,
@@ -2053,7 +2095,7 @@
 				5D974B7E237D672F00DCDF21 /* Date+.swift in Sources */,
 				5D6831D223DB2EA30095BB1D /* CreateWalletCommand.swift in Sources */,
 				5D60CA63272C472F00A1DF0B /* ResetCodesController.swift in Sources */,
-				DC1682202B3C355600194DDE /* CardCertificateProvider.swift in Sources */,
+				DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
 				DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
@@ -2061,6 +2103,7 @@
 				DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */,
+				DCA0707C2D91D2300036C371 /* DevOnlineAttestationService.swift in Sources */,
 				DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */,
 				DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */,
 				DC8B0E3F286F221D009D64F7 /* BiometricsUtil.swift in Sources */,
@@ -2072,7 +2115,6 @@
 				5D23C42426CE749F00A1A280 /* FloatingTextField.swift in Sources */,
 				B00BC5C4260B80E600F0647D /* Track.swift in Sources */,
 				DCB5A4E32A1FAB330021E12D /* BLSUtils.swift in Sources */,
-				5D14947F2686458100C0D923 /* GenericPasswordConvertible.swift in Sources */,
 				5D86CBDB24A1102D00FB5BA7 /* Issuer.swift in Sources */,
 				DC1244C729B776D40037BC05 /* ExtendedPrivateKey.swift in Sources */,
 				5D944758264EC52400EA9CD2 /* JSONRPC.swift in Sources */,
@@ -2091,6 +2133,7 @@
 				B0800F89252C4514007E04EE /* ReadFileCommand.swift in Sources */,
 				5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
+				DC9E50F32D97288500F35850 /* ManufacturerKey.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DCAB0FE26C43D2100ADEE7D /* Message.swift in Sources */,
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
@@ -2100,6 +2143,7 @@
 				5D6508262673936900A8D45B /* OptionSetCodable.swift in Sources */,
 				DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */,
 				5DE43A6226D5157900ECA36A /* ReadBackupDataCommand.swift in Sources */,
+				DCA070782D91CFFE0036C371 /* OnlineAttestationService.swift in Sources */,
 				B006971825FFABA10040D203 /* InteractionMode.swift in Sources */,
 				DC1244E029BB6D460037BC05 /* Base58.swift in Sources */,
 				DCC0A21129D3146100C45B13 /* SetUserSettingsCommand.swift in Sources */,
@@ -2117,6 +2161,7 @@
 				5DFCAF57258CB9FF00CD237F /* CardIdFormatter.swift in Sources */,
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
 				DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */,
+				DCA0708F2D9325650036C371 /* OnlineAttestationCache.swift in Sources */,
 				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
@@ -2165,6 +2210,7 @@
 				B00BC5C8260B82A700F0647D /* ReadMode.swift in Sources */,
 				5DBD7325249122C9000DF4BD /* SetUserCodeCommand.swift in Sources */,
 				DCD2D9252A1D15A300AB00B6 /* SchnorrSignature.swift in Sources */,
+				DCA0708B2D91F9D90036C371 /* BackupCertificateProviderFactory.swift in Sources */,
 				5D04F9E226EF731B00D15F75 /* Publisher+.swift in Sources */,
 				5D23C42626CEDDD000A1A280 /* Array+.swift in Sources */,
 				5DDAF04C26AB195F00673D44 /* DefaultSessionViewDelegate.swift in Sources */,
@@ -2191,11 +2237,13 @@
 				5D5242672727FE37007FEB03 /* ResetUserCodesView.swift in Sources */,
 				5D46F1552681032B00DC6447 /* SignHashCommand.swift in Sources */,
 				5D5A67FA272830C00002EDA9 /* BadgedCardView.swift in Sources */,
+				DCA0708D2D93163B0036C371 /* OnlineAttestationResponseMapper.swift in Sources */,
 				DC3D98002A77F5D0001EEE7A /* EIP2333MasterKeyFactory.swift in Sources */,
 				5DDA5DA326E95F2F00199274 /* Result+RAPDU.swift in Sources */,
 				5D0631DB2477DAAA0056BF21 /* OpenSessionCommand.swift in Sources */,
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
+				DCA070762D91CFEA0036C371 /* OnlineAttestationServiceFactory.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				DCDCDD5F2DA426F9003D3CB9 /* ForcedCTServerTrust.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
@@ -2254,7 +2302,7 @@
 				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,
 				5D445B7826E29A2800F6F0FE /* SignResetPinToken.swift in Sources */,
-				5DEBB2A625DC0FF400D1734F /* OnlineAttestationService.swift in Sources */,
+				5DEBB2A625DC0FF400D1734F /* CardInfoProvider.swift in Sources */,
 				5D7F4E52249006DB00A1700D /* Bundle+.swift in Sources */,
 				5D445B7A26E29C2300F6F0FE /* ResetPinCommand.swift in Sources */,
 				DC3D97F92A77D3C6001EEE7A /* SLIP23.swift in Sources */,

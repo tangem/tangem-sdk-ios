@@ -24,7 +24,6 @@ public enum NetworkServiceError: Error, LocalizedError {
     case urlSessionError(Error)
     case emptyResponseData
     case mappingError(Error)
-    case underliying(Error)
     case failedToMakeRequest
     case ctDisabled
 
@@ -36,14 +35,7 @@ public enum NetworkServiceError: Error, LocalizedError {
             return "\(self)"
         }
     }
-    
-    static func fromError(_ error: Error) -> NetworkServiceError{
-        if let ne = error as? NetworkServiceError {
-            return ne
-        } else {
-            return .underliying(error)
-        }
-    }
+
 }
 
 public class NetworkService {

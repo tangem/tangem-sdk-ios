@@ -10,11 +10,16 @@ struct OnlineAttestationResponseMapper {
     let card: Card
 
     func mapError(_ error: Error) -> Attestation.Status {
-        if case TangemSdkError.cardVerificationFailed = error {
-            return Attestation.Status.failed
+        if let networkError = error as? NetworkServiceError {
+            switch networkError {
+            case .urlSessionError:
+                return Attestation.Status.verifiedOffline
+            default:
+                break
+            }
         }
 
-        return Attestation.Status.verifiedOffline
+        return Attestation.Status.failed
     }
 
     func mapValue(_ value: OnlineAttestationResponse) -> Attestation.Status {

@@ -57,7 +57,8 @@ extension Data {
         reserveCapacity(hexString.unicodeScalars.lazy.underestimatedCount)
         
         var buffer: UInt8?
-        var skip = hexString.hasPrefix("0x") ? 2 : 0
+        let hasPrefix = hexString.range(of: "0x", options: [.anchored, .caseInsensitive]) != nil
+        var skip = hasPrefix ? 2 : 0
         for char in hexString.unicodeScalars.lazy {
             guard skip == 0 else {
                 skip -= 1

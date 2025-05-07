@@ -79,4 +79,18 @@ class DataExtensionTests: XCTestCase {
         let converted = testData.toInt()
         XCTAssertEqual(converted, intData)
     }
+    
+    func testUpperCasePrefixToIntConversion() {
+        let testData = Data(hexString: "0X00026A03")
+        let intData = 158211
+        let converted = testData.toInt()
+        XCTAssertEqual(converted, intData)
+    }
+    
+    func testLowerCasePrefixToIntConversion() {
+        let testData = Data(hexString: "0x00026A03")
+        let intData = 158211
+        let converted = testData.toInt()
+        XCTAssertEqual(converted, intData)
+    }
 }

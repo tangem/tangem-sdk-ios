@@ -8,7 +8,13 @@
 
 import Foundation
 
-struct OnlineAttestationServiceFactory {
+public struct OnlineAttestationServiceFactory {
+    private let networkService: NetworkService
+
+    public init(networkService: NetworkService = .init()) {
+        self.networkService = networkService
+    }
+
     func makeService(for card: Card) -> OnlineAttestationService {
         return makeService(
             cardId: card.cardId,
@@ -37,7 +43,7 @@ struct OnlineAttestationServiceFactory {
             cardId: cardId,
             cardPublicKey: cardPublicKey,
             verifier: verifier,
-            networkService: .init()
+            networkService: networkService
         )
     }
 }

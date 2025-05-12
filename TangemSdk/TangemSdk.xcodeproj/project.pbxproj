@@ -305,7 +305,13 @@
 		DC8BD7472D79F61600BD2486 /* precomputed_ecmult_gen.h in Headers */ = {isa = PBXBuildFile; fileRef = DC8BD7442D79F61600BD2486 /* precomputed_ecmult_gen.h */; };
 		DC8BD7482D79F61600BD2486 /* precompute_ecmult_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = DC8BD7432D79F61600BD2486 /* precompute_ecmult_gen.c */; };
 		DC8BD7492D79F61600BD2486 /* precomputed_ecmult_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = DC8BD7452D79F61600BD2486 /* precomputed_ecmult_gen.c */; };
+		DC972E4F2DBBA04B00089882 /* CardArtworksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC972E4E2DBBA04300089882 /* CardArtworksProvider.swift */; };
+		DC972E512DBBA0A800089882 /* DevCardArtworksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC972E502DBBA0A100089882 /* DevCardArtworksProvider.swift */; };
+		DC9E50EC2D97087200F35850 /* CommonCardArtworksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50EB2D97086900F35850 /* CommonCardArtworksProvider.swift */; };
+		DC9E50EE2D97089A00F35850 /* ArtworksResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50ED2D97089800F35850 /* ArtworksResponse.swift */; };
 		DC9E50F32D97288500F35850 /* ManufacturerKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50F22D97288400F35850 /* ManufacturerKey.swift */; };
+		DC9E50FB2D97549800F35850 /* CardArtworksVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50FA2D97549300F35850 /* CardArtworksVerifier.swift */; };
+		DC9E50FD2D97565700F35850 /* CardArtworksProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9E50FC2D97564F00F35850 /* CardArtworksProviderFactory.swift */; };
 		DCA070762D91CFEA0036C371 /* OnlineAttestationServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070752D91CFDC0036C371 /* OnlineAttestationServiceFactory.swift */; };
 		DCA070782D91CFFE0036C371 /* OnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070772D91CFEF0036C371 /* OnlineAttestationService.swift */; };
 		DCA0707A2D91D2170036C371 /* CommonOnlineAttestationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA070792D91D20F0036C371 /* CommonOnlineAttestationService.swift */; };
@@ -720,7 +726,13 @@
 		DC8BD7432D79F61600BD2486 /* precompute_ecmult_gen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = precompute_ecmult_gen.c; sourceTree = "<group>"; };
 		DC8BD7442D79F61600BD2486 /* precomputed_ecmult_gen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = precomputed_ecmult_gen.h; sourceTree = "<group>"; };
 		DC8BD7452D79F61600BD2486 /* precomputed_ecmult_gen.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = precomputed_ecmult_gen.c; sourceTree = "<group>"; };
+		DC972E4E2DBBA04300089882 /* CardArtworksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardArtworksProvider.swift; sourceTree = "<group>"; };
+		DC972E502DBBA0A100089882 /* DevCardArtworksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevCardArtworksProvider.swift; sourceTree = "<group>"; };
+		DC9E50EB2D97086900F35850 /* CommonCardArtworksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonCardArtworksProvider.swift; sourceTree = "<group>"; };
+		DC9E50ED2D97089800F35850 /* ArtworksResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworksResponse.swift; sourceTree = "<group>"; };
 		DC9E50F22D97288400F35850 /* ManufacturerKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManufacturerKey.swift; sourceTree = "<group>"; };
+		DC9E50FA2D97549300F35850 /* CardArtworksVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardArtworksVerifier.swift; sourceTree = "<group>"; };
+		DC9E50FC2D97564F00F35850 /* CardArtworksProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardArtworksProviderFactory.swift; sourceTree = "<group>"; };
 		DCA070752D91CFDC0036C371 /* OnlineAttestationServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationServiceFactory.swift; sourceTree = "<group>"; };
 		DCA070772D91CFEF0036C371 /* OnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineAttestationService.swift; sourceTree = "<group>"; };
 		DCA070792D91D20F0036C371 /* CommonOnlineAttestationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOnlineAttestationService.swift; sourceTree = "<group>"; };
@@ -857,6 +869,7 @@
 		5D0E56012757C0FD00D46F54 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				DC9E50ED2D97089800F35850 /* ArtworksResponse.swift */,
 				5D0E56022757C11F00D46F54 /* OnlineAttestationResponse.swift */,
 			);
 			path = Entities;
@@ -1012,6 +1025,7 @@
 				5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */,
 				5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */,
 				5D3F77B524B9B8F600E8695B /* Attestation.swift */,
+				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
 				5D2FE06424DD82BA0086B5E8 /* VerifyCardRequest.swift */,
 				5D38D077267A4B0C0052F67C /* AttestationTask.swift */,
 			);
@@ -1368,16 +1382,6 @@
 			path = Logger;
 			sourceTree = "<group>";
 		};
-		5DE59F2723D96F5C00312DA4 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-				5D14947B2686450F00C0D923 /* Secure */,
-				5DFCE40424B30589007B95AF /* Storage.swift */,
-				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
-			);
-			path = Services;
-			sourceTree = "<group>";
-		};
 		5DF7CFCA233D034E00461F4D /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -1387,17 +1391,19 @@
 				5D65081F266E37E100A8D45B /* JSON */,
 				5D0BAAEA25CD87DF00E6A2B6 /* Log */,
 				5D2FE06824DDA84F0086B5E8 /* Network */,
-				5DE59F2723D96F5C00312DA4 /* Services */,
+				DC9E50F82D9748ED00F35850 /* CardArtworks */,
 				5DA5B61F233E13180058C720 /* TLV */,
 				5DA5B614233E11DD0058C720 /* APDU */,
 				5DFFC49D233B9D4C004964E8 /* NFC */,
 				5DFFC4A0233BA5D2004964E8 /* Extensions */,
 				5D6A92D52344E2B400158457 /* Localization */,
 				B0EC64FE260110440088F03D /* Deserialization */,
+				5D14947B2686450F00C0D923 /* Secure */,
 				5DFCAF56258CB9FF00CD237F /* CardIdFormatter.swift */,
 				5D379C2A268FA4D200C7F473 /* CompletionResult.swift */,
 				5DDD6C6B25D30B0D00E48D7B /* SuccessResponse.swift */,
 				5D379C2C268FA53D00C7F473 /* KeyPair.swift */,
+				5DFCE40424B30589007B95AF /* Storage.swift */,
 				5D379C2E268FA57500C7F473 /* UserCode.swift */,
 				5DE7DD2F2695DCD300472205 /* CardFilter.swift */,
 			);
@@ -1627,6 +1633,18 @@
 				DC8BD7322D79F4A800BD2486 /* vectors.h */,
 			);
 			path = musig;
+			sourceTree = "<group>";
+		};
+		DC9E50F82D9748ED00F35850 /* CardArtworks */ = {
+			isa = PBXGroup;
+			children = (
+				DC972E502DBBA0A100089882 /* DevCardArtworksProvider.swift */,
+				DC972E4E2DBBA04300089882 /* CardArtworksProvider.swift */,
+				DC9E50FC2D97564F00F35850 /* CardArtworksProviderFactory.swift */,
+				DC9E50FA2D97549300F35850 /* CardArtworksVerifier.swift */,
+				DC9E50EB2D97086900F35850 /* CommonCardArtworksProvider.swift */,
+			);
+			path = CardArtworks;
 			sourceTree = "<group>";
 		};
 		DCA070742D91CFD30036C371 /* OnlineAttestationService */ = {
@@ -2103,6 +2121,7 @@
 				DCB5A4E02A1F969F0021E12D /* HKDFUtil.swift in Sources */,
 				5DE59F2D23D96FE500312DA4 /* TerminalKeysService.swift in Sources */,
 				DCC0A21629D3216100C45B13 /* UserSettings.swift in Sources */,
+				DC972E512DBBA0A800089882 /* DevCardArtworksProvider.swift in Sources */,
 				DCA0707C2D91D2300036C371 /* DevOnlineAttestationService.swift in Sources */,
 				DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */,
 				DCEA3ABE2875AF0F00B0B0DA /* SecureStorageKey.swift in Sources */,
@@ -2134,6 +2153,7 @@
 				5D270F2526A0199100D2EDC1 /* WalletData.swift in Sources */,
 				5DB4406D234B740B00AC39F1 /* Data+.swift in Sources */,
 				DC9E50F32D97288500F35850 /* ManufacturerKey.swift in Sources */,
+				DC9E50EE2D97089A00F35850 /* ArtworksResponse.swift in Sources */,
 				5D7F4E4E248FFAAF00A1700D /* UIColor+.swift in Sources */,
 				5DCAB0FE26C43D2100ADEE7D /* Message.swift in Sources */,
 				5D6508282673938A00A8D45B /* OptionSetCustomStringConvertible.swift in Sources */,
@@ -2162,11 +2182,13 @@
 				B0A9448525654BBC00A7958E /* FirmwareVersion.swift in Sources */,
 				DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */,
 				DCA0708F2D9325650036C371 /* OnlineAttestationCache.swift in Sources */,
+				DC9E50EC2D97087200F35850 /* CommonCardArtworksProvider.swift in Sources */,
 				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				DC77F24F2CD426B6001B2929 /* ChunkedHashesContainer.swift in Sources */,
 				5DDD6C6C25D30B0D00E48D7B /* SuccessResponse.swift in Sources */,
+				DC9E50FD2D97565700F35850 /* CardArtworksProviderFactory.swift in Sources */,
 				DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */,
 				5D8666622731687A0095CC82 /* ResetCodesViewModel.swift in Sources */,
 				DC1244DE29BB677C0037BC05 /* Ripemd160.swift in Sources */,
@@ -2244,6 +2266,7 @@
 				5DAAF3A226E268F600187AA9 /* ViewModel.swift in Sources */,
 				5D73FC2D26B8261400DF1BB4 /* DerivationNode.swift in Sources */,
 				DCA070762D91CFEA0036C371 /* OnlineAttestationServiceFactory.swift in Sources */,
+				DC9E50FB2D97549800F35850 /* CardArtworksVerifier.swift in Sources */,
 				5DA5B616233E12170058C720 /* Instruction.swift in Sources */,
 				DCDCDD5F2DA426F9003D3CB9 /* ForcedCTServerTrust.swift in Sources */,
 				5D6A92DC2344E3A500158457 /* Localization.swift in Sources */,
@@ -2298,6 +2321,7 @@
 				5D2FE06524DD82BA0086B5E8 /* VerifyCardRequest.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */,
+				DC972E4F2DBBA04B00089882 /* CardArtworksProvider.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,
 				5DD6762C26CD621500D8C909 /* UIScreen+.swift in Sources */,

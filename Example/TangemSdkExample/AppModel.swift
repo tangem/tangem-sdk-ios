@@ -36,6 +36,7 @@ class AppModel: ObservableObject {
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
+    @Published var image: UIImage? = nil
     //MARK:-  Navigation
     @Published var showBackupView: Bool = false
     @Published var showResetPin: Bool = false
@@ -43,6 +44,9 @@ class AppModel: ObservableObject {
     //MARK:-  Config
     @Published var handleErrors: Bool = true
     @Published var displayLogs: Bool = false
+    @Published var forcedCT: Bool = false
+    @Published var useDevApi: Bool = false
+    @Published var newAttestation: Bool = true
     @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
     
     var backupService: BackupService? = nil
@@ -63,6 +67,10 @@ class AppModel: ObservableObject {
         if displayLogs {
             loggers.append(logger)
         }
+
+        config.newAttestaionService = newAttestation
+        Config.forcedCT = forcedCT
+        Config.useDevApi = useDevApi
 
         config.logConfig = .custom(
             logLevel: [.warning, .error, .command, .debug, .nfc, .session, .apdu, .network, .tlv, .view],
@@ -219,12 +227,24 @@ extension AppModel {
             if case let .success(card) = result {
                 self.card = card
                 self.curve = card.supportedCurves[0]
+                self.loadArtworks(for: card)
             }
             
             self.handleCompletion(result)
         }
     }
-    
+
+    func loadArtworks(for card: Card) {
+        let provider = CardArtworksProviderFactory().makeArtworksProvider(for: card)
+        Task {
+            let artworks = try await provider.loadArtworks()
+            await MainActor.run {
+                image = UIImage(data: artworks.large)
+                withExtendedLifetime(provider) {}
+            }
+        }
+    }
+
     func attest() {
         tangemSdk.startSession(with: AttestationTask(mode: attestationMode), completion: handleCompletion)
     }

@@ -33,11 +33,17 @@ struct ContentView: View {
                 GeometryReader { geo in
                     VStack {
                         ScrollView {
-                            HStack {
+                            VStack {
+
+                                if let image = model.image {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 200, height: 200)
+                                }
+
                                 Text(model.logText)
                                     .font(.caption)
-                                
-                                Spacer()
                             }
                         }
                         .padding(.vertical, 2)

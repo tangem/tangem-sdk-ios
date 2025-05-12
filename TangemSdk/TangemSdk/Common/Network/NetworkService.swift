@@ -52,42 +52,7 @@ public class NetworkService {
     deinit {
         Log.debug("NetworkService deinit")
     }
-    
-    public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
-        guard let request = prepareRequest(from: endpoint) else {
-            return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
-        }
 
-        return requestDataPublisher(request: request)
-    }
-    
-    private func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
-        Log.network("request to: \(request)")
-        
-        return session
-            .dataTaskPublisher(for: request)
-            .subscribe(on: DispatchQueue.global())
-            .tryMap { data, response -> Data in
-                Log.network("response: \(response)")
-                guard let response = response as? HTTPURLResponse else {
-                    let error = NetworkServiceError.emptyResponse
-                    Log.network(error.localizedDescription)
-                    throw error
-                }
-                
-                guard (200 ..< 300) ~= response.statusCode else {
-                    let error = NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
-                    Log.network(error.localizedDescription)
-                    throw error
-                }
-                
-                Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
-                return data
-            }
-            .mapError { $0 as? NetworkServiceError ?? NetworkServiceError.urlSessionError($0) }
-            .eraseToAnyPublisher()
-    }
-    
     private func prepareRequest(from endpoint: NetworkEndpoint) -> URLRequest? {
         guard var urlComponents = URLComponents(string: endpoint.baseUrl + endpoint.path) else {
             return nil
@@ -112,6 +77,85 @@ public class NetworkService {
     
     private func map<T: Decodable>(_ data: Data, type: T.Type) -> T? {
         try? JSONDecoder().decode(T.self, from: data)
+    }
+}
+
+// MARK: - async/await
+
+extension NetworkService {
+    public func request(_ endpoint: NetworkEndpoint) async throws -> Data  {
+        guard let request = prepareRequest(from: endpoint) else {
+            throw NetworkServiceError.failedToMakeRequest
+        }
+
+        return try await requestData(request: request)
+    }
+
+    func requestData(request: URLRequest) async throws -> Data {
+        do {
+            Log.network("request: \(String(describing: request.url)), headers: \(String(describing: request.allHTTPHeaderFields))")
+
+            let (data, response) = try await session.data(for: request)
+
+            Log.network("response: \(response)")
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                let error = NetworkServiceError.emptyResponse
+                Log.network(error.localizedDescription)
+                throw error
+            }
+
+            guard (200..<300).contains(httpResponse.statusCode) else {
+                let error = NetworkServiceError.statusCode(httpResponse.statusCode, String(data: data, encoding: .utf8))
+                Log.network(error.localizedDescription)
+                throw error
+            }
+
+            Log.network("status code: \(httpResponse.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+
+            return data
+        } catch {
+            throw error as? NetworkServiceError ?? NetworkServiceError.urlSessionError(error)
+        }
+    }
+}
+
+// MARK: - Combine
+
+extension NetworkService {
+    public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
+        guard let request = prepareRequest(from: endpoint) else {
+            return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
+        }
+
+        return requestDataPublisher(request: request)
+    }
+    
+    func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
+        Log.network("request: \(String(describing: request.url)), headers: \(String(describing: request.allHTTPHeaderFields))")
+        
+        return session
+            .dataTaskPublisher(for: request)
+            .subscribe(on: DispatchQueue.global())
+            .tryMap { data, response -> Data in
+                Log.network("response: \(response)")
+                guard let response = response as? HTTPURLResponse else {
+                    let error = NetworkServiceError.emptyResponse
+                    Log.network(error.localizedDescription)
+                    throw error
+                }
+
+                guard (200 ..< 300) ~= response.statusCode else {
+                    let error = NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
+                    Log.network(error.localizedDescription)
+                    throw error
+                }
+
+                Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+                return data
+            }
+            .mapError { $0 as? NetworkServiceError ?? NetworkServiceError.urlSessionError($0) }
+            .eraseToAnyPublisher()
     }
 }
 

@@ -12,10 +12,11 @@ public enum TangemEndpoint: NetworkEndpoint {
     case verifyAndGetInfo(request: CardVerifyAndGetInfoRequest)
     case artwork(cid: String, cardPublicKey: Data, artworkId: String)
     case cardData(cardId: String, cardPublicKey: Data)
-    
+    case artworks(cardId: String, cardPublicKey: Data)
+
     public var baseUrl: String {
         switch self {
-        case .cardData:
+        case .cardData, .artworks:
             return Config.useDevApi ? "https://api.tests-d.com/" : "https://api.tangem.org/"
         default:
             return "https://verify.tangem.com/"
@@ -30,6 +31,8 @@ public enum TangemEndpoint: NetworkEndpoint {
             return "card/artwork"
         case .cardData:
             return "card"
+        case .artworks:
+            return "card/artworks"
         }
     }
     
@@ -37,14 +40,14 @@ public enum TangemEndpoint: NetworkEndpoint {
         switch self {
         case .verifyAndGetInfo:
             return "POST"
-        case .artwork, .cardData:
+        case .artwork, .cardData, .artworks:
             return "GET"
         }
     }
     
     public var queryItems: [URLQueryItem]? {
         switch self {
-        case .verifyAndGetInfo, .cardData:
+        case .verifyAndGetInfo, .cardData, .artworks:
             return nil
         case .artwork(let cid, let cardPublicKey, let artworkId):
             return [.init(name: "CID", value: cid),
@@ -57,7 +60,7 @@ public enum TangemEndpoint: NetworkEndpoint {
         switch self {
         case .verifyAndGetInfo(let request):
             return try? JSONEncoder().encode(request)
-        case .artwork, .cardData:
+        case .artwork, .cardData, .artworks:
             return nil
         }
     }
@@ -66,7 +69,8 @@ public enum TangemEndpoint: NetworkEndpoint {
         var headers = ["Content-Type" : "application/json"]
         
         switch self {
-        case .cardData(let cardId, let cardPublicKey):
+        case .cardData(let cardId, let cardPublicKey),
+                .artworks(let cardId, let cardPublicKey):
             headers["card_id"] = cardId
             headers["card_public_key"] = cardPublicKey.hexString
         default:

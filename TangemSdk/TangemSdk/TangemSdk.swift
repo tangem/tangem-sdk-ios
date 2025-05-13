@@ -148,7 +148,7 @@ public extension TangemSdk {
     /// App will need to obtain Wallet_PublicKey from the response of `CreateWalletCommand` or `ReadCommand`
     /// and then transform it into an address of corresponding blockchain wallet
     /// according to a specific blockchain algorithm.
-    /// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyCommand`.
+    /// WalletPrivateKey is never revealed by the card and will be used by `SignCommand` and `AttestWalletKeyTask`.
     /// RemainingSignature is set to MaxSignatures.
     ///
     /// - Note: `WalletConfig` available for cards with COS v.4.0 or higher

@@ -133,6 +133,21 @@ struct ContentView: View {
             .cornerRadius(8)
             .overlay(RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.orange, lineWidth: 2))
+        case .attestWallet:
+            VStack {
+                Text("Wallet Attestation config")
+                    .font(.headline)
+                    .bold()
+                
+                TextField("\"m/0/1\"", text: $model.derivationPath)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+            }
+            .padding()
+            .cornerRadius(8)
+            .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.orange, lineWidth: 2))
         case .createWallet, .importWallet:
             VStack {
                 Text("Create wallet configuration")

@@ -253,6 +253,22 @@ extension AppModel {
         tangemSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
     }
     
+    func attestWallet(walletPublicKey: Data) {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+        
+        UIApplication.shared.endEditing()
+
+        tangemSdk.startSession(with: AttestWalletKeyTask(
+            walletPublicKey: walletPublicKey,
+            derivationPath: path,
+            confirmationMode: .dynamic
+        ), completion: handleCompletion)
+    }
+    
     func signHash(walletPublicKey: Data) {
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
@@ -702,7 +718,7 @@ extension AppModel {
             
             tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
-            logger.log(error)
+            complete(with: error)
         }
     }
 }
@@ -716,6 +732,7 @@ extension AppModel {
         case derivePublicKey
         case attest
         case attestCard
+        case attestWallet
         case chainingExample
         case setAccessCode
         case setPasscode
@@ -752,6 +769,7 @@ extension AppModel {
         switch method {
         case .attest: attest()
         case .attestCard: attestCard()
+        case .attestWallet: runWithPublicKey(attestWallet, walletPublicKey)
         case .chainingExample: chainingExample()
         case .setAccessCode: setAccessCode()
         case .setPasscode: setPasscode()

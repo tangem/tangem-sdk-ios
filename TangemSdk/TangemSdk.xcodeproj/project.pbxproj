@@ -105,7 +105,7 @@
 		5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */; };
 		5D6A92E32345F2A300158457 /* ReadCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92E22345F2A300158457 /* ReadCommand.swift */; };
 		5D6A92E52345F2B200158457 /* SignCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92E42345F2B200158457 /* SignCommand.swift */; };
-		5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */; };
+		5D6A92E72345F2D600158457 /* AttestWalletKeyTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92E62345F2D600158457 /* AttestWalletKeyTask.swift */; };
 		5D6A92EC2346069700158457 /* TangemSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92EB2346069700158457 /* TangemSdk.swift */; };
 		5D6A92EE23463D1200158457 /* ScanTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6A92ED23463D1200158457 /* ScanTask.swift */; };
 		5D6F51FE265845D5007CD7E2 /* JSONRPCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */; };
@@ -517,7 +517,7 @@
 		5D6A92DF2344F2F900158457 /* SessionViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionViewDelegate.swift; sourceTree = "<group>"; };
 		5D6A92E22345F2A300158457 /* ReadCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCommand.swift; sourceTree = "<group>"; };
 		5D6A92E42345F2B200158457 /* SignCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignCommand.swift; sourceTree = "<group>"; };
-		5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestWalletKeyCommand.swift; sourceTree = "<group>"; };
+		5D6A92E62345F2D600158457 /* AttestWalletKeyTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestWalletKeyTask.swift; sourceTree = "<group>"; };
 		5D6A92EB2346069700158457 /* TangemSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdk.swift; sourceTree = "<group>"; };
 		5D6A92ED23463D1200158457 /* ScanTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTask.swift; sourceTree = "<group>"; };
 		5D6F51FD265845D5007CD7E2 /* JSONRPCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRPCTests.swift; sourceTree = "<group>"; };
@@ -1022,7 +1022,7 @@
 			children = (
 				DCA070812D91E3DF0036C371 /* Verification */,
 				DCA070742D91CFD30036C371 /* OnlineAttestationService */,
-				5D6A92E62345F2D600158457 /* AttestWalletKeyCommand.swift */,
+				5D6A92E62345F2D600158457 /* AttestWalletKeyTask.swift */,
 				5D2FE06224DD82750086B5E8 /* AttestCardKeyCommand.swift */,
 				5D3F77B524B9B8F600E8695B /* Attestation.swift */,
 				5D38D074267A442B0052F67C /* TrustedCardsRepo.swift */,
@@ -2183,7 +2183,7 @@
 				DCA9706628E35EAD0046E62E /* GenerateOTPCommand.swift in Sources */,
 				DCA0708F2D9325650036C371 /* OnlineAttestationCache.swift in Sources */,
 				DC9E50EC2D97087200F35850 /* CommonCardArtworksProvider.swift in Sources */,
-				5D6A92E72345F2D600158457 /* AttestWalletKeyCommand.swift in Sources */,
+				5D6A92E72345F2D600158457 /* AttestWalletKeyTask.swift in Sources */,
 				5D73FC2926B8140200DF1BB4 /* DerivationPath.swift in Sources */,
 				B06EBBC12534794100B0FEEA /* ChangeFileSettingsCommand.swift in Sources */,
 				DC77F24F2CD426B6001B2929 /* ChunkedHashesContainer.swift in Sources */,

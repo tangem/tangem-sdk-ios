@@ -14,7 +14,7 @@ import Foundation
  * App will need to obtain Wallet_PublicKey from the response of `CreateWalletTask`or `ScanTask`
  * and then transform it into an address of corresponding blockchain wallet
  * according to a specific blockchain algorithm.
- * WalletPrivateKey is never revealed by the card and will be used by `SignHash` or `SignHashes` and `AttestWalletKeyCommand`.
+ * WalletPrivateKey is never revealed by the card and will be used by `SignHash` or `SignHashes` and `AttestWalletKeyTask`.
  * RemainingSignature is set to MaxSignatures.
  */
 public class CreateWalletTask: CardSessionRunnable {

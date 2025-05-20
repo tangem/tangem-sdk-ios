@@ -240,7 +240,7 @@ class JSONRPCTests: XCTestCase {
         let request = try? JSONRPCRequest(jsonString: json)
         XCTAssertNotNil(request)
         do {
-            _ = try JSONRPCConverter.shared.convert(request: request!)
+            _ = try JSONRPCConverter.makeDefaultConverter(networkService: .init(session: .shared)).convert(request: request!)
             XCTAssertTrue(false)
         } catch {
             let jsError = error as? JSONRPCError
@@ -310,7 +310,7 @@ class JSONRPCTests: XCTestCase {
         do {
            let request = try JSONRPCRequest(jsonString: testData.request)
             //test convert request
-            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
+            XCTAssertNoThrow(try JSONRPCConverter.makeDefaultConverter(networkService: .init(session: .shared)).convert(request: request))
         } catch {
             XCTAssert(false, "Failed to create request for \(name)")
             return
@@ -327,7 +327,7 @@ class JSONRPCTests: XCTestCase {
         do {
            let request = try JSONRPCRequest(jsonString: testData.request)
             //test convert request
-            XCTAssertNoThrow(try JSONRPCConverter.shared.convert(request: request))
+            XCTAssertNoThrow(try JSONRPCConverter.makeDefaultConverter(networkService: .init(session: .shared)).convert(request: request))
         } catch {
             XCTAssert(false, "Failed to create request for \(name)")
             return

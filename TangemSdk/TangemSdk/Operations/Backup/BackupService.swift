@@ -44,12 +44,17 @@ public class BackupService {
     public var skipCompatibilityChecks: Bool = false
 
     private let sdk: TangemSdk
+    private let networkService: NetworkService
     private var repo: BackupRepo = .init()
     private var currentCommand: AnyObject? = nil
     private var handleErrors: Bool { sdk.config.handleErrors }
 
-    public init(sdk: TangemSdk) {
+    public init(
+        sdk: TangemSdk,
+        networkService: NetworkService
+    ) {
         self.sdk = sdk
+        self.networkService = networkService
         self.updateState()
     }
 
@@ -263,9 +268,12 @@ public class BackupService {
     }
 
     private func readBackupCard(_ primaryCard: PrimaryCard, completion: @escaping CompletionResult<Card>) {
-        let command = StartBackupCardLinkingTask(primaryCard: primaryCard,
-                                                 addedBackupCards: repo.data.backupCards.map { $0.cardId },
-                                                 skipCompatibilityChecks: skipCompatibilityChecks)
+        let command = StartBackupCardLinkingTask(
+            primaryCard: primaryCard,
+            addedBackupCards: repo.data.backupCards.map { $0.cardId },
+            networkService: networkService,
+            skipCompatibilityChecks: skipCompatibilityChecks
+        )
         currentCommand = command
 
         sdk.startSession(with: command,
@@ -447,7 +455,7 @@ public class BackupService {
         firmwareVersion: FirmwareVersion,
         completion: @escaping CompletionResult<Data>
     ) {
-        let factory = BackupCertificateProviderFactory()
+        let factory = BackupCertificateProviderFactory(networkService: networkService)
 
         let certificateProvider = factory.makeBackupCertificateProvider(
             cardId: cardId,

@@ -78,7 +78,7 @@ public struct ReadIssuerExtraDataResponse: JSONStringConvertible {
  * format and payload of Issuer Data. . For example, this field may contain photo or
  * biometric information for ID card product.
  */
-@available(*, deprecated, message: "Use files instead")
+@available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class ReadIssuerExtraDataCommand: Command {
     private var issuerPublicKey: Data?
     private var completion: CompletionResult<ReadIssuerExtraDataResponse>?

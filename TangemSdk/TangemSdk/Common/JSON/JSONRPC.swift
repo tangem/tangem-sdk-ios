@@ -9,33 +9,9 @@
 import Foundation
 
 public final class JSONRPCConverter {
-    public static let shared: JSONRPCConverter = {
-        let converter = JSONRPCConverter()
-        converter.register(ScanHandler())
-        converter.register(AttestCardKeyHandler())
-        converter.register(SignHashHandler())
-        converter.register(SignHashesHandler())
-        converter.register(CreateWalletHandler())
-        converter.register(ImportWalletHandler())
-        converter.register(PurgeWalletHandler())
-        converter.register(SetAccessCodeHandler())
-        converter.register(SetPasscodeHandler())
-        converter.register(ResetUserCodesHandler())
-        converter.register(SetUserCodeRecoveryAllowedHandler())
-        converter.register(DeriveWalletPublicKeyHandler())
-        converter.register(DeriveWalletPublicKeysHandler())
-        converter.register(ReadFilesHandler())
-        converter.register(ChangeFileSettingsHandler())
-        converter.register(WriteFilesHandler())
-        converter.register(DeleteFilesHandler())
-        converter.register(PersonalizeHandler())
-        converter.register(DepersonalizeHandler())
-        return converter
-    }()
-    
     public private(set) var handlers: [String: JSONRPCHandler] = [:]
     
-    private init() {}
+    init() {}
     
     deinit {
         Log.debug("JSONRPCConverter deinit")
@@ -58,6 +34,34 @@ public final class JSONRPCConverter {
         }
         
         return handler
+    }
+}
+
+// MARK: - Factory
+
+extension JSONRPCConverter {
+    public static func makeDefaultConverter(networkService: NetworkService) -> JSONRPCConverter {
+        let converter = JSONRPCConverter()
+        converter.register(ScanHandler(networkService: networkService))
+        converter.register(AttestCardKeyHandler())
+        converter.register(SignHashHandler())
+        converter.register(SignHashesHandler())
+        converter.register(CreateWalletHandler())
+        converter.register(ImportWalletHandler())
+        converter.register(PurgeWalletHandler())
+        converter.register(SetAccessCodeHandler())
+        converter.register(SetPasscodeHandler())
+        converter.register(ResetUserCodesHandler())
+        converter.register(SetUserCodeRecoveryAllowedHandler())
+        converter.register(DeriveWalletPublicKeyHandler())
+        converter.register(DeriveWalletPublicKeysHandler())
+        converter.register(ReadFilesHandler())
+        converter.register(ChangeFileSettingsHandler())
+        converter.register(WriteFilesHandler())
+        converter.register(DeleteFilesHandler())
+        converter.register(PersonalizeHandler())
+        converter.register(DepersonalizeHandler())
+        return converter
     }
 }
 

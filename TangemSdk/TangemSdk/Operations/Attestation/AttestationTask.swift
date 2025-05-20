@@ -11,8 +11,9 @@ import Combine
 
 public final class AttestationTask: CardSessionRunnable {
     private let mode: Mode
+    private let networkService: NetworkService
     private let trustedCardsRepo: TrustedCardsRepo = .init()
-    private let legacyOnlineAttestationService = CardInfoProvider()
+    private let legacyOnlineAttestationService: CardInfoProvider
 
     private var currentAttestationStatus: Attestation = .empty
     private var onlineAttestationValue = CurrentValueSubject<Attestation.Status?, Never>(nil)
@@ -22,8 +23,10 @@ public final class AttestationTask: CardSessionRunnable {
     /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
     public var shouldKeepSessionOpened = false
     
-    public init(mode: Mode) {
+    public init(mode: Mode, networkService: NetworkService) {
         self.mode = mode
+        self.networkService = networkService
+        legacyOnlineAttestationService = CardInfoProvider(networkService: networkService)
     }
     
     deinit {
@@ -154,7 +157,7 @@ public final class AttestationTask: CardSessionRunnable {
         let mapper = OnlineAttestationResponseMapper(card: card)
 
         if session.environment.config.newAttestaionService {
-            let factory = OnlineAttestationServiceFactory()
+            let factory = OnlineAttestationServiceFactory(networkService: networkService)
             let onlineAttestationService = factory.makeService(for: card)
             onlineAttestationCancellable = onlineAttestationService
                 .attestCard()

@@ -13,7 +13,7 @@ import Combine
 public class CardInfoProvider {
     private let networkService: NetworkService
     
-    public init(networkService: NetworkService = .init()) {
+    public init(networkService: NetworkService) {
         self.networkService = networkService
     }
     

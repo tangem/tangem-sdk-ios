@@ -22,11 +22,18 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
 
     private let primaryCard: PrimaryCard
     private let addedBackupCards: [String]
+    private let networkService: NetworkService
     private let skipCompatibilityChecks: Bool
 
-    init(primaryCard: PrimaryCard, addedBackupCards: [String], skipCompatibilityChecks: Bool = false) {
+    init(
+        primaryCard: PrimaryCard,
+        addedBackupCards: [String],
+        networkService: NetworkService,
+        skipCompatibilityChecks: Bool = false
+    ) {
         self.primaryCard = primaryCard
         self.addedBackupCards = addedBackupCards
+        self.networkService = networkService
         self.skipCompatibilityChecks = skipCompatibilityChecks
     }
 
@@ -112,7 +119,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
     }
 
     private func runAttestation(_ session: CardSession, response: StartBackupCardLinkingTaskResponse, completion: @escaping CompletionResult<StartBackupCardLinkingTaskResponse>) {
-        let attestationTask = AttestationTask(mode: session.environment.config.attestationMode)
+        let attestationTask = AttestationTask(mode: session.environment.config.attestationMode, networkService: networkService)
         attestationTask.run(in: session) { result in
             switch result {
             case .success:

@@ -183,7 +183,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
-    
+
+    case jsonConverterNotSet
+
     /// This error is returned when a `CardSessionRunnable` requires that `ReadCommand`
     /// is executed before performing other commands.
     case missingPreflightRead
@@ -427,6 +429,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .userForgotTheCode: return 50013
         case .biometricsUnavailable: return 50014
         case .preflightFiltered: return 50015
+        case .jsonConverterNotSet: return 50016
 
         case .wrongInteractionMode: return 50027
             

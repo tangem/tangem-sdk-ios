@@ -13,8 +13,12 @@ import Foundation
 public final class ScanTask: CardSessionRunnable {
     public var shouldAskForAccessCode: Bool { false }
 
-    public init() {}
-    
+    private let networkService: NetworkService
+
+    public init(networkService: NetworkService) {
+        self.networkService = networkService
+    }
+
     deinit {
         Log.debug("ScanTask deinit")
     }
@@ -89,7 +93,7 @@ public final class ScanTask: CardSessionRunnable {
     }
     
     private func runAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
-        let attestationTask = AttestationTask(mode: session.environment.config.attestationMode)
+        let attestationTask = AttestationTask(mode: session.environment.config.attestationMode, networkService: networkService)
         attestationTask.run(in: session) { result in
             switch result {
             case .success:

@@ -37,7 +37,7 @@ public class CardSession {
     public internal(set) var environment: SessionEnvironment
 
     private let reader: CardReader
-    private let jsonConverter: JSONRPCConverter
+    private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
     private var sendSubscription: [AnyCancellable] = []
     private var nfcReaderSubscriptions: [AnyCancellable] = []
@@ -72,14 +72,14 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
-    ///   - jsonConverter: JSONRPCConverter
+    ///   - jsonConverter: optional JSONRPCConverter
     ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
     init(environment: SessionEnvironment,
          filter: SessionFilter? = nil,
          initialMessage: Message? = nil,
          cardReader: CardReader,
          viewDelegate: SessionViewDelegate,
-         jsonConverter: JSONRPCConverter,
+         jsonConverter: JSONRPCConverter?,
          accessCodeRepository: AccessCodeRepository?) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
@@ -603,16 +603,20 @@ extension CardSession {
     ///   - jsonRequest: request to run
     ///   - completion: CardSessionRunnable response converted to json string
     func run(jsonRequest: String, completion: @escaping (String) -> Void) {
-        var request: JSONRPCRequest!
+        guard let jsonConverter else {
+            completion(TangemSdkError.jsonConverterNotSet.toJsonResponse().json)
+            return
+        }
+
         do {
-            request = try JSONRPCRequest(jsonString: jsonRequest)
+            let request = try JSONRPCRequest(jsonString: jsonRequest)
             let runnable = try jsonConverter.convert(request: request)
             runnable.run(in: self) {
                 completion($0.toJsonResponse(id: request.id).json)
                 self.resetEnvironment()
             }
         } catch {
-            completion(error.toJsonResponse(id: request?.id).json)
+            completion(error.toJsonResponse().json)
         }
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 public struct CardArtworksProviderFactory {
     private let networkService: NetworkService
 
-    public init(networkService: NetworkService = .init()) {
+    public init(networkService: NetworkService) {
         self.networkService = networkService
     }
 

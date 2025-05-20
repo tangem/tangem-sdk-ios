@@ -73,9 +73,6 @@ public struct Config {
     /// Development API toggle
     public static var useDevApi: Bool = false
 
-    /// Should block self installed and trusted network sertificates
-    public static var forcedCT: Bool = true
-
     public mutating func setupForProduct(_ product: ProductType) {
         switch product {
         case .card:

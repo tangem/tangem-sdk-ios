@@ -42,7 +42,7 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
  * format and payload of Issuer Data. For example, this field may contain information about
  * wallet balance signed by the issuer or additional issuer’s attestation data.
  */
-@available(*, deprecated, message: "Use files instead")
+@available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class ReadIssuerDataCommand: Command {
     private var issuerPublicKey: Data?
     

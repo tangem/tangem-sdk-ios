@@ -17,14 +17,10 @@ public final class TangemSdk {
     
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
-    private let cardInfoProvider = CardInfoProvider()
     private let terminalKeysService = TerminalKeysService()
-    private var cardSession: CardSession? = nil
+    private var cardSession: CardSession?
+    private var jsonConverter: JSONRPCConverter?
 
-    private lazy var jsonConverter: JSONRPCConverter = {
-        return .shared
-    }()
-    
     /// Default initializer
     /// - Parameters:
     ///   - cardReader: An interface that is responsible for NFC connection and transfer of data to and from the Tangem Card.
@@ -33,7 +29,11 @@ public final class TangemSdk {
     ///   If nil, its default implementation will be used
     ///   - config: Allows to change a number of parameters for communication with Tangem cards.
     ///   Do not change the default values unless you know what you are doing.
-    public init(cardReader: CardReader? = nil, viewDelegate: SessionViewDelegate? = nil, config: Config = Config()) {
+    public init(
+        cardReader: CardReader? = nil,
+        viewDelegate: SessionViewDelegate? = nil,
+        config: Config = Config()
+    ) {
         let reader = cardReader ?? NFCReader()
         self.reader = reader
         self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader, style: config.style)
@@ -43,11 +43,24 @@ public final class TangemSdk {
     deinit {
         Log.debug("TangemSdk deinit")
     }
-    
+
+    /// Initialize JSONRPC functionality
+    /// - Parameter networkService: A service that conforms to `NetworkService` and is used for network communication.
+    public func initializeJSONRPC(networkService: NetworkService) {
+        jsonConverter = JSONRPCConverter.makeDefaultConverter(networkService: networkService)
+    }
+
     /// Register custom task, that supported JSONRPC
     /// - Parameter object: object, that conforms `JSONRPCHandler`
-    public func registerJSONRPCTask(_ object: JSONRPCHandler) {
+    /// - Returns: True if registered successfully
+    /// - Note: This method should be called after `initializeJSONRPC`
+    public func registerJSONRPCTask(_ object: JSONRPCHandler) -> Bool {
+        guard let jsonConverter else {
+            return false
+        }
+
         jsonConverter.register(object)
+        return true
     }
 }
 
@@ -63,10 +76,12 @@ public extension TangemSdk {
     ///
     /// - Parameters:
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+    ///   - networkService: Allows to customize a network layer
     ///   - completion: Returns `Swift.Result<Card,TangemSdkError>`
     func scanCard(initialMessage: Message? = nil,
+                  networkService: NetworkService,
                   completion: @escaping CompletionResult<Card>) {
-        startSession(with: ScanTask(), cardId: nil, initialMessage: initialMessage, completion: completion)
+        startSession(with: ScanTask(networkService: networkService), cardId: nil, initialMessage: initialMessage, completion: completion)
     }
 
     /// Perform a card's key attestation
@@ -212,12 +227,15 @@ public extension TangemSdk {
     /// - Parameters:
     ///   - cardPublicKey: CardPublicKey returned by [ReadCommand]
     ///   - cardId: CID, Unique Tangem card ID number.
+    ///   - networkService: Allows to customize a network layer
     ///   - completion: `CardVerifyAndGetInfoResponse.Item`
     func loadCardInfo(cardPublicKey: Data,
                       cardId: String,
+                      networkService: NetworkService,
                       completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
         var subscription: AnyCancellable?
 
+        let cardInfoProvider = CardInfoProvider(networkService: networkService)
         subscription = cardInfoProvider
             .getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
             .receive(on: DispatchQueue.main)
@@ -226,6 +244,7 @@ public extension TangemSdk {
                     completion(.failure(error.toTangemSdkError()))
                 }
 
+                withExtendedLifetime(cardInfoProvider) {}
                 withExtendedLifetime(subscription) {}
             }, receiveValue: { response in
                 completion(.success(response))
@@ -422,7 +441,7 @@ public extension TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<ReadIssuerDataResponse,TangemSdkError>`
      */
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func readIssuerData(cardId: String? = nil,
                         initialMessage: Message? = nil,
                         completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
@@ -445,7 +464,7 @@ public extension TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func writeIssuerData(issuerData: Data,
                          issuerDataSignature: Data,
                          issuerDataCounter: Int? = nil,
@@ -471,7 +490,7 @@ public extension TangemSdk {
     ///   - cardId:  CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<ReadIssuerExtraDataResponse,TangemSdkError>`
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func readIssuerExtraData(cardId: String? = nil,
                              initialMessage: Message? = nil,
                              completion: @escaping CompletionResult<ReadIssuerExtraDataResponse>) {
@@ -499,7 +518,7 @@ public extension TangemSdk {
     ///   - cardId:  CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func writeIssuerExtraData(issuerData: Data,
                               startingSignature: Data,
                               finalizingSignature: Data,
@@ -534,7 +553,7 @@ public extension TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<ReadUserDataResponse,TangemSdkError>`
      */
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func readUserData(cardId: String? = nil,
                       initialMessage: Message? = nil,
                       completion: @escaping CompletionResult<ReadUserDataResponse>) {
@@ -560,7 +579,7 @@ public extension TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func writeUserData(userData: Data,
                        userCounter: Int? = nil,
                        cardId: String? = nil,
@@ -589,7 +608,7 @@ public extension TangemSdk {
      *   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
      *   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
      */
-    @available(*, deprecated, message: "Use files instead")
+    @available(iOS, deprecated: 100000.0, message: "Use files instead")
     func writeUserProtectedData(userProtectedData: Data,
                                 userProtectedCounter: Int? = nil,
                                 cardId: String? = nil,
@@ -714,11 +733,16 @@ extension TangemSdk {
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: A JSONRPCResponse with with result of the operation
+    /// - Note: This method should be called after `initializeJSONRPC`
     public func startSession(with jsonRequest: String,
                              cardId: String? = nil,
                              initialMessage: String? = nil,
                              accessCode: String? = nil,
                              completion: @escaping (String) -> Void) {
+        guard let jsonConverter else {
+            completion(TangemSdkError.jsonConverterNotSet.toJsonResponse().json)
+            return
+        }
 
         do {
             let parseResult = try JSONRPCRequestParser().parse(jsonString: jsonRequest)

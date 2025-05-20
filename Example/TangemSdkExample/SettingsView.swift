@@ -18,8 +18,6 @@ struct SettingsView: View {
             
             Toggle("Display logs", isOn: $model.displayLogs)
 
-            Toggle("Forced CT", isOn: $model.forcedCT)
-
             Toggle("Dev api", isOn: $model.useDevApi)
 
             Toggle("New attestation", isOn: $model.newAttestation)

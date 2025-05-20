@@ -41,10 +41,6 @@ public enum NetworkServiceError: Error, LocalizedError {
 public class NetworkService {
     private let session: URLSession
 
-    public init() {
-        session = ForcedCTURLSessionBuilder.makeSession(configuration: .defaultTangemSDKConfiguration)
-    }
-
     public init(session: URLSession) {
         self.session = session
     }

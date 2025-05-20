@@ -13,7 +13,7 @@ import Foundation
  * The issuer defines purpose of use, format and payload of Issuer Data.
  * For example, this field may contain a photo or biometric information for ID card products.
  */
-@available(*, deprecated, message: "Use files instead") //todo: text
+@available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class WriteIssuerExtraDataCommand: Command {
     private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024

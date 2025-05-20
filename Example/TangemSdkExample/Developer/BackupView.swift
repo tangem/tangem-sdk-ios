@@ -159,6 +159,6 @@ struct BackupView: View {
 
 struct BackupView_Previews: PreviewProvider {
     static var previews: some View {
-        BackupView(backupService: BackupService(sdk: TangemSdk()))
+        BackupView(backupService: BackupService(sdk: TangemSdk(), networkService: .init(session: .shared)))
     }
 }

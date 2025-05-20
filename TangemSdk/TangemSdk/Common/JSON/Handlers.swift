@@ -11,9 +11,15 @@ import Foundation
 class ScanHandler: JSONRPCHandler {
     var method: String { "SCAN" }
     var requiresCardId: Bool { false }
-    
+
+    private let networkService: NetworkService
+
+    init(networkService: NetworkService) {
+        self.networkService = networkService
+    }
+
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let command = ScanTask()
+        let command = ScanTask(networkService: networkService)
         return command.eraseToAnyRunnable()
     }
 }

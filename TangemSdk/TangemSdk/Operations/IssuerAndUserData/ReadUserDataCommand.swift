@@ -32,7 +32,7 @@ public struct ReadUserDataResponse: JSONStringConvertible {
  * of new transaction (on SIGN command that calculate new signatures). The App defines purpose of use.
  * For example, this fields may contain blockchain nonce value.
  */
-@available(*, deprecated, message: "Use files instead")
+@available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class ReadUserDataCommand: Command {
     public init() {}
     

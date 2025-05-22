@@ -56,6 +56,10 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
     public func serializeToWIFCompressed(for networkType: NetworkType) -> String {
         return WIF.encodeToWIFCompressed(privateKey, networkType: networkType)
     }
+    
+    public func sign(_ data: Data, curve: EllipticCurve) throws -> Data {
+        return try data.sign(privateKey: privateKey, curve: curve)
+    }
 }
 
 // MARK: - ExtendedKeySerializable

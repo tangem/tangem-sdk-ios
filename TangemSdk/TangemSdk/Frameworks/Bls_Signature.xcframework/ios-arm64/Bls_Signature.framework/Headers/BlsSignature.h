@@ -8,6 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)augSchemeMplG2Map:(NSString *)hashPublicKey and:(NSString*)hashMessage with:(NSError **)error;
 + (NSString *)aggregate: (NSArray<NSString *> *)signatures with:(NSError **)error;
 + (BOOL)verify: (NSArray<NSString *> *)signatures with:(NSString *)publicKey and:(NSString *)message;
++ (NSString *)signHash:(NSString *)hash privateKey:(NSData *)privateKey with:(NSError **)error;
 
 @end
 

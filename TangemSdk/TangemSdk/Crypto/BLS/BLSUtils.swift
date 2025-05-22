@@ -103,4 +103,8 @@ public extension BLSUtils {
     func verify(signatures: [String], with publicKey: String, message: String) throws -> Bool {
         try BlsSignatureSwift.verify(signatures: signatures, with: publicKey, message: message)
     }
+    
+    func sign(hash: String, privateKey: Data) throws -> String {
+        try BlsSignatureSwift.sign(hash: hash, with: privateKey)
+    }
 }

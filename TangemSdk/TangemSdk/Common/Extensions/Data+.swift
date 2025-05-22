@@ -241,6 +241,8 @@ extension Data {
             return try P256.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: self).rawRepresentation
         case .ed25519:
             return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: getSha512())
+        case .bls12381_G2_AUG:
+            return try Data(hexString: BLSUtils().sign(hash: self.hexString, privateKey: privateKey))
         default:
             assertionFailure("Not implemented")
             throw TangemSdkError.unsupportedCurve

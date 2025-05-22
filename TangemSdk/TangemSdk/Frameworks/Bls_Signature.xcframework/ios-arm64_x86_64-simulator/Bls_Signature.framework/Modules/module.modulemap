@@ -1,7 +1,7 @@
 framework module Bls_Signature {
   umbrella header "Bls_Signature.h"
-
   export *
+
   module * { export * }
 }
 

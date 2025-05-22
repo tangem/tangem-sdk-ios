@@ -1,8 +1,8 @@
 {
   "ABIRoot": {
     "kind": "Root",
-    "name": "TopLevel",
-    "printedName": "TopLevel",
+    "name": "Bls_Signature",
+    "printedName": "Bls_Signature",
     "children": [
       {
         "kind": "Import",
@@ -174,6 +174,42 @@
             "funcSelfKind": "NonMutating"
           },
           {
+            "kind": "Function",
+            "name": "sign",
+            "printedName": "sign(hash:with:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV4sign4hash4withS2S_10Foundation4DataVtKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV4sign4hash4withS2S_10Foundation4DataVtKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
             "kind": "TypeDecl",
             "name": "ErrorList",
             "printedName": "ErrorList",
@@ -327,6 +363,43 @@
                 "moduleName": "Bls_Signature"
               },
               {
+                "kind": "Var",
+                "name": "errorSign",
+                "printedName": "errorSign",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ErrorList",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Metatype",
+                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList.Type",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "declKind": "EnumElement",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9errorSignyA2EmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9errorSignyA2EmF",
+                "moduleName": "Bls_Signature"
+              },
+              {
                 "kind": "Function",
                 "name": "==",
                 "printedName": "==(_:_:)",
@@ -431,6 +504,20 @@
             "conformances": [
               {
                 "kind": "Conformance",
+                "name": "Copyable",
+                "printedName": "Copyable",
+                "usr": "s:s8CopyableP",
+                "mangledName": "$ss8CopyableP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Escapable",
+                "printedName": "Escapable",
+                "usr": "s:s9EscapableP",
+                "mangledName": "$ss9EscapableP"
+              },
+              {
+                "kind": "Conformance",
                 "name": "Equatable",
                 "printedName": "Equatable",
                 "usr": "s:SQ",
@@ -466,6 +553,22 @@
         "moduleName": "Bls_Signature",
         "declAttributes": [
           "AccessControl"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          }
         ]
       }
     ],

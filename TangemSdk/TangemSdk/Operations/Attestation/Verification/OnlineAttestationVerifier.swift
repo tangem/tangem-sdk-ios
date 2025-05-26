@@ -11,20 +11,26 @@ import Foundation
 struct OnlineAttestationVerifier {
     private let cardPublicKey: Data
     private let issuerPublicKey: Data
+    private let newAttestaionService: Bool
 
-    init(cardPublicKey: Data, issuerPublicKey: Data) {
+    init(cardPublicKey: Data, issuerPublicKey: Data, newAttestaionService: Bool) {
         self.cardPublicKey = cardPublicKey
         self.issuerPublicKey = issuerPublicKey
+        self.newAttestaionService = newAttestaionService
     }
 
     func verify(response: OnlineAttestationResponse) throws -> Bool {
         // TODO: REMOVE WITH newAttestaionService TOGGLE
-        guard let manufacturerSignature = response.manufacturerSignature else {
-            return false
-        }
+        if newAttestaionService {
+            guard let manufacturerSignature = response.manufacturerSignature else {
+                return false
+            }
 
-        return try verifyManufacturerSignature(signature: manufacturerSignature)
-        && verifyIssuerSignature(signature: response.issuerSignature)
+            return try verifyManufacturerSignature(signature: manufacturerSignature)
+            && verifyIssuerSignature(signature: response.issuerSignature)
+        } else {
+            return try verifyIssuerSignature(signature: response.issuerSignature)
+        }
     }
 
     private func verifyManufacturerSignature(signature: Data) throws -> Bool {

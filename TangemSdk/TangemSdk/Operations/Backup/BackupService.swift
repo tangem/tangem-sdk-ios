@@ -447,7 +447,7 @@ public class BackupService {
         firmwareVersion: FirmwareVersion,
         completion: @escaping CompletionResult<Data>
     ) {
-        let factory = BackupCertificateProviderFactory()
+        let factory = BackupCertificateProviderFactory(newAttestationService: config.newAttestaionService)
 
         let certificateProvider = factory.makeBackupCertificateProvider(
             cardId: cardId,

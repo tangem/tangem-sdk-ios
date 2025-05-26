@@ -8,7 +8,13 @@
 
 import Foundation
 
-struct OnlineAttestationServiceFactory {
+public struct OnlineAttestationServiceFactory {
+    private let newAttestaionService: Bool
+
+    public init(newAttestaionService: Bool) {
+        self.newAttestaionService = newAttestaionService
+    }
+
     func makeService(for card: Card) -> OnlineAttestationService {
         return makeService(
             cardId: card.cardId,
@@ -30,7 +36,8 @@ struct OnlineAttestationServiceFactory {
 
         let verifier = OnlineAttestationVerifier(
             cardPublicKey: cardPublicKey,
-            issuerPublicKey: issuerPublicKey
+            issuerPublicKey: issuerPublicKey,
+            newAttestaionService: newAttestaionService
         )
 
         return CommonOnlineAttestationService(

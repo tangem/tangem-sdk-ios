@@ -10,9 +10,11 @@ import Foundation
 
 struct BackupCertificateProviderFactory {
     private let networkService: NetworkService
+    private let newAttestationService: Bool
 
-    public init(networkService: NetworkService) {
+    public init(networkService: NetworkService, newAttestationService: Bool) {
         self.networkService = networkService
+        self.newAttestationService = newAttestationService
     }
 
     func makeBackupCertificateProvider(
@@ -21,7 +23,7 @@ struct BackupCertificateProviderFactory {
         issuerPublicKey: Data,
         firmwareVersion: FirmwareVersion
     ) -> BackupCertificateProvider {
-        let factory = OnlineAttestationServiceFactory(networkService: networkService)
+        let factory = OnlineAttestationServiceFactory(networkService: networkService, newAttestationService: newAttestationService)
         let onlineAttestationService = factory.makeService(
             cardId: cardId,
             cardPublicKey: cardPublicKey,

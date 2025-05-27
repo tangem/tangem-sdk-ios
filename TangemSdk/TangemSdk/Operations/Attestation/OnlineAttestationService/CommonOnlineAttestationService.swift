@@ -42,27 +42,19 @@ struct CommonOnlineAttestationService: OnlineAttestationService {
             .eraseToAnyPublisher()
     }
 
-    private func getAttestationData() -> AnyPublisher<OnlineAttestationResponse, Error> {
+    private func getAttestationData() -> AnyPublisher<OnlineAttestationResponse, NetworkServiceError> {
         if let cached = cache.response(for: cardPublicKey) {
             return Just(cached)
-                .setFailureType(to: Error.self)
+                .setFailureType(to: NetworkServiceError.self)
                 .eraseToAnyPublisher()
         } else {
             return requestAttestationData()
         }
     }
 
-    private func requestAttestationData() -> AnyPublisher<OnlineAttestationResponse, Error> {
+    private func requestAttestationData() -> AnyPublisher<OnlineAttestationResponse, NetworkServiceError> {
         networkService
             .requestPublisher(TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey))
-            .tryMap { data -> OnlineAttestationResponse in
-                do {
-                    return try JSONDecoder.tangemSdkDecoder.decode(OnlineAttestationResponse.self, from: data)
-                }
-                catch {
-                    throw NetworkServiceError.mappingError(error)
-                }
-            }
             .eraseToAnyPublisher()
     }
 }

@@ -277,6 +277,7 @@
 		DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3D98092A792804001EEE7A /* KeysImportTests.swift */; };
 		DC44C58B2B4DC48000888BED /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC44C5892B4DC1B200888BED /* PrivacyInfo.xcprivacy */; };
 		DC4E442929BF42630088617C /* Base58Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4E442829BF42630088617C /* Base58Tests.swift */; };
+		DC569A832DE63A53008CEB62 /* AttestationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC569A822DE63A4F008CEB62 /* AttestationTests.swift */; };
 		DC59CB0429AF597900EC14E1 /* Wordlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0329AF597900EC14E1 /* Wordlist.swift */; };
 		DC59CB0A29AF6F9C00EC14E1 /* EntropyLength.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */; };
 		DC59CB0C29AF706100EC14E1 /* MnemonicError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */; };
@@ -692,6 +693,7 @@
 		DC47728C2C2B0C4000D2459D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DC47728D2C2B0C4E00D2459D /* uk-UA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "uk-UA"; path = "uk-UA.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		DC4E442829BF42630088617C /* Base58Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base58Tests.swift; sourceTree = "<group>"; };
+		DC569A822DE63A4F008CEB62 /* AttestationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttestationTests.swift; sourceTree = "<group>"; };
 		DC59CB0329AF597900EC14E1 /* Wordlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wordlist.swift; sourceTree = "<group>"; };
 		DC59CB0929AF6F9C00EC14E1 /* EntropyLength.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntropyLength.swift; sourceTree = "<group>"; };
 		DC59CB0B29AF706100EC14E1 /* MnemonicError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicError.swift; sourceTree = "<group>"; };
@@ -1321,6 +1323,7 @@
 				5D38D0672679040C0052F67C /* Jsons */,
 				5DA80CAA231D247A00A50A10 /* Info.plist */,
 				5DA80CA8231D247A00A50A10 /* CryptoUtilsTests.swift */,
+				DC569A822DE63A4F008CEB62 /* AttestationTests.swift */,
 				DCF53ACF2D7F57FC00CC4634 /* CardFilterTests.swift */,
 				5DAD449D236B2435006C38F8 /* DataExtensionTests.swift */,
 				5D713B2C236C3F6400E4F6FC /* StringUtilsTest.swift */,
@@ -2329,6 +2332,7 @@
 				DC3D980A2A792804001EEE7A /* KeysImportTests.swift in Sources */,
 				DC77F24D2CD42610001B2929 /* ChunkHashesTests.swift in Sources */,
 				DCF53AD02D7F57FC00CC4634 /* CardFilterTests.swift in Sources */,
+				DC569A832DE63A53008CEB62 /* AttestationTests.swift in Sources */,
 				DC1244E429BB806E0037BC05 /* WIFTests.swift in Sources */,
 				DC1244B929B610550037BC05 /* BIP39Tests.swift in Sources */,
 				5DD127A224F3D1A0009ACA29 /* JsonTests.swift in Sources */,

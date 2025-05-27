@@ -9,35 +9,6 @@
 import Foundation
 import Combine
 
-public protocol NetworkEndpoint {
-    var baseUrl: String {get}
-    var path: String {get}
-    var queryItems: [URLQueryItem]? {get}
-    var method: String {get}
-    var body: Data? {get}
-    var headers: [String:String] {get}
-}
-
-public enum NetworkServiceError: Error, LocalizedError {
-    case emptyResponse
-    case statusCode(Int, String?)
-    case urlSessionError(Error)
-    case emptyResponseData
-    case mappingError(Error)
-    case failedToMakeRequest
-    case ctDisabled
-
-    public var errorDescription: String? {
-        switch self {
-        case .urlSessionError(let error):
-            return error.localizedDescription
-        default:
-            return "\(self)"
-        }
-    }
-
-}
-
 public class NetworkService {
     private let session: URLSession
 
@@ -79,12 +50,19 @@ public class NetworkService {
 // MARK: - async/await
 
 extension NetworkService {
-    public func request(_ endpoint: NetworkEndpoint) async throws -> Data  {
+    public func request<T: Decodable>(_ endpoint: NetworkEndpoint) async throws -> T {
         guard let request = prepareRequest(from: endpoint) else {
             throw NetworkServiceError.failedToMakeRequest
         }
 
-        return try await requestData(request: request)
+        let responseData = try await requestData(request: request)
+
+        do {
+            return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: responseData)
+        }
+        catch {
+            throw NetworkServiceError.mappingError(error)
+        }
     }
 
     func requestData(request: URLRequest) async throws -> Data {
@@ -92,26 +70,9 @@ extension NetworkService {
             Log.network("request: \(String(describing: request.url)), headers: \(String(describing: request.allHTTPHeaderFields))")
 
             let (data, response) = try await session.data(for: request)
-
-            Log.network("response: \(response)")
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                let error = NetworkServiceError.emptyResponse
-                Log.network(error.localizedDescription)
-                throw error
-            }
-
-            guard (200..<300).contains(httpResponse.statusCode) else {
-                let error = NetworkServiceError.statusCode(httpResponse.statusCode, String(data: data, encoding: .utf8))
-                Log.network(error.localizedDescription)
-                throw error
-            }
-
-            Log.network("status code: \(httpResponse.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
-
-            return data
+            return try NetworkService.mapResponseData(data: data, response: response)
         } catch {
-            throw error as? NetworkServiceError ?? NetworkServiceError.urlSessionError(error)
+            throw NetworkService.mapError(error)
         }
     }
 }
@@ -119,12 +80,22 @@ extension NetworkService {
 // MARK: - Combine
 
 extension NetworkService {
-    public func requestPublisher(_ endpoint: NetworkEndpoint) -> AnyPublisher<Data, NetworkServiceError> {
+    public func requestPublisher<T: Decodable>(_ endpoint: NetworkEndpoint) -> AnyPublisher<T, NetworkServiceError> {
         guard let request = prepareRequest(from: endpoint) else {
             return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
         }
 
         return requestDataPublisher(request: request)
+            .tryMap { data -> T in
+                do {
+                    return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: data)
+                }
+                catch {
+                    throw NetworkServiceError.mappingError(error)
+                }
+            }
+            .mapError { NetworkService.mapError($0) }
+            .eraseToAnyPublisher()
     }
     
     func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
@@ -133,28 +104,41 @@ extension NetworkService {
         return session
             .dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
-            .tryMap { data, response -> Data in
-                Log.network("response: \(response)")
-                guard let response = response as? HTTPURLResponse else {
-                    let error = NetworkServiceError.emptyResponse
-                    Log.network(error.localizedDescription)
-                    throw error
-                }
-
-                guard (200 ..< 300) ~= response.statusCode else {
-                    let error = NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
-                    Log.network(error.localizedDescription)
-                    throw error
-                }
-
-                Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
-                return data
-            }
-            .mapError { $0 as? NetworkServiceError ?? NetworkServiceError.urlSessionError($0) }
+            .tryMap { try NetworkService.mapResponseData(data: $0, response: $1) }
+            .mapError { NetworkService.mapError($0) }
             .eraseToAnyPublisher()
     }
 }
 
+// MARK: - Helpers
+
+private extension NetworkService {
+    static func mapError(_ error: Error) -> NetworkServiceError {
+        return error as? NetworkServiceError ?? NetworkServiceError.urlSessionError(error)
+    }
+
+    static func mapResponseData(data: Data, response: URLResponse) throws -> Data {
+        Log.network("response: \(response)")
+
+        guard let response = response as? HTTPURLResponse else {
+            let error = NetworkServiceError.emptyResponse
+            Log.network(error.localizedDescription)
+            throw error
+        }
+
+        guard (200 ..< 300) ~= response.statusCode else {
+            let error = NetworkServiceError.statusCode(response.statusCode, String(data: data, encoding: .utf8))
+            Log.network(error.localizedDescription)
+            throw error
+        }
+
+        Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+        return data
+    }
+}
+
+
+// MARK: - Constants
 
 fileprivate extension URLSessionConfiguration {
     static var defaultTangemSDKConfiguration: URLSessionConfiguration {
@@ -163,4 +147,36 @@ fileprivate extension URLSessionConfiguration {
         configuration.timeoutIntervalForResource = 30
         return configuration
     }
+}
+
+// MARK: - NetworkEndpoint
+
+public protocol NetworkEndpoint {
+    var baseUrl: String {get}
+    var path: String {get}
+    var queryItems: [URLQueryItem]? {get}
+    var method: String {get}
+    var body: Data? {get}
+    var headers: [String:String] {get}
+}
+
+// MARK: - NetworkServiceError
+
+public enum NetworkServiceError: Error, LocalizedError {
+    case emptyResponse
+    case statusCode(Int, String?)
+    case urlSessionError(Error)
+    case emptyResponseData
+    case mappingError(Error)
+    case failedToMakeRequest
+
+    public var errorDescription: String? {
+        switch self {
+        case .urlSessionError(let error):
+            return error.localizedDescription
+        default:
+            return "\(self)"
+        }
+    }
+
 }

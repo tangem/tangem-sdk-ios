@@ -156,8 +156,8 @@ public final class AttestationTask: CardSessionRunnable {
 
         let mapper = OnlineAttestationResponseMapper(card: card)
 
-        if session.environment.config.newAttestaionService {
-            let factory = OnlineAttestationServiceFactory(networkService: networkService)
+        if session.environment.config.newAttestationService {
+            let factory = OnlineAttestationServiceFactory(networkService: networkService, newAttestationService: true)
             let onlineAttestationService = factory.makeService(for: card)
             onlineAttestationCancellable = onlineAttestationService
                 .attestCard()

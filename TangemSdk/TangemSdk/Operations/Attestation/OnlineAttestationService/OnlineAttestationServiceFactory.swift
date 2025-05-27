@@ -10,9 +10,11 @@ import Foundation
 
 public struct OnlineAttestationServiceFactory {
     private let networkService: NetworkService
+    private let newAttestationService: Bool
 
-    public init(networkService: NetworkService) {
+    public init(networkService: NetworkService, newAttestationService: Bool) {
         self.networkService = networkService
+        self.newAttestationService = newAttestationService
     }
 
     func makeService(for card: Card) -> OnlineAttestationService {
@@ -36,7 +38,8 @@ public struct OnlineAttestationServiceFactory {
 
         let verifier = OnlineAttestationVerifier(
             cardPublicKey: cardPublicKey,
-            issuerPublicKey: issuerPublicKey
+            issuerPublicKey: issuerPublicKey,
+            newAttestationService: newAttestationService
         )
 
         return CommonOnlineAttestationService(

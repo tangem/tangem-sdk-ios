@@ -12,14 +12,14 @@ struct OnlineAttestationResponseMapper {
     func mapError(_ error: Error) -> Attestation.Status {
         if let networkError = error as? NetworkServiceError {
             switch networkError {
-            case .urlSessionError:
-                return Attestation.Status.verifiedOffline
+            case .statusCode(let code, _) where (code == 403 || code == 404):
+                return Attestation.Status.failed
             default:
                 break
             }
         }
 
-        return Attestation.Status.failed
+        return Attestation.Status.verifiedOffline
     }
 
     func mapValue(_ value: OnlineAttestationResponse) -> Attestation.Status {

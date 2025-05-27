@@ -12,15 +12,15 @@ import Combine
 /// Online verification for Tangem cards.
 public class CardInfoProvider {
     private let networkService: NetworkService
-    
+
     public init(networkService: NetworkService) {
         self.networkService = networkService
     }
-    
+
     deinit {
         Log.debug("CardInfoProvider deinit")
     }
-    
+
     /// Online verification and get info for Tangem cards. Do not use for developer cards
     /// - Parameters:
     ///   - cardId: cardId to verify
@@ -31,27 +31,24 @@ public class CardInfoProvider {
         let request = CardVerifyAndGetInfoRequest(requests: [requestItem])
         let endpoint = TangemEndpoint.verifyAndGetInfo(request: request)
 
-        return networkService
-            .requestPublisher(endpoint)
-            .tryMap { data -> CardVerifyAndGetInfoResponse in
-                do {
-                    return try JSONDecoder().decode(CardVerifyAndGetInfoResponse.self, from: data)
-                }
-                catch {
-                    throw NetworkServiceError.mappingError(error)
-                }
-            }
+        return makeRequest(endpoint: endpoint)
             .tryMap { response in
                 guard let firstResult = response.results.first else {
                     throw NetworkServiceError.emptyResponse
                 }
-                
+
                 guard firstResult.passed else {
                     throw TangemSdkError.cardVerificationFailed
                 }
-
+                
                 return firstResult
             }
+            .eraseToAnyPublisher()
+    }
+
+    private func makeRequest(endpoint: TangemEndpoint) -> AnyPublisher<CardVerifyAndGetInfoResponse, NetworkServiceError> {
+        networkService
+            .requestPublisher(endpoint)
             .eraseToAnyPublisher()
     }
 }

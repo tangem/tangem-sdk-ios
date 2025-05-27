@@ -30,8 +30,7 @@ struct CommonCardArtworksProvider: CardArtworksProvider {
 
     public func loadArtworks() async throws -> Artworks {
         let endpoint = TangemEndpoint.artworks(cardId: cardId, cardPublicKey: cardPublicKey)
-        let jsonResponse = try await networkService.request(endpoint)
-        let response = try JSONDecoder.tangemSdkDecoder.decode(ArtworksResponse.self, from: jsonResponse)
+        let response: ArtworksResponse = try await networkService.request(endpoint)
 
         let imageLargeRequest = URLRequest(url: response.imageLargeUrl)
         let imageSmallRequest = response.imageSmallUrl.map { URLRequest(url: $0) }

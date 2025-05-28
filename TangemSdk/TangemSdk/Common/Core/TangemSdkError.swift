@@ -181,6 +181,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     case biometricsUnavailable
     
+    case biometricsIsLockedOut
+    
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
 
@@ -432,6 +434,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .jsonConverterNotSet: return 50016
 
         case .wrongInteractionMode: return 50027
+        case .biometricsIsLockedOut: return 50028
             
             // MARK: 9xxxx Errors
             // Reader error.

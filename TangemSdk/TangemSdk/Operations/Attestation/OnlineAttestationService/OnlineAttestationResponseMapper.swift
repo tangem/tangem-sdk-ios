@@ -18,8 +18,9 @@ struct OnlineAttestationResponseMapper {
             switch networkError {
             case .statusCode(let code, _) where (code == 403 || code == 404):
                 return Attestation.Status.failed
-            case .emptyResponse, .emptyResponseData, .failedToMakeRequest,
-                    .mappingError, .urlSessionError, .statusCode, .ctDisabled:
+            case .failedToMakeRequest, .mappingError:
+                return Attestation.Status.failed
+            case .emptyResponse, .emptyResponseData, .urlSessionError, .statusCode, .ctDisabled:
                 return Attestation.Status.verifiedOffline
             }
         }

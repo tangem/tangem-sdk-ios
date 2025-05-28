@@ -48,6 +48,8 @@ public final class BiometricsUtil {
                     switch laError.code {
                     case .userCancel, .appCancel, .systemCancel:
                         completion(.failure(.userCancelled))
+                    case LAError.biometryLockout:
+                        completion(.failure(.biometricsIsLockedOut))
                     default:
                         completion(.failure(error.toTangemSdkError()))
                     }

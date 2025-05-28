@@ -25,8 +25,6 @@ class AttestationTests: XCTestCase {
         XCTAssertEqual(mapper.mapError(NetworkServiceError.emptyResponse), Attestation.Status.verifiedOffline)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.emptyResponseData), Attestation.Status.verifiedOffline)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.urlSessionError(MockError.anyError)), Attestation.Status.verifiedOffline)
-        XCTAssertEqual(mapper.mapError(NetworkServiceError.mappingError(MockError.anyError)), Attestation.Status.verifiedOffline)
-        XCTAssertEqual(mapper.mapError(NetworkServiceError.failedToMakeRequest), Attestation.Status.verifiedOffline)
 
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(100, "")), Attestation.Status.verifiedOffline)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(210, "")), Attestation.Status.verifiedOffline)
@@ -34,9 +32,12 @@ class AttestationTests: XCTestCase {
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(410, "")), Attestation.Status.verifiedOffline)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(500, "")), Attestation.Status.verifiedOffline)
 
+
         XCTAssertEqual(mapper.mapError(TangemSdkError.cardVerificationFailed), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(403, "")), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(404, "")), Attestation.Status.failed)
+        XCTAssertEqual(mapper.mapError(NetworkServiceError.mappingError(MockError.anyError)), Attestation.Status.failed)
+        XCTAssertEqual(mapper.mapError(NetworkServiceError.failedToMakeRequest), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(MockError.anyError), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(TangemSdkError.userCancelled), Attestation.Status.failed)
 

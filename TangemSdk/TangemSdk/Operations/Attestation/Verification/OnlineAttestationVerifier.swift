@@ -23,7 +23,8 @@ struct OnlineAttestationVerifier {
         // [REDACTED_TODO_COMMENT]
         if newAttestaionService {
             guard let manufacturerSignature = response.manufacturerSignature else {
-                return false
+                // Just tmp mock
+                throw NetworkServiceError.mappingError(TangemSdkError.missingPrimaryAttestSignature)
             }
 
             return try verifyManufacturerSignature(signature: manufacturerSignature)

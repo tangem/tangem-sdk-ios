@@ -551,6 +551,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         }
     }
     
+    public var isBiometryLockedOut: Bool {
+        if case .biometricsIsLockedOut = self {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     public static func parse(_ error: Error) -> TangemSdkError {
         if let readerError = error as? NFCReaderError {
             switch readerError.code {

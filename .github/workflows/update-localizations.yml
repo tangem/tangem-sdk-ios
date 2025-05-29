@@ -73,4 +73,9 @@ jobs:
 
           git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
+
           gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body ""
+
+          # Amending and force-pushing this particular commit after creating a PR, a nasty workaround for https://github.com/orgs/community/discussions/65321
+          git commit --amend --no-edit
+          git push origin $SOURCE_BRANCH --force

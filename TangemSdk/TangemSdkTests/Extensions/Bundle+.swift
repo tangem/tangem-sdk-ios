@@ -2,7 +2,7 @@
 //  Bundle+.swift
 //  TangemSdkTests
 //
-//  Created by m3g0byt3 on 24.12.2023.
+//  Created by Andrey Fedorov on 24.12.2023.
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 

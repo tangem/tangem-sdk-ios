@@ -60,7 +60,6 @@ jobs:
           SOURCE_BRANCH: lokalise-translations-sync
           TARGET_BRANCH: ${{ github.ref_name }}
           LANGUAGES: ${{ github.event.inputs.langs }}
-          GH_RUN_ID: ${{ github.run_id }}
         run: |
           git config --global user.name "Tangem Service"
           git config --global user.email "gitservice@tangem.com"
@@ -69,9 +68,14 @@ jobs:
           git add "${SDK_LOCALIZATIONS_DESTINATION}"
 
           : "${LANGUAGES:="all"}"
-          commit_message="Sync translations for \`${LANGUAGES}\` languages"
-          pr_message="[Localise] ${commit_message} (${GH_RUN_ID})"
+          commit_message="Sync translations for \`${LANGUAGES}\` languages → \`${TARGET_BRANCH}\`"
+          pr_message="[Localise] ${commit_message}"
 
           git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
+
           gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body ""
+
+          # Amending and force-pushing this particular commit after creating a PR, a nasty workaround for https://github.com/orgs/community/discussions/65321
+          git commit --amend --no-edit
+          git push origin $SOURCE_BRANCH --force

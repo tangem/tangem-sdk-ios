@@ -1,6 +1,10 @@
 lane :test do
   run_tests(
     project: "TangemSdk/TangemSdk.xcodeproj",
+    # Old Xcode output formatter, 'xcpretty', doesn't work particularly well with the new build system and parallel testing output
+    xcodebuild_formatter: "xcbeautify",
+    # 'xcbeautify' doesn't support HTML output type
+    output_types: "junit",
     clean: true
   )
 end

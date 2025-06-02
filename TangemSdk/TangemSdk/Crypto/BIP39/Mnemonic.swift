@@ -25,6 +25,15 @@ public struct Mnemonic {
         mnemonicComponents = try bip39.generateMnemonic(entropyLength: entropy, wordlist: wordList)
         self.wordlist = wordList
     }
+    
+    /// Initialize from entropy data and word list
+    /// - Parameters:
+    ///   - entropyData: The entropy data to use
+    ///   - wordList: The Wordlist to use. Default is en.
+    public init(entropyData: Data, wordList: BIP39.Wordlist = .en) throws {
+        mnemonicComponents = try bip39.generateMnemonic(from: entropyData, wordlist: wordList)
+        self.wordlist = wordList
+    }
 
     /// Parse a mnemonic strind
     /// - Parameter mnemonic: The mnemonic string to use

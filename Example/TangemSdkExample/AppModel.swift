@@ -221,7 +221,7 @@ extension AppModel {
 // MARK:- Commands
 extension AppModel {
     func scan() {
-        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more"), networkService: .init(session: .shared)) { result in
+        tangemSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more"), networkService: .init(session: .shared, additionalHeaders: [:])) { result in
             if case let .success(card) = result {
                 self.card = card
                 self.curve = card.supportedCurves[0]
@@ -233,7 +233,7 @@ extension AppModel {
     }
 
     func loadArtworks(for card: Card) {
-        let provider = CardArtworksProviderFactory(networkService: .init(session: .shared)).makeArtworksProvider(for: card)
+        let provider = CardArtworksProviderFactory(networkService: .init(session: .shared, additionalHeaders: [:])).makeArtworksProvider(for: card)
         Task {
             let artworks = try await provider.loadArtworks()
             await MainActor.run {
@@ -244,7 +244,7 @@ extension AppModel {
     }
 
     func attest() {
-        tangemSdk.startSession(with: AttestationTask(mode: attestationMode, networkService: .init(session: .shared)), completion: handleCompletion)
+        tangemSdk.startSession(with: AttestationTask(mode: attestationMode, networkService: .init(session: .shared, additionalHeaders: [:])), completion: handleCompletion)
     }
 
     func attestCard() {
@@ -393,7 +393,7 @@ extension AppModel {
                 return
             }
             
-            let scan = ScanTask(networkService: .init(session: .shared))
+            let scan = ScanTask(networkService: .init(session: .shared, additionalHeaders: [:]))
             scan.run(in: session) { result in
                 switch result {
                 case .success:
@@ -805,7 +805,7 @@ extension AppModel {
 //MARK: - Routing
 extension AppModel {
     func onBackup() {
-        backupService = BackupService(sdk: tangemSdk, networkService: .init(session: .shared))
+        backupService = BackupService(sdk: tangemSdk, networkService: .init(session: .shared, additionalHeaders: [:]))
         showBackupView = true
     }
     

@@ -11,9 +11,11 @@ import Combine
 
 public class NetworkService {
     private let session: URLSession
+    private let additionalHeaders: [String: String]
 
-    public init(session: URLSession) {
+    public init(session: URLSession, additionalHeaders: [String:String]) {
         self.session = session
+        self.additionalHeaders = additionalHeaders
     }
     
     deinit {
@@ -38,7 +40,11 @@ public class NetworkService {
         for header in endpoint.headers {
             urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
         }
-        
+
+        for header in additionalHeaders {
+            urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+
         return urlRequest
     }
     

@@ -17,7 +17,7 @@ public class NetworkService {
         self.session = session
         self.additionalHeaders = additionalHeaders
     }
-    
+
     deinit {
         Log.debug("NetworkService deinit")
     }
@@ -26,17 +26,17 @@ public class NetworkService {
         guard var urlComponents = URLComponents(string: endpoint.baseUrl + endpoint.path) else {
             return nil
         }
-        
+
         urlComponents.queryItems = endpoint.queryItems
 
         guard let url = urlComponents.url else {
             return nil
         }
-        
+
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = endpoint.method
         urlRequest.httpBody = endpoint.body
-        
+
         for header in endpoint.headers {
             urlRequest.addValue(header.value, forHTTPHeaderField: header.key)
         }
@@ -47,7 +47,7 @@ public class NetworkService {
 
         return urlRequest
     }
-    
+
     private func map<T: Decodable>(_ data: Data, type: T.Type) -> T? {
         try? JSONDecoder().decode(T.self, from: data)
     }
@@ -73,7 +73,7 @@ extension NetworkService {
 
     func requestData(request: URLRequest) async throws -> Data {
         do {
-            Log.network("request: \(String(describing: request.url)), headers: \(String(describing: request.allHTTPHeaderFields))")
+            Log.network(request.requestDescription)
 
             let (data, response) = try await session.data(for: request)
             return try NetworkService.mapResponseData(data: data, response: response)
@@ -103,10 +103,10 @@ extension NetworkService {
             .mapError { NetworkService.mapError($0) }
             .eraseToAnyPublisher()
     }
-    
+
     func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
-        Log.network("request: \(String(describing: request.url)), headers: \(String(describing: request.allHTTPHeaderFields))")
-        
+        Log.network(request.requestDescription)
+
         return session
             .dataTaskPublisher(for: request)
             .subscribe(on: DispatchQueue.global())
@@ -185,4 +185,10 @@ public enum NetworkServiceError: Error, LocalizedError {
         }
     }
 
+}
+
+fileprivate extension URLRequest {
+    var requestDescription: String {
+        return "request: \(url?.absoluteString ?? "nil"), headers: \(allHTTPHeaderFields?.description ?? "[]")"
+    }
 }

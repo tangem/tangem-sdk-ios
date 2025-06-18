@@ -21,17 +21,14 @@ public struct SignHashResponse: JSONStringConvertible {
 public final class SignHashCommand: CardSessionRunnable {
     private let walletPublicKey: Data
     private let hash: Data
-    private let derivationPath: DerivationPath?
     
     /// Default initializer
     /// - Parameters:
     ///   - hash: Transaction hash for sign by card.
     ///   - walletPublicKey: Public key of the wallet, using for sign.
-    ///   - derivationPath: Derivation path of the wallet. Optional. COS v. 4.28 and higher,
-    public init(hash: Data, walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
+    public init(hash: Data, walletPublicKey: Data) {
         self.hash = hash
         self.walletPublicKey = walletPublicKey
-        self.derivationPath = derivationPath
     }
     
     deinit {
@@ -39,7 +36,7 @@ public final class SignHashCommand: CardSessionRunnable {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashResponse>) {
-        let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey, derivationPath: derivationPath)
+        let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey)
         signCommand.run(in: session) { result in
             switch result {
             case .success(let signResponse):

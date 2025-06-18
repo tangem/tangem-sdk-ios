@@ -122,7 +122,7 @@ public extension TangemSdk {
               derivationPath: DerivationPath? = nil,
               initialMessage: Message? = nil,
               completion: @escaping CompletionResult<SignHashResponse>) {
-        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey, derivationPath: derivationPath)
+        let command = SignHashCommand(hash: hash, walletPublicKey: walletPublicKey)
         startSession(with: command,
                      cardId: cardId,
                      initialMessage: initialMessage,

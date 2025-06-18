@@ -47,13 +47,8 @@ class SignHashHandler: JSONRPCHandler {
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
         let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
         let hash: Data = try parameters.value(for: "hash")
-        
-        let derivationRawPath: String? = try parameters.value(for: "derivationPath")
-        let derivationPath: DerivationPath? = try derivationRawPath.map{ try DerivationPath(rawPath: $0) }
-        
         let command = SignHashCommand(hash: hash,
-                                      walletPublicKey: walletPublicKey,
-                                      derivationPath: derivationPath)
+                                      walletPublicKey: walletPublicKey)
         return command.eraseToAnyRunnable()
     }
 }

@@ -35,23 +35,19 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 public final class AttestWalletKeyTask: Command {
     private var challenge: Data!
     private let walletPublicKey: Data
-    private let derivationPath: DerivationPath?
     private let confirmationMode: ConfirmationMode
     
     /// Default initializer
     /// - Parameters:
     ///   - publicKey: Public key of the wallet to check
-    ///   - derivationPath: DerivationPath of the wallet. Optional. COS v. 4.28 and higher,
     ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
     ///   - confirmationMode: Additional confirmation of the wallet ownership.  The card will return the `cardSignature` (a wallet's public key signed by the card's private key)  in response.  COS: 2.01+.
     public init(
         walletPublicKey: Data,
-        derivationPath: DerivationPath? = nil,
         challenge: Data? = nil,
         confirmationMode: ConfirmationMode = .dynamic
     ) {
         self.walletPublicKey = walletPublicKey
-        self.derivationPath = derivationPath
         self.challenge = challenge
         self.confirmationMode = confirmationMode
     }
@@ -61,22 +57,8 @@ public final class AttestWalletKeyTask: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        guard let wallet = card.wallets[walletPublicKey] else {
+        guard let _ = card.wallets[walletPublicKey] else {
             return .walletNotFound
-        }
-
-        if derivationPath != nil {
-            if card.firmwareVersion < .hdWalletAvailable {
-                return .notSupportedFirmwareVersion
-            }
-
-            guard wallet.curve.supportsDerivation else {
-                return .unsupportedCurve
-            }
-
-            if !card.settings.isHDWalletAllowed {
-                return .hdWalletDisabled
-            }
         }
 
         return nil
@@ -91,19 +73,7 @@ public final class AttestWalletKeyTask: Command {
             }
         }
         
-        if let derivationPath {
-            let derivationCommand = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPath)
-            derivationCommand.run(in: session) { result in
-                switch result {
-                case .success:
-                    self.transceiveAttestation(in: session, completion: completion)
-                case .failure(let error):
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            }
-        } else {
-            transceiveAttestation(in: session, completion: completion)
-        }
+        transceiveAttestation(in: session, completion: completion)
     }
     
     
@@ -162,10 +132,6 @@ public final class AttestWalletKeyTask: Command {
             }
         }
         
-        if let derivationPath {
-            try tlvBuilder.append(.walletHDPath, value: derivationPath)
-        }
-        
         return CommandApdu(.attestWalletKey, tlv: tlvBuilder.serialize())
     }
     
@@ -192,16 +158,7 @@ public final class AttestWalletKeyTask: Command {
             return false
         }
         
-        let publicKey: Data
-        if let derivationPath {
-            guard let derivedKey = wallet.derivedKeys[derivationPath] else {
-                throw TangemSdkError.walletNotFound
-            }
-            
-            publicKey = derivedKey.publicKey
-        } else {
-            publicKey = wallet.publicKey
-        }
+        let publicKey = wallet.publicKey
 
         return try CryptoUtils.verify(
             curve: wallet.curve,

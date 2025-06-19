@@ -142,7 +142,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case passcodeRequired
     
     /// This error is returned when SDK checks unsuccessfully either
-    /// a card's ability to sign with its private key, or the validity of issuer data.
+    /// a card's ability to sign with its private key, or the validity of issuer data or the validity of images
     case verificationFailed
     
     case cardVerificationFailed

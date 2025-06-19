@@ -40,32 +40,26 @@ struct CommonCardArtworksProvider: CardArtworksProvider {
 
         let (imageLargeData, imageSmallData) = try await (imageLargeResponse, imageSmallResponse)
 
-        let isImageLargeSignatureValid = try verifier.verify(
+        guard try verifier.verify(
             imageData: imageLargeData,
             imagePrefix: SignaturePrefixBuilder.largeImage.prefix(for: response.imageLargeUrl),
             signature: response.imageLargeSignature
-        )
+        ) else {
+            throw TangemSdkError.verificationFailed
+        }
 
-        let isImageSmallSignatureValid: Bool
-
-        if let imageSmallSignature = response.imageSmallSignature,
-           let imageSmallURL = response.imageSmallUrl,
-           let imageSmallData {
-            isImageSmallSignatureValid = try verifier.verify(
+        guard let imageSmallSignature = response.imageSmallSignature,
+              let imageSmallURL = response.imageSmallUrl,
+              let imageSmallData,
+              try verifier.verify(
                 imageData: imageSmallData,
                 imagePrefix: SignaturePrefixBuilder.smallImage.prefix(for: imageSmallURL),
                 signature: imageSmallSignature
-            )
-        } else {
-            isImageSmallSignatureValid = true
+              ) else {
+            return Artworks(large: imageLargeData, small: nil)
         }
 
-        guard isImageLargeSignatureValid && isImageSmallSignatureValid else {
-            throw TangemSdkError.cardVerificationFailed
-        }
-
-        let artworks = Artworks(large: imageLargeData, small: imageSmallData)
-        return artworks
+        return Artworks(large: imageLargeData, small: imageSmallData)
     }
 }
 

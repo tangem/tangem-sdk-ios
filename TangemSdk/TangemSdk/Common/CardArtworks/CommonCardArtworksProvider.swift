@@ -35,10 +35,14 @@ struct CommonCardArtworksProvider: CardArtworksProvider {
         let imageLargeRequest = URLRequest(url: response.imageLargeUrl)
         let imageSmallRequest = response.imageSmallUrl.map { URLRequest(url: $0) }
 
-        async let imageLargeResponse = networkService.requestData(request: imageLargeRequest)
-        async let imageSmallResponse = imageSmallRequest !=  nil ? networkService.requestData(request: imageSmallRequest!) : nil
+        async let imageLargeResponse = try? networkService.requestData(request: imageLargeRequest)
+        async let imageSmallResponse = imageSmallRequest == nil ? nil : try? networkService.requestData(request: imageSmallRequest!)
 
-        let (imageLargeData, imageSmallData) = try await (imageLargeResponse, imageSmallResponse)
+        let (imageLargeData, imageSmallData) = await (imageLargeResponse, imageSmallResponse)
+
+        guard let imageLargeData else {
+            throw Error.imageLoadingFailed
+        }
 
         guard try verifier.verify(
             imageData: imageLargeData,
@@ -86,5 +90,16 @@ extension CommonCardArtworksProvider {
             }
         }
 
+    }
+}
+
+
+extension CommonCardArtworksProvider {
+    enum Error: String, Swift.Error, LocalizedError {
+        case imageLoadingFailed
+
+        public var errorDescription: String? {
+            rawValue
+        }
     }
 }

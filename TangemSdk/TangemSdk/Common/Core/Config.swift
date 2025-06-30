@@ -67,9 +67,6 @@ public struct Config {
     /// Localized reason for Touch ID. DO NOT leave it empty.
     public var biometricsLocalizedReason: String = "touch_id_localized_reason".localized
 
-    /// Toggle for the new attestation service. To be removed
-    public var newAttestationService: Bool = true
-
     /// Development API toggle
     public static var useDevApi: Bool = false
 

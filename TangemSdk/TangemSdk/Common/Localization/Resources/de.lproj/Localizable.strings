@@ -1,4 +1,3 @@
-"attestation_failed_card" = "Diese Karte könnte ein Produktionsmuster oder eine Fälschung sein. Du kannst auf eigenem Risiko fortfahren.";
 "attestation_failed_card_title" = "Kartenprüfung fehlgeschlagen";
 "attestation_failed_dev_card" = "Dies ist eine Entwicklungskarte. Ihre Authentizität kann nicht überprüft werden. Akzeptiere diese Karte nicht als Zahlungsmittel.";
 "attestation_online_failed_body" = "Der Online-Nachweis/ Prüfung der Karte kann derzeit nicht durchgeführt werden. Du kannst auf eigenem Risiko fortfahren oder es später erneut versuchen.";

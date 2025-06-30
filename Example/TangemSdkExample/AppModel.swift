@@ -67,7 +67,6 @@ class AppModel: ObservableObject {
             loggers.append(logger)
         }
 
-        config.newAttestationService = newAttestation
         Config.useDevApi = useDevApi
 
         config.logConfig = .custom(

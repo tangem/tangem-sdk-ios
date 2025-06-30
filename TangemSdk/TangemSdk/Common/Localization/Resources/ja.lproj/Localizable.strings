@@ -1,4 +1,3 @@
-"attestation_failed_card" = "このカードは、製造サンプルまたは偽造品である可能性があります。自己責任で続行してください。";
 "attestation_failed_card_title" = "カード認証に失敗しました";
 "attestation_failed_dev_card" = "これは開発カードです。真正性は確認できません。このカードを支払い手段として使用しないでください。";
 "attestation_online_failed_body" = "現在、カードのオンライン認証は実行できません。自己責任で続行するか、後でもう一度お試しください。";

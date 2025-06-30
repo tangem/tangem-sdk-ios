@@ -13,7 +13,6 @@ public final class AttestationTask: CardSessionRunnable {
     private let mode: Mode
     private let networkService: NetworkService
     private let trustedCardsRepo: TrustedCardsRepo = .init()
-    private let legacyOnlineAttestationService: CardInfoProvider
 
     private var currentAttestationStatus: Attestation = .empty
     private var onlineAttestationValue = CurrentValueSubject<Attestation.Status?, Never>(nil)
@@ -26,7 +25,6 @@ public final class AttestationTask: CardSessionRunnable {
     public init(mode: Mode, networkService: NetworkService) {
         self.mode = mode
         self.networkService = networkService
-        legacyOnlineAttestationService = CardInfoProvider(networkService: networkService)
     }
     
     deinit {
@@ -155,39 +153,15 @@ public final class AttestationTask: CardSessionRunnable {
         }
 
         let mapper = OnlineAttestationResponseMapper(card: card)
-
-        if session.environment.config.newAttestationService {
-            let factory = OnlineAttestationServiceFactory(networkService: networkService, newAttestationService: true)
-            let onlineAttestationService = factory.makeService(for: card)
-            onlineAttestationCancellable = onlineAttestationService
-                .attestCard()
-                .map { mapper.mapValue($0) }
-                .catch { Just(mapper.mapError($0)) }
-                .sink(receiveValue: { [weak self] in
-                    self?.onlineAttestationValue.send($0)
-                })
-        } else {
-            //Dev card will not pass online attestation. Or, if the card already failed offline attestation, we can skip online part.
-            //So, we can send the error to the publisher immediately
-            if card.firmwareVersion.type == .sdk || currentAttestationStatus.cardKeyAttestation == .failed {
-                onlineAttestationValue.send(.failed)
-                return
-            }
-
-            onlineAttestationCancellable = legacyOnlineAttestationService
-                .getCardInfo(cardId: card.cardId, cardPublicKey: card.cardPublicKey)
-                .map { _ in return Attestation.Status.verified } //We assume, that card verified, because we skip online attestation for dev cards and cards that failed keys attestation
-                .catch { error -> Just<Attestation.Status> in
-                    if case TangemSdkError.cardVerificationFailed = error {
-                        return Just(.failed)
-                    }
-
-                    return Just(.verifiedOffline)
-                }
-                .sink(receiveValue: { [weak self] in
-                    self?.onlineAttestationValue.send($0)
-                })
-        }
+        let factory = OnlineAttestationServiceFactory(networkService: networkService)
+        let onlineAttestationService = factory.makeService(for: card)
+        onlineAttestationCancellable = onlineAttestationService
+            .attestCard()
+            .map { mapper.mapValue($0) }
+            .catch { Just(mapper.mapError($0)) }
+            .sink(receiveValue: { [weak self] in
+                self?.onlineAttestationValue.send($0)
+            })
     }
 
     private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
@@ -222,10 +196,10 @@ public final class AttestationTask: CardSessionRunnable {
     private func processAttestationReport(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         switch currentAttestationStatus.status {
         case .failed, .skipped:
-            let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
             session.viewDelegate.setState(.empty)
+            let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
             if isDevelopmentCard {
-                session.viewDelegate.attestationDidFail(isDevelopmentCard: isDevelopmentCard) {
+                session.viewDelegate.attestationDidFailDevCard {
                     self.complete(session, completion)
                 } onCancel: { [weak self] in
                     self?.cleanResources()

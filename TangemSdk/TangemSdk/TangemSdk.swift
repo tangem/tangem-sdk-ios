@@ -223,34 +223,6 @@ public extension TangemSdk {
         startSession(with: PurgeWalletCommand(publicKey: walletPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
-    /// Get the card info and verify with Tangem backend. Do not use for developer cards
-    /// - Parameters:
-    ///   - cardPublicKey: CardPublicKey returned by [ReadCommand]
-    ///   - cardId: CID, Unique Tangem card ID number.
-    ///   - networkService: Allows to customize a network layer
-    ///   - completion: `CardVerifyAndGetInfoResponse.Item`
-    func loadCardInfo(cardPublicKey: Data,
-                      cardId: String,
-                      networkService: NetworkService,
-                      completion: @escaping CompletionResult<CardVerifyAndGetInfoResponse.Item>) {
-        var subscription: AnyCancellable?
-
-        let cardInfoProvider = CardInfoProvider(networkService: networkService)
-        subscription = cardInfoProvider
-            .getCardInfo(cardId: cardId, cardPublicKey: cardPublicKey)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { receivedCompletion in
-                if case let .failure(error) = receivedCompletion {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-
-                withExtendedLifetime(cardInfoProvider) {}
-                withExtendedLifetime(subscription) {}
-            }, receiveValue: { response in
-                completion(.success(response))
-            })
-    }
-    
     /// Set or change card's access code
     /// - Parameters:
     ///   - accessCode: Access code to set. If nil, the user will be prompted to enter code before operation

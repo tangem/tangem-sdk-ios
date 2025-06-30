@@ -11,27 +11,14 @@ import Foundation
 struct OnlineAttestationVerifier {
     private let cardPublicKey: Data
     private let issuerPublicKey: Data
-    private let newAttestationService: Bool
 
-    init(cardPublicKey: Data, issuerPublicKey: Data, newAttestationService: Bool) {
+    init(cardPublicKey: Data, issuerPublicKey: Data) {
         self.cardPublicKey = cardPublicKey
         self.issuerPublicKey = issuerPublicKey
-        self.newAttestationService = newAttestationService
     }
 
     func verify(response: OnlineAttestationResponse) throws -> Bool {
-        // TODO: REMOVE WITH newAttestationService TOGGLE
-        if newAttestationService {
-            guard let manufacturerSignature = response.manufacturerSignature else {
-                // Just tmp mock
-                throw NetworkServiceError.mappingError(TangemSdkError.missingPrimaryAttestSignature)
-            }
-
-            return try verifyManufacturerSignature(signature: manufacturerSignature)
-            && verifyIssuerSignature(signature: response.issuerSignature)
-        } else {
-            return try verifyIssuerSignature(signature: response.issuerSignature)
-        }
+        return try verifyIssuerSignature(signature: response.issuerSignature)
     }
 
     private func verifyManufacturerSignature(signature: Data) throws -> Bool {

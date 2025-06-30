@@ -1,4 +1,3 @@
-"attestation_failed_card" = "This card may be production sample or counterfeit. You can continue at your own risk.";
 "attestation_failed_card_title" = "Non è stata eseguita la verifica della carta";
 "attestation_failed_dev_card" = "This is a development card. Its authenticity cannot be verified. Do not accept this card as a means of payment.";
 "attestation_online_failed_body" = "At the moment, online attestation of the card cannot be performed. You can continue at your own risk or try again later.";

@@ -89,10 +89,8 @@ extension CommonCardArtworksProvider {
                 return "artwork|large|\(artworkId)|"
             }
         }
-
     }
 }
-
 
 extension CommonCardArtworksProvider {
     enum Error: String, Swift.Error, LocalizedError {

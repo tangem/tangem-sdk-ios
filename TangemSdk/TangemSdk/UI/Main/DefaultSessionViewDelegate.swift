@@ -92,16 +92,14 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         runInMainThread(self.dismissScreen(completion: completion))
     }
     
-    //TODO: Refactor UI
-    func attestationDidFail(isDevelopmentCard: Bool, onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
+    func attestationDidFailDevCard(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
         guard let screen = screen else {
             onCancel()
             return
         }
         
         let title = "attestation_failed_card_title".localized
-        let message = isDevelopmentCard ? "attestation_failed_dev_card".localized
-            : "attestation_failed_card".localized
+        let message = "attestation_failed_dev_card".localized
         let tint = style.colors.tintUIColor
         
         runInMainThread(UIAlertController.showShouldContinue(from: screen,
@@ -111,8 +109,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
                                                              onContinue: onContinue,
                                                              onCancel: onCancel))
     }
-    
-    //TODO: Refactor UI
+
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
         guard let screen = screen else {
             onCancel()
@@ -131,8 +128,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
                                                              onCancel: onCancel,
                                                              onRetry: onRetry))
     }
-    
-    //TODO: Refactor UI
+
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
         guard let screen = screen else {
             onContinue()

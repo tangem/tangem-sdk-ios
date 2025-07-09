@@ -15,4 +15,4 @@ Supported platforms: **iOS** | [Android](https://github.com/tangem-developments/
  
 # License
 
-Tangem SDK is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+See the [LICENSE](LICENSE) file for more info.

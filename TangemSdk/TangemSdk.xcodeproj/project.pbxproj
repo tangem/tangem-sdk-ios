@@ -240,6 +240,7 @@
 		B0EC650E260131220088F03D /* ReadWalletsListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0EC650D260131220088F03D /* ReadWalletsListCommand.swift */; };
 		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
 		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
+		B6F5B6592E1BD3F700E6A454 /* ReadCardAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
@@ -656,6 +657,7 @@
 		B6B958982B2FCA8600E7B74E /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Gemfile; path = ../Gemfile; sourceTree = "<group>"; };
 		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
+		B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCardAnimationModifier.swift; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -929,8 +931,9 @@
 			isa = PBXGroup;
 			children = (
 				5D908C5A26A7469100270FA3 /* CardView.swift */,
-				5D908C5C26A74BD800270FA3 /* PhoneView.swift */,
 				5D908C5E26A7519500270FA3 /* NFCFieldView.swift */,
+				5D908C5C26A74BD800270FA3 /* PhoneView.swift */,
+				B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */,
 				5D908C6026A75DB700270FA3 /* ReadView.swift */,
 			);
 			path = Scan;
@@ -2307,6 +2310,7 @@
 				DC1244B329B60B6F0037BC05 /* BIP39.swift in Sources */,
 				5DFFC49F233B9D69004964E8 /* NFCReader.swift in Sources */,
 				5DE43A6626D515B100ECA36A /* FinalizePrimaryCardTask.swift in Sources */,
+				B6F5B6592E1BD3F700E6A454 /* ReadCardAnimationModifier.swift in Sources */,
 				5D26CEE5243C902C00994CC0 /* Secp256k1Utils.swift in Sources */,
 				5DE7DD302695DCD300472205 /* CardFilter.swift in Sources */,
 				5D4B128326D40C77006E173C /* StartPrimaryCardLinkingCommand.swift in Sources */,

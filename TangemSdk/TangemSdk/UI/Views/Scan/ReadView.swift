@@ -10,8 +10,7 @@ import SwiftUI
 
 struct ReadView: View {
     @EnvironmentObject var style: TangemSdkStyle
-    
-    @State private var cardOffset: CGSize = .init(width: -220, height: -160)
+    @State private var progress: Double = 0
     
     var body: some View {
         GeometryReader { geo in
@@ -21,16 +20,9 @@ struct ReadView: View {
                     .offset(y: -160)
                 
                 tagView
+                    .discreteAnimation(progress: progress, cardWidth: Constants.cardWidth, verticalOffset: Constants.verticalOffset)
                     .frame(minWidth: 210, maxWidth: 210)
-                    .offset(cardOffset)
-                    .animation(
-                        Animation
-                            .easeInOut(duration: 1)
-                            .delay(1)
-                            .repeatForever(),
-                        value: cardOffset
-                    )
-
+                
                 PhoneView()
                     .frame(width: 180, height: 360)
             }
@@ -38,7 +30,10 @@ struct ReadView: View {
                    height: geo.size.height)
         }
         .onAppear {
-            cardOffset.width = 0
+            progress = 0
+            withAnimation(.linear(duration: Constants.totalDuration).repeatForever(autoreverses: false)) {
+                progress = 1
+            }
         }
     }
     
@@ -55,6 +50,14 @@ struct ReadView: View {
                 .aspectRatio(contentMode: .fit)
                 .offset(y: verticalOffset)
         }
+    }
+}
+
+private extension ReadView {
+    enum Constants {
+        static let totalDuration: Double = 6
+        static let cardWidth: CGFloat = 210
+        static let verticalOffset: CGFloat = 160
     }
 }
 

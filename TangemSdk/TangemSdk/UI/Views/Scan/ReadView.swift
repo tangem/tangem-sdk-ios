@@ -43,7 +43,7 @@ struct ReadView: View {
         case .genericCard:
             CardView(cardColor: style.colors.cardColor, starsColor: style.colors.starsColor)
         case .genericRing:
-            Image("ring_shape_scan")
+            Image("ring_shape_scan", bundle: .sdkBundle)
         case .image(let uiImage, let verticalOffset):
             Image(uiImage: uiImage)
                 .resizable()

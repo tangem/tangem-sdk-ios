@@ -184,12 +184,21 @@ public class BackupService {
     }
 
     public func readPrimaryCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
-        let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
+        var initialMessage: Message? = nil
 
-        let initialMessage = formattedCardId.map {
-            Message(header: nil,
-                    body: "backup_prepare_primary_card_message_format".localized($0)) }
-        ?? Message(header: "backup_prepare_primary_card_message".localized)
+        if config.productType == .ring {
+            initialMessage = Message(
+                header: nil,
+                body:"backup_finalize_primary_ring_message".localized
+            )
+        } else {
+            let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
+
+            let initialMessage = formattedCardId.map {
+                Message(header: nil,
+                        body: "backup_prepare_primary_card_message_format".localized($0)) }
+            ?? Message(header: "backup_prepare_primary_card_message".localized)
+        }
 
         let command = StartPrimaryCardLinkingCommand()
         currentCommand = command
@@ -348,7 +357,6 @@ public class BackupService {
                     header: nil,
                     body: "backup_finalize_primary_card_message_format".localized(formattedCardId))
             }
-
 
             currentCommand = task
 

@@ -39,7 +39,7 @@ let package = Package(
                 .copy("Haptics"),
                 .copy("Crypto/BIP39/Wordlists/english.txt"),
                 .copy("PrivacyInfo.xcprivacy"),
-                .copy("Assets"),
+                .process("Assets"),
             ]
         ),
         .target(

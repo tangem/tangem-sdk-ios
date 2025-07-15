@@ -55,5 +55,29 @@ public final class BiometricsUtil {
             }
         }
     }
+
+    /// Request access to biometrics
+    /// - Parameters:
+    ///   - localizedReason:The app-provided reason for requesting authentication, which displays in the authentication dialog presented to the user. Must be non-empty. Only for touchID.
+    public static func requestAccess(localizedReason: String) async throws(TangemSdkError) -> LAContext {
+        let context = LAContext.default
+
+        do {
+            if try await context.evaluatePolicy(authenticationPolicy, localizedReason: localizedReason) {
+                return context
+            }
+
+            throw TangemSdkError.unknownError
+        } catch let error as LAError {
+            switch error.code {
+            case .userCancel, .appCancel, .systemCancel:
+                throw TangemSdkError.userCancelled
+            default:
+                throw error.toTangemSdkError()
+            }
+        } catch {
+            throw error.toTangemSdkError()
+        }
+    }
 }
 

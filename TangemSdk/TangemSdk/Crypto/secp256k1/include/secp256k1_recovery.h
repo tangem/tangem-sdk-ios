@@ -99,7 +99,7 @@ SECP256K1_API int tangem_secp256k1_ecdsa_sign_recoverable(
  *  In:      sig:       pointer to initialized signature that supports pubkey recovery.
  *           msghash32: the 32-byte message hash assumed to be signed.
  */
-SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_ecdsa_recover(
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int tangem_secp256k1_ecdsa_recover(
     const secp256k1_context *ctx,
     secp256k1_pubkey *pubkey,
     const secp256k1_ecdsa_recoverable_signature *sig,

@@ -11,7 +11,7 @@ import TangemSdk_secp256k1
 
 public struct Secp256k1Signature {
     private let secp256k1 = Secp256k1Utils()
-    private let rawSig: tangem_secp256k1_ecdsa_signature
+    private let rawSig: secp256k1_ecdsa_signature
     
     public init(with data: Data) throws {
         rawSig = try secp256k1.parseNormalize(data)

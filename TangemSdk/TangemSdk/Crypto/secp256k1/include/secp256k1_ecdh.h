@@ -51,7 +51,7 @@ SECP256K1_API const secp256k1_ecdh_hash_function secp256k1_ecdh_tangem;
  *           data:       arbitrary data pointer that is passed through to hashfp
  *                       (can be NULL for tangem_secp256k1_ecdh_hash_function_sha256).
  */
-SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_ecdh(
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int tangem_secp256k1_ecdh(
   const secp256k1_context *ctx,
   unsigned char *output,
   const secp256k1_pubkey *pubkey,

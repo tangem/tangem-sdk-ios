@@ -645,7 +645,7 @@ SECP256K1_API const secp256k1_nonce_function tangem_secp256k1_nonce_function_def
  * The created signature is always in lower-S form. See
  * tangem_secp256k1_ecdsa_signature_normalize for more details.
  */
-SECP256K1_API int secp256k1_ecdsa_sign(
+SECP256K1_API int tangem_secp256k1_ecdsa_sign(
     const secp256k1_context *ctx,
     secp256k1_ecdsa_signature *sig,
     const unsigned char *msghash32,

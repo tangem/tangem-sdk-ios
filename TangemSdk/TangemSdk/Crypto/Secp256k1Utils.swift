@@ -32,7 +32,7 @@ public final class Secp256k1Utils {
      */
     public func sign(_ data: Data, with key: Data) throws -> Data {
         var signature = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_sign(context, &signature, Array(data.getSha256()), Array(key), nil, nil) == 1 else {
+        guard tangem_secp256k1_ecdsa_sign(context, &signature, Array(data.getSha256()), Array(key), nil, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to sign")
         }
         
@@ -276,7 +276,7 @@ public final class Secp256k1Utils {
                 let hashPointer = hashRawPointer.assumingMemoryBound(to: UInt8.self)
                 return withUnsafePointer(to: &recoverableSignature, { (signaturePointer:UnsafePointer<secp256k1_ecdsa_recoverable_signature>) -> Int32 in
                     withUnsafeMutablePointer(to: &publicKey, { (pubKeyPtr: UnsafeMutablePointer<secp256k1_pubkey>) -> Int32 in
-                        return secp256k1_ecdsa_recover(context, pubKeyPtr, signaturePointer, hashPointer)
+                        return tangem_secp256k1_ecdsa_recover(context, pubKeyPtr, signaturePointer, hashPointer)
                     })
                 })
             } else {

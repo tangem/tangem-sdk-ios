@@ -126,7 +126,7 @@ SECP256K1_API int tangem_secp256k1_schnorrsig_sign32(
 
 /** Same as tangem_secp256k1_schnorrsig_sign32, but DEPRECATED. Will be removed in
  *  future versions. */
-SECP256K1_API int secp256k1_schnorrsig_sign(
+SECP256K1_API int tangem_secp256k1_schnorrsig_sign(
     const secp256k1_context *ctx,
     unsigned char *sig64,
     const unsigned char *msg32,

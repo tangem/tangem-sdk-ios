@@ -232,7 +232,7 @@ public final class Secp256k1Utils {
         let privkey = privateKey.toBytes
         var pubkey = try parsePublicKey(publicKey)
         var sharedSecret = Array(repeating: UInt8(0), count: 32)
-        guard tangem_secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, tangem_secp256k1_ecdh_tangem, nil) == 1 else {
+        guard tangem_secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, secp256k1_ecdh_tangem, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to compute an EC Diffie-Hellman secret ")
         }
         return Data(sharedSecret)

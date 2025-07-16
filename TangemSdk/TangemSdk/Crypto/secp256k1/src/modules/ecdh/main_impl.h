@@ -35,7 +35,7 @@ const secp256k1_ecdh_hash_function tangem_secp256k1_ecdh_hash_function_default =
 // TANGEM
 const secp256k1_ecdh_hash_function secp256k1_ecdh_tangem = ecdh_tangem_function;
 
-int secp256k1_ecdh(const secp256k1_context* ctx, unsigned char *output, const secp256k1_pubkey *point, const unsigned char *scalar, secp256k1_ecdh_hash_function hashfp, void *data) {
+int tangem_secp256k1_ecdh(const secp256k1_context* ctx, unsigned char *output, const secp256k1_pubkey *point, const unsigned char *scalar, secp256k1_ecdh_hash_function hashfp, void *data) {
     int ret = 0;
     int overflow = 0;
     secp256k1_gej res;

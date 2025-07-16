@@ -33,7 +33,7 @@ typedef struct secp256k1_ecdsa_recoverable_signature {
  *  In:   input64: pointer to a 64-byte compact signature
  *        recid:   the recovery id (0, 1, 2 or 3)
  */
-SECP256K1_API int secp256k1_ecdsa_recoverable_signature_parse_compact(
+SECP256K1_API int tangem_secp256k1_ecdsa_recoverable_signature_parse_compact(
     const secp256k1_context *ctx,
     secp256k1_ecdsa_recoverable_signature *sig,
     const unsigned char *input64,
@@ -47,7 +47,7 @@ SECP256K1_API int secp256k1_ecdsa_recoverable_signature_parse_compact(
  *  Out:  sig:    pointer to a normal signature.
  *  In:   sigin:  pointer to a recoverable signature.
  */
-SECP256K1_API int secp256k1_ecdsa_recoverable_signature_convert(
+SECP256K1_API int tangem_secp256k1_ecdsa_recoverable_signature_convert(
     const secp256k1_context *ctx,
     secp256k1_ecdsa_signature *sig,
     const secp256k1_ecdsa_recoverable_signature *sigin
@@ -61,7 +61,7 @@ SECP256K1_API int secp256k1_ecdsa_recoverable_signature_convert(
  *        recid:    pointer to an integer to hold the recovery id.
  *  In:   sig:      pointer to an initialized signature object.
  */
-SECP256K1_API int secp256k1_ecdsa_recoverable_signature_serialize_compact(
+SECP256K1_API int tangem_secp256k1_ecdsa_recoverable_signature_serialize_compact(
     const secp256k1_context *ctx,
     unsigned char *output64,
     int *recid,
@@ -72,16 +72,16 @@ SECP256K1_API int secp256k1_ecdsa_recoverable_signature_serialize_compact(
  *
  *  Returns: 1: signature created
  *           0: the nonce generation function failed, or the secret key was invalid.
- *  Args:    ctx:       pointer to a context object (not secp256k1_context_static).
+ *  Args:    ctx:       pointer to a context object (not tangem_secp256k1_context_static).
  *  Out:     sig:       pointer to an array where the signature will be placed.
  *  In:      msghash32: the 32-byte message hash being signed.
  *           seckey:    pointer to a 32-byte secret key.
  *           noncefp:   pointer to a nonce generation function. If NULL,
- *                      secp256k1_nonce_function_default is used.
+ *                      tangem_secp256k1_nonce_function_default is used.
  *           ndata:     pointer to arbitrary data used by the nonce generation function
- *                      (can be NULL for secp256k1_nonce_function_default).
+ *                      (can be NULL for tangem_secp256k1_nonce_function_default).
  */
-SECP256K1_API int secp256k1_ecdsa_sign_recoverable(
+SECP256K1_API int tangem_secp256k1_ecdsa_sign_recoverable(
     const secp256k1_context *ctx,
     secp256k1_ecdsa_recoverable_signature *sig,
     const unsigned char *msghash32,

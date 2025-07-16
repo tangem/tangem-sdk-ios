@@ -61,7 +61,7 @@ typedef int (*secp256k1_nonce_function_hardened)(
  *  Therefore, to create BIP-340 compliant signatures, algo must be set to
  *  "BIP0340/nonce" and algolen to 13.
  */
-SECP256K1_API const secp256k1_nonce_function_hardened secp256k1_nonce_function_bip340;
+SECP256K1_API const secp256k1_nonce_function_hardened tangem_secp256k1_nonce_function_bip340;
 
 /** Data structure that contains additional arguments for schnorrsig_sign_custom.
  *
@@ -73,10 +73,10 @@ SECP256K1_API const secp256k1_nonce_function_hardened secp256k1_nonce_function_b
  *             and has no other function than making sure the object is
  *             initialized.
  *    noncefp: pointer to a nonce generation function. If NULL,
- *             secp256k1_nonce_function_bip340 is used
+ *             tangem_secp256k1_nonce_function_bip340 is used
  *      ndata: pointer to arbitrary data used by the nonce generation function
  *             (can be NULL). If it is non-NULL and
- *             secp256k1_nonce_function_bip340 is used, then ndata must be a
+ *             tangem_secp256k1_nonce_function_bip340 is used, then ndata must be a
  *             pointer to 32-byte auxiliary randomness as per BIP-340.
  */
 typedef struct {
@@ -95,18 +95,18 @@ typedef struct {
 /** Create a Schnorr signature.
  *
  *  Does _not_ strictly follow BIP-340 because it does not verify the resulting
- *  signature. Instead, you can manually use secp256k1_schnorrsig_verify and
+ *  signature. Instead, you can manually use tangem_secp256k1_schnorrsig_verify and
  *  abort if it fails.
  *
  *  This function only signs 32-byte messages. If you have messages of a
  *  different size (or the same size but without a context-specific tag
  *  prefix), it is recommended to create a 32-byte message hash with
- *  secp256k1_tagged_sha256 and then sign the hash. Tagged hashing allows
+ *  tangem_secp256k1_tagged_sha256 and then sign the hash. Tagged hashing allows
  *  providing an context-specific tag for domain separation. This prevents
  *  signatures from being valid in multiple contexts by accident.
  *
  *  Returns 1 on success, 0 on failure.
- *  Args:    ctx: pointer to a context object (not secp256k1_context_static).
+ *  Args:    ctx: pointer to a context object (not tangem_secp256k1_context_static).
  *  Out:   sig64: pointer to a 64-byte array to store the serialized signature.
  *  In:    msg32: the 32-byte message being signed.
  *       keypair: pointer to an initialized keypair.
@@ -116,7 +116,7 @@ typedef struct {
  *                BIP-340 "Default Signing" for a full explanation of this
  *                argument and for guidance if randomness is expensive.
  */
-SECP256K1_API int secp256k1_schnorrsig_sign32(
+SECP256K1_API int tangem_secp256k1_schnorrsig_sign32(
     const secp256k1_context *ctx,
     unsigned char *sig64,
     const unsigned char *msg32,
@@ -124,7 +124,7 @@ SECP256K1_API int secp256k1_schnorrsig_sign32(
     const unsigned char *aux_rand32
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
-/** Same as secp256k1_schnorrsig_sign32, but DEPRECATED. Will be removed in
+/** Same as tangem_secp256k1_schnorrsig_sign32, but DEPRECATED. Will be removed in
  *  future versions. */
 SECP256K1_API int secp256k1_schnorrsig_sign(
     const secp256k1_context *ctx,
@@ -133,7 +133,7 @@ SECP256K1_API int secp256k1_schnorrsig_sign(
     const secp256k1_keypair *keypair,
     const unsigned char *aux_rand32
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4)
-  SECP256K1_DEPRECATED("Use secp256k1_schnorrsig_sign32 instead");
+  SECP256K1_DEPRECATED("Use tangem_secp256k1_schnorrsig_sign32 instead");
 
 /** Create a Schnorr signature with a more flexible API.
  *
@@ -141,7 +141,7 @@ SECP256K1_API int secp256k1_schnorrsig_sign(
  *  variable length messages and accepts a pointer to an extraparams object that
  *  allows customizing signing by passing additional arguments.
  *
- *  Equivalent to secp256k1_schnorrsig_sign32(..., aux_rand32) if msglen is 32
+ *  Equivalent to tangem_secp256k1_schnorrsig_sign32(..., aux_rand32) if msglen is 32
  *  and extraparams is initialized as follows:
  *  ```
  *  secp256k1_schnorrsig_extraparams extraparams = SECP256K1_SCHNORRSIG_EXTRAPARAMS_INIT;
@@ -149,14 +149,14 @@ SECP256K1_API int secp256k1_schnorrsig_sign(
  *  ```
  *
  *  Returns 1 on success, 0 on failure.
- *  Args:   ctx: pointer to a context object (not secp256k1_context_static).
+ *  Args:   ctx: pointer to a context object (not tangem_secp256k1_context_static).
  *  Out:  sig64: pointer to a 64-byte array to store the serialized signature.
  *  In:     msg: the message being signed. Can only be NULL if msglen is 0.
  *       msglen: length of the message.
  *      keypair: pointer to an initialized keypair.
  *  extraparams: pointer to an extraparams object (can be NULL).
  */
-SECP256K1_API int secp256k1_schnorrsig_sign_custom(
+SECP256K1_API int tangem_secp256k1_schnorrsig_sign_custom(
     const secp256k1_context *ctx,
     unsigned char *sig64,
     const unsigned char *msg,
@@ -175,7 +175,7 @@ SECP256K1_API int secp256k1_schnorrsig_sign_custom(
  *        msglen: length of the message
  *        pubkey: pointer to an x-only public key to verify with (cannot be NULL)
  */
-SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_schnorrsig_verify(
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int tangem_secp256k1_schnorrsig_verify(
     const secp256k1_context *ctx,
     const unsigned char *sig64,
     const unsigned char *msg,

@@ -112,13 +112,15 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
     /// Field on card that describes is accessCode is default value or not
     static let isAccessCodeStatusAvailable = FirmwareVersion(major: 4, minor: 33)
+    /// Determines when default PINs are optional in commands
+    static let isDefaultPinsOptional = FirmwareVersion(major: 4, minor: 34)
     /// Read-write files
     static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 39)
     /// Is create wallet command answers with the whole wallet
     static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
-    /// Backup availavle
+    /// Backup available
     static let backupAvailable = FirmwareVersion(major: 4, minor: 39)
     /// Wallet ownership confirmation available
     static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)

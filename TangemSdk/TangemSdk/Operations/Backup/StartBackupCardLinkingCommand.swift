@@ -43,7 +43,7 @@ final class StartBackupCardLinkingCommand: Command {
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
+            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .append(.cardId, value: environment.card?.cardId)
             .append(.primaryCardLinkingKey, value: primaryCardLinkingKey)
 

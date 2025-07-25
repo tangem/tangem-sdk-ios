@@ -99,8 +99,8 @@ final class LinkPrimaryCardCommand: Command {
 
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.pin2, value: environment.passcode.value)
+            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
+            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
             .append(.certificate, value: certificate)
             .append(.backupAttestSignature, value: attestSignature)

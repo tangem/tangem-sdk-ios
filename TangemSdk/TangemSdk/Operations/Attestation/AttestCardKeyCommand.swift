@@ -102,7 +102,7 @@ public class AttestCardKeyCommand: Command {
         }
 
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
+            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
 

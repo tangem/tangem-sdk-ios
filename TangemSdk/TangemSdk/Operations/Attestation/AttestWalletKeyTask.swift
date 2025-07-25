@@ -145,7 +145,7 @@ public final class AttestWalletKeyTask: Command {
         }
         
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
+            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .append(.cardId, value: card.cardId)
             .append(.challenge, value: challenge)
             .append(.walletIndex, value: walletIndex)

@@ -52,8 +52,8 @@ class SetUserSettingsCommand: Command {
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.pin2, value: environment.passcode.value)
+            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
+            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.cardId, value: environment.card?.cardId)
             .append(.userSettingsMask, value: settings.mask)
 

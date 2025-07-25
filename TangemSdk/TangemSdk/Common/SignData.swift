@@ -9,12 +9,12 @@ import Foundation
 
 public struct SignData {
     public let derivationPath: DerivationPath?
-    public let hash: Data
+    public let hashes: [Data]
     public let publicKey: Data
     
-    public init(derivationPath: DerivationPath?, hash: Data, publicKey: Data) {
+    public init(derivationPath: DerivationPath?, hashes: [Data], publicKey: Data) {
         self.derivationPath = derivationPath
-        self.hash = hash
+        self.hashes = hashes
         self.publicKey = publicKey
     }
 }

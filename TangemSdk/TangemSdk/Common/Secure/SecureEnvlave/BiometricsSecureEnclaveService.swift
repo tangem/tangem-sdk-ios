@@ -15,8 +15,8 @@ public struct BiometricsSecureEnclaveService {
 
     public init() {}
 
-    private func makeOrRestoreKey(tag: String, context: LAContext) throws -> SecKey {
-        if let restoredKey = keyUtil.restoreKey(tag: tag, context: context) {
+    private func makeOrRestoreKey(tag: String, context: LAContext?) throws -> SecKey {
+        if let context, let restoredKey = keyUtil.restoreKey(tag: tag, context: context) {
             return restoredKey
         }
 
@@ -27,7 +27,7 @@ public struct BiometricsSecureEnclaveService {
 // MARK: - Signing
 
 public extension BiometricsSecureEnclaveService {
-    func sign(data: Data, keyTag: String, context: LAContext) throws -> Data {
+    func sign(data: Data, keyTag: String, context: LAContext?) throws -> Data {
         let privateKey = try makeOrRestoreKey(tag: keyTag, context: context)
         return try util.sign(data: data, privateKey: privateKey)
     }
@@ -41,7 +41,7 @@ public extension BiometricsSecureEnclaveService {
 // MARK: - ECIES
 
 public extension BiometricsSecureEnclaveService {
-    func encryptData(_ data: Data, keyTag: String, context: LAContext) throws -> Data {
+    func encryptData(_ data: Data, keyTag: String, context: LAContext?) throws -> Data {
         let privateKey = try makeOrRestoreKey(tag: keyTag, context: context)
         return try util.encryptData(data, privateKey: privateKey)
     }
@@ -57,7 +57,7 @@ public extension BiometricsSecureEnclaveService {
 // MARK: - SecureStorageKey
 
 extension BiometricsSecureEnclaveService {
-    func sign(data: Data, storageKey: SecureStorageKey, context: LAContext) throws -> Data {
+    func sign(data: Data, storageKey: SecureStorageKey, context: LAContext?) throws -> Data {
         try sign(data: data, keyTag: storageKey.rawValue, context: context)
     }
 
@@ -65,7 +65,7 @@ extension BiometricsSecureEnclaveService {
         try verify(signature: signature, message: message, keyTag: storageKey.rawValue, context: context)
     }
 
-    func encryptData(_ data: Data, storageKey: SecureStorageKey, context: LAContext) throws -> Data {
+    func encryptData(_ data: Data, storageKey: SecureStorageKey, context: LAContext?) throws -> Data {
         try encryptData(data, keyTag: storageKey.rawValue, context: context)
     }
 

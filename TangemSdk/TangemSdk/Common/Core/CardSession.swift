@@ -175,7 +175,7 @@ public class CardSession {
         
         Log.session("Start card session with delegate")
         state = .active
-        NotificationCenter.default.post(name: .CardSessionDidStart, object: self)
+        NotificationCenter.default.post(name: .cardSessionDidStart, object: self)
 
         reader.viewEventsPublisher //Subscription for reader's view events and invoke viewDelegate
             .dropFirst()
@@ -357,7 +357,7 @@ public class CardSession {
         sendSubscription = []
         viewDelegate.sessionStopped(completion: completion)
         state = .inactive
-        NotificationCenter.default.post(name: .CardSessionDidFinish, object: self)
+        NotificationCenter.default.post(name: .cardSessionDidFinish, object: self)
     }
     
     // MARK: - Prepearing session

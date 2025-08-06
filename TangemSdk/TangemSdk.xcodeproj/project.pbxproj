@@ -241,6 +241,7 @@
 		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
 		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
 		B6F5B6592E1BD3F700E6A454 /* ReadCardAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */; };
+		C2E007242E4358A00076F57A /* CardSession+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E007232E4358A00076F57A /* CardSession+Notification.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
@@ -662,6 +663,7 @@
 		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCardAnimationModifier.swift; sourceTree = "<group>"; };
+		C2E007232E4358A00076F57A /* CardSession+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardSession+Notification.swift"; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -1131,6 +1133,7 @@
 			children = (
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
+				C2E007232E4358A00076F57A /* CardSession+Notification.swift */,
 				DC612D712AFD60C2005A547F /* SessionFilter.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
@@ -2109,6 +2112,7 @@
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D27C8AA27737D200095409C /* Secp256k1Signature.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
+				C2E007242E4358A00076F57A /* CardSession+Notification.swift in Sources */,
 				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
 				5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */,
 				5D379C29268FA4AC00C7F473 /* CardSessionRunnable.swift in Sources */,

@@ -241,6 +241,7 @@
 		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
 		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
 		B6F5B6592E1BD3F700E6A454 /* ReadCardAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */; };
+		C2E007242E4358A00076F57A /* CardSession+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E007232E4358A00076F57A /* CardSession+Notification.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
 		DC0665572A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0665562A7AC8F500CFFCC6 /* Ed25519Slip0010Tests.swift */; };
@@ -286,6 +287,10 @@
 		DC70AD652A80FC9F00928836 /* CommonFirmwareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */; };
 		DC70AD672A8115BB00928836 /* FWTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70AD662A8115BB00928836 /* FWTestCase.swift */; };
 		DC7254902A03E20A0003FE1B /* DerivedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */; };
+		DC76171A2E410EFC00B786D7 /* BiometricsSecureEnclaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7617192E410EF600B786D7 /* BiometricsSecureEnclaveService.swift */; };
+		DC76171C2E410F1F00B786D7 /* SecureEnclaveError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC76171B2E410F1A00B786D7 /* SecureEnclaveError.swift */; };
+		DC76171E2E41106500B786D7 /* SecureEnclaveAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC76171D2E41106000B786D7 /* SecureEnclaveAlgorithm.swift */; };
+		DC7617202E41134400B786D7 /* SecureEnclaveKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC76171F2E41133B00B786D7 /* SecureEnclaveKey.swift */; };
 		DC77F24D2CD42610001B2929 /* ChunkHashesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F24C2CD4260A001B2929 /* ChunkHashesTests.swift */; };
 		DC77F24F2CD426B6001B2929 /* ChunkedHashesContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F24E2CD426B6001B2929 /* ChunkedHashesContainer.swift */; };
 		DC77F2512CD426E3001B2929 /* SignDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77F2502CD426E3001B2929 /* SignDTO.swift */; };
@@ -658,6 +663,7 @@
 		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCardAnimationModifier.swift; sourceTree = "<group>"; };
+		C2E007232E4358A00076F57A /* CardSession+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardSession+Notification.swift"; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
 		DADB544F298BAFBC00491102 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -707,6 +713,10 @@
 		DC70AD642A80FC9F00928836 /* CommonFirmwareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonFirmwareTests.swift; sourceTree = "<group>"; };
 		DC70AD662A8115BB00928836 /* FWTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FWTestCase.swift; sourceTree = "<group>"; };
 		DC72548F2A03E20A0003FE1B /* DerivedKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DerivedKeys.swift; sourceTree = "<group>"; };
+		DC7617192E410EF600B786D7 /* BiometricsSecureEnclaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsSecureEnclaveService.swift; sourceTree = "<group>"; };
+		DC76171B2E410F1A00B786D7 /* SecureEnclaveError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveError.swift; sourceTree = "<group>"; };
+		DC76171D2E41106000B786D7 /* SecureEnclaveAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveAlgorithm.swift; sourceTree = "<group>"; };
+		DC76171F2E41133B00B786D7 /* SecureEnclaveKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureEnclaveKey.swift; sourceTree = "<group>"; };
 		DC77F24C2CD4260A001B2929 /* ChunkHashesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkHashesTests.swift; sourceTree = "<group>"; };
 		DC77F24E2CD426B6001B2929 /* ChunkedHashesContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkedHashesContainer.swift; sourceTree = "<group>"; };
 		DC77F2502CD426E3001B2929 /* SignDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignDTO.swift; sourceTree = "<group>"; };
@@ -877,14 +887,11 @@
 		5D14947B2686450F00C0D923 /* Secure */ = {
 			isa = PBXGroup;
 			children = (
+				DC7617182E410EDB00B786D7 /* Keychain */,
+				DC7617172E410EC000B786D7 /* SecureEnvlave */,
 				5DE59F2C23D96FE500312DA4 /* TerminalKeysService.swift */,
-				5D14947C2686453C00C0D923 /* KeyStoreError.swift */,
-				5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */,
-				5D1494802686488600C0D923 /* SecureEnclaveService.swift */,
 				DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */,
 				DC8B0E3E286F221D009D64F7 /* BiometricsUtil.swift */,
-				DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */,
-				DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */,
 			);
 			path = Secure;
 			sourceTree = "<group>";
@@ -1126,6 +1133,7 @@
 			children = (
 				5D58202124221E2B0057EF40 /* TangemSdkError.swift */,
 				5D58201F24221E060057EF40 /* CardSession.swift */,
+				C2E007232E4358A00076F57A /* CardSession+Notification.swift */,
 				DC612D712AFD60C2005A547F /* SessionFilter.swift */,
 				5D7D5FB123449D4000058D69 /* SessionEnvironment.swift */,
 				5D705B5A23DAF2BB002CCD7A /* Config.swift */,
@@ -1621,6 +1629,29 @@
 			path = PreflightReadFilter;
 			sourceTree = "<group>";
 		};
+		DC7617172E410EC000B786D7 /* SecureEnvlave */ = {
+			isa = PBXGroup;
+			children = (
+				DC76171F2E41133B00B786D7 /* SecureEnclaveKey.swift */,
+				DC76171D2E41106000B786D7 /* SecureEnclaveAlgorithm.swift */,
+				DC76171B2E410F1A00B786D7 /* SecureEnclaveError.swift */,
+				DC7617192E410EF600B786D7 /* BiometricsSecureEnclaveService.swift */,
+				5D1494802686488600C0D923 /* SecureEnclaveService.swift */,
+			);
+			path = SecureEnvlave;
+			sourceTree = "<group>";
+		};
+		DC7617182E410EDB00B786D7 /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				5D14947C2686453C00C0D923 /* KeyStoreError.swift */,
+				5DE59F2E23D9703A00312DA4 /* SecureStorage.swift */,
+				DCEA3ABB2875AEBA00B0B0DA /* BiometricsStorage.swift */,
+				DCEA3ABD2875AF0F00B0B0DA /* SecureStorageKey.swift */,
+			);
+			path = Keychain;
+			sourceTree = "<group>";
+		};
 		DC8BD7332D79F4A800BD2486 /* musig */ = {
 			isa = PBXGroup;
 			children = (
@@ -2081,6 +2112,7 @@
 				B0390F8725658F620061E5ED /* SigningMethod.swift in Sources */,
 				5D27C8AA27737D200095409C /* Secp256k1Signature.swift in Sources */,
 				5D6A92E02344F2F900158457 /* SessionViewDelegate.swift in Sources */,
+				C2E007242E4358A00076F57A /* CardSession+Notification.swift in Sources */,
 				5D46F15A2681064A00DC6447 /* Handlers.swift in Sources */,
 				5DED473326D6A00D003CB1E7 /* BackupService.swift in Sources */,
 				5D379C29268FA4AC00C7F473 /* CardSessionRunnable.swift in Sources */,
@@ -2114,6 +2146,7 @@
 				5D60CA63272C472F00A1DF0B /* ResetCodesController.swift in Sources */,
 				DC1682202B3C355600194DDE /* BackupCertificateProvider.swift in Sources */,
 				5D908C6126A75DB700270FA3 /* ReadView.swift in Sources */,
+				DC76171A2E410EFC00B786D7 /* BiometricsSecureEnclaveService.swift in Sources */,
 				DC3D98022A77F5DB001EEE7A /* IkarusMasterKeyFactory.swift in Sources */,
 				5D0243BE26CACACD00B76F37 /* IndicatorView.swift in Sources */,
 				5D1D945C2722FD7400FD6DAB /* CreateWalletTask.swift in Sources */,
@@ -2250,6 +2283,7 @@
 				5D0F8D0226C6A80F002E84A4 /* UserCodeHeaderView.swift in Sources */,
 				5DE5550C2458408B000E1816 /* ReadUserDataCommand.swift in Sources */,
 				5D27C8A827736F190095409C /* Secp256k1Key.swift in Sources */,
+				DC7617202E41134400B786D7 /* SecureEnclaveKey.swift in Sources */,
 				5D908C5B26A7469100270FA3 /* CardView.swift in Sources */,
 				5D8D257726EA66BD00146039 /* ResetBackupCommand.swift in Sources */,
 				5D38D078267A4B0C0052F67C /* AttestationTask.swift in Sources */,
@@ -2274,6 +2308,7 @@
 				B0800F82252C3CAA007E04EE /* ReadFilesTask.swift in Sources */,
 				5D445B7426E2988500F6F0FE /* GetResetPinToken.swift in Sources */,
 				B0800F96252C6867007E04EE /* File.swift in Sources */,
+				DC76171C2E410F1F00B786D7 /* SecureEnclaveError.swift in Sources */,
 				B00B32CA252DC77600A9FE96 /* WriteFileCommand.swift in Sources */,
 				5DFFC1A1234DC715001C2F35 /* CryptoUtils.swift in Sources */,
 				5D866660273168330095CC82 /* MainViewModel.swift in Sources */,
@@ -2319,6 +2354,7 @@
 				5DB4406F234B750200AC39F1 /* String+.swift in Sources */,
 				5DFFC4A2233BA5E0004964E8 /* Byte+.swift in Sources */,
 				DC30D70A2AF024D000744FA4 /* PreflightReadFilter.swift in Sources */,
+				DC76171E2E41106500B786D7 /* SecureEnclaveAlgorithm.swift in Sources */,
 				DC972E4F2DBBA04B00089882 /* CardArtworksProvider.swift in Sources */,
 				B06947BF2534570B0056A887 /* DeleteFilesTask.swift in Sources */,
 				DC1244DA29BB65970037BC05 /* ExtendedKeySerializable.swift in Sources */,

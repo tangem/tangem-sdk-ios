@@ -53,7 +53,9 @@ final class CreateWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion >= .multiwalletAvailable,
+        let selectBlockchainAllowedFlagRelevantVersions = (FirmwareVersion.multiwalletAvailable ..< .createWalletResponseAvailable)
+
+        if selectBlockchainAllowedFlagRelevantVersions.contains(card.firmwareVersion),
            !card.settings.isSelectBlockchainAllowed {
             return .walletCannotBeCreated
         }

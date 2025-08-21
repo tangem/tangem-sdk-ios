@@ -18,9 +18,13 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+    - name: Install Ruby
+      uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
 
     - name: Authorize SSH session
       env:
@@ -32,11 +36,6 @@ jobs:
         chmod 600 ~/.ssh/ios_dependencies_ssh_key
         ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
         ssh-add ~/.ssh/ios_dependencies_ssh_key
-
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.6
 
     - name: Bundle Install
       run: bundle install

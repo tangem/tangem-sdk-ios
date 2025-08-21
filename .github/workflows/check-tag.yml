@@ -16,6 +16,10 @@ jobs:
       with:
         fetch-depth: 0
 
+    # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+    - name: Install Ruby
+      uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
+
     - name: Read VERSION file
       id: read-version-file
       run: |

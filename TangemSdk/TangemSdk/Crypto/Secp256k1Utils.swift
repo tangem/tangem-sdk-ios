@@ -76,6 +76,11 @@ public final class Secp256k1Utils {
         return try serializePublicKey(&publicKeySecp, compressed: true)
     }
     
+    public func normalizeSignature(_ signature: Data) throws -> Data {
+        var parsed = try parseNormalize(signature)
+        return try serializeSignature(&parsed)
+    }
+    
     func compressKey(_ publicKey: Data) throws -> Data {
         if publicKey.count == 33 {
             return publicKey
@@ -322,11 +327,7 @@ public final class Secp256k1Utils {
         
         return Data(serializedSignature)
     }
-    
-    func normalizeSignature(_ signature: Data) throws -> Data {
-        var parsed = try parseNormalize(signature)
-        return try serializeSignature(&parsed)
-    }
+
     
     func parseNormalize(_ signature: Data) throws -> secp256k1_ecdsa_signature {
         var sig = secp256k1_ecdsa_signature()

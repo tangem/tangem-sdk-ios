@@ -39,7 +39,13 @@ public struct BLSUtils {
         let sk  = intKey % Constants.curveOrder
         
         if sk != 0 {
-            return Data(hexString: sk.hexString)
+            // Always return 32 bytes, left-padded with zeros if needed
+            var skData = Data(hexString: sk.hexString)
+            if skData.count < Constants.outputKeyLength {
+                let padding = Data(repeating: 0, count: Constants.outputKeyLength - skData.count)
+                skData = padding + skData
+            }
+            return skData
         }
 
         let salt = salt.getSha256()
@@ -61,6 +67,8 @@ extension BLSUtils {
 
         /// r, defined in  https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-bls-signature-04
         fileprivate static let curveOrder: BigInt = .init("52435875175126190479447740508185965837690552500527637822603658699938581184513", radix: 10)!
+        
+        fileprivate static let outputKeyLength = 32
     }
 
     enum BLSError: Error {

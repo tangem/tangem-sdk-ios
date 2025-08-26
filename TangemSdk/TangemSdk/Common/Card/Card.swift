@@ -2,7 +2,7 @@
 //  Card.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 18/11/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 
@@ -178,7 +178,7 @@ public extension Card {
 
 extension Card {
     /// Status of the card and its wallet.
-    enum Status: Int, StatusType { //TODO: TBD
+    enum Status: Int, StatusType { //[REDACTED_TODO_COMMENT]
         case notPersonalized = 0
         case empty = 1
         case loaded = 2
@@ -191,7 +191,7 @@ extension Card {
         case cardLinked
         case active
         
-        var intValue: Int { //TODO: make generic tlvintconvertible
+        var intValue: Int { //[REDACTED_TODO_COMMENT]
             switch self {
             case .noBackup:
                 return 0

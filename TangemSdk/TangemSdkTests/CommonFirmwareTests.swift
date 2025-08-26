@@ -2,7 +2,7 @@
 //  CommonFirmwareTests.swift
 //  TangemSdkTests
 //
-//  Created by Alexander Osokin on 07.08.2023.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 

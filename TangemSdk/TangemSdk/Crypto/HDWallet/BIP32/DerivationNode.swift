@@ -49,6 +49,8 @@ public enum DerivationNode: Equatable, Hashable {
     }
 }
 
+// MARK: - Serialization/deserialization
+
 extension DerivationNode {
     func serialize() -> Data {
         index.bytes4
@@ -64,5 +66,26 @@ extension DerivationNode {
         }
         
         return .nonHardened(index)
+    }
+}
+
+// MARK: - Convenience extensions
+
+public extension DerivationNode {
+    var rawIndex: UInt32 {
+        switch self {
+        case .hardened(let index),
+             .nonHardened(let index):
+            return index
+        }
+    }
+
+    func withRawIndex(_ rawIndex: UInt32) -> DerivationNode {
+        switch self {
+        case .hardened:
+            return .hardened(rawIndex)
+        case .nonHardened:
+            return .nonHardened(rawIndex)
+        }
     }
 }

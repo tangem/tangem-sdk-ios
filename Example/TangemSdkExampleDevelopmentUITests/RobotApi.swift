@@ -2,7 +2,7 @@
 //  RobotApi.swift
 //  Tangem
 //
-//  Created by Alexander Osokin on 16.12.2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Smart Cash AG. All rights reserved.
 //
 

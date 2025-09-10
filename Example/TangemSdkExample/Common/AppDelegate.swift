@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  TangemSDKExample
 //
-//  Created by Alexander Osokin on 10/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 

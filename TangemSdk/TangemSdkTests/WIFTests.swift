@@ -2,7 +2,7 @@
 //  WIFTests.swift
 //  TangemSdkTests
 //
-//  Created by Alexander Osokin on 13.01.2023.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 

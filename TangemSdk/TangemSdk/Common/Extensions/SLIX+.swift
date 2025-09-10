@@ -2,7 +2,7 @@
 //  SLIX+.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 11.02.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 
@@ -36,7 +36,7 @@ extension NFCReader: SlixTagReader {
     }
 }
 
-//Slix2 tag support. TODO: Refactor. Useful for payload retrieve
+//Slix2 tag support. [REDACTED_TODO_COMMENT]
 private extension ResponseApdu {
     init?(slix2Data: Data) {
         let ndefTlvData = slix2Data[4...] //cut e1402801 (CC)

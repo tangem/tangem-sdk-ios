@@ -2,7 +2,7 @@
 //  CardSession+Notification.swift
 //  TangemSdk
 //
-//  Created by Aleksei Lobankov on 05.08.2025.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import struct Foundation.Notification

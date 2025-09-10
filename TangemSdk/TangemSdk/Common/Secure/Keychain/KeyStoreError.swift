@@ -3,7 +3,7 @@
 //Errors that can be generated as a result of attempting to store keys.
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 25.06.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

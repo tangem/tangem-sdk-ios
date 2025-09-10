@@ -2,7 +2,7 @@
 //  Wallet.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 10.06.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 
@@ -47,7 +47,7 @@ public extension Card.Wallet {
 
 public extension Card.Wallet {
     /// Status of the wallet. 
-    enum Status: Int, StatusType, JSONStringConvertible { //TODO: Specify
+    enum Status: Int, StatusType, JSONStringConvertible { //[REDACTED_TODO_COMMENT]
         /// Wallet not created
         case empty = 1
         /// Wallet created and can be used for signing

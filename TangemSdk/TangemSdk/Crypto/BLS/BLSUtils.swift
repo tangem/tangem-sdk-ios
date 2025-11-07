@@ -102,6 +102,13 @@ public extension BLSUtils {
         try BlsSignatureSwift.publicKey(from: privateKey)
     }
 
+    /// Obtain public key from private key.
+    /// - Parameter privateKey: Private key data.
+    /// - Returns: Public key hash.
+    func makePublicKey(from privateKey: Data) throws -> String {
+        try BlsSignatureSwift.publicKey(from: privateKey)
+    }
+
     /// Verify message payload for signatures
     /// - Parameters:
     ///   - signatures: Hash signatures

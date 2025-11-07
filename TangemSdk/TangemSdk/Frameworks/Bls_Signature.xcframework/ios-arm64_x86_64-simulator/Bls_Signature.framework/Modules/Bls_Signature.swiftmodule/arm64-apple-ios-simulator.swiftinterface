@@ -1,7 +1,7 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 6.1 effective-5.10 (swiftlang-6.1.0.110.21 clang-1700.0.13.3)
+// swift-compiler-version: Apple Swift version 6.2 effective-5.10 (swiftlang-6.2.0.19.9 clang-1700.3.19.1)
 // swift-module-flags: -target arm64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name Bls_Signature
-// swift-module-flags-ignorable: -no-verify-emitted-module-interface -interface-compiler-version 6.1
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.2
 @_exported import Bls_Signature
 import Foundation
 import Swift
@@ -11,7 +11,8 @@ import _SwiftConcurrencyShims
 public struct BlsSignatureSwift {
   public static func augSchemeMplG2Map(publicKey: Swift.String, message: Swift.String) throws -> Swift.String
   public static func aggregate(signatures: [Swift.String]) throws -> Swift.String
-  public static func publicKey(from privateKey: Swift.String) throws -> Swift.String
+  public static func publicKey(from privateKeyHex: Swift.String) throws -> Swift.String
+  public static func publicKey(from privateKey: Foundation.Data) throws -> Swift.String
   public static func verify(signatures: [Swift.String], with publicKey: Swift.String, message: Swift.String) throws -> Swift.Bool
   public static func sign(hash: Swift.String, with privateKey: Foundation.Data) throws -> Swift.String
 }
@@ -19,15 +20,8 @@ extension Bls_Signature.BlsSignatureSwift {
   public enum ErrorList : Swift.Error {
     case errorAggregate
     case errorAugScheme
-    case errorPublicKeyFromPrivateKey
+    case errorPublicKeyFromPrivateKey(Bls_Signature.BlsSignatureErrorCode)
     case errorVerify
     case errorSign
-    public static func == (a: Bls_Signature.BlsSignatureSwift.ErrorList, b: Bls_Signature.BlsSignatureSwift.ErrorList) -> Swift.Bool
-    public func hash(into hasher: inout Swift.Hasher)
-    public var hashValue: Swift.Int {
-      get
-    }
   }
 }
-extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Equatable {}
-extension Bls_Signature.BlsSignatureSwift.ErrorList : Swift.Hashable {}

@@ -125,6 +125,36 @@
           },
           {
             "kind": "Function",
+            "name": "publicKey",
+            "printedName": "publicKey(from:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:13Bls_Signature0aB5SwiftV9publicKey4fromSS10Foundation4DataV_tKFZ",
+            "mangledName": "$s13Bls_Signature0aB5SwiftV9publicKey4fromSS10Foundation4DataV_tKFZ",
+            "moduleName": "Bls_Signature",
+            "static": true,
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "verify",
             "printedName": "verify(signatures:with:message:)",
             "children": [
@@ -296,13 +326,26 @@
                   {
                     "kind": "TypeFunc",
                     "name": "Function",
-                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                    "printedName": "(Bls_Signature.BlsSignatureSwift.ErrorList.Type) -> (Bls_Signature.BlsSignatureErrorCode) -> Bls_Signature.BlsSignatureSwift.ErrorList",
                     "children": [
                       {
-                        "kind": "TypeNominal",
-                        "name": "ErrorList",
-                        "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
-                        "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(Bls_Signature.BlsSignatureErrorCode) -> Bls_Signature.BlsSignatureSwift.ErrorList",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "ErrorList",
+                            "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
+                            "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "BlsSignatureErrorCode",
+                            "printedName": "Bls_Signature.BlsSignatureErrorCode",
+                            "usr": "c:@E@BlsSignatureErrorCode"
+                          }
+                        ]
                       },
                       {
                         "kind": "TypeNominal",
@@ -321,8 +364,8 @@
                   }
                 ],
                 "declKind": "EnumElement",
-                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yA2EmF",
-                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yA2EmF",
+                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yAESo0abD4CodeVcAEmF",
+                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO025errorPublicKeyFromPrivateH0yAESo0abD4CodeVcAEmF",
                 "moduleName": "Bls_Signature"
               },
               {
@@ -398,102 +441,6 @@
                 "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9errorSignyA2EmF",
                 "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9errorSignyA2EmF",
                 "moduleName": "Bls_Signature"
-              },
-              {
-                "kind": "Function",
-                "name": "==",
-                "printedName": "==(_:_:)",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ErrorList",
-                    "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
-                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ErrorList",
-                    "printedName": "Bls_Signature.BlsSignatureSwift.ErrorList",
-                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO"
-                  }
-                ],
-                "declKind": "Func",
-                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO2eeoiySbAE_AEtFZ",
-                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO2eeoiySbAE_AEtFZ",
-                "moduleName": "Bls_Signature",
-                "static": true,
-                "implicit": true,
-                "funcSelfKind": "NonMutating"
-              },
-              {
-                "kind": "Var",
-                "name": "hashValue",
-                "printedName": "hashValue",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivp",
-                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivp",
-                "moduleName": "Bls_Signature",
-                "implicit": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Int",
-                        "printedName": "Swift.Int",
-                        "usr": "s:Si"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivg",
-                    "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO9hashValueSivg",
-                    "moduleName": "Bls_Signature",
-                    "implicit": true,
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Function",
-                "name": "hash",
-                "printedName": "hash(into:)",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Hasher",
-                    "printedName": "Swift.Hasher",
-                    "paramValueOwnership": "InOut",
-                    "usr": "s:s6HasherV"
-                  }
-                ],
-                "declKind": "Func",
-                "usr": "s:13Bls_Signature0aB5SwiftV9ErrorListO4hash4intoys6HasherVz_tF",
-                "mangledName": "$s13Bls_Signature0aB5SwiftV9ErrorListO4hash4intoys6HasherVz_tF",
-                "moduleName": "Bls_Signature",
-                "implicit": true,
-                "funcSelfKind": "NonMutating"
               }
             ],
             "declKind": "Enum",
@@ -518,20 +465,6 @@
               },
               {
                 "kind": "Conformance",
-                "name": "Equatable",
-                "printedName": "Equatable",
-                "usr": "s:SQ",
-                "mangledName": "$sSQ"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Hashable",
-                "printedName": "Hashable",
-                "usr": "s:SH",
-                "mangledName": "$sSH"
-              },
-              {
-                "kind": "Conformance",
                 "name": "Error",
                 "printedName": "Error",
                 "usr": "s:s5ErrorP",
@@ -543,6 +476,13 @@
                 "printedName": "Sendable",
                 "usr": "s:s8SendableP",
                 "mangledName": "$ss8SendableP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "SendableMetatype",
+                "printedName": "SendableMetatype",
+                "usr": "s:s16SendableMetatypeP",
+                "mangledName": "$ss16SendableMetatypeP"
               }
             ]
           }

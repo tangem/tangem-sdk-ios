@@ -37,6 +37,7 @@ lane :test do
     device: TEST_DEVICE,
     ensure_devices_found: true,
     skip_detect_devices: true,
+    result_bundle: true,
     # Old Xcode output formatter, 'xcpretty',
     # doesn't work particularly well with the new build system and parallel testing output
     xcodebuild_formatter: 'xcbeautify',

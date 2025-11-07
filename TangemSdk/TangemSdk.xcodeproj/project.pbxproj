@@ -241,6 +241,7 @@
 		B6936A672B387B040024826A /* secp256k1_tangem.h in Headers */ = {isa = PBXBuildFile; fileRef = B6936A662B387B040024826A /* secp256k1_tangem.h */; };
 		B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */; };
 		B6F5B6592E1BD3F700E6A454 /* ReadCardAnimationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */; };
+		C28AC1232EBBA13C00B7979C /* BlsUtilsMakePublicKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28AC1222EBBA13C00B7979C /* BlsUtilsMakePublicKeyTests.swift */; };
 		C2E007242E4358A00076F57A /* CardSession+Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E007232E4358A00076F57A /* CardSession+Notification.swift */; };
 		DA216CC0282E4D86003585B9 /* AccessCodeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */; };
 		DA6C752A292682650070EEFD /* LAContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C7529292682650070EEFD /* LAContext+.swift */; };
@@ -663,6 +664,7 @@
 		B6B958992B2FCA8600E7B74E /* TangemSdk.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = TangemSdk.podspec; path = ../TangemSdk.podspec; sourceTree = "<group>"; };
 		B6CA42222B38B5AE00C9A5C9 /* Bundle+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+.swift"; sourceTree = "<group>"; };
 		B6F5B6582E1BD3F700E6A454 /* ReadCardAnimationModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadCardAnimationModifier.swift; sourceTree = "<group>"; };
+		C28AC1222EBBA13C00B7979C /* BlsUtilsMakePublicKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlsUtilsMakePublicKeyTests.swift; sourceTree = "<group>"; };
 		C2E007232E4358A00076F57A /* CardSession+Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardSession+Notification.swift"; sourceTree = "<group>"; };
 		DA216CBF282E4D86003585B9 /* AccessCodeRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessCodeRepository.swift; sourceTree = "<group>"; };
 		DA6C7529292682650070EEFD /* LAContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LAContext+.swift"; sourceTree = "<group>"; };
@@ -1359,6 +1361,7 @@
 				5D170AF226B46DAC000D4F36 /* HDWalletTests.swift */,
 				DC4E442829BF42630088617C /* Base58Tests.swift */,
 				DCB5A4E42A1FAC190021E12D /* BLSTests.swift */,
+				C28AC1222EBBA13C00B7979C /* BlsUtilsMakePublicKeyTests.swift */,
 				DCB5A4E82A20EB1F0021E12D /* HKDFTests.swift */,
 				DC3D97FA2A77E079001EEE7A /* SLIP23Tests.swift */,
 				DC3D98052A7927A2001EEE7A /* SLIP10Tests.swift */,
@@ -2378,6 +2381,7 @@
 				5DA7942A236C64D100B33DB5 /* IntUtilsTests.swift in Sources */,
 				5DA80CA9231D247A00A50A10 /* CryptoUtilsTests.swift in Sources */,
 				5D713B2D236C3F6400E4F6FC /* StringUtilsTest.swift in Sources */,
+				C28AC1232EBBA13C00B7979C /* BlsUtilsMakePublicKeyTests.swift in Sources */,
 				B6CA42232B38B5AE00C9A5C9 /* Bundle+.swift in Sources */,
 				DC3D97FB2A77E079001EEE7A /* SLIP23Tests.swift in Sources */,
 				DCB5A4E52A1FAC190021E12D /* BLSTests.swift in Sources */,

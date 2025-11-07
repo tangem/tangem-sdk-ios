@@ -105,7 +105,7 @@ public enum CryptoUtils {
             let key = try P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key.publicKey.rawRepresentation
         case .bls12381_G2_AUG:
-            return try Data(hexString: BLSUtils().makePublicKey(from: privateKey.hexString))
+            return try Data(hexString: BLSUtils().makePublicKey(from: privateKey))
         case .bls12381_G2, .bls12381_G2_POP:
             // TODO: implement
             throw TangemSdkError.unsupportedCurve

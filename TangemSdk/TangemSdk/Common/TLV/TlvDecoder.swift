@@ -217,6 +217,15 @@ public final class TlvDecoder {
                 throw TangemSdkError.decodingFailed("Decoding error. Unknown BackupRawStatus")
             }
             return status as! T
+
+        case .accessLevel:
+            try typeCheck(AccessLevel.self, T.self, for: tag)
+            guard let intValue = tagValue.toInt(),
+                  let accessLevel = AccessLevel(rawValue: intValue) else {
+                throw TangemSdkError.decodingFailed("Decoding error. Unknown AccessLevel")
+            }
+
+            return accessLevel as! T
         }
     }
     

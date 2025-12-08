@@ -32,7 +32,7 @@ public final class Secp256k1Utils {
      */
     public func sign(_ data: Data, with key: Data) throws -> Data {
         var signature = secp256k1_ecdsa_signature()
-        guard secp256k1_ecdsa_sign(context, &signature, Array(data.getSha256()), Array(key), nil, nil) == 1 else {
+        guard secp256k1_ecdsa_sign(context, &signature, Array(data.getSHA256()), Array(key), nil, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to sign")
         }
         

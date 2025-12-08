@@ -136,7 +136,7 @@ public class SetUserCodeCommand: Command {
     
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
         if let code = self.codes[type]?.value,
-           code == type.defaultValue.sha256() {
+           code == type.defaultValue.getSHA256() {
             return false
         }
         
@@ -175,7 +175,7 @@ public class SetUserCodeCommand: Command {
         }
         
         if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
-            let hash = (accessCodeValue + passcodeValue).getSha256()
+            let hash = (accessCodeValue + passcodeValue).getSHA256()
             try tlvBuilder.append(.codeHash, value: hash)
         }
         
@@ -253,7 +253,7 @@ extension SetUserCodeCommand {
         var value: Data? {
             switch self {
             case .stringValue(let code):
-                return code.sha256()
+                return code.getSHA256()
             case .value(let code):
                 return code
             default:

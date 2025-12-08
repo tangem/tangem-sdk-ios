@@ -16,7 +16,10 @@ let package = Package(
             targets: [
                 "TangemSdk",
             ]
-        ),
+        )
+    ],
+    dependencies: [
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .exactItem("1.9.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,6 +29,7 @@ let package = Package(
             dependencies: [
                 "TangemSdk_secp256k1",
                 "Bls_Signature",
+                "CryptoSwift",
             ],
             path: "TangemSdk/TangemSdk",
             exclude: [
@@ -54,6 +58,7 @@ let package = Package(
             name: "TangemSdkTests",
             dependencies: [
                 "TangemSdk",
+                "CryptoSwift",
             ],
             path: "TangemSdk/TangemSdkTests",
             resources: [

@@ -30,7 +30,7 @@ public class TlvBuilder {
         }
 
         if let card, card.firmwareVersion >= .isDefaultPinsOptional,
-              value.value == value.type.defaultValue.sha256() {
+              value.value == value.type.defaultValue.getSHA256() {
             return self
         }
 

@@ -65,7 +65,7 @@ public struct BIP39 {
         }
 
         let calculatedChecksumBits = entropyData
-            .getSha256()
+            .getSHA256()
             .toBits()
             .prefix(entropyLength.cheksumBitsCount)
             .joined()
@@ -115,7 +115,7 @@ public struct BIP39 {
             throw MnemonicError.invalidEntropyLength
         }
 
-        let entropyHashBits = entropyData.getSha256().toBits()
+        let entropyHashBits = entropyData.getSHA256().toBits()
         let entropyChecksumBits = entropyHashBits.prefix(entropyLength.cheksumBitsCount)
 
         let entropyBits = entropyData.toBits()

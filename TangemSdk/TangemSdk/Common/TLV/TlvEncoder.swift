@@ -123,6 +123,10 @@ public final class TlvEncoder {
             try typeCheck(value, Card.BackupRawStatus.self, for: tag)
             let status = value as! Card.BackupRawStatus
             return status.intValue.bytes2
+        case .accessLevel:
+            try typeCheck(value, AccessLevel.self, for: tag)
+            let accessLevel = value as! AccessLevel
+            return accessLevel.rawValue.byte
         }
     }
     

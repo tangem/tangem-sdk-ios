@@ -189,7 +189,7 @@ public final class WriteFileCommand: Command {
             if let finalizingSignature = self.finalizingSignature {
                 try tlvBuilder.append(.issuerDataSignature, value: finalizingSignature)
             } else {
-                try tlvBuilder.append(.codeHash, value: data.getSha256())
+                try tlvBuilder.append(.codeHash, value: data.getSHA256())
                     .append(.pin2, value: environment.passcode.value)
             }
         default:

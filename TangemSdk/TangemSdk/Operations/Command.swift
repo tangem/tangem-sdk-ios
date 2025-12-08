@@ -181,10 +181,18 @@ extension Command {
                         session.environment.encryptionMode = .strong
                     case .strong:
                         break
+                    case .ccmWithSecurityDelay, .ccmWithAccessToken, .ccmWithAsymmetricKeys:
+                        // Should not happen
+                        completion(.failure(TangemSdkError.needEncryption))
+                        return
                     }
+
                     self.transceive(apdu: apdu, in: session, completion: completion)
                 case .unknown:
                     completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
+                case .accessDenied:
+                    // TODO: Handle accessDenied
+                    completion(.failure(TangemSdkError.accessDenied))
                 default:
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                 }

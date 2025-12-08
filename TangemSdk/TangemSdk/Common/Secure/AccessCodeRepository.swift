@@ -154,7 +154,7 @@ public class AccessCodeRepository {
             }
             
             //We found default code
-            if accessCode == UserCodeType.accessCode.defaultValue.sha256() {
+            if accessCode == UserCodeType.accessCode.defaultValue.getSHA256() {
                 if existingCode == nil {
                     Log.debug("Ignore the default code")
                     continue //Ignore default code

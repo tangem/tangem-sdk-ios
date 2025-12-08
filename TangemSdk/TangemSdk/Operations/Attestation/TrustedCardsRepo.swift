@@ -35,7 +35,7 @@ public class TrustedCardsRepo {
             data[keyWithMinIndex] = nil
         }
         
-        let hash = cardPublicKey.getSha256()
+        let hash = cardPublicKey.getSHA256()
         data[hash] = newAttestation
         do {
             try save()
@@ -45,7 +45,7 @@ public class TrustedCardsRepo {
     }
     
     func attestation(for cardPublicKey: Data) -> Attestation? {
-        let hash = cardPublicKey.getSha256()
+        let hash = cardPublicKey.getSHA256()
         return data[hash]
     }
     

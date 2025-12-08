@@ -30,8 +30,11 @@ public enum StatusWord: UInt16 {
     case invalidAccessCode = 0x6AF1
     case invalidPascode = 0x6AF2
     case walletAlreadyExists = 0x6A89
-    //case pinsNotChanged = 0x9000 //equal to processCompleted
-    
+    /// case pinsNotChanged = 0x9000 equals to processCompleted
+
+    /// COS v8+
+    case accessDenied = 0x6AF3
+
     func toTangemSdkError() -> TangemSdkError? {
         switch self {
         case .needEcryption:
@@ -56,6 +59,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.passcodeRequired
         case .walletAlreadyExists:
             return TangemSdkError.walletAlreadyCreated
+        case .accessDenied:
+            return TangemSdkError.accessDenied
         default:
             return nil
         }

@@ -27,6 +27,7 @@ public enum TlvValueType: String {
     case interactionMode
     case derivationPath
     case backupStatus //TODO: make all these type more generic
+    case accessLevel
 }
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
@@ -147,9 +148,15 @@ public enum TlvTag: Byte {
     case backupCardLink = 0xD4
     case backupAttestSignature = 0xD5
     case backupCardPublicKey = 0xD6
-    
+
     case proof = 0xAA
-    
+
+    // MARK: - COS v8+
+    case hmac = 0x44
+    case accessToken = 0x48
+    case identifyToken = 0x49
+    case accessLevel = 0x4A
+
     // MARK: - Ttl value types
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
@@ -188,6 +195,8 @@ public enum TlvTag: Byte {
             return .backupStatus
         case .userSettingsMask:
             return .userSettingsMask
+        case .accessLevel:
+            return .accessLevel
         default:
             return .data
         }
@@ -238,7 +247,9 @@ public enum TlvTag: Byte {
                 .trOutRaw,
                 .cardWallet,
                 .fileData,
-                .fileSignature:
+                .fileSignature,
+                .accessToken,
+                .identifyToken:
             return true
         case .unknown,
                 .transactionOutHashSize,
@@ -304,7 +315,9 @@ public enum TlvTag: Byte {
                 .fileOwnerIndex,
                 .walletHDPath,
                 .backupStatus,
-                .backupCount:
+                .backupCount,
+                .hmac,
+                .accessLevel:
             return false
         }
     }

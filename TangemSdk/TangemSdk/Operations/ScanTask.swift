@@ -32,7 +32,7 @@ public final class ScanTask: CardSessionRunnable {
         //We have to retrieve passcode status information for cards with COS before v4.01 with checkUserCodes command for backward compatibility.
         //checkUserCodes command for cards with COS <=1.19 not supported because of persistent SD.
         //We cannot run checkUserCodes command for cards whose `isRemovingUserCodesAllowed` is set to false because of an error
-        if card.firmwareVersion < .isPasscodeStatusAvailable
+        if card.firmwareVersion < .passcodeStatusAvailable
             && card.firmwareVersion.doubleValue > 1.19
             && card.settings.isRemovingUserCodesAllowed {
             checkUserCodes(session, completion)

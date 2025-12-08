@@ -27,7 +27,7 @@ public class OnlineAttestationCache {
     }
 
     func append(cardPublicKey: Data, response: OnlineAttestationResponse) {
-        let hash = cardPublicKey.getSha256()
+        let hash = cardPublicKey.getSHA256()
         data[hash] = response
         do {
             try save()
@@ -37,7 +37,7 @@ public class OnlineAttestationCache {
     }
 
     func response(for cardPublicKey: Data) -> OnlineAttestationResponse? {
-        let hash = cardPublicKey.getSha256()
+        let hash = cardPublicKey.getSHA256()
         return data[hash]
     }
 

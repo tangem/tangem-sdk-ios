@@ -49,17 +49,17 @@ extension UInt16 {
 }
 
 extension Array where Element == UInt8 {
-    public func getSha256() -> Data {
+    public func getSHA256() -> Data {
         let digest = SHA256.hash(data: self)
         return Data(digest)
     }
 
-    public func getSha512() -> Data {
+    public func getSHA512() -> Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
     }
 
-    public func getDoubleSha256() -> Data {
-        return getSha256().getSha256()
+    public func getDoubleSHA256() -> Data {
+        return getSHA256().getSHA256()
     }
 }

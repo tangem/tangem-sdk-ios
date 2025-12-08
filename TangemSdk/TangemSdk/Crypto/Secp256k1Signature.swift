@@ -29,7 +29,7 @@ public struct Secp256k1Signature {
     
     /// Verify with sha256 hash function
     public func verify(with publicKey: Data, message: Data) throws -> Bool {
-        return try verify(with: publicKey, hash: message.getSha256())
+        return try verify(with: publicKey, hash: message.getSHA256())
     }
     
     public func verify(with publicKey: Data, hash: Data) throws -> Bool {

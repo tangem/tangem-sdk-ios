@@ -3,81 +3,31 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2DA139F22A8A742600E3C374 /* Bls_Signature.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9AFD712A852FB600DF7002 /* Bls_Signature.xcframework */; };
-		2DA139F32A8A742600E3C374 /* Bls_Signature.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9AFD712A852FB600DF7002 /* Bls_Signature.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3672187517CA258835D737D6 /* Pods_TangemSdkExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F391CC3724B714DAE6648A97 /* Pods_TangemSdkExample.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		5D031FFD266A6960008472EC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D031FFC266A6960008472EC /* ContentView.swift */; };
-		5D031FFE266A6960008472EC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D031FFC266A6960008472EC /* ContentView.swift */; };
-		5D031FFF266A6960008472EC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D031FFC266A6960008472EC /* ContentView.swift */; };
 		5D032001266A6A15008472EC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D032000266A6A15008472EC /* AppModel.swift */; };
-		5D032002266A6A15008472EC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D032000266A6A15008472EC /* AppModel.swift */; };
-		5D032003266A6A15008472EC /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D032000266A6A15008472EC /* AppModel.swift */; };
 		5D032009266A8523008472EC /* ExampleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D032008266A8523008472EC /* ExampleButton.swift */; };
-		5D03200A266A8523008472EC /* ExampleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D032008266A8523008472EC /* ExampleButton.swift */; };
 		5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
-		5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
-		5D032010266A85CB008472EC /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */; };
 		5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
-		5D1C6C7327214F3100E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
-		5D2BDF8226DCE5A2002F7E19 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
-		5D2BDF8326DCE5A6002F7E19 /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */; };
 		5D3ABA3D26D02C5C0087EF4A /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */; };
 		5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
 		5D445B8026E2A8CF00F6F0FE /* ResetPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */; };
-		5D445B8126E2A97300F6F0FE /* ResetPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */; };
-		5D78C1BA234F435B008D7478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* AppDelegate.swift */; };
+		5D78C1BA234F435B008D7478 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* Application.swift */; };
 		5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
 		5D78C1C6234F435C008D7478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */; };
-		5DBC25BA235F053F005F0C79 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* AppDelegate.swift */; };
-		5DBC25BF235F053F005F0C79 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */; };
-		5DBC25C0235F053F005F0C79 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
-		5DBC25CB235F0639005F0C79 /* TangemSdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */; };
-		5DBC25CC235F0639005F0C79 /* TangemSdk.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5DDCEC7525C957930002090D /* UI+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDCEC7425C957930002090D /* UI+.swift */; };
-		5DDCEC7A25C958220002090D /* UI+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDCEC7425C957930002090D /* UI+.swift */; };
 		B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
-		B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00A67B2253D8CAC002D7D53 /* Utils.swift */; };
-		B6B9589C2B2FCA9900E7B74E /* Gemfile in Resources */ = {isa = PBXBuildFile; fileRef = B6B9589A2B2FCA9900E7B74E /* Gemfile */; };
-		B6B9589D2B2FCA9900E7B74E /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = B6B9589B2B2FCA9900E7B74E /* Podfile */; };
 		DC23ED9F2912DD0D0023E626 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */; };
-		DC23EDA02912DD520023E626 /* ResetToFactorySettingsTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */; };
 		DC28E0F22877F84B00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
-		DC28E0F32877F9BA00AE7A84 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */; };
-		DC4512802BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */; };
+		DC3D69122EE7448700F718D9 /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = DC3D69112EE7448700F718D9 /* TangemSdk */; };
 		DC4512822BD17F9D00DE6F94 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */; };
+		DC99C0F22E8C48AA00C59D6D /* TangemSdk in Frameworks */ = {isa = PBXBuildFile; productRef = DC99C0F12E8C48AA00C59D6D /* TangemSdk */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		E53EB3E923F2C7C90079CC11 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5D78C1AE234F435B008D7478 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5DBC25B6235F053F005F0C79;
-			remoteInfo = TangemSdkExampleDevelopment;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		5DBC25CD235F0639005F0C79 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				2DA139F32A8A742600E3C374 /* Bls_Signature.xcframework in Embed Frameworks */,
-				5DBC25CC235F0639005F0C79 /* TangemSdk.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		2D9AFD712A852FB600DF7002 /* Bls_Signature.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Bls_Signature.xcframework; path = ../TangemSdk/TangemSdk/Frameworks/Bls_Signature.xcframework; sourceTree = "<group>"; };
 		5D031FFC266A6960008472EC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5D032000266A6A15008472EC /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		5D032008266A8523008472EC /* ExampleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleButton.swift; sourceTree = "<group>"; };
@@ -86,26 +36,16 @@
 		5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticData.swift; sourceTree = "<group>"; };
 		5D3C2BCE26D93E7200722E33 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
 		5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinView.swift; sourceTree = "<group>"; };
-		5D78C1B6234F435B008D7478 /* TangemSdkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5D78C1B9234F435B008D7478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5D78C1B9234F435B008D7478 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		5D78C1C2234F435C008D7478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D78C1C5234F435C008D7478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5D7FE136234F7D6700A1F440 /* TangemSdkExample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TangemSdkExample.entitlements; sourceTree = "<group>"; };
-		5DBC25C6235F053F005F0C79 /* TangemSdkExampleDevelopment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExampleDevelopment.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TangemSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DDCEC7425C957930002090D /* UI+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UI+.swift"; sourceTree = "<group>"; };
-		5E2717BD1D7CB2EFFB59D0F4 /* Pods-TangemSdkExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSdkExample.release.xcconfig"; path = "Target Support Files/Pods-TangemSdkExample/Pods-TangemSdkExample.release.xcconfig"; sourceTree = "<group>"; };
-		ABA3866CD02DAF9913B7E6BD /* Pods-TangemSdkExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangemSdkExample.debug.xcconfig"; path = "Target Support Files/Pods-TangemSdkExample/Pods-TangemSdkExample.debug.xcconfig"; sourceTree = "<group>"; };
 		B00A67B2253D8CAC002D7D53 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		B6B9589A2B2FCA9900E7B74E /* Gemfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Gemfile; sourceTree = "<group>"; };
-		B6B9589B2B2FCA9900E7B74E /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetToFactorySettingsTask.swift; sourceTree = "<group>"; };
 		DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
 		DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		E53EB3E423F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TangemSdkExampleDevelopmentUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TangemSdkExampleDevelopmentUITests.swift; sourceTree = "<group>"; };
-		E53EB3EE23F2CD860079CC11 /* RobotApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobotApi.swift; sourceTree = "<group>"; };
-		F391CC3724B714DAE6648A97 /* Pods_TangemSdkExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangemSdkExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC99C0F32E8C49FD00C59D6D /* TangemSdkExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TangemSdkExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,23 +53,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3672187517CA258835D737D6 /* Pods_TangemSdkExample.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5DBC25BC235F053F005F0C79 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2DA139F22A8A742600E3C374 /* Bls_Signature.xcframework in Frameworks */,
-				5DBC25CB235F0639005F0C79 /* TangemSdk.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E53EB3E123F2C7C90079CC11 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				DC99C0F22E8C48AA00C59D6D /* TangemSdk in Frameworks */,
+				DC3D69122EE7448700F718D9 /* TangemSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +67,7 @@
 				5D032008266A8523008472EC /* ExampleButton.swift */,
 				5DDCEC7425C957930002090D /* UI+.swift */,
 				B00A67B2253D8CAC002D7D53 /* Utils.swift */,
-				5D78C1B9234F435B008D7478 /* AppDelegate.swift */,
+				5D78C1B9234F435B008D7478 /* Application.swift */,
 				5D03200D266A85CB008472EC /* ActivityIndicatorView.swift */,
 				5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */,
 				5D78C1C2234F435C008D7478 /* Assets.xcassets */,
@@ -166,22 +91,16 @@
 			isa = PBXGroup;
 			children = (
 				DC45127F2BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy */,
-				B6B9589A2B2FCA9900E7B74E /* Gemfile */,
-				B6B9589B2B2FCA9900E7B74E /* Podfile */,
 				5D78C1B8234F435B008D7478 /* TangemSdkExample */,
-				E53EB3E523F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests */,
 				5D78C1B7234F435B008D7478 /* Products */,
 				5D78C1D7234F4400008D7478 /* Frameworks */,
-				BE3AC01BC66047E63E00A34C /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
 		5D78C1B7234F435B008D7478 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5D78C1B6234F435B008D7478 /* TangemSdkExample.app */,
-				5DBC25C6235F053F005F0C79 /* TangemSdkExampleDevelopment.app */,
-				E53EB3E423F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.xctest */,
+				DC99C0F32E8C49FD00C59D6D /* TangemSdkExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -202,29 +121,8 @@
 		5D78C1D7234F4400008D7478 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2D9AFD712A852FB600DF7002 /* Bls_Signature.xcframework */,
-				5DCA54A0235E0D5900C2BB99 /* TangemSdk.framework */,
-				F391CC3724B714DAE6648A97 /* Pods_TangemSdkExample.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		BE3AC01BC66047E63E00A34C /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				ABA3866CD02DAF9913B7E6BD /* Pods-TangemSdkExample.debug.xcconfig */,
-				5E2717BD1D7CB2EFFB59D0F4 /* Pods-TangemSdkExample.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		E53EB3E523F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests */ = {
-			isa = PBXGroup;
-			children = (
-				E53EB3E623F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.swift */,
-				E53EB3EE23F2CD860079CC11 /* RobotApi.swift */,
-			);
-			path = TangemSdkExampleDevelopmentUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -234,11 +132,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5D78C1CA234F435C008D7478 /* Build configuration list for PBXNativeTarget "TangemSdkExample" */;
 			buildPhases = (
-				C52DCDA70E3ECD7241A6257C /* [CP] Check Pods Manifest.lock */,
 				5D78C1B2234F435B008D7478 /* Sources */,
 				5D78C1B3234F435B008D7478 /* Frameworks */,
 				5D78C1B4234F435B008D7478 /* Resources */,
-				5C55CF4C2E78C5A03E93678B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -246,44 +142,8 @@
 			);
 			name = TangemSdkExample;
 			productName = TangemSDKExample;
-			productReference = 5D78C1B6234F435B008D7478 /* TangemSdkExample.app */;
+			productReference = DC99C0F32E8C49FD00C59D6D /* TangemSdkExample.app */;
 			productType = "com.apple.product-type.application";
-		};
-		5DBC25B6235F053F005F0C79 /* TangemSdkExampleDevelopment */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5DBC25C3235F053F005F0C79 /* Build configuration list for PBXNativeTarget "TangemSdkExampleDevelopment" */;
-			buildPhases = (
-				5DBC25B8235F053F005F0C79 /* Sources */,
-				5DBC25BC235F053F005F0C79 /* Frameworks */,
-				5DBC25BE235F053F005F0C79 /* Resources */,
-				5DBC25CD235F0639005F0C79 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = TangemSdkExampleDevelopment;
-			productName = TangemSDKExample;
-			productReference = 5DBC25C6235F053F005F0C79 /* TangemSdkExampleDevelopment.app */;
-			productType = "com.apple.product-type.application";
-		};
-		E53EB3E323F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E53EB3EB23F2C7C90079CC11 /* Build configuration list for PBXNativeTarget "TangemSdkExampleDevelopmentUITests" */;
-			buildPhases = (
-				E53EB3E023F2C7C90079CC11 /* Sources */,
-				E53EB3E123F2C7C90079CC11 /* Frameworks */,
-				E53EB3E223F2C7C90079CC11 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E53EB3EA23F2C7C90079CC11 /* PBXTargetDependency */,
-			);
-			name = TangemSdkExampleDevelopmentUITests;
-			productName = TangemSdkExampleDevelopmentUITests;
-			productReference = E53EB3E423F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -293,19 +153,15 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1640;
 				ORGANIZATIONNAME = "Tangem AG";
 				TargetAttributes = {
 					5D78C1B5234F435B008D7478 = {
 						CreatedOnToolsVersion = 11.1;
 					};
-					E53EB3E323F2C7C90079CC11 = {
-						CreatedOnToolsVersion = 11.2.1;
-						TestTargetID = 5DBC25B6235F053F005F0C79;
-					};
 				};
 			};
-			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */;
+			buildConfigurationList = 5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -314,13 +170,14 @@
 				Base,
 			);
 			mainGroup = 5D78C1AD234F435B008D7478;
+			packageReferences = (
+				DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference "../../tangem-sdk-ios" */,
+			);
 			productRefGroup = 5D78C1B7234F435B008D7478 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				5D78C1B5234F435B008D7478 /* TangemSdkExample */,
-				5DBC25B6235F053F005F0C79 /* TangemSdkExampleDevelopment */,
-				E53EB3E323F2C7C90079CC11 /* TangemSdkExampleDevelopmentUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -330,72 +187,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6B9589C2B2FCA9900E7B74E /* Gemfile in Resources */,
 				5D78C1C6234F435C008D7478 /* LaunchScreen.storyboard in Resources */,
-				B6B9589D2B2FCA9900E7B74E /* Podfile in Resources */,
 				DC4512822BD17F9D00DE6F94 /* PrivacyInfo.xcprivacy in Resources */,
 				5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5DBC25BE235F053F005F0C79 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DC4512802BD17F8F00DE6F94 /* PrivacyInfo.xcprivacy in Resources */,
-				5DBC25BF235F053F005F0C79 /* LaunchScreen.storyboard in Resources */,
-				5DBC25C0235F053F005F0C79 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E53EB3E223F2C7C90079CC11 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		5C55CF4C2E78C5A03E93678B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TangemSdkExample/Pods-TangemSdkExample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C52DCDA70E3ECD7241A6257C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TangemSdkExample-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5D78C1B2234F435B008D7478 /* Sources */ = {
@@ -403,7 +201,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D031FFD266A6960008472EC /* ContentView.swift in Sources */,
-				5D78C1BA234F435B008D7478 /* AppDelegate.swift in Sources */,
+				5D78C1BA234F435B008D7478 /* Application.swift in Sources */,
 				5D3ABA3D26D02C5C0087EF4A /* StaticData.swift in Sources */,
 				5D032001266A6A15008472EC /* AppModel.swift in Sources */,
 				5D032009266A8523008472EC /* ExampleButton.swift in Sources */,
@@ -418,45 +216,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5DBC25B8235F053F005F0C79 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5D2BDF8326DCE5A6002F7E19 /* StaticData.swift in Sources */,
-				5D031FFE266A6960008472EC /* ContentView.swift in Sources */,
-				5DBC25BA235F053F005F0C79 /* AppDelegate.swift in Sources */,
-				DC23EDA02912DD520023E626 /* ResetToFactorySettingsTask.swift in Sources */,
-				5D032002266A6A15008472EC /* AppModel.swift in Sources */,
-				5D03200A266A8523008472EC /* ExampleButton.swift in Sources */,
-				B00A67B6253D8DA2002D7D53 /* Utils.swift in Sources */,
-				5D445B8126E2A97300F6F0FE /* ResetPinView.swift in Sources */,
-				DC28E0F32877F9BA00AE7A84 /* DebugLogger.swift in Sources */,
-				5DDCEC7A25C958220002090D /* UI+.swift in Sources */,
-				5D2BDF8226DCE5A2002F7E19 /* BackupView.swift in Sources */,
-				5D03200F266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
-				5D1C6C7327214F3100E04A8B /* SettingsView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E53EB3E023F2C7C90079CC11 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5D032003266A6A15008472EC /* AppModel.swift in Sources */,
-				5D032010266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
-				5D031FFF266A6960008472EC /* ContentView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		E53EB3EA23F2C7C90079CC11 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5DBC25B6235F053F005F0C79 /* TangemSdkExampleDevelopment */;
-			targetProxy = E53EB3E923F2C7C90079CC11 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */ = {
@@ -505,6 +265,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -566,6 +327,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -588,14 +350,13 @@
 		};
 		5D78C1CB234F435C008D7478 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ABA3866CD02DAF9913B7E6BD /* Pods-TangemSdkExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				INFOPLIST_FILE = TangemSDKExample/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TangemSdk;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -615,14 +376,13 @@
 		};
 		5D78C1CC234F435C008D7478 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5E2717BD1D7CB2EFFB59D0F4 /* Pods-TangemSdkExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
 				INFOPLIST_FILE = TangemSDKExample/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TangemSdk;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -640,100 +400,10 @@
 			};
 			name = Release;
 		};
-		5DBC25C4235F053F005F0C79 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = "TangemSdkExample/Info-Development.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
-		};
-		5DBC25C5235F053F005F0C79 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = TangemSDKExample/TangemSDKExample.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 15;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = "TangemSdkExample/Info-Development.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tangem.TangemSDKExample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		E53EB3EC23F2C7C90079CC11 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = TangemSdkExampleDevelopmentUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = Tangem.TangemSdkExampleDevelopmentUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TangemSdkExampleDevelopment;
-			};
-			name = Debug;
-		};
-		E53EB3ED23F2C7C90079CC11 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4897UJ6D8C;
-				INFOPLIST_FILE = TangemSdkExampleDevelopmentUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = Tangem.TangemSdkExampleDevelopmentUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TangemSdkExampleDevelopment;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSDKExample" */ = {
+		5D78C1B1234F435B008D7478 /* Build configuration list for PBXProject "TangemSdkExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5D78C1C8234F435C008D7478 /* Debug */,
@@ -751,25 +421,25 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5DBC25C3235F053F005F0C79 /* Build configuration list for PBXNativeTarget "TangemSdkExampleDevelopment" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5DBC25C4235F053F005F0C79 /* Debug */,
-				5DBC25C5235F053F005F0C79 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E53EB3EB23F2C7C90079CC11 /* Build configuration list for PBXNativeTarget "TangemSdkExampleDevelopmentUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E53EB3EC23F2C7C90079CC11 /* Debug */,
-				E53EB3ED23F2C7C90079CC11 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference "../../tangem-sdk-ios" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../tangem-sdk-ios";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DC3D69112EE7448700F718D9 /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemSdk;
+		};
+		DC99C0F12E8C48AA00C59D6D /* TangemSdk */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TangemSdk;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5D78C1AE234F435B008D7478 /* Project object */;
 }

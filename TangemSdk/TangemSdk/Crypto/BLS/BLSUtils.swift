@@ -48,7 +48,7 @@ public struct BLSUtils {
             return skData
         }
 
-        let salt = salt.getSha256()
+        let salt = salt.getSHA256()
         
         return try generateKey(inputKeyMaterial: inputKeyMaterial, salt: salt, keyInfo: keyInfo)
     }
@@ -60,7 +60,7 @@ extension BLSUtils {
         static let saltPreV4: Data = "BLS-SIG-KEYGEN-SALT-".data(using: .utf8)!
 
         /// Actual version of  keygen algorithm
-        static let salt: Data = saltPreV4.getSha256()
+        static let salt: Data = saltPreV4.getSHA256()
         
         /// L, Calculated as ceil((3 * ceil(log2(r))) / 16). where r is s the order of the BLS 12-381
         fileprivate static let okmCount: Int = 48

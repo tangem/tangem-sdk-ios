@@ -22,7 +22,7 @@ public struct Secp256k1Key {
     }
 
     public init(with signature: Secp256k1Signature.Extended, message: Data) throws {
-        try self.init(with: signature, hash: message.getSha256())
+        try self.init(with: signature, hash: message.getSHA256())
     }
 
     public func compress() throws -> Data {

@@ -38,3 +38,5 @@ Pods/
 
 # Rubygems
 vendor/bundle
+
+report.xml

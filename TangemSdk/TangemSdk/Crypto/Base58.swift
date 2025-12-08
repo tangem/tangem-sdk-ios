@@ -140,7 +140,7 @@ public extension Array where Element == UInt8 {
     var base58CheckEncodedString: String {
         guard !self.isEmpty else { return "" }
 
-        let checksum = self.getDoubleSha256().prefix(4)
+        let checksum = self.getDoubleSHA256().prefix(4)
         let bytes = self + checksum
         return Base58.base58FromBytes(bytes)
     }
@@ -170,7 +170,7 @@ public extension String {
 
         let checksum = Array(bytes.suffix(4))
         let bytesWithoutCheck = Array(bytes.dropLast(4))
-        let calculatedChecksum = Array(bytesWithoutCheck.getDoubleSha256().prefix(4))
+        let calculatedChecksum = Array(bytesWithoutCheck.getDoubleSHA256().prefix(4))
 
         if checksum != calculatedChecksum { return nil }
 

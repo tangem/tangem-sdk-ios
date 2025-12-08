@@ -109,9 +109,10 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     /// BLS
     static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
     /// Field on card that describes is passcode is default value or not
-    static let isPasscodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
-    /// Field on card that describes is accessCode is default value or not
-    static let isAccessCodeStatusAvailable = FirmwareVersion(major: 4, minor: 33)
+    static let passcodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Starting from this firmware version, the card provides status information about user codes (access code and passcode),
+    /// including whether they are set to default values. The status words SW_INVALID_PIN and SW_INVALID_PIN2 indicate invalid user code attempts.
+    static let userCodeStatusesAvailable = FirmwareVersion(major: 4, minor: 33)
     /// Determines when default PINs are optional in commands
     static let isDefaultPinsOptional = FirmwareVersion(major: 4, minor: 34)
     /// Read-write files
@@ -130,6 +131,8 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     static let visaRange = 5.25...5.30
     /// ed25519_slip0010
     static let ed25519Slip0010Available = FirmwareVersion(major: 6, minor: 33)
+    /// main secret
+    static let mainSecretAvailable = FirmwareVersion(major: 8, minor: 33)
 }
 
 public extension FirmwareVersion {

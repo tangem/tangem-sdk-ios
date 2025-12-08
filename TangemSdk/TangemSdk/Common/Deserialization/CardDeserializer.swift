@@ -30,10 +30,10 @@ struct CardDeserializer {
         let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
         let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
 
-        let isPasscodeSet: Bool? = firmware >= .isPasscodeStatusAvailable ?
+        let isPasscodeSet: Bool? = firmware >= .passcodeStatusAvailable ?
             !(try decoder.decode(.pin2IsDefault)) : nil
         
-        let isAccessCodeSet: Bool? = firmware >= .isAccessCodeStatusAvailable ?
+        let isAccessCodeSet: Bool? = firmware >= .userCodeStatusesAvailable ?
             !(try decoder.decode(.pinIsDefault)) : nil
         
         let defaultCurve: EllipticCurve? = try decoder.decode(.curveId)

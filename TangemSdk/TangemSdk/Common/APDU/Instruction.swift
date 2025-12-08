@@ -44,4 +44,8 @@ public enum Instruction: Byte {
     case getEntropy = 0xE7
     case setUserSettings = 0xD5
     case finalizeReadBackupData = 0xEF
+
+    /// COS v8+
+    case manageAccessTokens = 0xD6
+    case manageMasterSecret = 0xE6
 }

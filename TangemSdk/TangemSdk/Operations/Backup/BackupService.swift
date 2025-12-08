@@ -133,7 +133,7 @@ public class BackupService {
             throw TangemSdkError.accessCodeCannotBeChanged
         }
 
-        repo.data.accessCode = code.sha256()
+        repo.data.accessCode = code.getSHA256()
         updateState()
     }
 
@@ -159,7 +159,7 @@ public class BackupService {
             throw TangemSdkError.passcodeCannotBeChanged
         }
 
-        repo.data.passcode = code.sha256()
+        repo.data.passcode = code.getSHA256()
         updateState()
     }
 
@@ -194,7 +194,7 @@ public class BackupService {
         } else {
             let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
 
-            let initialMessage = formattedCardId.map {
+            initialMessage = formattedCardId.map {
                 Message(header: nil,
                         body: "backup_prepare_primary_card_message_format".localized($0)) }
             ?? Message(header: "backup_prepare_primary_card_message".localized)
@@ -309,8 +309,8 @@ public class BackupService {
                 }
             }
 
-            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
-            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
+            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.getSHA256()
+            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.getSHA256()
 
             guard let primaryCard = repo.data.primaryCard else {
                 throw TangemSdkError.missingPrimaryCard
@@ -380,8 +380,8 @@ public class BackupService {
                 }
             }
 
-            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.sha256()
-            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.sha256()
+            let accessCode = repo.data.accessCode ?? UserCodeType.accessCode.defaultValue.getSHA256()
+            let passcode = repo.data.passcode ?? UserCodeType.passcode.defaultValue.getSHA256()
 
             guard let attestSignature = repo.data.attestSignature else {
                 throw TangemSdkError.missingPrimaryAttestSignature

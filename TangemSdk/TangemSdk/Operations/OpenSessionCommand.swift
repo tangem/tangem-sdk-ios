@@ -58,6 +58,8 @@ class EncryptionHelperFactory {
             return try StrongEncryptionHelper()
         case .none:
             fatalError("Cannot make EncryptionHelper for EncryptionMode NONE")
+        case .ccmWithSecurityDelay, .ccmWithAccessToken, .ccmWithAsymmetricKeys:
+            fatalError("These modes are not supported by the old encryption mechanism")
         }
     }
 }

@@ -24,7 +24,7 @@ public class PersonalizeCommand: Command {
     private let acquirer: Acquirer?
     
     private lazy var devPersonalizationKey: Data = {
-        return "1234".sha256().prefix(32)
+        return "1234".getSHA256().prefix(32)
     }()
     
     /// Default initializer
@@ -102,13 +102,13 @@ public class PersonalizeCommand: Command {
             .append(.cvc, value: config.cvc.data(using: .utf8))
             .append(.createWalletAtPersonalize, value: createWallet)
             .append(.ndefData, value: serializeNdef(config))
-            .append(.newPin, value: config.pin.sha256())
-            .append(.newPin2, value: config.pin2.sha256())
+            .append(.newPin, value: config.pin.getSHA256())
+            .append(.newPin2, value: config.pin2.getSHA256())
             .append(.issuerPublicKey, value: issuer.dataKeyPair.publicKey)
             .append(.issuerTransactionPublicKey, value: issuer.transactionKeyPair.publicKey)
             .append(.cardData, value: try serializeCardData(environment: environment, cardId: cardId, cardData: cardData))
         
-        if let pin3 = config.pin3?.sha256() {
+        if let pin3 = config.pin3?.getSHA256() {
             try tlvBuilder.append(.newPin3, value: pin3)
         }
         

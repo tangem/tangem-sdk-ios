@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-PROJECT_NAME = 'TangemSdk/TangemSdk.xcodeproj'
-SCHEMA_NAME = 'TangemSdk'
+PACKAGE_PATH = '.'
+SCHEME_NAME = 'TangemSdk'
 TEST_DEVICE = 'iPhone 16 Pro Max (18.5)' # Update when Xcode is updated
+BUILD_RESULT_FOLDER = "test_output"
 
 before_all do |lane, options|
   lanes_to_skip_bootstrap = [
@@ -32,17 +33,18 @@ end
 
 lane :test do
   run_tests(
-    project: PROJECT_NAME,
-    scheme: SCHEMA_NAME,
+    package_path: PACKAGE_PATH,
+    scheme: SCHEME_NAME,
     device: TEST_DEVICE,
-    ensure_devices_found: true,
     skip_detect_devices: true,
+    ensure_devices_found: true,
+    # Result bundle will be analyzed using `xcode_summary` Danger plugin
+    output_directory: File.join(Dir.pwd, BUILD_RESULT_FOLDER),
     result_bundle: true,
-    # Old Xcode output formatter, 'xcpretty',
-    # doesn't work particularly well with the new build system and parallel testing output
-    xcodebuild_formatter: 'xcbeautify',
+    # Old Xcode output formatter, 'xcpretty', doesn't work particularly well with the new build system and parallel testing output
+    xcodebuild_formatter: "xcbeautify",
     # 'xcbeautify' doesn't support HTML output type
-    output_types: 'junit',
+    output_types: "junit",
     clean: true
   )
 end

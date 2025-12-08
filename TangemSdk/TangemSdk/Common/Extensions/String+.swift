@@ -9,14 +9,14 @@
 import Foundation
 
 public extension String {
-    func sha256() -> Data {
+    func getSHA256() -> Data {
         let data = Data(Array(utf8))
-        return data.getSha256()
+        return data.getSHA256()
     }
 
-    func sha512() -> Data {
+    func getSHA512() -> Data {
         let data = Data(Array(utf8))
-        return data.getSha512()
+        return data.getSHA512()
     }
     
     internal var titleFormatted: String {

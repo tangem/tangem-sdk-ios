@@ -47,7 +47,7 @@ public class ResetPinService {
             }
         }
         
-        repo.accessCode = code.sha256()
+        repo.accessCode = code.getSHA256()
         
         if currentState == .needCode {
             _currentState.value = currentState.next()
@@ -72,7 +72,7 @@ public class ResetPinService {
             }
         }
 
-        repo.passcode = code.sha256()
+        repo.passcode = code.getSHA256()
 
         if currentState == .needCode {
             _currentState.value = currentState.next()
@@ -177,11 +177,11 @@ public class ResetPinService {
         
         if config.handleErrors {
             if !resetPinCard.isAccessCodeSet {
-                accessCode = UserCodeType.accessCode.defaultValue.sha256()
+                accessCode = UserCodeType.accessCode.defaultValue.getSHA256()
             }
             
             if !resetPinCard.isPasscodeSet {
-                passcode = UserCodeType.passcode.defaultValue.sha256()
+                passcode = UserCodeType.passcode.defaultValue.getSHA256()
             }
         }
         

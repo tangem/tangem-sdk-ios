@@ -225,7 +225,7 @@ class TlvTests: XCTestCase {
         XCTAssertEqual(try! TlvBuilder().append(.productMask, value: ProductMask.tag).serialize(), Data(hexString: "8A0102"))
         XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value: Int(9).byte).serialize(), Data(hexString: "510109"))
         XCTAssertEqual(try! TlvBuilder().append(.transactionOutHashSize, value: Int(900).bytes2).serialize(), Data(hexString: "51020384"))
-        XCTAssertEqual(try! TlvBuilder().append(.pin, value: "12345".sha256()).serialize(), Data(hexString: "10205994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"))
+        XCTAssertEqual(try! TlvBuilder().append(.pin, value: "12345".getSHA256()).serialize(), Data(hexString: "10205994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"))
     }
     
     func testFileSettings() {
@@ -234,5 +234,13 @@ class TlvTests: XCTestCase {
         XCTAssertNotNil(settings)
         XCTAssertTrue(settings!.isPermanent)
         XCTAssertTrue(settings!.visibility == .public)
+    }
+
+    func testAccessLevel() throws {
+        let accessLevel: AccessLevel = try XCTUnwrap(Data(hexString: "4A0110").decodeTlv(tag: .accessLevel))
+        XCTAssertEqual(accessLevel, AccessLevel.fileOwner)
+
+        let encoded = try TlvBuilder().append(.accessLevel, value: AccessLevel.fileOwner).serialize()
+        XCTAssertEqual(encoded, Data(hexString: "4A0110"))
     }
 }

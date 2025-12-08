@@ -480,7 +480,7 @@ public class CardSession {
                     
                     let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
                     let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
-                    let sessionKey = (secret + protocolKey).getSha256()
+                    let sessionKey = (secret + protocolKey).getSHA256()
                     self.environment.encryptionKey = sessionKey
 
                     Log.session("The encryption established")

@@ -14,12 +14,12 @@ struct UserCode {
     let value: Data?
     
     init(_ type: UserCodeType) {
-        self.value = type.defaultValue.sha256()
+        self.value = type.defaultValue.getSHA256()
         self.type = type
     }
     
     init(_ type: UserCodeType, stringValue: String) {
-        self.value = stringValue.sha256()
+        self.value = stringValue.getSHA256()
         self.type = type
     }
     

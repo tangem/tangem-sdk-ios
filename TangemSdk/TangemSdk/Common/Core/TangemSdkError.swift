@@ -89,8 +89,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     /// This error is returned when a card's reply is `StatusWord.NeedEncryption` and the encryption was not established by TangemSdk.
     case needEncryption
-    
-    
+
+    /// COS v8+
+    case accessDenied
+
     //MARK: Business logic errors
     
     // Personalization Errors
@@ -230,7 +232,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorZeroLengthMessage
     case readerErrorRadioDisabled
     case readerTransceiveErrorPacketTooLong
-    
+    // TODO: uncomment for xcode26
+//     case readerErrorIneligible
+//     case readerErrorAccessNotAccepted
+
     // MARK: Files errors
     
     /// Returned when there is no files on card or when successfully read all files
@@ -325,7 +330,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .needEncryption: return 30006
         case .fileNotFound: return 30007
         case .walletNotFound: return 30008
-            
+        case .accessDenied: return 30009
+
             // MARK: 4yyxx Errors
             // Command Error. Business logical errors that occurred inside commands' implmentation.
             
@@ -456,6 +462,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
+            // TODO: uncomment for xCode26
+//        case .readerErrorIneligible: return 90023
+//        case .readerErrorAccessNotAccepted: return 90024
         }
     }
     
@@ -595,6 +604,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .readerErrorRadioDisabled
             case .readerTransceiveErrorPacketTooLong:
                 return .readerTransceiveErrorPacketTooLong
+                // TODO: uncomment for xCode26
+//            case .readerErrorIneligible:
+//                return .readerErrorIneligible
+//            case .readerErrorAccessNotAccepted:
+//                return .readerErrorAccessNotAccepted
             @unknown default:
                 return .nfcReaderError
             }

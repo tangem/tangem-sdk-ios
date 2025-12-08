@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/alexander.osokin/repos/tangem/tangem-lite/111/TangemSdk/Example/TangemSdkExample.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

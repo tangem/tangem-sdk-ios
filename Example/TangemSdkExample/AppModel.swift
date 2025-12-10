@@ -46,7 +46,7 @@ class AppModel: ObservableObject {
     @Published var displayLogs: Bool = false
     @Published var useDevApi: Bool = false
     @Published var newAttestation: Bool = true
-    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
+    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .alwaysWithBiometrics
     
     var backupService: BackupService? = nil
     var resetPinService: ResetPinService? = nil
@@ -284,7 +284,7 @@ extension AppModel {
         
         let hashSize = wallet.curve == .ed25519 ? 64 : 32
         let hash = getRandomHash(size: hashSize)
-        
+
         tangemSdk.sign(hash: hash,
                        walletPublicKey: walletPublicKey,
                        cardId: nil,

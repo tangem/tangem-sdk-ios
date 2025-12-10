@@ -22,6 +22,10 @@ public struct SecureEnclaveService {
 
         return try keyUtil.makeKey(tag: tag, flags: [.privateKeyUsage])
     }
+
+    func deleteKey(tag: String) {
+        keyUtil.delete(tag: tag)
+    }
 }
 
 // MARK: - Signing

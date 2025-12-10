@@ -22,6 +22,10 @@ public struct BiometricsSecureEnclaveService {
 
         return try keyUtil.makeKey(tag: tag, flags: [.privateKeyUsage, .biometryCurrentSet])
     }
+
+    func deleteKey(tag: String) {
+        keyUtil.delete(tag: tag)
+    }
 }
 
 // MARK: - Signing

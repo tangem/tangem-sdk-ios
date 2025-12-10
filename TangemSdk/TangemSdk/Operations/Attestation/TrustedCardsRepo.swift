@@ -72,6 +72,6 @@ public class TrustedCardsRepo {
 
 private extension TrustedCardsRepo {
     enum Constants {
-        static var maxCards = 1000 //todo: Think about it!
+        static var maxCards = 1000
     }
 }

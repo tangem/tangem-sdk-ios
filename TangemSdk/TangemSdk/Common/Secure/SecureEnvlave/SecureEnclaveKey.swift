@@ -55,4 +55,15 @@ struct SecureEnclaveKey {
 
         return (item as! SecKey)
     }
+
+    func delete(tag: String) {
+        let query: [String: Any] = [
+            kSecClass as String                 : kSecClassKey,
+            kSecAttrApplicationTag as String    : tag,
+            kSecAttrKeyType as String           : kSecAttrKeyTypeECSECPrimeRandom,
+        ]
+
+        // status intentionally omitted because data could be absent
+        _ = SecItemDelete(query as CFDictionary)
+    }
 }

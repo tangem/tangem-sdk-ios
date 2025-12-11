@@ -7,7 +7,7 @@ let package = Package(
     name: "TangemSdk",
     defaultLocalization: "en",
     platforms: [
-        .iOS("15.0")
+        .iOS("16.4")
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.

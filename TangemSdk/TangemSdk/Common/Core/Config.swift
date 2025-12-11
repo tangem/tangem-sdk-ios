@@ -115,7 +115,6 @@ public enum ProductType {
     case card
     case ring
 
-    @available(iOS 13.0, *)
     var localizedDescription: String {
         switch self {
         case .card:

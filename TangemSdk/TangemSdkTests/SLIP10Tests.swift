@@ -26,7 +26,6 @@ class SLIP10Tests: XCTestCase {
 
 // MARK: - SLIP10FWTests
 class SLIP10FWTests: FWTestCase {
-    @available(iOS 16.0, *)
     func testVector1Secp256r1() {
         let sdk = TangemSdk()
         sdk.config.defaultDerivationPaths = [.secp256r1: [
@@ -90,7 +89,6 @@ class SLIP10FWTests: FWTestCase {
         }
     }
 
-    @available(iOS 16.0, *)
     func testVector2Secp256r1() {
         let sdk = TangemSdk()
         sdk.config.defaultDerivationPaths = [.secp256r1: [

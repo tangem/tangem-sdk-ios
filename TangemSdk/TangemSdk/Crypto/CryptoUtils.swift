@@ -147,7 +147,6 @@ public enum CryptoUtils {
     }
 
     /// Verify secp256r1 signature
-    @available(iOS 16.0, *)
     public static func verifySecp256r1Signature(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
         if publicKey.count == Constants.p256CompressedKeySize {
             let pubKey = try P256.Signing.PublicKey(compressedRepresentation: publicKey)

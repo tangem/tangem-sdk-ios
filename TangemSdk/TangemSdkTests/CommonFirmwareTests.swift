@@ -11,7 +11,6 @@ import Foundation
 import CryptoKit
 
 /// Firmware tests snippets.
-@available(iOS 16.0, *)
 class CommonFirmwareTests: FWTestCase {
     /// Go to BLS lib and generate public keys for all mnemonics from BIP39
     func getAllPrivateKetsForBLS() {

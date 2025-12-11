@@ -64,15 +64,6 @@ fileprivate class FocusableTextFieldModel: ObservableObject {
             .eraseToAnyPublisher()
     }
 
-    /// This is the minimum allowable delay, calculated empirically for all iOS versions prior 16.
-    private var appearDelay: Int {
-        if #available(iOS 16.0, *) {
-            return 0
-        } else {
-            return 500
-        }
-    }
-
     init() {
         bind()
     }
@@ -90,7 +81,6 @@ fileprivate class FocusableTextFieldModel: ObservableObject {
 
         appearPublisher
             .filter { $0 }
-            .delay(for: .milliseconds(appearDelay), scheduler: DispatchQueue.main)
             .combineLatest(activePublisher.filter{ $0 })
             .sink { [weak self] _ in
                 self?.focusPublisher.send(())

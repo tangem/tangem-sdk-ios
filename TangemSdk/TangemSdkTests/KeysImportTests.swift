@@ -31,7 +31,6 @@ class KeysImportTests: XCTestCase {
         XCTAssertEqual(pubKey.chainCode.hexString, "B975E8D7517ED618CBBEBE87555E415874438B670C9E54E57F70FF02A15C4C10")
     }
 
-    @available(iOS 16.0, *)
     func testKeyImportSchnorr() throws {
         let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .bip0340).makePrivateKey()
         let pubKey = try prvKey.makePublicKey(for: .bip0340)
@@ -45,7 +44,6 @@ class KeysImportTests: XCTestCase {
         XCTAssertEqual(pubKey.chainCode.hexString, "B975E8D7517ED618CBBEBE87555E415874438B670C9E54E57F70FF02A15C4C10")
     }
     
-    @available(iOS 16.0, *)
     func testKeyImportSecp256r1() throws {
         let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .secp256r1).makePrivateKey()
         let pubKey = (try P256.Signing.PrivateKey(rawRepresentation: prvKey.privateKey)).publicKey.compressedRepresentation

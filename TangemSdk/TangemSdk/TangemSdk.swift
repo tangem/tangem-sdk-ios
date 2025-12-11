@@ -2,7 +2,7 @@
 //  CardManager.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 03/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -206,7 +206,7 @@ public extension TangemSdk {
     }
     
     /// This command deletes all wallet data. If Is_Reusable flag is enabled during personalization,
-    /// the card changes state to ‘Empty’ and a new wallet can be created by `CREATE_WALLET` command.
+    /// the card changes state to ‘Empty’ and a new wallet can be created by [REDACTED_AUTHOR]
     /// If Is_Reusable flag is disabled, the card switches to ‘Purged’ state.
     /// ‘Purged’ state is final, it makes the card useless.
     ///

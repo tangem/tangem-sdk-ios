@@ -1,8 +1,6 @@
-[![Tests](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml)
-[![Version](https://img.shields.io/cocoapods/v/TangemSdk.svg?style=flat)](https://cocoapods.org/pods/TangemSdk)
-[![License](https://img.shields.io/cocoapods/l/TangemSdk.svg?style=flat)](LICENSE)
+[![Tests](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml/badge.svg?branch=develop)](https://github.com/tangem-developments/tangem-sdk-ios/actions/workflows/tests.yml)
 ![Platform](https://img.shields.io/cocoapods/p/TangemSdk)
-[![Twitter](https://img.shields.io/twitter/follow/tangem?style=flat)](http://twitter.com/tangem)
+[![Twitter](https://img.shields.io/twitter/follow/tangem?style=flat)]([http://twitter.com/tangem](https://x.com/tangem))
 
 
 # Welcome to Tangem

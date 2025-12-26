@@ -18,7 +18,12 @@ struct OnlineAttestationVerifier {
     }
 
     func verify(response: OnlineAttestationResponse) throws -> Bool {
-        return try verifyIssuerSignature(signature: response.issuerSignature)
+        guard let manufacturerSignature = response.manufacturerSignature else {
+            return false
+        }
+
+        return try verifyManufacturerSignature(signature: manufacturerSignature)
+         && verifyIssuerSignature(signature: response.issuerSignature)
     }
 
     private func verifyManufacturerSignature(signature: Data) throws -> Bool {

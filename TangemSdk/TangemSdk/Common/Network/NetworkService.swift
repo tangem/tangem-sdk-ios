@@ -189,6 +189,6 @@ public enum NetworkServiceError: Error, LocalizedError {
 
 fileprivate extension URLRequest {
     var requestDescription: String {
-        return "request: \(url?.absoluteString ?? "nil"), headers: \(allHTTPHeaderFields?.description ?? "[]")"
+        return "request: \(url?.absoluteString ?? "nil"), headers: \(allHTTPHeaderFields?.keys.description ?? "[]")"
     }
 }

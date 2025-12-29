@@ -2,7 +2,7 @@
 //  CardIdFormatter.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 18.12.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

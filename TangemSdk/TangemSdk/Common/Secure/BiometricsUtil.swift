@@ -53,7 +53,7 @@ public final class BiometricsUtil {
                     }
 
                     switch laError.code {
-                    case .userCancel, .appCancel, .systemCancel:
+                    case .userCancel, .appCancel, .systemCancel, .notInteractive:
                         completion(.failure(.userCancelled))
                     default:
                         completion(.failure(error.toTangemSdkError()))
@@ -77,7 +77,7 @@ public final class BiometricsUtil {
             throw TangemSdkError.unknownError
         } catch let error as LAError {
             switch error.code {
-            case .userCancel, .appCancel, .systemCancel:
+            case .userCancel, .appCancel, .systemCancel, .notInteractive:
                 throw TangemSdkError.userCancelled
             default:
                 throw error.toTangemSdkError()

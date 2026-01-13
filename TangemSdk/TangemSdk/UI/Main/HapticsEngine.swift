@@ -121,13 +121,13 @@ class HapticsEngine {
         /// because on the Main thread I/O operations can cause UI unresponsiveness
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                self.engine = try CHHapticEngine()
-                self.engine!.playsHapticsOnly = true
-                self.engine!.stoppedHandler = { [weak self] reason in
+                let engine = try CHHapticEngine()
+                engine.playsHapticsOnly = true
+                engine.stoppedHandler = { [weak self] reason in
                     Log.debug("CHHapticEngine stop handler: The engine stopped for reason: \(reason.rawValue)")
                     self?.engineNeedsStart = true
                 }
-                self.engine!.resetHandler = { [weak self] in
+                engine.resetHandler = { [weak self] in
                     Log.debug("Reset Handler: Restarting the engine.")
                     do {
                         // Try restarting the engine.
@@ -140,6 +140,8 @@ class HapticsEngine {
                         Log.error("Failed to start the engine with error: \(error)")
                     }
                 }
+
+                self.engine = engine
             } catch {
                 Log.error("CHHapticEngine error: \(error)")
             }

@@ -2,7 +2,7 @@
 //  JSONRPCRequest.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 14.05.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 
@@ -207,7 +207,7 @@ extension JSONRPCError {
         case internalError = -32603
         case serverError = -32000
         
-        var message: String { //TODO: localize
+        var message: String { //[REDACTED_TODO_COMMENT]
             switch self {
             case .internalError:
                 return "Internal error"

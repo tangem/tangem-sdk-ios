@@ -138,9 +138,11 @@ public class CardSession {
                         switch result {
                         case .success(let runnableResponse):
                             session.saveAccessCodeIfNeeded()
-
-                            self.stop(message: "nfc_alert_default_done".localized) {
-                                completion(.success(runnableResponse))
+                            session.handleHealthIfNeeded { [weak self] in
+                                guard let self = self else { return }
+                                self.stop(message: "nfc_alert_default_done".localized) {
+                                    completion(.success(runnableResponse))
+                                }
                             }
                         case .failure(let error):
                             Log.error(error)
@@ -573,7 +575,18 @@ public class CardSession {
             Log.error(error)
         }
     }
-    
+
+    func handleHealthIfNeeded(_ completion: @escaping () -> Void) {
+//        guard let healthTag = environment.card?.health,
+//            healthTag != 0 else {
+//             completion()
+//            return
+//        }
+
+        Log.session("Show health alert")
+        viewDelegate.showHealthAlert(onContinue: completion)
+    }
+
     private func updateEnvironment(with type: UserCodeType, code: String) {
         switch type {
         case .accessCode:

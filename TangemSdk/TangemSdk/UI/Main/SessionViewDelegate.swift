@@ -31,7 +31,9 @@ public protocol SessionViewDelegate: AnyObject {
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void)
     
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void)
-    
+
+    func showHealthAlert(onContinue: @escaping () -> Void)
+
     func setState(_ state: SessionViewState)
 }
 

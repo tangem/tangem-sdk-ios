@@ -116,7 +116,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
             return
         }
         
-        let title =  "attestation_online_failed_title".localized
+        let title = "attestation_online_failed_title".localized
         let message = "attestation_online_failed_body".localized
         let tint = style.colors.tintUIColor
         
@@ -153,7 +153,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
 
         let title = "common_warning".localized
-        let message = "Go TO SUPPORT"
+        let message = "card_health_warning".localized
         let tint = style.colors.tintUIColor
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,

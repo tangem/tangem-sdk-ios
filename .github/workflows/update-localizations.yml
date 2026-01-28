@@ -56,8 +56,10 @@ jobs:
 
       # Skipping Ruby installation since it has been already installed by an action above
       # Skipping dependencies installation using Mint since we don't build the app in this job
-      - name: Install required dependencies
-        run: ./bootstrap.sh --skip-ruby --skip-mint
+      - name: Bundle install
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
 
       - name: Fetch and update SDK localizations
         env:

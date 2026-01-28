@@ -1,2 +1,2 @@
 # Fetches and updates localization bundles using Lokalise
-gem "fastlane-plugin-lokalise", :git => "git@github.com:tangem-developments/lokalise-fastlane-actions.git", :tag => "2.0.6-tangem5"
+gem "fastlane-plugin-lokalise", :git => "git@github.com:tangem-developments/lokalise-fastlane-actions.git", :tag => "2.0.6-tangem6"

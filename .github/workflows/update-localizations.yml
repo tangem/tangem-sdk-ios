@@ -15,16 +15,19 @@ env:
 
 jobs:
   update-localizations:
-    runs-on: macos-14
+    runs-on: macos-15
     env:
       SDK_LOCALIZATIONS_DESTINATION: "TangemSdk/TangemSdk/Common/Localization/Resources"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
-      - name: Install Ruby
-        uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4  # v6.1.0
+        with:
+          gpg_private_key: ${{ secrets.PGP_PRIVATE_SERVICE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - name: Authorize SSH session
         env:
@@ -37,31 +40,42 @@ jobs:
           ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
           ssh-add ~/.ssh/ios_dependencies_ssh_key
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4  # v6.1.0
+      # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
+      - name: Install Ruby
+        uses: ruby/setup-ruby@efbf473cab83af4468e8606cc33eca9281bb213f  # v1.256.0
         with:
-          gpg_private_key: ${{ secrets.PGP_PRIVATE_SERVICE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
+          bundler-cache: true
 
-      - name: Bundle install
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+      - name: Save/restore Mint cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.mint
+          key: ${{ runner.os }}-mint-${{ hashFiles('.swift-version') }}-${{ hashFiles('.xcode-version') }}-${{ hashFiles('Utilities/Mintfile@ci') }}-${{ hashFiles('Utilities/Mintfile@local') }}
+          restore-keys: |
+            ${{ runner.os }}-mint-
+
+      # Skipping Ruby installation since it has been already installed by an action above
+      # Skipping dependencies installation using Mint since we don't build the app in this job
+      - name: Install required dependencies
+        run: ./bootstrap.sh --skip-ruby --skip-mint
 
       - name: Fetch and update SDK localizations
         env:
           LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_CARD_SDK_PROJECT_ID }}
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_ACCESS_TOKEN }}
         run: |
-          bundle exec fastlane update_translations \
+          # The initialization of rbenv is required before every `bundle` call since GitHub Actions spawns each 'run' step in a separate process
+          eval "$(rbenv init - bash)"
+
+          bundle exec fastlane \
+          update_translations \
           languages:${{ github.event.inputs.langs }} \
           destination:${{ env.SDK_LOCALIZATIONS_DESTINATION }}
-
+          
       - name: Push changes and open a pull-request
         env:
-          GH_TOKEN: ${{ github.token }}
-          SOURCE_BRANCH: lokalise-translations-sync
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
+          SOURCE_BRANCH: 'lokalise/${{ github.run_id }}'
           TARGET_BRANCH: ${{ github.ref_name }}
           LANGUAGES: ${{ github.event.inputs.langs }}
         run: |
@@ -73,13 +87,14 @@ jobs:
 
           : "${LANGUAGES:="all"}"
           commit_message="Sync translations for \`${LANGUAGES}\` languages → \`${TARGET_BRANCH}\`"
-          pr_message="[Localise] ${commit_message}"
+          pr_title="[Localise] ${commit_message}"
+          pr_message="This is an automated PR to sync \`${LANGUAGES}\` languages to \`${TARGET_BRANCH}\`."
 
           git commit -S -m "${commit_message}"
           git push --set-upstream origin $SOURCE_BRANCH --force
 
-          gh pr create --base $TARGET_BRANCH --head $SOURCE_BRANCH --title "${pr_message}" --body ""
-
-          # Amending and force-pushing this particular commit after creating a PR, a nasty workaround for https://github.com/orgs/community/discussions/65321
-          git commit --amend --no-edit
-          git push origin $SOURCE_BRANCH --force
+          gh pr create \
+          --base "${TARGET_BRANCH}" \
+          --head "${SOURCE_BRANCH}" \
+          --title "${pr_title}" \
+          --body "${pr_message}"  || true # Ignore errors since the PR may already be opened

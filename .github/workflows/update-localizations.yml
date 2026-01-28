@@ -76,7 +76,7 @@ jobs:
           
       - name: Push changes and open a pull-request
         env:
-          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           SOURCE_BRANCH: 'lokalise/${{ github.run_id }}'
           TARGET_BRANCH: ${{ github.ref_name }}
           LANGUAGES: ${{ github.event.inputs.langs }}

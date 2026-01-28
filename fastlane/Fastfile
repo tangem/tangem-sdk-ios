@@ -2,7 +2,7 @@
 
 PACKAGE_PATH = '.'
 SCHEME_NAME = 'TangemSdk'
-TEST_DEVICE = 'iPhone 16 Pro Max (18.5)' # Update when Xcode is updated
+TEST_DEVICE = 'iPhone 17 Pro Max (26.2)' # Update when Xcode is updated
 BUILD_RESULT_FOLDER = "test_output"
 
 before_all do |lane, options|

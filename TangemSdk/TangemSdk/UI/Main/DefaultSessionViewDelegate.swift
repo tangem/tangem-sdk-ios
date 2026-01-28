@@ -93,7 +93,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     }
     
     func attestationDidFailDevCard(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
-        guard let screen = screen else {
+        guard let screen else {
             onCancel()
             return
         }
@@ -111,12 +111,12 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     }
 
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
-        guard let screen = screen else {
+        guard let screen else {
             onCancel()
             return
         }
         
-        let title =  "attestation_online_failed_title".localized
+        let title = "attestation_online_failed_title".localized
         let message = "attestation_online_failed_body".localized
         let tint = style.colors.tintUIColor
         
@@ -130,13 +130,30 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     }
 
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
-        guard let screen = screen else {
+        guard let screen else {
             onContinue()
             return
         }
         
         let title = "common_warning".localized
         let message = "attestation_warning_attest_wallets".localized
+        let tint = style.colors.tintUIColor
+        runInMainThread(UIAlertController.showAlert(from: screen,
+                                                    title: title,
+                                                    message: message,
+                                                    tint: tint,
+                                                    onContinue: onContinue))
+    }
+
+    func showHealthAlert(onContinue: @escaping () -> Void) {
+        setState(.empty)
+
+        guard let screen else {
+            return
+        }
+
+        let title = "common_warning".localized
+        let message = "card_health_warning".localized
         let tint = style.colors.tintUIColor
         runInMainThread(UIAlertController.showAlert(from: screen,
                                                     title: title,

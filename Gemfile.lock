@@ -1,7 +1,7 @@
 GIT
   remote: git@github.com:tangem-developments/lokalise-fastlane-actions.git
-  revision: 3d52754f3ae42259669e07b23ca1a86ae43403c8
-  tag: 2.0.6-tangem5
+  revision: 122de189e92ebdc8f1b7f5ad8435ba6eb9671c62
+  tag: 2.0.6-tangem6
   specs:
     fastlane-plugin-lokalise (2.0.6.pre.tangem5)
 
@@ -236,8 +236,7 @@ GEM
       xcpretty (~> 0.2, >= 0.0.7)
 
 PLATFORMS
-  arm64-darwin-21
-  arm64-darwin-22
+  arm64-darwin-23
   arm64-darwin-24
   x86_64-linux
 

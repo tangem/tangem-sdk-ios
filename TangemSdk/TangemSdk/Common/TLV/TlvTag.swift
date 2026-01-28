@@ -2,7 +2,7 @@
 //  TlvTag.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 27/09/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -26,7 +26,7 @@ public enum TlvValueType: String {
     case uint16
     case interactionMode
     case derivationPath
-    case backupStatus //TODO: make all these type more generic
+    case backupStatus //[REDACTED_TODO_COMMENT]
     case accessLevel
 }
 /// Contains all TLV tags, with their code and descriptive name.

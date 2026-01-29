@@ -20,8 +20,6 @@ struct SettingsView: View {
 
             Toggle("Dev api", isOn: $model.useDevApi)
 
-            Toggle("New attestation", isOn: $model.newAttestation)
-
             Text("Access code request policy")
                 .fontWeight(.bold)
                 .padding()

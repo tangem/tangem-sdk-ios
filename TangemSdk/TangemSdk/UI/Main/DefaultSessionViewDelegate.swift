@@ -146,12 +146,11 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
     }
 
     func showHealthAlert(onContinue: @escaping () -> Void) {
-        setState(.empty)
-
         guard let screen else {
             return
         }
 
+        setState(.empty)
         let title = "common_warning".localized
         let message = "card_health_warning".localized
         let tint = style.colors.tintUIColor

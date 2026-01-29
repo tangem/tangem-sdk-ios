@@ -70,6 +70,9 @@ public struct Config {
     /// Development API toggle
     public static var useDevApi: Bool = false
 
+    /// Handle health tag toggle
+    public static var handleHealth: Bool = false
+
     public mutating func setupForProduct(_ product: ProductType) {
         switch product {
         case .card:

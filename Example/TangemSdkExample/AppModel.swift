@@ -45,9 +45,8 @@ class AppModel: ObservableObject {
     @Published var handleErrors: Bool = true
     @Published var displayLogs: Bool = false
     @Published var useDevApi: Bool = false
-    @Published var newAttestation: Bool = true
-    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .alwaysWithBiometrics
-    
+    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
+
     var backupService: BackupService? = nil
     var resetPinService: ResetPinService? = nil
     

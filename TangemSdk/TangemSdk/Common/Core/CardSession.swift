@@ -138,12 +138,12 @@ public class CardSession {
                         switch result {
                         case .success(let runnableResponse):
                             session.saveAccessCodeIfNeeded()
-                            session.handleHealthIfNeeded { [weak self] in
-                                guard let self = self else { return }
-                                self.stop(message: "nfc_alert_default_done".localized) {
+                            session.handleHealthIfNeeded {
+                                session.stop(message: "nfc_alert_default_done".localized) {
                                     completion(.success(runnableResponse))
                                 }
                             }
+
                         case .failure(let error):
                             Log.error(error)
                             self.stop(error: error) {
@@ -244,6 +244,7 @@ public class CardSession {
         if let message = message {
             viewDelegate.showAlertMessage(message)
         }
+
         reader.stopSession()
         sessionDidStop(completion: completion)
     }
@@ -577,13 +578,14 @@ public class CardSession {
     }
 
     func handleHealthIfNeeded(_ completion: @escaping () -> Void) {
-        guard let healthTag = environment.card?.health,
-            healthTag != 0 else {
-             completion()
+        guard Config.handleHealth, let healthTag = environment.card?.health,
+              1...100 ~= healthTag else {
+            completion()
             return
         }
 
         Log.session("Show health alert")
+        pause()
         viewDelegate.showHealthAlert(onContinue: completion)
     }
 

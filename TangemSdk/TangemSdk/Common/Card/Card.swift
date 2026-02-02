@@ -58,6 +58,15 @@ public struct Card: Codable, JSONStringConvertible {
 }
 
 public extension Card {
+    var hasHealthReport: Bool {
+        guard let health else {
+            return false
+        }
+
+        let msb = health & 0xFF
+        return msb & 0x7F != 0
+    }
+
     struct Manufacturer: Codable {
         /// Card manufacturer name.
         public let name: String

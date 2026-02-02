@@ -578,8 +578,7 @@ public class CardSession {
     }
 
     func handleHealthIfNeeded(_ completion: @escaping () -> Void) {
-        guard Config.handleHealth, let healthTag = environment.card?.health,
-              1...100 ~= healthTag else {
+        guard Config.handleHealth, environment.card?.hasHealthReport == true else {
             completion()
             return
         }

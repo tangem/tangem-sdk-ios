@@ -99,6 +99,25 @@ class AppModel: ObservableObject {
                 self?.logText = logs
             }
             .store(in: &bag)
+
+        $method
+            .sink { [weak self] newMethod in
+                guard let self else { return }
+
+                switch newMethod {
+                case .personalize:
+                    if personalizationConfig.isEmpty {
+                        personalizationConfig = Self.personalizeConfigTemplate
+                    }
+                case .personalizeV8:
+                    if personalizationConfig.isEmpty {
+                        personalizationConfig = Self.personalizeConfigTemplateV8
+                    }
+                default:
+                    break
+                }
+            }
+            .store(in: &bag)
     }
     
     func clear() {
@@ -122,10 +141,6 @@ class AppModel: ObservableObject {
     func onAppear() {
         if json.isEmpty {
             json = AppModel.jsonRpcTemplate
-        }
-        
-        if personalizationConfig.isEmpty {
-            personalizationConfig = AppModel.personalizeConfigTemplate
         }
     }
     
@@ -184,7 +199,7 @@ extension AppModel {
             switch method {
             case .jsonrpc:
                 return json
-            case .personalize:
+            case .personalize, .personalizeV8:
                 return personalizationConfig
             default: return ""
             }
@@ -194,7 +209,7 @@ extension AppModel {
             switch method {
             case .jsonrpc:
                 json = newValue
-            case .personalize:
+            case .personalize, .personalizeV8:
                 personalizationConfig = newValue
             default: break
             }
@@ -702,7 +717,7 @@ extension AppModel {
     func personalize() {
         do {
             guard let configData = personalizationConfig.data(using: .utf8) else {
-                throw TangemSdkError.decodingFailed("Failed to convert congif to data")
+                throw TangemSdkError.decodingFailed("Failed to convert config to data")
             }
             
             let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: configData)
@@ -712,6 +727,25 @@ extension AppModel {
                                                         issuer: issuer,
                                                         manufacturer: manufacturer)
             
+            tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
+        } catch {
+            complete(with: error)
+        }
+    }
+
+    func personalizeV8() {
+        do {
+            guard let configData = personalizationConfig.data(using: .utf8) else {
+                throw TangemSdkError.decodingFailed("Failed to convert config to data")
+            }
+
+            let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfigV8.self, from: configData)
+            let issuer = try JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: AppModel.issuerJson.data(using: .utf8)!)
+            let manufacturer = try JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: AppModel.manufacturerJson.data(using: .utf8)!)
+            let personalizeCommand = PersonalizeCommandV8(config: config,
+                                                          issuer: issuer,
+                                                          manufacturer: manufacturer)
+
             tangemSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
             complete(with: error)
@@ -755,6 +789,7 @@ extension AppModel {
         //developer
         case depersonalize
         case personalize
+        case personalizeV8
         case resetBackup
         case resetToFactory
         case getEntropy
@@ -792,6 +827,7 @@ extension AppModel {
         case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
+        case .personalizeV8: personalizeV8()
         case .resetBackup: resetBackup()
         case .resetToFactory: resetToFactory()
         case .getEntropy: getEntropy()

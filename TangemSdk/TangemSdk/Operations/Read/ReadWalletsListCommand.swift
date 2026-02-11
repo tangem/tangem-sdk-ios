@@ -75,15 +75,12 @@ public class ReadWalletsListCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadWalletsListResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }
         
-        let decoder = TlvDecoder(tlv: tlv)
         let deserializedData = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallets(from: decoder)
         receivedWalletsCount += deserializedData.totalReceived
         return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),

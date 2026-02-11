@@ -119,12 +119,8 @@ final class ReadBackupDataCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PartialReadBackupDataResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         return PartialReadBackupDataResponse(cardId: try decoder.decode(.cardId),
                                              index: try decoder.decode(.walletIndex),
                                              data: EncryptedBackupData (data: try decoder.decode(.issuerData),

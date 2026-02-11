@@ -200,10 +200,7 @@ public final class WriteFileCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> WriteFileResponse {
-        guard let tlv = apdu.getTlvData() else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return WriteFileResponse(cardId: try decoder.decode(.cardId),
                                  fileIndex: try decoder.decode(.fileIndex))
     }

@@ -132,7 +132,7 @@ public extension FirmwareVersion { //todo: move all doubleValue checks to consta
     /// ed25519_slip0010
     static let ed25519Slip0010Available = FirmwareVersion(major: 6, minor: 33)
     /// main secret
-    static let v8 = FirmwareVersion(major: 8, minor: 33)
+    static let v8 = FirmwareVersion(major: 8, minor: 44)
 }
 
 public extension FirmwareVersion {

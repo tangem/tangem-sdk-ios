@@ -119,7 +119,7 @@ struct CardDeserializer {
     }
     
     static func getDecoder(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> TlvDecoder {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
+        guard let tlv = apdu.getTlvData() else {
             throw TangemSdkError.deserializeApduFailed
         }
         

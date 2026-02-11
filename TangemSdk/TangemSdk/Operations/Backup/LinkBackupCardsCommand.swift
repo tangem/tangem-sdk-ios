@@ -107,12 +107,8 @@ final class LinkBackupCardsCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> LinkBackupCardsResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         return LinkBackupCardsResponse(cardId: try decoder.decode(.cardId),
                                        attestSignature: try decoder.decode(.backupAttestSignature))
     }

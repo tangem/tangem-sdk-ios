@@ -155,15 +155,11 @@ final class CreateWalletCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CreateWalletResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }
-        
-        let decoder = TlvDecoder(tlv: tlv)
         
         let wallet: Card.Wallet
         

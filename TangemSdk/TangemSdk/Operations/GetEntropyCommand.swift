@@ -43,12 +43,7 @@ public class GetEntropyCommand: Command {
     }
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> GetEntropyResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-
-        let decoder = TlvDecoder(tlv: tlv)
-
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return GetEntropyResponse(cardId: try decoder.decode(.cardId),
                                   data: try decoder.decode(.issuerData))
     }

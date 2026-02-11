@@ -156,11 +156,8 @@ final class ReadFileCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileResponse {
-        guard let tlv = apdu.getTlvData() else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         return ReadFileResponse(cardId: try decoder.decode(.cardId),
                                 size: try decoder.decode(.size),
                                 offset: try decoder.decode(.offset),

@@ -64,10 +64,7 @@ public final class ReadFileChecksumCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileChecksumResponse {
-        guard let tlv = apdu.getTlvData() else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ReadFileChecksumResponse(cardId: try decoder.decode(.cardId),
                                         checksum: try decoder.decode(.codeHash),
                                         fileIndex: try decoder.decode(.fileIndex))

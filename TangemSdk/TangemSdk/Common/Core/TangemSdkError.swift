@@ -93,6 +93,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// COS v8+
     case accessDenied
 
+    /// COS v8+
+    case invalidAccessTokens
+
     //MARK: Business logic errors
     
     // Personalization Errors
@@ -135,8 +138,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     // General Errors
     
-    case notPersonalized
-    
+    case notPersonalized(firmware: FirmwareVersion)
+
     case notActivated
     
     case walletIsPurged
@@ -348,7 +351,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .cardVerificationFailed: return 40011
         case .wrongAccessCode: return 40012
         case .wrongPasscode: return 40013
-            
+        case .invalidAccessTokens: return 40014
+
         case .alreadyPersonalized: return 40101
             
         case .cannotBeDepersonalized: return 40201

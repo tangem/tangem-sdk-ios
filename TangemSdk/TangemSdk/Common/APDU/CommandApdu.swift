@@ -14,25 +14,25 @@ import CoreNFC
 public struct CommandApdu: Equatable {
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
-    
-    //MARK: Header
-    fileprivate let cla: Byte
 
-    fileprivate let p1:  Byte
-    fileprivate let p2:  Byte
-    
+    //MARK: Header
+    let cla: Byte
+
+    let p1:  Byte
+    let p2:  Byte
+
     //MARK: Body
     /// An array of  serialized TLVs that are to be sent to the card
-    fileprivate let data: Data
-    fileprivate let le: Int?
-    
+    let data: Data
+    let le: Int?
+
     /// Convinience initializer
     /// - Parameter instruction: Instruction code
     /// - Parameter tlv: data
     public init(_ instruction: Instruction, tlv: Data) {
         self.init(ins: instruction.rawValue, tlv: tlv)
     }
-    
+
     /// Raw initializer
     /// - Parameter cla: Instruction class (CLA) byte
     /// - Parameter ins: Instruction code (INS) byte
@@ -56,7 +56,7 @@ public struct CommandApdu: Equatable {
         self.le = le
         data = tlv
     }
-    
+
     /// Encrypt APDU
     /// - Parameters:
     /// - Parameter encryptionMode: encryption mode
@@ -66,15 +66,39 @@ public struct CommandApdu: Equatable {
         guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
             return self
         }
-        
+
         let crc = data.crc16()
         let tlvDataToEncrypt = data.count.bytes2 + crc + data
         let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
         Log.debug("C-APDU encrypted")
 
-        return CommandApdu(cla: self.cla, ins: self.ins, p1: encryptionMode.byteValue, p2: self.p2, le: self.le, tlv: Data(encryptedPayload))
+        return CommandApdu(cla: cla, ins: ins, p1: encryptionMode.byteValue, p2: p2, le: le, tlv: Data(encryptedPayload))
     }
-    
+
+    /// Encrypt APDU using CCM mode
+    /// - Parameters:
+    ///   - encryptionKey: encryption key
+    ///   - encryptionNonce: nonce for CCM encryption
+    /// - Returns: Encrypted APDU
+    public func encryptCcm(encryptionKey: Data?, encryptionNonce: Data) throws -> CommandApdu {
+        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else {
+            return self
+        }
+
+        let newP1: Byte = AesMode.ccm.byteValue
+        let associatedData = Data([cla, ins, newP1, p2])
+
+        let encryptedPayload = try data.encryptAESCCM(
+            with: encryptionKey,
+            iv: encryptionNonce,
+            additionalAuthenticatedData: associatedData
+        )
+
+        Log.debug("C-APDU encrypted with CCM")
+
+        return CommandApdu(cla: cla, ins: ins, p1: newP1, p2: p2, le: le, tlv: encryptedPayload)
+    }
+
     /// Serialize as an extended APDU
     /// - Returns: Data to send
     public func serialize() -> Data {
@@ -83,20 +107,20 @@ public struct CommandApdu: Equatable {
         apduBytes.append(ins)
         apduBytes.append(p1)
         apduBytes.append(p2)
-        
+
         if !data.isEmpty {
             //append LC as an extended field
             apduBytes.append(UInt8(0))
             apduBytes.append(contentsOf: data.count.bytes2)
-            
+
             apduBytes.append(contentsOf: data)
         }
-        
+
         if let le = le {
             //append LE as an extended field
             apduBytes.append(contentsOf: le.bytes2)
         }
-        
+
         return apduBytes
     }
 }

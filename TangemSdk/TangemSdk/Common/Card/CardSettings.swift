@@ -144,6 +144,7 @@ extension CardSettingsMask {
     static let allowHDWallets = CardSettingsMask(rawValue: 0x00200000)
     static let allowBackup = CardSettingsMask(rawValue: 0x00400000)
     static let allowKeysImport = CardSettingsMask(rawValue: 0x00800000)
+    static let requireBackup = CardSettingsMask(rawValue: 0x08000000)
 }
 
 // MARK: - CardSettingsMask OptionSetCodable conformance
@@ -176,7 +177,8 @@ extension CardSettingsMask: OptionSetCodable {
         case isPermanentWallet
         case allowHDWallets
         case allowBackup
-        
+        case requireBackup
+
         var value: CardSettingsMask {
             switch self {
             case .useActivation:
@@ -231,6 +233,8 @@ extension CardSettingsMask: OptionSetCodable {
                 return .allowHDWallets
             case .allowBackup:
                 return .allowBackup
+            case .requireBackup:
+                return .requireBackup
             }
         }
     }

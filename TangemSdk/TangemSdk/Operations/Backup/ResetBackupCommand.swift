@@ -78,11 +78,7 @@ public final class ResetBackupCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ResetBackupResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ResetBackupResponse(cardId: try decoder.decode(.cardId),
                                    backupStatus: try decoder.decode(.backupStatus),
                                    settingsMask: try decoder.decode(.settingsMask),

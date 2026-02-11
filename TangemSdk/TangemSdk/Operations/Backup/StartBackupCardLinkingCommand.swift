@@ -51,15 +51,11 @@ final class StartBackupCardLinkingCommand: Command {
     }
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> BackupCard {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }
-        
-        let decoder = TlvDecoder(tlv: tlv)
 
         return BackupCard(
             cardId: try decoder.decode(.cardId),

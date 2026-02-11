@@ -170,11 +170,8 @@ public final class AttestWalletKeyTask: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AttestWalletKeyResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         
-        let decoder = TlvDecoder(tlv: tlv)
         return AttestWalletKeyResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),

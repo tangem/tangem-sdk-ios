@@ -37,6 +37,22 @@ extension ApduSerializable {
         }
         return builder
     }
+
+    func createTlvDecoder(environment: SessionEnvironment, apdu: ResponseApdu) throws -> TlvDecoder {
+        guard var tlv = apdu.getTlvData() else {
+            throw TangemSdkError.deserializeApduFailed
+        }
+
+        // V8 protocol requires no cardId in response for all commands. So we need to add it manually for compatibility
+        if let card = environment.card,
+           card.firmwareVersion >= .v8 {
+            let cardIdTag = Tlv(.cardId, value: Data(hexString: card.cardId))
+            tlv.append(cardIdTag)
+        }
+
+        let decoder = TlvDecoder(tlv: tlv)
+        return decoder
+    }
 }
 
 /// The basic protocol for card commands
@@ -205,7 +221,7 @@ extension Command {
     /// Helper method to parse security delay information received from a card.
     /// - Returns: Remaining security delay in milliseconds.
     private func deserializeSecurityDelay(with environment: SessionEnvironment, from responseApdu: ResponseApdu) -> (remainingSeconds: Float, saveToFlash: Bool)? {
-        guard let tlv = responseApdu.getTlvData(encryptionKey: environment.encryptionKey),
+        guard let tlv = responseApdu.getTlvData(),
               let remainingCs = tlv.value(for: .pause)?.toInt() else {
             return nil
         }

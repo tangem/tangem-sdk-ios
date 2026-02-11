@@ -115,18 +115,14 @@ public class AttestCardKeyCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AttestCardKeyResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
         return AttestCardKeyResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),
             cardSignature: try decoder.decode(.cardSignature),
             challenge: self.challenge!,
-            linkedCardPublicKeys: try decodeLinkedCardPublicKeys(from: tlv))
+            linkedCardPublicKeys: try decodeLinkedCardPublicKeys(from: decoder.tlv))
     }
 
     private func decodeLinkedCardPublicKeys(from tlv: [Tlv]) throws -> [Data] {

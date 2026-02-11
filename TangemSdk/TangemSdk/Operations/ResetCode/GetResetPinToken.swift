@@ -42,12 +42,8 @@ final class GetResetPinTokenCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ResetPinCard {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         guard let isAccessCodeSet = environment.card?.isAccessCodeSet,
               let isPasscodeSet = environment.card?.isPasscodeSet else {
             throw TangemSdkError.missingPreflightRead

@@ -46,12 +46,8 @@ public final class StartPrimaryCardLinkingCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PrimaryCard {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         guard let cardPublicKey = environment.card?.cardPublicKey else {
             throw TangemSdkError.unknownError
         }

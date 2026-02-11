@@ -93,11 +93,7 @@ public final class ReadIssuerDataCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadIssuerDataResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ReadIssuerDataResponse(
             cardId: try decoder.decode(.cardId),
             issuerData: try decoder.decode(.issuerData),

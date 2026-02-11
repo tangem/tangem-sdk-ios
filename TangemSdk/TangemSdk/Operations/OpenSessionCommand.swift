@@ -33,11 +33,7 @@ class OpenSessionCommand: ApduSerializable {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> OpenSessionResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return OpenSessionResponse(sessionKeyB: try decoder.decode(.sessionKeyB),
                                    uid: try decoder.decode(.uid))
     }

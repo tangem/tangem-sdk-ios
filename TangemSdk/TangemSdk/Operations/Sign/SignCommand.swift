@@ -190,11 +190,7 @@ class SignCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PartialSignResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         let chunk = try chunkHashesHelper.getCurrentChunk()
 
         let signatureBLOB: Data = try decoder.decode(.walletSignature)

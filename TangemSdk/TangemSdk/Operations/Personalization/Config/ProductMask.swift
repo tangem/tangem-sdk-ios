@@ -16,7 +16,8 @@ struct ProductMask: OptionSet, OptionSetCustomStringConvertible {
     }
 }
 
-//MARK:- Constants
+//MARK: - Constants
+
 extension ProductMask {
     static let note = ProductMask(rawValue: 0x01)
     static let tag = ProductMask(rawValue: 0x02)
@@ -27,6 +28,7 @@ extension ProductMask {
 }
 
 //MARK: - OptionSetCodable conformance
+
 extension ProductMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case note

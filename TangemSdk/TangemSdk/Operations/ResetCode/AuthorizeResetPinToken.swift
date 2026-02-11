@@ -47,11 +47,7 @@ final class AuthorizeResetPinTokenCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }

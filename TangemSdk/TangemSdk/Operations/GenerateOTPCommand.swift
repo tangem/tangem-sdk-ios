@@ -46,12 +46,8 @@ public class GenerateOTPCommand: Command {
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> GenerateOTPResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-        
-        let decoder = TlvDecoder(tlv: tlv)
-        
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
+
         return GenerateOTPResponse(cardId: try decoder.decode(.cardId),
                                    rootOTP: try decoder.decode(.codeHash),
                                    rootOTPCounter: try decoder.decode(.fileIndex),

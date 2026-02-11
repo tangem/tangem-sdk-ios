@@ -61,11 +61,7 @@ class SetUserSettingsCommand: Command {
     }
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SetUserSettingsCommandResponse {
-        guard let tlv = apdu.getTlvData(encryptionKey: environment.encryptionKey) else {
-            throw TangemSdkError.deserializeApduFailed
-        }
-
-        let decoder = TlvDecoder(tlv: tlv)
+        let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         let mask: UserSettingsMask = try decoder.decode(.userSettingsMask)
         return SetUserSettingsCommandResponse(cardId: try decoder.decode(.cardId), settings: .init(from: mask))
     }

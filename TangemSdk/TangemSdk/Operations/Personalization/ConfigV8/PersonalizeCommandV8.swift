@@ -88,7 +88,7 @@ public class PersonalizeCommandV8: Command {
 
     private func encryptApdu(cApdu: CommandApdu) throws -> CommandApdu {
         let p1: Byte = 0x00
-        let nonce =  Data([0x7E] + (0..<Constants.nonceLength-1).map { UInt8($0) })
+        let nonce =  Data([0x7E] + (0..<ConstantsV8.nonceLength-1).map { UInt8($0) })
         let associatedData = Data([cApdu.cla, cApdu.ins, p1, cApdu.p2])
 
         let encryptedPayload = try cApdu.data.encryptAESCCM(
@@ -114,24 +114,26 @@ public class PersonalizeCommandV8: Command {
     private func decryptApdu(rApdu: ResponseApdu) throws -> ResponseApdu {
         let data = rApdu.data
 
-        // no payload
-        if data.count == 2 {
+        // nothing to decrypt
+        if data.isEmpty {
             return rApdu
-        } else if data.count >= Constants.nonceLength {
-            let nonce = Data(data.prefix(Constants.nonceLength))
-            let payload = Data(data.dropFirst(Constants.nonceLength))
-            let authData = Data([rApdu.sw1, rApdu.sw2])
-            let decryptedPayload = try payload.decryptAESCCM(
-                with: devPersonalizationKey,
-                iv: nonce,
-                additionalAuthenticatedData: authData
-            )
-
-            let decryptedData = decryptedPayload + authData
-            return ResponseApdu(decryptedData, rApdu.sw1, rApdu.sw2)
-        } else {
-            throw TangemSdkError.failedToDecryptApdu
         }
+
+        guard data.count >= ConstantsV8.nonceLength else {
+            throw TangemSdkError.invalidResponseApdu
+        }
+
+        let nonce = Data(data.prefix(ConstantsV8.nonceLength))
+        let payload = Data(data.dropFirst(ConstantsV8.nonceLength))
+        let authData = rApdu.swBytes
+        let decryptedPayload = try payload.decryptAESCCM(
+            with: devPersonalizationKey,
+            iv: nonce,
+            additionalAuthenticatedData: authData
+        )
+
+        let decryptedData = decryptedPayload + authData
+        return ResponseApdu(decryptedData, rApdu.sw1, rApdu.sw2)
     }
 
     private func serializePersonalizationData(environment: SessionEnvironment, config: CardConfigV8) throws -> Data {
@@ -186,11 +188,5 @@ public class PersonalizeCommandV8: Command {
             .append(.issuerName, value: issuer.id)
 
         return tlvBuilder.serialize()
-    }
-}
-
-private extension PersonalizeCommandV8 {
-    enum Constants {
-        static let nonceLength = 12
     }
 }

@@ -80,7 +80,7 @@ public struct CommandApdu: Equatable {
     ///   - encryptionKey: encryption key
     ///   - encryptionNonce: nonce for CCM encryption
     /// - Returns: Encrypted APDU
-    public func encryptCcm(encryptionKey: Data?, encryptionNonce: Data) throws -> CommandApdu {
+    public func encryptCcm(encryptionKey: Data?, nonce: Data) throws -> CommandApdu {
         guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else {
             return self
         }
@@ -90,7 +90,7 @@ public struct CommandApdu: Equatable {
 
         let encryptedPayload = try data.encryptAESCCM(
             with: encryptionKey,
-            iv: encryptionNonce,
+            iv: nonce,
             additionalAuthenticatedData: associatedData
         )
 

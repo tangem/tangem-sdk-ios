@@ -20,14 +20,15 @@ struct CardDeserializer {
     /// - Returns: Card
     func deserialize(isAccessCodeSetLegacy: Bool, decoder: TlvDecoder, cardDataDecoder: TlvDecoder?) throws -> Card {
         let cardStatus: Card.Status = try decoder.decode(.status)
-        try assertStatus(cardStatus)
+        let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
+
+        try assertStatus(cardStatus, firmware: firmware)
         try assertActivation(try decoder.decode(.isActivated))
         
         guard let cardDataDecoder = cardDataDecoder  else {
             throw TangemSdkError.deserializeApduFailed
         }
-        
-        let firmware = FirmwareVersion(stringValue: try decoder.decode(.firmwareVersion))
+
         let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
 
         let isPasscodeSet: Bool? = firmware >= .passcodeStatusAvailable ?
@@ -140,9 +141,9 @@ struct CardDeserializer {
         }
     }
     
-    private func assertStatus(_ status: Card.Status) throws {
+    private func assertStatus(_ status: Card.Status, firmware: FirmwareVersion) throws {
         if status == .notPersonalized && !allowNotPersonalized {
-            throw TangemSdkError.notPersonalized
+            throw TangemSdkError.notPersonalized(firmware: firmware)
         }
         
         if status == .purged {

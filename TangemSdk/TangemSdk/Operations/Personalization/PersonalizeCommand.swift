@@ -48,7 +48,12 @@ public class PersonalizeCommand: Command {
             case .success:
                 completion(.failure(.alreadyPersonalized))
             case .failure(let error):
-                if case .notPersonalized = error {
+                if case .notPersonalized(let firmware) = error {
+                    if firmware >= .v8 {
+                        completion(.failure(TangemSdkError.notSupportedFirmwareVersion))
+                        return
+                    }
+
                     self.runPersonalize(in: session, completion: completion)
                 } else {
                     completion(.failure(error))
@@ -56,7 +61,7 @@ public class PersonalizeCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         return try CommandApdu(.personalize, tlv: serializePersonalizationData(environment: environment, config: config))
     }
@@ -71,7 +76,7 @@ public class PersonalizeCommand: Command {
                          decoder: decoder,
                          cardDataDecoder: cardDataDecoder)
     }
-    
+
     private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         let encryptionMode = session.environment.encryptionMode
         let encryptionKey = session.environment.encryptionKey
@@ -83,9 +88,9 @@ public class PersonalizeCommand: Command {
             completion(result)
         }
     }
-    
+
     private func serializePersonalizationData(environment: SessionEnvironment, config: CardConfig) throws -> Data {
-        guard let cardId = config.createCardId() else {
+        guard let cardId = CardIdBuilder.createCardId(config: config) else {
             throw TangemSdkError.serializeCommandError
         }
         
@@ -97,7 +102,7 @@ public class PersonalizeCommand: Command {
             .append(.curveId, value: config.curveID)
             .append(.maxSignatures, value: config.maxSignatures ?? Int(UInt32.max))
             .append(.signingMethod, value: config.signingMethod)
-            .append(.settingsMask, value: config.createSettingsMask())
+            .append(.settingsMask, value: CardSettingsMaskBuilder.createSettingsMask(config: config))
             .append(.pauseBeforePin2, value: config.pauseBeforePin2 / 10)
             .append(.cvc, value: config.cvc.data(using: .utf8))
             .append(.createWalletAtPersonalize, value: createWallet)

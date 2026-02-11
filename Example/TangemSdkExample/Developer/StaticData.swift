@@ -64,7 +64,48 @@ extension AppModel {
         "createWallet": 0
     }
     """
-    
+
+    static var personalizeConfigTemplateV8 =
+        """
+     {
+        "releaseVersion": true,
+        "issuerName": "TANGEM AG",
+        "series": "CB",
+        "startNumber": 7900000000000,
+        "count": 2500,
+        "numberFormat": "",
+        "PIN": "000000",
+        "curveID": "secp256k1",
+        "SigningMethod": 0,
+        "allowSwapPIN": false,
+        "useActivation": false,
+        "useNDEF": true,
+        "useBlock": false,
+        "forbidPurgeWallet": false,
+        "forbidDefaultPIN": false,
+        "disableFiles": false,
+        "allowHDWallets": true,
+        "allowBackup": true,
+        "allowKeysImport": true,
+        "createWallet": 0,
+        "NDEF": [],
+        "walletsCount": 20,
+        "securityDelay": 5000,
+        "requireBackup": false,
+        "cardData": {
+            "date": "2021-03-15",
+            "batch": "CB79",
+            "blockchain": "ANY",
+            "product_note": true,
+            "product_tag": false,
+            "product_id_card": false,
+            "product_id_issuer": false,
+            "product_authentication": false,
+            "product_twin": false
+        }
+    }
+    """
+
     static var manufacturerJson =
         """
                 {
@@ -75,7 +116,7 @@ extension AppModel {
                     "name": "Tangem"
                 }
     """
-    
+
     static var issuerJson =
         """
             {
@@ -91,7 +132,7 @@ extension AppModel {
                 "id": "TANGEM SDK"
             }
     """
-    
+
     static var acquirerJson =
         """
                 {
@@ -103,7 +144,7 @@ extension AppModel {
                     "id": "Smart Cash"
                 }
     """
-    
+
     static var jsonRpcTemplate: String {
         """
     {

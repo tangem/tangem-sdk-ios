@@ -16,9 +16,9 @@ public struct ResponseApdu {
     /// Parsed status word.
     public var statusWord: StatusWord { return StatusWord(rawValue: sw) ?? .unknown }
     
-    private let sw1: Byte
-    private let sw2: Byte
-    private let data: Data
+    let sw1: Byte
+    let sw2: Byte
+    let data: Data
     
     public init(_ data: Data, _ sw1: Byte, _ sw2: Byte) {
         self.sw1 = sw1

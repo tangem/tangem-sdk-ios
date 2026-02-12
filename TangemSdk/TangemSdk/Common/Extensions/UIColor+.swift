@@ -38,6 +38,13 @@ extension UIColor {
                   blue: 60.0/255.0,
                   alpha: 1)
         }
+
+        static let warningBackground = UIColor(
+            red: 255.0/255.0,
+            green: 183.0/255.0,
+            blue: 27.0/255.0,
+            alpha: 1
+        )
     }
 }
 

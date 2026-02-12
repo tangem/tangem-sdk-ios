@@ -25,41 +25,54 @@ struct EnterUserCodeView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            UserCodeHeaderView(title: title,
-                               cardId: cardId,
-                               onCancel: onCancel)
-                .padding(.top, 8)
-            
-            FloatingTextField(title: placeholder,
-                              text: $code,
-                              onCommit: onDone,
-                              shouldBecomeFirstResponder: true)
-                .padding(.top, 16)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    UserCodeHeaderView(title: title, cardId: cardId, onCancel: onCancel)
+                        .padding(.top, 8)
 
-            Text("tangem_never_pregenerate_code_alert".localized)
-                .foregroundColor(.gray)
-                .font(.system(size: 16))
+                    codeInput
+                        .padding(.top, 16)
 
-            VStack(spacing: 16) {
-                
-                Spacer()
-                
-                if showForgotButton {
-                    Button("reset_codes_btn_forgot_your_code".localized, action: onForgot)
-                        .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
+                    SecurityNoticeView()
+                        .padding(.top, 8)
+
+                    footer
                 }
-                
-                Button("common_continue".localized, action: onDone)
-                    .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
-                                               isDisabled: isContinueDisabled,
-                                               isLoading: isLoading))
+                .padding([.horizontal, .bottom])
+                .onAppear(perform: onAppear)
+                .frame(minHeight: proxy.size.height)
             }
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .padding([.horizontal, .bottom])
-        .onAppear(perform: onAppear)
     }
-    
+
+    private var codeInput: some View {
+        FloatingTextField(
+            title: placeholder,
+            text: $code,
+            onCommit: onDone,
+            shouldBecomeFirstResponder: true
+        )
+    }
+
+    private var footer: some View {
+        VStack(spacing: 16) {
+
+            Spacer()
+
+            if showForgotButton {
+                Button("reset_codes_btn_forgot_your_code".localized, action: onForgot)
+                    .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
+            }
+
+            Button("common_continue".localized, action: onDone)
+                .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
+                                           isDisabled: isContinueDisabled,
+                                           isLoading: isLoading))
+        }
+    }
+
     private func onAppear() {
         if isLoading {
             isLoading = false

@@ -62,7 +62,7 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
 
-        if let error = card.assertWalletsAccess() {
+        if card.assertWalletsAccess() != nil {
             self.runAttestation(session, completion)
             return
         }

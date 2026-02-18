@@ -189,9 +189,9 @@ public final class AttestWalletKeyTask: Command {
     }
     
     private func verifyWalletSignature(response: AttestWalletKeyResponse, wallet: Card.Wallet) throws -> Bool {
-        // Impossible case because of pre check
+        // Impossible case because of precheck
         guard let currentWalletPublicKey = wallet.publicKey else {
-            throw TangemSdkError.cardError
+            throw TangemSdkError.walletUnavailableBackupRequired
         }
 
         guard currentWalletPublicKey == walletPublicKey else {

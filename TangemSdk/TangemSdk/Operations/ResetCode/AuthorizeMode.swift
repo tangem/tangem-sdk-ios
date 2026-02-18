@@ -19,6 +19,6 @@ enum AuthorizeMode: Byte, InteractionMode {
     case secureDelay = 0x10
     case accessToken = 0x11
     case asymmetricKey = 0x12
-    case PINChallenge = 0x21
-    case PINResponse = 0x22
+    case pinChallenge = 0x21
+    case pinResponse = 0x22
 }

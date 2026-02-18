@@ -185,7 +185,9 @@ class AppModel: ObservableObject {
         }
         
         if card.wallets.count == 1 {
-            method(card.wallets.first!.publicKey)
+            if let publicKey = card.wallets.first?.publicKey {
+                method(publicKey)
+            }
         } else {
             showWalletSelection.toggle()
         }

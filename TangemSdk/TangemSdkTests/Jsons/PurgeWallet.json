@@ -4,7 +4,7 @@
         "id": 1,
         "method": "purge_wallet",
         "params": {
-            "walletIndex": "0"
+            "walletIndex": 0
         }
     },
     "response" : {

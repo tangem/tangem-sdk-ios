@@ -7,7 +7,9 @@
   ],
   "cardPublicKey" : "0000",
   "userSettings" : {
-      "isUserCodeRecoveryAllowed" : true
+      "isUserCodeRecoveryAllowed" : true,
+      "isPINRequired" : false,
+      "isNDEFDisabled" : false,
   },
   "settings" : {
     "isSettingPasscodeAllowed" : true,

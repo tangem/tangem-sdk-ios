@@ -86,11 +86,11 @@ struct ContentView: View {
             .padding(.bottom, 8)
             .actionSheet(isPresented: $model.showWalletSelection) {
                 let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
-                    let publicKey = wallet.publicKey.hexString
-                    let formattedKey = "\(publicKey.prefix(6))...\(publicKey.suffix(6)) (\(wallet.curve.rawValue))"
-                    
+                    let publicKeyDescription = wallet.publicKey.map { "\($0.prefix(6))...\($0.suffix(6))" } ?? ""
+                    let formattedKey = "\(wallet.index) \(publicKeyDescription) (\(wallet.curve.rawValue))"
+
                     return ActionSheet.Button.default(Text(formattedKey)) {
-                        model.start(walletPublicKey: wallet.publicKey)
+                        model.start(walletIndex: wallet.index)
                     }
                 } ?? []
                 

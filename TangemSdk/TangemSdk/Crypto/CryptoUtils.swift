@@ -2,7 +2,7 @@
 //  CryptoUtils.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 09/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -50,7 +50,7 @@ public enum CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
-            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
+            // [REDACTED_TODO_COMMENT]
             if publicKey.count == Constants.p256CompressedKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
@@ -60,7 +60,7 @@ public enum CryptoUtils {
             
             return pubKey.isValidSignature(sig, for: message)
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -81,7 +81,7 @@ public enum CryptoUtils {
             let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -107,7 +107,7 @@ public enum CryptoUtils {
         case .bls12381_G2_AUG:
             return try Data(hexString: BLSUtils().makePublicKey(from: privateKey))
         case .bls12381_G2, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -132,7 +132,7 @@ public enum CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
-            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
+            // [REDACTED_TODO_COMMENT]
             if publicKey.count == Constants.p256CompressedKeySize {
                 throw TangemSdkError.unsupportedCurve
             }
@@ -141,7 +141,7 @@ public enum CryptoUtils {
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }

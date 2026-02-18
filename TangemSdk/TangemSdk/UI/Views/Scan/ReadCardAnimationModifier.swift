@@ -2,7 +2,7 @@
 //  ReadCardAnimationModifier.swift
 //  TangemSdk
 //
-//  Created by Alexander Skibin on 24.06.2025.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import SwiftUI

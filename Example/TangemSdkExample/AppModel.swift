@@ -266,10 +266,10 @@ extension AppModel {
     
     func attestWallet(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: "Wallet not found")
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
-        
+
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -287,7 +287,7 @@ extension AppModel {
     
     func signHash(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: "Wallet not found")
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
@@ -331,7 +331,7 @@ extension AppModel {
     
     func signHashes(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: "Wallet not found")
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
@@ -365,7 +365,7 @@ extension AppModel {
         }
 
         guard let walletPublicKey = card.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: "Wallet not found")
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 

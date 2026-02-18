@@ -91,7 +91,7 @@ struct ContentView: View {
                         return "\(hexString.prefix(6))...\(hexString.suffix(6))"
                     } ?? ""
                     
-                    let formattedKey = "\(wallet.index) \(publicKeyDescription) (\(wallet.curve.rawValue))"
+                    let formattedKey = "(\(wallet.index)) \(publicKeyDescription) (\(wallet.curve.rawValue))"
 
                     return ActionSheet.Button.default(Text(formattedKey)) {
                         model.start(walletIndex: wallet.index)

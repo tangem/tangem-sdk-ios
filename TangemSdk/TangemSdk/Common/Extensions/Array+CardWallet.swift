@@ -29,25 +29,4 @@ public extension Array where Element == Card.Wallet {
             }
         }
     }
-
-//    subscript(walletIndex: Int) -> Element? {
-//        get {
-//            return first(where: { $0.index == walletIndex })
-//        }
-//        set(newValue) {
-//            let elementIndex = firstIndex(where: { $0.index == walletIndex })
-//
-//            if let newValue = newValue {
-//                if let elementIndex {
-//                    self[elementIndex] = newValue
-//                } else {
-//                    self.append(newValue)
-//                }
-//            } else {
-//                if let elementIndex {
-//                    remove(at: elementIndex)
-//                }
-//            }
-//        }
-//    }
 }

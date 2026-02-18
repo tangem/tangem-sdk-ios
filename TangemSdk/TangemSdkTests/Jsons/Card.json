@@ -28,7 +28,8 @@
     "isHDWalletAllowed" : true,
     "isFilesAllowed" : true,
     "isBackupAllowed" : true,
-    "isKeysImportAllowed" : true
+    "isKeysImportAllowed" : true,
+    "isBackupRequired" : false,
   },
   "issuer" : {
     "name" : "TANGEM AG",

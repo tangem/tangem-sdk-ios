@@ -103,7 +103,7 @@ class BIP32FWTests: FWTestCase {
 
                 // Chain m
                 let expectedM = try! ExtendedPublicKey(from: "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8", networkType: .mainnet)
-                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey.hexString)
+                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey!.hexString)
                 self.printEquals(expectedM.chainCode.hexString, wallet.chainCode!.hexString)
 
                 // Chain m/0H ext pub

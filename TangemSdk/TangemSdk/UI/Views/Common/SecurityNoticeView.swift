@@ -24,6 +24,7 @@ struct SecurityNoticeView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.init(top: 12, leading: 14, bottom: 12, trailing: 32))
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(uiColor: UIColor.LightPalette.warningBackground).opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }

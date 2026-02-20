@@ -122,7 +122,10 @@ class CommonFirmwareTests: FWTestCase {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
-                            let key = r.wallet.publicKey.hexString.lowercased()
+                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                print("!!! Wallet not found ❌")
+                                return
+                            }
                             //let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
                             let expected = generatedPublicKeys[cmd.0]
                             let equals = key == expected
@@ -215,7 +218,10 @@ class CommonFirmwareTests: FWTestCase {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
-                            let key = r.wallet.publicKey.hexString.lowercased()
+                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                print("!!! Wallet not found ❌")
+                                return
+                            }
                             //let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
                             let expected = generatedPublicKeys[cmd.0]
                             let equals = key == expected.dropFirst(2)
@@ -281,7 +287,10 @@ class CommonFirmwareTests: FWTestCase {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
-                            let key = r.wallet.publicKey.hexString
+                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                print("!!! Wallet not found ❌")
+                                return
+                            }
                             let expected = try! cmd.1.1.makePublicKey(for: .secp256k1).publicKey.hexString
                             self.printEquals(expected, key)
                         case .failure(let error):
@@ -345,7 +354,11 @@ class CommonFirmwareTests: FWTestCase {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
-                            let key = r.wallet.publicKey.hexString
+                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                print("!!! Wallet not found ❌")
+                                return
+                            }
+                            
                             let expected = (try! P256.Signing.PrivateKey(rawRepresentation: cmd.1.1.privateKey)).publicKey.compressedRepresentation.hexString.uppercased()
                             self.printEquals(expected, key)
                         case .failure(let error):

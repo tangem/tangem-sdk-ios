@@ -31,6 +31,8 @@ public extension Card {
         public let isHDWalletAllowed: Bool
         /// Is allowed to create backup
         public let isBackupAllowed: Bool
+        /// Is backup required to use a card. If true, the card will not return public keys until backup is created. COS. v8+
+        public let isBackupRequired: Bool
         /// Is allowed to import  keys. COS. v6+
         public let isKeysImportAllowed: Bool
         /// Is allowed to delete wallet. COS before v4
@@ -71,6 +73,7 @@ extension Card.Settings {
         self.isHDWalletAllowed = mask.contains(.allowHDWallets)
         self.isFilesAllowed = !mask.contains(.disableFiles)
         self.isBackupAllowed = mask.contains(.allowBackup)
+        self.isBackupRequired = mask.contains(.requireBackup)
         self.isKeysImportAllowed = mask.contains(.allowKeysImport)
         
         var encryptionModes: [EncryptionMode] = [.strong]

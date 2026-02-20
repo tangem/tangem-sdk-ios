@@ -20,7 +20,7 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
             return
         }
 
-        PurgeWalletCommand(publicKey: wallet.publicKey).run(in: session) { result in
+        PurgeWalletCommand(walletIndex: wallet.index).run(in: session) { result in
             switch result {
             case .success:
                 self.deteleWallets(in: session, completion: completion)

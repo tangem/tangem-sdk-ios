@@ -12,6 +12,12 @@ public extension Card {
     struct UserSettings: Codable {
         /// Is allowed to recover user codes
         public internal(set) var isUserCodeRecoveryAllowed: Bool
+
+        /// Is required Pin to open session for v8+ cards
+        public internal(set) var isPINRequired: Bool
+
+        /// Is read NDEF feature disabled
+        public internal(set) var isNDEFDisabled: Bool
     }
 }
 
@@ -23,11 +29,21 @@ extension Card.UserSettings {
             builder.add(.forbidResetPIN)
         }
 
+        if isPINRequired {
+            builder.add(.requirePIN)
+        }
+
+        if isNDEFDisabled {
+            builder.add(.disableNDEF)
+        }
+
         return builder.build()
     }
 
     init(from mask: UserSettingsMask) {
         self.isUserCodeRecoveryAllowed = !mask.contains(.forbidResetPIN)
+        self.isPINRequired = mask.contains(.requirePIN)
+        self.isNDEFDisabled = mask.contains(.disableNDEF)
     }
 }
 
@@ -43,6 +59,8 @@ struct UserSettingsMask: OptionSet, OptionSetCustomStringConvertible {
 
 extension UserSettingsMask {
     static let forbidResetPIN = UserSettingsMask(rawValue: 0x00000001)
+    static let requirePIN = UserSettingsMask(rawValue: 0x00000002)
+    static let disableNDEF = UserSettingsMask(rawValue: 0x00000010)
 }
 
 // MARK: - OptionSetCodable conformance

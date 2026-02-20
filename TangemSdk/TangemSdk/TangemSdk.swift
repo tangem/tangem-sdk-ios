@@ -212,15 +212,15 @@ public extension TangemSdk {
     ///
     /// - Note: Wallet index available for cards with COS v.4.0 or higher
     /// - Parameters:
-    ///   - walletPublicKey: Public key of wallet that should be purged.
+    ///   - walletIndex: Index of wallet that should be purged.
     ///   - cardId: CID, Unique Tangem card ID number.
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - completion: Returns `Swift.Result<SuccessResponse,TangemSdkError>`
-    func purgeWallet(walletPublicKey: Data,
+    func purgeWallet(walletIndex: Int,
                      cardId: String,
                      initialMessage: Message? = nil,
                      completion: @escaping CompletionResult<SuccessResponse>) {
-        startSession(with: PurgeWalletCommand(publicKey: walletPublicKey), cardId: cardId, initialMessage: initialMessage, completion: completion)
+        startSession(with: PurgeWalletCommand(walletIndex: walletIndex), cardId: cardId, initialMessage: initialMessage, completion: completion)
     }
     
     /// Set or change card's access code

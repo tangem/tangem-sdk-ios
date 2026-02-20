@@ -235,9 +235,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorZeroLengthMessage
     case readerErrorRadioDisabled
     case readerTransceiveErrorPacketTooLong
-    // TODO: uncomment for xcode26
-//     case readerErrorIneligible
-//     case readerErrorAccessNotAccepted
+    case readerErrorIneligible
+    case readerErrorAccessNotAccepted
 
     // MARK: Files errors
     
@@ -258,7 +257,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
     case walletAlreadyCreated
-    
+    case walletUnavailableBackupRequired
+
     // MARK: Backup errors
     case backupFailedCardNotLinked
     case backupNotAllowed
@@ -362,7 +362,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
         case .walletAlreadyCreated: return 40405
-            
+        case .walletUnavailableBackupRequired: return 40406
+
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502
         case .maxNumberOfWalletsCreated: return 40503
@@ -466,9 +467,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
-            // TODO: uncomment for xCode26
-//        case .readerErrorIneligible: return 90023
-//        case .readerErrorAccessNotAccepted: return 90024
+        case .readerErrorIneligible: return 90023
+        case .readerErrorAccessNotAccepted: return 90024
         }
     }
     
@@ -608,11 +608,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .readerErrorRadioDisabled
             case .readerTransceiveErrorPacketTooLong:
                 return .readerTransceiveErrorPacketTooLong
-                // TODO: uncomment for xCode26
-//            case .readerErrorIneligible:
-//                return .readerErrorIneligible
-//            case .readerErrorAccessNotAccepted:
-//                return .readerErrorAccessNotAccepted
+            case .readerErrorIneligible:
+                return .readerErrorIneligible
+            case .readerErrorAccessNotAccepted:
+                return .readerErrorAccessNotAccepted
             @unknown default:
                 return .nfcReaderError
             }

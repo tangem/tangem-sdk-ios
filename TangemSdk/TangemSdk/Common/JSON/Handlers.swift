@@ -88,8 +88,8 @@ class PurgeWalletHandler: JSONRPCHandler {
     var method: String { "PURGE_WALLET" }
     
     func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable {
-        let walletPublicKey: Data = try parameters.value(for: "walletPublicKey")
-        let command = PurgeWalletCommand(publicKey: walletPublicKey)
+        let walletIndex: Int = try parameters.value(for: "walletIndex")
+        let command = PurgeWalletCommand(walletIndex: walletIndex)
         return command.eraseToAnyRunnable()
     }
 }

@@ -106,8 +106,24 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {
-        let attestationCommands = session.environment.card!.wallets.map { AttestWalletKeyTask(walletPublicKey: $0.publicKey) }
-      
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        if let error = card.assertWalletsAccess() {
+            completion(.failure(error))
+            return
+        }
+
+        let attestationCommands = card.wallets.compactMap { wallet -> AttestWalletKeyTask? in
+            guard let publicKey = wallet.publicKey else {
+                return nil
+            }
+
+            return AttestWalletKeyTask(walletPublicKey: publicKey)
+        }
+
         if attestationCommands.isEmpty {
             completion(.success(false)) //no warnings
             return

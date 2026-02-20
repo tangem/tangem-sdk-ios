@@ -54,7 +54,7 @@ class SLIP10FWTests: FWTestCase {
                 let wallet = response.wallet
 
                 // Chain m
-                self.printEquals("0266874dc6ade47b3ecd096745ca09bcd29638dd52c2c12117b11ed3e458cfa9e8".uppercased(), wallet.publicKey.hexString)
+                self.printEquals("0266874dc6ade47b3ecd096745ca09bcd29638dd52c2c12117b11ed3e458cfa9e8".uppercased(), wallet.publicKey!.hexString)
 
                 // Chain m/0H ext pub
                 let derived = wallet.derivedKeys[try! DerivationPath(rawPath: "m/0'")]!
@@ -117,7 +117,7 @@ class SLIP10FWTests: FWTestCase {
                 let wallet = response.wallet
 
                 // Chain m
-                self.printEquals("02c9e16154474b3ed5b38218bb0463e008f89ee03e62d22fdcc8014beab25b48fa".uppercased(), wallet.publicKey.hexString)
+                self.printEquals("02c9e16154474b3ed5b38218bb0463e008f89ee03e62d22fdcc8014beab25b48fa".uppercased(), wallet.publicKey!.hexString)
 
                 // Chain m/0 ext pub
                 let derived = wallet.derivedKeys[try! DerivationPath(rawPath: "m/0'")]!
@@ -173,7 +173,7 @@ class SLIP10FWTests: FWTestCase {
                 let wallet = response.wallet
 
                 // Chain m
-                self.printEquals("0266874dc6ade47b3ecd096745ca09bcd29638dd52c2c12117b11ed3e458cfa9e8".uppercased(), wallet.publicKey.hexString)
+                self.printEquals("0266874dc6ade47b3ecd096745ca09bcd29638dd52c2c12117b11ed3e458cfa9e8".uppercased(), wallet.publicKey!.hexString)
 
                 // Chain m/28578H
                 let derived = wallet.derivedKeys[try! DerivationPath(rawPath: "m/28578'")]!
@@ -220,7 +220,7 @@ class SLIP10FWTests: FWTestCase {
                 let wallet = response.wallet
 
                 // Chain m
-                self.printEquals("00a4b2856bfec510abab89753fac1ac0e1112364e7d250545963f135f2a33188ed".dropFirst(2).uppercased(), wallet.publicKey.hexString)
+                self.printEquals("00a4b2856bfec510abab89753fac1ac0e1112364e7d250545963f135f2a33188ed".dropFirst(2).uppercased(), wallet.publicKey!.hexString)
 
                 // Chain m/0H ext pub
                 let derived = wallet.derivedKeys[try! DerivationPath(rawPath: "m/0'")]!
@@ -282,7 +282,7 @@ class SLIP10FWTests: FWTestCase {
                 let wallet = response.wallet
 
                 // Chain m
-                self.printEquals("008fe9693f8fa62a4305a140b9764c5ee01e455963744fe18204b4fb948249308a".dropFirst(2).uppercased(), wallet.publicKey.hexString)
+                self.printEquals("008fe9693f8fa62a4305a140b9764c5ee01e455963744fe18204b4fb948249308a".dropFirst(2).uppercased(), wallet.publicKey!.hexString)
 
                 // Chain m/0H ext pub
                 let derived = wallet.derivedKeys[try! DerivationPath(rawPath: "m/0'")]!

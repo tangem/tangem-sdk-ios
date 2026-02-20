@@ -67,6 +67,24 @@ public extension Card {
         return msb & 0x7F != 0
     }
 
+    func assertWalletsAccess() -> TangemSdkError? {
+        guard firmwareVersion >= .v8, settings.isBackupRequired else {
+            return nil
+        }
+
+        guard let backupStatus else {
+            return nil
+        }
+
+        if backupStatus.isActive {
+            return nil
+        }
+
+        return TangemSdkError.walletUnavailableBackupRequired
+    }
+}
+
+public extension Card {
     struct Manufacturer: Codable {
         /// Card manufacturer name.
         public let name: String

@@ -62,6 +62,11 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
 
+        if card.assertWalletsAccess() != nil {
+            self.runAttestation(session, completion)
+            return
+        }
+
         let defaultPaths = session.environment.config.defaultDerivationPaths
         guard card.firmwareVersion >= .hdWalletAvailable, card.settings.isHDWalletAllowed, !defaultPaths.isEmpty else {
             self.runAttestation(session, completion)
@@ -69,8 +74,8 @@ public final class ScanTask: CardSessionRunnable {
         }
         
         let derivations = card.wallets.reduce(into: [Data: [DerivationPath]]()) { (result, wallet) in
-            if let paths = defaultPaths[wallet.curve], !paths.isEmpty {
-                result[wallet.publicKey] = paths
+            if let walletPublicKey = wallet.publicKey, let paths = defaultPaths[wallet.curve], !paths.isEmpty {
+                result[walletPublicKey] = paths
             }
         }
         

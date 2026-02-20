@@ -7,7 +7,9 @@
   ],
   "cardPublicKey" : "0000",
   "userSettings" : {
-      "isUserCodeRecoveryAllowed" : true
+      "isUserCodeRecoveryAllowed" : true,
+      "isPINRequired" : false,
+      "isNDEFDisabled" : false,
   },
   "settings" : {
     "isSettingPasscodeAllowed" : true,
@@ -28,7 +30,8 @@
     "isHDWalletAllowed" : true,
     "isFilesAllowed" : true,
     "isBackupAllowed" : true,
-    "isKeysImportAllowed" : true
+    "isKeysImportAllowed" : true,
+    "isBackupRequired" : false,
   },
   "issuer" : {
     "name" : "TANGEM AG",

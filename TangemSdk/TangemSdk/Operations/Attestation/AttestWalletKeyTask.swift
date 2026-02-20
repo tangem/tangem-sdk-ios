@@ -61,6 +61,10 @@ public final class AttestWalletKeyTask: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if let error = card.assertWalletsAccess() {
+            return error
+        }
+
         guard let wallet = card.wallets[walletPublicKey] else {
             return .walletNotFound
         }
@@ -185,7 +189,12 @@ public final class AttestWalletKeyTask: Command {
     }
     
     private func verifyWalletSignature(response: AttestWalletKeyResponse, wallet: Card.Wallet) throws -> Bool {
-        guard wallet.publicKey == walletPublicKey else {
+        // Impossible case because of precheck
+        guard let currentWalletPublicKey = wallet.publicKey else {
+            throw TangemSdkError.walletUnavailableBackupRequired
+        }
+
+        guard currentWalletPublicKey == walletPublicKey else {
             return false
         }
         
@@ -197,7 +206,7 @@ public final class AttestWalletKeyTask: Command {
             
             publicKey = derivedKey.publicKey
         } else {
-            publicKey = wallet.publicKey
+            publicKey = currentWalletPublicKey
         }
 
         return try CryptoUtils.verify(

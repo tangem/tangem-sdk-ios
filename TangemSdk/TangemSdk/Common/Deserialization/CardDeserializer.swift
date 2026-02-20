@@ -95,7 +95,11 @@ struct CardDeserializer {
         if let userSettingsMask {
             userSettings = .init(from: userSettingsMask)
         } else {
-            userSettings = .init(isUserCodeRecoveryAllowed: firmware >= .backupAvailable)
+            userSettings = .init(
+                isUserCodeRecoveryAllowed: firmware >= .backupAvailable,
+                isPINRequired: false,
+                isNDEFDisabled: false
+            )
         }
 
         let card = Card(cardId: try decoder.decode(.cardId),

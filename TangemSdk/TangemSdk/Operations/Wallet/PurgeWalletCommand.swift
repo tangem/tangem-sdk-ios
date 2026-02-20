@@ -12,12 +12,12 @@ import Foundation
 public final class PurgeWalletCommand: Command {
     var requiresPasscode: Bool { return true }
     
-    private let walletPublicKey: Data
-    
+    private let walletIndex: Int
+
     /// Default initializer
-    /// - Parameter publicKey: Public key of the wallet to delete
-    public init(publicKey: Data) {
-        self.walletPublicKey = publicKey
+    /// - Parameter walletIndex: Index of the wallet to delete
+    public init(walletIndex: Int) {
+        self.walletIndex = walletIndex
     }
     
     deinit {
@@ -25,7 +25,7 @@ public final class PurgeWalletCommand: Command {
     }
     
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        guard let wallet = card.wallets[walletPublicKey] else {
+        guard let wallet = card.wallets.first(where: { $0.index == walletIndex }) else {
             return .walletNotFound
         }
         
@@ -37,10 +37,10 @@ public final class PurgeWalletCommand: Command {
     }
     
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        transceive(in: session) { (result) in
+        transceive(in: session) { [walletIndex] result in
             switch result {
             case .success(let response):
-                session.environment.card?.wallets[self.walletPublicKey] = nil
+                session.environment.card?.wallets.removeAll(where: { $0.index == walletIndex })
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
@@ -49,10 +49,6 @@ public final class PurgeWalletCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
-            throw TangemSdkError.walletNotFound
-        }
-        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)

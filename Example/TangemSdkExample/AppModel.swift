@@ -133,9 +133,9 @@ class AppModel: ObservableObject {
         UIApplication.shared.endEditing()
     }
     
-    func start(walletPublicKey: Data? = nil) {
+    func start(walletIndex: Int? = nil) {
         isScanning = true
-        chooseMethod(walletPublicKey: walletPublicKey)
+        chooseMethod(walletIndex: walletIndex)
     }
     
     func onAppear() {
@@ -173,9 +173,9 @@ class AppModel: ObservableObject {
         return Data(array)
     }
     
-    private func runWithPublicKey(_ method: (_ walletPublicKey: Data) -> Void, _ walletPublicKey: Data?) {
-        if let publicKey = walletPublicKey {
-            method(publicKey)
+    private func runWithWallet(_ method: (_ walletIndex: Int) -> Void, _ walletIndex: Int?) {
+        if let walletIndex {
+            method(walletIndex)
             return
         }
         
@@ -185,7 +185,7 @@ class AppModel: ObservableObject {
         }
         
         if card.wallets.count == 1 {
-            method(card.wallets.first!.publicKey)
+            method(card.wallets.first!.index)
         } else {
             showWalletSelection.toggle()
         }
@@ -264,7 +264,12 @@ extension AppModel {
         tangemSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
     }
     
-    func attestWallet(walletPublicKey: Data) {
+    func attestWallet(walletIndex: Int) {
+        guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            return
+        }
+
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -280,7 +285,12 @@ extension AppModel {
         ), completion: handleCompletion)
     }
     
-    func signHash(walletPublicKey: Data) {
+    func signHash(walletIndex: Int) {
+        guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            return
+        }
+
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -319,7 +329,12 @@ extension AppModel {
         }
     }
     
-    func signHashes(walletPublicKey: Data) {
+    func signHashes(walletIndex: Int) {
+        guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            return
+        }
+
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
             self.complete(with: "Failed to parse hd path")
@@ -343,17 +358,22 @@ extension AppModel {
                        completion: handleCompletion)
     }
     
-    func derivePublicKey(walletPublicKey: Data) {
+    func derivePublicKey(walletIndex: Int) {
         guard let card = card else {
             self.complete(with: "Scan card before")
             return
         }
-        
+
+        guard let walletPublicKey = card.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
+            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            return
+        }
+
         guard let path = try? DerivationPath(rawPath: derivationPath) else {
             self.complete(with: "Failed to parse hd path")
             return
         }
-        
+
         UIApplication.shared.endEditing()
         
         tangemSdk.deriveWalletPublicKey(cardId: card.cardId,
@@ -386,13 +406,13 @@ extension AppModel {
                                completion: handleCompletion)
     }
     
-    func purgeWallet(walletPublicKey: Data) {
+    func purgeWallet(walletIndex: Int) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
             return
         }
         
-        tangemSdk.purgeWallet(walletPublicKey: walletPublicKey,
+        tangemSdk.purgeWallet(walletIndex: walletIndex,
                               cardId: cardId,
                               completion: handleCompletion)
     }
@@ -796,22 +816,22 @@ extension AppModel {
         case setUserCodeRecoveryAllowed
     }
     
-    private func chooseMethod(walletPublicKey: Data? = nil) {
+    private func chooseMethod(walletIndex: Int? = nil) {
         switch method {
         case .attest: attest()
         case .attestCard: attestCard()
-        case .attestWallet: runWithPublicKey(attestWallet, walletPublicKey)
+        case .attestWallet: runWithWallet(attestWallet, walletIndex)
         case .chainingExample: chainingExample()
         case .setAccessCode: setAccessCode()
         case .setPasscode: setPasscode()
         case .resetUserCodes: resetUserCodes()
         case .depersonalize: depersonalize()
         case .scan: scan()
-        case .signHash: runWithPublicKey(signHash, walletPublicKey)
-        case .signHashes: runWithPublicKey(signHashes, walletPublicKey)
+        case .signHash: runWithWallet(signHash, walletIndex)
+        case .signHashes: runWithWallet(signHashes, walletIndex)
         case .createWallet: createWallet()
         case .importWallet: importWallet()
-        case .purgeWallet: runWithPublicKey(purgeWallet, walletPublicKey)
+        case .purgeWallet: runWithWallet(purgeWallet, walletIndex)
         case .readFiles: readFiles()
         case .writeUserFile: writeUserFile()
         case .writeOwnerFile: writeOwnerFile()
@@ -824,7 +844,7 @@ extension AppModel {
         case .readUserData: readUserData()
         case .writeUserData: writeUserData()
         case .writeUserProtectedData: writeUserProtectedData()
-        case .derivePublicKey: runWithPublicKey(derivePublicKey, walletPublicKey)
+        case .derivePublicKey: runWithWallet(derivePublicKey, walletIndex)
         case .jsonrpc: runJsonRpc()
         case .personalize: personalize()
         case .personalizeV8: personalizeV8()

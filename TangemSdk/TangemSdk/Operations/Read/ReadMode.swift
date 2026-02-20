@@ -17,4 +17,6 @@ enum ReadMode: Byte, InteractionMode {
     case wallet = 0x02
     /// Returns card and list of available wallets
     case walletsList = 0x03
+    /// Returns card and card's master secret
+    case masterSecret = 0x04
 }

@@ -103,7 +103,7 @@ class BIP32FWTests: FWTestCase {
 
                 // Chain m
                 let expectedM = try! ExtendedPublicKey(from: "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8", networkType: .mainnet)
-                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey.hexString)
+                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey!.hexString)
                 self.printEquals(expectedM.chainCode.hexString, wallet.chainCode!.hexString)
 
                 // Chain m/0H ext pub
@@ -174,7 +174,7 @@ class BIP32FWTests: FWTestCase {
 
                 // Chain m
                 let expectedM = try! ExtendedPublicKey(from: "xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8idoc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB", networkType: .mainnet)
-                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey.hexString)
+                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey!.hexString)
                 self.printEquals(expectedM.chainCode.hexString, wallet.chainCode!.hexString)
 
                 // Chain m/0 ext pub
@@ -242,7 +242,7 @@ class BIP32FWTests: FWTestCase {
 
                 // Chain m
                 let expectedM = try! ExtendedPublicKey(from: "xpub661MyMwAqRbcEZVB4dScxMAdx6d4nFc9nvyvH3v4gJL378CSRZiYmhRoP7mBy6gSPSCYk6SzXPTf3ND1cZAceL7SfJ1Z3GC8vBgp2epUt13", networkType: .mainnet)
-                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey.hexString)
+                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey!.hexString)
                 self.printEquals(expectedM.chainCode.hexString, wallet.chainCode!.hexString)
 
                 // Chain m/0' ext pub
@@ -287,7 +287,7 @@ class BIP32FWTests: FWTestCase {
 
                 // Chain m
                 let expectedM = try! ExtendedPublicKey(from: "xpub661MyMwAqRbcGczjuMoRm6dXaLDEhW1u34gKenbeYqAix21mdUKJyuyu5F1rzYGVxyL6tmgBUAEPrEz92mBXjByMRiJdba9wpnN37RLLAXa", networkType: .mainnet)
-                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey.hexString)
+                self.printEquals(expectedM.publicKey.hexString, wallet.publicKey!.hexString)
                 self.printEquals(expectedM.chainCode.hexString, wallet.chainCode!.hexString)
 
                 // Chain m/0' ext pub

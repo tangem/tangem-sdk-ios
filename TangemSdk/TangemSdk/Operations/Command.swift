@@ -250,7 +250,7 @@ extension Command {
         }
         
         DispatchQueue.main.async {
-            session.requestUserCodeIfNeeded(type) { result in
+            session.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { result in
                 switch result {
                 case .success:
                     session.resume()

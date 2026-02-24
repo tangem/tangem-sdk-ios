@@ -26,14 +26,29 @@ public extension TangemSdkStyle {
         
         public var errorTint: Color = .red
         
-        public var buttonColors: ButtonColors = .init()
-        
-        public var secondaryButtonColors: ButtonColors = .init(foregroundColor: .adaptiveColor(dark: UIColor.lightGray,
-                                                                                               light: UIColor.LightPalette.secondaryButtonForeground),
-                                                               backgroundColor: .adaptiveColor(dark: UIColor.systemGray3,
-                                                                                               light: UIColor.LightPalette.secondaryButtonBackground),
-                                                               disabledForegroundColor: Color(UIColor.systemGray2),
-                                                               disabledBackgroundColor: Color(UIColor.systemGray5))
+        /// Primary button style matching the main app's MainButton(.primary)
+        public var buttonColors: ButtonColors = .init(
+            foregroundColor: .adaptiveColor(dark: UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1),
+                                            light: .white),
+            backgroundColor: .adaptiveColor(dark: UIColor(red: 201/255, green: 201/255, blue: 201/255, alpha: 1),
+                                            light: UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1)),
+            disabledForegroundColor: .adaptiveColor(dark: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1),
+                                                    light: UIColor(red: 201/255, green: 201/255, blue: 201/255, alpha: 1)),
+            disabledBackgroundColor: .adaptiveColor(dark: UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1),
+                                                    light: UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1))
+        )
+
+        /// Secondary button style matching the main app's MainButton(.secondary)
+        public var secondaryButtonColors: ButtonColors = .init(
+            foregroundColor: .adaptiveColor(dark: .white,
+                                            light: UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1)),
+            backgroundColor: .adaptiveColor(dark: UIColor(red: 59/255, green: 59/255, blue: 59/255, alpha: 1),
+                                            light: UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1)),
+            disabledForegroundColor: .adaptiveColor(dark: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1),
+                                                    light: UIColor(red: 201/255, green: 201/255, blue: 201/255, alpha: 1)),
+            disabledBackgroundColor: .adaptiveColor(dark: UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1),
+                                                    light: UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1))
+        )
         
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
         

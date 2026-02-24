@@ -13,6 +13,8 @@ import Foundation
 public final class ScanTask: CardSessionRunnable {
     public var shouldAskForAccessCode: Bool { false }
 
+    public var preflightReadMode: PreflightReadMode { .fullCardReadWithAccessCodeCheck }
+
     private let networkService: NetworkService
 
     public init(networkService: NetworkService) {

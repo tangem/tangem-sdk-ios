@@ -1,3 +1,7 @@
+"already_activated_btn_confirm" = "This is my wallet";
+"already_activated_btn_just_bought" = "I\'ve just bought it";
+"already_activated_message" = "This wallet has already been activated, and we would like to confirm that it was activated by you.";
+"already_activated_title" = "Welcome back";
 "attestation_failed_card_title" = "Non è stata eseguita la verifica della carta";
 "attestation_failed_dev_card" = "This is a development card. Its authenticity cannot be verified. Do not accept this card as a means of payment.";
 "attestation_online_failed_body" = "At the moment, online attestation of the card cannot be performed. You can continue at your own risk or try again later.";

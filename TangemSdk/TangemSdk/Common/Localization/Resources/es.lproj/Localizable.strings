@@ -1,3 +1,7 @@
+"already_activated_btn_confirm" = "Esta es mi billetera";
+"already_activated_btn_just_bought" = "I\'ve just bought it";
+"already_activated_message" = "This wallet has already been activated, and we would like to confirm that it was activated by you.";
+"already_activated_title" = "Welcome back";
 "attestation_failed_card_title" = "Error de validación de tarjeta";
 "attestation_failed_dev_card" = "Esta es una tarjeta en desarrollo. No se puede verificar su autenticidad. No acepte esta tarjeta como medio de pago.";
 "attestation_online_failed_body" = "En estos momentos no es posible realizar la certificación online de la tarjeta. Puede continuar por su cuenta y riesgo o volver a intentarlo más tarde.";

@@ -22,31 +22,77 @@ struct MainScreen: View {
     
     @ViewBuilder
     private var mainView: some View {
-        switch viewModel.viewState {
-        case .scan:
-            ReadView()
-            
-        case .requestCode(let type, cardId: let cardId, let showForgotButton, completion: let completion):
-            EnterUserCodeView(title: type.enterCodeTitle,
-                              cardId: cardId ?? "",
-                              placeholder: type.name,
-                              showForgotButton: showForgotButton,
-                              completion: completion)
-            
-        case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
-            ChangeUserCodeView(type: type,
-                               title: type.changeCodeTitle,
-                               cardId: cardId ?? "",
-                               placeholder: type.enterNewCodeTitle,
-                               confirmationPlaceholder: type.confirmCodeTitle,
-                               completion: completion)
-        case .empty:
-            EmptyView()
-        default:
-            indicatorView(self.viewModel.viewState.indicatorState!)
+        Group {
+            switch viewModel.viewState {
+            case .scan:
+                ReadView()
+                    .transition(.opacity.animation(.easeInOut))
+
+            case .requestCode(
+                let type,
+                cardId: let cardId,
+                let showForgotButton,
+                let showWelcomeBackWarning,
+                completion: let completion
+            ):
+                requestCodeView(
+                    type: type,
+                    cardId: cardId,
+                    showForgotButton: showForgotButton,
+                    showWelcomeBackWarning: showWelcomeBackWarning,
+                    completion: completion
+                )
+
+            case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
+                ChangeUserCodeView(
+                    type: type,
+                    title: type.changeCodeTitle,
+                    cardId: cardId ?? "",
+                    placeholder: type.enterNewCodeTitle,
+                    confirmationPlaceholder: type.confirmCodeTitle,
+                    completion: completion
+                )
+                .transition(.opacity.animation(.easeInOut))
+
+            case .empty:
+                EmptyView()
+            default:
+                indicatorView(self.viewModel.viewState.indicatorState!)
+                    .transition(.opacity.animation(.easeInOut))
+            }
         }
     }
     
+    @ViewBuilder
+    private func requestCodeView(
+        type: UserCodeType,
+        cardId: String?,
+        showForgotButton: Bool,
+        showWelcomeBackWarning: Bool,
+        completion: @escaping CompletionResult<String>
+    ) -> some View {
+        if showWelcomeBackWarning {
+            WelcomeBackView { result in
+                viewModel.handleWelcomeBackResult(
+                    result, type: type,
+                    cardId: cardId,
+                    showForgotButton: showForgotButton,
+                    completion: completion
+                )
+            }
+            .transition(.opacity.animation(.easeInOut))
+        } else {
+            EnterUserCodeView(
+                title: type.enterCodeTitle,
+                cardId: cardId ?? "",
+                placeholder: type.name,
+                showForgotButton: showForgotButton,
+                completion: completion
+            )
+            .transition(.opacity.animation(.easeInOut))
+        }
+    }
+
     @ViewBuilder
     private func indicatorView(_ state: IndicatorView.ViewState) -> some View {
         GeometryReader { geo in

@@ -17,7 +17,9 @@ public enum PreflightReadMode: Decodable, Equatable {
     case readCardOnly
     /// Read card info and all wallets. Used by default
     case fullCardRead
-    
+    /// Read card info and all wallets. Show alert if this card is unknown yet.
+    case fullCardReadWithAccessCodeCheck
+
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercased()
@@ -38,6 +40,7 @@ public enum PreflightReadMode: Decodable, Equatable {
 final class PreflightReadTask: CardSessionRunnable {
     private let readMode: PreflightReadMode
     private let preflightFilter: PreflightReadFilter?
+    private let trustedCardsRepo = TrustedCardsRepo()
 
     init(readMode: PreflightReadMode, filter: PreflightReadFilter?) {
         self.readMode = readMode
@@ -98,6 +101,27 @@ final class PreflightReadTask: CardSessionRunnable {
         switch readMode {
         case .fullCardRead:
             readWalletsList(in: session, completion: completion)
+        case .fullCardReadWithAccessCodeCheck:
+            if card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
+                session.pause()
+                session.environment.accessCode = UserCode(.accessCode, value: nil)
+
+                DispatchQueue.main.async {
+                    session.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: true) { result in
+                        switch result {
+                        case .success:
+                            session.resume()
+                            self.readWalletsList(in: session, completion: completion)
+                        case .failure(let error):
+                            session.releaseTag()
+                            completion(.failure(error))
+                        }
+                    }
+                }
+
+            } else {
+                readWalletsList(in: session, completion: completion)
+            }
         case .readCardOnly, .none:
             completion(.success(card))
         }

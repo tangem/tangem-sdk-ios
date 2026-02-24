@@ -62,14 +62,18 @@ struct EnterUserCodeView: View {
             Spacer()
 
             if showForgotButton {
-                Button("reset_codes_btn_forgot_your_code".localized, action: onForgot)
-                    .buttonStyle(RoundedButton(colors: style.colors.secondaryButtonColors))
+                SdkButton(
+                    title: "reset_codes_btn_forgot_your_code".localized,
+                    colors: style.colors.secondaryButtonColors,
+                    action: onForgot
+                )
             }
 
-            Button("common_continue".localized, action: onDone)
-                .buttonStyle(RoundedButton(colors: style.colors.buttonColors,
-                                           isDisabled: isContinueDisabled,
-                                           isLoading: isLoading))
+            SdkButton(
+                title: "common_continue".localized,
+                colors: style.colors.buttonColors,
+                action: onDone
+            )
         }
     }
 

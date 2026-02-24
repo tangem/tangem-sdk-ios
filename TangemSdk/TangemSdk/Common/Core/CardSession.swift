@@ -381,7 +381,7 @@ public class CardSession {
         let requestAccessCodeAction = {
             Log.session("Request for an access code")
             self.environment.accessCode = UserCode(.accessCode, value: nil)
-            self.requestUserCodeIfNeeded(.accessCode) { result in
+            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
                 switch result {
                 case .success:
                     Log.session("Continue the runnable")
@@ -497,59 +497,67 @@ public class CardSession {
     }
     
     // MARK: - Request User code
-    func requestUserCodeIfNeeded(_ type: UserCodeType, _ completion: @escaping CompletionResult<Void>) {
-        switch type {
-        case .accessCode:
-            guard environment.accessCode.value == nil else {
-                completion(.success(()))
-                return
-            }
-        case .passcode:
-            guard environment.passcode.value == nil else {
-                completion(.success(()))
-                return
+    func requestUserCodeIfNeeded(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
+        if !showWelcomeBackWarning {
+            switch type {
+            case .accessCode:
+                guard environment.accessCode.value == nil else {
+                    completion(.success(()))
+                    return
+                }
+            case .passcode:
+                guard environment.passcode.value == nil else {
+                    completion(.success(()))
+                    return
+                }
             }
         }
         Log.session("Request user code of type: \(type)")
-        
-        
+
+
         let cardId = environment.card?.cardId ?? self.cardId
         let showForgotButton = environment.card?.backupStatus?.isActive ?? false
         let formattedCardId = cardId.flatMap { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
-        
-        viewDelegate.setState(.requestCode(type, cardId: formattedCardId, showForgotButton: showForgotButton, completion: { [weak self] result in
-            guard let self = self else { return }
-            
-            func continueRunnable(code: String) {
-                self.updateEnvironment(with: type, code: code)
-                self.viewDelegate.setState(.default)
-                self.viewDelegate.showAlertMessage(defaultScanMessage)
-                completion(.success(()))
-            }
-            
-            switch result {
-            case .success(let code):
-                continueRunnable(code: code)
-            case .failure(let error):
-                if case .userForgotTheCode = error {
-                    self.viewDelegate.sessionStopped {
-                        self.restoreUserCode(type, cardId: cardId) { result in
-                            switch result {
-                            case .success(let newCode):
-                                continueRunnable(code: newCode)
-                                self.resetCodesController = nil
-                            case .failure(let error):
-                                completion(.failure(error))
+
+        viewDelegate.setState(
+            .requestCode(
+                type,
+                cardId: formattedCardId,
+                showForgotButton: showForgotButton,
+                showWelcomeBackWarning: showWelcomeBackWarning,
+                completion: { [weak self] result in
+                    guard let self = self else { return }
+
+                    func continueRunnable(code: String) {
+                        self.updateEnvironment(with: type, code: code)
+                        self.viewDelegate.setState(.default)
+                        self.viewDelegate.showAlertMessage(defaultScanMessage)
+                        completion(.success(()))
+                    }
+
+                    switch result {
+                    case .success(let code):
+                        continueRunnable(code: code)
+                    case .failure(let error):
+                        if case .userForgotTheCode = error {
+                            self.viewDelegate.sessionStopped {
+                                self.restoreUserCode(type, cardId: cardId) { result in
+                                    switch result {
+                                    case .success(let newCode):
+                                        continueRunnable(code: newCode)
+                                        self.resetCodesController = nil
+                                    case .failure(let error):
+                                        completion(.failure(error))
+                                    }
+                                }
                             }
+                        } else {
+                            completion(.failure(error))
                         }
                     }
-                } else {
-                    completion(.failure(error))
-                }
-            }
-        }))
+                }))
     }
-    
+
     func fetchAccessCodeIfNeeded() {
         Log.session("Try fetch an access code")
         guard let card = environment.card, card.isAccessCodeSet,

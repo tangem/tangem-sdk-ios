@@ -9,93 +9,46 @@
 import Foundation
 import SwiftUI
 
-struct RoundedButton: ButtonStyle {
-    var colors: TangemSdkStyle.ButtonColors
+struct SdkButton: View {
+    let title: String
+    let colors: TangemSdkStyle.ButtonColors
     var isDisabled: Bool = false
     var isLoading: Bool = false
-    
-    var height: CGFloat = 50
-    
+    let action: () -> Void
+
     private var foregroundColor: Color {
         isDisabled ? colors.disabledForegroundColor : colors.foregroundColor
     }
-    
+
     private var backgroundColor: Color {
         isDisabled ? colors.disabledBackgroundColor : colors.backgroundColor
     }
-    
-    @ViewBuilder private var loadingOverlay: some View {
-        if isLoading  {
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(foregroundColor)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, minHeight: 46, maxHeight: 46)
+                .background(backgroundColor)
+                .overlay(loadingOverlay)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .allowsHitTesting(!isDisabled && !isLoading)
+                .animation(.easeInOut(duration: 0.2), value: isDisabled)
+        }
+        .buttonStyle(BorderlessButtonStyle())
+    }
+
+    @ViewBuilder
+    private var loadingOverlay: some View {
+        if isLoading {
             ZStack {
-                colors.backgroundColor
-                ActivityIndicatorView(color: colors.foregroundColor)
+                backgroundColor
+                ActivityIndicatorView(color: foregroundColor)
             }
         } else {
             Color.clear
-        }
-    }
-    
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Spacer()
-            configuration.label
-            Spacer()
-        }
-        .frame(height: height)
-        .padding(.horizontal, 10)
-        .font(.system(size: 17, weight: .semibold, design: .default))
-        .foregroundColor(foregroundColor)
-        .background(backgroundColor)
-        .overlay(loadingOverlay)
-        .cornerRadius(8)
-        .allowsHitTesting(!isDisabled && !isLoading)
-        .animation(.easeInOut(duration: 0.2), value: isDisabled)
-    }
-}
-
-struct RoundedButton_Previews: PreviewProvider {
-    
-    @ViewBuilder
-    static func buttons(for buttonColors: TangemSdkStyle.ButtonColors) -> some View {
-        VStack {
-            Button("Continue", action: {})
-                .buttonStyle(RoundedButton(colors: buttonColors,
-                                           isDisabled: false,
-                                           isLoading: false))
-            Button("Continue", action: {})
-                .buttonStyle(RoundedButton(colors: buttonColors,
-                                           isDisabled: false,
-                                           isLoading: true))
-            
-            Button("Continue", action: {})
-                .buttonStyle(RoundedButton(colors: buttonColors,
-                                           isDisabled: true,
-                                           isLoading: false))
-            
-            Button("Continue", action: {})
-                .buttonStyle(RoundedButton(colors: buttonColors,
-                                           isDisabled: true,
-                                           isLoading: true))
-        }
-    }
-    
-    static var buttonGroup: some View {
-        VStack(spacing: 80) {
-            let style = TangemSdkStyle()
-            
-            buttons(for: style.colors.buttonColors)
-            
-            buttons(for: style.colors.secondaryButtonColors)
-        }
-        .padding()
-    }
-    
-    static var previews: some View {
-        Group {
-            buttonGroup
-            
-            buttonGroup
-                .preferredColorScheme(.dark)
         }
     }
 }

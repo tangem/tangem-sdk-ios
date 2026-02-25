@@ -3,6 +3,9 @@
 
 # Xcode
 build/
+
+# Swift Package Manager
+.build/
 *.pbxuser
 !default.pbxuser
 *.mode1v3

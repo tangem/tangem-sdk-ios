@@ -21,6 +21,17 @@ extension ResponseApdu {
             }
         }}.eraseToAnyPublisher()
     }
+
+    func decryptCcmPublisher(encryptionKey: Data?, nonce: Data) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+        return Deferred {Future() { promise in
+            do {
+                let decrypted = try self.decryptCcm(encryptionKey: encryptionKey, nonce: nonce)
+                promise(.success(decrypted))
+            } catch {
+                promise(.failure(error.toTangemSdkError()))
+            }
+        }}.eraseToAnyPublisher()
+    }
 }
 
 extension CommandApdu {
@@ -28,6 +39,17 @@ extension CommandApdu {
         return Deferred {Future() { promise in
             do {
                 let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey)
+                promise(.success(encrypted))
+            } catch {
+                promise(.failure(error.toTangemSdkError()))
+            }
+        }}.eraseToAnyPublisher()
+    }
+
+    func encryptCcmPublisher(encryptionKey: Data?, nonce: Data) -> AnyPublisher<CommandApdu, TangemSdkError> {
+        return Deferred {Future() { promise in
+            do {
+                let encrypted = try self.encryptCcm(encryptionKey: encryptionKey, nonce: nonce)
                 promise(.success(encrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))

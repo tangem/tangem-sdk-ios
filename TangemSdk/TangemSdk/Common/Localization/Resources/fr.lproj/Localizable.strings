@@ -1,7 +1,7 @@
 "already_activated_btn_confirm" = "C'est mon portefeuille";
-"already_activated_btn_just_bought" = "I\'ve just bought it";
-"already_activated_message" = "This wallet has already been activated, and we would like to confirm that it was activated by you.";
-"already_activated_title" = "Welcome back";
+"already_activated_btn_just_bought" = "Je viens de l’acheter.";
+"already_activated_message" = "Ce portefeuille a déjà été activé et nous souhaitons confirmer qu’il a bien été activé par vous.";
+"already_activated_title" = "Bon retour";
 "attestation_failed_card_title" = "Erreur de validation de la carte";
 "attestation_failed_dev_card" = "Ceci est une carte de développement. Son authenticité ne peut être vérifiée. N'acceptez pas cette carte comme moyen de paiement.";
 "attestation_online_failed_body" = "Pour le moment, l'attestation en ligne de la carte ne peut pas être effectuée. Vous pouvez continuer à vos propres risques ou réessayer plus tard.";
@@ -14,7 +14,7 @@
 "backup_finalize_primary_ring_message" = "Connectez votre téléphone et la sonnerie principale comme indiqué ci-dessus.";
 "backup_prepare_primary_card_message_format" = "Connectez votre téléphone et la carte principale avec le numéro %@ exactement comme indiqué ci-dessus.";
 "backup_prepare_primary_card_message" = "Connectez votre téléphone et la carte principale exactement comme indiqué ci-dessus.";
-"card_health_warning" = "There is an issue with your Tangem card. Please contact Tangem Support for assistance.";
+"card_health_warning" = "Il y a un problème avec votre carte Tangem. Veuillez contacter le support Tangem pour obtenir de l’aide.";
 "cid_format" = "Carte n°%@";
 "common_cancel" = "Annuler";
 "common_card_or_ring" = "carte ou bague";
@@ -78,6 +78,6 @@
 "touch_id_localized_reason" = "Utilisez Touch ID pour enregistrer les codes d'accès dans l'application";
 "view_delegate_scan_description_format" = "Appuyez sur %@ comme indiqué ci-dessus et maintenez-le enfoncé jusqu'à la fin de l'opération";
 "view_delegate_scan_description" = "Appuyez sur la carte comme indiqué ci-dessus et maintenez jusqu'à la fin de l'opération";
-"view_delegate_security_delay_description_format" = "Pour garantir le bon fonctionnement du processus, veuillez maintenir la carte ou la bague contre le téléphone jusqu'à ce que l'opération soit terminée.";
+"view_delegate_security_delay_description_format" = "Pour garantir le bon fonctionnement du processus, veuillez maintenir %@ contre le téléphone jusqu'à ce que l'opération soit terminée.";
 "view_delegate_security_delay_description" = "Pour garantir la sécurité, veuillez conserver la carte jusqu'à ce que l'opération soit terminée.";
 "wallet_not_found" = "On dirait que vous vous êtes trompé de carte. L'opération ne peut pas être effectuée avec cette carte.";

@@ -1,7 +1,7 @@
 "already_activated_btn_confirm" = "Das ist meine Wallet";
-"already_activated_btn_just_bought" = "I\'ve just bought it";
-"already_activated_message" = "This wallet has already been activated, and we would like to confirm that it was activated by you.";
-"already_activated_title" = "Welcome back";
+"already_activated_btn_just_bought" = "Gerade gekauft.";
+"already_activated_message" = "Diese Wallet wurde bereits aktiviert, und wir möchten bestätigen, dass sie von Ihnen aktiviert wurde.";
+"already_activated_title" = "Willkommen zurück";
 "attestation_failed_card_title" = "Kartenprüfung fehlgeschlagen";
 "attestation_failed_dev_card" = "Dies ist eine Entwicklungskarte. Ihre Authentizität kann nicht überprüft werden. Akzeptiere diese Karte nicht als Zahlungsmittel.";
 "attestation_online_failed_body" = "Der Online-Nachweis/ Prüfung der Karte kann derzeit nicht durchgeführt werden. Du kannst auf eigenem Risiko fortfahren oder es später erneut versuchen.";

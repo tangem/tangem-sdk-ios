@@ -81,7 +81,7 @@ struct WelcomeBackView: View {
 private extension WelcomeBackView {
     enum Constants {
         static let supportedBlogLanguages: Set<String> = [
-            "en", "es", "pt", "de", "ja", "fr", "tr", "ko", "zh-Hans",
+            "en", "es", "pt", "de", "ja", "fr", "tr", "ko", "zh-Hans", "ru"
         ]
 
         static var preactivatedWalletsURL: URL? {

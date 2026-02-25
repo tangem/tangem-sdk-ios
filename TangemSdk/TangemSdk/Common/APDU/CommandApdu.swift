@@ -57,48 +57,6 @@ public struct CommandApdu: Equatable {
         data = tlv
     }
 
-    /// Encrypt APDU
-    /// - Parameters:
-    /// - Parameter encryptionMode: encryption mode
-    /// - Parameter encryptionKey: encryption key
-    /// - Returns: Encrypted APDU
-    public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?) throws -> CommandApdu {
-        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
-            return self
-        }
-
-        let crc = data.crc16()
-        let tlvDataToEncrypt = data.count.bytes2 + crc + data
-        let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
-        Log.debug("C-APDU encrypted")
-
-        return CommandApdu(cla: cla, ins: ins, p1: encryptionMode.byteValue, p2: p2, le: le, tlv: Data(encryptedPayload))
-    }
-
-    /// Encrypt APDU using CCM mode
-    /// - Parameters:
-    ///   - encryptionKey: encryption key
-    ///   - encryptionNonce: nonce for CCM encryption
-    /// - Returns: Encrypted APDU
-    public func encryptCcm(encryptionKey: Data?, nonce: Data) throws -> CommandApdu {
-        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else {
-            return self
-        }
-
-        let newP1: Byte = AesMode.ccm.byteValue
-        let associatedData = Data([cla, ins, newP1, p2])
-
-        let encryptedPayload = try data.encryptAESCCM(
-            with: encryptionKey,
-            iv: nonce,
-            additionalAuthenticatedData: associatedData
-        )
-
-        Log.debug("C-APDU encrypted with CCM")
-
-        return CommandApdu(cla: cla, ins: ins, p1: newP1, p2: p2, le: le, tlv: encryptedPayload)
-    }
-
     /// Serialize as an extended APDU
     /// - Returns: Data to send
     public func serialize() -> Data {
@@ -122,6 +80,53 @@ public struct CommandApdu: Equatable {
         }
 
         return apduBytes
+    }
+
+    /// Encrypt APDU
+    /// - Parameters:
+    /// - Parameter encryptionMode: encryption mode
+    /// - Parameter encryptionKey: encryption key
+    /// - Parameter encryptionNonce: nonce for CCM encryption
+    /// - Returns: Encrypted APDU
+    public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> CommandApdu {
+        guard let encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
+            return self
+        }
+
+        switch encryptionMode {
+        case .fast, .strong, .none:
+            return try encryptLegacy(encryptionKey: encryptionKey, p1: encryptionMode.byteValue)
+        case .ccmWithAccessToken, .ccmWithAsymmetricKeys, .ccmWithSecurityDelay:
+            guard let nonce else {
+                return self
+            }
+
+            return try encryptCcm(encryptionKey: encryptionKey, nonce: nonce)
+        }
+    }
+
+    private func encryptLegacy(encryptionKey: Data, p1: Byte) throws -> CommandApdu {
+        let crc = data.crc16()
+        let tlvDataToEncrypt = data.count.bytes2 + crc + data
+        let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
+        Log.debug("C-APDU encrypted")
+
+        return CommandApdu(cla: cla, ins: ins, p1: p1, p2: p2, le: le, tlv: Data(encryptedPayload))
+    }
+
+    private func encryptCcm(encryptionKey: Data, nonce: Data) throws -> CommandApdu {
+        let newP1: Byte = AesMode.ccm.byteValue
+        let associatedData = Data([cla, ins, newP1, p2])
+
+        let encryptedPayload = try data.encryptAESCCM(
+            with: encryptionKey,
+            iv: nonce,
+            additionalAuthenticatedData: associatedData
+        )
+
+        Log.debug("C-APDU encrypted with CCM")
+
+        return CommandApdu(cla: cla, ins: ins, p1: newP1, p2: p2, le: le, tlv: encryptedPayload)
     }
 }
 

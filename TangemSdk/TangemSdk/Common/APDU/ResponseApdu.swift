@@ -38,14 +38,34 @@ public struct ResponseApdu {
     }
 
     /// Decrypts the response APDU data using AES-CBC encryption.
+    /// - Parameter encryptionMode: encryption mode
     /// - Parameter encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    ///   - nonce: The nonce (initialization vector) used for CCM decryption.
     /// - Throws: `TangemSdkError.invalidResponseApdu` if decryption fails or data integrity check fails.
     /// - Returns: A new `ResponseApdu` with decrypted payload data.
-    func decrypt(encryptionKey: Data?) throws -> ResponseApdu {
+    func decrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> ResponseApdu {
         guard let encryptionKey else {
             return self
         }
 
+        switch encryptionMode {
+        case .fast, .strong, .none:
+            return try decryptLegacy(encryptionKey: encryptionKey,)
+        case .ccmWithAccessToken, .ccmWithAsymmetricKeys, .ccmWithSecurityDelay:
+            guard let nonce else {
+                return self
+            }
+
+            return try decryptCcm(encryptionKey: encryptionKey, nonce: nonce)
+        }
+    }
+
+    /// Decrypts the response APDU data using AES-CBC encryption.
+    /// - Parameter encryptionMode: encryption mode
+    /// - Parameter encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    /// - Throws: `TangemSdkError.invalidResponseApdu` if decryption fails or data integrity check fails.
+    /// - Returns: A new `ResponseApdu` with decrypted payload data.
+    private func decryptLegacy(encryptionKey: Data) throws -> ResponseApdu {
         if data.isEmpty { //error response. nothing to decrypt
             return self
         }
@@ -72,15 +92,11 @@ public struct ResponseApdu {
 
     /// Decrypts the response APDU data using AES-CCM encryption.
     /// - Parameters:
-    ///   - encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    ///   - encryptionKey: The key used for decryption.
     ///   - nonce: The nonce (initialization vector) used for CCM decryption.
     /// - Throws: `TangemSdkError.invalidResponseApdu` if data is too short for decryption.
     /// - Returns: A new `ResponseApdu` with decrypted payload data.
-    func decryptCcm(encryptionKey: Data?, nonce: Data) throws -> ResponseApdu {
-        guard let encryptionKey else {
-            return self
-        }
-
+    private func decryptCcm(encryptionKey: Data, nonce: Data) throws -> ResponseApdu {
         if data.isEmpty { //error response. nothing to decrypt
             return self
         }

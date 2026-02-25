@@ -71,8 +71,16 @@ final class PreflightReadTask: CardSessionRunnable {
                 
                 self.updateEnvironmentIfNeeded(for: readResponse, in: session)
                 session.fetchAccessCodeIfNeeded()
-                
-                self.finalizeRead(in: session, completion: completion)
+                session.fetchCardTokensIfNeeded()
+
+                session.establishSecureChannelIfNeeded { result in
+                    switch result {
+                    case .success:
+                        self.finalizeRead(in: session, completion: completion)
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -770,26 +770,38 @@ extension TangemSdk {
         }
 
         Log.debug("Failed to initialize AccessCodeRepository. Biometrics is unavailable.")
-        
+
         return nil
     }
-    
+
+    private func makeCardTokensRepository(with config: Config) -> CardTokensRepository? {
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
+            return CardTokensRepository()
+        }
+
+        Log.debug("Failed to initialize CardTokensRepository. Biometrics is unavailable.")
+
+        return nil
+    }
+
     func makeSession(with config: Config,
                      filter: SessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
-        
+
         if let accessCode = accessCode {
             env.accessCode = .init(.accessCode, stringValue: accessCode)
         }
-        
+
         return CardSession(environment: env,
                            filter: filter,
                            initialMessage: initialMessage,
                            cardReader: reader,
                            viewDelegate: viewDelegate,
                            jsonConverter: jsonConverter,
-                           accessCodeRepository: makeAccessCodeRepository(with: config))
+                           accessCodeRepository: makeAccessCodeRepository(with: config),
+                           cardTokensRepository: makeCardTokensRepository(with: config))
     }
 }

@@ -13,8 +13,11 @@ struct OpenSessionWithSecurityDelayResponse {
 
 /// Second step of the security delay secure channel establishment.
 /// Opens an encrypted session using ECDH key exchange.
-class OpenSessionWithSecurityDelayCommand: ApduSerializable {
+class OpenSessionWithSecurityDelayCommand: Command {
     typealias CommandResponse = OpenSessionWithSecurityDelayResponse
+
+    var preflightReadMode: PreflightReadMode { .none }
+    var usesEncryption: Bool { false }
 
     private let sessionKeyB: Data
 

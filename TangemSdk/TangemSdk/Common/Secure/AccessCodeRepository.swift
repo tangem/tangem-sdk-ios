@@ -32,7 +32,11 @@ public class AccessCodeRepository {
         Log.debug("AccessCodeRepository deinit")
     }
 
-    public func save(_ accessCode: Data, for cardIds: [String]) throws {
+    public func save(_ accessCode: Data, for cardIds: [String], firmwareVersion: FirmwareVersion) throws {
+        guard firmwareVersion < .v8 else {
+            throw TangemSdkError.notSupportedFirmwareVersion
+        }
+
         guard BiometricsUtil.isAvailable else {
             throw TangemSdkError.biometricsUnavailable
         }
@@ -66,8 +70,8 @@ public class AccessCodeRepository {
         Log.debug("The saving was completed successfully")
     }
 
-    public func save(_ accessCode: Data, for cardId: String) throws {
-        try save(accessCode, for: [cardId])
+    public func save(_ accessCode: Data, for cardId: String, firmwareVersion: FirmwareVersion) throws {
+        try save(accessCode, for: [cardId], firmwareVersion: firmwareVersion)
     }
 
     public func deleteAccessCode(for cardIds: [String]) throws {

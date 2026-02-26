@@ -17,7 +17,9 @@ public class PersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
     
     var requiresPasscode: Bool { false }
-    
+
+    var usesEncryption: Bool { false }
+
     private let config: CardConfig
     private let issuer: Issuer
     private let manufacturer: Manufacturer
@@ -54,7 +56,7 @@ public class PersonalizeCommand: Command {
                         return
                     }
 
-                    self.runPersonalize(in: session, completion: completion)
+                    self.transceive(in: session, completion: completion)
                 } else {
                     completion(.failure(error))
                 }
@@ -63,11 +65,14 @@ public class PersonalizeCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        return try CommandApdu(.personalize, tlv: serializePersonalizationData(environment: environment, config: config))
+        let apdu = try CommandApdu(.personalize, tlv: serializePersonalizationData(environment: environment, config: config))
+        let encryptedApdu = try apdu.encrypt(encryptionMode: .none, encryptionKey: devPersonalizationKey, nonce: nil)
+        return encryptedApdu
     }
     
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> Card {
-        let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
+        let decryptedApdu = try apdu.decrypt(encryptionMode: .none, encryptionKey: devPersonalizationKey, nonce: nil)
+        let decoder = try CardDeserializer.getDecoder(with: environment, from: decryptedApdu)
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
         
         let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
@@ -77,17 +82,17 @@ public class PersonalizeCommand: Command {
                          cardDataDecoder: cardDataDecoder)
     }
 
-    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let encryptionMode = session.environment.encryptionMode
-        let encryptionKey = session.environment.encryptionKey
-        session.environment.encryptionMode = .none
-        session.environment.encryptionKey = devPersonalizationKey
-        transceive(in: session) { result in
-            session.environment.encryptionMode = encryptionMode
-            session.environment.encryptionKey = encryptionKey
-            completion(result)
-        }
-    }
+//    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+//        let encryptionMode = session.environment.encryptionMode
+//        let encryptionKey = session.environment.encryptionKey
+//        session.environment.encryptionMode = .none
+//        session.environment.encryptionKey = devPersonalizationKey
+//        transceive(in: session) { result in
+//            session.environment.encryptionMode = encryptionMode
+//            session.environment.encryptionKey = encryptionKey
+//            completion(result)
+//        }
+//    }
 
     private func serializePersonalizationData(environment: SessionEnvironment, config: CardConfig) throws -> Data {
         guard let cardId = CardIdBuilder.createCardId(config: config) else {

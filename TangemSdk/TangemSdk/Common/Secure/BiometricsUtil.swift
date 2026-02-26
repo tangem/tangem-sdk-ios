@@ -51,13 +51,8 @@ public final class BiometricsUtil {
                         completion(.failure(error.toTangemSdkError()))
                         return
                     }
-
-                    switch laError.code {
-                    case .userCancel, .appCancel, .systemCancel, .notInteractive:
-                        completion(.failure(.userCancelled))
-                    default:
-                        completion(.failure(error.toTangemSdkError()))
-                    }
+                    
+                    completion(.failure(mapError(error: laError)))
                 }
             }
         }
@@ -76,14 +71,30 @@ public final class BiometricsUtil {
 
             throw TangemSdkError.unknownError
         } catch let error as LAError {
-            switch error.code {
-            case .userCancel, .appCancel, .systemCancel, .notInteractive:
-                throw TangemSdkError.userCancelled
-            default:
-                throw error.toTangemSdkError()
-            }
+            throw mapError(error: error)
         } catch {
             throw error.toTangemSdkError()
+        }
+    }
+
+    private static func mapError(error: LAError) -> TangemSdkError {
+        switch error.code {
+        case .userCancel, .appCancel, .systemCancel, .notInteractive:
+            return TangemSdkError.userCancelled
+        case .authenticationFailed,
+                .biometryDisconnected,
+                .biometryNotPaired,
+                .companionNotAvailable,
+                .invalidContext,
+                .invalidDimensions,
+                .passcodeNotSet,
+                .touchIDLockout,
+                .touchIDNotAvailable,
+                .touchIDNotEnrolled,
+                .userFallback:
+            return error.toTangemSdkError()
+        @unknown default:
+            return TangemSdkError.userCancelled
         }
     }
 }

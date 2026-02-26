@@ -2,7 +2,7 @@
 //  Locale+.swift
 //  TangemSdk
 //
-//  Created by GuitarKitty on 20.02.2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

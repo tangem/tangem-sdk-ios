@@ -2,7 +2,7 @@
 //  WriteFileCommand.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 10/7/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 
@@ -208,7 +208,7 @@ public final class WriteFileCommand: Command {
     // MARK: Private functions
     
     private func writeFileData(session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
-        // TODO: Insert view delegate method to display progress to user
+        // [REDACTED_TODO_COMMENT]
         transceive(in: session) { (result) in
             switch result {
             case .success(let response):

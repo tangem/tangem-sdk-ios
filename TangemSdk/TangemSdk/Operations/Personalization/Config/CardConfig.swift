@@ -2,7 +2,7 @@
 //  CardConfig.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 22.06.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 
@@ -51,7 +51,7 @@ public struct CardConfig: Decodable {
     let disableIssuerData: Bool?
     let disableUserData: Bool?
     let disableFiles: Bool?
-    let allowHDWallets: Bool? //TODO: add precheck to specific commands
+    let allowHDWallets: Bool? //[REDACTED_TODO_COMMENT]
     let allowBackup: Bool?
     let allowKeysImport: Bool?
     let createWallet: Int

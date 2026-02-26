@@ -3,7 +3,7 @@
 //  CARD.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 02/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -207,7 +207,7 @@ extension Command {
                 case .unknown:
                     completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
                 case .accessDenied:
-                    // TODO: Handle accessDenied
+                    // [REDACTED_TODO_COMMENT]
                     completion(.failure(TangemSdkError.accessDenied))
                 default:
                     completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))

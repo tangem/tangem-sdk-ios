@@ -2,7 +2,7 @@
 //  TangemSdkError.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 18.03.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 
@@ -235,7 +235,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorZeroLengthMessage
     case readerErrorRadioDisabled
     case readerTransceiveErrorPacketTooLong
-    // TODO: uncomment for xcode26
+    // [REDACTED_TODO_COMMENT]
 //     case readerErrorIneligible
 //     case readerErrorAccessNotAccepted
 
@@ -466,7 +466,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
-            // TODO: uncomment for xCode26
+            // [REDACTED_TODO_COMMENT]
 //        case .readerErrorIneligible: return 90023
 //        case .readerErrorAccessNotAccepted: return 90024
         }
@@ -608,7 +608,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .readerErrorRadioDisabled
             case .readerTransceiveErrorPacketTooLong:
                 return .readerTransceiveErrorPacketTooLong
-                // TODO: uncomment for xCode26
+                // [REDACTED_TODO_COMMENT]
 //            case .readerErrorIneligible:
 //                return .readerErrorIneligible
 //            case .readerErrorAccessNotAccepted:

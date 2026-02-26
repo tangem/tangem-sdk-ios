@@ -2,7 +2,7 @@
 //  AttestWalletKeyTask.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 03/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 

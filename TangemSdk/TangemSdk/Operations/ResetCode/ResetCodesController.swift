@@ -2,7 +2,7 @@
 //  ResetCodesController.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 29.10.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 

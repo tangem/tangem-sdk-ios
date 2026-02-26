@@ -17,6 +17,8 @@ struct AuthorizeWithPinResponseResponse {
 class AuthorizeWithPinResponseCommand: Command {
     typealias CommandResponse = AuthorizeWithPinResponseResponse
 
+    var usesEncryption: Bool { false }
+
     private let challenge: Data
 
     init(challenge: Data) {

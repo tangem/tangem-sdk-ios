@@ -15,8 +15,11 @@ struct AuthorizeWithSecurityDelayResponse {
 /// First step of the security delay secure channel establishment.
 /// Sends an authorize command with `.secureDelay` interaction mode.
 /// Returns the card's session public key and attestation signature.
-class AuthorizeWithSecurityDelayCommand: ApduSerializable {
+class AuthorizeWithSecurityDelayCommand: Command {
     typealias CommandResponse = AuthorizeWithSecurityDelayResponse
+
+    var preflightReadMode: PreflightReadMode { .none }
+    var usesEncryption: Bool { false }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)

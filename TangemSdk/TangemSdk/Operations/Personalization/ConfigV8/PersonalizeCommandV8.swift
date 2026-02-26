@@ -17,6 +17,8 @@ public class PersonalizeCommandV8: Command {
 
     var requiresPasscode: Bool { false }
 
+    var usesEncryption: Bool { false }
+
     private let config: CardConfigV8
     private let issuer: Issuer
     private let manufacturer: Manufacturer
@@ -50,7 +52,7 @@ public class PersonalizeCommandV8: Command {
                         return
                     }
 
-                    self.runPersonalize(in: session, completion: completion)
+                    self.transceive(in: session, completion: completion)
                 } else {
                     completion(.failure(error))
                 }
@@ -75,16 +77,17 @@ public class PersonalizeCommandV8: Command {
                          cardDataDecoder: cardDataDecoder)
     }
 
-    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let encryptionKey = session.environment.encryptionKey
-
-        // override encryption for personalization
-        session.environment.encryptionKey = nil
-        transceive(in: session) { result in
-            session.environment.encryptionKey = encryptionKey
-            completion(result)
-        }
-    }
+//    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+//        let encryptionKey = session.environment.encryptionKey
+//
+//        // override encryption for personalization
+//        session.environment.encryptionMode = nil
+//        session.environment.encryptionKey = nil
+//        transceive(in: session) { result in
+//            session.environment.encryptionKey = encryptionKey
+//            completion(result)
+//        }
+//    }
 
     private func encryptApdu(cApdu: CommandApdu) throws -> CommandApdu {
         let p1: Byte = 0x00

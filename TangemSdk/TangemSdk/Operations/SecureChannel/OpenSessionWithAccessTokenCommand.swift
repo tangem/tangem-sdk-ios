@@ -14,8 +14,11 @@ struct OpenSessionWithAccessTokenResponse {
 
 /// Second step of the access token secure channel establishment.
 /// Opens an encrypted session using challenge-response with access tokens.
-class OpenSessionWithAccessTokenCommand: ApduSerializable {
+class OpenSessionWithAccessTokenCommand: Command {
     typealias CommandResponse = OpenSessionWithAccessTokenResponse
+
+    var preflightReadMode: PreflightReadMode { .none }
+    var usesEncryption: Bool { false }
 
     private let challengeB: Data
     private let hmacAttestB: Data

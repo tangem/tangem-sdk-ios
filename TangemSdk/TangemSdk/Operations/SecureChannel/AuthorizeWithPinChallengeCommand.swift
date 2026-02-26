@@ -17,6 +17,9 @@ struct AuthorizeWithPinChallengeResponse {
 class AuthorizeWithPinChallengeCommand: Command {
     typealias CommandResponse = AuthorizeWithPinChallengeResponse
 
+    var preflightReadMode: PreflightReadMode { .none }
+    var usesEncryption: Bool { false }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.interactionMode, value: AuthorizeMode.pinChallenge)

@@ -12,12 +12,17 @@ import Foundation
 ///  including unique card number (CID or cardId) that has to be submitted while calling all other commands.
 
 public final class ReadCommand: Command {
+    public typealias Response = Card
+    typealias CommandResponse = (Card, WalletData?)
+
     public var preflightReadMode: PreflightReadMode { .none }
-    
+
+    var accessLevel: AccessLevel { .publicAccess }
+
     deinit {
         Log.debug("ReadCommand deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         transceive(in: session) { result in
             switch result {

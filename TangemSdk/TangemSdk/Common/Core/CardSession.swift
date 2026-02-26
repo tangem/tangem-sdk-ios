@@ -343,8 +343,7 @@ public class CardSession {
                     return true
                 }
             }
-            .flatMap { _ in self.establishEncryptionIfNeeded() }
-            .flatMap { apdu.encryptPublisher(
+            .flatMap { _ in apdu.encryptPublisher(
                 encryptionMode: self.environment.encryptionMode,
                 encryptionKey: self.environment.encryptionKey,
                 nonce: self.environment.secureChannelSession?.makeСhallengeNonce()
@@ -397,7 +396,8 @@ public class CardSession {
         NotificationCenter.default.post(name: .cardSessionDidFinish, object: self)
     }
 
-    // MARK: - Prepearing session
+    // MARK: - Preparing session
+
     private func prepareSession<T: CardSessionRunnable>(for runnable: T, completion: @escaping CompletionResult<Void>) {
         Log.session("Prepare card session")
         preflightReadMode = runnable.preflightReadMode
@@ -453,11 +453,12 @@ public class CardSession {
     }
 
     // MARK: - Preflight check
+
     private func preflightCheck(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start preflight check")
         let preflightTask = PreflightReadTask(readMode: preflightReadMode, filter: filter?.preflightReadFilter)
         preflightTask.run(in: self) { [weak self] readResult in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch readResult {
             case .success:
@@ -486,251 +487,64 @@ public class CardSession {
         }
     }
 
-    private func establishEncryptionIfNeeded() -> AnyPublisher<Void, TangemSdkError> {
-        if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
-            return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
-        }
+    // MARK: - Encryption
 
-        Log.session("Try establish encryption")
-
-        do {
-            let encryptionHelper = try EncryptionHelperFactory.make(for: self.environment.encryptionMode)
-            let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
-            let openSesssionApdu = try openSessionCommand.serialize(with: self.environment)
-            return reader
-                .sendPublisher(apdu: openSesssionApdu)
-                .tryMap { responseApdu -> Void in
-                    let response = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-
-                    var uid: Data
-                    if let uidFromResponse = response.uid {
-                        uid = uidFromResponse
-                    } else {
-                        if case let .tag(tagUid) = self.reader.tag.value {
-                            uid = tagUid
-                        } else {
-                            throw TangemSdkError.failedToEstablishEncryption
-                        }
-                    }
-
-                    guard let accessCode = self.environment.accessCode.value else {
-                        throw TangemSdkError.accessCodeRequired
-                    }
-
-                    let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
-                    let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
-                    let sessionKey = (secret + protocolKey).getSHA256()
-                    self.environment.encryptionKey = sessionKey
-
-                    Log.session("The encryption established")
-                    return ()
-                }
-                .mapError{$0.toTangemSdkError()}
-                .eraseToAnyPublisher()
-        } catch {
-            return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
-        }
-    }
-
-    // MARK: - Secure Channel (CCM)
-    /*
-    func establishSecureChannelIfNeeded(completion: @escaping CompletionResult<Void>) {
-        guard let card = environment.card,
-              card.firmwareVersion >= .v8 else {
+    func establishEncryptionIfNeeded(usesEncryption: Bool, accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
+        guard usesEncryption else {
             completion(.success(()))
             return
         }
 
-        Log.session("Establish secure channel if needed")
-
-        if environment.secureChannelSession == nil {
-            environment.secureChannelSession = SecureChannelSession()
-        }
-
-        if environment.secureChannelSession?.cardTokens != nil {
-            establishEncryptionWithAccessToken(completion: completion)
-        } else {
-            establishEncryptionWithSecurityDelay(completion: completion)
-        }
-    }
-
-    private func establishSecureChannelIfNeededPublisher() -> AnyPublisher<Void, TangemSdkError> {
-        guard let card = environment.card,
-              card.firmwareVersion >= .v8 else {
-            return Just(()).setFailureType(to: TangemSdkError.self).eraseToAnyPublisher()
-        }
-
-        Log.session("Establish secure channel if needed")
-
-        if environment.secureChannelSession == nil {
-            environment.secureChannelSession = SecureChannelSession()
-        }
-
-        if environment.secureChannelSession?.cardTokens != nil {
-            return establishEncryptionWithAccessTokenPublisher()
-        } else {
-            return establishEncryptionWithSecurityDelayPublisher()
-        }
-    }
-
-    private func establishEncryptionWithAccessToken(completion: @escaping CompletionResult<Void>) {
-        Log.session("Establish encryption with access token")
-
-        let savedEncryptionMode = environment.encryptionMode
-        environment.encryptionMode = .none
-        environment.encryptionKey = nil
-        environment.secureChannelSession?.reset()
-
-        guard let cardPublicKey = environment.card?.cardPublicKey else {
+        guard let card = environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
 
-        guard let cardTokens = environment.secureChannelSession?.cardTokens else {
-            completion(.failure(.cryptoUtilsError("Missing card tokens")))
-            return
-        }
+        Log.session("Try establish encryption")
 
-        let authorizeCommand = AuthorizeWithAccessTokensCommand()
-        do {
-            let apdu = try authorizeCommand.serialize(with: environment)
-            send(apdu: apdu) { [weak self] result in
-                guard let self else { return }
-
-                switch result {
-                case .success(let responseApdu):
-                    do {
-                        let authorizeResponse = try authorizeCommand.deserialize(with: self.environment, from: responseApdu)
-                        try self.completeAccessTokenEstablishment(
-                            authorizeResponse: authorizeResponse,
-                            cardTokens: cardTokens,
-                            cardPublicKey: cardPublicKey,
-                            completion: completion
-                        )
-                    } catch {
-                        self.environment.encryptionMode = savedEncryptionMode
-                        completion(.failure(error.toTangemSdkError()))
-                    }
-                case .failure(let error):
-                    self.environment.encryptionMode = savedEncryptionMode
-                    completion(.failure(error))
-                }
-            }
-        } catch {
-            environment.encryptionMode = savedEncryptionMode
-            completion(.failure(error.toTangemSdkError()))
+        if card.firmwareVersion < .v8 {
+            establishLegacyEncryption(completion)
+        } else {
+            establishSecureChannel(accessLevel: accessLevel, completion: completion)
         }
     }
 
-    private func completeAccessTokenEstablishment(
-        authorizeResponse: AuthorizeWithAccessTokenResponse,
-        cardTokens: CardTokens,
-        cardPublicKey: Data,
-        completion: @escaping CompletionResult<Void>
-    ) throws {
-        let challengeA = authorizeResponse.challengeA
-        let hmacAttestA = authorizeResponse.hmacAttestA
-
-        // Verify card attestation
-        let identifyKey = try cardTokens.identifyToken.xor(with: challengeA)
-        let hmacCalculated = identifyKey.hmacSHA256(input: Data("SESSION.CARD".utf8) + challengeA)
-        guard hmacCalculated == hmacAttestA else {
-            Log.error("Card attest HMAC (hmacAttestA) is invalid!")
-            throw TangemSdkError.cryptoUtilsError("Invalid access tokens")
-        }
-
-        // Prepare terminal attestation
-        let challengeB = try CryptoUtils.generateRandomBytes(count: 32)
-        let accessKey = try cardTokens.accessToken.xor(with: challengeA)
-        let hmacAttestB = accessKey.hmacSHA256(input: Data("SESSION.TERM".utf8) + challengeA + challengeB)
-
-        let openSessionCommand = OpenSessionWithAccessTokenCommand(challengeB: challengeB, hmacAttestB: hmacAttestB)
-        let apdu = try openSessionCommand.serialize(with: environment)
-
-        send(apdu: apdu) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let responseApdu):
-                do {
-                    let openResponse = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-
-                    // Derive session key
-                    let sessionKey = try accessKey.pbkdf2sha256(
-                        salt: cardTokens.identifyToken + challengeA + challengeB,
-                        rounds: 10
-                    )
-
-                    // Verify session attestation
-                    let isValid = try CryptoUtils.verify(
-                        curve: .secp256k1,
-                        publicKey: cardPublicKey,
-                        message: Data("SESSION.KEY".utf8) + sessionKey,
-                        signature: openResponse.signAttestSession
-                    )
-
-                    guard isValid else {
-                        throw TangemSdkError.cryptoUtilsError("Session attest signature (signAttestSession) is invalid!")
-                    }
-
-                    self.environment.encryptionMode = .ccmWithAccessToken
-                    self.environment.encryptionKey = sessionKey
-                    self.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
-
-                    Log.session("Secure channel established with access token")
-                    completion(.success(()))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    private func establishEncryptionWithSecurityDelay(completion: @escaping CompletionResult<Void>) {
-        Log.session("Establish encryption with security delay")
-
-        environment.encryptionMode = .none
-        environment.encryptionKey = nil
-        environment.secureChannelSession?.reset()
-
-        guard let cardPublicKey = environment.card?.cardPublicKey else {
-            completion(.failure(.missingPreflightRead))
+    private func establishLegacyEncryption(_ completion: @escaping CompletionResult<Void>) {
+        if self.environment.encryptionMode == .none || self.environment.encryptionKey != nil {
+            completion(.success(()))
             return
         }
 
-        let authorizeCommand = AuthorizeWithSecurityDelayCommand()
         do {
-            let apdu = try authorizeCommand.serialize(with: environment)
-            send(apdu: apdu) { [weak self] result in
+            let encryptionHelper = try EncryptionHelperFactory.make(for: self.environment.encryptionMode)
+            let openSessionCommand = OpenSessionCommand(sessionKeyA: encryptionHelper.keyA)
+            openSessionCommand.run(in: self) { [weak self] result in
                 guard let self else { return }
 
                 switch result {
-                case .success(let responseApdu):
+                case .success(let response):
                     do {
-                        let authorizeResponse = try authorizeCommand.deserialize(with: self.environment, from: responseApdu)
-
-                        // Verify card attestation
-                        let isValid = try CryptoUtils.verify(
-                            curve: .secp256k1,
-                            publicKey: cardPublicKey,
-                            message: Data("SESSION.CARD".utf8) + authorizeResponse.pubSessionKeyA,
-                            signature: authorizeResponse.signAttestA
-                        )
-
-                        guard isValid else {
-                            throw TangemSdkError.cryptoUtilsError("Card attest signature is invalid!")
+                        var uid: Data
+                        if let uidFromResponse = response.uid {
+                            uid = uidFromResponse
+                        } else {
+                            if case let .tag(tagUid) = self.reader.tag.value {
+                                uid = tagUid
+                            } else {
+                                throw TangemSdkError.failedToEstablishEncryption
+                            }
                         }
 
-                        Log.session("Card attest signature - OK")
+                        guard let accessCode = self.environment.accessCode.value else {
+                            throw TangemSdkError.accessCodeRequired
+                        }
 
-                        let encryptionHelper = try StrongEncryptionHelper()
-                        try self.completeSecurityDelayEstablishment(
-                            encryptionHelper: encryptionHelper,
-                            pubSessionKeyA: authorizeResponse.pubSessionKeyA,
-                            completion: completion
-                        )
+                        let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
+                        let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
+                        let sessionKey = (secret + protocolKey).getSHA256()
+                        self.environment.encryptionKey = sessionKey
+                        Log.session("The encryption established")
+                        completion(.success(()))
                     } catch {
                         completion(.failure(error.toTangemSdkError()))
                     }
@@ -743,200 +557,8 @@ public class CardSession {
         }
     }
 
-    private func completeSecurityDelayEstablishment(
-        encryptionHelper: StrongEncryptionHelper,
-        pubSessionKeyA: Data,
-        completion: @escaping CompletionResult<Void>
-    ) throws {
-        let openSessionCommand = OpenSessionWithSecurityDelayCommand(sessionKeyB: encryptionHelper.keyA)
-        let apdu = try openSessionCommand.serialize(with: environment)
-
-        send(apdu: apdu) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let responseApdu):
-                do {
-                    let openResponse = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-
-                    let sessionKey = try encryptionHelper.generateSecret(keyB: pubSessionKeyA).getSHA256()
-                    self.environment.encryptionMode = .ccmWithSecurityDelay
-                    self.environment.encryptionKey = sessionKey
-                    self.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
-
-                    Log.session("Secure channel established with security delay")
-                    completion(.success(()))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    private func establishEncryptionWithAccessTokenPublisher() -> AnyPublisher<Void, TangemSdkError> {
-        Log.session("Establish encryption with access token")
-
-        let savedEncryptionMode = environment.encryptionMode
-        environment.encryptionMode = .none
-        environment.encryptionKey = nil
-        environment.secureChannelSession?.reset()
-
-        guard let cardPublicKey = environment.card?.cardPublicKey else {
-            return Fail(error: .missingPreflightRead).eraseToAnyPublisher()
-        }
-
-        guard let cardTokens = environment.secureChannelSession?.cardTokens else {
-            return Fail(error: .cryptoUtilsError("Missing card tokens")).eraseToAnyPublisher()
-        }
-
-        do {
-            let authorizeCommand = AuthorizeWithAccessTokensCommand()
-            let authorizeApdu = try authorizeCommand.serialize(with: environment)
-
-            return reader
-                .sendPublisher(apdu: authorizeApdu)
-                .tryMap { responseApdu -> (Data, Data, Data) in
-                    let authorizeResponse = try authorizeCommand.deserialize(with: self.environment, from: responseApdu)
-                    let challengeA = authorizeResponse.challengeA
-
-                    // Verify card attestation
-                    let identifyKey = try cardTokens.identifyToken.xor(with: challengeA)
-                    let hmacCalculated = identifyKey.hmacSHA256(input: Data("SESSION.CARD".utf8) + challengeA)
-                    guard hmacCalculated == authorizeResponse.hmacAttestA else {
-                        Log.error("Card attest HMAC (hmacAttestA) is invalid!")
-                        throw TangemSdkError.cryptoUtilsError("Invalid access tokens")
-                    }
-
-                    // Prepare terminal attestation
-                    let challengeB = try CryptoUtils.generateRandomBytes(count: 32)
-                    let accessKey = try cardTokens.accessToken.xor(with: challengeA)
-
-                    return (accessKey, challengeA, challengeB)
-                }
-                .mapError { $0.toTangemSdkError() }
-                .flatMap { accessKey, challengeA, challengeB -> AnyPublisher<Void, TangemSdkError> in
-                    do {
-                        let hmacAttestB = accessKey.hmacSHA256(input: Data("SESSION.TERM".utf8) + challengeA + challengeB)
-                        let openSessionCommand = OpenSessionWithAccessTokenCommand(challengeB: challengeB, hmacAttestB: hmacAttestB)
-                        let openApdu = try openSessionCommand.serialize(with: self.environment)
-
-                        return self.reader
-                            .sendPublisher(apdu: openApdu)
-                            .tryMap { responseApdu -> Void in
-                                let openResponse = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-
-                                // Derive session key
-                                let sessionKey = try accessKey.pbkdf2sha256(
-                                    salt: cardTokens.identifyToken + challengeA + challengeB,
-                                    rounds: 10
-                                )
-
-                                // Verify session attestation
-                                let isValid = try CryptoUtils.verify(
-                                    curve: .secp256k1,
-                                    publicKey: cardPublicKey,
-                                    message: Data("SESSION.KEY".utf8) + sessionKey,
-                                    signature: openResponse.signAttestSession
-                                )
-
-                                guard isValid else {
-                                    throw TangemSdkError.cryptoUtilsError("Session attest signature (signAttestSession) is invalid!")
-                                }
-
-                                self.environment.encryptionMode = .ccmWithAccessToken
-                                self.environment.encryptionKey = sessionKey
-                                self.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
-
-                                Log.session("Secure channel established with access token")
-                            }
-                            .mapError { $0.toTangemSdkError() }
-                            .eraseToAnyPublisher()
-                    } catch {
-                        return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
-                    }
-                }
-                .handleEvents(receiveCompletion: { [weak self] completion in
-                    if case .failure = completion {
-                        self?.environment.encryptionMode = savedEncryptionMode
-                    }
-                })
-                .eraseToAnyPublisher()
-        } catch {
-            environment.encryptionMode = savedEncryptionMode
-            return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
-        }
-    }
-
-    private func establishEncryptionWithSecurityDelayPublisher() -> AnyPublisher<Void, TangemSdkError> {
-        Log.session("Establish encryption with security delay")
-
-        environment.encryptionMode = .none
-        environment.encryptionKey = nil
-        environment.secureChannelSession?.reset()
-
-        guard let cardPublicKey = environment.card?.cardPublicKey else {
-            return Fail(error: .missingPreflightRead).eraseToAnyPublisher()
-        }
-
-        do {
-            let authorizeCommand = AuthorizeWithSecurityDelayCommand()
-            let authorizeApdu = try authorizeCommand.serialize(with: environment)
-
-            return reader
-                .sendPublisher(apdu: authorizeApdu)
-                .tryMap { responseApdu -> (StrongEncryptionHelper, Data) in
-                    let authorizeResponse = try authorizeCommand.deserialize(with: self.environment, from: responseApdu)
-
-                    // Verify card attestation
-                    let isValid = try CryptoUtils.verify(
-                        curve: .secp256k1,
-                        publicKey: cardPublicKey,
-                        message: Data("SESSION.CARD".utf8) + authorizeResponse.pubSessionKeyA,
-                        signature: authorizeResponse.signAttestA
-                    )
-
-                    guard isValid else {
-                        throw TangemSdkError.cryptoUtilsError("Card attest signature is invalid!")
-                    }
-
-                    Log.session("Card attest signature - OK")
-
-                    let encryptionHelper = try StrongEncryptionHelper()
-                    return (encryptionHelper, authorizeResponse.pubSessionKeyA)
-                }
-                .mapError { $0.toTangemSdkError() }
-                .flatMap { encryptionHelper, pubSessionKeyA -> AnyPublisher<Void, TangemSdkError> in
-                    do {
-                        let openSessionCommand = OpenSessionWithSecurityDelayCommand(sessionKeyB: encryptionHelper.keyA)
-                        let openApdu = try openSessionCommand.serialize(with: self.environment)
-
-                        return self.reader
-                            .sendPublisher(apdu: openApdu)
-                            .tryMap { responseApdu -> Void in
-                                let openResponse = try openSessionCommand.deserialize(with: self.environment, from: responseApdu)
-
-                                let sessionKey = try encryptionHelper.generateSecret(keyB: pubSessionKeyA).getSHA256()
-                                self.environment.encryptionMode = .ccmWithSecurityDelay
-                                self.environment.encryptionKey = sessionKey
-                                self.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
-
-                                Log.session("Secure channel established with security delay")
-                            }
-                            .mapError { $0.toTangemSdkError() }
-                            .eraseToAnyPublisher()
-                    } catch {
-                        return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
-                    }
-                }
-                .eraseToAnyPublisher()
-        } catch {
-            return Fail(error: error.toTangemSdkError()).eraseToAnyPublisher()
-        }
-    }
-*/
     // MARK: - Request User code
+
     func requestUserCodeIfNeeded(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
         if !showWelcomeBackWarning {
             switch type {
@@ -1017,39 +639,9 @@ public class CardSession {
         }
 
         do {
-            try accessCodeRepository?.save(code, for: card.cardId)
+            try accessCodeRepository?.save(code, for: card.cardId, firmwareVersion: card.firmwareVersion)
             accessCodeRepository?.lock()
             Log.session("The access code saved successfully")
-        } catch {
-            Log.error(error)
-        }
-    }
-
-    func fetchCardTokensIfNeeded() {
-        Log.session("Try fetch card tokens")
-        guard let card = environment.card,
-              let tokens = cardTokensRepository?.fetch(for: card.cardId) else {
-            return
-        }
-
-        Log.session("Card tokens fetched successfully")
-        if environment.secureChannelSession == nil {
-            environment.secureChannelSession = SecureChannelSession()
-        }
-        environment.secureChannelSession?.cardTokens = tokens
-    }
-
-    func saveCardTokensIfNeeded() {
-        Log.session("Try save card tokens")
-        guard let card = environment.card,
-              let tokens = environment.secureChannelSession?.cardTokens else {
-            return
-        }
-
-        do {
-            try cardTokensRepository?.save(tokens, for: card.cardId)
-            cardTokensRepository?.lock()
-            Log.session("Card tokens saved successfully")
         } catch {
             Log.error(error)
         }
@@ -1090,7 +682,77 @@ public class CardSession {
         environment = _environment
     }
 }
-//MARK: - JSON RPC
+
+// MARK: - Secure Channel
+
+private extension CardSession {
+    func establishSecureChannel(accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
+        Log.session("Establish secure channel if needed")
+
+        if let currentSecureChannel = environment.secureChannelSession,
+           currentSecureChannel.accessLevel.rawValue >= accessLevel.rawValue {
+            completion(.success(()))
+            return
+        }
+
+        if environment.secureChannelSession == nil {
+            environment.secureChannelSession = SecureChannelSession()
+        }
+
+        if let accessTokens = environment.secureChannelSession?.cardTokens {
+            _establishSecureChannelWithAccessToken(completion: completion)
+        } else if environment.card?.isAccessCodeSet == true {
+            _establishSecureChannelWithPIN(completion: completion)
+        } else {
+            _establishSecureChannelWithSecurityDelay(completion: completion)
+        }
+    }
+
+    func fetchCardTokensIfNeeded() {
+        Log.session("Try fetch card tokens")
+        guard let card = environment.card,
+              let tokens = cardTokensRepository?.fetch(for: card.cardId) else {
+            return
+        }
+
+        Log.session("Card tokens fetched successfully")
+        if environment.secureChannelSession == nil {
+            environment.secureChannelSession = SecureChannelSession()
+        }
+        environment.secureChannelSession?.cardTokens = tokens
+    }
+
+    func saveCardTokensIfNeeded() {
+        Log.session("Try save card tokens")
+        guard let card = environment.card,
+              let tokens = environment.secureChannelSession?.cardTokens else {
+            return
+        }
+
+        do {
+            try cardTokensRepository?.save(tokens, for: card.cardId)
+            cardTokensRepository?.lock()
+            Log.session("Card tokens saved successfully")
+        } catch {
+            Log.error(error)
+        }
+    }
+
+    func _establishSecureChannelWithAccessToken(completion: @escaping CompletionResult<Void>) {
+        EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
+    }
+
+    func _establishSecureChannelWithPIN(completion: @escaping CompletionResult<Void>) {
+        EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
+    }
+
+    func _establishSecureChannelWithSecurityDelay(completion: @escaping CompletionResult<Void>) {
+        EstablishSecureChannelWithSecurityDelayTask().run(in: self, completion: completion)
+    }
+}
+
+// MARK: - JSON RPC
+
 extension CardSession {
     /// Convinience method for jsonrpc requests running
     /// - Parameters:

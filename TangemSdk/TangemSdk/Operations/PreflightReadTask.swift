@@ -55,13 +55,13 @@ final class PreflightReadTask: CardSessionRunnable {
         Log.debug("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
             switch result {
-            case .success(let card, _):
+            case .success(let readResponse):
                 do {
                     let permanentFilter = session.environment.config.filter
-                    try permanentFilter.verifyCard(card)
+                    try permanentFilter.verifyCard(readResponse)
 
                     if session.environment.config.handleErrors {
-                        try self.preflightFilter?.onCardRead(card, environment: session.environment)
+                        try self.preflightFilter?.onCardRead(readResponse, environment: session.environment)
                     }
 
                 } catch {
@@ -69,7 +69,7 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                self.updateEnvironmentIfNeeded(for: card, in: session)
+                self.updateEnvironmentIfNeeded(for: readResponse, in: session)
                 session.fetchAccessCodeIfNeeded()
                 session.fetchCardTokensIfNeeded()
                 self.finalizeRead(in: session, completion: completion)
@@ -94,7 +94,6 @@ final class PreflightReadTask: CardSessionRunnable {
         }
         
         if card.firmwareVersion < .multiwalletAvailable {
-
             do {
                 try self.filterOnReadWalletsList(card: card, session)
             } catch {

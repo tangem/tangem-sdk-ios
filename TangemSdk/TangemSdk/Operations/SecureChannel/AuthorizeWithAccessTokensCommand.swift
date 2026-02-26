@@ -15,8 +15,11 @@ struct AuthorizeWithAccessTokenResponse {
 /// First step of the access token secure channel establishment.
 /// Sends an authorize command with `.accessToken` interaction mode.
 /// Returns a challenge and HMAC attestation from the card.
-class AuthorizeWithAccessTokensCommand: ApduSerializable {
+class AuthorizeWithAccessTokensCommand: Command {
     typealias CommandResponse = AuthorizeWithAccessTokenResponse
+
+    var preflightReadMode: PreflightReadMode { .none }
+    var usesEncryption: Bool { false }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)

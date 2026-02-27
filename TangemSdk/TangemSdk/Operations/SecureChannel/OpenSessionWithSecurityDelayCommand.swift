@@ -18,13 +18,14 @@ class OpenSessionWithSecurityDelayCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var usesEncryption: Bool { false }
+    var accessLevel: AccessLevel { .publicAccess }
 
     private let sessionKeyB: Data
 
     init(sessionKeyB: Data) {
         self.sessionKeyB = sessionKeyB
     }
-
+    
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

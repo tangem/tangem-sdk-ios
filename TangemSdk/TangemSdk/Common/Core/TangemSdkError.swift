@@ -194,7 +194,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a `CardSessionRunnable` requires that `ReadCommand`
     /// is executed before performing other commands.
     case missingPreflightRead
-    
+
+    /// This error is returned when a `SecureChannel` requires `AccessTokens`
+    case missingAccessTokens
+
     /// This error is returned when a [Task] expects a user to use a particular card,
     /// but the user tries to use a different card.
     case wrongCardNumber(expectedCardId: String?)
@@ -434,6 +437,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardType: return 50006
         case .cardError: return 50007
         case .notSupportedFirmwareVersion: return 50008
+        case .missingAccessTokens: return 50009
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012

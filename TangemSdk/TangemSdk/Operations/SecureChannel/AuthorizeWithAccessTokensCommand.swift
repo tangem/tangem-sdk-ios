@@ -10,6 +10,19 @@ import Foundation
 struct AuthorizeWithAccessTokenResponse {
     let challengeA: Data
     let hmacAttestA: Data
+
+    func verify(identifyToken: Data) throws -> Bool {
+        let key = try identifyToken.xor(with: challengeA)
+        let input = Data("SESSION.CARD".utf8) + challengeA
+        let hmacCalculated = key.hmacSHA256(input: input)
+
+        guard hmacCalculated == hmacAttestA else {
+            Log.error("Card attest HMAC (hmacAttestA) is invalid!")
+            return false
+        }
+
+        return true
+    }
 }
 
 /// First step of the access token secure channel establishment.
@@ -20,13 +33,52 @@ class AuthorizeWithAccessTokensCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var usesEncryption: Bool { false }
+    var accessLevel: AccessLevel { .publicAccess }
+
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.settings.isBackupRequired, card.backupStatus?.isActive == false {
+            return TangemSdkError.walletUnavailableBackupRequired
+        }
+
+        return nil
+    }
+
+    func run(in session: CardSession, completion: @escaping CompletionResult<AuthorizeWithAccessTokenResponse>) {
+        transceive(in: session) { result in
+            switch result {
+            case .success(let authorizeResponse):
+                do {
+                    guard let card = session.environment.card else {
+                        throw TangemSdkError.missingPreflightRead
+                    }
+
+                    guard let accessTokens = session.environment.secureChannelSession?.cardTokens else {
+                        throw TangemSdkError.missingAccessTokens
+                    }
+
+
+                    if try authorizeResponse.verify(identifyToken: accessTokens.identifyToken)  {
+                        completion(.success(authorizeResponse))
+                    } else {
+                        try? session.cardTokensRepository?.deleteTokens(for: [card.cardId])
+                        throw TangemSdkError.invalidAccessTokens
+                    }
+
+                } catch {
+                    completion(.failure(error.toTangemSdkError()))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId )
             .append(.interactionMode, value: AuthorizeMode.accessToken)
 
-        return CommandApdu(ins: Instruction.authorize.rawValue, tlv: tlvBuilder.serialize())
+        return CommandApdu(.authorize, tlv: tlvBuilder.serialize())
     }
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AuthorizeWithAccessTokenResponse {

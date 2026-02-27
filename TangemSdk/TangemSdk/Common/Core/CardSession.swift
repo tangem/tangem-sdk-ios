@@ -36,6 +36,9 @@ public class CardSession {
     private var _environment: SessionEnvironment
     public internal(set) var environment: SessionEnvironment
 
+    /// Allows card tokens to be stored in a secure location
+    var cardTokensRepository: CardTokensRepository? = nil
+
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
@@ -47,8 +50,6 @@ public class CardSession {
     private var resetCodesController: ResetCodesController? = nil
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository? = nil
-    /// Allows card tokens to be stored in a secure location
-    private var cardTokensRepository: CardTokensRepository? = nil
     private let filter: SessionFilter?
 
     private var defaultScanMessage: String {
@@ -159,7 +160,7 @@ public class CardSession {
                         switch result {
                         case .success(let runnableResponse):
                             session.saveAccessCodeIfNeeded()
-                            session.saveCardTokensIfNeeded()
+                            session.saveAccessTokensIfNeeded()
                             session.handleHealthIfNeeded {
                                 session.stop(message: "nfc_alert_default_done".localized) {
                                     completion(.success(runnableResponse))
@@ -685,7 +686,7 @@ public class CardSession {
 
 // MARK: - Secure Channel
 
-private extension CardSession {
+extension CardSession {
     func establishSecureChannel(accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
         Log.session("Establish secure channel if needed")
 
@@ -699,31 +700,32 @@ private extension CardSession {
             environment.secureChannelSession = SecureChannelSession()
         }
 
-        if let accessTokens = environment.secureChannelSession?.cardTokens {
-            _establishSecureChannelWithAccessToken(completion: completion)
+        // TODO: chaining via PublicSecureChannel
+        if environment.secureChannelSession?.cardTokens != nil {
+            EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
         } else if environment.card?.isAccessCodeSet == true {
-            _establishSecureChannelWithPIN(completion: completion)
+            EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
         } else {
-            _establishSecureChannelWithSecurityDelay(completion: completion)
+            EstablishSecureChannelWithSecurityDelayTask().run(in: self, completion: completion)
         }
     }
 
-    func fetchCardTokensIfNeeded() {
-        Log.session("Try fetch card tokens")
+    func fetchAccessTokensIfNeeded() {
+        Log.session("Try fetch acccess tokens")
         guard let card = environment.card,
               let tokens = cardTokensRepository?.fetch(for: card.cardId) else {
             return
         }
 
-        Log.session("Card tokens fetched successfully")
+        Log.session("Access tokens fetched successfully")
         if environment.secureChannelSession == nil {
             environment.secureChannelSession = SecureChannelSession()
         }
         environment.secureChannelSession?.cardTokens = tokens
     }
 
-    func saveCardTokensIfNeeded() {
-        Log.session("Try save card tokens")
+    func saveAccessTokensIfNeeded() {
+        Log.session("Try save access tokens")
         guard let card = environment.card,
               let tokens = environment.secureChannelSession?.cardTokens else {
             return
@@ -732,22 +734,10 @@ private extension CardSession {
         do {
             try cardTokensRepository?.save(tokens, for: card.cardId)
             cardTokensRepository?.lock()
-            Log.session("Card tokens saved successfully")
+            Log.session("Access tokens saved successfully")
         } catch {
             Log.error(error)
         }
-    }
-
-    func _establishSecureChannelWithAccessToken(completion: @escaping CompletionResult<Void>) {
-        EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
-    }
-
-    func _establishSecureChannelWithPIN(completion: @escaping CompletionResult<Void>) {
-        EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
-    }
-
-    func _establishSecureChannelWithSecurityDelay(completion: @escaping CompletionResult<Void>) {
-        EstablishSecureChannelWithSecurityDelayTask().run(in: self, completion: completion)
     }
 }
 

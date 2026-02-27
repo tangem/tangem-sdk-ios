@@ -56,12 +56,14 @@ final class PreflightReadTask: CardSessionRunnable {
         ReadCommand().run(in: session) { result in
             switch result {
             case .success(let readResponse):
+                let (card, _) = readResponse
+
                 do {
                     let permanentFilter = session.environment.config.filter
-                    try permanentFilter.verifyCard(readResponse)
+                    try permanentFilter.verifyCard(card)
 
                     if session.environment.config.handleErrors {
-                        try self.preflightFilter?.onCardRead(readResponse, environment: session.environment)
+                        try self.preflightFilter?.onCardRead(card, environment: session.environment)
                     }
 
                 } catch {
@@ -69,18 +71,10 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
                 
-                self.updateEnvironmentIfNeeded(for: readResponse, in: session)
+                self.updateEnvironmentIfNeeded(for: card, in: session)
                 session.fetchAccessCodeIfNeeded()
-                session.fetchCardTokensIfNeeded()
+                session.fetchAccessTokensIfNeeded()
                 self.finalizeRead(in: session, completion: completion)
-//                session.establishSecureChannelIfNeeded { result in
-//                    switch result {
-//                    case .success:
-//                        self.finalizeRead(in: session, completion: completion)
-//                    case .failure(let error):
-//                        completion(.failure(error))
-//                    }
-//                }
             case .failure(let error):
                 completion(.failure(error))
             }

@@ -13,6 +13,7 @@ class EstablishSecureChannelWithPINTask: CardSessionRunnable {
     typealias Response = Void
 
     var preflightReadMode: PreflightReadMode { .none }
+    var accessLevel: AccessLevel { .publicSecureChannel }
 
     func run(in session: CardSession, completion: @escaping CompletionResult<Void>) {
         Log.session("authorizeWithPin")

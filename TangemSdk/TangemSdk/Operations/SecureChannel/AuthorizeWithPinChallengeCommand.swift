@@ -20,11 +20,13 @@ class AuthorizeWithPinChallengeCommand: Command {
     var preflightReadMode: PreflightReadMode { .none }
     var usesEncryption: Bool { false }
 
+    var accessLevel: AccessLevel { .publicSecureChannel }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.interactionMode, value: AuthorizeMode.pinChallenge)
 
-        return CommandApdu(ins: Instruction.authorize.rawValue, tlv: tlvBuilder.serialize())
+        return CommandApdu(.authorize, tlv: tlvBuilder.serialize())
     }
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AuthorizeWithPinChallengeResponse {

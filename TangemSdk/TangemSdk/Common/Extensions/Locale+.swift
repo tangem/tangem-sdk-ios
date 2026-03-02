@@ -10,10 +10,32 @@ import Foundation
 extension Locale {
     static let appLanguageCode = Bundle.main.preferredLocalizations.first ?? enLanguageCode
 
-    static let deviceLanguageCode: String = {
+    static func deviceLanguageCode(
+        withRegion: Bool = true,
+        fallback: LanguageCode = .english
+    ) -> String {
+        // Get the list of device languages in the order set by the user. Format: [language]-[region]
         let languages = CFPreferencesCopyAppValue("AppleLanguages" as CFString, kCFPreferencesAnyApplication) as? [String]
-        return languages?.first ?? enLanguageCode
-    }()
+
+        // Use fallback if no languages are found
+        guard let language = languages?.first else {
+            return fallback.identifier
+        }
+
+        if withRegion {
+            return language
+        }
+
+        let separator = "-"
+        let languageParts = language.split(separator: separator)
+
+        // We cannot rely on `Locale.language.script` because its standard may differ from the device language identifier
+        if languageParts.count > 1 {
+            return languageParts.dropLast().joined(separator: separator)
+        } else {
+            return language
+        }
+    }
 }
 
 extension Locale {
@@ -27,7 +49,7 @@ extension Locale {
     /// Supports codes with script subtags (e.g. `zh-Hans`).
     static func languageCode(supportedCodes: Set<String>, fallback: String = enLanguageCode) -> String {
         resolveLanguageCode(
-            identifiers: [appLanguageCode, deviceLanguageCode],
+            identifiers: [appLanguageCode, deviceLanguageCode()],
             supportedCodes: supportedCodes,
             fallback: fallback
         )

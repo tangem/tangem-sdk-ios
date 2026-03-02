@@ -2,7 +2,7 @@
 //  CardSettingsMaskBuilderV8.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 10/02/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 enum CardSettingsMaskBuilderV8 {

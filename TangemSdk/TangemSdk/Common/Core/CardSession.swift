@@ -38,6 +38,7 @@ public class CardSession {
 
     /// Allows card access tokens to be stored in a secure location
     var cardAccessTokensRepository: CardAccessTokensRepository? = nil
+    var secureChannelSession: SecureChannelSession? = nil
 
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
@@ -232,7 +233,7 @@ public class CardSession {
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[weak self] tag in
                 self?.environment.encryptionKey = nil
-                self?.environment.secureChannelSession?.reset()
+                self?.secureChannelSession?.reset()
             })
             .store(in: &nfcReaderSubscriptions)
 
@@ -347,16 +348,16 @@ public class CardSession {
             .flatMap { _ in apdu.encryptPublisher(
                 encryptionMode: self.environment.encryptionMode,
                 encryptionKey: self.environment.encryptionKey,
-                nonce: self.environment.secureChannelSession?.makeСhallengeNonce()
+                nonce: self.secureChannelSession?.makeСhallengeNonce()
             )}
             .flatMap { self.reader.sendPublisher(apdu: $0) }
             .flatMap { $0.decryptPublisher(
                 encryptionMode: self.environment.encryptionMode,
                 encryptionKey: self.environment.encryptionKey,
-                nonce: self.environment.secureChannelSession?.makeResponseNonce()
+                nonce: self.secureChannelSession?.makeResponseNonce()
             )}
             .handleEvents(receiveOutput: { [weak self] _ in
-                self?.environment.secureChannelSession?.incrementPacketCounter()
+                self?.secureChannelSession?.incrementPacketCounter()
             })
             .sink(receiveCompletion: {[weak self] readerCompletion in
                 self?.sendSubscription = []
@@ -389,7 +390,7 @@ public class CardSession {
 
     private func sessionDidStop(completion: (() -> Void)?) {
         nfcReaderSubscriptions = []
-        resetEnvironment()
+        resetSensitiveData()
         preflightReadMode = .fullCardRead
         sendSubscription = []
         viewDelegate.sessionStopped(completion: completion)
@@ -469,7 +470,7 @@ public class CardSession {
                 case .preflightFiltered:
                     self.viewDelegate.wrongCard(message: error.localizedDescription)
                     // We have to return environment to initial state to reset all the changes
-                    self.resetEnvironment()
+                    self.resetSensitiveData()
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
                         guard self.reader.isReady else {
                             onSessionStarted(self, .userCancelled)
@@ -678,7 +679,8 @@ public class CardSession {
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
     }
 
-    private func resetEnvironment() {
+    private func resetSensitiveData() {
+        secureChannelSession?.reset()
         _environment.reset()
         environment = _environment
     }
@@ -690,18 +692,17 @@ extension CardSession {
     func establishSecureChannel(accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
         Log.session("Establish secure channel if needed")
 
-        if let currentSecureChannel = environment.secureChannelSession,
-           currentSecureChannel.accessLevel.rawValue >= accessLevel.rawValue {
+        if let secureChannelSession, secureChannelSession.accessLevel.rawValue >= accessLevel.rawValue {
             completion(.success(()))
             return
         }
 
-        if environment.secureChannelSession == nil {
-            environment.secureChannelSession = SecureChannelSession()
+        if secureChannelSession == nil {
+            secureChannelSession = SecureChannelSession(environment: environment)
         }
 
         // TODO: chaining via PublicSecureChannel
-        if environment.secureChannelSession?.cardAccessTokens != nil {
+        if secureChannelSession?.cardAccessTokens != nil {
             EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
         } else if environment.card?.isAccessCodeSet == true {
             EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
@@ -718,16 +719,17 @@ extension CardSession {
         }
 
         Log.session("Access tokens fetched successfully")
-        if environment.secureChannelSession == nil {
-            environment.secureChannelSession = SecureChannelSession()
+        if secureChannelSession == nil {
+            secureChannelSession = SecureChannelSession(environment: environment)
         }
-        environment.secureChannelSession?.cardAccessTokens = tokens
+
+        secureChannelSession?.cardAccessTokens = tokens
     }
 
     func saveAccessTokensIfNeeded() {
         Log.session("Try save access tokens")
         guard let card = environment.card,
-              let tokens = environment.secureChannelSession?.cardAccessTokens else {
+              let tokens = secureChannelSession?.cardAccessTokens else {
             return
         }
 
@@ -759,7 +761,7 @@ extension CardSession {
             let runnable = try jsonConverter.convert(request: request)
             runnable.run(in: self) {
                 completion($0.toJsonResponse(id: request.id).json)
-                self.resetEnvironment()
+                self.resetSensitiveData()
             }
         } catch {
             completion(error.toJsonResponse().json)

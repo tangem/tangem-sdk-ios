@@ -32,8 +32,6 @@ public class SessionEnvironment {
     var accessCode: UserCode = .init(.accessCode)
     
     var passcode: UserCode = .init(.passcode)
-
-    var secureChannelSession: SecureChannelSession? = nil
     
     var legacyMode: Bool { config.legacyMode ?? NFCUtils.isPoorNfcQualityDevice }
     
@@ -63,6 +61,5 @@ public class SessionEnvironment {
     func reset() {
         accessCode = .init(.accessCode)
         passcode = .init(.passcode)
-        secureChannelSession?.reset()
     }
 }

@@ -32,7 +32,7 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
 
     private func completeEstablishment(authorizeResponse: AuthorizeWithAccessTokenResponse, in session: CardSession, completion: @escaping CompletionResult<Void>) {
         do {
-            guard let accessTokens = session.environment.secureChannelSession?.cardAccessTokens else {
+            guard let accessTokens = session.secureChannelSession?.cardAccessTokens else {
                 throw TangemSdkError.missingAccessTokens
             }
 
@@ -51,10 +51,6 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
                 switch result {
                 case .success(let openResponse):
                     do {
-                        guard let card = session.environment.card else {
-                            throw TangemSdkError.missingPreflightRead
-                        }
-
                         // Derive session key
                         let sessionKey = try accessKey.pbkdf2sha256(
                             salt: accessTokens.identifyToken + authorizeResponse.challengeA + challengeB,
@@ -63,7 +59,7 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
 
                         session.environment.encryptionMode = .ccmWithAccessToken
                         session.environment.encryptionKey = sessionKey
-                        session.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel, cardId: card.cardId)
+                        session.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
                         completion(.success(()))
                     } catch {
                         completion(.failure(error.toTangemSdkError()))

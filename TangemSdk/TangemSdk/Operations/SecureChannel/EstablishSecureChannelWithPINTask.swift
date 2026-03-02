@@ -24,7 +24,7 @@ class EstablishSecureChannelWithPINTask: CardSessionRunnable {
                 AuthorizeWithPinResponseCommand(challenge: challengeResponse.challenge).run(in: session) { responseResult in
                     switch responseResult {
                     case .success(let pinResponse):
-                        session.environment.secureChannelSession?.didAuthorizePin(accessLevel: pinResponse.accessLevel)
+                        session.secureChannelSession?.didAuthorizePin(accessLevel: pinResponse.accessLevel)
                         completion(.success(()))
                     case .failure(let error):
                         completion(.failure(error))

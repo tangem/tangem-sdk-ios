@@ -10,17 +10,28 @@ import Foundation
 /// Encapsulates all CCM encryption state for v8+ secure channel protocol.
 class SecureChannelSession {
     var cardAccessTokens: CardAccessTokens?
-    
+
     private(set) var accessLevel: AccessLevel = .publicAccess
     private(set) var isPinChecked: Bool = false
     private(set) var packetCounter: Int = 0
-    private var cardId: String = ""
+    private let environment: SessionEnvironment
+
+    private var cardIdBytes: Data {
+        if let cardId = environment.card?.cardId {
+            return Data(hexString: cardId)
+        } else {
+            return Data()
+        }
+    }
+
+    init(environment: SessionEnvironment) {
+        self.environment = environment
+    }
 
     /// Constructs a 12-byte nonce for AES-CCM encryption.
     /// Format: [prefix(1)] + [cardId bytes(8)] + [packetCounter big-endian(3)] = 12 bytes
     func makeСhallengeNonce() -> Data {
         let prefix: UInt8 = 0x7E
-        let cardIdBytes = Data(hexString: cardId)
         let counterBytes = packetCounter.toBytes(count: 3)
         return Data([prefix]) + cardIdBytes + counterBytes
     }
@@ -29,7 +40,6 @@ class SecureChannelSession {
     /// Format: [prefix(1)] + [cardId bytes(8)] + [packetCounter big-endian(3)] = 12 bytes
     func makeResponseNonce() -> Data {
         let prefix: UInt8 = 0xCA
-        let cardIdBytes = Data(hexString: cardId)
         let counterBytes = packetCounter.toBytes(count: 3)
         return Data([prefix]) + cardIdBytes + counterBytes
     }
@@ -38,9 +48,8 @@ class SecureChannelSession {
         packetCounter += 1
     }
 
-    func didEstablishChannel(accessLevel: AccessLevel, cardId: String) {
+    func didEstablishChannel(accessLevel: AccessLevel) {
         self.accessLevel = accessLevel
-        self.cardId = cardId
         self.packetCounter = 1
     }
 
@@ -53,6 +62,5 @@ class SecureChannelSession {
         accessLevel = .publicAccess
         isPinChecked = false
         packetCounter = 0
-        cardId = ""
     }
 }

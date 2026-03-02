@@ -21,7 +21,7 @@ class EstablishSecureChannelWithSecurityDelayTask: CardSessionRunnable {
         //TODO: TBD?
         session.environment.encryptionMode = .none
         session.environment.encryptionKey = nil
-        session.environment.secureChannelSession?.reset()
+        session.secureChannelSession?.reset()
 
         AuthorizeWithSecurityDelayCommand().run(in: session) { result in
             switch result {
@@ -50,14 +50,10 @@ class EstablishSecureChannelWithSecurityDelayTask: CardSessionRunnable {
                 switch result {
                 case .success(let openResponse):
                     do {
-                        guard let card = session.environment.card else {
-                            throw TangemSdkError.missingPreflightRead
-                        }
-
                         let sessionKey = try encryptionHelper.generateSecret(keyB: authorizeResponse.pubSessionKeyA).getSHA256()
                         session.environment.encryptionMode = .ccmWithSecurityDelay
                         session.environment.encryptionKey = sessionKey
-                        session.environment.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel, cardId: card.cardId)
+                        session.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)
 
                         Log.session("Secure channel established with security delay")
                         completion(.success(()))

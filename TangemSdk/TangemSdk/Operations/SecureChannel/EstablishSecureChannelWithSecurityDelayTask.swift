@@ -16,13 +16,6 @@ class EstablishSecureChannelWithSecurityDelayTask: CardSessionRunnable {
     var accessLevel: AccessLevel { .publicAccess }
 
     func run(in session: CardSession, completion: @escaping CompletionResult<Void>) {
-        Log.session("Establish encryption with security delay")
-
-        //TODO: TBD?
-        session.environment.encryptionMode = .none
-        session.environment.encryptionKey = nil
-        session.secureChannelSession?.reset()
-
         AuthorizeWithSecurityDelayCommand().run(in: session) { result in
             switch result {
             case .success(let authorizeResponse):

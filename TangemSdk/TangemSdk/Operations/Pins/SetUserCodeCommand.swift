@@ -170,10 +170,6 @@ public class SetUserCodeCommand: Command {
             .append(.newPin, value: accessCodeValue)
             .append(.newPin2, value: passcodeValue)
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
             let hash = (accessCodeValue + passcodeValue).getSHA256()
             try tlvBuilder.append(.codeHash, value: hash)

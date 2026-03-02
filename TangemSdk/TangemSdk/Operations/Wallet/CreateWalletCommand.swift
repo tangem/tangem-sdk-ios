@@ -124,10 +124,6 @@ final class CreateWalletCommand: Command {
             .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.cardId, value: environment.card?.cardId)
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }

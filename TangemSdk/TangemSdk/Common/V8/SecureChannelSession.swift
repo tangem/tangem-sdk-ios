@@ -9,8 +9,6 @@ import Foundation
 
 /// Encapsulates all CCM encryption state for v8+ secure channel protocol.
 class SecureChannelSession {
-    var cardAccessTokens: CardAccessTokens?
-
     private(set) var accessLevel: AccessLevel = .publicAccess
     private(set) var isPinChecked: Bool = false
     private(set) var packetCounter: Int = 0

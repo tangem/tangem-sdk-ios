@@ -26,9 +26,10 @@ public class SessionEnvironment {
     var encryptionKey: Data? = nil
     
     var currentSecurityDelay: Float? = nil
-    
-    var cvc: Data? = nil //todo: remove
-    
+
+    /// COS v8+
+    var cardAccessTokens: CardAccessTokens?
+
     var accessCode: UserCode = .init(.accessCode)
     
     var passcode: UserCode = .init(.passcode)

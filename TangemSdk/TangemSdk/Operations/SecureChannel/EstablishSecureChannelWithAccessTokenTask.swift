@@ -32,7 +32,7 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
 
     private func completeEstablishment(authorizeResponse: AuthorizeWithAccessTokenResponse, in session: CardSession, completion: @escaping CompletionResult<Void>) {
         do {
-            guard let accessTokens = session.secureChannelSession?.cardAccessTokens else {
+            guard let accessTokens = session.environment.cardAccessTokens else {
                 throw TangemSdkError.missingAccessTokens
             }
 

@@ -40,10 +40,6 @@ final class ResetPinCommand: Command {
             .append(.newPin2, value: passcode)
             .append(.codeHash, value: (accessCode + passcode).getSHA256())
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())
     }
     

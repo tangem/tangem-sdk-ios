@@ -507,7 +507,14 @@ public class CardSession {
         if card.firmwareVersion < .v8 {
             establishLegacyEncryption(completion)
         } else {
-            establishSecureChannel(accessLevel: accessLevel, completion: completion)
+            establishSecureChannel(accessLevel: accessLevel) { result in
+                switch result {
+                case .success:
+                    self.authorizeWithPINIfNeeded(accessLevel: accessLevel, completion: completion)
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
         }
     }
 
@@ -697,18 +704,44 @@ extension CardSession {
             return
         }
 
-        if secureChannelSession == nil {
-            secureChannelSession = SecureChannelSession(environment: environment)
+        secureChannelSession = SecureChannelSession(environment: environment)
+        environment.encryptionMode = .none
+        environment.encryptionKey = nil
+
+        if environment.cardAccessTokens == nil {
+            EstablishSecureChannelWithSecurityDelayTask()
+                .run(in: self, completion: completion)
+        } else {
+            EstablishSecureChannelWithAccessTokenTask()
+                .run(in: self, completion: completion)
+        }
+    }
+
+    func authorizeWithPINIfNeeded(accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
+        Log.session("Authorize with PIN if needed")
+
+        if let secureChannelSession, secureChannelSession.accessLevel.rawValue >= accessLevel.rawValue {
+            completion(.success(()))
+            return
         }
 
-        // TODO: chaining via PublicSecureChannel
-        if secureChannelSession?.cardAccessTokens != nil {
-            EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
-        } else if environment.card?.isAccessCodeSet == true {
-            EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
-        } else {
-            EstablishSecureChannelWithSecurityDelayTask().run(in: self, completion: completion)
+        if let secureChannelSession, secureChannelSession.isPinChecked {
+            completion(.success(()))
+            return
         }
+
+        guard let card = environment.card else {
+            completion(.failure(TangemSdkError.missingPreflightRead))
+            return
+        }
+
+        guard card.userSettings.isPINRequired else {
+            completion(.success(()))
+            return
+        }
+
+        EstablishSecureChannelWithPINTask()
+            .run(in: self, completion: completion)
     }
 
     func fetchAccessTokensIfNeeded() {
@@ -718,18 +751,14 @@ extension CardSession {
             return
         }
 
+        environment.cardAccessTokens = tokens
         Log.session("Access tokens fetched successfully")
-        if secureChannelSession == nil {
-            secureChannelSession = SecureChannelSession(environment: environment)
-        }
-
-        secureChannelSession?.cardAccessTokens = tokens
     }
 
     func saveAccessTokensIfNeeded() {
         Log.session("Try save access tokens")
         guard let card = environment.card,
-              let tokens = secureChannelSession?.cardAccessTokens else {
+              let tokens = environment.cardAccessTokens else {
             return
         }
 

@@ -10,7 +10,7 @@ import Foundation
 
 /// Contains data relating to a Tangem card. It is used in constructing all the commands,
 /// and commands can return modified `SessionEnvironment`.
-public struct SessionEnvironment {
+public class SessionEnvironment {
     /// Current card, read by preflight `Read` command
     public internal(set) var card: Card? = nil
     
@@ -45,7 +45,12 @@ public struct SessionEnvironment {
         
         return nil
     }
-    
+
+    init(config: Config = Config(), terminalKeysService: TerminalKeysService? = nil) {
+        self.config = config
+        self.terminalKeysService = terminalKeysService
+    }
+
     func isUserCodeSet(_ type: UserCodeType) -> Bool {
         switch type {
         case .accessCode:
@@ -55,7 +60,7 @@ public struct SessionEnvironment {
         }
     }
 
-    mutating func reset() {
+    func reset() {
         accessCode = .init(.accessCode)
         passcode = .init(.passcode)
         secureChannelSession?.reset()

@@ -789,7 +789,7 @@ extension TangemSdk {
                      filter: SessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
-        var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
+        let env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
 
         if let accessCode = accessCode {
             env.accessCode = .init(.accessCode, stringValue: accessCode)

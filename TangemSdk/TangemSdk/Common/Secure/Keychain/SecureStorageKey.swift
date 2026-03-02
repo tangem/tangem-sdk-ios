@@ -20,9 +20,9 @@ enum SecureStorageKey: String {
     case cardsWithSavedCodes
     case cardsWithSavedCodesEncryptionKey
 
-    //card tokens repo
-    case cardsWithSavedTokens
-    case cardsWithSavedTokensEncryptionKey
+    //card access tokens repo
+    case cardsWithSavedAccessTokens
+    case cardsWithSavedAccessTokensEncryptionKey
 
     //terminal keys service
     case terminalPrivateKey //link card to terminal
@@ -42,12 +42,12 @@ extension SecureStorageKey {
         "accessCode_encryption_key_\(cardId)"
     }
 
-    // Card tokens repo
-    static func cardTokens(for cardId: String) -> String {
-        "cardTokens_\(cardId)"
+    // Card access tokens repo
+    static func cardAccessTokens(for cardId: String) -> String {
+        "cardAccessTokens_\(cardId)"
     }
 
-    static func cardTokensEncryptionKey(for cardId: String) -> String {
-        "cardTokens_encryption_key_\(cardId)"
+    static func cardAccessTokensEncryptionKey(for cardId: String) -> String {
+        "cardAccessTokens_encryption_key_\(cardId)"
     }
 }

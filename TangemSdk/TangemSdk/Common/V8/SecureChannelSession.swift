@@ -12,7 +12,7 @@ class SecureChannelSession {
     private(set) var accessLevel: AccessLevel = .publicAccess
     private(set) var isPinChecked: Bool = false
     private(set) var packetCounter: Int = 0
-    var cardTokens: CardTokens?
+    var cardAccessTokens: CardAccessTokens?
     private var cardId: String = ""
 
     /// Constructs a 12-byte nonce for AES-CCM encryption.

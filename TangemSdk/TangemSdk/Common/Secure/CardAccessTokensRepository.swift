@@ -1,5 +1,5 @@
 //
-//  CardTokensRepository.swift
+//  CardAccessTokensRepository.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 20/02/2026.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CardTokensRepository {
+class CardAccessTokensRepository {
     var isEmpty: Bool {
         let cards = try? getCards()
         return cards?.isEmpty ?? true
@@ -18,20 +18,20 @@ class CardTokensRepository {
     private let secureEnclave = SecureEnclaveService()
     private let biometricsStorage = BiometricsStorage()
     private let biometricsSecureEnclave = BiometricsSecureEnclaveService()
-    private var tokens: [String: CardTokens] = .init()
+    private var tokens: [String: CardAccessTokens] = .init()
 
     public init() {
-        if !storage.bool(forKey: .hasClearedCardTokensRepoOnFirstLaunch) {
+        if !storage.bool(forKey: .hasClearedCardAccessTokensRepoOnFirstLaunch) {
             clear()
-            storage.set(boolValue: true, forKey: .hasClearedCardTokensRepoOnFirstLaunch)
+            storage.set(boolValue: true, forKey: .hasClearedCardAccessTokensRepoOnFirstLaunch)
         }
     }
 
     deinit {
-        Log.debug("CardTokensRepository deinit")
+        Log.debug("CardAccessTokensRepository deinit")
     }
 
-    func save(_ cardTokens: CardTokens, for cardIds: [String]) throws {
+    func save(_ cardAccessTokens: CardAccessTokens, for cardIds: [String]) throws {
         guard BiometricsUtil.isAvailable else {
             throw TangemSdkError.biometricsUnavailable
         }
@@ -39,13 +39,13 @@ class CardTokensRepository {
         var savedCardIds = try getCards()
 
         for cardId in cardIds {
-            let storageKey = SecureStorageKey.cardTokens(for: cardId)
-            let encryptionKey = SecureStorageKey.cardTokensEncryptionKey(for: cardId)
+            let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
+            let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
             biometricsSecureEnclave.deleteKey(tag: encryptionKey)
             try? biometricsStorage.delete(storageKey)
 
-            let data = try JSONEncoder().encode(cardTokens)
+            let data = try JSONEncoder().encode(cardAccessTokens)
             let encryptedData = try biometricsSecureEnclave.encryptData(
                 data,
                 keyTag: encryptionKey,
@@ -55,15 +55,15 @@ class CardTokensRepository {
             try biometricsStorage.store(encryptedData, forKey: storageKey)
 
             savedCardIds.insert(cardId)
-            tokens[cardId] = cardTokens
+            tokens[cardId] = cardAccessTokens
         }
 
         try saveCards(cardIds: savedCardIds)
-        Log.debug("Card tokens saved successfully")
+        Log.debug("Card access tokens saved successfully")
     }
 
-    func save(_ cardTokens: CardTokens, for cardId: String) throws {
-        try save(cardTokens, for: [cardId])
+    func save(_ cardAccessTokens: CardAccessTokens, for cardId: String) throws {
+        try save(cardAccessTokens, for: [cardId])
     }
 
     func deleteTokens(for cardIds: [String]) throws {
@@ -77,8 +77,8 @@ class CardTokensRepository {
                 continue
             }
 
-            let storageKey = SecureStorageKey.cardTokens(for: cardId)
-            let encryptionKey = SecureStorageKey.cardTokensEncryptionKey(for: cardId)
+            let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
+            let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
             biometricsSecureEnclave.deleteKey(tag: encryptionKey)
             try? biometricsStorage.delete(storageKey)
@@ -87,11 +87,11 @@ class CardTokensRepository {
         }
 
         try saveCards(cardIds: savedCardIds)
-        Log.debug("Card tokens deletion completed successfully")
+        Log.debug("Card access tokens deletion completed successfully")
     }
 
     func clear() {
-        Log.debug("Clear CardTokensRepository")
+        Log.debug("Clear CardAccessTokensRepository")
         do {
             let cardIds = try getCards()
             try deleteTokens(for: Array(cardIds))
@@ -117,7 +117,7 @@ class CardTokensRepository {
         }
 
         self.tokens = [:]
-        Log.debug("Start unlocking card tokens with biometrics")
+        Log.debug("Start unlocking card access tokens with biometrics")
 
         BiometricsUtil.requestAccess(localizedReason: localizedReason) { [weak self] result in
             guard let self = self else { return }
@@ -127,13 +127,13 @@ class CardTokensRepository {
                 Log.error(error)
                 completion(.failure(error))
             case .success(let context):
-                Log.debug("Card tokens storage was unlocked successfully")
+                Log.debug("Card access tokens storage was unlocked successfully")
                 do {
-                    var fetchedTokens: [String: CardTokens] = [:]
+                    var fetchedTokens: [String: CardAccessTokens] = [:]
 
                     for cardId in try self.getCards() {
-                        let storageKey = SecureStorageKey.cardTokens(for: cardId)
-                        let encryptionKey = SecureStorageKey.cardTokensEncryptionKey(for: cardId)
+                        let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
+                        let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
                         if let encryptedData = try self.biometricsStorage.get(storageKey, context: context) {
                             let data = try self.biometricsSecureEnclave.decryptData(
@@ -142,8 +142,8 @@ class CardTokensRepository {
                                 context: context
                             )
 
-                            let cardTokens = try JSONDecoder().decode(CardTokens.self, from: data)
-                            fetchedTokens[cardId] = cardTokens
+                            let cardAccessTokens = try JSONDecoder().decode(CardAccessTokens.self, from: data)
+                            fetchedTokens[cardId] = cardAccessTokens
                         }
                     }
 
@@ -159,27 +159,27 @@ class CardTokensRepository {
     }
 
     func lock() {
-        Log.debug("Lock the card tokens repo")
+        Log.debug("Lock the card access tokens repo")
         tokens = .init()
     }
 
-    func fetch(for cardId: String) -> CardTokens? {
+    func fetch(for cardId: String) -> CardAccessTokens? {
         return tokens[cardId]
     }
 
     private func getCards() throws -> Set<String> {
-        guard let encryptedData = try secureStorage.get(.cardsWithSavedTokens) else {
+        guard let encryptedData = try secureStorage.get(.cardsWithSavedAccessTokens) else {
             return []
         }
 
-        let data = try secureEnclave.decryptData(encryptedData, storageKey: .cardsWithSavedTokensEncryptionKey)
+        let data = try secureEnclave.decryptData(encryptedData, storageKey: .cardsWithSavedAccessTokensEncryptionKey)
         let decoded = try JSONDecoder().decode(Set<String>.self, from: data)
         return decoded
     }
 
     private func saveCards(cardIds: Set<String>) throws {
         let data = try JSONEncoder().encode(cardIds)
-        let encryptedData = try secureEnclave.encryptData(data, storageKey: .cardsWithSavedTokensEncryptionKey)
-        try secureStorage.store(encryptedData, forKey: .cardsWithSavedTokens)
+        let encryptedData = try secureEnclave.encryptData(data, storageKey: .cardsWithSavedAccessTokensEncryptionKey)
+        try secureStorage.store(encryptedData, forKey: .cardsWithSavedAccessTokens)
     }
 }

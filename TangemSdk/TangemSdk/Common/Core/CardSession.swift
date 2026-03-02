@@ -36,8 +36,8 @@ public class CardSession {
     private var _environment: SessionEnvironment
     public internal(set) var environment: SessionEnvironment
 
-    /// Allows card tokens to be stored in a secure location
-    var cardTokensRepository: CardTokensRepository? = nil
+    /// Allows card access tokens to be stored in a secure location
+    var cardAccessTokensRepository: CardAccessTokensRepository? = nil
 
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
@@ -69,19 +69,19 @@ public class CardSession {
             return !accessCodeRepository.isEmpty
         }()
 
-        let hasCardTokens: Bool = {
-            guard let cardTokensRepository = self.cardTokensRepository else {
+        let hasCardAccessTokens: Bool = {
+            guard let cardAccessTokensRepository = self.cardAccessTokensRepository else {
                 return false
             }
 
             if let cardId = self.cardId {
-                return cardTokensRepository.contains(cardId)
+                return cardAccessTokensRepository.contains(cardId)
             }
 
-            return !cardTokensRepository.isEmpty
+            return !cardAccessTokensRepository.isEmpty
         }()
 
-        return hasAccessCodes || hasCardTokens
+        return hasAccessCodes || hasCardAccessTokens
     }
 
     /// Main initializer
@@ -93,7 +93,7 @@ public class CardSession {
     ///   - viewDelegate: viewDelegate implementation
     ///   - jsonConverter: optional JSONRPCConverter
     ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
-    ///   - cardTokensRepository: Optional CardTokensRepository that saves card tokens to Apple Keychain
+    ///   - cardAccessTokensRepository: Optional CardAccessTokensRepository that saves card access tokens to Apple Keychain
     init(environment: SessionEnvironment,
          filter: SessionFilter? = nil,
          initialMessage: Message? = nil,
@@ -101,7 +101,7 @@ public class CardSession {
          viewDelegate: SessionViewDelegate,
          jsonConverter: JSONRPCConverter?,
          accessCodeRepository: AccessCodeRepository?,
-         cardTokensRepository: CardTokensRepository?) {
+         cardAccessTokensRepository: CardAccessTokensRepository?) {
         self.reader = cardReader
         self.viewDelegate = viewDelegate
         self._environment = environment
@@ -110,7 +110,7 @@ public class CardSession {
         self.filter = filter
         self.jsonConverter = jsonConverter
         self.accessCodeRepository = accessCodeRepository
-        self.cardTokensRepository = cardTokensRepository
+        self.cardAccessTokensRepository = cardAccessTokensRepository
     }
 
     deinit {
@@ -436,7 +436,7 @@ public class CardSession {
                      switch result {
                      case .success:
                          Log.session("Biometric auth completed successfully")
-                         self.cardTokensRepository?.unlock(localizedReason: reason) { _ in
+                         self.cardAccessTokensRepository?.unlock(localizedReason: reason) { _ in
                              runnable.prepare(self, completion: completion)
                          }
                      case .failure:
@@ -701,7 +701,7 @@ extension CardSession {
         }
 
         // TODO: chaining via PublicSecureChannel
-        if environment.secureChannelSession?.cardTokens != nil {
+        if environment.secureChannelSession?.cardAccessTokens != nil {
             EstablishSecureChannelWithAccessTokenTask().run(in: self, completion: completion)
         } else if environment.card?.isAccessCodeSet == true {
             EstablishSecureChannelWithPINTask().run(in: self, completion: completion)
@@ -713,7 +713,7 @@ extension CardSession {
     func fetchAccessTokensIfNeeded() {
         Log.session("Try fetch acccess tokens")
         guard let card = environment.card,
-              let tokens = cardTokensRepository?.fetch(for: card.cardId) else {
+              let tokens = cardAccessTokensRepository?.fetch(for: card.cardId) else {
             return
         }
 
@@ -721,19 +721,19 @@ extension CardSession {
         if environment.secureChannelSession == nil {
             environment.secureChannelSession = SecureChannelSession()
         }
-        environment.secureChannelSession?.cardTokens = tokens
+        environment.secureChannelSession?.cardAccessTokens = tokens
     }
 
     func saveAccessTokensIfNeeded() {
         Log.session("Try save access tokens")
         guard let card = environment.card,
-              let tokens = environment.secureChannelSession?.cardTokens else {
+              let tokens = environment.secureChannelSession?.cardAccessTokens else {
             return
         }
 
         do {
-            try cardTokensRepository?.save(tokens, for: card.cardId)
-            cardTokensRepository?.lock()
+            try cardAccessTokensRepository?.save(tokens, for: card.cardId)
+            cardAccessTokensRepository?.lock()
             Log.session("Access tokens saved successfully")
         } catch {
             Log.error(error)

@@ -15,7 +15,7 @@ public class Storage {
         case refreshedOnlineAttestationCache
         case refreshedTrustedCardsRepo
         case hasClearedAccessCodeRepoOnFirstLaunch
-        case hasClearedCardTokensRepoOnFirstLaunch
+        case hasClearedCardAccessTokensRepoOnFirstLaunch
     }
 
     func bool(forKey: Storage.Keys) -> Bool {

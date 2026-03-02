@@ -52,7 +52,7 @@ class AuthorizeWithAccessTokensCommand: Command {
                         throw TangemSdkError.missingPreflightRead
                     }
 
-                    guard let accessTokens = session.environment.secureChannelSession?.cardTokens else {
+                    guard let accessTokens = session.environment.secureChannelSession?.cardAccessTokens else {
                         throw TangemSdkError.missingAccessTokens
                     }
 
@@ -60,7 +60,7 @@ class AuthorizeWithAccessTokensCommand: Command {
                     if try authorizeResponse.verify(identifyToken: accessTokens.identifyToken)  {
                         completion(.success(authorizeResponse))
                     } else {
-                        try? session.cardTokensRepository?.deleteTokens(for: [card.cardId])
+                        try? session.cardAccessTokensRepository?.deleteTokens(for: [card.cardId])
                         throw TangemSdkError.invalidAccessTokens
                     }
 

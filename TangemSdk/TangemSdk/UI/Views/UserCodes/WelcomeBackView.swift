@@ -86,7 +86,18 @@ private extension WelcomeBackView {
 
         static var preactivatedWalletsURL: URL? {
             let lang = Locale.languageCode(supportedCodes: supportedBlogLanguages)
-            return URL(string: "https://tangem.com/\(lang)/blog/post/preactivated-wallets/")
+
+            let queryItems = [
+                URLQueryItem(name: "utm_source", value: "tangem-app"),
+                URLQueryItem(name: "utm_medium", value: "app"),
+                URLQueryItem(name: "utm_campaign", value: "articles-sdk-\(lang)"),
+                URLQueryItem(name: "utm_content", value: "devicelang-\(Locale.deviceLanguageCode(withRegion: false))")
+            ]
+
+            var blogURLComponents = URLComponents(string: "https://tangem.com/\(lang)/blog/post/preactivated-wallets")
+            blogURLComponents?.queryItems = queryItems
+
+            return blogURLComponents?.url
         }
     }
 }

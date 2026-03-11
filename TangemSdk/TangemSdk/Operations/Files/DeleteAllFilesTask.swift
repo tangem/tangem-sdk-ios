@@ -10,6 +10,10 @@ import Foundation
 
 /// Task for deleting all files from card.
 final class DeleteAllFilesTask: CardSessionRunnable {
+    deinit {
+        Log.debug("DeleteAllFilesTask deinit")
+    }
+
     func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         deleteFile(session: session, completion: completion)
     }

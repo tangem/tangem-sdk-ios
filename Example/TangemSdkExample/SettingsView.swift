@@ -20,6 +20,8 @@ struct SettingsView: View {
 
             Toggle("Dev api", isOn: $model.useDevApi)
 
+            Toggle("Dev mode", isOn: $model.isDevelopmentMode)
+
             Text("Access code request policy")
                 .fontWeight(.bold)
                 .padding()

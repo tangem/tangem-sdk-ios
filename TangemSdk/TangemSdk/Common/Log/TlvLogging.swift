@@ -14,7 +14,7 @@ protocol TlvLogging {
 
 extension TlvLogging {
     func logTlv<T>(_ tlv: Tlv, _ value: T) {
-        guard !tlv.tag.shouldMask else {
+        if tlv.tag.shouldMask && !Config.isDevelopmentMode {
             logMasked(tlv)
             return
         }

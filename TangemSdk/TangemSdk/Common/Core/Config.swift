@@ -44,8 +44,8 @@ public struct Config {
     public var productType: ProductType = .any
 
     /// Logger configuration
-    public var logConfig: Log.Config = .default
-    
+    public var logConfig: Log.LogConfig = .default
+
     /// ScanTask or scanCard method in TangemSdk class will use this mode to attest the card
     public var attestationMode: AttestationTask.Mode = .normal
     
@@ -69,6 +69,9 @@ public struct Config {
 
     /// Development API toggle
     public static var useDevApi: Bool = false
+
+    /// Development mode toggle. Do not use in production, it can cause security issues.
+    public static var isDevelopmentMode: Bool = false
 
     /// Handle health tag toggle
     public static var handleHealth: Bool = false

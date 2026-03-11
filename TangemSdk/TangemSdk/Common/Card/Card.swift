@@ -45,6 +45,10 @@ public struct Card: Codable, JSONStringConvertible {
     public var backupStatus: BackupStatus?
     /// Wallets, created on the card, that can be used for signature
     public var wallets: [Wallet] = []
+    /// Master secret info for deterministic entropy (BIP-0085). Available on COS v8+.
+    public var masterSecret: MasterSecret?
+    /// Whether the card's backup data is consistent. Calculated by comparing local hash with card's backup hash. Available on COS v8+.
+    public var isBackupVerified: Bool?
     /// Card's attestation report
     public var attestation: Attestation = .empty
     /// Any non-zero value indicates that the card experiences some hardware problems.
@@ -204,7 +208,7 @@ public extension Card {
 
 extension Card {
     /// Status of the card and its wallet.
-    enum Status: Int, StatusType { //TODO: TBD
+    enum Status: Int, StatusType {
         case notPersonalized = 0
         case empty = 1
         case loaded = 2

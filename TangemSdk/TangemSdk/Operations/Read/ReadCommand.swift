@@ -13,18 +13,21 @@ import Foundation
 
 public final class ReadCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
-    
+
+    var usesEncryption: Bool { false }
+    var accessLevel: AccessLevel { .publicAccess }
+
     deinit {
         Log.debug("ReadCommand deinit")
     }
-    
-    public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+
+    public func run(in session: CardSession, completion: @escaping CompletionResult<(Card, WalletData?)>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
                 session.environment.card = response.0
                 session.environment.walletData = response.1
-                completion(.success(response.0))
+                completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
             }

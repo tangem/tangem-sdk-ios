@@ -24,6 +24,10 @@ public class ReadFilesTask: CardSessionRunnable {
         self.walletPublicKey = walletPublicKey
     }
     
+    deinit {
+        Log.debug("ReadFilesTask deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<[File]>) {
         readAllFiles(fileIndex: 0, session: session, completion: completion)
     }

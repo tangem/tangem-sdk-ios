@@ -609,7 +609,6 @@ extension TangemSdk {
             return
         }
 
-        configure()
         cardSession = makeSession(with: config,
                                   filter: nil,
                                   initialMessage: nil,
@@ -639,7 +638,6 @@ extension TangemSdk {
             return
         }
 
-        configure()
         cardSession = makeSession(with: config,
                                   filter: filter,
                                   initialMessage: initialMessage,
@@ -687,8 +685,7 @@ extension TangemSdk {
             callback(cardSession!, error.toTangemSdkError())
             return
         }
-        
-        configure()
+
         cardSession = makeSession(with: config,
                                   filter: .init(from: cardId),
                                   initialMessage: initialMessage,
@@ -721,7 +718,6 @@ extension TangemSdk {
             let runnables = try parseResult.requests.map { try jsonConverter.convert(request: $0) }
             
             try checkSession()
-            configure()
             cardSession = makeSession(with: config,
                                       filter: .init(from: cardId),
                                       initialMessage: initialMessage.flatMap { Message($0) },
@@ -759,7 +755,7 @@ extension TangemSdk {
         }
     }
     
-    private func configure() {
+    private func configure(config: Config) {
         Log.config = config.logConfig
     }
     
@@ -770,26 +766,38 @@ extension TangemSdk {
         }
 
         Log.debug("Failed to initialize AccessCodeRepository. Biometrics is unavailable.")
-        
+
         return nil
     }
-    
+
+    private func makeCardAccessTokensRepository(with config: Config) -> CardAccessTokensRepository? {
+        if case .alwaysWithBiometrics = config.accessCodeRequestPolicy,
+           BiometricsUtil.isAvailable {
+            return CardAccessTokensRepository()
+        }
+
+        Log.debug("Failed to initialize CardAccessTokensRepository. Biometrics is unavailable.")
+
+        return nil
+    }
+
     func makeSession(with config: Config,
                      filter: SessionFilter?,
                      initialMessage: Message?,
                      accessCode: String? = nil) -> CardSession {
         var env = SessionEnvironment(config: config, terminalKeysService: terminalKeysService)
-        
+
         if let accessCode = accessCode {
             env.accessCode = .init(.accessCode, stringValue: accessCode)
         }
-        
+        configure(config: config)
         return CardSession(environment: env,
                            filter: filter,
                            initialMessage: initialMessage,
                            cardReader: reader,
                            viewDelegate: viewDelegate,
                            jsonConverter: jsonConverter,
-                           accessCodeRepository: makeAccessCodeRepository(with: config))
+                           accessCodeRepository: makeAccessCodeRepository(with: config),
+                           cardAccessTokensRepository: makeCardAccessTokensRepository(with: config))
     }
 }

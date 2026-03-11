@@ -14,7 +14,9 @@
 		5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C6C7127214EA900E04A8B /* SettingsView.swift */; };
 		5D3ABA3D26D02C5C0087EF4A /* StaticData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */; };
 		5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3C2BCE26D93E7200722E33 /* BackupView.swift */; };
+		DC28E0F42877F84B00AE7A84 /* BackupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F32877F84B00AE7A84 /* BackupViewModel.swift */; };
 		5D445B8026E2A8CF00F6F0FE /* ResetPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */; };
+		DC28E0F62877F84B00AE7A84 /* ResetPinViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC28E0F52877F84B00AE7A84 /* ResetPinViewModel.swift */; };
 		5D78C1BA234F435B008D7478 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D78C1B9234F435B008D7478 /* Application.swift */; };
 		5D78C1C3234F435C008D7478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C2234F435C008D7478 /* Assets.xcassets */; };
 		5D78C1C6234F435C008D7478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5D78C1C4234F435C008D7478 /* LaunchScreen.storyboard */; };
@@ -35,7 +37,9 @@
 		5D1C6C7127214EA900E04A8B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticData.swift; sourceTree = "<group>"; };
 		5D3C2BCE26D93E7200722E33 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
+		DC28E0F32877F84B00AE7A84 /* BackupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupViewModel.swift; sourceTree = "<group>"; };
 		5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinView.swift; sourceTree = "<group>"; };
+		DC28E0F52877F84B00AE7A84 /* ResetPinViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPinViewModel.swift; sourceTree = "<group>"; };
 		5D78C1B9234F435B008D7478 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		5D78C1C2234F435C008D7478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D78C1C5234F435C008D7478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -80,7 +84,9 @@
 			children = (
 				5D3ABA3C26D02C5C0087EF4A /* StaticData.swift */,
 				5D3C2BCE26D93E7200722E33 /* BackupView.swift */,
+				DC28E0F32877F84B00AE7A84 /* BackupViewModel.swift */,
 				5D445B7F26E2A8CF00F6F0FE /* ResetPinView.swift */,
+				DC28E0F52877F84B00AE7A84 /* ResetPinViewModel.swift */,
 				DC28E0F12877F84B00AE7A84 /* DebugLogger.swift */,
 				DC23ED9E2912DD0D0023E626 /* ResetToFactorySettingsTask.swift */,
 			);
@@ -207,9 +213,11 @@
 				5D032009266A8523008472EC /* ExampleButton.swift in Sources */,
 				B00A67B3253D8CAC002D7D53 /* Utils.swift in Sources */,
 				5D445B8026E2A8CF00F6F0FE /* ResetPinView.swift in Sources */,
+				DC28E0F62877F84B00AE7A84 /* ResetPinViewModel.swift in Sources */,
 				DC28E0F22877F84B00AE7A84 /* DebugLogger.swift in Sources */,
 				5DDCEC7525C957930002090D /* UI+.swift in Sources */,
 				5D3C2BCF26D93E7200722E33 /* BackupView.swift in Sources */,
+				DC28E0F42877F84B00AE7A84 /* BackupViewModel.swift in Sources */,
 				DC23ED9F2912DD0D0023E626 /* ResetToFactorySettingsTask.swift in Sources */,
 				5D03200E266A85CB008472EC /* ActivityIndicatorView.swift in Sources */,
 				5D1C6C7227214EA900E04A8B /* SettingsView.swift in Sources */,

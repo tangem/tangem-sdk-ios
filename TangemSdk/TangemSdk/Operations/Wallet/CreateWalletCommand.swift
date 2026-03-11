@@ -124,10 +124,6 @@ final class CreateWalletCommand: Command {
             .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.cardId, value: environment.card?.cardId)
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
@@ -187,16 +183,19 @@ final class CreateWalletCommand: Command {
                                   index: Int,
                                   remainingSignatures: Int?,
                                   isPermanentWallet: Bool) throws -> Card.Wallet {
-        return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                           chainCode: nil,
-                           curve: curve, // It's safe to use this property because create wallet command will not execute successfully with the wrong curve
-                           settings: Card.Wallet.Settings(isPermanent: isPermanentWallet),
-                           totalSignedHashes: 0,
-                           remainingSignatures: remainingSignatures,
-                           index: index,
-                           proof: nil,
-                           isImported: false,
-                           hasBackup: false)
+        return Card.Wallet(
+            publicKey: try decoder.decode(.walletPublicKey),
+            chainCode: nil,
+            curve: curve, // It's safe to use this property because create wallet command will not execute successfully with the wrong curve
+            settings: Card.Wallet.Settings(isPermanent: isPermanentWallet),
+            totalSignedHashes: 0,
+            remainingSignatures: remainingSignatures,
+            index: index,
+            proof: nil,
+            isImported: false,
+            hasBackup: false,
+            status: .loaded
+        )
     }
     
     private func calculateWalletIndex(for card: Card) throws -> Int {

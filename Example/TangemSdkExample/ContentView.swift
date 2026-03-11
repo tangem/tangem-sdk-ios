@@ -9,237 +9,351 @@
 import SwiftUI
 import TangemSdk
 
+// MARK: - Orange Border Modifier
+
+private struct OrangeBorderModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding()
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.orange, lineWidth: 2))
+    }
+}
+
+private extension View {
+    func orangeBorder() -> some View {
+        modifier(OrangeBorderModifier())
+    }
+}
+
+// MARK: - Content View
+
 struct ContentView: View {
     @EnvironmentObject var model: AppModel
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                GeometryReader { geo in
-                    VStack {
-                        ScrollView {
-                            VStack {
-                                
-                                if let image = model.image {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 200, height: 200)
-                                }
-                                
-                                Text(model.logText)
-                                    .font(.caption)
-                            }
-                        }
-                        .padding(.vertical, 2)
-                        .padding(.horizontal, 14)
-                        .clipped()
-                        .frame(width: geo.size.width)
-                        .overlay(RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.orange, lineWidth: 2)
-                            .padding(.horizontal, 8))
-                        .layoutPriority(-1)
-                        
-                        VStack(spacing: 4) {
-                            HStack {
-                                Button("Clear", action: model.clear)
-                                Button("Copy", action: model.copy)
-                                Button("Backup", action: model.onBackup)
-                                Button("Reset", action: model.onResetService)
-                                Button("Hide kb", action: model.hideKeyboard)
-                            }
-                            
-                            additionalView
-                                .padding(.top, 4)
-                            
-                            Picker("", selection: $model.method) {
-                                ForEach(0..<AppModel.Method.allCases.count, id: \.self) { index in
-                                    Text(AppModel.Method.allCases[index].rawValue)
-                                        .tag(AppModel.Method.allCases[index])
-                                }
-                            }
-                            .frame(minHeight: 110)
-                            .labelsHidden()
-                            .pickerStyle(WheelPickerStyle())
-                            
-                            Button("Start") { model.start() }
-                                .buttonStyle(ExampleButton(isLoading: model.isScanning))
-                                .frame(width: 100)
-                            
-                        }
-                        .padding(.horizontal, 8)
-                        .frame(width: geo.size.width)
+            TabView {
+                MainTab()
+                    .tabItem {
+                        Label("Main", systemImage: "house")
+                    }
+
+                BackupView(viewModel: model.backupViewModel)
+                    .onAppear { model.setupBackup() }
+                    .tabItem {
+                        Label("Backup", systemImage: "doc.on.doc")
+                    }
+
+                ResetPinView(viewModel: model.resetPinViewModel)
+                    .onAppear { model.setupResetPin() }
+                    .tabItem {
+                        Label("Reset Pin", systemImage: "arrow.counterclockwise")
+                    }
+            }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+                        UIApplication.shared.endEditing()
+                    } label: {
+                        Image(systemName: "keyboard.chevron.compact.down")
                     }
                 }
-            }
-            .navigationBarTitle("SDK", displayMode: .inline)
-            .navigationBarItems(trailing: Button(action: model.onSettings, label: { Image(systemName: "gear")}))
-            .navigationDestination(isPresented: $model.showBackupView) {
-                model.makeBackupDestination()
             }
             .navigationDestination(isPresented: $model.showSettings) {
                 model.makeSettingsDestination()
             }
-            .navigationDestination(isPresented: $model.showResetPin) {
-                model.makePinResetDestination()
-            }
-            .padding(.bottom, 8)
-            .actionSheet(isPresented: $model.showWalletSelection) {
-                let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
-                    let publicKeyDescription = wallet.publicKey.map {
-                        let hexString  = $0.hexString
-                        return "\(hexString.prefix(6))...\(hexString.suffix(6))"
-                    } ?? ""
-                    
-                    let formattedKey = "(\(wallet.index)) \(publicKeyDescription) (\(wallet.curve.rawValue))"
+        }
+    }
+}
 
-                    return ActionSheet.Button.default(Text(formattedKey)) {
-                        model.start(walletIndex: wallet.index)
-                    }
-                } ?? []
-                
-                let cancelButton = ActionSheet.Button.cancel {
-                    model.isScanning = false
+// MARK: - Main Tab
+
+struct MainTab: View {
+    @EnvironmentObject var model: AppModel
+
+    var body: some View {
+        VStack {
+            logView
+            controlsView
+        }
+        .padding(.bottom, 8)
+        .navigationTitle("SDK")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: model.onSettings) {
+                    Image(systemName: "gear")
                 }
-                
-                return ActionSheet(title: Text("Select wallet"),
-                                   message: nil,
-                                   buttons: walletButtons + [cancelButton])
+            }
+        }
+        .confirmationDialog("Select wallet", isPresented: $model.showWalletSelection) {
+            walletSelectionButtons
+        }
+    }
+
+    private var logView: some View {
+        VStack(spacing: 4) {
+            ScrollView {
+                VStack {
+                    if let image = model.image {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 200, height: 200)
+                    }
+
+                    Text(model.logText)
+                        .font(.caption)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            .padding(.vertical, 2)
+            .padding(.horizontal, 14)
+            .clipped()
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.orange, lineWidth: 2)
+                    .padding(.horizontal, 8)
+            )
+
+            HStack(spacing: 16) {
+                Button("Clear", action: model.clear)
+                Button("Copy", action: model.copy)
+            }
+            .padding(.horizontal, 8)
+        }
+        .layoutPriority(-1)
+    }
+
+    private var controlsView: some View {
+        VStack(spacing: 4) {
+            additionalView
+                .padding(.top, 4)
+
+            Picker("", selection: $model.method) {
+                ForEach(AppModel.Method.allCases, id: \.self) { method in
+                    Text(method.rawValue).tag(method)
+                }
+            }
+            .frame(minHeight: 110)
+            .labelsHidden()
+            .pickerStyle(.wheel)
+
+            Button("Start") { model.start() }
+                .buttonStyle(ExampleButton(isLoading: model.isScanning))
+                .frame(width: 100)
+        }
+        .padding(.horizontal, 8)
+    }
+
+    @ViewBuilder
+    private var walletSelectionButtons: some View {
+        if let wallets = model.card?.wallets {
+            ForEach(wallets, id: \.index) { wallet in
+                let publicKeyDescription = wallet.publicKey.map {
+                    let hex = $0.hexString
+                    return "\(hex.prefix(6))...\(hex.suffix(6))"
+                } ?? ""
+
+                Button("(\(wallet.index)) \(publicKeyDescription) (\(wallet.curve.rawValue))") {
+                    model.start(walletIndex: wallet.index)
+                }
+            }
+        }
+
+        Button("Cancel", role: .cancel) {
+            model.isScanning = false
+        }
+    }
+
+    // MARK: - Additional Views per Method
+
+    @ViewBuilder
+    private var additionalView: some View {
+        switch model.method {
+        case .attest:
+            attestView
+        case .attestWallet:
+            attestWalletView
+        case .createWallet:
+            createWalletView
+        case .importWallet:
+            importWalletView
+        case .signHash, .signHashes, .derivePublicKey:
+            hdPathView
+        case .jsonrpc:
+            jsonEditorView
+        case .personalize, .personalizeV8:
+            persoJsonEditorView
+        case .importMasterSecret:
+            importMasterSecretView
+        case .setUserCodeRecoveryAllowed:
+            Toggle("Is user code recovery allowed", isOn: $model.isUserCodeRecoveryAllowed)
+        case .setPinRequired:
+            Toggle("Is PIN required", isOn: $model.isPinRequired)
+        case .setNDEFDisabled:
+            Toggle("Is NDEF disabled", isOn: $model.isNDEFDisabled)
+        default:
+            EmptyView()
+        }
+    }
+
+    private var attestView: some View {
+        VStack {
+            Text("Attestation configuration")
+                .font(.headline)
+                .bold()
+
+            Picker("", selection: $model.attestationMode) {
+                ForEach(AttestationTask.Mode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+        }
+        .orangeBorder()
+    }
+
+    private var attestWalletView: some View {
+        VStack {
+            Text("Wallet Attestation config")
+                .font(.headline)
+                .bold()
+
+            TextField("\"m/0/1\"", text: $model.derivationPath)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+        }
+        .orangeBorder()
+    }
+
+    private var createWalletView: some View {
+        VStack {
+            Text("Create wallet configuration")
+                .font(.headline)
+                .bold()
+
+            curveSelector
+        }
+        .orangeBorder()
+    }
+
+    private var importWalletView: some View {
+        VStack {
+            Text("Import wallet configuration")
+                .font(.headline)
+                .bold()
+
+            curveSelector
+
+            mnemonicFields
+        }
+        .orangeBorder()
+    }
+
+    private var hdPathView: some View {
+        VStack {
+            Text("Hd path")
+                .font(.headline)
+                .bold()
+
+            TextField("\"m/0/1\"", text: $model.derivationPath)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+
+            if case .signHashes = model.method {
+                Text("Sign hashes count")
+                    .font(.headline)
+                    .bold()
+
+                TextField("", text: $model.signHashesCount)
+                    .textFieldStyle(.roundedBorder)
+                    .textInputAutocapitalization(.never)
+            }
+        }
+        .orangeBorder()
+    }
+
+    
+    private var curveSelector: some View {
+        Group {
+            if let supportedCurves = model.card?.supportedCurves {
+                Picker("", selection: $model.curve) {
+                    ForEach(supportedCurves, id: \.self) { curve in
+                        Text(curve.rawValue).tag(curve)
+                    }
+                }
+                .pickerStyle(.wheel)
             }
         }
     }
 
-        @ViewBuilder
-        private var additionalView: some View {
-            switch model.method {
-            case .attest:
-                VStack {
-                    Text("Attestation configuration")
-                        .font(.headline)
-                        .bold()
+    private var mnemonicFields: some View {
+        Group {
+            TextField("Optional mnemonic", text: $model.mnemonicString)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.never)
 
-                    Picker("", selection: $model.attestationMode) {
-                        ForEach(0..<AttestationTask.Mode.allCases.count, id: \.self) { index in
-                            Text(AttestationTask.Mode.allCases[index].rawValue)
-                                .tag(AttestationTask.Mode.allCases[index])
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .attestWallet:
-                VStack {
-                    Text("Wallet Attestation config")
-                        .font(.headline)
-                        .bold()
+            TextField("Optional passphrase", text: $model.passphrase)
+                .textFieldStyle(.roundedBorder)
+                .textInputAutocapitalization(.never)
+        }
+    }
 
-                    TextField("\"m/0/1\"", text: $model.derivationPath)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .createWallet, .importWallet:
-                VStack {
-                    Text("Create wallet configuration")
-                        .font(.headline)
-                        .bold()
+    private var importMasterSecretView: some View {
+        VStack {
+            Text("Import master secret configuration")
+                .font(.headline)
+                .bold()
 
-                    if let supportedCurves = model.card?.supportedCurves {
-                        Picker("", selection: $model.curve) {
-                            ForEach(0..<supportedCurves.count, id: \.self) { index in
-                                Text(supportedCurves[index].rawValue)
-                                    .tag(supportedCurves[index])
-                            }
-                        }
-                        .pickerStyle(WheelPickerStyle())
-                    }
+            mnemonicFields
+        }
+        .orangeBorder()
+    }
 
-                    if case .importWallet = model.method {
-                        TextField("Optional mnemonic", text: $model.mnemonicString)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
+    private var jsonEditorView: some View {
+        VStack {
+            Text("JSON editor")
+                .font(.headline)
+                .bold()
 
-                        TextField("Optional passphrase", text: $model.passphrase)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
-                    }
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .signHash, .signHashes, .derivePublicKey:
-                VStack {
-                    Text("Hd path")
-                        .font(.headline)
-                        .bold()
+            TextEditor(text: $model.editorData)
+                .frame(height: 100)
 
-                    TextField("\"m/0/1\"", text: $model.derivationPath)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
+            Button("Paste json", action: model.pasteEditor)
+        }
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
+        .orangeBorder()
+        .onAppear(perform: model.onAppear)
+    }
 
-                    if case .signHashes = model.method {
-                        Text("Sign hashes count")
-                            .font(.headline)
-                            .bold()
+    private var persoJsonEditorView: some View {
+        VStack {
+            Text("JSON editor")
+                .font(.headline)
+                .bold()
 
-                        TextField("", text: $model.signHashesCount)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
-                    }
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .jsonrpc, .personalize, .personalizeV8:
-                VStack {
-                    Text("JSON editor")
-                        .font(.headline)
-                        .bold()
+            TextEditor(text: $model.editorData)
+                .frame(height: 100)
 
-                    TextEditor(text: $model.editorData)
-                        .frame(height: 100)
-
-                    HStack {
-                        Spacer()
-                        Button("Paste json", action: model.pasteEditor)
-                        Spacer()
-                        Button("End editing", action: model.endEditing)
-                        Spacer()
-                    }
-                }
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .padding(.vertical, 8)
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-                .onAppear(perform: model.onAppear)
-            case .setUserCodeRecoveryAllowed:
-                Toggle(isOn: $model.isUserCodeRecoveryAllowed) {
-                    Text("Is user code recovery allowed")
-                }
-            default:
-                EmptyView()
+            HStack {
+                Button("Paste json", action: model.pasteEditor)
+                Button("Reset to defaults", action: model.resetPersonalizationConfig)
             }
         }
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
+        .orangeBorder()
+        .onAppear(perform: model.onAppear)
     }
+}
 
-    struct ContentView_Previews: PreviewProvider {
-        static var model = AppModel()
 
-        static var previews: some View {
-            ContentView()
-                .previewDevice("iPhone 8")
-                .environmentObject(model)
-        }
-    }
+#Preview {
+    ContentView()
+        .environmentObject(AppModel())
+}

@@ -34,6 +34,10 @@ public final class ReadFileChecksumCommand: Command {
         self.fileName = nil
     }
     
+    deinit {
+        Log.debug("ReadFileChecksumCommand deinit")
+    }
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion.doubleValue < 3.34 {
             return .notSupportedFirmwareVersion
@@ -66,7 +70,7 @@ public final class ReadFileChecksumCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileChecksumResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ReadFileChecksumResponse(cardId: try decoder.decode(.cardId),
-                                        checksum: try decoder.decode(.codeHash),
+                                        checksum: try decoder.decode(.hash),
                                         fileIndex: try decoder.decode(.fileIndex))
     }
 }

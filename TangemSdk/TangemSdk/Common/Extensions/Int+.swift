@@ -33,6 +33,12 @@ extension Int {
         let data = withUnsafeBytes(of: self.bigEndian) { Data($0) }
         return data
     }
+
+    /// Converts an integer to big-endian bytes of the specified count.
+    public func toBytes(count: Int) -> Data {
+        let data = withUnsafeBytes(of: self.bigEndian) { Data($0) }
+        return data.suffix(count)
+    }
 }
 
 extension UInt64 {

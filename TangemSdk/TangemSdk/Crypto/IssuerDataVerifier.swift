@@ -53,7 +53,7 @@ class IssuerDataVerifier {
         do {
             data += try encoder.encode(.cardId, value: cardId).value
             if let issuerData = issuerData {
-                data += try encoder.encode(.issuerData, value: issuerData).value
+                data += try encoder.encode(.data, value: issuerData).value
             }
             if let counter = issuerDataCounter {
                 data += try encoder.encode(.issuerDataCounter, value: counter).value

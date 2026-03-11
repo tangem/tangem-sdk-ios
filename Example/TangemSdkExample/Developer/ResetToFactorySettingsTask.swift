@@ -16,7 +16,7 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
 
     private func deteleWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let wallet = session.environment.card?.wallets.last else {
-            resetBackup(in: session, completion: completion)
+            purgeMasterSecret(in: session, completion: completion)
             return
         }
 
@@ -24,6 +24,22 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
             switch result {
             case .success:
                 self.deteleWallets(in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func purgeMasterSecret(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        guard session.environment.card?.masterSecret != nil else {
+            resetBackup(in: session, completion: completion)
+            return
+        }
+
+        PurgeMasterSecretCommand().run(in: session) { result in
+            switch result {
+            case .success:
+                self.resetBackup(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }

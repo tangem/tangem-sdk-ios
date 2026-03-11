@@ -10,155 +10,88 @@ import SwiftUI
 import TangemSdk
 
 struct BackupView: View {
-    var backupService: BackupService
-    
-    @State private var count: Int = 2
-    @State private var accessCode: String = ""
-    @State private var passcode: String = ""
-    @State private var errorText: String = ""
-    
-    @ViewBuilder
-    var separatorView: some View {
-        Spacer()
-        Color.gray.frame(width: 100, height: 1).clipped()
-        Spacer()
-    }
-    
-    var stateTitle: String {
-        switch backupService.currentState {
-        case .preparing:
-            return "Preparing"
-        case .finalizingPrimaryCard:
-            return "Scan primary card again"
-        case .finalizingBackupCard(let index):
-            return "Scan backup card again with index: \(index)"
-        case .finished:
-            return "Backup succeded"
-        }
-    }
-    
-    var body: some View {
-        VStack {
-            
-            Spacer()
-            
-            VStack(spacing: 8) {
-                let msg = "Has primary card: \(backupService.primaryCardIsSet)"
-                Text(msg)
-                
-                Button("Read primary card") {
-                    backupService.readPrimaryCard { result in
-                        switch result {
-                        case .success(let newState):
-                            self.errorText = ""
-                            print("New state is: \(newState)")
-                        case .failure(let error):
-                            self.errorText = "Error occured: \(error)"
-                        }
-                    }
-                }
-                .buttonStyle(ExampleButton(isLoading: false))
-                .frame(width: 200)
-            }
-            
-            separatorView
-            
-            VStack(spacing: 8) {
-                Text("Maximum backup cards count is: \(BackupService.maxBackupCardsCount)")
-                
-                Text("Added backup cards count is: \(backupService.addedBackupCardsCount)")
-                
-                Button("Add backup card") {
-                    backupService.addBackupCard { result in
-                        switch result {
-                        case .success(let newState):
-                            self.errorText = ""
-                            print("New state is: \(newState)")
-                        case .failure(let error):
-                            self.errorText = "Error occured: \(error)"
-                        }
-                    }
-                }
-                .buttonStyle(ExampleButton(/*isDisabled: !backupService.canAddBackupCards,*/
-                                           isLoading: false))
-                .frame(width: 200)
-            }
-            
-            separatorView
-            
-            VStack(spacing: 8) {
-                let msg1 = "Has access code: \(backupService.accessCodeIsSet)"
-                Text(msg1)
-                
-                TextField("Access code for all cards", text: $accessCode)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button("Set access code") {
-                    do {
-                        try backupService.setAccessCode(accessCode)
-                        self.errorText = ""
-                        UIApplication.shared.endEditing()
-                    } catch {
-                        self.errorText = "Error occured: \(error)"
-                    }
-                }
-                .buttonStyle(ExampleButton(isLoading: false))
-                .frame(width: 200)
-                
-                let msg2 = "Has passcode: \(backupService.passcodeIsSet)"
-                Text(msg2)
+    @ObservedObject var viewModel: BackupViewModel
 
-                
-                TextField("Passcode for all cards", text: $passcode)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button("Set passcode") {
-                    do {
-                        try backupService.setPasscode(passcode)
-                        self.errorText = ""
-                        UIApplication.shared.endEditing()
-                    } catch {
-                        self.errorText = "Error occured: \(error)"
-                    }
-                }
-                .buttonStyle(ExampleButton(isLoading: false))
-                .frame(width: 200)
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                primaryCardSection
+                separator
+                backupCardsSection
+                separator
+                codesSection
+                separator
+                errorAndProceedSection
             }
-            
-            separatorView
-            
-            Text(errorText)
-                .foregroundColor(.red)
-            
-            VStack(spacing: 8) {
-                Button("Discard incompleted") {
-                    backupService.discardIncompletedBackup()
-                }
-                
-                Text("Current state is: \(stateTitle)")
-                
-                Button("Proceed") {
-                    backupService.proceedBackup() { result in
-                        switch result {
-                        case .success:
-                            self.errorText = ""
-                        case .failure(let error):
-                            self.errorText = "Error occured: \(error)"
-                        }
-                    }
-                }
-                .buttonStyle(ExampleButton(/*isDisabled: !backupService.canProceed,*/
-                                           isLoading: false))
-                .frame(width: 200)
-            }
+            .padding([.horizontal, .bottom], 16)
         }
-        .navigationBarTitle("Backup", displayMode: .inline)
-        .padding([.horizontal, .bottom], 16)
+        .navigationTitle("Backup")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var separator: some View {
+        Color.gray.frame(width: 100, height: 1)
+    }
+
+    private var primaryCardSection: some View {
+        VStack(spacing: 8) {
+            Text(viewModel.primaryCardTitle)
+
+            actionButton("Read primary card", action: viewModel.readPrimaryCard)
+        }
+    }
+
+    private var backupCardsSection: some View {
+        VStack(spacing: 8) {
+            Text("Maximum backup cards count is: \(BackupService.maxBackupCardsCount)")
+            Text(viewModel.backupCardsCountTitle)
+
+            actionButton("Add backup card", action: viewModel.addBackupCard)
+        }
+    }
+
+    private var codesSection: some View {
+        VStack(spacing: 8) {
+            Text(viewModel.accessCodeTitle)
+
+            TextField("Access code for all cards", text: $viewModel.accessCode)
+                .textFieldStyle(.roundedBorder)
+
+            actionButton("Set access code", action: viewModel.setAccessCode)
+
+            Text(viewModel.passcodeTitle)
+
+            TextField("Passcode for all cards", text: $viewModel.passcode)
+                .textFieldStyle(.roundedBorder)
+
+            actionButton("Set passcode", action: viewModel.setPasscode)
+        }
+    }
+
+    private var errorAndProceedSection: some View {
+        VStack(spacing: 8) {
+            Text(viewModel.errorText)
+                .foregroundStyle(.red)
+
+            Button("Discard incompleted") {
+                viewModel.discardIncompletedBackup()
+            }
+
+            Text(viewModel.stateTitle)
+
+            actionButton("Proceed", action: viewModel.proceed)
+        }
+    }
+
+    private func actionButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .buttonStyle(ExampleButton(isLoading: false))
+            .frame(width: 200)
     }
 }
 
-struct BackupView_Previews: PreviewProvider {
-    static var previews: some View {
-        BackupView(backupService: BackupService(sdk: TangemSdk(), networkService: .init(session: .shared, additionalHeaders: [:])))
+#Preview {
+    NavigationStack {
+        BackupView(viewModel: BackupViewModel())
     }
 }

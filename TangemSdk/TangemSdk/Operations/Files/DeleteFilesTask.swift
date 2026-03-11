@@ -20,6 +20,10 @@ public final class DeleteFilesTask: CardSessionRunnable {
         self.indices = indices?.sorted(by: <)
     }
     
+    deinit {
+        Log.debug("DeleteFilesTask deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         if let indices = self.indices {
             deleteFiles(indices: indices, session: session, completion: completion)

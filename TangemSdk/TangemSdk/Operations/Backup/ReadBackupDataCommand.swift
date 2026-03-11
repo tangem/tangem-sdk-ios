@@ -123,7 +123,7 @@ final class ReadBackupDataCommand: Command {
 
         return PartialReadBackupDataResponse(cardId: try decoder.decode(.cardId),
                                              index: try decoder.decode(.walletIndex),
-                                             data: EncryptedBackupData (data: try decoder.decode(.issuerData),
+                                             data: EncryptedBackupData (data: try decoder.decode(.data),
                                                                         salt: try decoder.decode(.salt)))
     }
 }

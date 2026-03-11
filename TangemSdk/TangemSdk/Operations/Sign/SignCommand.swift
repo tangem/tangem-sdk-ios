@@ -162,10 +162,6 @@ class SignCommand: Command {
             //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
             .append(.walletIndex, value: walletIndex)
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         /**
          * Application can optionally submit a public key Terminal_PublicKey in [SignCommand].
          * Submitted key is stored by the Tangem card if it differs from a previous submitted Terminal_PublicKey.

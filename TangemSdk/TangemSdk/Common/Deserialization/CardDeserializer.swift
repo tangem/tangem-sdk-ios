@@ -31,8 +31,15 @@ struct CardDeserializer {
 
         let cardSettingsMask: CardSettingsMask = try decoder.decode(.settingsMask)
 
-        let isPasscodeSet: Bool? = firmware >= .passcodeStatusAvailable ?
-            !(try decoder.decode(.pin2IsDefault)) : nil
+        let isPasscodeSet: Bool?
+
+        if firmware >= .v8 { // not supported for v8
+            isPasscodeSet = nil
+        } else if firmware >= .passcodeStatusAvailable {
+            isPasscodeSet = !(try decoder.decode(.pin2IsDefault))
+        } else {
+            isPasscodeSet = nil
+        }
         
         let isAccessCodeSet: Bool? = firmware >= .userCodeStatusesAvailable ?
             !(try decoder.decode(.pinIsDefault)) : nil
@@ -52,17 +59,20 @@ struct CardDeserializer {
                 throw TangemSdkError.decodingFailed("Missing curve id")
             }
 
-            let wallet = Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                                     chainCode: nil,
-                                     curve: defaultCurve,
-                                     settings: walletSettings,
-                                     totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                                     remainingSignatures: remainingSignatures,
-                                     index: 0,
-                                     proof: nil,
-                                     isImported: false,
-                                     hasBackup: false)
-            
+            let wallet = Card.Wallet(
+                publicKey: try decoder.decode(.walletPublicKey),
+                chainCode: nil,
+                curve: defaultCurve,
+                settings: walletSettings,
+                totalSignedHashes: try decoder.decode(.walletSignedHashes),
+                remainingSignatures: remainingSignatures,
+                index: 0,
+                proof: nil,
+                isImported: false,
+                hasBackup: false,
+                status: .loaded
+            )
+
             wallets.append(wallet)
         }
         

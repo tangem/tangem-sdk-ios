@@ -89,7 +89,7 @@ extension AppModel {
         "allowKeysImport": true,
         "createWallet": 0,
         "NDEF": [],
-        "walletsCount": 20,
+        "walletsCount": 10,
         "securityDelay": 5000,
         "requireBackup": false,
         "cardData": {

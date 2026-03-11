@@ -11,7 +11,8 @@ import Foundation
 public class SetUserCodeCommand: Command {
     var requiresPasscode: Bool = true
     var shouldRestrictDefaultCodes = true
-    
+    var requiresAuthorizationWithPin: Bool { true }
+
     private var codes: [UserCodeType: UserCodeAction] = [:]
     
     /// Change access code only. Passcode will be remain the same
@@ -170,13 +171,9 @@ public class SetUserCodeCommand: Command {
             .append(.newPin, value: accessCodeValue)
             .append(.newPin2, value: passcodeValue)
         
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
-        }
-        
         if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
             let hash = (accessCodeValue + passcodeValue).getSHA256()
-            try tlvBuilder.append(.codeHash, value: hash)
+            try tlvBuilder.append(.hash, value: hash)
         }
         
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())

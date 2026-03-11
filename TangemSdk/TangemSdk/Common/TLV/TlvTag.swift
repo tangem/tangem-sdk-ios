@@ -74,7 +74,7 @@ public enum TlvTag: Byte {
     case manufacturerSignature = 0x21
     case issuerPublicKey = 0x30
     case issuerTransactionPublicKey = 0x31
-    case issuerData = 0x32
+    case data = 0x32
     case issuerDataSignature = 0x33
     case issuerDataCounter = 0x35
     case isActivated = 0x3A
@@ -87,7 +87,7 @@ public enum TlvTag: Byte {
     case resetPin = 0x36
     case codePageAddress = 0x40
     case codePageCount = 0x41
-    case codeHash = 0x42
+    case hash = 0x42
     case trOutRaw = 0x52
     case walletPublicKey = 0x60
     case firmwareVersion = 0x80
@@ -232,7 +232,7 @@ public enum TlvTag: Byte {
                 .sessionKeyA,
                 .sessionKeyB,
                 .certificate,
-                .issuerData,
+                .data,
                 .issuerDataSignature,
                 .cardData,
                 .proof,
@@ -282,7 +282,7 @@ public enum TlvTag: Byte {
                 .userProtectedCounter,
                 .codePageAddress,
                 .codePageCount,
-                .codeHash,
+                .hash,
                 .firmwareVersion,
                 .batchId,
                 .manufactureDateTime,

@@ -172,7 +172,7 @@ public final class WriteIssuerExtraDataCommand: Command {
             
         case .writePart:
             try tlvBuilder
-                .append(.issuerData, value: issuerData[calculateChunk()])
+                .append(.data, value: issuerData[calculateChunk()])
                 .append(.offset, value: offset)
             
         case .finalizeWrite:

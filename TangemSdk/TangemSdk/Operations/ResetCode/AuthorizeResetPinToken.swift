@@ -11,7 +11,8 @@ import Foundation
 final class AuthorizeResetPinTokenCommand: Command {
     var requiresPasscode: Bool { return false }
     var preflightReadMode: PreflightReadMode { .readCardOnly }
-    
+    var accessLevel: AccessLevel { .publicSecureChannel }
+
     private let confirmationCard: ConfirmationCard
     
     init(confirmationCard: ConfirmationCard) {

@@ -36,6 +36,10 @@ public struct ReadUserDataResponse: JSONStringConvertible {
 public final class ReadUserDataCommand: Command {
     public init() {}
     
+    deinit {
+        Log.debug("ReadUserDataCommand deinit")
+    }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

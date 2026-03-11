@@ -95,7 +95,7 @@ public final class WriteIssuerDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-            .append(.issuerData, value: issuerData)
+            .append(.data, value: issuerData)
             .append(.issuerDataSignature, value: issuerDataSignature)
         
         if let counter = issuerDataCounter {

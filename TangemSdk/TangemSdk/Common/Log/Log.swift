@@ -11,7 +11,7 @@ import Foundation
 private let logger = Log()
 
 public class Log {
-    public static var config: Config = .default {
+    public static var config: LogConfig = .default {
         didSet {
             logger.logLevel = config.logLevel
             logger.loggers = config.loggers
@@ -39,7 +39,7 @@ public class Log {
     }
     
     public static func apdu<T>(_ message: T) {
-        if Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String == "com.tangem.TangemSDKExample" {
+        if Config.isDevelopmentMode {
             logger.logInternal(message, level: .apdu)
         }
     }
@@ -141,14 +141,14 @@ public extension Log {
 }
 
 public extension Log {
-    enum Config {
+    enum LogConfig {
         case release
         case debug
         case verbose
         case custom(logLevel: [Log.Level],
                     loggers: [TangemSdkLogger] = [ConsoleLogger()])
 
-        static var `default`: Log.Config = .debug
+        static var `default`: Log.LogConfig = .debug
         
         internal var logLevel: [Log.Level] {
             switch self {

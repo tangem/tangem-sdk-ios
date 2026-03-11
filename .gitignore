@@ -40,3 +40,7 @@ Pods/
 vendor/bundle
 
 report.xml
+
+
+# Claude Code
+.claude/settings.local.json

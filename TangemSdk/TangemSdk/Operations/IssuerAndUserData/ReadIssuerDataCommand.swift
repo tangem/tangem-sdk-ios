@@ -96,7 +96,7 @@ public final class ReadIssuerDataCommand: Command {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ReadIssuerDataResponse(
             cardId: try decoder.decode(.cardId),
-            issuerData: try decoder.decode(.issuerData),
+            issuerData: try decoder.decode(.data),
             issuerDataSignature: try decoder.decode(.issuerDataSignature),
             issuerDataCounter: try decoder.decode(.issuerDataCounter))
     }

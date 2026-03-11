@@ -26,9 +26,10 @@ public struct SessionEnvironment {
     var encryptionKey: Data? = nil
     
     var currentSecurityDelay: Float? = nil
-    
-    var cvc: Data? = nil //todo: remove
-    
+
+    /// COS v8+
+    var cardAccessTokens: CardAccessTokens?
+
     var accessCode: UserCode = .init(.accessCode)
     
     var passcode: UserCode = .init(.passcode)
@@ -43,7 +44,12 @@ public struct SessionEnvironment {
         
         return nil
     }
-    
+
+    init(config: Config = Config(), terminalKeysService: TerminalKeysService? = nil) {
+        self.config = config
+        self.terminalKeysService = terminalKeysService
+    }
+
     func isUserCodeSet(_ type: UserCodeType) -> Bool {
         switch type {
         case .accessCode:
@@ -53,7 +59,8 @@ public struct SessionEnvironment {
         }
     }
 
-    mutating func resetCodes() {
+    mutating func reset() {
+        cardAccessTokens = nil
         accessCode = .init(.accessCode)
         passcode = .init(.passcode)
     }

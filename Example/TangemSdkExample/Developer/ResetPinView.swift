@@ -10,77 +10,51 @@ import SwiftUI
 import TangemSdk
 
 struct ResetPinView: View {
-    var resetPinService: ResetPinService
-    
-    private var stateTitle: String { "Current state is: \(resetPinService.currentState)" }
-    @State private var accessCode: String = ""
-    @State private var passcode: String = ""
-    @State private var errorText: String = ""
-    @State private var showOkAlert: Bool = false
-    
+    @ObservedObject var viewModel: ResetPinViewModel
+
     var body: some View {
-        VStack(spacing: 16) {
-            
-            Text(stateTitle)
-                .padding(.top, 40)
-                .font(.title)
-            
-            
-            TextField("Access code", text: $accessCode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            Button("Set access code") {
-                do {
-                    try resetPinService.setAccessCode(accessCode)
-                    self.errorText = ""
-                    showOkAlert = true
-                    UIApplication.shared.endEditing()
-                } catch {
-                    self.errorText = "Error occured: \(error)"
+        ScrollView {
+            VStack(spacing: 16) {
+                TextField("Access code", text: $viewModel.accessCode)
+                    .textFieldStyle(.roundedBorder)
+
+                actionButton("Set access code", action: viewModel.setAccessCode)
+
+                TextField("Passcode", text: $viewModel.passcode)
+                    .textFieldStyle(.roundedBorder)
+
+                actionButton("Set passcode", action: viewModel.setPasscode)
+
+                Text(viewModel.errorText)
+                    .foregroundStyle(.red)
+
+                if let serviceErrorText = viewModel.serviceErrorText {
+                    Text(serviceErrorText)
+                        .foregroundStyle(.red)
                 }
+
+                Text(viewModel.stateTitle)
+                    .font(.title)
             }
-            .buttonStyle(ExampleButton(isLoading: false))
-            .frame(width: 200)
-            
-            TextField("Passcode", text: $passcode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            Button("Set passcode") {
-                do {
-                    try resetPinService.setPasscode(passcode)
-                    self.errorText = ""
-                    showOkAlert = true
-                    UIApplication.shared.endEditing()
-                } catch {
-                    self.errorText = "Error occured: \(error)"
-                }
-            }
-            .buttonStyle(ExampleButton(isLoading: false))
-            .frame(width: 200)
-            
-            Text(errorText)
-                .foregroundColor(.red)
-            
-            if let error = resetPinService.error {
-                Text("Error occured: \(error.localizedDescription)")
-            }
-            
-            Spacer()
-            
-            Button("Proceed", action: { resetPinService.proceed() })
-                .buttonStyle(ExampleButton(isLoading: false))
-                .frame(width: 200)
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)
-        .navigationBarTitle("Reset user codes", displayMode: .inline)
-        .alert(isPresented: $showOkAlert, content: {
-            Alert(title: Text("Success"), message: Text("Code accepted"))
-        })
+        .safeAreaInset(edge: .bottom) {
+            actionButton("Proceed", action: viewModel.proceed)
+                .padding(.bottom, 16)
+        }
+        .navigationTitle("Reset user codes")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func actionButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(title, action: action)
+            .buttonStyle(ExampleButton(isLoading: false))
+            .frame(width: 200)
     }
 }
 
-struct ResetPinView_Previews: PreviewProvider {
-    static var previews: some View {
-        ResetPinView(resetPinService: ResetPinService(config: Config()))
+#Preview {
+    NavigationStack {
+        ResetPinView(viewModel: ResetPinViewModel())
     }
 }

@@ -17,13 +17,22 @@ struct OpenSessionResponse {
 /// In case of encrypted communication, App should setup a session before calling any further command.
 /// [OpenSessionCommand] generates secret session_key that is used by both host and card
 /// to encrypt and decrypt commands’ payload.
-class OpenSessionCommand: ApduSerializable {
+class OpenSessionCommand: Command {
+
+    var preflightReadMode: PreflightReadMode { .none }
+    
+    var usesEncryption: Bool { false }
+
     private let sessionKeyA: Data
     
     init(sessionKeyA: Data) {
         self.sessionKeyA = sessionKeyA
     }
     
+    deinit {
+        Log.debug("OpenSessionCommand deinit")
+    }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.sessionKeyA, value: sessionKeyA)

@@ -180,7 +180,7 @@ public final class ReadIssuerExtraDataCommand: Command {
         return ReadIssuerExtraDataResponse(
             cardId: try decoder.decode(.cardId),
             size: try decoder.decode(.size),
-            issuerData: try decoder.decode(.issuerData) ?? Data(),
+            issuerData: try decoder.decode(.data) ?? Data(),
             issuerDataSignature: try decoder.decode(.issuerDataSignature),
             issuerDataCounter: try decoder.decode(.issuerDataCounter))
     }

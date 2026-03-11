@@ -54,17 +54,20 @@ class WalletDeserializer {
     private func deserialize(from decoder: TlvDecoder, status: Card.Wallet.Status) throws -> Card.Wallet {
         let mask: WalletSettingsMask? = try decoder.decode(.settingsMask)
         let settings: Card.Wallet.Settings = mask.map {.init(mask: $0)}
-            ?? .init(isPermanent: isDefaultPermanentWallet) //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
+        ?? .init(isPermanent: isDefaultPermanentWallet) //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
 
-        return Card.Wallet(publicKey: try decoder.decode(.walletPublicKey),
-                           chainCode: try decoder.decode(.walletHDChain),
-                           curve: try decoder.decode(.curveId),
-                           settings: settings,
-                           totalSignedHashes: try decoder.decode(.walletSignedHashes),
-                           remainingSignatures: nil,
-                           index: try decoder.decode(.walletIndex),
-                           proof: try decoder.decode(.proof),
-                           isImported: status.isImported,
-                           hasBackup: status.isBackedUp)
+        return Card.Wallet(
+            publicKey: try decoder.decode(.walletPublicKey),
+            chainCode: try decoder.decode(.walletHDChain),
+            curve: try decoder.decode(.curveId),
+            settings: settings,
+            totalSignedHashes: try decoder.decode(.walletSignedHashes),
+            remainingSignatures: nil,
+            index: try decoder.decode(.walletIndex),
+            proof: try decoder.decode(.proof),
+            isImported: status.isImported,
+            hasBackup: status.isBackedUp,
+            status: status
+        )
     }
 }

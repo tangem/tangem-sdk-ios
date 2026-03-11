@@ -19,9 +19,15 @@ public struct DepersonalizeResponse: JSONStringConvertible {
 */
 public class DepersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
-    
+
+    var usesEncryption: Bool { false }
+
     public init() {}
     
+    deinit {
+        Log.debug("DepersonalizeCommand deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<DepersonalizeResponse>) {
         transceive(in: session) { result in
             switch result {

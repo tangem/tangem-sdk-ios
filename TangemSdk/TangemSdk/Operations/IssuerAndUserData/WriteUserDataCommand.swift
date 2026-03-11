@@ -63,6 +63,10 @@ public final class WriteUserDataCommand: Command {
         self.init(userData: nil, userCounter: nil, userProtectedData: userProtectedData, userProtectedCounter: userProtectedCounter)
     }
     
+    deinit {
+        Log.debug("WriteUserDataCommand deinit")
+    }
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if 2.30..<3.34 ~= card.firmwareVersion.doubleValue {
             return .notSupportedFirmwareVersion

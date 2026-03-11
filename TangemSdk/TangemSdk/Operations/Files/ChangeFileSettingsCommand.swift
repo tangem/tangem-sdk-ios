@@ -20,6 +20,10 @@ public final class ChangeFileSettingsCommand: Command {
         self.newPermissions = newPermissions
     }
     
+    deinit {
+        Log.debug("ChangeFileSettingsCommand deinit")
+    }
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion

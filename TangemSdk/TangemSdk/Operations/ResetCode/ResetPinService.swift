@@ -13,13 +13,15 @@ public class ResetPinService {
     public var currentState: State { _currentState.value }
     public var currentStatePublisher: AnyPublisher<State, Never> { _currentState.eraseToAnyPublisher() }
 
-    public private(set) var error: TangemSdkError? = nil
-    
+    public var error: TangemSdkError? { _error.value }
+    public var errorPublisher: AnyPublisher<TangemSdkError?, Never> { _error.eraseToAnyPublisher() }
+
     private var session: CardSession?
     private let config: Config
     private var repo: ResetPinRepo = .init()
     private var currentCommand: AnyObject? = nil
     private var _currentState: CurrentValueSubject<State, Never> = .init(.needCode)
+    private var _error: CurrentValueSubject<TangemSdkError?, Never> = .init(nil)
 
     public init(config: Config) {
         self.config = config
@@ -97,7 +99,7 @@ public class ResetPinService {
         case .success:
             _currentState.value = currentState.next()
         case .failure(let error):
-            self.error = error
+            _error.value = error
         }
     }
     

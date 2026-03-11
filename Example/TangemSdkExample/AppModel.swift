@@ -11,6 +11,7 @@ import SwiftUI
 import TangemSdk
 import Combine
 
+@MainActor
 class AppModel: ObservableObject {
     //MARK:- Inputs
     @Published var method: Method = .scan
@@ -28,8 +29,10 @@ class AppModel: ObservableObject {
     @Published var json: String =  ""
     //Personalization
     @Published var personalizationConfig: String =  ""
-    //Set user code recovery allowed
+    //User settings
     @Published var isUserCodeRecoveryAllowed: Bool = false
+    @Published var isPinRequired: Bool = false
+    @Published var isNDEFDisabled: Bool = false
     
     //MARK:-  Outputs
     @Published var logText: String = DebugLogger.logPlaceholder
@@ -38,19 +41,18 @@ class AppModel: ObservableObject {
     @Published var showWalletSelection: Bool = false
     @Published var image: UIImage? = nil
     //MARK:-  Navigation
-    @Published var showBackupView: Bool = false
-    @Published var showResetPin: Bool = false
     @Published var showSettings: Bool = false
     //MARK:-  Config
-    @Published var handleErrors: Bool = true
-    @Published var displayLogs: Bool = false
-    @Published var useDevApi: Bool = false
-    @Published var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
+    @AppStorage("handleErrors") var handleErrors: Bool = true
+    @AppStorage("displayLogs") var displayLogs: Bool = false
+    @AppStorage("useDevApi") var useDevApi: Bool = false
+    @AppStorage("isDevelopmentMode") var isDevelopmentMode: Bool = false
+    @AppStorage("accessCodeRequestPolicy") var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
 
-    var backupService: BackupService? = nil
-    var resetPinService: ResetPinService? = nil
-    
-    private lazy var _tangemSdk: TangemSdk = { .init() }()
+    @Published private(set) var backupViewModel = BackupViewModel()
+    @Published private(set) var resetPinViewModel = ResetPinViewModel()
+
+    private lazy var _tangemSdk: TangemSdk = .init()
     private lazy var logger: DebugLogger = .init()
     
     private var tangemSdk: TangemSdk {
@@ -67,6 +69,7 @@ class AppModel: ObservableObject {
         }
 
         Config.useDevApi = useDevApi
+        Config.isDevelopmentMode = isDevelopmentMode
 
         config.logConfig = .custom(
             logLevel: [.warning, .error, .command, .debug, .nfc, .session, .apdu, .network, .tlv, .view],
@@ -129,10 +132,6 @@ class AppModel: ObservableObject {
         UIPasteboard.general.string = logText
     }
 
-    func hideKeyboard() {
-        UIApplication.shared.endEditing()
-    }
-    
     func start(walletIndex: Int? = nil) {
         isScanning = true
         chooseMethod(walletIndex: walletIndex)
@@ -225,9 +224,15 @@ extension AppModel {
         default: break
         }
     }
-    
-    func endEditing() {
-        UIApplication.shared.endEditing()
+
+    func resetPersonalizationConfig() {
+        switch method {
+        case .personalize:
+            personalizationConfig = Self.personalizeConfigTemplate
+        case .personalizeV8:
+            personalizationConfig = Self.personalizeConfigTemplateV8
+        default: break
+        }
     }
 }
 
@@ -406,6 +411,26 @@ extension AppModel {
                                completion: handleCompletion)
     }
     
+    func createMasterSecret() {
+        tangemSdk.startSession(with: CreateMasterSecretCommand(), completion: handleCompletion)
+    }
+
+    func importMasterSecret() {
+        do {
+            let mnemonic = try Mnemonic(with: mnemonicString)
+            let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase)
+            let privateKey = try factory.makeMasterKey(for: .secp256k1)
+            let command = CreateMasterSecretCommand(privateKey: privateKey)
+            tangemSdk.startSession(with: command, completion: handleCompletion)
+        } catch {
+            complete(with: error)
+        }
+    }
+
+    func purgeMasterSecret() {
+        tangemSdk.startSession(with: PurgeMasterSecretCommand(), completion: handleCompletion)
+    }
+
     func purgeWallet(walletIndex: Int) {
         guard let cardId = card?.cardId else {
             self.complete(with: "Scan card to retrieve cardId")
@@ -710,6 +735,16 @@ extension AppModel {
 
         tangemSdk.setUserCodeRecoveryAllowed(isUserCodeRecoveryAllowed, cardId: cardId, completion: handleCompletion)
     }
+
+    func setPinRequired() {
+        let task = SetPinRequiredTask(isRequired: isPinRequired)
+        tangemSdk.startSession(with: task, completion: handleCompletion)
+    }
+
+    func setNDEFDisabled() {
+        let task = SetNDEFDisabledTask(isDisabled: isNDEFDisabled)
+        tangemSdk.startSession(with: task, completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -790,6 +825,9 @@ extension AppModel {
         case createWallet
         case importWallet
         case purgeWallet
+        case createMasterSecret
+        case importMasterSecret
+        case purgeMasterSecret
         //files
         case readFiles
         case writeUserFile
@@ -814,6 +852,8 @@ extension AppModel {
         case resetToFactory
         case getEntropy
         case setUserCodeRecoveryAllowed
+        case setPinRequired
+        case setNDEFDisabled
     }
     
     private func chooseMethod(walletIndex: Int? = nil) {
@@ -832,6 +872,9 @@ extension AppModel {
         case .createWallet: createWallet()
         case .importWallet: importWallet()
         case .purgeWallet: runWithWallet(purgeWallet, walletIndex)
+        case .createMasterSecret: createMasterSecret()
+        case .importMasterSecret: importMasterSecret()
+        case .purgeMasterSecret: purgeMasterSecret()
         case .readFiles: readFiles()
         case .writeUserFile: writeUserFile()
         case .writeOwnerFile: writeOwnerFile()
@@ -852,51 +895,39 @@ extension AppModel {
         case .resetToFactory: resetToFactory()
         case .getEntropy: getEntropy()
         case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
+        case .setPinRequired: setPinRequired()
+        case .setNDEFDisabled: setNDEFDisabled()
         }
     }
 }
 
 //MARK: - Routing
 extension AppModel {
-    func onBackup() {
-        backupService = BackupService(sdk: tangemSdk, networkService: .init(session: .shared, additionalHeaders: [:]))
-        showBackupView = true
+    func setupBackup() {
+        guard !backupViewModel.isSetUp else { return }
+
+        let backupService = BackupService(sdk: tangemSdk, networkService: .init(session: .shared, additionalHeaders: [:]))
+        backupViewModel.setup(backupService: backupService)
     }
-    
+
+    func setupResetPin() {
+        guard !resetPinViewModel.isSetUp else { return }
+
+        let resetPinService = ResetPinService(config: tangemSdk.config)
+        resetPinViewModel.setup(resetPinService: resetPinService)
+    }
+
     func onSettings() {
         showSettings = true
     }
-    
+
     func onRemoveAccessCodes() {
         let repo = AccessCodeRepository()
         repo.clear()
     }
-    
-    func onResetService() {
-        resetPinService = ResetPinService(config: tangemSdk.config)
-        showResetPin = true
-    }
-    
+
     @ViewBuilder
     func makeSettingsDestination() -> some View {
         SettingsView().environmentObject(self)
-    }
-    
-    @ViewBuilder
-    func makeBackupDestination() -> some View {
-        if let service = self.backupService {
-            BackupView(backupService: service)
-        } else {
-           EmptyView()
-        }
-    }
-    
-    @ViewBuilder
-    func makePinResetDestination() -> some View {
-        if let service = self.resetPinService {
-            ResetPinView(resetPinService: service)
-        } else {
-            EmptyView()
-        }
     }
 }

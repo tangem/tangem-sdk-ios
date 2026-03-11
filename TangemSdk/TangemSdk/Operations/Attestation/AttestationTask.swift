@@ -214,6 +214,12 @@ public final class AttestationTask: CardSessionRunnable {
         case .failed, .skipped:
             session.viewDelegate.setState(.empty)
             let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
+
+            if isDevelopmentCard, Config.isDevelopmentMode {
+                self.complete(session, completion)
+                return
+            }
+
             if isDevelopmentCard {
                 session.viewDelegate.attestationDidFailDevCard {
                     self.complete(session, completion)

@@ -35,6 +35,8 @@ public extension Card {
         public var hasBackup: Bool
         /// Derived keys according to `Config.defaultDerivationPaths`
         public var derivedKeys: DerivedKeys = [:]
+        /// Raw status of the wallet
+        internal let status: Card.Wallet.Status
     }
 }
 
@@ -47,7 +49,7 @@ public extension Card.Wallet {
 
 public extension Card.Wallet {
     /// Status of the wallet. 
-    enum Status: Int, StatusType, JSONStringConvertible { //TODO: Specify
+    enum Status: Int, Codable, StatusType, JSONStringConvertible {
         /// Wallet not created
         case empty = 1
         /// Wallet created and can be used for signing

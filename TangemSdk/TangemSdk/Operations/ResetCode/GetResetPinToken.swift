@@ -11,6 +11,8 @@ import Foundation
 final class GetResetPinTokenCommand: Command {
     var requiresPasscode: Bool { return false }
     var preflightReadMode: PreflightReadMode { .readCardOnly }
+    var accessLevel: AccessLevel { .publicSecureChannel }
+    var shouldAskForAccessCode: Bool { false }
 
     deinit {
         Log.debug("GetResetPinTokenCommand deinit")

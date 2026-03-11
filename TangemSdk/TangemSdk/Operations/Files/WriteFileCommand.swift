@@ -82,6 +82,10 @@ public final class WriteFileCommand: Command {
         }
     }
     
+    deinit {
+        Log.debug("WriteFileCommand deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFileResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
@@ -179,7 +183,7 @@ public final class WriteFileCommand: Command {
             let partSize = min(WriteFileCommand.singleWriteSize, data.count - offset)
             let dataChunk = data[offset..<offset+partSize]
             
-            try tlvBuilder.append(.issuerData, value: dataChunk)
+            try tlvBuilder.append(.data, value: dataChunk)
                 .append(.offset, value: offset)
                 .append(.fileIndex, value: fileIndex)
             
@@ -189,7 +193,7 @@ public final class WriteFileCommand: Command {
             if let finalizingSignature = self.finalizingSignature {
                 try tlvBuilder.append(.issuerDataSignature, value: finalizingSignature)
             } else {
-                try tlvBuilder.append(.codeHash, value: data.getSHA256())
+                try tlvBuilder.append(.hash, value: data.getSHA256())
                     .append(.pin2, value: environment.passcode.value)
             }
         default:

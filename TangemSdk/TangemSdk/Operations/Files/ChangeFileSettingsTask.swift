@@ -16,6 +16,10 @@ public final class ChangeFileSettingsTask: CardSessionRunnable {
         self.changes = changes.map { ($0.key, $0.value) }
     }
     
+    deinit {
+        Log.debug("ChangeFileSettingsTask deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         changeFileSettings(session: session, completion: completion)
     }

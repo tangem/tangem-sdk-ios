@@ -74,6 +74,10 @@ final class ReadFileCommand: Command {
         self.walletPublicKey = walletPublicKey
     }
     
+    deinit {
+        Log.debug("ReadFileCommand deinit")
+    }
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion
@@ -161,7 +165,7 @@ final class ReadFileCommand: Command {
         return ReadFileResponse(cardId: try decoder.decode(.cardId),
                                 size: try decoder.decode(.size),
                                 offset: try decoder.decode(.offset),
-                                fileData: try decoder.decode(.issuerData) ?? Data(),
+                                fileData: try decoder.decode(.data) ?? Data(),
                                 fileIndex: try decoder.decode(.fileIndex) ?? 0,
                                 settings: try FileSettings(try decoder.decode(.fileSettings)),
                                 ownerIndex: try decoder.decode(.fileOwnerIndex),

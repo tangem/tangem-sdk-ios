@@ -11,10 +11,10 @@ import Combine
 import CoreNFC
 
 extension ResponseApdu {
-    func decryptPublisher(encryptionKey: Data?) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+    func decryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) -> AnyPublisher<ResponseApdu, TangemSdkError> {
         return Deferred {Future() { promise in
             do {
-                let decrypted = try self.decrypt(encryptionKey: encryptionKey)
+                let decrypted = try self.decrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
                 promise(.success(decrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))
@@ -24,10 +24,10 @@ extension ResponseApdu {
 }
 
 extension CommandApdu {
-    func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
+    func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
         return Deferred {Future() { promise in
             do {
-                let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey)
+                let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
                 promise(.success(encrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))

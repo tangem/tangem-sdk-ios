@@ -49,7 +49,7 @@ public class GenerateOTPCommand: Command {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
         return GenerateOTPResponse(cardId: try decoder.decode(.cardId),
-                                   rootOTP: try decoder.decode(.codeHash),
+                                   rootOTP: try decoder.decode(.hash),
                                    rootOTPCounter: try decoder.decode(.fileIndex),
                                    walletPublicKey: try decoder.decode(.walletPublicKey))
     }

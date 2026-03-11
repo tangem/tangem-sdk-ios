@@ -68,11 +68,17 @@ extension UserSettingsMask {
 extension UserSettingsMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case forbidResetPIN
+        case requirePIN
+        case disableNDEF
 
         var value: UserSettingsMask {
             switch self {
             case .forbidResetPIN:
                 return .forbidResetPIN
+            case .requirePIN:
+                return .requirePIN
+            case .disableNDEF:
+                return .disableNDEF
             }
         }
     }

@@ -19,6 +19,7 @@ public struct GetEntropyResponse: JSONStringConvertible {
 /// Get entropy from the card
 public class GetEntropyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readCardOnly }
+    var accessLevel: AccessLevel { .publicSecureChannel }
 
     public init() {}
 
@@ -45,6 +46,6 @@ public class GetEntropyCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> GetEntropyResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return GetEntropyResponse(cardId: try decoder.decode(.cardId),
-                                  data: try decoder.decode(.issuerData))
+                                  data: try decoder.decode(.data))
     }
 }

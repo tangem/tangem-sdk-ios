@@ -18,6 +18,10 @@ public final class DeleteFileCommand: Command {
         self.fileIndex = fileIndex
     }
     
+    deinit {
+        Log.debug("DeleteFileCommand deinit")
+    }
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion

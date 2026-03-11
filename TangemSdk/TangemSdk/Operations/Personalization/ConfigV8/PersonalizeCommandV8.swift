@@ -17,6 +17,8 @@ public class PersonalizeCommandV8: Command {
 
     var requiresPasscode: Bool { false }
 
+    var usesEncryption: Bool { false }
+
     private let config: CardConfigV8
     private let issuer: Issuer
     private let manufacturer: Manufacturer
@@ -37,6 +39,10 @@ public class PersonalizeCommandV8: Command {
         self.manufacturer = manufacturer
     }
 
+    deinit {
+        Log.debug("PersonalizeCommandV8 deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) //We have to run preflight read ourselves to catch the notPersonalized error
         read.run(in: session) { readResult in
@@ -50,7 +56,7 @@ public class PersonalizeCommandV8: Command {
                         return
                     }
 
-                    self.runPersonalize(in: session, completion: completion)
+                    self.transceive(in: session, completion: completion)
                 } else {
                     completion(.failure(error))
                 }
@@ -73,17 +79,6 @@ public class PersonalizeCommandV8: Command {
             .deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
                          decoder: decoder,
                          cardDataDecoder: cardDataDecoder)
-    }
-
-    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let encryptionKey = session.environment.encryptionKey
-
-        // override encryption for personalization
-        session.environment.encryptionKey = nil
-        transceive(in: session) { result in
-            session.environment.encryptionKey = encryptionKey
-            completion(result)
-        }
     }
 
     private func encryptApdu(cApdu: CommandApdu) throws -> CommandApdu {

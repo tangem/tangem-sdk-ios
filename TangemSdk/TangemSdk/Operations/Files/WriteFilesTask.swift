@@ -31,6 +31,10 @@ public final class WriteFilesTask: CardSessionRunnable {
         self.files = files
     }
     
+    deinit {
+        Log.debug("WriteFilesTask deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
         if files.isEmpty {
             completion(.failure(.filesIsEmpty))

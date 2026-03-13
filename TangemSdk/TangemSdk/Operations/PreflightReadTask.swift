@@ -103,17 +103,19 @@ final class PreflightReadTask: CardSessionRunnable {
         case .fullCardRead:
             readWalletsList(in: session, completion: completion)
         case .fullCardReadWithAccessCodeCheck:
-            if Config.isDevelopmentMode, card.firmwareVersion.type == .sdk {
-                readWalletsList(in: session, completion: completion)
-                return
-            }
-
             if card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
                 session.pause()
                 session.environment.accessCode = UserCode(.accessCode, value: nil)
 
+                let showWelcomeBackWarning: Bool
+                if Config.isDevelopmentMode, card.firmwareVersion.type == .sdk {
+                    showWelcomeBackWarning = false
+                } else {
+                    showWelcomeBackWarning = true
+                }
+
                 DispatchQueue.main.async {
-                    session.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: true) { result in
+                    session.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
                         switch result {
                         case .success:
                             session.resume()

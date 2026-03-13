@@ -221,7 +221,7 @@ extension Card {
         case cardLinked
         case active
         
-        var intValue: Int { //[REDACTED_TODO_COMMENT]
+        var intValue: Int { 
             switch self {
             case .noBackup:
                 return 0

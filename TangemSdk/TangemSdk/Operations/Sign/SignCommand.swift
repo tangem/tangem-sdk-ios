@@ -23,7 +23,7 @@ class SignCommand: Command {
     typealias Response = SignResponse
     typealias CommandResponse = PartialSignResponse
 
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath?
@@ -76,7 +76,7 @@ class SignCommand: Command {
             }
         }
         
-        if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 15000 {
+        if card.firmwareVersion < .persistentSecurityDelayAvailable, card.settings.securityDelay > 15000 {
             return .oldCard
         }
         

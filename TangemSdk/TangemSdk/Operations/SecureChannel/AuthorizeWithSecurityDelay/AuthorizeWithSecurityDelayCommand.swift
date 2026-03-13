@@ -28,8 +28,7 @@ class AuthorizeWithSecurityDelayCommand: Command {
     typealias CommandResponse = AuthorizeWithSecurityDelayResponse
 
     var preflightReadMode: PreflightReadMode { .none }
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicAccess }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     deinit {
         Log.debug("AuthorizeWithSecurityDelayCommand deinit")

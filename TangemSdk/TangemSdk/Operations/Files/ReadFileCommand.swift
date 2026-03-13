@@ -151,7 +151,7 @@ final class ReadFileCommand: Command {
             try tlvBuilder.append(.pin, value: environment.accessCode.value)
                 .append(.pin2, value: environment.passcode.value)
         } else {
-            if card.firmwareVersion.doubleValue < 4 {
+            if card.firmwareVersion < .multiwalletAvailable {
                 try tlvBuilder.append(.pin, value: environment.accessCode.value)
             }
         }

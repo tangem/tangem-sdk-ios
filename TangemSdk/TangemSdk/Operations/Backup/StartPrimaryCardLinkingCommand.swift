@@ -9,7 +9,7 @@
 import Foundation
 
 public final class StartPrimaryCardLinkingCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
     
     public init() {}
     

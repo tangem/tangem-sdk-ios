@@ -81,14 +81,27 @@ final class LinkBackupCardsCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.backupCount, value: backupCards.count)
             .append(.newPin, value: accessCode)
-            .append(.newPin2, value: passcode)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+            try tlvBuilder.append(.newPin2, value: passcode)
+        }
+
         for (index, card) in backupCards.enumerated() {
             guard let certificate = card.certificate else {
                 throw TangemSdkError.certificateSignatureRequired

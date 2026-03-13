@@ -53,9 +53,9 @@ public struct SessionEnvironment {
     func isUserCodeSet(_ type: UserCodeType) -> Bool {
         switch type {
         case .accessCode:
-            return accessCode.value != type.defaultValue.getSHA256() && accessCode.value != nil
+            return !accessCode.isDefault && accessCode.value != nil
         case .passcode:
-            return passcode.value != type.defaultValue.getSHA256() && passcode.value != nil
+            return !passcode.isDefault && passcode.value != nil
         }
     }
 

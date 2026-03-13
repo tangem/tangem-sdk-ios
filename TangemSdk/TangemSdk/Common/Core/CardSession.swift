@@ -12,10 +12,6 @@ import CommonCrypto
 
 /// Allows interaction with Tangem cards. Should be open before sending commands
 public class CardSession {
-    enum CardSessionState {
-        case inactive
-        case active
-    }
     /// Allows interaction with users and shows visual elements.
     public let viewDelegate: SessionViewDelegate
 
@@ -505,13 +501,21 @@ public class CardSession {
     // MARK: - Encryption
 
     func establishEncryptionIfNeeded(
-        usesEncryption: Bool,
-        accessLevel: AccessLevel,
-        requiresAuthorizationWithPin: Bool,
+        cardSessionEncryption: CardSessionEncryption,
+        shouldAskForAccessCode: Bool,
         completion: @escaping CompletionResult<Void>
     ) {
-        guard usesEncryption else {
-            Log.session("Encryption is not needed by command")
+        Log.session("Try establish encryption for type: \(cardSessionEncryption)")
+
+        if cardSessionEncryption == .none {
+            Log.session("Encryption is not needed for this command")
+            completion(.success(()))
+            return
+        }
+
+        if let secureChannelSession = self.secureChannelSession,
+           !secureChannelSession.isElevationRequired(for: cardSessionEncryption) {
+            Log.session("Encryption elevation is not needed")
             completion(.success(()))
             return
         }
@@ -526,21 +530,21 @@ public class CardSession {
             establishLegacyEncryption(completion)
         } else {
             let needsAuthorizationWithPin = checkIfAuthorizationWithPinNeeded(
-                commandRequiresAuthorizationWithPin: requiresAuthorizationWithPin
+                cardSessionEncryption: cardSessionEncryption,
+                shouldAskForAccessCode: shouldAskForAccessCode
             )
-
             // Request PIN as early as possible
-            if needsAuthorizationWithPin, environment.accessCode.value == UserCode(.accessCode).value {
+            if needsAuthorizationWithPin, !environment.isUserCodeSet(.accessCode) {
+                Log.session("Access code is needed, request early")
                 pause()
                 DispatchQueue.main.async {
-                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: true) { result in
+                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
                         switch result {
                         case .success:
                             self.resume()
                             self.establishEncryptionIfNeeded(
-                                usesEncryption: usesEncryption,
-                                accessLevel: accessLevel,
-                                requiresAuthorizationWithPin: requiresAuthorizationWithPin,
+                                cardSessionEncryption: cardSessionEncryption,
+                                shouldAskForAccessCode: shouldAskForAccessCode,
                                 completion: completion
                             )
                         case .failure(let error):
@@ -552,34 +556,50 @@ public class CardSession {
                 return
             }
 
-            establishSecureChannel(accessLevel: accessLevel) { result in
+            establishSecureChannel { result in
                 switch result {
                 case .success:
-                    let currentAccessLevel = self.secureChannelSession?.accessLevel ?? .publicSecureChannel
-                    if needsAuthorizationWithPin || accessLevel > currentAccessLevel {
-                        Log.session("Authorization with PIN is needed")
-                        AuthorizeWithPINTask().run(in: self) { authorizeResult in
-                            switch authorizeResult {
-                            case .success:
-                                self.requestCardAccessTokensIfNeeded(completion: completion)
-                            case .failure(let error):
-                                // wrong pin was entered. retry
-                                switch error {
-                                case .accessCodeRequired, .invalidParams:
-                                    self.establishEncryptionIfNeeded(
-                                        usesEncryption: usesEncryption,
-                                        accessLevel: accessLevel,
-                                        requiresAuthorizationWithPin: requiresAuthorizationWithPin,
-                                        completion: completion
-                                    )
-                                default:
-                                    completion(.failure(error))
-                                }
-                            }
-                        }
-                    } else {
+                    guard let secureChannelSession = self.secureChannelSession else {
+                        Log.session("Secure channel session not found")
+                        completion(.failure(.needEncryption))
+                        return
+                    }
+
+                    Log.session("SecureChannel established successfully. Current access level is \(secureChannelSession.accessLevel)")
+
+                    guard needsAuthorizationWithPin || secureChannelSession.isElevationRequired(for: cardSessionEncryption) else {
                         Log.session("Authorization with PIN is not needed")
                         completion(.success(()))
+                        return
+                    }
+
+                    Log.session("Authorization with PIN is needed")
+                    AuthorizeWithPINTask().run(in: self) { authorizeResult in
+                        switch authorizeResult {
+                        case .success:
+                            self.requestCardAccessTokensIfNeeded(completion: completion)
+                        case .failure(let error):
+                            Log.session("Authorization was failed. Wrong pin. retrying.")
+
+                            // wrong pin was entered. retry
+                            switch error {
+                            case .accessCodeRequired:
+                                self.handleWrongUserCode(.accessCode) { pinResult in
+                                    switch pinResult {
+                                    case .success:
+                                        self.establishEncryptionIfNeeded(
+                                            cardSessionEncryption: cardSessionEncryption,
+                                            shouldAskForAccessCode: shouldAskForAccessCode,
+                                            completion: completion
+                                        )
+                                    case .failure(let error):
+                                        completion(.failure(error))
+                                    }
+                                }
+                            default:
+                                completion(.failure(error))
+                            }
+                        }
                     }
                 case .failure(let error):
                     completion(.failure(error))
@@ -644,6 +664,37 @@ public class CardSession {
 
     // MARK: - Request User code
 
+    func handleWrongUserCode(_ type: UserCodeType, completion: @escaping CompletionResult<Void>) {
+        let sdkError = TangemSdkError.from(userCodeType: type, environment: environment)
+
+        switch sdkError {
+        case .accessCodeRequired, .passcodeRequired:
+            pause(message: sdkError.localizedDescription)
+        default:
+            pause(error: sdkError)
+        }
+
+        switch type {
+        case .accessCode:
+            environment.accessCode = UserCode(.accessCode, value: nil)
+        case .passcode:
+            environment.passcode = UserCode(.passcode, value: nil)
+        }
+
+        DispatchQueue.main.async {
+            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { result in
+                switch result {
+                case .success:
+                    self.resume()
+                    completion(.success(()))
+                case .failure(let error):
+                    self.releaseTag()
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
     func requestUserCodeIfNeeded(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
         if !showWelcomeBackWarning {
             switch type {
@@ -659,6 +710,7 @@ public class CardSession {
                 }
             }
         }
+
         Log.session("Request user code of type: \(type)")
 
 
@@ -773,14 +825,8 @@ public class CardSession {
 
 // MARK: - Secure Channel
 
-extension CardSession {
-    func establishSecureChannel(accessLevel: AccessLevel, completion: @escaping CompletionResult<Void>) {
-        if let secureChannelSession, secureChannelSession.accessLevel.rawValue >= accessLevel.rawValue {
-            Log.session("Skip secure channel establishing")
-            completion(.success(()))
-            return
-        }
-
+private extension CardSession {
+    func establishSecureChannel(completion: @escaping CompletionResult<Void>) {
         Log.session("Establish secure channel")
 
         secureChannelSession = SecureChannelSession(environment: environment)
@@ -797,7 +843,7 @@ extension CardSession {
                     completion(.success(()))
                 case .failure(let error):
                     if case .invalidAccessTokens = error {
-                        self.establishSecureChannel(accessLevel: accessLevel, completion: completion)
+                        self.establishSecureChannel(completion: completion)
                     } else {
                         completion(.failure(error))
                     }
@@ -806,19 +852,24 @@ extension CardSession {
         }
     }
 
-    func checkIfAuthorizationWithPinNeeded(commandRequiresAuthorizationWithPin: Bool) -> Bool {
-        // Already authorized
-        if let secureChannelSession, secureChannelSession.isAuthorizedWithPin {
+    func checkIfAuthorizationWithPinNeeded(cardSessionEncryption: CardSessionEncryption, shouldAskForAccessCode: Bool) -> Bool {
+        // Some commands handle pin by themselves
+        if !shouldAskForAccessCode {
             return false
         }
 
         // Authorization is mandatory by command
-        if commandRequiresAuthorizationWithPin {
+        if cardSessionEncryption == .secureChannelWithPIN {
             return true
         }
 
         // Authorization is mandatory by user
         if let card = environment.card, card.userSettings.isPINRequired {
+            return true
+        }
+
+        // Access code is set, no access tokens, pin must be entered
+        if let card = environment.card, card.isAccessCodeSet, self.environment.cardAccessTokens == nil {
             return true
         }
 
@@ -841,7 +892,10 @@ extension CardSession {
         ManageAccessTokensTask()
             .run(in: self, completion: completion)
     }
+}
 
+// MARK: - Access Tokens
+extension CardSession {
     func resetAccessTokens() {
         environment.cardAccessTokens = nil
         if let cardId = environment.card?.cardId {
@@ -900,5 +954,14 @@ extension CardSession {
         } catch {
             completion(error.toJsonResponse().json)
         }
+    }
+}
+
+// MARK: - CardSessionState
+
+public extension CardSession {
+    enum CardSessionState {
+        case inactive
+        case active
     }
 }

@@ -17,8 +17,7 @@ class OpenSessionWithSecurityDelayCommand: Command {
     typealias CommandResponse = OpenSessionWithSecurityDelayResponse
 
     var preflightReadMode: PreflightReadMode { .none }
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicAccess }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     private let sessionKeyB: Data
 

@@ -57,14 +57,11 @@ extension ApduSerializable {
 
 /// The basic protocol for card commands
 protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
-    /// If set to `true` and ` SessionEnvironment.passcode` is nil, pin2 will be requested automatically before transieve the apdu. Default is `false`
+    /// If set to `true` and ` SessionEnvironment.passcode` is nil, pin2 will be requested automatically before transceive the apdu. Default is `false`. COS < v8
     var requiresPasscode: Bool { get }
 
-    var requiresAuthorizationWithPin: Bool { get }
-
-    var usesEncryption: Bool { get }
-
-    var accessLevel: AccessLevel { get }
+    /// Mode for encryption that should be used for this command. Default is `secureChannel`, which means that the command will be encrypted if secure channel is established.
+    var cardSessionEncryption: CardSessionEncryption { get }
 
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
@@ -73,11 +70,7 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
 extension Command {
     var requiresPasscode: Bool { false }
 
-    var usesEncryption: Bool { true }
-
-    var requiresAuthorizationWithPin: Bool { false }
-
-    var accessLevel: AccessLevel { .user }
+    var cardSessionEncryption: CardSessionEncryption { .secureChannel }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transceive(in: session, completion: completion)
@@ -141,6 +134,13 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
+                    // handled by secure channel flow by card session
+                    if let firmwareVersion = session.environment.card?.firmwareVersion, firmwareVersion >= .v8 {
+                        session.releaseTag()
+                        completion(.failure(error))
+                        return
+                    }
+
                     let error = session.environment.config.handleErrors ? self.mapError(session.environment.card, error) : error
                     switch error {
                     case .accessCodeRequired:
@@ -170,12 +170,10 @@ extension Command {
     }
 
     private func transceive(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
-        session.establishEncryptionIfNeeded(
-            usesEncryption: usesEncryption,
-            accessLevel: accessLevel,
-            requiresAuthorizationWithPin: requiresAuthorizationWithPin ) { encryptionResult in
+        session.establishEncryptionIfNeeded(cardSessionEncryption: cardSessionEncryption, shouldAskForAccessCode: shouldAskForAccessCode) { encryptionResult in
                 switch encryptionResult {
                 case .success:
+                    Log.session("Encryption established successfully")
                     session.send(apdu: apdu) { result in
                         switch result {
                         case .success(let responseApdu):
@@ -231,7 +229,6 @@ extension Command {
                             case .unknown:
                                 completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
                             case .accessDenied:
-                                // TODO: Handle accessDenied
                                 completion(.failure(TangemSdkError.accessDenied))
                             default:
                                 completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
@@ -261,32 +258,12 @@ extension Command {
     }
 
     private func requestPin(_ type: UserCodeType, _ session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
-        let sdkError = TangemSdkError.from(userCodeType: type, environment: session.environment)
-
-        switch sdkError {
-        case .accessCodeRequired, .passcodeRequired:
-            session.pause(message: sdkError.localizedDescription)
-        default:
-            session.pause(error: sdkError)
-        }
-
-        switch type {
-        case .accessCode:
-            session.environment.accessCode = UserCode(.accessCode, value: nil)
-        case .passcode:
-            session.environment.passcode = UserCode(.passcode, value: nil)
-        }
-
-        DispatchQueue.main.async {
-            session.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { result in
-                switch result {
-                case .success:
-                    session.resume()
-                    self.transceiveInternal(in: session, completion: completion)
-                case .failure(let error):
-                    session.releaseTag()
-                    completion(.failure(error))
-                }
+        session.handleWrongUserCode(type) { pinResult in
+            switch pinResult {
+            case .success:
+                self.transceiveInternal(in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }

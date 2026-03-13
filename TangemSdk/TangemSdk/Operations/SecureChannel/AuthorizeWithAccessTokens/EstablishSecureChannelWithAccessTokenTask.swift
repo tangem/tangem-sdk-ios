@@ -13,7 +13,7 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
     typealias Response = Void
 
     var preflightReadMode: PreflightReadMode { .none }
-    var accessLevel: AccessLevel { .publicAccess }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     deinit {
         Log.debug("EstablishSecureChannelWithAccessTokenTask deinit")

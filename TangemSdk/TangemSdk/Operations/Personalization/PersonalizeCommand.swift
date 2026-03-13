@@ -18,7 +18,7 @@ public class PersonalizeCommand: Command {
     
     var requiresPasscode: Bool { false }
 
-    var usesEncryption: Bool { false }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     private let config: CardConfig
     private let issuer: Issuer

@@ -103,41 +103,45 @@ extension FirmwareVersion: Comparable {
     
 }
 //MARK: - Constants
-public extension FirmwareVersion { //todo: move all doubleValue checks to constants, group production cos
+public extension FirmwareVersion {
+    /// Wallet ownership confirmation available
+    static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
+    /// Persistent security delay available
+    static let persistentSecurityDelayAvailable = FirmwareVersion(major: 2, minor: 28)
+    /// Read-write files
+    static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
+    /// Read file checksum, writing by user codes
+    static let updatedFilesAvailable = FirmwareVersion(major: 3, minor: 34)
     /// Multi-wallet
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
-    /// BLS
-    static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
     /// Field on card that describes is passcode is default value or not
     static let passcodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Is create wallet command answers with the whole wallet
+    static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
     /// Starting from this firmware version, the card provides status information about user codes (access code and passcode),
     /// including whether they are set to default values. The status words SW_INVALID_PIN and SW_INVALID_PIN2 indicate invalid user code attempts.
     static let userCodeStatusesAvailable = FirmwareVersion(major: 4, minor: 33)
     /// Determines when default PINs are optional in commands
     static let isDefaultPinsOptional = FirmwareVersion(major: 4, minor: 34)
-    /// Read-write files
-    static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 39)
-    /// Is create wallet command answers with the whole wallet
-    static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
     /// Backup available
     static let backupAvailable = FirmwareVersion(major: 4, minor: 39)
-    /// Wallet ownership confirmation available
-    static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
-    /// Keys import support
-    static let keysImportAvailable = FirmwareVersion(major: 6, minor: 21)
+    /// BLS
+    static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
     /// Tmp range for visa cards
     static let visaRange = 5.25...5.30
+    /// Keys import support
+    static let keysImportAvailable = FirmwareVersion(major: 6, minor: 21)
     /// ed25519_slip0010
     static let ed25519Slip0010Available = FirmwareVersion(major: 6, minor: 33)
-    /// main secret
+    /// COS v8+, a lot of changes
     static let v8 = FirmwareVersion(major: 8, minor: 48)
 }
 
 public extension FirmwareVersion {
     enum FirmwareType: String, StringCodable, CaseIterable, JSONStringConvertible {
-        case sdk = "d SDK" //todo fix
+        case sdk = "d SDK"
         case release = "r"
         case special
         

@@ -17,9 +17,8 @@ struct AuthorizeWithPinResponseCommandResponse {
 class AuthorizeWithPinResponseCommand: Command {
     typealias CommandResponse = AuthorizeWithPinResponseCommandResponse
 
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicSecureChannel }
-    
+    var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
+
     private let challengeWithXor: Data
 
     init(challengeWithXor: Data) {

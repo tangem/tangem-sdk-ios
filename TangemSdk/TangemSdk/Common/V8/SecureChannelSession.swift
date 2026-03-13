@@ -50,6 +50,19 @@ class SecureChannelSession {
         packetCounter += 1
     }
 
+    func isElevationRequired(for encryption: CardSessionEncryption) -> Bool {
+        switch encryption {
+        case .none:
+            return false
+        case .publicSecureChannel:
+            return accessLevel.isPublic
+        case .secureChannel:
+            return accessLevel.isPublic || accessLevel.isPublicSecureChannel
+        case .secureChannelWithPIN:
+            return accessLevel.isPublic || accessLevel.isPublicSecureChannel || !isAuthorizedWithPin
+        }
+    }
+
     func didEstablishChannel(accessLevel: AccessLevel) {
         self.accessLevel = accessLevel
         self.packetCounter = 1

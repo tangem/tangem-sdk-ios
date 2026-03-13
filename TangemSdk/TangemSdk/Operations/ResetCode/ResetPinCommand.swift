@@ -53,15 +53,22 @@ final class ResetPinCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: accessCode)
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
 
-        if let card = environment.card, card.firmwareVersion < .v8 {
-            try tlvBuilder.append(.newPin2, value: passcode)
-            try tlvBuilder.append(.hash, value: (accessCode + passcode).getSHA256())
+        let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.newPin, value: accessCode)
+                .append(.newPin2, value: passcode)
+                .append(.hash, value: (accessCode + passcode).getSHA256())
         } else {
-            try tlvBuilder.append(.hash, value: accessCode.getSHA256())
+            try tlvBuilder
+                .append(.newPin, value: accessCode)
+                .append(.hash, value: accessCode.getSHA256())
         }
 
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())

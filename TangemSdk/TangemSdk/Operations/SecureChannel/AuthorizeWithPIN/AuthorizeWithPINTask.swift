@@ -13,7 +13,6 @@ class AuthorizeWithPINTask: CardSessionRunnable {
     typealias Response = Void
 
     var preflightReadMode: PreflightReadMode { .none }
-    var accessLevel: AccessLevel { .publicSecureChannel }
 
     deinit {
         Log.debug("AuthorizeWithPINTask deinit")
@@ -31,13 +30,6 @@ class AuthorizeWithPINTask: CardSessionRunnable {
                         session.secureChannelSession?.didAuthorizePin(accessLevel: pinResponse.accessLevel)
                         completion(.success(()))
                     case .failure(let error):
-                        switch error {
-                        case .accessCodeRequired:
-                            session.environment.accessCode = UserCode(.accessCode)
-                        default:
-                            break
-                        }
-
                         completion(.failure(error))
                     }
                 }

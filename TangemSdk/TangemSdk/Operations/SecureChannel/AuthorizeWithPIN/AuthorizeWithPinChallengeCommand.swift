@@ -18,9 +18,7 @@ class AuthorizeWithPinChallengeCommand: Command {
     typealias CommandResponse = AuthorizeWithPinChallengeResponse
 
     var preflightReadMode: PreflightReadMode { .none }
-    var usesEncryption: Bool { false }
-
-    var accessLevel: AccessLevel { .publicSecureChannel }
+    var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
 
     deinit {
         Log.debug("AuthorizeWithPinChallengeCommand deinit")

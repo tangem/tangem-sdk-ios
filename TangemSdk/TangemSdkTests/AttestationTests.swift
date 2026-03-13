@@ -12,11 +12,11 @@ import XCTest
 class AttestationTests: XCTestCase {
     var mapper: OnlineAttestationResponseMapper?
 
-    override func setUp() {
-        let json = try? Bundle.readFileAsString(name: "Card", in: .root)
-        let data = json?.data(using: .utf8)
-        let card = try? JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
-        mapper = card.map { OnlineAttestationResponseMapper(card: $0) }
+    override func setUpWithError() throws {
+        let json = try Bundle.readFileAsString(name: "Card", in: .root)
+        let data = Data(json.utf8)
+        let card = try JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data)
+        mapper = OnlineAttestationResponseMapper(card: card)
     }
 
     func testErrorMapping() throws {

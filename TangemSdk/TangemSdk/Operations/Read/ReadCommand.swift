@@ -14,8 +14,7 @@ import Foundation
 public final class ReadCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
 
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicAccess }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     deinit {
         Log.debug("ReadCommand deinit")

@@ -21,7 +21,7 @@ class JsonTests: XCTestCase {
     
     func testEllipticCurve() {
         
-        let testJson = "{\"curve\":\"Secp256k1\"}".data(using: .utf8)!
+        let testJson = Data("{\"curve\":\"Secp256k1\"}".utf8)
         
         struct TestStruct: Codable {
             let curve: EllipticCurve

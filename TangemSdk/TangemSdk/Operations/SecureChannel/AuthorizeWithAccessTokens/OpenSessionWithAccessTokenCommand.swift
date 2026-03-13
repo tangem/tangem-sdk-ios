@@ -32,9 +32,8 @@ class OpenSessionWithAccessTokenCommand: Command {
     typealias CommandResponse = OpenSessionWithAccessTokenResponse
 
     var preflightReadMode: PreflightReadMode { .none }
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicAccess }
-    
+    var cardSessionEncryption: CardSessionEncryption { .none }
+
     private let challengeB: Data
     private let hmacAttestB: Data
     private let sessionKey: Data

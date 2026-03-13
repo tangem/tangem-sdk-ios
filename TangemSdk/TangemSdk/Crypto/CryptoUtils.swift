@@ -50,12 +50,10 @@ public enum CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
-            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
-            if publicKey.count == Constants.p256CompressedKeySize {
-                throw TangemSdkError.unsupportedCurve
-            }
-
-            let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
+            let pubKey = publicKey.count == Constants.p256CompressedKeySize ?
+            try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+            : try P256.Signing.PublicKey(x963Representation: publicKey)
+            
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             
             return pubKey.isValidSignature(sig, for: message)
@@ -132,29 +130,16 @@ public enum CryptoUtils {
             let pubKey = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
-            // TODO: Add support for compressed keys. CryptoKit works only on iOS16+.
-            if publicKey.count == Constants.p256CompressedKeySize {
-                throw TangemSdkError.unsupportedCurve
-            }
+            let pubKey = publicKey.count == Constants.p256CompressedKeySize ?
+            try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+            : try P256.Signing.PublicKey(x963Representation: publicKey)
 
-            let pubKey = try P256.Signing.PublicKey(x963Representation: publicKey)
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // TODO: implement
             throw TangemSdkError.unsupportedCurve
         }
-    }
-
-    /// Verify secp256r1 signature
-    public static func verifySecp256r1Signature(publicKey: Data, hash: Data, signature: Data) throws -> Bool {
-        if publicKey.count == Constants.p256CompressedKeySize {
-            let pubKey = try P256.Signing.PublicKey(compressedRepresentation: publicKey)
-            let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
-            return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
-        }
-
-        return try verify(curve: .secp256r1, publicKey: publicKey, hash: hash, signature: signature)
     }
 
     public static func crypt(operation: Int, algorithm: Int, options: Int, key: Data, dataIn: Data) throws -> Data {

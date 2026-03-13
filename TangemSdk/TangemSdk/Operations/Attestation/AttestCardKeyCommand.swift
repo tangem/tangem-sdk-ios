@@ -102,9 +102,15 @@ public class AttestCardKeyCommand: Command {
         }
 
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .append(.cardId, value: environment.card?.cardId)
             .append(.challenge, value: challenge)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
 
         if let backupStatus = card.backupStatus, backupStatus.isActive,
            let attestationMode = mode.rawMode {

@@ -21,7 +21,7 @@ import Foundation
 */
 @available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class WriteUserDataCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     
     private static let maxSize = 512
     

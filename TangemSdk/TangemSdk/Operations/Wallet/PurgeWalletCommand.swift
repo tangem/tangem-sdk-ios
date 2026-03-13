@@ -10,7 +10,7 @@ import Foundation
 
 /// This command deletes all wallet data and its private and public keys
 public final class PurgeWalletCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     
     private let walletIndex: Int
 

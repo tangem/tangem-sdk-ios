@@ -16,11 +16,16 @@ class KeysImportTests: XCTestCase {
     private let entropy = Data(hexString: "6610b25967cdcca9d59875f5cb50b0ea75433311869e930b")
     private let mnemonicString = "gravity machine north sort system female filter attitude volume fold club stay feature office ecology stable narrow fog"
     private let passphrase = "TREZOR"
-    private lazy var mnemonic = try! Mnemonic(with: mnemonicString)
-    private lazy var seed = try! mnemonic.generateSeed(with: passphrase)
+    private func makeMnemonic() throws -> Mnemonic {
+        try Mnemonic(with: mnemonicString)
+    }
+
+    private func makeSeed() throws -> Data {
+        try makeMnemonic().generateSeed(with: passphrase)
+    }
 
     func testKeyImportSecp256k1() throws {
-        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .secp256k1).makePrivateKey()
+        let prvKey = try BIP32MasterKeyFactory(seed: makeSeed(), curve: .secp256k1).makePrivateKey()
         let pubKey = try prvKey.makePublicKey(for: .secp256k1)
 
         // validate with WalletCore
@@ -32,7 +37,7 @@ class KeysImportTests: XCTestCase {
     }
 
     func testKeyImportSchnorr() throws {
-        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .bip0340).makePrivateKey()
+        let prvKey = try BIP32MasterKeyFactory(seed: makeSeed(), curve: .bip0340).makePrivateKey()
         let pubKey = try prvKey.makePublicKey(for: .bip0340)
 
         // validate with secp256k1
@@ -45,7 +50,7 @@ class KeysImportTests: XCTestCase {
     }
     
     func testKeyImportSecp256r1() throws {
-        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .secp256r1).makePrivateKey()
+        let prvKey = try BIP32MasterKeyFactory(seed: makeSeed(), curve: .secp256r1).makePrivateKey()
         let pubKey = (try P256.Signing.PrivateKey(rawRepresentation: prvKey.privateKey)).publicKey.compressedRepresentation
 
         // validate with WalletCore
@@ -57,7 +62,7 @@ class KeysImportTests: XCTestCase {
     }
 
     func testKeyImportEd25519Slip0010() throws {
-        let prvKey = try BIP32MasterKeyFactory(seed: seed, curve: .ed25519_slip0010).makePrivateKey()
+        let prvKey = try BIP32MasterKeyFactory(seed: makeSeed(), curve: .ed25519_slip0010).makePrivateKey()
         let pubKey = try prvKey.makePublicKey(for: .ed25519_slip0010)
 
         // validate with WalletCore
@@ -87,7 +92,7 @@ class KeysImportTests: XCTestCase {
 
     /// All BLS schemes tested to produce same public key.
     func testKeyImportBLS() throws {
-        let prvKey = try EIP2333MasterKeyFactory(seed: seed).makePrivateKey()
+        let prvKey = try EIP2333MasterKeyFactory(seed: makeSeed()).makePrivateKey()
         //static from code to prevent any changes in future
 
         // Validated via https://iancoleman.io/eip2333/

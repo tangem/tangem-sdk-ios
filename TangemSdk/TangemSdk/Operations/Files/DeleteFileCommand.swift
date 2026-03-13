@@ -10,7 +10,7 @@ import Foundation
 
 /// Command that deletes file at specified index
 public final class DeleteFileCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     
     private let fileIndex: Int
     

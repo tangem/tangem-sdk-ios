@@ -16,7 +16,7 @@ struct WriteBackupDataResponse {
 }
 
 final class WriteBackupDataCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
     
     private let backupData: [EncryptedBackupData]
     private let accessCode: Data

@@ -33,8 +33,8 @@ struct CardDeserializer {
 
         let isPasscodeSet: Bool?
 
-        if firmware >= .v8 { // not supported for v8
-            isPasscodeSet = nil
+        if firmware >= .v8 { // not supported for v8. Should be false for backward compatibility.
+            isPasscodeSet = false
         } else if firmware >= .passcodeStatusAvailable {
             isPasscodeSet = !(try decoder.decode(.pin2IsDefault))
         } else {

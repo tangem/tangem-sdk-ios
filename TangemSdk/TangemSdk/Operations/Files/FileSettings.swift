@@ -40,7 +40,7 @@ public enum FileVisibility: String, Codable {
     case `private`
     
     func serializeValue(for fwVersion: FirmwareVersion) -> Data {
-        if fwVersion.doubleValue < 4 {
+        if fwVersion < .multiwalletAvailable {
             return Data([Byte(0), permissionsRawValue])
         } else {
             return Data(permissionsRawValue)

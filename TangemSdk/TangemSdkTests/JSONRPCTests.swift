@@ -14,9 +14,8 @@ class JSONRPCTests: XCTestCase {
     var testCard: Card {
         get throws {
             let json = try Bundle.readFileAsString(name: "Card", in: .root)
-            let data = json.data(using: .utf8)
-            XCTAssertNotNil(data)
-            return try JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data!)
+            let data = Data(json.utf8)
+            return try JSONDecoder.tangemSdkDecoder.decode(Card.self, from: data)
         }
     }
 
@@ -29,7 +28,7 @@ class JSONRPCTests: XCTestCase {
         }
         """
 
-        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: Data(json.utf8))
         XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
         XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
         XCTAssertEqual(decoded.depth, 0)
@@ -47,7 +46,7 @@ class JSONRPCTests: XCTestCase {
         }
         """
 
-        XCTAssertThrowsError(try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!))
+        XCTAssertThrowsError(try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: Data(json.utf8)))
     }
 
     func testDecodeExtendedPublicKey() throws {
@@ -62,7 +61,7 @@ class JSONRPCTests: XCTestCase {
         }
         """
 
-        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: json.data(using: .utf8)!)
+        let decoded = try JSONDecoder.tangemSdkDecoder.decode(ExtendedPublicKey.self, from: Data(json.utf8))
         XCTAssertEqual(decoded.publicKey.hexString, "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962")
         XCTAssertEqual(decoded.chainCode.hexString, "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")
         XCTAssertEqual(decoded.depth, 1)
@@ -70,13 +69,13 @@ class JSONRPCTests: XCTestCase {
         XCTAssertEqual(decoded.parentFingerprint.hexString, "00000001")
     }
     
-    func testJsonRPCRequestParse() {
+    func testJsonRPCRequestParse() throws {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"subtract\", \"params\": {\"subtrahend\": 23, \"minuend\": 42}, \"id\": 3}"
-        
-        let request = try? JSONRPCRequest(jsonString: json)
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request!.method, "subtract")
-        XCTAssertEqual(request!.params["subtrahend"] as! Int, Int(23))
+
+        let request = try JSONRPCRequest(jsonString: json)
+        XCTAssertEqual(request.method, "subtract")
+        let subtrahend = try XCTUnwrap(request.params["subtrahend"] as? Int)
+        XCTAssertEqual(subtrahend, Int(23))
     }
     
     func testInitialMessageInit() {
@@ -98,17 +97,17 @@ class JSONRPCTests: XCTestCase {
         XCTAssertEqual(jsonResponse, testResponse)
     }
     
-    func testDecodeSingleHex() {
+    func testDecodeSingleHex() throws {
         var dict: [String: Any] = .init()
         dict["pubKey"] = "AABBCCDDEEFF"
-        let data: Data = try! dict.value(for: "pubKey")
+        let data: Data = try dict.value(for: "pubKey")
         XCTAssert(data == Data(hexString: "AABBCCDDEEFF"))
     }
-    
-    func testDecodeMultipleHex() {
+
+    func testDecodeMultipleHex() throws {
         var dict: [String: Any] = .init()
         dict["hashes"] = ["AABBCCDDEEFF", "AABBCCDDEEFFGG"]
-        let data: [Data] = try! dict.value(for: "hashes")
+        let data: [Data] = try dict.value(for: "hashes")
         XCTAssert(data[0] == Data(hexString: "AABBCCDDEEFF"))
         XCTAssert(data[1] == Data(hexString: "AABBCCDDEEFFGG"))
     }
@@ -128,7 +127,8 @@ class JSONRPCTests: XCTestCase {
                                                               index: 1,
                                                               proof: nil,
                                                               isImported: false,
-                                                              hasBackup: false))
+                                                              hasBackup: false,
+                                                              status: Card.Wallet.Status.loaded))
         try testMethod(name: "CreateWallet", in: .root, result: result)
     }
 
@@ -143,7 +143,8 @@ class JSONRPCTests: XCTestCase {
                                                               index: 1,
                                                               proof: nil,
                                                               isImported: false,
-                                                              hasBackup: false))
+                                                              hasBackup: false,
+                                                              status: Card.Wallet.Status.loaded))
         try testMethod(name: "ImportWalletMnemonic", in: .root, result: result)
     }
     
@@ -199,9 +200,9 @@ class JSONRPCTests: XCTestCase {
     }
     
     func testDerivePublicKeys() throws {
-        let keys = [try! DerivationPath(rawPath: "m/44'/0'") : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+        let keys = [try DerivationPath(rawPath: "m/44'/0'") : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB")),
-                    try! DerivationPath(rawPath: "m/44'/1'")  : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
+                    try DerivationPath(rawPath: "m/44'/1'")  : ExtendedPublicKey(publicKey: Data(hexString: "0200300397571D99D41BB2A577E2CBE495C04AC5B9A97B7A4ECF999F23CE45E962"),
                                                      chainCode: Data(hexString: "537F7361175B150732E17508066982B42D9FB1F8239C4D7BFC490088C83A8BBB"))]
         let result = DerivedKeys(keys: keys)
         try testMethod(name: "DeriveWalletPublicKeys", in: .root, result: result)
@@ -235,25 +236,23 @@ class JSONRPCTests: XCTestCase {
         try testMethod(name: "ChangeFileSettings", in: .files, result: ChangeFileSettingsTask.Response(cardId: "c000111122223333"))
     }
     
-    func testMethodNotFound() {
+    func testMethodNotFound() throws {
         let json = "{\"jsonrpc\": \"2.0\", \"method\": \"sign_task\", \"params\": {\"walletIndex\": \"AABBCCDDEEFFGGHHKKLLMMNN\", \"hashes\": [\"AABBCCDDEEFF\", \"AABBCCDDEEFFGG\"]}, \"id\": 1}"
-        let request = try? JSONRPCRequest(jsonString: json)
-        XCTAssertNotNil(request)
+        let request = try JSONRPCRequest(jsonString: json)
         do {
-            _ = try JSONRPCConverter.makeDefaultConverter(networkService: .init(session: .shared, additionalHeaders: [:])).convert(request: request!)
-            XCTAssertTrue(false)
+            _ = try JSONRPCConverter.makeDefaultConverter(networkService: .init(session: .shared, additionalHeaders: [:])).convert(request: request)
+            XCTFail("Expected methodNotFound error")
         } catch {
-            let jsError = error as? JSONRPCError
-            XCTAssertNotNil(jsError)
-            XCTAssertTrue(jsError!.code == JSONRPCError.Code.methodNotFound.rawValue)
+            let jsError = try XCTUnwrap(error as? JSONRPCError)
+            XCTAssertTrue(jsError.code == JSONRPCError.Code.methodNotFound.rawValue)
         }
     }
     
     func testParseRequest() throws {
         let name = "TestParseRequest"
         let fileText = try Bundle.readFileAsString(name: name, in: .root)
-        let jsonData = fileText.data(using: .utf8)!
-        
+        let jsonData = Data(fileText.utf8)
+
         do {
             guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
                   let array = json["array"],
@@ -343,12 +342,14 @@ class JSONRPCTests: XCTestCase {
             return
         }
       
-        XCTAssertEqual(resultData.utf8String!.lowercased(), resultJsonData.utf8String!.lowercased())
+        let resultString = try XCTUnwrap(resultData.utf8String)
+        let resultJsonString = try XCTUnwrap(resultJsonData.utf8String)
+        XCTAssertEqual(resultString.lowercased(), resultJsonString.lowercased())
     }
     
     private func getTestData(for method: String, in folder: Bundle.Folder) throws -> (request: String, response: Data)? {
         let fileText = try Bundle.readFileAsString(name: method, in: folder)
-        let jsonData = fileText.data(using: .utf8)!
+        let jsonData = Data(fileText.utf8)
         
         do {
             guard let json = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
@@ -364,7 +365,7 @@ class JSONRPCTests: XCTestCase {
                 responseData = try JSONSerialization.data(withJSONObject: response, options: .prettyPrinted)
             } else {
                 let cardResponse = "{\"result\": \(try testCard.json)}"
-                responseData = cardResponse.data(using: .utf8)!
+                responseData = Data(cardResponse.utf8)
             }
 
             guard let requestValue = String(data: requestData, encoding: .utf8) else {

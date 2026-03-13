@@ -39,7 +39,7 @@ public final class ReadFileChecksumCommand: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.firmwareVersion.doubleValue < 3.34 {
+        if card.firmwareVersion < .updatedFilesAvailable {
             return .notSupportedFirmwareVersion
         }
         

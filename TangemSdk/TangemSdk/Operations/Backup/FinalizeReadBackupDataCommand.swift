@@ -9,7 +9,7 @@
 import Foundation
 
 final class FinalizeReadBackupDataCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
 
     private let accessCode: Data
 

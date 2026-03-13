@@ -19,7 +19,7 @@ public struct GetEntropyResponse: JSONStringConvertible {
 /// Get entropy from the card
 public class GetEntropyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readCardOnly }
-    var accessLevel: AccessLevel { .publicSecureChannel }
+    var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
 
     public init() {}
 

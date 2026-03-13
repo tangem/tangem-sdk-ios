@@ -29,7 +29,7 @@ struct PartialReadBackupDataResponse {
 }
 
 final class ReadBackupDataCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
     
     private let backupCardLinkingKey: Data
     private let accessCode: Data

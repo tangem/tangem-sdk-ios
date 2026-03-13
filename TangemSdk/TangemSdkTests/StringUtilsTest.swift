@@ -36,4 +36,67 @@ class StringUtilsTest: XCTestCase {
         let testSha = Data(hexString: "10e6d647af44624442f388c2c14a787ff8b17e6165b83d767ec047768d8cbcb71a1a3226e7cc7816bc79c0427d94a9da688c41a3992c7bf5e4d7cc3e0be5dbac")
         XCTAssertEqual(testSrting.getSHA512(), testSha)
     }
+
+    // MARK: - trim
+
+    func testTrim() {
+        XCTAssertEqual("  hello  ".trim(), "hello")
+        XCTAssertEqual("\n\t hello \n".trim(), "hello")
+        XCTAssertEqual("hello".trim(), "hello")
+        XCTAssertEqual("".trim(), "")
+    }
+
+    func testSubSequenceTrim() {
+        let str = "  hello  "
+        let sub = str[str.startIndex...]
+        XCTAssertEqual(sub.trim(), "hello")
+    }
+
+    // MARK: - leadingZeroPadding
+
+    func testLeadingZeroPadding() {
+        XCTAssertEqual("42".leadingZeroPadding(toLength: 5), "00042")
+        XCTAssertEqual("12345".leadingZeroPadding(toLength: 5), "12345")
+        XCTAssertEqual("123456".leadingZeroPadding(toLength: 5), "123456")
+        XCTAssertEqual("".leadingZeroPadding(toLength: 3), "000")
+    }
+
+    // MARK: - capitalizingFirst / lowercasingFirst
+
+    func testCapitalizingFirst() {
+        XCTAssertEqual("hello".capitalizingFirst(), "Hello")
+        XCTAssertEqual("Hello".capitalizingFirst(), "Hello")
+        XCTAssertEqual("".capitalizingFirst(), "")
+        XCTAssertEqual("a".capitalizingFirst(), "A")
+    }
+
+    func testLowercasingFirst() {
+        XCTAssertEqual("Hello".lowercasingFirst(), "hello")
+        XCTAssertEqual("hello".lowercasingFirst(), "hello")
+        XCTAssertEqual("".lowercasingFirst(), "")
+        XCTAssertEqual("A".lowercasingFirst(), "a")
+    }
+
+    // MARK: - titleFormatted
+
+    func testTitleFormatted() {
+        let result = "TEST".titleFormatted
+        XCTAssertTrue(result.contains("TEST"))
+        XCTAssertTrue(result.hasPrefix("----------------"))
+        XCTAssertTrue(result.hasSuffix("----------------"))
+    }
+
+    // MARK: - String interpolation extensions
+
+    func testDataStringInterpolation() {
+        let data = Data([0xAB, 0xCD])
+        let result = "\(data)"
+        XCTAssertEqual(result, "ABCD")
+    }
+
+    func testByteStringInterpolation() {
+        let byte: Byte = 0xFF
+        let result = "\(byte)"
+        XCTAssertEqual(result, "FF")
+    }
 }

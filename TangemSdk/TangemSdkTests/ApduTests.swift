@@ -12,12 +12,12 @@ import CoreNFC
 @testable import TangemSdk
 
 class ApduTests: XCTestCase {
-    func testInitialization() {
+    func testInitialization() throws {
         let commandApdu1 = CommandApdu(Instruction.read, tlv: Data())
         let commandApdu2 = CommandApdu(ins: UInt8(0xF2), tlv: Data())
         XCTAssertEqual(commandApdu1, commandApdu2)
-        
-        
+
+
         let cla: UInt8 = 0x00
         let ins: UInt8 = 0x01
         let p1: UInt8 = 0x02
@@ -26,7 +26,7 @@ class ApduTests: XCTestCase {
         let tlv = [Tlv(.cardId, value: Data([UInt8(0x00), UInt8(0x01), UInt8(0x02), UInt8(0x03)]))]
         let commandApdu3 = CommandApdu(cla: cla, ins: ins, p1: p1, p2: p2, le: le, tlv: tlv.serialize())
         let data = commandApdu3.serialize()
-        let nfcApdu = NFCISO7816APDU(data: data)!
+        let nfcApdu = try XCTUnwrap(NFCISO7816APDU(data: data))
         
         XCTAssertEqual(nfcApdu.instructionClass, cla)
         XCTAssertEqual(nfcApdu.instructionCode, ins)
@@ -36,35 +36,35 @@ class ApduTests: XCTestCase {
         XCTAssertEqual(nfcApdu.data, tlv.serialize())
     }
     
-    func testSerialization() {
+    func testSerialization() throws {
         let apdu1 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03,
                                 le: nil, tlv: Data(hexString: "0101010101"))
         XCTAssertEqual(apdu1.serialize(), Data(hexString: "000102030000050101010101"))
-        XCTAssertEqual(apdu1.serialize(), apdu1.NFCISO7816APDUDATA)
-        
+        XCTAssertEqual(apdu1.serialize(), try apdu1.NFCISO7816APDUDATA)
+
         let apdu2 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03,
                                 le: 0, tlv: Data(hexString: "0101010101"))
         XCTAssertEqual(apdu2.serialize(), Data(hexString: "0001020300000501010101010000"))
-        XCTAssertEqual(apdu2.serialize(), apdu2.NFCISO7816APDUDATA)
-        
+        XCTAssertEqual(apdu2.serialize(), try apdu2.NFCISO7816APDUDATA)
+
         let apdu3 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03,
                                 le: 65535, tlv: Data(hexString: "0101010101"))
         XCTAssertEqual(apdu3.serialize(), Data(hexString: "000102030000050101010101FFFF"))
-        XCTAssertEqual(apdu3.serialize(), apdu3.NFCISO7816APDUDATA)
-        
+        XCTAssertEqual(apdu3.serialize(), try apdu3.NFCISO7816APDUDATA)
+
         let apdu4 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03,
                                 le: 70000, tlv: Data(hexString: "0101010101"))
         XCTAssertEqual(apdu4.serialize(), Data(hexString: "000102030000050101010101FFFF"))
-        XCTAssertEqual(apdu4.serialize(), apdu4.NFCISO7816APDUDATA)
-        
+        XCTAssertEqual(apdu4.serialize(), try apdu4.NFCISO7816APDUDATA)
+
         let apdu5 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03,
                                 le: -1, tlv: Data(hexString: "0101010101"))
         XCTAssertEqual(apdu5.serialize(), Data(hexString: "0001020300000501010101010000"))
-        XCTAssertEqual(apdu5.serialize(), apdu5.NFCISO7816APDUDATA)
-        
+        XCTAssertEqual(apdu5.serialize(), try apdu5.NFCISO7816APDUDATA)
+
         let apdu6 = CommandApdu(cla: 0x00, ins: 0x01, p1: 0x02, p2: 0x03, tlv: Data())
         XCTAssertEqual(apdu6.serialize(), Data(hexString: "00010203"))
-        XCTAssertEqual(apdu6.serialize(), apdu6.NFCISO7816APDUDATA)
+        XCTAssertEqual(apdu6.serialize(), try apdu6.NFCISO7816APDUDATA)
     }
     
     func testResponse() {
@@ -93,8 +93,9 @@ class ApduTests: XCTestCase {
 
 fileprivate extension CommandApdu {
     var NFCISO7816APDUDATA: Data {
-        let nfcApdu = NFCISO7816APDU(data: self.serialize())!
-        
+        get throws {
+        let nfcApdu = try XCTUnwrap(NFCISO7816APDU(data: self.serialize()))
+
         let hexString = String(describing: nfcApdu)
             .remove(", ")
             .remove("\"")
@@ -103,5 +104,6 @@ fileprivate extension CommandApdu {
             .remove("0x")
         
         return Data(hexString: hexString)
+        }
     }
 }

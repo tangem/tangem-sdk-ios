@@ -16,8 +16,7 @@ public class PersonalizeCommandV8: Command {
     public var preflightReadMode: PreflightReadMode { .none }
 
     var requiresPasscode: Bool { false }
-
-    var usesEncryption: Bool { false }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     private let config: CardConfigV8
     private let issuer: Issuer

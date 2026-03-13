@@ -26,7 +26,7 @@ public struct CreateWalletResponse: JSONStringConvertible {
  * RemainingSignature is set to MaxSignatures.
  */
 final class CreateWalletCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     var walletIndex: Int = 0
     
     private let curve: EllipticCurve

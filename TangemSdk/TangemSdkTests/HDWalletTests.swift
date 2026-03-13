@@ -11,33 +11,31 @@ import XCTest
 @testable import TangemSdk
 
 class HDWalletTests: XCTestCase {
-    func testDerivation1() {
+    func testDerivation1() throws {
         let masterKey = ExtendedPublicKey(publicKey: Data(hexString: "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"),
                                           chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"))
-        
-        let derived = try? masterKey.derivePublicKey(node: .nonHardened(1))
-        XCTAssertNotNil(derived)
-        
-        let key = derived!.publicKey.hexString.lowercased()
-        let chainCode = derived!.chainCode.hexString.lowercased()
+
+        let derived = try masterKey.derivePublicKey(node: .nonHardened(1))
+
+        let key = derived.publicKey.hexString.lowercased()
+        let chainCode = derived.chainCode.hexString.lowercased()
         XCTAssertEqual(key, "037c2098fd2235660734667ff8821dbbe0e6592d43cfd86b5dde9ea7c839b93a50")
         XCTAssertEqual(chainCode, "8dd96414ff4d5b4750be3af7fecce207173f86d6b5f58f9366297180de8e109b")
     }
     
-    func testDerivation0() {
+    func testDerivation0() throws {
         let masterKey = ExtendedPublicKey(publicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
-        
-        let derived = try? masterKey.derivePublicKey(node: .nonHardened(0))
-        XCTAssertNotNil(derived)
-        
-        let key = derived!.publicKey.hexString.lowercased()
-        let chainCode = derived!.chainCode.hexString.lowercased()
+
+        let derived = try masterKey.derivePublicKey(node: .nonHardened(0))
+
+        let key = derived.publicKey.hexString.lowercased()
+        let chainCode = derived.chainCode.hexString.lowercased()
         XCTAssertEqual(key, "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea")
         XCTAssertEqual(chainCode, "f0909affaa7ee7abe5dd4e100598d4dc53cd709d5a5c2cac40e7412f232f7c9c")
     }
     
-    func testParsePath() {
+    func testParsePath() throws {
         let derivationPath = try? DerivationPath(rawPath: "m / 44' / 0' / 0' / 1 / 0")
         let derivationPath1 = try? DerivationPath(rawPath: "m/44'/0'/0'/1/0")
         let derivationPath2 = try? DerivationPath(rawPath: "M/44'/0'/0'/1/0")
@@ -76,28 +74,28 @@ class HDWalletTests: XCTestCase {
         let derivationPathWrong8 = try? DerivationPath(rawPath: "m'/44'/0'/0'/1/0") // m' <---
         XCTAssertNil(derivationPathWrong8)
         
-        let derivationPathNormalized = try! DerivationPath(rawPath: "m/44'/0'/0/1'/1/5/5'/9/9'")
-        let derivationPathNotNormalized = try! DerivationPath(rawPath: "m/044'/00'/00/001'/001/00005/00005'/00000000000000000000000000009/00000000000000000000000000009'")
+        let derivationPathNormalized = try DerivationPath(rawPath: "m/44'/0'/0/1'/1/5/5'/9/9'")
+        let derivationPathNotNormalized = try DerivationPath(rawPath: "m/044'/00'/00/001'/001/00005/00005'/00000000000000000000000000009/00000000000000000000000000009'")
         XCTAssertEqual(derivationPathNormalized, derivationPathNotNormalized)
     }
     
-    func testTlvSerialization() {
-        let path = try! DerivationPath(rawPath: "m/0/1")
+    func testTlvSerialization() throws {
+        let path = try DerivationPath(rawPath: "m/0/1")
         let tlv = path.encodeTlv(with: .walletHDPath)
         let hexValue = tlv.value.hexString
         XCTAssertEqual("0000000000000001", hexValue)
-        
-        let path1 = try! DerivationPath(rawPath: "m/0'/1'/2")
+
+        let path1 = try DerivationPath(rawPath: "m/0'/1'/2")
         let tlv1 = path1.encodeTlv(with: .walletHDPath)
         let hexValue1 = tlv1.value.hexString
         XCTAssertEqual("800000008000000100000002", hexValue1)
     }
-    
-    func testTlvDeserialization() {
-        let path = try! DerivationPath(from: Data(hexString: "0000000000000001"))
+
+    func testTlvDeserialization() throws {
+        let path = try DerivationPath(from: Data(hexString: "0000000000000001"))
         XCTAssertEqual("m/0/1", path.rawPath)
-        
-        let path1 = try! DerivationPath(from: Data(hexString: "800000008000000100000002"))
+
+        let path1 = try DerivationPath(from: Data(hexString: "800000008000000100000002"))
         XCTAssertEqual("m/0'/1'/2", path1.rawPath)
         
         let nilPath = try? DerivationPath(from: Data(hexString: "000000000000000100"))
@@ -113,8 +111,8 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(path, "m/44'/0'/0'/0/0")
     }
     
-    func testPathDerivation() {
-        let path = try! DerivationPath(rawPath: "m/0")
+    func testPathDerivation() throws {
+        let path = try DerivationPath(rawPath: "m/0")
         
         let masterKey = ExtendedPublicKey(publicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
@@ -125,8 +123,8 @@ class HDWalletTests: XCTestCase {
         XCTAssertEqual(childKey?.publicKey.hexString.lowercased(), "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea")
     }
     
-    func testPathDerivation1() {
-        let path = try! DerivationPath(rawPath: "m/0/1")
+    func testPathDerivation1() throws {
+        let path = try DerivationPath(rawPath: "m/0/1")
         //xpub661MyMwAqRbcFW31YEwpkMuc5THy2PSt5bDMsktWQcFF8syAmRUapSCGu8ED9W6oDMSgv6Zz8doc4a6mr8BDzTJY47LJhkJ8UB7WEGuduB
         let masterKey = ExtendedPublicKey(publicKey: Data(hexString: "03cbcaa9c98c877a26977d00825c956a238e8dddfbd322cce4f74b0b5bd6ace4a7"),
                                           chainCode: Data(hexString: "60499f801b896d83179a4374aeb7822aaeaceaa0db1f85ee3e904c4defbd9689"))
@@ -156,15 +154,15 @@ class HDWalletTests: XCTestCase {
         }
     }
     
-    func testCodableDerivationPath() {
-        let derivationPath = try! DerivationPath(rawPath: "m/44'/0'/0'/1/0")
-        let encodedData = try! JSONEncoder().encode(derivationPath)
-        let decodedDerivationPath = try! JSONDecoder().decode(DerivationPath.self, from: encodedData)
+    func testCodableDerivationPath() throws {
+        let derivationPath = try DerivationPath(rawPath: "m/44'/0'/0'/1/0")
+        let encodedData = try JSONEncoder().encode(derivationPath)
+        let decodedDerivationPath = try JSONDecoder().decode(DerivationPath.self, from: encodedData)
         XCTAssertEqual(derivationPath, decodedDerivationPath)
     }
     
-    func testPathExtension() {
-        let derivationPath = try! DerivationPath(rawPath: "m/44'/0'/0'/1")
+    func testPathExtension() throws {
+        let derivationPath = try DerivationPath(rawPath: "m/44'/0'/0'/1")
         let extendedPath = derivationPath.extendedPath(with: .nonHardened(0))
         XCTAssertEqual(extendedPath.rawPath, "m/44'/0'/0'/1/0")
     }

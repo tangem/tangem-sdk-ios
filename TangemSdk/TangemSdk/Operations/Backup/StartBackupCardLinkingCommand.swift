@@ -9,7 +9,7 @@
 import Foundation
 
 final class StartBackupCardLinkingCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
 
     private let primaryCardLinkingKey: Data
 

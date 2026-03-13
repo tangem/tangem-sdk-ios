@@ -94,6 +94,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case accessDenied
 
     /// COS v8+
+    case needReset
+
+    /// COS v8+
     case invalidAccessTokens
 
     //MARK: Business logic errors
@@ -110,8 +113,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     
     // CreateWallet Errors
     case alreadyCreated
-    case unsupportedCurve //todo: localize
-    case unsupportedWalletConfig //todo: localize
+    case unsupportedCurve
+    case unsupportedWalletConfig
     
     // PurgeWallet Errors
     case purgeWalletProhibited
@@ -337,6 +340,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .fileNotFound: return 30007
         case .walletNotFound: return 30008
         case .accessDenied: return 30009
+        case .needReset: return 30010
 
             // MARK: 4yyxx Errors
             // Command Error. Business logical errors that occurred inside commands' implmentation.

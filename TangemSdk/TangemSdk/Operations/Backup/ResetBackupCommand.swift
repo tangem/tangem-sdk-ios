@@ -17,7 +17,7 @@ struct ResetBackupResponse {
 }
 
 public final class ResetBackupCommand: Command {
-    public var requiresPasscode: Bool { return true }
+    public var requiresPasscode: Bool { true }
     public var preflightReadMode: PreflightReadMode { .fullCardRead }
     
     public init() {}

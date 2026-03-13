@@ -20,7 +20,7 @@ public struct DepersonalizeResponse: JSONStringConvertible {
 public class DepersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
 
-    var usesEncryption: Bool { false }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     public init() {}
     

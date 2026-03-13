@@ -321,13 +321,8 @@ extension AppModel {
                        initialMessage: Message(header: "Signing hash")) { result in
 
             if case .success(let response) = result {
-                if wallet.curve == .secp256r1 {
-                    let isValid = try? CryptoUtils.verifySecp256r1Signature(publicKey: verifyKey, hash: hash, signature: response.signature)
-                    self.logger.log("signature status: \(String(describing: isValid))")
-                } else  {
-                    let isValid = try? CryptoUtils.verify(curve: wallet.curve, publicKey: verifyKey, hash: hash, signature: response.signature)
-                    self.logger.log("signature status: \(String(describing: isValid))")
-                }
+                let isValid = try? CryptoUtils.verify(curve: wallet.curve, publicKey: verifyKey, hash: hash, signature: response.signature)
+                self.logger.log("signature status: \(String(describing: isValid))")
             }
 
             self.handleCompletion(result)

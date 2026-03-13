@@ -13,7 +13,7 @@ import CryptoKit
 /// Firmware tests snippets.
 class CommonFirmwareTests: FWTestCase {
     /// Go to BLS lib and generate public keys for all mnemonics from BIP39
-    func getAllPrivateKetsForBLS() {
+    func getAllPrivateKetsForBLS() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
@@ -41,15 +41,15 @@ class CommonFirmwareTests: FWTestCase {
             "void come effort suffer camp survey warrior heavy shoot primary clutch crush open amazing screen patrol group space point ten exist slush involve unfold",
         ]
 
-        let addresses = mnemonics.map { str in
-            try! AnyMasterKeyFactory(mnemonic: try! Mnemonic(with: str), passphrase: "TREZOR").makeMasterKey(for: .bls12381_G2_AUG).privateKey.hexString
+        let addresses = try mnemonics.map { str in
+            try AnyMasterKeyFactory(mnemonic: try Mnemonic(with: str), passphrase: "TREZOR").makeMasterKey(for: .bls12381_G2_AUG).privateKey.hexString
         }
 
         print(addresses)
     }
 
     /// Generated public keys from chia-bls for all mnemonics from BIP39
-    func testMnemonicsBLS() {
+    func testMnemonicsBLS() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
@@ -105,10 +105,10 @@ class CommonFirmwareTests: FWTestCase {
         ]
         let passphrase = "TREZOR"
 
-        let cmds = mnemonics.map {
-            let mnemonic = try! Mnemonic(with: $0)
+        let cmds = try mnemonics.map {
+            let mnemonic = try Mnemonic(with: $0)
             let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase)
-            let prvKey = try! factory.makeMasterKey(for: .bls12381_G2_AUG)
+            let prvKey = try factory.makeMasterKey(for: .bls12381_G2_AUG)
             let cmd = CreateWalletTask(curve: .bls12381_G2_AUG, privateKey: prvKey)
             return (cmd, prvKey)
         }
@@ -145,7 +145,7 @@ class CommonFirmwareTests: FWTestCase {
     }
 
     /// Generated public keys from WalletCore for all mnemonics from BIP39
-    func testMnemonicsEd25519() {
+    func testMnemonicsEd25519() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
@@ -200,10 +200,10 @@ class CommonFirmwareTests: FWTestCase {
             "01539f7909fe0243b862dd4395d2c8575bf070d22931952e94fb46d9aa557fa46a",
         ]
 
-        let cmds = mnemonics.map {
-            let mnemonic = try! Mnemonic(with: $0)
+        let cmds = try mnemonics.map {
+            let mnemonic = try Mnemonic(with: $0)
             let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: "")
-            let prvKey = try! factory.makeMasterKey(for: .ed25519)
+            let prvKey = try factory.makeMasterKey(for: .ed25519)
             let cmd = CreateWalletTask(curve: .ed25519, privateKey: prvKey)
             return (cmd, prvKey)
         }
@@ -240,7 +240,7 @@ class CommonFirmwareTests: FWTestCase {
     }
 
     // All mnemonics from BIP39
-    func testMnemonicsSecp256k1() {
+    func testMnemonicsSecp256k1() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
@@ -270,10 +270,10 @@ class CommonFirmwareTests: FWTestCase {
 
         let pass = "TREZOR"
 
-        let cmds = mnemonics.map {
-            let mnemonic = try! Mnemonic(with: $0)
+        let cmds = try mnemonics.map {
+            let mnemonic = try Mnemonic(with: $0)
             let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: pass)
-            let prvKey = try! factory.makeMasterKey(for: .secp256k1)
+            let prvKey = try factory.makeMasterKey(for: .secp256k1)
             let cmd = CreateWalletTask(curve: .secp256k1, privateKey: prvKey)
             return (cmd, prvKey)
         }
@@ -285,17 +285,21 @@ class CommonFirmwareTests: FWTestCase {
             for cmd in cmds.enumerated() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5*Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
-                        switch resp {
-                        case .success(let r):
-                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
-                                print("!!! Wallet not found ❌")
-                                return
+                        do {
+                            switch resp {
+                            case .success(let r):
+                                guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                    print("!!! Wallet not found ❌")
+                                    return
+                                }
+                                let expected = try cmd.1.1.makePublicKey(for: .secp256k1).publicKey.hexString
+                                self.printEquals(expected, key)
+                            case .failure(let error):
+                                print(error)
+                                break
                             }
-                            let expected = try! cmd.1.1.makePublicKey(for: .secp256k1).publicKey.hexString
-                            self.printEquals(expected, key)
-                        case .failure(let error):
-                            print(error)
-                            break
+                        } catch {
+                            print("!!! Unexpected error: \(error) ❌")
                         }
 
                     }
@@ -307,7 +311,7 @@ class CommonFirmwareTests: FWTestCase {
     }
 
     // All mnemonics from BIP39
-    func testMnemonicsSecp256r1() {
+    func testMnemonicsSecp256r1() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
@@ -337,10 +341,10 @@ class CommonFirmwareTests: FWTestCase {
 
         let pass = "TREZOR"
 
-        let cmds = mnemonics.map {
-            let mnemonic = try! Mnemonic(with: $0)
+        let cmds = try mnemonics.map {
+            let mnemonic = try Mnemonic(with: $0)
             let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: pass)
-            let prvKey = try! factory.makeMasterKey(for: .secp256r1)
+            let prvKey = try factory.makeMasterKey(for: .secp256r1)
             let cmd = CreateWalletTask(curve: .secp256r1, privateKey: prvKey)
             return (cmd, prvKey)
         }
@@ -352,18 +356,22 @@ class CommonFirmwareTests: FWTestCase {
             for cmd in cmds.enumerated() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5*Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
-                        switch resp {
-                        case .success(let r):
-                            guard let key = r.wallet.publicKey?.hexString.lowercased() else {
-                                print("!!! Wallet not found ❌")
-                                return
+                        do {
+                            switch resp {
+                            case .success(let r):
+                                guard let key = r.wallet.publicKey?.hexString.lowercased() else {
+                                    print("!!! Wallet not found ❌")
+                                    return
+                                }
+
+                                let expected = (try P256.Signing.PrivateKey(rawRepresentation: cmd.1.1.privateKey)).publicKey.compressedRepresentation.hexString.uppercased()
+                                self.printEquals(expected, key)
+                            case .failure(let error):
+                                print(error)
+                                break
                             }
-                            
-                            let expected = (try! P256.Signing.PrivateKey(rawRepresentation: cmd.1.1.privateKey)).publicKey.compressedRepresentation.hexString.uppercased()
-                            self.printEquals(expected, key)
-                        case .failure(let error):
-                            print(error)
-                            break
+                        } catch {
+                            print("!!! Unexpected error: \(error) ❌")
                         }
 
                     }
@@ -374,4 +382,3 @@ class CommonFirmwareTests: FWTestCase {
         }
     }
 }
-

@@ -20,8 +20,7 @@ struct OpenSessionResponse {
 class OpenSessionCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
-    
-    var usesEncryption: Bool { false }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     private let sessionKeyA: Data
     

@@ -38,8 +38,7 @@ class AuthorizeWithAccessTokensCommand: Command {
     typealias CommandResponse = AuthorizeWithAccessTokenResponseDTO
 
     var preflightReadMode: PreflightReadMode { .none }
-    var usesEncryption: Bool { false }
-    var accessLevel: AccessLevel { .publicAccess }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     deinit {
         Log.debug("AuthorizeWithAccessTokensCommand deinit")

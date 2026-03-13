@@ -30,6 +30,7 @@ public enum StatusWord: UInt16 {
     case invalidAccessCode = 0x6AF1
     case invalidPascode = 0x6AF2
     case walletAlreadyExists = 0x6A89
+    case needReset = 0x6983
     /// case pinsNotChanged = 0x9000 equals to processCompleted
 
     /// COS v8+
@@ -61,6 +62,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.walletAlreadyCreated
         case .accessDenied:
             return TangemSdkError.accessDenied
+        case .needReset:
+            return TangemSdkError.needReset
         default:
             return nil
         }

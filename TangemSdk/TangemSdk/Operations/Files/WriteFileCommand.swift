@@ -113,15 +113,15 @@ public final class WriteFileCommand: Command {
             return .filesDisabled
         }
         
-        if isWritingByUserCodes, card.firmwareVersion.doubleValue < 3.34 {
+        if isWritingByUserCodes, card.firmwareVersion < .updatedFilesAvailable {
             return .notSupportedFirmwareVersion
         }
         
-        if fileVisibility != nil && card.firmwareVersion.doubleValue < 4 {
+        if fileVisibility != nil && card.firmwareVersion < .multiwalletAvailable {
             return .fileSettingsUnsupported
         }
         
-        if walletPublicKey != nil && card.firmwareVersion.doubleValue < 4 {
+        if walletPublicKey != nil && card.firmwareVersion < .multiwalletAvailable {
             return .fileSettingsUnsupported
         }
         

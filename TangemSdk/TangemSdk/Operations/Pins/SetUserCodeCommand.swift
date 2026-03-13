@@ -11,7 +11,7 @@ import Foundation
 public class SetUserCodeCommand: Command {
     var requiresPasscode: Bool = true
     var shouldRestrictDefaultCodes = true
-    var requiresAuthorizationWithPin: Bool { true }
+    var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
 
     private var codes: [UserCodeType: UserCodeAction] = [:]
     

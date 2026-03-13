@@ -11,7 +11,7 @@ import Foundation
 final class ResetPinCommand: Command {
     var requiresPasscode: Bool { false }
     var preflightReadMode: PreflightReadMode { .readCardOnly }
-    var accessLevel: AccessLevel { .publicSecureChannel }
+    var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
 
     private let accessCode: Data
     private let passcode: Data
@@ -53,7 +53,7 @@ final class ResetPinCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        var tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.newPin, value: accessCode)
 

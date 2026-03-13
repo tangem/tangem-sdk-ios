@@ -221,7 +221,7 @@ extension Card {
         case cardLinked
         case active
         
-        var intValue: Int { //TODO: make generic tlvintconvertible
+        var intValue: Int { 
             switch self {
             case .noBackup:
                 return 0

@@ -16,7 +16,7 @@ struct LinkPrimaryCardResponse {
 }
 
 final class LinkPrimaryCardCommand: Command {
-    var requiresPasscode: Bool { return true }
+    var requiresPasscode: Bool { true }
     
     private let primaryCard: PrimaryCard
     private let backupCards: [BackupCard]

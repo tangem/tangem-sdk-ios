@@ -27,7 +27,7 @@ enum ManageAccessTokensMode: Byte, InteractionMode {
 class ManageAccessTokensCommand: Command {
     typealias CommandResponse = ManageAccessTokensResponse
 
-    var requiresAuthorizationWithPin: Bool { true }
+    var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
 
     private let mode: ManageAccessTokensMode
 

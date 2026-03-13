@@ -16,10 +16,10 @@ struct SetUserSettingsCommandResponse: JSONStringConvertible {
     let settings: Card.UserSettings
 }
 
-/// Set user serrings on a card. COS v.6.16+
+/// Set user settings on a card. COS v.6.16+
 class SetUserSettingsCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
-    var requiresAuthorizationWithPin: Bool { true }
+    var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
     
     private let settings: Card.UserSettings
 

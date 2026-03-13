@@ -149,11 +149,17 @@ public final class AttestWalletKeyTask: Command {
         }
         
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .append(.cardId, value: card.cardId)
             .append(.challenge, value: challenge)
             .append(.walletIndex, value: walletIndex)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
+
         //Otherwise, static confirmation will fail with the "invalidParams" error.
         if card.firmwareVersion >= .walletOwnershipConfirmationAvailable {
             switch confirmationMode {

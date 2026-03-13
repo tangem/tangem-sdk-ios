@@ -27,8 +27,8 @@ final class ReadMasterSecretCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
-        try tlvBuilder.append(.interactionMode, value: ReadMode.masterSecret)
+        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
+            .append(.interactionMode, value: ReadMode.masterSecret)
 
         if let derivationPath {
             try tlvBuilder.append(.walletHDPath, value: derivationPath)

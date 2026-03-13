@@ -12,7 +12,11 @@ import Foundation
 struct UserCode {
     let type: UserCodeType
     let value: Data?
-    
+
+    var isDefault: Bool {
+        value == type.defaultValue.getSHA256()
+    }
+
     init(_ type: UserCodeType) {
         self.value = type.defaultValue.getSHA256()
         self.type = type

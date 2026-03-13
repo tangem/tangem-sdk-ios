@@ -48,7 +48,7 @@ final class LinkPrimaryCardCommand: Command {
         if !card.wallets.isEmpty {
             return .backupFailedNotEmptyWallets(cardId: card.cardId)
         }
-        
+
         return nil
     }
     
@@ -93,20 +93,33 @@ final class LinkPrimaryCardCommand: Command {
     
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
         guard let certificate = primaryCard.certificate else {
             throw TangemSdkError.certificateSignatureRequired
         }
 
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
             .append(.certificate, value: certificate)
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
-            .append(.newPin2, value: passcode)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+            try tlvBuilder.append(.newPin2, value: passcode)
+        }
+
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)

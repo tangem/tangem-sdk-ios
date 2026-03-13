@@ -73,10 +73,20 @@ public class ReadWalletsListCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .append(.interactionMode, value: ReadMode.walletsList)
-            .append(.cardId, value: environment.card?.cardId)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
 
         if receivedWalletsCount > 0 {
             try tlvBuilder.append(.walletIndex, value: receivedWalletsCount)

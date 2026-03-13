@@ -159,23 +159,49 @@ public class SetUserCodeCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let accessCodeValue = codes[.accessCode]?.value ?? environment.accessCode.value,
-              let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
+        guard let accessCodeValue = codes[.accessCode]?.value ?? environment.accessCode.value else {
             throw TangemSdkError.serializeCommandError
         }
         
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.pin2, value: environment.passcode.value)
-            .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: accessCodeValue)
-            .append(.newPin2, value: passcodeValue)
-        
-        if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
-            let hash = (accessCodeValue + passcodeValue).getSHA256()
-            try tlvBuilder.append(.hash, value: hash)
+        let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
+
+        if card.firmwareVersion >= .v8 {
+            try tlvBuilder
+                .append(.newPin, value: accessCodeValue)
+                .append(.hash, value: accessCodeValue.getSHA256())
+        } else if card.firmwareVersion >= .backupAvailable {
+            guard let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+                throw TangemSdkError.serializeCommandError
+            }
+
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.newPin, value: accessCodeValue)
+                .append(.newPin2, value: passcodeValue)
+                .append(.hash, value: (accessCodeValue + passcodeValue).getSHA256())
+        } else {
+            guard let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+                throw TangemSdkError.serializeCommandError
+            }
+
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.newPin, value: accessCodeValue)
+                .append(.newPin2, value: passcodeValue)
         }
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())
     }
     

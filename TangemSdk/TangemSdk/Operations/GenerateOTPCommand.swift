@@ -32,7 +32,11 @@ public class GenerateOTPCommand: Command {
         guard !card.wallets.isEmpty else {
             return TangemSdkError.walletNotFound
         }
-        
+
+        guard FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) else {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
         return nil
     }
     

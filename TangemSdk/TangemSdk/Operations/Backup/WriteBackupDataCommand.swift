@@ -74,12 +74,20 @@ final class WriteBackupDataCommand: Command {
     }
     
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+        
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: accessCode)
             .append(.salt, value: backupData[index].salt)
             .append(.data, value: backupData[index].data)
-        
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.pin, value: accessCode)
+        }
+
         return CommandApdu(.writeBackupData, tlv: tlvBuilder.serialize())
     }
     

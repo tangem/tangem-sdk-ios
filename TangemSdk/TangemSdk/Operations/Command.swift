@@ -38,6 +38,18 @@ extension ApduSerializable {
         return builder
     }
 
+    func shouldAddPin(_ value: UserCode, firmwareVersion: FirmwareVersion) -> Bool {
+        if firmwareVersion >= .v8 {
+            return false
+        }
+        
+        if firmwareVersion >= .isDefaultPinsOptional, value.isDefault {
+            return false
+        }
+        
+        return true
+    }
+
     func createTlvDecoder(environment: SessionEnvironment, apdu: ResponseApdu) throws -> TlvDecoder {
         guard var tlv = apdu.getTlvData() else {
             throw TangemSdkError.deserializeApduFailed

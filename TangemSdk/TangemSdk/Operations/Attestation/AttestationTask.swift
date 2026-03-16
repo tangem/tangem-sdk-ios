@@ -213,7 +213,7 @@ public final class AttestationTask: CardSessionRunnable {
             if isDevelopmentCard {
                 session.viewDelegate.attestationDidFailDevCard { [weak self] in
                     self?.complete(session, completion)
-                } onCancel: { [weak self] in
+                } onCancel: {
                     completion(.failure(.userCancelled))
                 }
                 
@@ -234,7 +234,7 @@ public final class AttestationTask: CardSessionRunnable {
             session.viewDelegate.setState(.empty)
             session.viewDelegate.attestationCompletedOffline() { [weak self] in
                 self?.complete(session, completion)
-            } onCancel: { [weak self] in
+            } onCancel: {
                 completion(.failure(.userCancelled))
             } onRetry: { [weak self] in
                 session.viewDelegate.setState(.default)

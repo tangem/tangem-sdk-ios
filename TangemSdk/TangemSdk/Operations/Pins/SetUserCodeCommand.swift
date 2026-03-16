@@ -137,7 +137,7 @@ public class SetUserCodeCommand: Command {
     
     private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
         if let code = self.codes[type]?.value,
-           code == type.defaultValue.getSHA256() {
+           CryptoUtils.secureCompare(code, type.defaultValue.getSHA256()) {
             return false
         }
         

@@ -142,6 +142,17 @@ public enum CryptoUtils {
         }
     }
 
+    /// Performs a constant-time comparison of two Data values to prevent timing attacks.
+    public static func secureCompare(_ lhs: Data, _ rhs: Data) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+
+        var result: UInt8 = 0
+        for (a, b) in zip(lhs, rhs) {
+            result |= a ^ b
+        }
+        return result == 0
+    }
+
     public static func crypt(operation: Int, algorithm: Int, options: Int, key: Data, dataIn: Data) throws -> Data {
         return try key.withUnsafeBytes { keyUnsafeRawBufferPointer in
             return try dataIn.withUnsafeBytes { dataInUnsafeRawBufferPointer in

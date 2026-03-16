@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 
 public class NetworkService {
     private let session: URLSession
@@ -56,7 +55,7 @@ public class NetworkService {
 // MARK: - async/await
 
 extension NetworkService {
-    public func request<T: Decodable>(_ endpoint: NetworkEndpoint) async throws -> T {
+    public func request<T: Decodable>(_ endpoint: NetworkEndpoint) async throws(NetworkServiceError) -> T {
         guard let request = prepareRequest(from: endpoint) else {
             throw NetworkServiceError.failedToMakeRequest
         }
@@ -71,7 +70,7 @@ extension NetworkService {
         }
     }
 
-    func requestData(request: URLRequest) async throws -> Data {
+    func requestData(request: URLRequest) async throws(NetworkServiceError) -> Data {
         do {
             Log.network(request.requestDescription)
 
@@ -80,39 +79,6 @@ extension NetworkService {
         } catch {
             throw NetworkService.mapError(error)
         }
-    }
-}
-
-// MARK: - Combine
-
-extension NetworkService {
-    public func requestPublisher<T: Decodable>(_ endpoint: NetworkEndpoint) -> AnyPublisher<T, NetworkServiceError> {
-        guard let request = prepareRequest(from: endpoint) else {
-            return Fail(error: NetworkServiceError.failedToMakeRequest).eraseToAnyPublisher()
-        }
-
-        return requestDataPublisher(request: request)
-            .tryMap { data -> T in
-                do {
-                    return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: data)
-                }
-                catch {
-                    throw NetworkServiceError.mappingError(error)
-                }
-            }
-            .mapError { NetworkService.mapError($0) }
-            .eraseToAnyPublisher()
-    }
-
-    func requestDataPublisher(request: URLRequest) -> AnyPublisher<Data, NetworkServiceError> {
-        Log.network(request.requestDescription)
-
-        return session
-            .dataTaskPublisher(for: request)
-            .subscribe(on: DispatchQueue.global())
-            .tryMap { try NetworkService.mapResponseData(data: $0, response: $1) }
-            .mapError { NetworkService.mapError($0) }
-            .eraseToAnyPublisher()
     }
 }
 

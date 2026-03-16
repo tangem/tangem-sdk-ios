@@ -14,7 +14,8 @@ struct UserCode {
     let value: Data?
 
     var isDefault: Bool {
-        value == type.defaultValue.getSHA256()
+        guard let value else { return false }
+        return CryptoUtils.secureCompare(value, type.defaultValue.getSHA256())
     }
 
     init(_ type: UserCodeType) {

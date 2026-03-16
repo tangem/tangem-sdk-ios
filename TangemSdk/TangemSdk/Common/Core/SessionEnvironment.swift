@@ -60,6 +60,8 @@ public struct SessionEnvironment {
     }
 
     mutating func reset() {
+        encryptionKey?.zeroOut()
+        encryptionKey = nil
         cardAccessTokens = nil
         accessCode = .init(.accessCode)
         passcode = .init(.passcode)

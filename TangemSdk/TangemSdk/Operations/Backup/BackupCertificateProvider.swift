@@ -18,7 +18,7 @@ class BackupCertificateProvider {
     }
 
     func getCertificate(completion: @escaping CompletionResult<Data>) {
-        Task.detached {
+        Task {
             do {
                 let response = try await self.loadAttestationData()
                 let certificate = try self.generateBackupCertificate(

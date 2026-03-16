@@ -71,7 +71,6 @@ public final class AttestationTask: CardSessionRunnable {
         case .normal:
             runOnlineAttestation(session, completion)
         case .full:
-            runOnlineAttestation(session, completion)
             runWalletsAttestation(session, completion)
         }
     }
@@ -96,7 +95,7 @@ public final class AttestationTask: CardSessionRunnable {
     
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         // [REDACTED_TODO_COMMENT]
-        complete(session, completion)
+        runOnlineAttestation(session, completion)
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {

@@ -194,7 +194,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
 
         let calculatedHash = Self.calculateBackupHash(card: card)
-        let isBackupVerified = calculatedHash == backupHash
+        let isBackupVerified = CryptoUtils.secureCompare(calculatedHash, backupHash)
         session.environment.card?.isBackupVerified = isBackupVerified
         Log.session("Backup is verified: \(isBackupVerified)")
     }

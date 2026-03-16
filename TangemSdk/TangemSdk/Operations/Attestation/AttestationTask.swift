@@ -168,7 +168,7 @@ public final class AttestationTask: CardSessionRunnable {
             session.pause() //Nothing to do with nfc anymore
         }
 
-        Task.detached {
+        Task {
             let attestResult: Attestation.Status
             let mapper = OnlineAttestationResponseMapper(card: card)
 

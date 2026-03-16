@@ -68,7 +68,7 @@ final class ResetPinViewModel: ObservableObject {
             .store(in: &bag)
 
         resetPinService.errorPublisher
-            .sink { [weak self] state in
+            .sink { [weak self] _ in
                 guard let self else { return }
                 self.serviceErrorText = self.resetPinService?.error.map { "Error occurred: \($0.localizedDescription)" }
             }

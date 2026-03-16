@@ -829,7 +829,13 @@ private extension CardSession {
     func establishSecureChannel(completion: @escaping CompletionResult<Void>) {
         Log.session("Establish secure channel")
 
-        secureChannelSession = SecureChannelSession(environment: environment)
+        guard let card = environment.card else {
+            Log.session("Encryption can not be established because card is not read")
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        secureChannelSession = SecureChannelSession(cardId: card.cardId)
         environment.encryptionMode = .none
         environment.encryptionKey = nil
 
@@ -934,7 +940,7 @@ extension CardSession {
 // MARK: - JSON RPC
 
 extension CardSession {
-    /// Convinience method for jsonrpc requests running
+    /// Convenience method for jsonrpc requests running
     /// - Parameters:
     ///   - jsonRequest: request to run
     ///   - completion: CardSessionRunnable response converted to json string

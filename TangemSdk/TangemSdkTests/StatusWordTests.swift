@@ -27,7 +27,7 @@ class StatusWordTests: XCTestCase {
     }
 
     func testNeedEncryption() {
-        assertMapsTo(.needEcryption, .needEncryption)
+        assertMapsTo(.needEncryption, .needEncryption)
     }
 
     func testInvalidParams() {
@@ -80,7 +80,7 @@ class StatusWordTests: XCTestCase {
 
     func testInitFromRawValue() {
         XCTAssertEqual(StatusWord(rawValue: 0x9000), .processCompleted)
-        XCTAssertEqual(StatusWord(rawValue: 0x6982), .needEcryption)
+        XCTAssertEqual(StatusWord(rawValue: 0x6982), .needEncryption)
         XCTAssertNil(StatusWord(rawValue: 0xFFFF))
     }
 }

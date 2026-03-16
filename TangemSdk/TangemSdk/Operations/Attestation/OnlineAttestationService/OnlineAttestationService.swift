@@ -6,8 +6,6 @@
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 
-import Combine
-
 protocol OnlineAttestationService {
-    func attestCard() -> AnyPublisher<OnlineAttestationResponse, Error>
+    func attestCard() async throws -> OnlineAttestationResponse
 }

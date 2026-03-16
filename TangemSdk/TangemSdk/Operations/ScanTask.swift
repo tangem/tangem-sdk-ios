@@ -104,7 +104,7 @@ public final class ScanTask: CardSessionRunnable {
         attestationTask.run(in: session) { result in
             switch result {
             case .success:
-                guard let card = session.environment.card  else {
+                guard let card = session.environment.card else {
                     completion(.failure(.missingPreflightRead))
                     return
                 }

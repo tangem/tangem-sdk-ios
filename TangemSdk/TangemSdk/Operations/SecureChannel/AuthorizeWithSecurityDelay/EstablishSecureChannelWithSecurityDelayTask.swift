@@ -47,7 +47,9 @@ class EstablishSecureChannelWithSecurityDelayTask: CardSessionRunnable {
                 switch result {
                 case .success(let openResponse):
                     do {
-                        let sessionKey = try encryptionHelper.generateSecret(keyB: authorizeResponse.pubSessionKeyA).getSHA256()
+                        var ecdhSecret = try encryptionHelper.generateSecret(keyB: authorizeResponse.pubSessionKeyA)
+                        let sessionKey = ecdhSecret.getSHA256()
+                        ecdhSecret.zeroOut()
                         session.environment.encryptionMode = .ccmWithSecurityDelay
                         session.environment.encryptionKey = sessionKey
                         session.secureChannelSession?.didEstablishChannel(accessLevel: openResponse.accessLevel)

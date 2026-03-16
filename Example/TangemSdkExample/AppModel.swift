@@ -245,7 +245,7 @@ extension AppModel {
                 self.curve = card.supportedCurves[0]
                 self.loadArtworks(for: card)
             }
-            
+
             self.handleCompletion(result)
         }
     }
@@ -268,7 +268,7 @@ extension AppModel {
     func attestCard() {
         tangemSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
     }
-    
+
     func attestWallet(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
             self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
@@ -280,7 +280,7 @@ extension AppModel {
             self.complete(with: "Failed to parse hd path")
             return
         }
-        
+
         UIApplication.shared.endEditing()
 
         tangemSdk.startSession(with: AttestWalletKeyTask(
@@ -289,7 +289,7 @@ extension AppModel {
             confirmationMode: .dynamic
         ), completion: handleCompletion)
     }
-    
+
     func signHash(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
             self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
@@ -301,17 +301,18 @@ extension AppModel {
             self.complete(with: "Failed to parse hd path")
             return
         }
-        
+
         UIApplication.shared.endEditing()
-        
+
         guard let wallet = self.card?.wallets[walletPublicKey] else {
             self.complete(with: "Scan card before")
             return
         }
 
         let verifyKey = (path.flatMap { wallet.derivedKeys[$0] })?.publicKey ?? walletPublicKey
-        
-        let hashSize = wallet.curve == .ed25519 ? 64 : 32
+
+
+        let hashSize = wallet.curve == .ed25519 || wallet.curve == .ed25519_slip0010 ? 64 : 32
         let hash = getRandomHash(size: hashSize)
 
         tangemSdk.sign(hash: hash,
@@ -740,6 +741,22 @@ extension AppModel {
         let task = SetNDEFDisabledTask(isDisabled: isNDEFDisabled)
         tangemSdk.startSession(with: task, completion: handleCompletion)
     }
+
+    func readMasterSecret() {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+
+        UIApplication.shared.endEditing()
+
+        tangemSdk.startSession(with: ReadMasterSecretCommand(derivationPath: path), completion: handleCompletion)
+    }
+
+    func resetAccessTokens() {
+        tangemSdk.startSession(with: ResetAccessTokensTask(), completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -849,6 +866,8 @@ extension AppModel {
         case setUserCodeRecoveryAllowed
         case setPinRequired
         case setNDEFDisabled
+        case readMasterSecret
+        case resetAccessTokens
     }
     
     private func chooseMethod(walletIndex: Int? = nil) {
@@ -892,6 +911,8 @@ extension AppModel {
         case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         case .setPinRequired: setPinRequired()
         case .setNDEFDisabled: setNDEFDisabled()
+        case .readMasterSecret: readMasterSecret()
+        case .resetAccessTokens: resetAccessTokens()
         }
     }
 }

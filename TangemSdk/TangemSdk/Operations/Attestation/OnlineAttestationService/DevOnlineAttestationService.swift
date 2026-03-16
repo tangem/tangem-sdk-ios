@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 
 struct DevOnlineAttestationService: OnlineAttestationService {
     private let cardPublicKey: Data
@@ -16,12 +15,8 @@ struct DevOnlineAttestationService: OnlineAttestationService {
         self.cardPublicKey = cardPublicKey
     }
 
-    func attestCard() -> AnyPublisher<OnlineAttestationResponse, Error> {
-        Result {
-             try makeDevResponse(cardPublicKey: cardPublicKey)
-        }
-        .publisher
-        .eraseToAnyPublisher()
+    func attestCard() async throws -> OnlineAttestationResponse {
+        try makeDevResponse(cardPublicKey: cardPublicKey)
     }
 
     private func makeDevResponse(cardPublicKey: Data) throws -> OnlineAttestationResponse {

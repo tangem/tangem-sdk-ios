@@ -122,7 +122,7 @@ final class BackupViewModel: ObservableObject {
         case .finalizingBackupCard(let index):
             stateTitle = "Current state is: Scan backup card again with index: \(index)"
         case .finished:
-            stateTitle = "Current state is: Backup succeed"
+            stateTitle = "Current state is: Backup succeeded"
         }
     }
 }

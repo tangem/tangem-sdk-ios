@@ -15,13 +15,13 @@ extension Array where Element == Tlv {
         return Data(self.reduce([], { $0 + $1.serialize() }))
     }
     
-    /// Convinience getter for tlv item
+    /// Convenience getter for tlv item
     /// - Parameter tag: tag to find
     public func item(for tag: TlvTag) -> Element? {
         first(where: { $0.tag == tag })
     }
     
-    /// Convinience getter for tlv
+    /// Convenience getter for tlv
     /// - Parameter tag: tag to find
     public func value(for tag: TlvTag) -> Data? {
         item(for: tag)?.value
@@ -32,7 +32,7 @@ extension Array where Element == Tlv {
         value(for: tag) != nil
     }
     
-    /// Convinience getter for multiple tlvs with same tag
+    /// Convenience getter for multiple tlvs with same tag
     /// - Parameter tag: tag to find
     public func items(for tag: TlvTag) -> [Element] {
         filter { $0.tag == tag }

@@ -12,25 +12,15 @@ class SecureChannelSession {
     private(set) var accessLevel: AccessLevel = .publicAccess
     private(set) var isAuthorizedWithPin: Bool = false
     private(set) var packetCounter: Int = 0
-    private let environment: SessionEnvironment
+    private let cardIdBytes: Data
 
-    private var cardIdBytes: Data? {
-        if let cardId = environment.card?.cardId {
-            return Data(hexString: cardId)
-        } else {
-           return nil
-        }
-    }
-
-    init(environment: SessionEnvironment) {
-        self.environment = environment
+    init(cardId: String) {
+        self.cardIdBytes = Data(hexString: cardId)
     }
 
     /// Constructs a 12-byte nonce for AES-CCM encryption.
     /// Format: [prefix(1)] + [cardId bytes(8)] + [packetCounter big-endian(3)] = 12 bytes
-    func makeCommandAPDUNonce() -> Data? {
-        guard let cardIdBytes else { return nil }
-
+    func makeCommandAPDUNonce() -> Data {
         let prefix: UInt8 = 0x7E
         let counterBytes = packetCounter.toBytes(count: 3)
         return Data([prefix]) + cardIdBytes + counterBytes
@@ -38,9 +28,7 @@ class SecureChannelSession {
 
     /// Constructs a 12-byte nonce for AES-CCM encryption.
     /// Format: [prefix(1)] + [cardId bytes(8)] + [packetCounter big-endian(3)] = 12 bytes
-    func makeResponseAPDUNonce() -> Data? {
-        guard let cardIdBytes else { return nil }
-
+    func makeResponseAPDUNonce() -> Data {
         let prefix: UInt8 = 0xCA
         let counterBytes = packetCounter.toBytes(count: 3)
         return Data([prefix]) + cardIdBytes + counterBytes

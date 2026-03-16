@@ -13,12 +13,12 @@ public struct ReadMasterSecretResponse: JSONStringConvertible {
 }
 
 /// This command reads master secret from the Tangem Card.
-final class ReadMasterSecretCommand: Command {
-    var preflightReadMode: PreflightReadMode { .none }
+public final class ReadMasterSecretCommand: Command {
+    public var preflightReadMode: PreflightReadMode { .none }
 
     private let derivationPath: DerivationPath?
 
-    init(derivationPath: DerivationPath? = nil) {
+    public init(derivationPath: DerivationPath? = nil) {
         self.derivationPath = derivationPath
     }
 

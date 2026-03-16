@@ -742,6 +742,18 @@ extension AppModel {
         tangemSdk.startSession(with: task, completion: handleCompletion)
     }
 
+    func readMasterSecret() {
+        let path = try? DerivationPath(rawPath: derivationPath)
+        if !derivationPath.isEmpty && path == nil {
+            self.complete(with: "Failed to parse hd path")
+            return
+        }
+
+        UIApplication.shared.endEditing()
+
+        tangemSdk.startSession(with: ReadMasterSecretCommand(derivationPath: path), completion: handleCompletion)
+    }
+
     func resetAccessTokens() {
         tangemSdk.startSession(with: ResetAccessTokensTask(), completion: handleCompletion)
     }
@@ -854,6 +866,7 @@ extension AppModel {
         case setUserCodeRecoveryAllowed
         case setPinRequired
         case setNDEFDisabled
+        case readMasterSecret
         case resetAccessTokens
     }
     
@@ -898,6 +911,7 @@ extension AppModel {
         case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         case .setPinRequired: setPinRequired()
         case .setNDEFDisabled: setNDEFDisabled()
+        case .readMasterSecret: readMasterSecret()
         case .resetAccessTokens: resetAccessTokens()
         }
     }

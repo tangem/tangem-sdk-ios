@@ -36,6 +36,9 @@ public class CardSession {
     var cardAccessTokensRepository: CardAccessTokensRepository? = nil
     var secureChannelSession: SecureChannelSession? = nil
 
+    private static let maxSecureChannelRetries = 5
+    private var secureChannelRetryCount = 0
+
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
@@ -228,6 +231,7 @@ public class CardSession {
             .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[weak self] tag in
+                self?.environment.encryptionKey?.zeroOut()
                 self?.environment.encryptionKey = nil
                 self?.secureChannelSession?.reset()
             })
@@ -644,9 +648,11 @@ public class CardSession {
                             throw TangemSdkError.accessCodeRequired
                         }
 
-                        let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
-                        let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
+                        var protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
+                        var secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
                         let sessionKey = (secret + protocolKey).getSHA256()
+                        protocolKey.zeroOut()
+                        secret.zeroOut()
                         self.environment.encryptionKey = sessionKey
                         Log.session("The encryption established")
                         completion(.success(()))
@@ -846,9 +852,11 @@ private extension CardSession {
             EstablishSecureChannelWithAccessTokenTask().run(in: self) { result in
                 switch result {
                 case .success:
+                    self.secureChannelRetryCount = 0
                     completion(.success(()))
                 case .failure(let error):
-                    if case .invalidAccessTokens = error {
+                    if case .invalidAccessTokens = error, self.secureChannelRetryCount < Self.maxSecureChannelRetries {
+                        self.secureChannelRetryCount += 1
                         self.establishSecureChannel(completion: completion)
                     } else {
                         completion(.failure(error))

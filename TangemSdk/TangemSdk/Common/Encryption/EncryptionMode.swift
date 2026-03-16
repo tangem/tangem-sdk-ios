@@ -48,8 +48,4 @@ public enum EncryptionMode: String, StringCodable {
             AesMode.ccm
         }
     }
-
-    var isCCM: Bool {
-        aesMode == .ccm
-    }
 }

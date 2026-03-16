@@ -160,9 +160,6 @@ public class AccessCodeRepository {
 
     func lock() {
         Log.debug("Lock the access codes repo")
-        for key in accessCodes.keys {
-            accessCodes[key]?.zeroOut()
-        }
         accessCodes = .init()
     }
 

@@ -37,10 +37,10 @@ public struct ResponseApdu {
         return tlv
     }
 
-    /// Decrypts the response APDU data using AES-CBC encryption.
+    /// Decrypts the response APDU data.
     /// - Parameter encryptionMode: encryption mode
     /// - Parameter encryptionKey: The key used for decryption. If nil, returns the original APDU.
-    ///   - nonce: The nonce (initialization vector) used for CCM decryption.
+    /// - Parameter nonce: The nonce (initialization vector) used for CCM decryption.
     /// - Throws: `TangemSdkError.invalidResponseApdu` if decryption fails or data integrity check fails.
     /// - Returns: A new `ResponseApdu` with decrypted payload data.
     func decrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> ResponseApdu {
@@ -101,7 +101,7 @@ public struct ResponseApdu {
         }
 
         // always unencrypted
-        if statusWord == .needPause || statusWord == .needEcryption {
+        if statusWord == .needPause || statusWord == .needEncryption {
             return self
         }
 

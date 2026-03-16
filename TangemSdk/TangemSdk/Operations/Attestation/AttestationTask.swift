@@ -95,7 +95,8 @@ public final class AttestationTask: CardSessionRunnable {
     }
     
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        //TODO: ATTEST_CARD_FIRMWARE, ATTEST_CARD_UNIQUENESS
+        // TODO: ATTEST_CARD_FIRMWARE, ATTEST_CARD_UNIQUENESS
+        complete(session, completion)
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {

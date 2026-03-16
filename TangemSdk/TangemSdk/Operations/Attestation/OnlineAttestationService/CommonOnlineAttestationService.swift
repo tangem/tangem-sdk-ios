@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 
 struct CommonOnlineAttestationService: OnlineAttestationService {
     private let cardId: String
@@ -29,32 +28,26 @@ struct CommonOnlineAttestationService: OnlineAttestationService {
         self.networkService = networkService
     }
 
-    func attestCard() -> AnyPublisher<OnlineAttestationResponse, Error> {
-        getAttestationData()
-            .tryMap { response in
-                if try verifier.verify(response: response) {
-                    cache.append(cardPublicKey: cardPublicKey, response: response)
-                    return response
-                }
+    func attestCard() async throws -> OnlineAttestationResponse {
+        let response = try await getAttestationData()
 
-                throw TangemSdkError.cardVerificationFailed
-            }
-            .eraseToAnyPublisher()
+        if try verifier.verify(response: response) {
+            cache.append(cardPublicKey: cardPublicKey, response: response)
+            return response
+        }
+
+        throw TangemSdkError.cardVerificationFailed
     }
 
-    private func getAttestationData() -> AnyPublisher<OnlineAttestationResponse, NetworkServiceError> {
+    private func getAttestationData() async throws(NetworkServiceError) -> OnlineAttestationResponse {
         if let cached = cache.response(for: cardPublicKey) {
-            return Just(cached)
-                .setFailureType(to: NetworkServiceError.self)
-                .eraseToAnyPublisher()
+            return cached
         } else {
-            return requestAttestationData()
+            return try await requestAttestationData()
         }
     }
 
-    private func requestAttestationData() -> AnyPublisher<OnlineAttestationResponse, NetworkServiceError> {
-        networkService
-            .requestPublisher(TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey))
-            .eraseToAnyPublisher()
+    private func requestAttestationData() async throws(NetworkServiceError) -> OnlineAttestationResponse {
+        try await networkService.request(TangemEndpoint.cardData(cardId: cardId, cardPublicKey: cardPublicKey))
     }
 }

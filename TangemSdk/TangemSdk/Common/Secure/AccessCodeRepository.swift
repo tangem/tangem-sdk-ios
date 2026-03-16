@@ -131,22 +131,25 @@ public class AccessCodeRepository {
         for cardId in try self.getCards() {
             let storageKey = SecureStorageKey.accessCode(for: cardId)
             let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
+            do {
+                if let encryptedAccessCode = try self.biometricsStorage.get(storageKey, context: context) {
+                    do {
+                        let accessCode = try self.biometricsSecureEnclave.decryptData(
+                            encryptedAccessCode,
+                            keyTag: encryptionKey,
+                            context: context
+                        )
 
-            if let encryptedAccessCode = try self.biometricsStorage.get(storageKey, context: context) {
-                do {
-                    let accessCode = try self.biometricsSecureEnclave.decryptData(
-                        encryptedAccessCode,
-                        keyTag: encryptionKey,
-                        context: context
-                    )
-
-                    fetchedAccessCodes[cardId] = accessCode
-                } catch SecureEnclaveError.decryptionFailed {
-                    // use old unencrypted data for backward compatibility
-                    if encryptedAccessCode.count == 32 {
-                        fetchedAccessCodes[cardId] = encryptedAccessCode
+                        fetchedAccessCodes[cardId] = accessCode
+                    } catch SecureEnclaveError.decryptionFailed {
+                        // use old unencrypted data for backward compatibility
+                        if encryptedAccessCode.count == 32 {
+                            fetchedAccessCodes[cardId] = encryptedAccessCode
+                        }
                     }
                 }
+            } catch {
+                Log.debug("Failed to unlock access codes for cardId: \(cardId). Error: \(error)")
             }
         }
 
@@ -157,6 +160,9 @@ public class AccessCodeRepository {
 
     func lock() {
         Log.debug("Lock the access codes repo")
+        for key in accessCodes.keys {
+            accessCodes[key]?.zeroOut()
+        }
         accessCodes = .init()
     }
 
@@ -171,13 +177,13 @@ public class AccessCodeRepository {
         for cardId in cardIds {
             let existingCode = accessCodes[cardId]
 
-            if existingCode == accessCode {
+            if let existingCode, CryptoUtils.secureCompare(existingCode, accessCode) {
                 Log.debug("We already know this code. Ignoring.")
                 continue //We already know this code. Ignoring
             }
 
             //We found default code
-            if accessCode == UserCodeType.accessCode.defaultValue.getSHA256() {
+            if CryptoUtils.secureCompare(accessCode, UserCodeType.accessCode.defaultValue.getSHA256()) {
                 if existingCode == nil {
                     Log.debug("Ignore the default code")
                     continue //Ignore default code

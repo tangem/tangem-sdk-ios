@@ -170,9 +170,15 @@ public final class AttestationTask: CardSessionRunnable {
         }
 
         Task.detached {
-            let onlineAttestResult = try await onlineAttestationService.attestCard()
+            let attestResult: Attestation.Status
             let mapper = OnlineAttestationResponseMapper(card: card)
-            let attestResult = mapper.mapValue(onlineAttestResult)
+
+            do {
+                let onlineAttestResult = try await onlineAttestationService.attestCard()
+                attestResult = mapper.mapValue(onlineAttestResult)
+            } catch {
+                attestResult = mapper.mapError(error)
+            }
 
             switch attestResult {
             case .verified:
@@ -184,7 +190,9 @@ public final class AttestationTask: CardSessionRunnable {
                 break
             }
 
-            self.processAttestationReport(session, completion)
+            await MainActor.run {
+                self.processAttestationReport(session, completion)
+            }
         }
     }
     

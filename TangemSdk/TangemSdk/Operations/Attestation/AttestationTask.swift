@@ -7,17 +7,12 @@
 //
 
 import Foundation
-import Combine
 
 public final class AttestationTask: CardSessionRunnable {
     private let mode: Mode
     private let networkService: NetworkService
     private let trustedCardsRepo: TrustedCardsRepo = .init()
-
     private var currentAttestationStatus: Attestation = .empty
-    private var onlineAttestationValue = CurrentValueSubject<Attestation.Status?, Never>(nil)
-    private var onlineAttestationCancellable: AnyCancellable?
-    private var bag = Set<AnyCancellable>()
 
     /// If `true'`, AttestationTask will not pause nfc session after all card operatons complete. Usefull for chaining  tasks after AttestationTask. False by default
     public var shouldKeepSessionOpened = false
@@ -75,7 +70,7 @@ public final class AttestationTask: CardSessionRunnable {
             complete(session, completion)
         case .normal:
             runOnlineAttestation(session, completion)
-            waitForOnlineAndComplete(session, completion)
+           // waitForOnlineAndComplete(session, completion)
         case .full:
             runOnlineAttestation(session, completion)
             runWalletsAttestation(session, completion)
@@ -102,7 +97,7 @@ public final class AttestationTask: CardSessionRunnable {
     
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         //TODO: ATTEST_CARD_FIRMWARE, ATTEST_CARD_UNIQUENESS
-        self.waitForOnlineAndComplete(session, completion)
+      //  self.waitForOnlineAndComplete(session, completion)
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {
@@ -168,42 +163,56 @@ public final class AttestationTask: CardSessionRunnable {
             return
         }
 
-        let mapper = OnlineAttestationResponseMapper(card: card)
         let factory = OnlineAttestationServiceFactory(networkService: networkService)
         let onlineAttestationService = factory.makeService(for: card)
-        onlineAttestationCancellable = onlineAttestationService
-            .attestCard()
-            .map { mapper.mapValue($0) }
-            .catch { Just(mapper.mapError($0)) }
-            .sink(receiveValue: { [weak self] in
-                self?.onlineAttestationValue.send($0)
-            })
-    }
 
-    private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         if !shouldKeepSessionOpened {
             session.pause() //Nothing to do with nfc anymore
         }
 
-        onlineAttestationValue
-            .compactMap { $0 }
-            .sink(receiveValue: { [weak self] attestResult in
-                guard let self else { return }
+        Task.detached {
+            let onlineAttestResult = try await onlineAttestationService.attestCard()
+            let mapper = OnlineAttestationResponseMapper(card: card)
+            let attestResult = mapper.mapValue(onlineAttestResult)
 
-                switch attestResult {
-                case .verified:
-                    self.currentAttestationStatus.cardKeyAttestation = .verified
-                    self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
-                case .failed:
-                    self.currentAttestationStatus.cardKeyAttestation = .failed
-                default:
-                    break
-                }
+            switch attestResult {
+            case .verified:
+                self.currentAttestationStatus.cardKeyAttestation = .verified
+                self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
+            case .failed:
+                self.currentAttestationStatus.cardKeyAttestation = .failed
+            default:
+                break
+            }
 
-                self.processAttestationReport(session, completion)
-            })
-            .store(in: &bag)
+            self.processAttestationReport(session, completion)
+        }
     }
+
+//    private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
+//        if !shouldKeepSessionOpened {
+//            session.pause() //Nothing to do with nfc anymore
+//        }
+//
+//        onlineAttestationValue
+//            .compactMap { $0 }
+//            .sink(receiveValue: { [weak self, weak session] attestResult in
+//                guard let self, let session else { return }
+//
+//                switch attestResult {
+//                case .verified:
+//                    self.currentAttestationStatus.cardKeyAttestation = .verified
+//                    self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
+//                case .failed:
+//                    self.currentAttestationStatus.cardKeyAttestation = .failed
+//                default:
+//                    break
+//                }
+//
+//                self.processAttestationReport(session, completion)
+//            })
+//            .store(in: &bag)
+//    }
     
     private func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         self.runOnlineAttestation(session, completion)
@@ -216,15 +225,14 @@ public final class AttestationTask: CardSessionRunnable {
             let isDevelopmentCard = session.environment.card!.firmwareVersion.type == .sdk
 
             if isDevelopmentCard, Config.isDevelopmentMode {
-                self.complete(session, completion)
+                complete(session, completion)
                 return
             }
 
             if isDevelopmentCard {
-                session.viewDelegate.attestationDidFailDevCard {
-                    self.complete(session, completion)
+                session.viewDelegate.attestationDidFailDevCard { [weak self] in
+                    self?.complete(session, completion)
                 } onCancel: { [weak self] in
-                    self?.cleanResources()
                     completion(.failure(.userCancelled))
                 }
                 
@@ -234,43 +242,35 @@ public final class AttestationTask: CardSessionRunnable {
             completion(.failure(.cardVerificationFailed))
             
         case .verified:
-            self.complete(session, completion)
+            complete(session, completion)
             
         case .verifiedOffline:
             if session.environment.config.attestationMode == .offline {
-                self.complete(session, completion)
+                complete(session, completion)
                 return
             }
             
             session.viewDelegate.setState(.empty)
-            session.viewDelegate.attestationCompletedOffline() {
-                self.complete(session, completion)
+            session.viewDelegate.attestationCompletedOffline() { [weak self] in
+                self?.complete(session, completion)
             } onCancel: { [weak self] in
-                self?.cleanResources()
                 completion(.failure(.userCancelled))
-            } onRetry: {
+            } onRetry: { [weak self] in
                 session.viewDelegate.setState(.default)
-                self.retryOnline(session, completion)
+                self?.retryOnline(session, completion)
             }
             
         case .warning:
             session.viewDelegate.setState(.empty)
-            session.viewDelegate.attestationCompletedWithWarnings {
-                self.complete(session, completion)
+            session.viewDelegate.attestationCompletedWithWarnings { [weak self] in
+                self?.complete(session, completion)
             }
         }
     }
     
     private func complete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        cleanResources()
         session.environment.card?.attestation = currentAttestationStatus
         completion(.success(currentAttestationStatus))
-    }
-
-    // deinit is not called
-    private func cleanResources() {
-        bag = []
-        onlineAttestationCancellable = nil
     }
 }
 

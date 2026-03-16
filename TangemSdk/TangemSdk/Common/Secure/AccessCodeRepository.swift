@@ -149,7 +149,7 @@ public class AccessCodeRepository {
                     }
                 }
             } catch {
-                Log.debug("Failed to unlock card access tokens for cardId: \(cardId). Error: \(error)")
+                Log.debug("Failed to unlock access codes for cardId: \(cardId). Error: \(error)")
             }
         }
 

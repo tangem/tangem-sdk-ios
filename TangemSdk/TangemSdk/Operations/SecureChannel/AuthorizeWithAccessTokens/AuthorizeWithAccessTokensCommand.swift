@@ -16,7 +16,7 @@ struct AuthorizeWithAccessTokenResponse {
         let input = Data("SESSION.CARD".utf8) + challengeA
         let hmacCalculated = key.hmacSHA256(input: input)
 
-        guard hmacCalculated == hmacAttestA else {
+        guard CryptoUtils.secureCompare(hmacCalculated, hmacAttestA) else {
             Log.error("Card attest HMAC (hmacAttestA) is invalid!")
             return false
         }

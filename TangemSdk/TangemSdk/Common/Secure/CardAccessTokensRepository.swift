@@ -47,12 +47,13 @@ class CardAccessTokensRepository {
                 biometricsSecureEnclave.deleteKey(tag: encryptionKey)
                 try? biometricsStorage.delete(storageKey)
 
-                let data = try JSONEncoder().encode(cardAccessTokens)
+                var data = try JSONEncoder().encode(cardAccessTokens)
                 let encryptedData = try biometricsSecureEnclave.encryptData(
                     data,
                     keyTag: encryptionKey,
                     context: nil
                 )
+                data.zeroOut()
 
                 try biometricsStorage.store(encryptedData, forKey: storageKey)
 
@@ -125,15 +126,20 @@ class CardAccessTokensRepository {
             let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
             let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
-            if let encryptedData = try self.biometricsStorage.get(storageKey, context: context) {
-                let data = try self.biometricsSecureEnclave.decryptData(
-                    encryptedData,
-                    keyTag: encryptionKey,
-                    context: context
-                )
+            do {
+                if let encryptedData = try self.biometricsStorage.get(storageKey, context: context) {
+                    var data = try self.biometricsSecureEnclave.decryptData(
+                        encryptedData,
+                        keyTag: encryptionKey,
+                        context: context
+                    )
 
-                let cardAccessTokens = try JSONDecoder().decode(CardAccessTokens.self, from: data)
-                fetchedTokens[cardId] = cardAccessTokens
+                    let cardAccessTokens = try JSONDecoder().decode(CardAccessTokens.self, from: data)
+                    data.zeroOut()
+                    fetchedTokens[cardId] = cardAccessTokens
+                }
+            } catch {
+                Log.debug("Failed to unlock card access tokens for cardId: \(cardId). Error: \(error)")
             }
         }
 

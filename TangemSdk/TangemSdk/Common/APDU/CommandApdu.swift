@@ -26,7 +26,7 @@ public struct CommandApdu: Equatable {
     let data: Data
     let le: Int?
 
-    /// Convinience initializer
+    /// Convenience initializer
     /// - Parameter instruction: Instruction code
     /// - Parameter tlv: data
     public init(_ instruction: Instruction, tlv: Data) {

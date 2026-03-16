@@ -36,6 +36,9 @@ public class CardSession {
     var cardAccessTokensRepository: CardAccessTokensRepository? = nil
     var secureChannelSession: SecureChannelSession? = nil
 
+    private static let maxSecureChannelRetries = 5
+    private var secureChannelRetryCount = 0
+
     private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
@@ -228,6 +231,7 @@ public class CardSession {
             .filter { $0 == .none }
             .sink(receiveCompletion: {_ in},
                   receiveValue: {[weak self] tag in
+                self?.environment.encryptionKey?.zeroOut()
                 self?.environment.encryptionKey = nil
                 self?.secureChannelSession?.reset()
             })
@@ -410,7 +414,12 @@ public class CardSession {
         let requestAccessCodeAction = {
             Log.session("Request for an access code")
             self.environment.accessCode = UserCode(.accessCode, value: nil)
-            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
+            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     Log.session("Continue the runnable")
@@ -538,7 +547,12 @@ public class CardSession {
                 Log.session("Access code is needed, request early")
                 pause()
                 DispatchQueue.main.async {
-                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
+                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                        guard let self else {
+                            completion(.failure(.sessionInactive))
+                            return
+                        }
+
                         switch result {
                         case .success:
                             self.resume()
@@ -556,7 +570,12 @@ public class CardSession {
                 return
             }
 
-            establishSecureChannel { result in
+            establishSecureChannel {[weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     guard let secureChannelSession = self.secureChannelSession else {
@@ -584,7 +603,12 @@ public class CardSession {
                             // wrong pin was entered. retry
                             switch error {
                             case .accessCodeRequired:
-                                self.handleWrongUserCode(.accessCode) { pinResult in
+                                self.handleWrongUserCode(.accessCode) { [weak self] pinResult in
+                                    guard let self else {
+                                        completion(.failure(.sessionInactive))
+                                        return
+                                    }
+
                                     switch pinResult {
                                     case .success:
                                         self.establishEncryptionIfNeeded(
@@ -628,6 +652,7 @@ public class CardSession {
 
                 switch result {
                 case .success(let response):
+
                     do {
                         var uid: Data
                         if let uidFromResponse = response.uid {
@@ -644,9 +669,11 @@ public class CardSession {
                             throw TangemSdkError.accessCodeRequired
                         }
 
-                        let protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
-                        let secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
+                        var protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
+                        var secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
                         let sessionKey = (secret + protocolKey).getSHA256()
+                        protocolKey.zeroOut()
+                        secret.zeroOut()
                         self.environment.encryptionKey = sessionKey
                         Log.session("The encryption established")
                         completion(.success(()))
@@ -682,7 +709,12 @@ public class CardSession {
         }
 
         DispatchQueue.main.async {
-            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { result in
+            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { [weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     self.resume()
@@ -829,20 +861,37 @@ private extension CardSession {
     func establishSecureChannel(completion: @escaping CompletionResult<Void>) {
         Log.session("Establish secure channel")
 
-        secureChannelSession = SecureChannelSession(environment: environment)
+        guard let card = environment.card else {
+            Log.session("Encryption can not be established because card is not read")
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        secureChannelSession = SecureChannelSession(cardId: card.cardId)
         environment.encryptionMode = .none
+        environment.encryptionKey?.zeroOut()
         environment.encryptionKey = nil
 
         if environment.cardAccessTokens == nil {
             EstablishSecureChannelWithSecurityDelayTask()
-                .run(in: self, completion: completion)
+                .run(in: self) { result in
+                    switch result {
+                    case .success:
+                        self.secureChannelRetryCount = 0
+                        completion(.success(()))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
         } else {
             EstablishSecureChannelWithAccessTokenTask().run(in: self) { result in
                 switch result {
                 case .success:
+                    self.secureChannelRetryCount = 0
                     completion(.success(()))
                 case .failure(let error):
-                    if case .invalidAccessTokens = error {
+                    if case .invalidAccessTokens = error, self.secureChannelRetryCount < Self.maxSecureChannelRetries {
+                        self.secureChannelRetryCount += 1
                         self.establishSecureChannel(completion: completion)
                     } else {
                         completion(.failure(error))
@@ -934,7 +983,7 @@ extension CardSession {
 // MARK: - JSON RPC
 
 extension CardSession {
-    /// Convinience method for jsonrpc requests running
+    /// Convenience method for jsonrpc requests running
     /// - Parameters:
     ///   - jsonRequest: request to run
     ///   - completion: CardSessionRunnable response converted to json string

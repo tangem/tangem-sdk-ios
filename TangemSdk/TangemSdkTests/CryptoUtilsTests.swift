@@ -520,6 +520,76 @@ class CryptoUtilsTests: XCTestCase {
     }
 }
 
+// MARK: - secureCompare
+
+extension CryptoUtilsTests {
+    func testSecureCompareEqualData() {
+        let a = Data([0x01, 0x02, 0x03, 0x04])
+        let b = Data([0x01, 0x02, 0x03, 0x04])
+        XCTAssertTrue(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareEmptyData() {
+        XCTAssertTrue(CryptoUtils.secureCompare(Data(), Data()))
+    }
+
+    func testSecureCompareDifferentData() {
+        let a = Data([0x01, 0x02, 0x03, 0x04])
+        let b = Data([0x01, 0x02, 0x03, 0x05])
+        XCTAssertFalse(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareDifferentLengths() {
+        let a = Data([0x01, 0x02, 0x03])
+        let b = Data([0x01, 0x02, 0x03, 0x04])
+        XCTAssertFalse(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareFirstByteDiffers() {
+        let a = Data([0xFF, 0x02, 0x03, 0x04])
+        let b = Data([0x00, 0x02, 0x03, 0x04])
+        XCTAssertFalse(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareLastByteDiffers() {
+        let a = Data([0x01, 0x02, 0x03, 0x04])
+        let b = Data([0x01, 0x02, 0x03, 0xFF])
+        XCTAssertFalse(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareLargeIdenticalData() throws {
+        let a = try CryptoUtils.generateRandomBytes(count: 1024)
+        XCTAssertTrue(CryptoUtils.secureCompare(a, a))
+    }
+
+    func testSecureCompareLargeDifferentData() throws {
+        let a = try CryptoUtils.generateRandomBytes(count: 1024)
+        var b = a
+        b[512] ^= 0x01
+        XCTAssertFalse(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareAllZeros() {
+        let a = Data(repeating: 0x00, count: 32)
+        let b = Data(repeating: 0x00, count: 32)
+        XCTAssertTrue(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareAllOnes() {
+        let a = Data(repeating: 0xFF, count: 32)
+        let b = Data(repeating: 0xFF, count: 32)
+        XCTAssertTrue(CryptoUtils.secureCompare(a, b))
+    }
+
+    func testSecureCompareSHA256Hashes() {
+        let hash1 = "hello".data(using: .utf8)!.getSHA256()
+        let hash2 = "hello".data(using: .utf8)!.getSHA256()
+        let hash3 = "world".data(using: .utf8)!.getSHA256()
+        XCTAssertTrue(CryptoUtils.secureCompare(hash1, hash2))
+        XCTAssertFalse(CryptoUtils.secureCompare(hash1, hash3))
+    }
+}
+
 // MARK: - Helper for tests
 
 fileprivate struct CustomSha256Digest: Digest {

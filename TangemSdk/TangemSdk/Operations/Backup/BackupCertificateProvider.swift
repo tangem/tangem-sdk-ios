@@ -7,12 +7,10 @@
 //
 
 import Foundation
-import Combine
 
 class BackupCertificateProvider {
     private let cardPublicKey: Data
     private let onlineAttestationService: OnlineAttestationService
-    private var cancellable: AnyCancellable? = nil
 
     init(cardPublicKey: Data, onlineAttestationService: OnlineAttestationService) {
         self.cardPublicKey = cardPublicKey
@@ -20,38 +18,25 @@ class BackupCertificateProvider {
     }
 
     func getCertificate(completion: @escaping CompletionResult<Data>) {
-        loadAttestationData() { [weak self] loadCompletion in
-            guard let self else {
-                completion(.failure(.unknownError))
-                return
-            }
-
-            switch loadCompletion {
-            case .success(let response):
-                do {
-                    let certificate = try self.generateBackupCertificate(
-                        issuerSignature: response.issuerSignature
-                    )
-                    completion(.success(certificate))
-                } catch {
-                    completion(.failure(error.toTangemSdkError()))
-                }
-            case .failure(let error):
-                completion(.failure(error))
+        Task.detached {
+            do {
+                let response = try await self.loadAttestationData()
+                let certificate = try self.generateBackupCertificate(
+                    issuerSignature: response.issuerSignature
+                )
+                completion(.success(certificate))
+            } catch {
+                completion(.failure(error.toTangemSdkError()))
             }
         }
     }
 
-    private func loadAttestationData(completion: @escaping CompletionResult<OnlineAttestationResponse>) {
-        cancellable = onlineAttestationService
-            .attestCard()
-            .sink(receiveCompletion: { receivedCompletion in
-                if case .failure = receivedCompletion {
-                    completion(.failure(.issuerSignatureLoadingFailed))
-                }
-            }, receiveValue: {
-                completion(.success($0))
-            })
+    private func loadAttestationData() async throws(TangemSdkError) -> OnlineAttestationResponse {
+        do {
+            return try await onlineAttestationService.attestCard()
+        } catch {
+            throw TangemSdkError.issuerSignatureLoadingFailed
+        }
     }
 
     private func generateBackupCertificate(issuerSignature: Data) throws -> Data {

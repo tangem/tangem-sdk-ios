@@ -133,6 +133,8 @@ extension Command {
                         session.releaseTag()
 
                         session.secureChannelSession?.incrementPacketCounter()
+
+                        // Should be incremented only for success responses. Do not increment on security delay responses.
                         if let packetCounter = session.secureChannelSession?.packetCounter {
                             Log.session("Current packet counter is \(packetCounter)")
                         }
@@ -219,7 +221,7 @@ extension Command {
                                     }
                                     self.transceive(apdu: apdu, in: session, completion: completion)
                                 }
-                            case .needEcryption:
+                            case .needEncryption:
                                 switch session.environment.encryptionMode {
                                 case .none:
                                     Log.session("Try change to fast encryption")

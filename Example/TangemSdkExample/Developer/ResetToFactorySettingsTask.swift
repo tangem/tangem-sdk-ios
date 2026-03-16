@@ -11,26 +11,26 @@ import TangemSdk
 
 class ResetToFactorySettingsTask: CardSessionRunnable {
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        deteleWallets(in: session, completion: completion)
+        deleteWallets(in: session, completion: completion)
     }
 
-    private func deteleWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func deleteWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let wallet = session.environment.card?.wallets.last else {
-            purgeMasterSecret(in: session, completion: completion)
+            deleteMasterSecret(in: session, completion: completion)
             return
         }
 
         PurgeWalletCommand(walletIndex: wallet.index).run(in: session) { result in
             switch result {
             case .success:
-                self.deteleWallets(in: session, completion: completion)
+                self.deleteWallets(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
 
-    private func purgeMasterSecret(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func deleteMasterSecret(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard session.environment.card?.masterSecret != nil else {
             resetBackup(in: session, completion: completion)
             return

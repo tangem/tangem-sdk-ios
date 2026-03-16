@@ -180,7 +180,7 @@ struct MainTab: View {
             createWalletView
         case .importWallet:
             importWalletView
-        case .signHash, .signHashes, .derivePublicKey:
+        case .signHash, .signHashes, .derivePublicKey, .readMasterSecret:
             hdPathView
         case .jsonrpc:
             jsonEditorView

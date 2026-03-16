@@ -343,7 +343,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .needReset: return 30010
 
             // MARK: 4yyxx Errors
-            // Command Error. Business logical errors that occurred inside commands' implmentation.
+            // Command Error. Business logical errors that occurred inside commands' implementation.
             
         case .notPersonalized: return 40001
         case .notActivated: return 40002

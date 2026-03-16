@@ -16,7 +16,7 @@ public enum StatusWord: UInt16 {
     case errorProcessingCommand = 0x6286
     case invalidState = 0x6985
     case insNotSupported = 0x6D00
-    case needEcryption = 0x6982
+    case needEncryption = 0x6982
     case needPause = 0x9789
     case pin1Changed = 0x9001
     case pin2Changed = 0x9002
@@ -38,7 +38,7 @@ public enum StatusWord: UInt16 {
 
     func toTangemSdkError() -> TangemSdkError? {
         switch self {
-        case .needEcryption:
+        case .needEncryption:
             return TangemSdkError.needEncryption
         case .invalidParams:
             return TangemSdkError.invalidParams

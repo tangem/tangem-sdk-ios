@@ -134,7 +134,7 @@ extension Command {
 
                         session.secureChannelSession?.incrementPacketCounter()
 
-                        /// Should be incremented only for success responses. Do not increment on security delay responses.
+                        // Should be incremented only for success responses. Do not increment on security delay responses.
                         if let packetCounter = session.secureChannelSession?.packetCounter {
                             Log.session("Current packet counter is \(packetCounter)")
                         }

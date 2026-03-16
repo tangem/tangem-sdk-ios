@@ -70,7 +70,6 @@ public final class AttestationTask: CardSessionRunnable {
             complete(session, completion)
         case .normal:
             runOnlineAttestation(session, completion)
-           // waitForOnlineAndComplete(session, completion)
         case .full:
             runOnlineAttestation(session, completion)
             runWalletsAttestation(session, completion)
@@ -97,7 +96,6 @@ public final class AttestationTask: CardSessionRunnable {
     
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         //TODO: ATTEST_CARD_FIRMWARE, ATTEST_CARD_UNIQUENESS
-      //  self.waitForOnlineAndComplete(session, completion)
     }
     
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {
@@ -188,31 +186,6 @@ public final class AttestationTask: CardSessionRunnable {
             self.processAttestationReport(session, completion)
         }
     }
-
-//    private func waitForOnlineAndComplete(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-//        if !shouldKeepSessionOpened {
-//            session.pause() //Nothing to do with nfc anymore
-//        }
-//
-//        onlineAttestationValue
-//            .compactMap { $0 }
-//            .sink(receiveValue: { [weak self, weak session] attestResult in
-//                guard let self, let session else { return }
-//
-//                switch attestResult {
-//                case .verified:
-//                    self.currentAttestationStatus.cardKeyAttestation = .verified
-//                    self.trustedCardsRepo.append(cardPublicKey: session.environment.card!.cardPublicKey, attestation:  self.currentAttestationStatus)
-//                case .failed:
-//                    self.currentAttestationStatus.cardKeyAttestation = .failed
-//                default:
-//                    break
-//                }
-//
-//                self.processAttestationReport(session, completion)
-//            })
-//            .store(in: &bag)
-//    }
     
     private func retryOnline( _ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         self.runOnlineAttestation(session, completion)

@@ -869,6 +869,7 @@ private extension CardSession {
 
         secureChannelSession = SecureChannelSession(cardId: card.cardId)
         environment.encryptionMode = .none
+        environment.encryptionKey?.zeroOut()
         environment.encryptionKey = nil
 
         if environment.cardAccessTokens == nil {

@@ -873,7 +873,15 @@ private extension CardSession {
 
         if environment.cardAccessTokens == nil {
             EstablishSecureChannelWithSecurityDelayTask()
-                .run(in: self, completion: completion)
+                .run(in: self) { result in
+                    switch result {
+                    case .success:
+                        self.secureChannelRetryCount = 0
+                        completion(.success(()))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
         } else {
             EstablishSecureChannelWithAccessTokenTask().run(in: self) { result in
                 switch result {

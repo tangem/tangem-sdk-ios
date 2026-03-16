@@ -414,7 +414,12 @@ public class CardSession {
         let requestAccessCodeAction = {
             Log.session("Request for an access code")
             self.environment.accessCode = UserCode(.accessCode, value: nil)
-            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
+            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     Log.session("Continue the runnable")
@@ -542,7 +547,12 @@ public class CardSession {
                 Log.session("Access code is needed, request early")
                 pause()
                 DispatchQueue.main.async {
-                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { result in
+                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                        guard let self else {
+                            completion(.failure(.sessionInactive))
+                            return
+                        }
+
                         switch result {
                         case .success:
                             self.resume()
@@ -560,7 +570,12 @@ public class CardSession {
                 return
             }
 
-            establishSecureChannel { result in
+            establishSecureChannel {[weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     guard let secureChannelSession = self.secureChannelSession else {
@@ -588,7 +603,12 @@ public class CardSession {
                             // wrong pin was entered. retry
                             switch error {
                             case .accessCodeRequired:
-                                self.handleWrongUserCode(.accessCode) { pinResult in
+                                self.handleWrongUserCode(.accessCode) { [weak self] pinResult in
+                                    guard let self else {
+                                        completion(.failure(.sessionInactive))
+                                        return
+                                    }
+                                    
                                     switch pinResult {
                                     case .success:
                                         self.establishEncryptionIfNeeded(
@@ -632,6 +652,7 @@ public class CardSession {
 
                 switch result {
                 case .success(let response):
+
                     do {
                         var uid: Data
                         if let uidFromResponse = response.uid {
@@ -688,7 +709,12 @@ public class CardSession {
         }
 
         DispatchQueue.main.async {
-            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { result in
+            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { [weak self] result in
+                guard let self else {
+                    completion(.failure(.sessionInactive))
+                    return
+                }
+
                 switch result {
                 case .success:
                     self.resume()

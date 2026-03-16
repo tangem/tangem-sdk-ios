@@ -741,6 +741,10 @@ extension AppModel {
         let task = SetNDEFDisabledTask(isDisabled: isNDEFDisabled)
         tangemSdk.startSession(with: task, completion: handleCompletion)
     }
+
+    func resetAccessTokens() {
+        tangemSdk.startSession(with: ResetAccessTokensTask(), completion: handleCompletion)
+    }
 }
 
 //MARK:- Json RPC
@@ -850,6 +854,7 @@ extension AppModel {
         case setUserCodeRecoveryAllowed
         case setPinRequired
         case setNDEFDisabled
+        case resetAccessTokens
     }
     
     private func chooseMethod(walletIndex: Int? = nil) {
@@ -893,6 +898,7 @@ extension AppModel {
         case .setUserCodeRecoveryAllowed: setUserCodeRecoveryAllowed()
         case .setPinRequired: setPinRequired()
         case .setNDEFDisabled: setNDEFDisabled()
+        case .resetAccessTokens: resetAccessTokens()
         }
     }
 }

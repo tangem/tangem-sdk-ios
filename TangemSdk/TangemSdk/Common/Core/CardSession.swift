@@ -608,7 +608,7 @@ public class CardSession {
                                         completion(.failure(.sessionInactive))
                                         return
                                     }
-                                    
+
                                     switch pinResult {
                                     case .success:
                                         self.establishEncryptionIfNeeded(

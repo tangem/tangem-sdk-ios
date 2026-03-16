@@ -138,19 +138,6 @@ extension Data {
         return Array(self)
     }
 
-    func toBits() -> [String] {
-        return flatMap { $0.toBits() }
-    }
-
-    func decodeTlv<T>(tag: TlvTag) -> T? {
-        guard let tlv = Tlv.deserialize(self) else{
-            return nil
-        }
-
-        let decoder = TlvDecoder(tlv: tlv)
-        return try? decoder.decode(tag)
-    }
-
     public func pbkdf2(hash: CCPBKDFAlgorithm,
                        salt: Data,
                        keyByteCount: Int,
@@ -305,4 +292,21 @@ extension Data {
         return Data(authenticationCode)
     }
 
+    func toBits() -> [String] {
+        return flatMap { $0.toBits() }
+    }
+
+    func decodeTlv<T>(tag: TlvTag) -> T? {
+        guard let tlv = Tlv.deserialize(self) else{
+            return nil
+        }
+
+        let decoder = TlvDecoder(tlv: tlv)
+        return try? decoder.decode(tag)
+    }
+
+    mutating func zeroOut() {
+        guard !isEmpty else { return }
+        resetBytes(in: startIndex..<endIndex)
+    }
 }

@@ -148,32 +148,45 @@ extension Command {
                         completion(.failure(error.toTangemSdkError()))
                     }
                 case .failure(let error):
-                    // handled by secure channel flow by card session
+                    // pin handled by secure channel flow by card session
                     if let firmwareVersion = session.environment.card?.firmwareVersion, firmwareVersion >= .v8 {
-                        session.releaseTag()
-                        completion(.failure(error))
-                        return
-                    }
-
-                    let error = session.environment.config.handleErrors ? self.mapError(session.environment.card, error) : error
-                    switch error {
-                    case .accessCodeRequired:
-                        self.requestPin(.accessCode, session, completion: completion) //only read command
-                    case .passcodeRequired:
-                        self.requestPin(.passcode, session, completion: completion)
-                    case .invalidParams:
-                        if self.requiresPasscode {
-                            //Addition check for COS v4 and newer to prevent false-positive pin2 request
-                            if session.environment.card?.isPasscodeSet == false,
-                               !session.environment.isUserCodeSet(.passcode) {
-                                fallthrough
+                        switch error {
+                        case .retrySecureChannelNeeded:
+                            // We have to restart secure channel flow for COS V8+
+                            session.secureChannelSession?.reset()
+                            if commandApdu.ins == Instruction.authorize.rawValue || commandApdu.ins == Instruction.openSession.rawValue {
+                                Log.debug("Fail secure channel command to restart the full flow")
+                                completion(.failure(error))
+                            } else {
+                                Log.debug("Retry command with new secure channel session")
+                                self.transceiveInternal(in: session, completion: completion)
                             }
+                        default:
+                            session.releaseTag()
+                            completion(.failure(error))
+                        }
+                    } else {
+                        let error = session.environment.config.handleErrors ? self.mapError(session.environment.card, error) : error
 
+                        switch error {
+                        case .accessCodeRequired:
+                            self.requestPin(.accessCode, session, completion: completion) //only read command
+                        case .passcodeRequired:
                             self.requestPin(.passcode, session, completion: completion)
-                        } else { fallthrough }
-                    default:
-                        session.releaseTag()
-                        completion(.failure(error))
+                        case .invalidParams:
+                            if self.requiresPasscode {
+                                //Addition check for COS v4 and newer to prevent false-positive pin2 request
+                                if session.environment.card?.isPasscodeSet == false,
+                                   !session.environment.isUserCodeSet(.passcode) {
+                                    fallthrough
+                                }
+
+                                self.requestPin(.passcode, session, completion: completion)
+                            } else { fallthrough }
+                        default:
+                            session.releaseTag()
+                            completion(.failure(error))
+                        }
                     }
                 }
             }

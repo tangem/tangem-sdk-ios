@@ -25,8 +25,6 @@ struct BackupView: View {
             }
             .padding([.horizontal, .bottom], 16)
         }
-        .navigationTitle("Backup")
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var separator: some View {

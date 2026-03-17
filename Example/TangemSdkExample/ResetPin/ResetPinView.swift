@@ -42,8 +42,6 @@ struct ResetPinView: View {
             actionButton("Proceed", action: viewModel.proceed)
                 .padding(.bottom, 16)
         }
-        .navigationTitle("Reset user codes")
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private func actionButton(_ title: String, action: @escaping () -> Void) -> some View {

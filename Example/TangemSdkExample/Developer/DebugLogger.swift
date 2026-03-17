@@ -43,7 +43,7 @@ class DebugLogger: TangemSdkLogger {
         }
         
         let currentLogs = logsPublisher.value
-        let newLogs = "\(text)\n\n" + currentLogs
+        let newLogs = currentLogs.appending("\n\n\(text)")
         logsPublisher.send(newLogs)
     }
 }

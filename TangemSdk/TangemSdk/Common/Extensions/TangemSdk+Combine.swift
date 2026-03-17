@@ -55,7 +55,8 @@ extension NFCISO7816Tag {
                 Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
 
                 if let sdkError = error?.toTangemSdkError() {
-                    Log.error(sdkError)
+                    Log.command("Error received.")
+                    Log.error(error)
                     promise(.failure(sdkError))
                 } else {
                     let rApdu = ResponseApdu(data, sw1, sw2)

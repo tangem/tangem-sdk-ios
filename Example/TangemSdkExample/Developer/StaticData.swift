@@ -10,7 +10,7 @@ import Foundation
 
 //MARK:- Personalization jsons
 
-extension AppModel {
+extension MainTabViewModel {
     static var personalizeConfigTemplate =
         """
      {

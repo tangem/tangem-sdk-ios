@@ -286,8 +286,9 @@ extension NFCReader: CardReader {
 
     /// Send apdu command to connected tag
     /// - Parameter apdu: serialized apdu
+    /// - Parameter retryOnFail: Should be false for COS v8+ because of secure channel
     /// - Parameter completion: result with ResponseApdu or NFCError otherwise
-    func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+    func sendPublisher(apdu: CommandApdu, retryOnFail: Bool) -> AnyPublisher<ResponseApdu, TangemSdkError> {
         if isBeingStopped {
             Log.nfc("Session is being stopped. Skip sending.")
             return Empty(completeImmediately: false)
@@ -329,11 +330,20 @@ extension NFCReader: CardReader {
                     .receive(on: self.queue)
                     .tryCatch{[weak self] error -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> in
                         guard let self = self else {
-                            return Empty(completeImmediately: true).eraseToAnyPublisher()
+                            return Empty(completeImmediately: true)
+                                .eraseToAnyPublisher()
                         }
 
                         if case .userCancelled = error {
                             return Just(.failure(error))
+                                .setFailureType(to: TangemSdkError.self)
+                                .eraseToAnyPublisher()
+                        }
+
+                        guard retryOnFail else {
+                            Log.nfc("Got an error, skip retry.")
+                            self.restartPolling(silent: true)
+                            return Just(.failure(TangemSdkError.retrySecureChannelNeeded))
                                 .setFailureType(to: TangemSdkError.self)
                                 .eraseToAnyPublisher()
                         }
@@ -344,7 +354,8 @@ extension NFCReader: CardReader {
                             Log.nfc("Invoke restart polling on error")
                             self.sendRetryCount = Constants.retryCount
                             self.restartPolling(silent: !isDistanceTooLong) //Use silent mode only if retries are empty
-                            return Empty(completeImmediately: false).eraseToAnyPublisher()
+                            return Empty(completeImmediately: false)
+                                .eraseToAnyPublisher()
                         } else {
                             self.sendRetryCount -= 1
                             Log.nfc("Retry send. distance: \(distance)")
@@ -355,7 +366,7 @@ extension NFCReader: CardReader {
                     .handleEvents (receiveOutput: {[weak self] rApdu in
                         guard let self = self else { return }
 
-                        Log.nfc("Success response from card received")
+                        Log.nfc("Response from card received")
                         self.sendRetryCount = Constants.retryCount
                         self.startIdleTimer()
                     })

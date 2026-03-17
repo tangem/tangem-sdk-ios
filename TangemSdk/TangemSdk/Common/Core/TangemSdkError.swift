@@ -31,7 +31,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case nfcTimeout
     
     case nfcReaderError
-    
+
+    /// COS v8+. We can't retry anymore, always restart session after this error.
+    case retrySecureChannelNeeded
     
     //MARK: Apdu processing errrors
     
@@ -312,8 +314,8 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .nfcStuck: return 10006
         case .nfcTimeout: return 10007
         case .nfcReaderError: return 10008
-            
-            
+        case .retrySecureChannelNeeded: return 10009
+
             // MARK: 2xxxx Errors
             // Errors occurred during the mapping or parsing data.
         case .serializeCommandError: return 20001

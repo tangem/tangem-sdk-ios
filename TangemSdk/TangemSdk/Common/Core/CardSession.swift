@@ -144,6 +144,7 @@ public class CardSession {
                     guard let self = self else { return }
 
                     if let error = error {
+                        Log.session("Prepare session error")
                         Log.error(error)
                         DispatchQueue.main.async {
                             completion(.failure(error))
@@ -323,6 +324,13 @@ public class CardSession {
             return
         }
 
+        let retryOnFail: Bool
+        if let fwVersion = environment.card?.firmwareVersion, fwVersion >= .v8 {
+            retryOnFail = false
+        } else {
+            retryOnFail = true
+        }
+
         reader.tag
             .filter { $0 != .none }
             .filter {[weak self] tag in
@@ -350,7 +358,7 @@ public class CardSession {
                 encryptionKey: self.environment.encryptionKey,
                 nonce: self.secureChannelSession?.makeCommandAPDUNonce()
             )}
-            .flatMap { self.reader.sendPublisher(apdu: $0) }
+            .flatMap { self.reader.sendPublisher(apdu: $0, retryOnFail: retryOnFail) }
             .flatMap { $0.decryptPublisher(
                 encryptionMode: self.environment.encryptionMode,
                 encryptionKey: self.environment.encryptionKey,

@@ -91,7 +91,7 @@ extension MainTabViewModel {
         "NDEF": [],
         "walletsCount": 10,
         "securityDelay": 5000,
-        "requireBackup": false,
+        "requireBackup": true,
         "cardData": {
             "date": "2021-03-15",
             "batch": "CB79",

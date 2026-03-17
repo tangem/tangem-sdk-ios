@@ -208,7 +208,7 @@ extension MainTabViewModel {
         switch method {
         case .jsonrpc:
             pasteJson()
-        case .personalize:
+        case .personalize, .personalizeV8:
             pastePersonalizationConfig()
         default: break
         }

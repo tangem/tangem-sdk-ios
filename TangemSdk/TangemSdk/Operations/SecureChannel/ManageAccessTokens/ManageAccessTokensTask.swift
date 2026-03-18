@@ -16,19 +16,20 @@ class ManageAccessTokensTask: CardSessionRunnable {
     }
 
     func run(in session: CardSession, completion: @escaping CompletionResult<Void>) {
-        ManageAccessTokensCommand(mode: .get).run(in: session) { result in
+        let getCommand = ManageAccessTokensCommand(mode: .get)
+        getCommand.run(in: session) { result in
             switch result {
             case .success(let response):
                 if response.isZeroResponse {
-                    let command = ManageAccessTokensCommand(mode: .renew)
-                    command.run(in: session) { result in
+                    let renewCommand = ManageAccessTokensCommand(mode: .renew)
+                    renewCommand.run(in: session) { result in
                         switch result {
                         case .success:
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
                         }
-                        withExtendedLifetime(command) {}
+                        withExtendedLifetime(renewCommand) {}
                     }
                 } else {
                     completion(.success(()))
@@ -36,7 +37,7 @@ class ManageAccessTokensTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
+            withExtendedLifetime(getCommand) {}
         }
     }
 }
-

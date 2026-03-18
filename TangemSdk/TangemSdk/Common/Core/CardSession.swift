@@ -161,7 +161,6 @@ public class CardSession {
                         switch result {
                         case .success(let runnableResponse):
                             session.saveAccessCodeIfNeeded()
-                            session.saveAccessTokensIfNeeded()
                             session.handleHealthIfNeeded {
                                 session.stop(message: "nfc_alert_default_done".localized) {
                                     completion(.success(runnableResponse))
@@ -310,7 +309,7 @@ public class CardSession {
     ///   - apdu: The apdu to send
     ///   - completion: Completion handler. Invoked by nfc-reader
     public final func send(apdu: CommandApdu, completion: @escaping CompletionResult<ResponseApdu>) {
-        Log.session("Send")
+        Log.session("Send \(Instruction(rawValue: apdu.ins) ?? .unknown)")
 
         guard sendSubscription.isEmpty else {
             Log.error(TangemSdkError.busy)
@@ -394,6 +393,8 @@ public class CardSession {
     }
 
     private func sessionDidStop(completion: (() -> Void)?) {
+        accessCodeRepository?.lock()
+        cardAccessTokensRepository?.lock()
         nfcReaderSubscriptions = []
         resetSensitiveData()
         preflightReadMode = .fullCardRead
@@ -965,7 +966,6 @@ extension CardSession {
 
         do {
             try cardAccessTokensRepository?.save(tokens, for: card.cardId)
-            cardAccessTokensRepository?.lock()
             Log.session("Access tokens saved successfully")
         } catch {
             Log.error(error)

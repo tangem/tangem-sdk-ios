@@ -132,8 +132,7 @@ public struct CommandApdu: Equatable {
 
 extension CommandApdu: CustomStringConvertible {
     public var description: String {
-        let instruction = Instruction(rawValue: ins) ?? .unknown
         let bytes = serialize()
-        return "\(instruction) [\(bytes.count) bytes]: \(bytes)"
+        return "cla: \(cla) ins: \(ins) p1: \(p1) p2: \(p2) length: [\(bytes.count) bytes]: \(bytes)"
     }
 }

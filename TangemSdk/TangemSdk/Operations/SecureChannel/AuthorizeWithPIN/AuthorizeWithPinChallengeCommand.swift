@@ -24,6 +24,14 @@ class AuthorizeWithPinChallengeCommand: Command {
         Log.debug("AuthorizeWithPinChallengeCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        return nil
+    }
+    
     func run(in session: CardSession, completion: @escaping CompletionResult<AuthorizeWithPinChallengeResponse>) {
         transceive(in: session) { result in
             switch result {

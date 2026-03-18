@@ -177,7 +177,7 @@ extension Command {
                             if self.requiresPasscode {
                                 //Addition check for COS v4 and newer to prevent false-positive pin2 request
                                 if session.environment.card?.isPasscodeSet == false,
-                                   !session.environment.isUserCodeSet(.passcode) {
+                                   session.environment.passcode.isDefault {
                                     fallthrough
                                 }
 

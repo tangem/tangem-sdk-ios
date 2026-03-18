@@ -39,6 +39,19 @@ class ManageAccessTokensCommand: Command {
         Log.debug("ManageAccessTokensCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        if mode != .reset,
+           card.settings.isBackupRequired, card.backupStatus?.isActive == false {
+            return TangemSdkError.noActiveBackup
+        }
+
+        return nil
+    }
+
     func run(in session: CardSession, completion: @escaping CompletionResult<ManageAccessTokensResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -49,14 +62,6 @@ class ManageAccessTokensCommand: Command {
                 completion(.failure(error))
             }
         }
-    }
-
-    func performPreCheck(_ card: Card) -> TangemSdkError? {
-        if card.settings.isBackupRequired, card.backupStatus?.isActive == false {
-            return TangemSdkError.noActiveBackup
-        }
-
-        return nil
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
@@ -75,8 +80,13 @@ class ManageAccessTokensCommand: Command {
     }
 
     private func saveTokens(_ response: ManageAccessTokensResponse, session: CardSession) {
-        session.environment.cardAccessTokens = CardAccessTokens(response)
-        session.saveAccessTokensIfNeeded()
-        Log.debug("Access tokens requested successfully")
+        if response.isZeroResponse || mode == .reset {
+            session.resetAccessTokens()
+            Log.debug("Access tokens reset successfully")
+        } else {
+            session.environment.cardAccessTokens = CardAccessTokens(response)
+            session.saveAccessTokensIfNeeded()
+            Log.debug("Access tokens updated successfully")
+        }
     }
 }

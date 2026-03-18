@@ -52,6 +52,14 @@ class OpenSessionWithAccessTokenCommand: Command {
         Log.debug("OpenSessionWithAccessTokenCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        return nil
+    }
+
     func run(in session: CardSession, completion: @escaping CompletionResult<OpenSessionWithAccessTokenResponse>) {
         transceive(in: session) { result in
             switch result {

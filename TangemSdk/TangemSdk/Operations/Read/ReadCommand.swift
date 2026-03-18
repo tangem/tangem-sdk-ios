@@ -59,7 +59,7 @@ public final class ReadCommand: Command {
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> (Card, WalletData?) {
         let decoder = try CardDeserializer.getDecoder(with: environment, from: apdu)
         let cardDataDecoder = try CardDeserializer.getCardDataDecoder(with: environment, from: decoder.tlv)
-        let card = try CardDeserializer().deserialize(isAccessCodeSetLegacy: environment.isUserCodeSet(.accessCode),
+        let card = try CardDeserializer().deserialize(isAccessCodeSetLegacy: environment.accessCode.isNonDefault,
                                                       decoder: decoder,
                                                       cardDataDecoder: cardDataDecoder)
         let walletData = try cardDataDecoder.flatMap { try WalletDataDeserializer().deserialize(decoder: $0) }

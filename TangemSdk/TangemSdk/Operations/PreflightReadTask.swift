@@ -86,7 +86,11 @@ final class PreflightReadTask: CardSessionRunnable {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
+
+        if card.isAccessCodeSet {
+            session.environment.accessCode = UserCode(.accessCode, value: nil)
+        }
+
         if card.firmwareVersion < .multiwalletAvailable {
             do {
                 try self.filterOnReadWalletsList(card: card, session)
@@ -105,7 +109,6 @@ final class PreflightReadTask: CardSessionRunnable {
         case .fullCardReadWithAccessCodeCheck:
             if card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
                 session.pause()
-                session.environment.accessCode = UserCode(.accessCode, value: nil)
 
                 let showWelcomeBackWarning: Bool
                 if Config.isDevelopmentMode, card.firmwareVersion.type == .sdk {
@@ -115,7 +118,7 @@ final class PreflightReadTask: CardSessionRunnable {
                 }
 
                 DispatchQueue.main.async {
-                    session.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
+                    session.requestUserCode(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
                         switch result {
                         case .success:
                             session.resume()

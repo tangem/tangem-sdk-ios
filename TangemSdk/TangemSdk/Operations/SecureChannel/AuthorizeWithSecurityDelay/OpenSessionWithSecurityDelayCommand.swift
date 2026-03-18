@@ -29,6 +29,14 @@ class OpenSessionWithSecurityDelayCommand: Command {
         Log.debug("OpenSessionWithSecurityDelayCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        return nil
+    }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

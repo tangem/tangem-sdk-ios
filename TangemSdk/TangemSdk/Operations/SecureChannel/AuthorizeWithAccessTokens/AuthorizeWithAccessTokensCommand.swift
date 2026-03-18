@@ -45,6 +45,10 @@ class AuthorizeWithAccessTokensCommand: Command {
     }
 
     func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
         if card.settings.isBackupRequired, card.backupStatus?.isActive == false {
             return TangemSdkError.walletUnavailableBackupRequired
         }

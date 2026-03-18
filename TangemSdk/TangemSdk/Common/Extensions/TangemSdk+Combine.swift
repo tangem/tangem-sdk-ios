@@ -15,6 +15,7 @@ extension ResponseApdu {
         return Deferred {Future() { promise in
             do {
                 let decrypted = try self.decrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
+                Log.apdu("R-APDU decrypted --> \(decrypted)")
                 promise(.success(decrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))
@@ -27,6 +28,8 @@ extension CommandApdu {
     func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
         return Deferred {Future() { promise in
             do {
+                Log.apdu("C-APDU unencrypted --> \(self)")
+
                 let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
                 promise(.success(encrypted))
             } catch {
@@ -45,11 +48,11 @@ extension NFCISO7816Tag {
                 return
             }
 
-            Log.apdu("C-APDU send --> \(serializedAPDU.hexString)")
+            Log.apdu("C-APDU send encrypted --> \(serializedAPDU.hexString)")
 
             let requestDate = Date()
             self.sendCommand(apdu: apdu) { data, sw1, sw2, error in
-                Log.apdu("R-APDU receive <-- Data: \(data.hexString) SW1: \(sw1) SW2: \(sw2)")
+                Log.apdu("R-APDU receive encrypted <-- Data: \(data.hexString) SW1: \(sw1) SW2: \(sw2)")
 
                 let dateDiff = Calendar.current.dateComponents([.nanosecond], from: requestDate, to: Date())
                 Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")

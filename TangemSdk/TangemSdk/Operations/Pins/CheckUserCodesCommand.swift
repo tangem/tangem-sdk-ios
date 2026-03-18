@@ -30,11 +30,11 @@ public final class CheckUserCodesCommand: CardSessionRunnable {
         command.run(in: session) { result in
             switch result {
             case .success:
-                completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.isUserCodeSet(.accessCode),
-                                                           isPasscodeSet: session.environment.isUserCodeSet(.passcode))))
+                completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.accessCode.isNonDefault,
+                                                           isPasscodeSet: session.environment.passcode.isNonDefault)))
             case .failure(let error):
                 if case .invalidParams = error {
-                    completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.isUserCodeSet(.accessCode),
+                    completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.accessCode.isNonDefault,
                                                                isPasscodeSet: true)))
                 } else {
                     completion(.failure(error))

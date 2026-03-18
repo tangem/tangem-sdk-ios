@@ -50,15 +50,6 @@ public struct SessionEnvironment {
         self.terminalKeysService = terminalKeysService
     }
 
-    func isUserCodeSet(_ type: UserCodeType) -> Bool {
-        switch type {
-        case .accessCode:
-            return !accessCode.isDefault && accessCode.value != nil
-        case .passcode:
-            return !passcode.isDefault && passcode.value != nil
-        }
-    }
-
     mutating func reset() {
         encryptionKey?.zeroOut()
         encryptionKey = nil

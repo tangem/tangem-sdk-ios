@@ -644,12 +644,12 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
     /// - Returns: TangemSdkError
     static func from(userCodeType: UserCodeType, environment: SessionEnvironment?) -> TangemSdkError {
-        let isCodeSet = environment?.isUserCodeSet(userCodeType) ?? false
-        
         switch userCodeType {
         case .accessCode:
+            let isCodeSet = environment?.accessCode.isNonDefault ?? false
             return isCodeSet ? .wrongAccessCode : .accessCodeRequired
         case .passcode:
+            let isCodeSet = environment?.passcode.isNonDefault ?? false
             return isCodeSet ? .wrongPasscode : .passcodeRequired
         }
     }

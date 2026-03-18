@@ -9,6 +9,8 @@ import Foundation
 
 /// Reset access tokens on the card
 public class ResetAccessTokensTask: CardSessionRunnable {
+    public var preflightReadMode: PreflightReadMode { .readCardOnly }
+
     deinit {
         Log.debug("ResetAccessTokensTask deinit")
     }

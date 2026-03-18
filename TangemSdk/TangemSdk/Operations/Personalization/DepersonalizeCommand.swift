@@ -35,6 +35,7 @@ public class DepersonalizeCommand: Command {
                 if response.success {
                     session.environment.accessCode = UserCode(.accessCode, value: nil)
                     session.environment.passcode = UserCode(.passcode, value: nil)
+                    session.resetAccessTokens()
                 }
                 completion(.success(response))
             case .failure(let error):

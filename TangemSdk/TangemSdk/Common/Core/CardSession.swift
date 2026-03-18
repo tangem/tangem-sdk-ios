@@ -422,7 +422,7 @@ public class CardSession {
         let requestAccessCodeAction = {
             Log.session("Request for an access code")
             self.environment.accessCode = UserCode(.accessCode, value: nil)
-            self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+            self.requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
                 guard let self else {
                     completion(.failure(.sessionInactive))
                     return
@@ -546,16 +546,16 @@ public class CardSession {
         if card.firmwareVersion < .v8 {
             establishLegacyEncryption(completion)
         } else {
-            let needsAuthorizationWithPin = checkIfAuthorizationWithPinNeeded(
+            let needsAuthorizationWithAccessCode = checkIfAuthorizationWithAccessCodeIsNeeded(
                 cardSessionEncryption: cardSessionEncryption,
                 shouldAskForAccessCode: shouldAskForAccessCode
             )
-            // Request PIN as early as possible
-            if needsAuthorizationWithPin, !environment.isUserCodeSet(.accessCode) {
+            // Request Access Code as early as possible
+            if needsAuthorizationWithAccessCode, environment.accessCode.value == nil {
                 Log.session("Access code is needed, request early")
                 pause()
                 DispatchQueue.main.async {
-                    self.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                    self.requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
                         guard let self else {
                             completion(.failure(.sessionInactive))
                             return
@@ -594,7 +594,7 @@ public class CardSession {
 
                     Log.session("SecureChannel established successfully. Current access level is \(secureChannelSession.accessLevel)")
 
-                    guard needsAuthorizationWithPin || secureChannelSession.isElevationRequired(for: cardSessionEncryption) else {
+                    guard needsAuthorizationWithAccessCode || secureChannelSession.isElevationRequired(for: cardSessionEncryption) else {
                         Log.session("Authorization with PIN is not needed")
                         completion(.success(()))
                         return
@@ -717,7 +717,7 @@ public class CardSession {
         }
 
         DispatchQueue.main.async {
-            self.requestUserCodeIfNeeded(type, showWelcomeBackWarning: false) { [weak self] result in
+            self.requestUserCode(type, showWelcomeBackWarning: false) { [weak self] result in
                 guard let self else {
                     completion(.failure(.sessionInactive))
                     return
@@ -735,22 +735,7 @@ public class CardSession {
         }
     }
 
-    func requestUserCodeIfNeeded(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
-        if !showWelcomeBackWarning {
-            switch type {
-            case .accessCode:
-                guard environment.accessCode.value == nil else {
-                    completion(.success(()))
-                    return
-                }
-            case .passcode:
-                guard environment.passcode.value == nil else {
-                    completion(.success(()))
-                    return
-                }
-            }
-        }
-
+    func requestUserCode(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
         Log.session("Request user code of type: \(type)")
 
 
@@ -909,7 +894,7 @@ private extension CardSession {
         }
     }
 
-    func checkIfAuthorizationWithPinNeeded(cardSessionEncryption: CardSessionEncryption, shouldAskForAccessCode: Bool) -> Bool {
+    func checkIfAuthorizationWithAccessCodeIsNeeded(cardSessionEncryption: CardSessionEncryption, shouldAskForAccessCode: Bool) -> Bool {
         // Some commands handle pin by themselves
         if !shouldAskForAccessCode {
             return false

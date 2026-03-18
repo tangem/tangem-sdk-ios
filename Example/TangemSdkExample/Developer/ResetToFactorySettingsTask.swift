@@ -47,16 +47,47 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
     }
 
     private func resetBackup(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        guard let backupStatus = session.environment.card?.backupStatus,
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard let backupStatus = card.backupStatus,
               backupStatus != .noBackup else {
-            completion(.success(session.environment.card!))
+            self.resetAccessTokens(in: session, completion: completion)
             return
         }
 
         ResetBackupCommand().run(in: session) { result in
             switch result {
             case .success:
-                completion(.success(session.environment.card!))
+                self.resetAccessTokens(in: session, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func resetAccessTokens(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard card.firmwareVersion >= .v8 else {
+            completion(.success(card))
+            return
+        }
+
+        ResetAccessTokensTask().run(in: session) { result in
+            switch result {
+            case .success:
+                guard let card = session.environment.card else {
+                    completion(.failure(.missingPreflightRead))
+                    return
+                }
+
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }

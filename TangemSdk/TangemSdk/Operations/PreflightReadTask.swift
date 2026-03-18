@@ -72,6 +72,11 @@ final class PreflightReadTask: CardSessionRunnable {
                 }
                 
                 self.updateEnvironmentIfNeeded(for: card, in: session)
+
+                if card.isAccessCodeSet, session.environment.accessCode.isDefault {
+                    session.environment.accessCode = UserCode(.accessCode, value: nil)
+                }
+
                 session.fetchAccessCodeIfNeeded()
                 session.fetchAccessTokensIfNeeded()
                 self.finalizeRead(in: session, completion: completion)
@@ -85,10 +90,6 @@ final class PreflightReadTask: CardSessionRunnable {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
-        }
-
-        if card.isAccessCodeSet {
-            session.environment.accessCode = UserCode(.accessCode, value: nil)
         }
 
         if card.firmwareVersion < .multiwalletAvailable {

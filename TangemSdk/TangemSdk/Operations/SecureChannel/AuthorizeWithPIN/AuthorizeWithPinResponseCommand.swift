@@ -29,6 +29,14 @@ class AuthorizeWithPinResponseCommand: Command {
         Log.debug("AuthorizeWithPinResponseCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        if card.firmwareVersion < .v8 {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        return nil
+    }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let pin = environment.accessCode.value else {
             throw TangemSdkError.serializeCommandError

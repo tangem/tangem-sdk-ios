@@ -902,7 +902,7 @@ private extension CardSession {
         }
 
         // Authorization is mandatory by command
-        if cardSessionEncryption == .secureChannelWithPIN {
+        if cardSessionEncryption == .secureChannelWithPIN, environment.card?.isAccessCodeSet == true {
             return true
         }
 

@@ -18,6 +18,10 @@ struct UserCode {
         return CryptoUtils.secureCompare(value, type.defaultValue.getSHA256())
     }
 
+    var isNonDefault: Bool {
+        !isDefault
+    }
+
     init(_ type: UserCodeType) {
         self.value = type.defaultValue.getSHA256()
         self.type = type

@@ -58,10 +58,10 @@ final class LinkPrimaryCardCommand: Command {
             case .success(let response):
                 session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
                 session.environment.passcode = UserCode(.passcode, value: self.passcode)
-                
-                let isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
-                let isPasscodeSet = session.environment.isUserCodeSet(.passcode)
-                
+
+                let isAccessCodeSet = session.environment.accessCode.isNonDefault
+                let isPasscodeSet = session.environment.passcode.isNonDefault
+
                 session.environment.card?.isAccessCodeSet = isAccessCodeSet
                 session.environment.card?.isPasscodeSet = isPasscodeSet
                 self.complete(response: response, session: session, completion: completion)

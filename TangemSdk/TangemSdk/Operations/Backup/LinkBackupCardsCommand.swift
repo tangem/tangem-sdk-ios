@@ -60,9 +60,9 @@ final class LinkBackupCardsCommand: Command {
                 session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
                 session.environment.passcode = UserCode(.passcode, value: self.passcode)
                 
-                let isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
-                let isPasscodeSet = session.environment.isUserCodeSet(.passcode)
-                
+                let isAccessCodeSet = session.environment.accessCode.isNonDefault
+                let isPasscodeSet = session.environment.passcode.isNonDefault
+
                 session.environment.card?.isAccessCodeSet = isAccessCodeSet
                 session.environment.card?.isPasscodeSet = isPasscodeSet
                 completion(.success(response))

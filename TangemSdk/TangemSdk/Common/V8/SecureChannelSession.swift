@@ -10,7 +10,7 @@ import Foundation
 /// Encapsulates all CCM encryption state for v8+ secure channel protocol.
 class SecureChannelSession {
     private(set) var accessLevel: AccessLevel = .publicAccess
-    private(set) var isAuthorizedWithPin: Bool = false
+    private(set) var isAuthorizedWithAccessCode: Bool = false
     private(set) var packetCounter: Int = 0
     private let cardIdBytes: Data
 
@@ -47,7 +47,7 @@ class SecureChannelSession {
         case .secureChannel:
             return accessLevel.isPublic || accessLevel.isPublicSecureChannel
         case .secureChannelWithPIN:
-            return accessLevel.isPublic || accessLevel.isPublicSecureChannel || !isAuthorizedWithPin
+            return accessLevel.isPublic || accessLevel.isPublicSecureChannel || !isAuthorizedWithAccessCode
         }
     }
 
@@ -58,12 +58,12 @@ class SecureChannelSession {
 
     func didAuthorizePin(accessLevel: AccessLevel) {
         self.accessLevel = accessLevel
-        self.isAuthorizedWithPin = true
+        self.isAuthorizedWithAccessCode = true
     }
 
     func reset() {
         accessLevel = .publicAccess
-        isAuthorizedWithPin = false
+        isAuthorizedWithAccessCode = false
         packetCounter = 0
     }
 }

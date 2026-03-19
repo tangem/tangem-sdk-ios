@@ -14,11 +14,11 @@ extension MainTabViewModel {
     static var personalizeConfigTemplate =
         """
      {
-        "releaseVersion": true,
-        "issuerName": "TANGEM AG",
-        "series": "CB",
-        "startNumber": 7900000000000,
-        "count": 2500,
+        "releaseVersion": false,
+        "issuerName": "TANGEM",
+        "series": "AAAA",
+        "startNumber": 0,
+        "count": 10,
         "numberFormat": "",
         "PIN": "000000",
         "PIN2": "000",
@@ -51,15 +51,9 @@ extension MainTabViewModel {
         "allowKeysImport": true,
         "NDEF": [],
         "cardData": {
-            "date": "2021-03-15",
-            "batch": "CB79",
-            "blockchain": "ANY",
-            "product_note": true,
-            "product_tag": false,
-            "product_id_card": false,
-            "product_id_issuer": false,
-            "product_authentication": false,
-            "product_twin": false
+            "date": "2026-01-01",
+            "batch": "FFFA",
+            "blockchain": "ANY"
         },
         "createWallet": 0
     }
@@ -68,12 +62,12 @@ extension MainTabViewModel {
     static var personalizeConfigTemplateV8 =
         """
      {
-        "releaseVersion": true,
-        "issuerName": "TANGEM AG",
-        "series": "CB",
-        "startNumber": 7900000000000,
-        "count": 2500,
-        "numberFormat": "",
+        "releaseVersion": false,
+        "issuerName": "TANGEM",
+        "series": "AAAA",
+        "startNumber": 0,
+        "count": 10,
+        "numberFormat": "0NNNNNNNNNN",
         "PIN": "000000",
         "curveID": "secp256k1",
         "SigningMethod": 0,
@@ -82,7 +76,7 @@ extension MainTabViewModel {
         "useNDEF": true,
         "useBlock": false,
         "forbidPurgeWallet": false,
-        "forbidDefaultPIN": false,
+        "forbidDefaultPIN": true,
         "disableFiles": false,
         "allowHDWallets": true,
         "allowBackup": true,
@@ -93,15 +87,8 @@ extension MainTabViewModel {
         "securityDelay": 5000,
         "requireBackup": true,
         "cardData": {
-            "date": "2021-03-15",
-            "batch": "CB79",
-            "blockchain": "ANY",
-            "product_note": true,
-            "product_tag": false,
-            "product_id_card": false,
-            "product_id_issuer": false,
-            "product_authentication": false,
-            "product_twin": false
+            "date": "2026-01-01",
+            "batch": "FFFA"
         }
     }
     """

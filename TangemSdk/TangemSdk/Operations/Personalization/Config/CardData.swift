@@ -15,7 +15,7 @@ struct CardData {
     /// Timestamp of manufacturing.
     let manufactureDateTime: Date
     /// Name of the blockchain.
-    let blockchainName: String
+    let blockchainName: String?
     /// Mask of products enabled on card. COS 2.30+
     let productMask: ProductMask?
     /// Name of the token.

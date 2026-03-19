@@ -10,7 +10,7 @@ import Foundation
 struct CardConfigData: Decodable {
     let date: Date?
     let batch: String
-    let blockchain: String
+    let blockchain: String?
     let productNote: Bool?
     let productTag: Bool?
     let productIdCard: Bool?

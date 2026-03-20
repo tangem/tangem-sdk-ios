@@ -154,8 +154,7 @@ Feature availability is gated by `FirmwareVersion`:
 
 - **Main branch**: `develop`
 - **Feature branches**: e.g., `develop-fw8` (V8 firmware support)
-- **Release branches**: `release/X.Y.Z` → merged to `master` → published to CocoaPods
 - **Commit message style**: `IOS-XXXXX Description (#PR)` (Jira ticket prefix)
 - **CI**: GitHub Actions on `macos-15`, runs `bundle exec fastlane test` on PRs to `develop` and `release/**`
 - **Additional workflows**: publish-release, sync-to-public-repo, update-localizations (Lokalise), create-release-branch, check-tag, set-tag, generate-changelog
-- **Version**: stored in `VERSION` file (currently 4.1.0), also in `TangemSdk.podspec`
+- **Version**: stored in `VERSION` file (currently 5.0.0), also in `TangemSdk.podspec`

@@ -72,11 +72,6 @@ final class PreflightReadTask: CardSessionRunnable {
                 }
                 
                 self.updateEnvironmentIfNeeded(for: card, in: session)
-
-                if card.isAccessCodeSet, session.environment.accessCode.isDefault {
-                    session.environment.accessCode = UserCode(.accessCode, value: nil)
-                }
-
                 session.fetchAccessCodeIfNeeded()
                 session.fetchAccessTokensIfNeeded()
                 self.finalizeRead(in: session, completion: completion)
@@ -119,6 +114,7 @@ final class PreflightReadTask: CardSessionRunnable {
                 }
 
                 DispatchQueue.main.async {
+                    session.environment.accessCode = UserCode(.accessCode, value: nil)
                     session.requestUserCode(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
                         switch result {
                         case .success:

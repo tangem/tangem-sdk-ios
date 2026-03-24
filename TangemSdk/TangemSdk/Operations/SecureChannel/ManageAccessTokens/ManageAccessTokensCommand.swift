@@ -80,7 +80,7 @@ class ManageAccessTokensCommand: Command {
     }
 
     private func saveTokens(_ response: ManageAccessTokensResponse, session: CardSession) {
-        if response.isZeroResponse || mode == .reset {
+        if response.isZeroResponse {
             session.resetAccessTokens()
             Log.debug("Access tokens reset successfully")
         } else {

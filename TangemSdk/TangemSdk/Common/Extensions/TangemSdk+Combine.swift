@@ -15,7 +15,7 @@ extension ResponseApdu {
         return Deferred {Future() { promise in
             do {
                 let decrypted = try self.decrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
-                Log.apdu("R-APDU decrypted --> \(decrypted)")
+                Log.apdu("R-APDU decrypted <-- \(decrypted)")
                 promise(.success(decrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))

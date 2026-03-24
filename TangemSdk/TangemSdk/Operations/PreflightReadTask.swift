@@ -70,6 +70,10 @@ final class PreflightReadTask: CardSessionRunnable {
                     completion(.failure(.preflightFiltered(error)))
                     return
                 }
+
+                if card.firmwareVersion.type != .sdk {
+                    Config.isDevelopmentMode = false
+                }
                 
                 self.updateEnvironmentIfNeeded(for: card, in: session)
                 session.fetchAccessCodeIfNeeded()

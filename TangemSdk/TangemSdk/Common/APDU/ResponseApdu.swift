@@ -122,6 +122,6 @@ public struct ResponseApdu {
 
 extension ResponseApdu: CustomStringConvertible {
     public var description: String {
-        return "<-- RECEIVED [\(data.count + 2) bytes]: *** \(sw1) \(sw2) (SW: \(statusWord))"
+        return "[\(data.count + 2) bytes]: \(data) \(sw1) \(sw2) (SW: \(statusWord))"
     }
 }

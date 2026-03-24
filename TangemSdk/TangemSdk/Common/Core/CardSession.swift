@@ -552,8 +552,9 @@ public class CardSession {
                 shouldAskForAccessCode: shouldAskForAccessCode
             )
             // Request Access Code as early as possible
-            if needsAuthorizationWithAccessCode, environment.accessCode.value == nil {
+            if needsAuthorizationWithAccessCode, environment.accessCode.isDefault {
                 Log.session("Access code is needed, request early")
+                environment.accessCode = UserCode(.accessCode, value: nil)
                 pause()
                 DispatchQueue.main.async {
                     self.requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
@@ -738,8 +739,6 @@ public class CardSession {
 
     func requestUserCode(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
         Log.session("Request user code of type: \(type)")
-
-
         let cardId = environment.card?.cardId ?? self.cardId
         let showForgotButton = environment.card?.backupStatus?.isActive ?? false
         let formattedCardId = cardId.flatMap { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }

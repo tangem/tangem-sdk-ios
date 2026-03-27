@@ -61,7 +61,12 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
         ResetBackupCommand().run(in: session) { result in
             switch result {
             case .success:
-                self.resetAccessTokens(in: session, completion: completion)
+                guard let card = session.environment.card else {
+                    completion(.failure(.missingPreflightRead))
+                    return
+                }
+
+                completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -75,6 +80,12 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
         }
 
         guard card.firmwareVersion >= .v8 else {
+            completion(.success(card))
+            return
+        }
+
+        // Nothing to reset if backup required and backup is not done, so we can skip this step
+        if card.settings.isBackupRequired {
             completion(.success(card))
             return
         }

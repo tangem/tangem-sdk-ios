@@ -44,8 +44,7 @@ class ManageAccessTokensCommand: Command {
             return TangemSdkError.notSupportedFirmwareVersion
         }
 
-        if mode != .reset,
-           card.settings.isBackupRequired, card.backupStatus?.isActive == false {
+        if card.settings.isBackupRequired, card.backupStatus?.isActive == false {
             return TangemSdkError.noActiveBackup
         }
 

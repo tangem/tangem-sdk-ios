@@ -1,0 +1,7 @@
+tangem-app-config/
+BlockchainSdkExample/config/
+fastlane/test_output/
+fastlane/uitest-artifacts/
+fastlane/report.xml
+vendor/bundle/
+vendor/ios_dependencies/

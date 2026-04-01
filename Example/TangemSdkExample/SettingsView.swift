@@ -31,7 +31,7 @@ struct SettingsView: View {
                 .padding()
 
             Picker("", selection: $accessCodeRequestPolicy) {
-                ForEach(0..<AccessCodeRequestPolicy.allCases.count, id: \.self) { index in
+                ForEach(0 ..< AccessCodeRequestPolicy.allCases.count, id: \.self) { index in
                     Text(AccessCodeRequestPolicy.allCases[index].rawValue)
                         .tag(AccessCodeRequestPolicy.allCases[index])
                 }

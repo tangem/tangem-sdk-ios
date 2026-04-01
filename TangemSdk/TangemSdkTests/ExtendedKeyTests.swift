@@ -14,7 +14,7 @@ class ExtendedKeyTests: XCTestCase {
     func testRoundTripPub() throws {
         let key = try ExtendedPublicKey(
             publicKey: Data(hexString: "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"),
-            chainCode:  Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"),
+            chainCode: Data(hexString: "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"),
             depth: 3,
             parentFingerprint: Data(hexString: "0x00000000"),
             childNumber: 2147483648
@@ -61,8 +61,10 @@ class ExtendedKeyTests: XCTestCase {
     }
 
     func testSerializeEdKey() {
-        let key = ExtendedPublicKey(publicKey: Data(hexString: "9FE5BB2CC7D83C1DA10845AFD8A34B141FD8FD72500B95B1547E12B9BB8AAC3D"),
-                                    chainCode: Data(hexString: "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea"))
+        let key = ExtendedPublicKey(
+            publicKey: Data(hexString: "9FE5BB2CC7D83C1DA10845AFD8A34B141FD8FD72500B95B1547E12B9BB8AAC3D"),
+            chainCode: Data(hexString: "02fc9e5af0ac8d9b3cecfe2a888e2117ba3d089d8585886c9c826b6b22a98d12ea")
+        )
         XCTAssertThrowsError(try key.serialize(for: .mainnet))
     }
 
@@ -76,7 +78,7 @@ class ExtendedKeyTests: XCTestCase {
             depth: 1,
             parentFingerprint: mXpubKey.publicKey.sha256Ripemd160.prefix(4),
             childNumber: 2147483648
-            )
+        )
 
         let serialized = try key.serialize(for: .mainnet)
         XCTAssertEqual(serialized, "xpub68Gmy5EdvgibQVfPdqkBBCHxA5htiqg55crXYuXoQRKfDBFA1WEjWgP6LHhwBZeNK1VTsfTFUHCdrfp1bgwQ9xv5ski8PX9rL2dZXvgGDnw")

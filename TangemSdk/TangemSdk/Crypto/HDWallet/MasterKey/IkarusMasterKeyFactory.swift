@@ -18,6 +18,6 @@ struct IkarusMasterKeyFactory: MasterKeyFactory {
     }
 
     func makePrivateKey() throws -> ExtendedPrivateKey {
-      return try SLIP23().makeIkarusMasterKey(entropy: entropy, passphrase: passphrase)
+        return try SLIP23().makeIkarusMasterKey(entropy: entropy, passphrase: passphrase)
     }
 }

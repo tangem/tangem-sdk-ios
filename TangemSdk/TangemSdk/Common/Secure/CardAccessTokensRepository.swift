@@ -117,18 +117,18 @@ class CardAccessTokensRepository {
     }
 
     func unlock(context: LAContext) throws {
-        self.tokens = [:]
+        tokens = [:]
         Log.debug("Start unlocking card access tokens with provided context")
 
         var fetchedTokens: [String: CardAccessTokens] = [:]
 
-        for cardId in try self.getCards() {
+        for cardId in try getCards() {
             let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
             let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
             do {
-                if let encryptedData = try self.biometricsStorage.get(storageKey, context: context) {
-                    var data = try self.biometricsSecureEnclave.decryptData(
+                if let encryptedData = try biometricsStorage.get(storageKey, context: context) {
+                    var data = try biometricsSecureEnclave.decryptData(
                         encryptedData,
                         keyTag: encryptionKey,
                         context: context
@@ -145,8 +145,8 @@ class CardAccessTokensRepository {
             }
         }
 
-        self.tokens = fetchedTokens
-        try self.saveCards(cardIds: Set(fetchedTokens.keys))
+        tokens = fetchedTokens
+        try saveCards(cardIds: Set(fetchedTokens.keys))
         Log.debug("Card access tokens unlocked successfully")
     }
 

@@ -48,7 +48,7 @@ class KeysImportTests: XCTestCase {
         XCTAssertEqual(pubKey.publicKey.hexString, "0B0DE47DF425C4BA08D77F927477195FB65E1B238E2366AA1B1BB82E0ACEE1A6")
         XCTAssertEqual(pubKey.chainCode.hexString, "B975E8D7517ED618CBBEBE87555E415874438B670C9E54E57F70FF02A15C4C10")
     }
-    
+
     func testKeyImportSecp256r1() throws {
         let prvKey = try BIP32MasterKeyFactory(seed: makeSeed(), curve: .secp256r1).makePrivateKey()
         let pubKey = (try P256.Signing.PrivateKey(rawRepresentation: prvKey.privateKey)).publicKey.compressedRepresentation
@@ -67,14 +67,14 @@ class KeysImportTests: XCTestCase {
 
         // validate with WalletCore
         XCTAssertEqual(prvKey.privateKey.hexString, "0CD28B28383FAF7FDDBE79E34919BCB9FCDA3F505CC3360C2DEADF01C88412FF")
-        
+
         // validate with card and WalletCore
         XCTAssertEqual(pubKey.publicKey.hexString, "335215FCF3105D6A379B8A0372A9E92B42CEED0B2D4E0D7E78E80D16DF41EA6B")
         XCTAssertEqual(pubKey.chainCode.hexString, "837FFAF1B96CA1ACD4A3CB9E08398DC1F21EC657A3BE7679435FC55F9FAE4A46")
     }
 
     func testKeyImportEd25519() throws {
-        /// TrustWallet ignores passphrase https://github.com/trustwallet/wallet-core/blob/master/src/HDWallet.cpp
+        // TrustWallet ignores passphrase https://github.com/trustwallet/wallet-core/blob/master/src/HDWallet.cpp
         let prvKey = try IkarusMasterKeyFactory(entropy: entropy, passphrase: "").makePrivateKey()
 
         // validate with WalletCore
@@ -82,8 +82,10 @@ class KeysImportTests: XCTestCase {
         XCTAssertEqual(prvKey.chainCode.hexString.lowercased(), "4c3bd3e0df9ea6371678ccf2b741a762825783b8746e2527d8c15749e64b9d60")
 
         // from TrustWallet's WalletCore
-        let pubKey = ExtendedPublicKey(publicKey: Data(hexString: "8d1dbcbe742b3db49533a3ee1166e9b69348fe200a2369443973b826e65b6a61"),
-                                       chainCode: Data(hexString: "4c3bd3e0df9ea6371678ccf2b741a762825783b8746e2527d8c15749e64b9d60"))
+        let pubKey = ExtendedPublicKey(
+            publicKey: Data(hexString: "8d1dbcbe742b3db49533a3ee1166e9b69348fe200a2369443973b826e65b6a61"),
+            chainCode: Data(hexString: "4c3bd3e0df9ea6371678ccf2b741a762825783b8746e2527d8c15749e64b9d60")
+        )
 
         // validate with card
         XCTAssertEqual(pubKey.publicKey.hexString, "8D1DBCBE742B3DB49533A3EE1166E9B69348FE200A2369443973B826E65B6A61")
@@ -93,7 +95,7 @@ class KeysImportTests: XCTestCase {
     /// All BLS schemes tested to produce same public key.
     func testKeyImportBLS() throws {
         let prvKey = try EIP2333MasterKeyFactory(seed: makeSeed()).makePrivateKey()
-        //static from code to prevent any changes in future
+        // static from code to prevent any changes in future
 
         // Validated via https://iancoleman.io/eip2333/
         XCTAssertEqual(prvKey.privateKey.hexString, "3492BB55324A0F413798EA71856358556D25AD4EBC9458F062435C7B559E4670")

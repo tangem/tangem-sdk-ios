@@ -8,11 +8,11 @@
 
 import Foundation
 
-// We can't use CodingKeyRepresentable because of iOS 15 version
+/// We can't use CodingKeyRepresentable because of iOS 15 version
 public struct DerivedKeys: JSONStringConvertible {
-    public private(set) var keys: [DerivationPath:ExtendedPublicKey]
+    public private(set) var keys: [DerivationPath: ExtendedPublicKey]
 
-    public init(keys: [DerivationPath : ExtendedPublicKey]) {
+    public init(keys: [DerivationPath: ExtendedPublicKey]) {
         self.keys = keys
     }
 
@@ -21,7 +21,7 @@ public struct DerivedKeys: JSONStringConvertible {
             return keys[path]
         }
         set(newValue) {
-          keys[path] = newValue
+            keys[path] = newValue
         }
     }
 }

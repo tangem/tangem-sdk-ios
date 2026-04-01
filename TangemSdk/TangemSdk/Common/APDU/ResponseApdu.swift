@@ -12,7 +12,7 @@ import CoreNFC
 /// Stores response data from the card and parses it to `Tlv` and `StatusWord`.
 public struct ResponseApdu {
     /// Status word code, reflecting the status of the response
-    public var sw: UInt16 { return UInt16( (UInt16(sw1) << 8) | UInt16(sw2) ) }
+    public var sw: UInt16 { return UInt16((UInt16(sw1) << 8) | UInt16(sw2)) }
     /// Parsed status word.
     public var statusWord: StatusWord { return StatusWord(rawValue: sw) ?? .unknown }
 
@@ -78,15 +78,15 @@ public struct ResponseApdu {
             throw TangemSdkError.invalidResponseApdu
         }
 
-        let length = decryptedData[0...1].toInt()
-        let crc = decryptedData[2...3]
+        let length = decryptedData[0 ... 1].toInt()
+        let crc = decryptedData[2 ... 3]
         let payload = decryptedData[4...]
 
         guard length == payload.count, crc == payload.crc16() else {
             throw TangemSdkError.invalidResponseApdu
         }
 
-        return ResponseApdu(payload, self.sw1, self.sw2)
+        return ResponseApdu(payload, sw1, sw2)
     }
 
     /// Decrypts the response APDU data using AES-CCM encryption.
@@ -116,7 +116,7 @@ public struct ResponseApdu {
             additionalAuthenticatedData: swBytes
         )
 
-        return ResponseApdu(payload, self.sw1, self.sw2)
+        return ResponseApdu(payload, sw1, sw2)
     }
 }
 

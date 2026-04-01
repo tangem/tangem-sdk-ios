@@ -31,7 +31,7 @@ public enum StatusWord: UInt16 {
     case invalidPascode = 0x6AF2
     case walletAlreadyExists = 0x6A89
     case needReset = 0x6983
-    /// case pinsNotChanged = 0x9000 equals to processCompleted
+    // case pinsNotChanged = 0x9000 equals to processCompleted
 
     /// COS v8+
     case accessDenied = 0x6AF3

@@ -45,7 +45,7 @@ final class FinalizeReadBackupDataCommand: Command {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
 
         if card.firmwareVersion < .v8 {
@@ -62,4 +62,3 @@ final class FinalizeReadBackupDataCommand: Command {
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }
-

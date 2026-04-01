@@ -13,7 +13,6 @@ import CommonCrypto
 /// We can't use CryptoKit's HKDF because of iOS14
 /// https://www.rfc-editor.org/rfc/rfc5869
 enum HKDFUtil<H: HashFunction> {
-    
     /// HKDF-Extract(salt, IKM) -> PRK
     /// - Parameters:
     ///   - inputKeyMaterial: input keying material
@@ -23,7 +22,7 @@ enum HKDFUtil<H: HashFunction> {
         let prk = HMAC<H>.authenticationCode(for: inputKeyMaterial, using: SymmetricKey(data: salt ?? Data()))
         return Data(prk)
     }
-    
+
     /// HKDF-Expand(PRK, info, L) -> OKM
     /// - Parameters:
     ///   - pseudoRandomKey: a pseudorandom key of at least HashLen octets (usually, the output from the extract step)
@@ -39,14 +38,14 @@ enum HKDFUtil<H: HashFunction> {
         let iterations = Int(ceil(Double(outputByteCount) / Double(hashSize)))
 
         var result = Data()
-        result.reserveCapacity(iterations*hashSize)
+        result.reserveCapacity(iterations * hashSize)
 
         let infoData = info ?? Data()
         let key = SymmetricKey(data: pseudoRandomKey)
 
         var mixin = Data()
 
-        for iteration in 1...iterations {
+        for iteration in 1 ... iterations {
             var hmac = HMAC<H>(key: key)
             hmac.update(data: mixin)
             hmac.update(data: infoData)
@@ -54,7 +53,7 @@ enum HKDFUtil<H: HashFunction> {
             mixin = Data(hmac.finalize())
             result += mixin
         }
-        
+
         return result.prefix(outputByteCount)
     }
 }

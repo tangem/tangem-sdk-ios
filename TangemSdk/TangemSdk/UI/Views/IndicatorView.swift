@@ -10,33 +10,33 @@ import SwiftUI
 
 struct IndicatorView: View {
     var state: ViewState = .spinner
-    
+
     @EnvironmentObject var style: TangemSdkStyle
-    
+
     @State private var angle = -90.0
-    
+
     private var bgCircleHidden: Bool {
-        switch state  {
+        switch state {
         case .spinner:
             return true
         default:
             return false
         }
     }
-    
+
     private var trimValue: CGFloat {
-        switch state  {
+        switch state {
         case .spinner:
             return 0.9
         case .delay(let currentValue, let totalValue):
-            return 1.0 - (totalValue - currentValue)/totalValue
+            return 1.0 - (totalValue - currentValue) / totalValue
         case .progress(let progress):
-            return CGFloat(progress)/100.0
+            return CGFloat(progress) / 100.0
         }
     }
-    
+
     private var rotateAnimation: Animation {
-        switch state  {
+        switch state {
         case .spinner:
             return Animation.linear(duration: 1.3)
                 .repeatForever(autoreverses: false)
@@ -44,27 +44,27 @@ struct IndicatorView: View {
             return Animation.easeOut(duration: 0.3)
         }
     }
-    
+
     private var trimAnimation: Animation {
-        switch state  {
+        switch state {
         case .spinner:
             return Animation.linear
         default:
             return Animation.spring(dampingFraction: 0.7).speed(1.6)
         }
     }
-    
+
     private var rotationAngle: Angle {
-        switch state  {
+        switch state {
         case .spinner:
             return Angle(degrees: angle)
         default:
             return Angle(degrees: -90)
         }
     }
-    
+
     private var labelText: String? {
-        switch state  {
+        switch state {
         case .spinner:
             return nil
         case .delay(let currentValue, _):
@@ -74,32 +74,38 @@ struct IndicatorView: View {
             return "\(progress)%"
         }
     }
-    
+
     var body: some View {
         ZStack {
             if !bgCircleHidden {
                 Circle()
-                    .stroke(style.colors.indicatorBackground,
-                            lineWidth: CGFloat(style.indicatorWidth))
+                    .stroke(
+                        style.colors.indicatorBackground,
+                        lineWidth: CGFloat(style.indicatorWidth)
+                    )
             }
-            
+
             Circle()
                 .trim(from: 0, to: trimValue)
-                .stroke(style.colors.tint,
-                        lineWidth: CGFloat(style.indicatorWidth))
+                .stroke(
+                    style.colors.tint,
+                    lineWidth: CGFloat(style.indicatorWidth)
+                )
                 .animation(trimAnimation, value: trimValue)
                 .rotationEffect(rotationAngle)
                 .animation(rotateAnimation, value: rotationAngle)
-            
+
             if let text = labelText {
                 Text(text)
-                    .font(.system(size: style.textSizes.indicatorLabel,
-                                  weight: .medium,
-                                  design: .default))
+                    .font(.system(
+                        size: style.textSizes.indicatorLabel,
+                        weight: .medium,
+                        design: .default
+                    ))
                     .foregroundColor(style.colors.tint)
             }
         }
-        .padding(.all, CGFloat(style.indicatorWidth)/2)
+        .padding(.all, CGFloat(style.indicatorWidth) / 2)
         .onAppear {
             angle = 270
         }

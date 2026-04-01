@@ -16,7 +16,7 @@ public struct AnyMasterKeyFactory {
         self.mnemonic = mnemonic
         self.passphrase = passphrase
     }
-    
+
     public func makeMasterKey(for curve: EllipticCurve) throws -> ExtendedPrivateKey {
         let factory = try makeFactory(for: curve)
         return try factory.makePrivateKey()

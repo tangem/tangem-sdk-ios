@@ -16,19 +16,19 @@ final class DefaultSessionViewDelegate: BaseViewDelegate {
     private var pinnedMessage: String?
     private var style: TangemSdkStyle
     private let viewModel: MainViewModel = .init(viewState: .scan)
-    
+
     init(reader: CardReader, style: TangemSdkStyle) {
         self.reader = reader
-        self.engine = HapticsEngine()
+        engine = HapticsEngine()
         self.style = style
         engine.create()
     }
-    
+
     override func makeScreen() -> UIViewController {
         let view = MainScreen()
             .environmentObject(viewModel)
             .environmentObject(style)
-        
+
         let screen = UIHostingController(rootView: view)
         screen.modalPresentationStyle = .overFullScreen
         screen.modalTransitionStyle = .crossDissolve
@@ -42,17 +42,17 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         if state.shouldPlayHaptics {
             engine.playTick()
         }
-        
+
         let setStateAction = { self.viewModel.viewState = state }
-        runInMainThread (setStateAction())
-        runInMainThread(self.presentScreenIfNeeded())
+        runInMainThread(setStateAction())
+        runInMainThread(presentScreenIfNeeded())
     }
-    
+
     func showAlertMessage(_ text: String) {
         Log.view("Show alert message: \(text)")
         reader.alertMessage = text
     }
-    
+
     func tagConnected() {
         Log.view("Tag connected")
         if let pinnedMessage = pinnedMessage {
@@ -61,7 +61,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
         engine.playSuccess()
     }
-    
+
     func tagLost(message: String) {
         Log.view("Tag lost")
         if pinnedMessage == nil {
@@ -69,7 +69,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
         showAlertMessage(message)
     }
-    
+
     func wrongCard(message: String) {
         Log.view("Wrong card detected")
         engine.playError()
@@ -78,36 +78,38 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         }
         showAlertMessage(message)
     }
-    
+
     func sessionStarted() {
         Log.view("Session started")
-        runInMainThread(self.presentScreenIfNeeded())
+        runInMainThread(presentScreenIfNeeded())
         engine.start()
     }
-    
+
     func sessionStopped(completion: (() -> Void)?) {
         Log.view("Session stopped")
         pinnedMessage = nil
         engine.stop()
-        runInMainThread(self.dismissScreen(completion: completion))
+        runInMainThread(dismissScreen(completion: completion))
     }
-    
+
     func attestationDidFailDevCard(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {
         guard let screen else {
             onCancel()
             return
         }
-        
+
         let title = "attestation_failed_card_title".localized
         let message = "attestation_failed_dev_card".localized
         let tint = style.colors.tintUIColor
-        
-        runInMainThread(UIAlertController.showShouldContinue(from: screen,
-                                                             title: title,
-                                                             message: message,
-                                                             tint: tint,
-                                                             onContinue: onContinue,
-                                                             onCancel: onCancel))
+
+        runInMainThread(UIAlertController.showShouldContinue(
+            from: screen,
+            title: title,
+            message: message,
+            tint: tint,
+            onContinue: onContinue,
+            onCancel: onCancel
+        ))
     }
 
     func attestationCompletedOffline(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void, onRetry: @escaping () -> Void) {
@@ -115,18 +117,20 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
             onCancel()
             return
         }
-        
+
         let title = "attestation_online_failed_title".localized
         let message = "attestation_online_failed_body".localized
         let tint = style.colors.tintUIColor
-        
-        runInMainThread(UIAlertController.showShouldContinue(from: screen,
-                                                             title: title,
-                                                             message: message,
-                                                             tint: tint,
-                                                             onContinue: onContinue,
-                                                             onCancel: onCancel,
-                                                             onRetry: onRetry))
+
+        runInMainThread(UIAlertController.showShouldContinue(
+            from: screen,
+            title: title,
+            message: message,
+            tint: tint,
+            onContinue: onContinue,
+            onCancel: onCancel,
+            onRetry: onRetry
+        ))
     }
 
     func attestationCompletedWithWarnings(onContinue: @escaping () -> Void) {
@@ -134,15 +138,17 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
             onContinue()
             return
         }
-        
+
         let title = "common_warning".localized
         let message = "attestation_warning_attest_wallets".localized
         let tint = style.colors.tintUIColor
-        runInMainThread(UIAlertController.showAlert(from: screen,
-                                                    title: title,
-                                                    message: message,
-                                                    tint: tint,
-                                                    onContinue: onContinue))
+        runInMainThread(UIAlertController.showAlert(
+            from: screen,
+            title: title,
+            message: message,
+            tint: tint,
+            onContinue: onContinue
+        ))
     }
 
     func showHealthAlert(onContinue: @escaping () -> Void) {
@@ -154,10 +160,12 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         let title = "common_warning".localized
         let message = "card_health_warning".localized
         let tint = style.colors.tintUIColor
-        runInMainThread(UIAlertController.showAlert(from: screen,
-                                                    title: title,
-                                                    message: message,
-                                                    tint: tint,
-                                                    onContinue: onContinue))
+        runInMainThread(UIAlertController.showAlert(
+            from: screen,
+            title: title,
+            message: message,
+            tint: tint,
+            onContinue: onContinue
+        ))
     }
 }

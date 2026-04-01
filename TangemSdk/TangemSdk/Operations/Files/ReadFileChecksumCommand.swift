@@ -18,22 +18,22 @@ public struct ReadFileChecksumResponse: JSONStringConvertible {
 /// The command that prompts the card to create a file checksum. This checksum is used to check the integrity of the file on the card
 public final class ReadFileChecksumCommand: Command {
     public var shouldReadPrivateFiles = false
-    
+
     public var requiresPasscode: Bool { shouldReadPrivateFiles }
-    
+
     private let fileName: String?
     private let fileIndex: Int?
-    
+
     public init(fileName: String) {
         self.fileName = fileName
-        self.fileIndex = nil
+        fileIndex = nil
     }
-    
+
     public init(fileIndex: Int) {
         self.fileIndex = fileIndex
-        self.fileName = nil
+        fileName = nil
     }
-    
+
     deinit {
         Log.debug("ReadFileChecksumCommand deinit")
     }
@@ -42,35 +42,37 @@ public final class ReadFileChecksumCommand: Command {
         if card.firmwareVersion < .updatedFilesAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         return nil
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.interactionMode, value: FileDataMode.readFileHash)
-        
-        if let fileName = self.fileName {
+
+        if let fileName = fileName {
             try tlvBuilder.append(.fileTypeName, value: fileName)
         }
-        
-        if let fileIndex = self.fileIndex {
+
+        if let fileIndex = fileIndex {
             try tlvBuilder.append(.fileIndex, value: fileIndex)
         }
-        
+
         if shouldReadPrivateFiles {
             try tlvBuilder.append(.pin2, value: environment.passcode.value)
         }
-        
+
         return CommandApdu(.readFileData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadFileChecksumResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        return ReadFileChecksumResponse(cardId: try decoder.decode(.cardId),
-                                        checksum: try decoder.decode(.hash),
-                                        fileIndex: try decoder.decode(.fileIndex))
+        return ReadFileChecksumResponse(
+            cardId: try decoder.decode(.cardId),
+            checksum: try decoder.decode(.hash),
+            fileIndex: try decoder.decode(.fileIndex)
+        )
     }
 }

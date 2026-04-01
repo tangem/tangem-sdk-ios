@@ -32,7 +32,6 @@ class AttestationTests: XCTestCase {
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(410, "")), Attestation.Status.verifiedOffline)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(500, "")), Attestation.Status.verifiedOffline)
 
-
         XCTAssertEqual(mapper.mapError(TangemSdkError.cardVerificationFailed), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(403, "")), Attestation.Status.failed)
         XCTAssertEqual(mapper.mapError(NetworkServiceError.statusCode(404, "")), Attestation.Status.failed)
@@ -44,18 +43,18 @@ class AttestationTests: XCTestCase {
         let networkError = NetworkServiceError.emptyResponse
         switch networkError {
         case .emptyResponse,
-                .emptyResponseData,
-                .failedToMakeRequest,
-                .mappingError,
-                .statusCode,
-                .urlSessionError:
+             .emptyResponseData,
+             .failedToMakeRequest,
+             .mappingError,
+             .statusCode,
+             .urlSessionError:
             break
-            /// All network errors should be covered in this test
+            // All network errors should be covered in this test
         }
     }
 }
 
-fileprivate extension AttestationTests {
+private extension AttestationTests {
     enum MockError: Error {
         case anyError
     }

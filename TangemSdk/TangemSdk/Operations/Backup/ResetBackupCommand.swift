@@ -19,13 +19,13 @@ struct ResetBackupResponse {
 public final class ResetBackupCommand: Command {
     public var requiresPasscode: Bool { true }
     public var preflightReadMode: PreflightReadMode { .fullCardRead }
-    
+
     public init() {}
-    
+
     deinit {
         Log.debug("ResetBackupCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion
@@ -35,13 +35,13 @@ public final class ResetBackupCommand: Command {
             return TangemSdkError.noActiveBackup
         }
 
-        guard !card.wallets.contains(where: { $0.hasBackup } ) else {
+        guard !card.wallets.contains(where: { $0.hasBackup }) else {
             return TangemSdkError.resetBackupFailedHasBackedUpWallets
         }
-        
+
         return nil
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -50,29 +50,29 @@ public final class ResetBackupCommand: Command {
                     completion(.failure(.unknownError))
                     return
                 }
-                
+
                 session.environment.card?.backupStatus = .noBackup
                 session.environment.card?.isAccessCodeSet = !response.isDefaultAccessCode
                 session.environment.card?.isPasscodeSet = !response.isDefaultPasscode
                 session.environment.accessCode = response.isDefaultAccessCode ? UserCode(.accessCode) : UserCode(.accessCode, value: nil)
                 session.environment.passcode = response.isDefaultPasscode ? UserCode(.passcode) : UserCode(.passcode, value: nil)
-                
+
                 if let settings = session.environment.card?.settings {
                     session.environment.card?.settings = settings.updated(with: response.settingsMask)
                 }
-                
+
                 completion(.success(SuccessResponse(cardId: response.cardId)))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
 
         if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
@@ -89,18 +89,20 @@ public final class ResetBackupCommand: Command {
 
         return CommandApdu(.backupReset, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ResetBackupResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        return ResetBackupResponse(cardId: try decoder.decode(.cardId),
-                                   backupStatus: try decoder.decode(.backupStatus),
-                                   settingsMask: try decoder.decode(.settingsMask),
-                                   isDefaultAccessCode: try decoder.decode(.pinIsDefault),
-                                   isDefaultPasscode: try decoder.decode(.pin2IsDefault))
+        return ResetBackupResponse(
+            cardId: try decoder.decode(.cardId),
+            backupStatus: try decoder.decode(.backupStatus),
+            settingsMask: try decoder.decode(.settingsMask),
+            isDefaultAccessCode: try decoder.decode(.pinIsDefault),
+            isDefaultPasscode: try decoder.decode(.pin2IsDefault)
+        )
     }
 }
 
-fileprivate extension Card.BackupStatus {
+private extension Card.BackupStatus {
     var canResetBackup: Bool {
         switch self {
         case .active, .cardLinked:

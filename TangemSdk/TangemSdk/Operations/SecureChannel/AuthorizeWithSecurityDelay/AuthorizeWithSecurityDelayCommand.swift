@@ -12,7 +12,7 @@ struct AuthorizeWithSecurityDelayResponse {
     let signAttestA: Data
 
     func verify(with cardPublicKey: Data) throws -> Bool {
-       return try CryptoUtils.verify(
+        return try CryptoUtils.verify(
             curve: .secp256k1,
             publicKey: cardPublicKey,
             message: Data("SESSION.CARD".utf8) + pubSessionKeyA,
@@ -38,7 +38,7 @@ class AuthorizeWithSecurityDelayCommand: Command {
         if card.firmwareVersion < .v8 {
             return TangemSdkError.notSupportedFirmwareVersion
         }
-        
+
         return nil
     }
 
@@ -64,7 +64,7 @@ class AuthorizeWithSecurityDelayCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)

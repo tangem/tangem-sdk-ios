@@ -31,17 +31,17 @@ extension Bundle {
     /// SPM preserves folder structure for resources, unlike Cocoapods.
     /// Therefore, a full file path with all intermediate directories must be constructed.
     private static func filePath(name: String, in folder: Folder) throws -> String {
-#if SWIFT_PACKAGE
+        #if SWIFT_PACKAGE
         let bundle = Bundle.module
         let resource = [
             "Jsons",
             folder.rawValue,
             name,
         ].joined(separator: "/")
-#else
+        #else
         let bundle = Bundle(for: Dummy.self)
         let resource = name
-#endif  // SWIFT_PACKAGE
+        #endif // SWIFT_PACKAGE
 
         guard let path = bundle.path(forResource: resource, ofType: "json") else {
             throw NSError(domain: "BundleTests", code: 1, userInfo: [NSLocalizedDescriptionKey: "Resource not found: \(resource).json"])
@@ -52,4 +52,4 @@ extension Bundle {
 
 #if !SWIFT_PACKAGE
 private final class Dummy {}
-#endif  // SWIFT_PACKAGE
+#endif // SWIFT_PACKAGE

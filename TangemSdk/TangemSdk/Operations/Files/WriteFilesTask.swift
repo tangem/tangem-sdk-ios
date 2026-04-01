@@ -24,13 +24,13 @@ public struct WriteFilesResponse: JSONStringConvertible {
 public final class WriteFilesTask: CardSessionRunnable {
     private let files: [FileToWrite]
     private var savedFilesIndices: [Int] = []
-    
+
     /// Default initializer
     /// - Parameter files: Array of files to write
     public init(files: [FileToWrite]) {
         self.files = files
     }
-    
+
     deinit {
         Log.debug("WriteFilesTask deinit")
     }
@@ -40,16 +40,16 @@ public final class WriteFilesTask: CardSessionRunnable {
             completion(.failure(.filesIsEmpty))
             return
         }
-        
+
         writeFile(index: 0, session: session, completion: completion)
     }
-    
+
     private func writeFile(index: Int, session: CardSession, completion: @escaping CompletionResult<WriteFilesResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.cardError))
             return
         }
-        
+
         guard index < files.count else {
             completion(.success(.init(cardId: card.cardId, filesIndices: savedFilesIndices)))
             return

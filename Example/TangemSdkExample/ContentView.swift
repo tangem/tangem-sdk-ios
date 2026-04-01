@@ -9,7 +9,6 @@
 import SwiftUI
 import TangemSdk
 
-
 // MARK: - Content View
 
 struct ContentView: View {

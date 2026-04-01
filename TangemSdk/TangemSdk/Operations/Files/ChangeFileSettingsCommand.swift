@@ -11,15 +11,15 @@ import Foundation
 /// Command for updating file settings
 public final class ChangeFileSettingsCommand: Command {
     public var requiresPasscode: Bool { true }
-    
+
     private let fileIndex: Int
     private let newPermissions: FileVisibility
-    
+
     public init(fileIndex: Int, newPermissions: FileVisibility) {
         self.fileIndex = fileIndex
         self.newPermissions = newPermissions
     }
-    
+
     deinit {
         Log.debug("ChangeFileSettingsCommand deinit")
     }
@@ -28,19 +28,19 @@ public final class ChangeFileSettingsCommand: Command {
         if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         if !card.settings.isFilesAllowed {
             return .filesDisabled
         }
-        
+
         return nil
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
-           throw TangemSdkError.missingPreflightRead
+            throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
@@ -48,10 +48,10 @@ public final class ChangeFileSettingsCommand: Command {
             .append(.interactionMode, value: FileDataMode.changeFileSettings)
             .append(.fileIndex, value: fileIndex)
             .append(.fileSettings, value: newPermissions.serializeValue(for: card.firmwareVersion))
-        
+
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))

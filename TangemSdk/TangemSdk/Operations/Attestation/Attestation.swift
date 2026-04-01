@@ -17,38 +17,38 @@ public struct Attestation: JSONStringConvertible, Equatable {
     public internal(set) var firmwareAttestation: Status
     /// Attestation status of card's uniqueness. Not implemented for this time
     public internal(set) var cardUniquenessAttestation: Status
-    
+
     /// Index for storage
     var index: Int = 0
-    
+
     public var status: Status {
-        if !statuses.contains(where: { $0 != .skipped } ) {
+        if !statuses.contains(where: { $0 != .skipped }) {
             return .skipped
         }
-        
+
         if statuses.contains(.failed) {
             return .failed
         }
-        
+
         if statuses.contains(.warning) {
             return .warning
         }
-        
+
         if statuses.contains(.verifiedOffline) {
             return .verifiedOffline
         }
-        
+
         return .verified
     }
-    
+
     var mode: AttestationTask.Mode {
         if walletKeysAttestation == .skipped {
             return .normal
         }
-        
+
         return .full
     }
-    
+
     private var statuses: [Status] {
         return [cardKeyAttestation, walletKeysAttestation, firmwareAttestation, cardUniquenessAttestation]
     }
@@ -56,16 +56,22 @@ public struct Attestation: JSONStringConvertible, Equatable {
 
 public extension Attestation {
     enum Status: String, StringCodable {
-        case failed, warning, skipped, verifiedOffline, verified
+        case failed
+        case warning
+        case skipped
+        case verifiedOffline
+        case verified
     }
 }
 
 public extension Attestation {
     static var empty: Attestation {
-        .init(cardKeyAttestation: .skipped,
-              walletKeysAttestation: .skipped,
-              firmwareAttestation: .skipped,
-              cardUniquenessAttestation: .skipped)
+        .init(
+            cardKeyAttestation: .skipped,
+            walletKeysAttestation: .skipped,
+            firmwareAttestation: .skipped,
+            cardUniquenessAttestation: .skipped
+        )
     }
 }
 
@@ -73,10 +79,10 @@ extension Attestation {
     var rawRepresentation: String {
         return "\(index),\(cardKeyAttestation.intRepresentation),\(walletKeysAttestation.intRepresentation),\(firmwareAttestation.intRepresentation),\(cardUniquenessAttestation.intRepresentation)"
     }
-    
+
     init?(rawRepresentation: String) {
         let values: [Int] = rawRepresentation.split(separator: ",").compactMap { Int($0) }
-        
+
         guard values.count == 5,
               let cardKeyAttestation = Status(intRepresentation: values[1]),
               let walletKeysAttestation = Status(intRepresentation: values[2]),
@@ -84,8 +90,8 @@ extension Attestation {
               let cardUniquenessAttestation = Status(intRepresentation: values[4]) else {
             return nil
         }
-        
-        self.index = values[0]
+
+        index = values[0]
         self.cardKeyAttestation = cardKeyAttestation
         self.walletKeysAttestation = walletKeysAttestation
         self.firmwareAttestation = firmwareAttestation
@@ -103,7 +109,7 @@ extension Attestation.Status {
         case .verified: return 4
         }
     }
-    
+
     public init?(intRepresentation: Int) {
         switch intRepresentation {
         case 0:
@@ -125,15 +131,15 @@ extension Attestation.Status {
 extension Attestation: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.index = (try? container.decode(Int.self, forKey: .index)) ?? 0
-        self.cardKeyAttestation = try container.decode(Status.self, forKey: .cardKeyAttestation)
-        self.walletKeysAttestation = try container.decode(Status.self, forKey: .walletKeysAttestation)
-        self.firmwareAttestation = try container.decode(Status.self, forKey: .firmwareAttestation)
-        self.cardUniquenessAttestation = try container.decode(Status.self, forKey: .cardUniquenessAttestation)
+        index = (try? container.decode(Int.self, forKey: .index)) ?? 0
+        cardKeyAttestation = try container.decode(Status.self, forKey: .cardKeyAttestation)
+        walletKeysAttestation = try container.decode(Status.self, forKey: .walletKeysAttestation)
+        firmwareAttestation = try container.decode(Status.self, forKey: .firmwareAttestation)
+        cardUniquenessAttestation = try container.decode(Status.self, forKey: .cardUniquenessAttestation)
     }
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy:  CodingKeys.self)
+        var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(cardKeyAttestation, forKey: .cardKeyAttestation)
         try container.encode(walletKeysAttestation, forKey: .walletKeysAttestation)
         try container.encode(firmwareAttestation, forKey: .firmwareAttestation)
@@ -141,7 +147,10 @@ extension Attestation: Decodable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case index, cardKeyAttestation, walletKeysAttestation,
-             firmwareAttestation, cardUniquenessAttestation
+        case index
+        case cardKeyAttestation
+        case walletKeysAttestation
+        case firmwareAttestation
+        case cardUniquenessAttestation
     }
 }

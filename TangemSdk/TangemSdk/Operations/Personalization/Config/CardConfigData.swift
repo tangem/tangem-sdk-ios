@@ -22,13 +22,15 @@ struct CardConfigData: Decodable {
     let tokenDecimal: Int?
 
     func createPersonalizationCardData() -> CardData {
-        return CardData(batchId: batch,
-                        manufactureDateTime: date ?? Date(),
-                        blockchainName: blockchain,
-                        productMask: createProductMask(),
-                        tokenSymbol: tokenSymbol,
-                        tokenContractAddress: tokenContractAddress,
-                        tokenDecimal: tokenDecimal)
+        return CardData(
+            batchId: batch,
+            manufactureDateTime: date ?? Date(),
+            blockchainName: blockchain,
+            productMask: createProductMask(),
+            tokenSymbol: tokenSymbol,
+            tokenContractAddress: tokenContractAddress,
+            tokenDecimal: tokenDecimal
+        )
     }
 
     func createProductMask() -> ProductMask {

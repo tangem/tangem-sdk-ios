@@ -15,12 +15,12 @@ final class ResetPinCommand: Command {
 
     private let accessCode: Data
     private let passcode: Data
-    
+
     init(accessCode: Data, passcode: Data) {
         self.accessCode = accessCode
         self.passcode = passcode
     }
-    
+
     deinit {
         Log.debug("ResetPinCommand deinit")
     }
@@ -29,12 +29,12 @@ final class ResetPinCommand: Command {
         if card.firmwareVersion < .backupAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         guard let backupStatus = card.backupStatus,
               backupStatus.isActive else {
             return TangemSdkError.noActiveBackup
         }
-        
+
         return nil
     }
 

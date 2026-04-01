@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Convert hex data to Integer
+/// Convert hex data to Integer
 public protocol HexConvertible {
     init?(hexData: Data)
 }

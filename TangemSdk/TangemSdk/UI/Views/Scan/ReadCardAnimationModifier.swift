@@ -29,8 +29,8 @@ struct ReadCardAnimationModifier: AnimatableModifier {
         let startX = -cardWidth
         let centerX = (width - cardWidth) / 2
 
-        let toCenter = Double(progress).interpolatedProgress(inRange: 0.12...0.24)
-        let toLeft = Double(progress).interpolatedProgress(inRange: 0.88...1.00)
+        let toCenter = Double(progress).interpolatedProgress(inRange: 0.12 ... 0.24)
+        let toLeft = Double(progress).interpolatedProgress(inRange: 0.88 ... 1.00)
 
         if progress < 0.12 {
             return startX
@@ -46,11 +46,11 @@ struct ReadCardAnimationModifier: AnimatableModifier {
 
 extension View {
     func discreteAnimation(progress: Double, cardWidth: CGFloat, verticalOffset: CGFloat = 0) -> some View {
-        self.modifier(ReadCardAnimationModifier(progress: progress, cardWidth: cardWidth, verticalOffset: verticalOffset))
+        modifier(ReadCardAnimationModifier(progress: progress, cardWidth: cardWidth, verticalOffset: verticalOffset))
     }
 }
 
-fileprivate extension BinaryFloatingPoint {
+private extension BinaryFloatingPoint {
     /// Interpolates the value of the receiver to a fractional progress within the given range:
     ///    - `range.lowerBound` corresponds to a progress of 0.0
     ///    - `range.upperBound` corresponds to a progress of 1.0

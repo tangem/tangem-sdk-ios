@@ -19,8 +19,8 @@ public enum WIF {
 
         var data = decoded.dropFirst()
 
-        if !string.starts(with: Constants.uncompressedMainnetPrefix)
-            && !string.starts(with: Constants.uncompressedTestnetPrefix),
+        if !string.starts(with: Constants.uncompressedMainnetPrefix),
+           !string.starts(with: Constants.uncompressedTestnetPrefix),
            let lastByte = data.last, Data(lastByte) == Constants.compressedSuffix {
             data = data.dropLast() // remove compressedSuffix
         }
@@ -29,7 +29,7 @@ public enum WIF {
     }
 }
 
-fileprivate extension WIF {
+private extension WIF {
     enum Constants {
         static let prefixMainnet = Data(hexString: "0x80")
         static let prefixTestnet = Data(hexString: "0xEF")
@@ -39,7 +39,7 @@ fileprivate extension WIF {
     }
 }
 
-fileprivate extension NetworkType {
+private extension NetworkType {
     var prefix: Data {
         switch self {
         case .mainnet:

@@ -11,11 +11,11 @@ import Foundation
 /// Formatting CID in more readable manner
 public struct CardIdFormatter {
     public var style: CardIdDisplayFormat
-    
+
     public init(style: CardIdDisplayFormat = .full) {
         self.style = style
     }
-    
+
     public func string(from cardId: String) -> String? {
         switch style {
         case .none:
@@ -36,11 +36,11 @@ public struct CardIdFormatter {
             return format(splitted)
         }
     }
-    
+
     private func format(_ string: String) -> String {
         return "cid_format".localized(string)
     }
-    
+
     private func split(_ cardId: String) -> String {
         let chunks: [String] = stride(from: cardId.count, to: 0, by: -4).map {
             let endIndex = cardId.index(cardId.startIndex, offsetBy: $0)
@@ -48,7 +48,7 @@ public struct CardIdFormatter {
             let startIndex = cardId.index(cardId.startIndex, offsetBy: offset)
             return String(cardId[startIndex ..< endIndex])
         }
-        
+
         let nbsp = " "
         return chunks.reversed().joined(separator: nbsp)
     }

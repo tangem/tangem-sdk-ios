@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class SigningMethodTests: XCTestCase {
-
     // MARK: - OptionSet basics
 
     func testContains() {

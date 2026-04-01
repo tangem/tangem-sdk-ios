@@ -40,4 +40,3 @@ class Ed25519Slip0010Tests {
         XCTAssertEqual(expectedChainCode2.uppercased(), "C411B20769C9CD91478786455DA12A5EB071D88FA395355957827BD8C79F1392")
     }
 }
-

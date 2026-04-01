@@ -7,7 +7,7 @@ let package = Package(
     name: "TangemSdk",
     defaultLocalization: "en",
     platforms: [
-        .iOS("16.4")
+        .iOS("16.4"),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -16,7 +16,7 @@ let package = Package(
             targets: [
                 "TangemSdk",
             ]
-        )
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .exactItem("1.9.0")),

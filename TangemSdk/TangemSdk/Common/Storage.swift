@@ -5,7 +5,6 @@
 //  Created by Alexander Osokin on 06.07.2020.
 //  Copyright © 2020 Tangem AG. All rights reserved.
 
-
 import Foundation
 
 public class Storage {
@@ -35,7 +34,7 @@ public class Storage {
     }
 
     func object<T: Decodable>(forKey: Storage.Keys, postfix: String? = nil) -> T? {
-        if let data =  UserDefaults.standard.data(forKey: rawKey(forKey, postfix)) {
+        if let data = UserDefaults.standard.data(forKey: rawKey(forKey, postfix)) {
             let decoder = JSONDecoder()
             return try? decoder.decode(T.self, from: data)
         }

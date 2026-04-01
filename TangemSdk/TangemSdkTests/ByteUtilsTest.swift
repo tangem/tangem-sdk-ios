@@ -16,7 +16,7 @@ class ByteUtilsTests: XCTestCase {
         let testString = "1B"
         XCTAssert(testString == testData.hexString)
     }
-    
+
     func testInputStream() throws {
         let data = Data(hexString: "00010203040506")
         let inputStream = InputStream(data: data)

@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class DerivedKeysTests: XCTestCase {
-
     // MARK: - Subscript
 
     func testSubscriptGet() throws {

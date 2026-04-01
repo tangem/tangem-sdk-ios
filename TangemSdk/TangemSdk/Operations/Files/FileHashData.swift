@@ -12,10 +12,10 @@ import Foundation
 public struct FileHashData: JSONStringConvertible {
     public let startingHash: Data
     public let finalizingHash: Data
-    
+
     public var startingSignature: Data?
     public var finalizingSignature: Data?
-    
+
     public init(startingHash: Data, startingSignature: Data?, finalizingHash: Data, finalizingSignature: Data?) {
         self.startingHash = startingHash
         self.startingSignature = startingSignature

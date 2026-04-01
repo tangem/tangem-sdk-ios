@@ -19,7 +19,7 @@ class BIP39Tests: XCTestCase {
         }
     }
 
-    func testMnemonicGenerationBase() throws  {
+    func testMnemonicGenerationBase() throws {
         let entropyLengthArray = EntropyLength.allCases
         let wordLists = BIP39.Wordlist.allCases
 
@@ -33,7 +33,7 @@ class BIP39Tests: XCTestCase {
         }
     }
 
-    func testMnemonicByEnVectors() throws  {
+    func testMnemonicByEnVectors() throws {
         guard let allVectors = try getTestVectors(from: Constants.seedTestVectorsFilename),
               let vectors = allVectors[Constants.englishTestVectors] as? [[String]] else {
             XCTFail("Failed to parse test vectors file.")
@@ -41,7 +41,7 @@ class BIP39Tests: XCTestCase {
         }
 
         let bip39 = BIP39()
-        
+
         for vector in vectors {
             let entropy = vector[0]
             let expectedMnemonic = vector[1]

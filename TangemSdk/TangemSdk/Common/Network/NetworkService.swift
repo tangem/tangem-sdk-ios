@@ -12,7 +12,7 @@ public class NetworkService {
     private let session: URLSession
     private let additionalHeaders: [String: String]
 
-    public init(session: URLSession, additionalHeaders: [String:String]) {
+    public init(session: URLSession, additionalHeaders: [String: String]) {
         self.session = session
         self.additionalHeaders = additionalHeaders
     }
@@ -64,8 +64,7 @@ extension NetworkService {
 
         do {
             return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: responseData)
-        }
-        catch {
+        } catch {
             throw NetworkServiceError.mappingError(error)
         }
     }
@@ -104,15 +103,14 @@ private extension NetworkService {
             throw error
         }
 
-        Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "" )")
+        Log.network("status code: \(response.statusCode), response: \(String(data: data, encoding: .utf8) ?? "")")
         return data
     }
 }
 
-
 // MARK: - Constants
 
-fileprivate extension URLSessionConfiguration {
+private extension URLSessionConfiguration {
     static var defaultTangemSDKConfiguration: URLSessionConfiguration {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 10
@@ -124,12 +122,12 @@ fileprivate extension URLSessionConfiguration {
 // MARK: - NetworkEndpoint
 
 public protocol NetworkEndpoint {
-    var baseUrl: String {get}
-    var path: String {get}
-    var queryItems: [URLQueryItem]? {get}
-    var method: String {get}
-    var body: Data? {get}
-    var headers: [String:String] {get}
+    var baseUrl: String { get }
+    var path: String { get }
+    var queryItems: [URLQueryItem]? { get }
+    var method: String { get }
+    var body: Data? { get }
+    var headers: [String: String] { get }
 }
 
 // MARK: - NetworkServiceError
@@ -150,10 +148,9 @@ public enum NetworkServiceError: Error, LocalizedError {
             return "\(self)"
         }
     }
-
 }
 
-fileprivate extension URLRequest {
+private extension URLRequest {
     var requestDescription: String {
         return "request: \(url?.absoluteString ?? "nil"), headers: \(allHTTPHeaderFields?.keys.description ?? "[]")"
     }

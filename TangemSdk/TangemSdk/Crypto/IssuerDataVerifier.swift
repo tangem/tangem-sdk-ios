@@ -9,45 +9,52 @@
 import Foundation
 
 class IssuerDataVerifier {
-    static func verify(cardId: String,
-                       issuerData: Data,
-                       issuerDataCounter: Int?,
-                       publicKey: Data,
-                       signature: Data) -> Bool {
-        
-        if let verifyResult = try? verify(cardId: cardId,
-                                     issuerData: issuerData,
-                                     issuerDataSize: nil,
-                                     issuerDataCounter: issuerDataCounter,
-                                     publicKey: publicKey,
-                                     signature: signature),
+    static func verify(
+        cardId: String,
+        issuerData: Data,
+        issuerDataCounter: Int?,
+        publicKey: Data,
+        signature: Data
+    ) -> Bool {
+        if let verifyResult = try? verify(
+            cardId: cardId,
+            issuerData: issuerData,
+            issuerDataSize: nil,
+            issuerDataCounter: issuerDataCounter,
+            publicKey: publicKey,
+            signature: signature
+        ),
             verifyResult == true { return true }
         return false
     }
-    
-    static func verify(cardId: String,
-                       issuerDataSize: Int,
-                       issuerDataCounter: Int?,
-                       publicKey: Data,
-                       signature: Data) -> Bool {
-        
-        if let verifyResult = try? verify(cardId: cardId,
-                                     issuerData: nil,
-                                     issuerDataSize: issuerDataSize,
-                                     issuerDataCounter: issuerDataCounter,
-                                     publicKey: publicKey,
-                                     signature: signature),
+
+    static func verify(
+        cardId: String,
+        issuerDataSize: Int,
+        issuerDataCounter: Int?,
+        publicKey: Data,
+        signature: Data
+    ) -> Bool {
+        if let verifyResult = try? verify(
+            cardId: cardId,
+            issuerData: nil,
+            issuerDataSize: issuerDataSize,
+            issuerDataCounter: issuerDataCounter,
+            publicKey: publicKey,
+            signature: signature
+        ),
             verifyResult == true { return true }
         return false
     }
-    
-    private static func verify(cardId: String,
-                               issuerData: Data?,
-                               issuerDataSize: Int?,
-                               issuerDataCounter: Int?,
-                               publicKey: Data,
-                               signature: Data) throws -> Bool? {
-        
+
+    private static func verify(
+        cardId: String,
+        issuerData: Data?,
+        issuerDataSize: Int?,
+        issuerDataCounter: Int?,
+        publicKey: Data,
+        signature: Data
+    ) throws -> Bool? {
         let encoder = TlvEncoder()
         var data = Data()
         do {
@@ -62,11 +69,12 @@ class IssuerDataVerifier {
                 data += try encoder.encode(.size, value: size).value
             }
         } catch { return nil }
-        
-        return try CryptoUtils.verify(curve: .secp256k1,
-                                  publicKey: publicKey,
-                                  message: data,
-                                  signature: signature)
+
+        return try CryptoUtils.verify(
+            curve: .secp256k1,
+            publicKey: publicKey,
+            message: data,
+            signature: signature
+        )
     }
-    
 }

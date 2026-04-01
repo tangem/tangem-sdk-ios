@@ -25,6 +25,7 @@ class SLIP10Tests: XCTestCase {
 }
 
 // MARK: - SLIP10FWTests
+
 class SLIP10FWTests: FWTestCase {
     func testVector1Secp256r1() throws {
         let sdk = TangemSdk()
@@ -90,7 +91,7 @@ class SLIP10FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -158,7 +159,7 @@ class SLIP10FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -166,14 +167,15 @@ class SLIP10FWTests: FWTestCase {
 
     func testSecp256r1DerivationRetry() throws {
         let sdk = TangemSdk()
-        sdk.config.defaultDerivationPaths = [ .secp256r1: [try DerivationPath(rawPath: "m/28578'"),
-                                                           try DerivationPath(rawPath: "m/28578'/33941")]]
+        sdk.config.defaultDerivationPaths = [.secp256r1: [
+            try DerivationPath(rawPath: "m/28578'"),
+            try DerivationPath(rawPath: "m/28578'/33941"),
+        ]]
         let bip32 = BIP32()
         let masterKey = try bip32.makeMasterKey(from: Data(hexString: "000102030405060708090a0b0c0d0e0f"), curve: .secp256r1)
 
         printEquals(masterKey.privateKey.hexString.lowercased(), "612091aaa12e22dd2abef664f8a01a82cae99ad7441b7ef8110424915c268bc2".lowercased())
         printEquals(masterKey.chainCode.hexString.lowercased(), "beeb672fe4621673f722f38529c07392fecaa61015c80c34f29ce8b41b3cb6ea".lowercased())
-
 
         let iw = CreateWalletTask(curve: .secp256r1, privateKey: masterKey)
 
@@ -204,7 +206,7 @@ class SLIP10FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -271,7 +273,7 @@ class SLIP10FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -338,7 +340,7 @@ class SLIP10FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 }

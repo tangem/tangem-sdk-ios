@@ -23,7 +23,7 @@ public enum PreflightReadMode: Decodable, Equatable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercased()
-        
+
         switch stringValue {
         case "none":
             self = .none
@@ -44,13 +44,13 @@ final class PreflightReadTask: CardSessionRunnable {
 
     init(readMode: PreflightReadMode, filter: PreflightReadFilter?) {
         self.readMode = readMode
-        self.preflightFilter = filter
+        preflightFilter = filter
     }
-    
+
     deinit {
         Log.debug("PreflightReadTask deinit")
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         Log.debug("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
@@ -74,7 +74,7 @@ final class PreflightReadTask: CardSessionRunnable {
                 if card.firmwareVersion.type != .sdk {
                     Config.isDevelopmentMode = false
                 }
-                
+
                 self.updateEnvironmentIfNeeded(for: card, in: session)
                 session.fetchAccessCodeIfNeeded()
                 session.fetchAccessTokensIfNeeded()
@@ -84,7 +84,7 @@ final class PreflightReadTask: CardSessionRunnable {
             }
         }
     }
-    
+
     private func finalizeRead(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
@@ -93,7 +93,7 @@ final class PreflightReadTask: CardSessionRunnable {
 
         if card.firmwareVersion < .multiwalletAvailable {
             do {
-                try self.filterOnReadWalletsList(card: card, session)
+                try filterOnReadWalletsList(card: card, session)
             } catch {
                 completion(.failure(.preflightFiltered(error)))
                 return
@@ -102,7 +102,7 @@ final class PreflightReadTask: CardSessionRunnable {
             completion(.success(card))
             return
         }
-        
+
         switch readMode {
         case .fullCardRead:
             readWalletsList(in: session, completion: completion)
@@ -138,7 +138,7 @@ final class PreflightReadTask: CardSessionRunnable {
             completion(.success(card))
         }
     }
-    
+
     private func readWalletsList(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         ReadWalletsListCommand().run(in: session) { result in
             switch result {
@@ -193,7 +193,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
 
         // No backup yet
-        if backupHash.allSatisfy({$0 == 0}) {
+        if backupHash.allSatisfy({ $0 == 0 }) {
             return
         }
 
@@ -241,7 +241,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
 
         do {
-            try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
+            try preflightFilter?.onFullCardRead(card, environment: session.environment)
         } catch {
             throw TangemSdkError.preflightFiltered(error)
         }

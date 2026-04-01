@@ -16,16 +16,16 @@ import CryptoKit
 class BIP32Tests: XCTestCase {
     // MARK: - Test vector 5
 
-    // https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
+    /// https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#user-content-Test_Vectors
     func testVector5() {
         // (invalid pubkey 020000000000000000000000000000000000000000000000000000000000000007)
         XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6Q5JXayek4PRsn35jii4veMimro1xefsM58PgBMrvdYre8QyULY", networkType: .mainnet))
 
         // (unknown extended key version)
-        XCTAssertThrowsError(try ExtendedPublicKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHPmHJiEDXkTiJTVV9rHEBUem2mwVbbNfvT2MTcAqj3nesx8uBf9", networkType:.mainnet))
+        XCTAssertThrowsError(try ExtendedPublicKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHPmHJiEDXkTiJTVV9rHEBUem2mwVbbNfvT2MTcAqj3nesx8uBf9", networkType: .mainnet))
 
         // (unknown extended key version)
-        XCTAssertThrowsError(try ExtendedPrivateKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHGMQzT7ayAmfo4z3gY5KfbrZWZ6St24UVf2Qgo6oujFktLHdHY4", networkType:.mainnet))
+        XCTAssertThrowsError(try ExtendedPrivateKey(from: "DMwo58pR1QLEFihHiXPVykYB6fJmsTeHvyTp7hRThAtCX8CvYzgPcn8XnmdfHGMQzT7ayAmfo4z3gY5KfbrZWZ6St24UVf2Qgo6oujFktLHdHY4", networkType: .mainnet))
 
         // (zero depth with non-zero index)
         XCTAssertThrowsError(try ExtendedPublicKey(from: "xpub661MyMwAuDcm6CRQ5N4qiHKrJ39Xe1R1NyfouMKTTWcguwVcfrZJaNvhpebzGerh7gucBvzEQWRugZDuDXjNDRmXzSZe4c7mnTK97pTvGS8", networkType: .mainnet))
@@ -67,7 +67,6 @@ class BIP32Tests: XCTestCase {
         XCTAssertThrowsError(try ExtendedPrivateKey(from: "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHL", networkType: .mainnet))
     }
 }
-
 
 // MARK: - SLIP10FWTests
 
@@ -146,9 +145,10 @@ class BIP32FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
+
     func testVector2() throws {
         let sdk = TangemSdk()
         sdk.config.defaultDerivationPaths = [.secp256k1: [
@@ -210,7 +210,7 @@ class BIP32FWTests: FWTestCase {
                     self.printEquals(expected3.publicKey.hexString, derived3.publicKey.hexString)
                     self.printEquals(expected3.chainCode.hexString, derived3.chainCode.hexString)
 
-                    /// Chain m/0/2147483647H/1/2147483646H/2 ext pub
+                    // Chain m/0/2147483647H/1/2147483646H/2 ext pub
                     let derived4 = try XCTUnwrap(wallet.derivedKeys[try DerivationPath(rawPath: "m/0/2147483647'/1/2147483646'/2")])
                     let expected4 = try ExtendedPublicKey(from: "xpub6FnCn6nSzZAw5Tw7cgR9bi15UV96gLZhjDstkXXxvCLsUXBGXPdSnLFbdpq8p9HmGsApME5hQTZ3emM2rnY5agb9rXpVGyy3bdW6EEgAtqt", networkType: .mainnet)
                     self.printEquals(expected4.publicKey.hexString, derived4.publicKey.hexString)
@@ -223,7 +223,7 @@ class BIP32FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -273,7 +273,7 @@ class BIP32FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 
@@ -330,7 +330,7 @@ class BIP32FWTests: FWTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
 
-            withExtendedLifetime(sdk, {})
+            withExtendedLifetime(sdk) {}
         }
     }
 }

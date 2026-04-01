@@ -39,7 +39,7 @@ public class GetEntropyCommand: Command {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
 
         if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
@@ -55,7 +55,9 @@ public class GetEntropyCommand: Command {
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> GetEntropyResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        return GetEntropyResponse(cardId: try decoder.decode(.cardId),
-                                  data: try decoder.decode(.data))
+        return GetEntropyResponse(
+            cardId: try decoder.decode(.cardId),
+            data: try decoder.decode(.data)
+        )
     }
 }

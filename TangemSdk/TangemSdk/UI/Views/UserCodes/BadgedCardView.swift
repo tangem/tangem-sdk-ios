@@ -14,12 +14,12 @@ struct BadgedCardView: View {
     let name: String
     let badgeBackground: Color
     let badgeForeground: Color
-    
+
     var body: some View {
         CardView(cardColor: cardColor, starsColor: starsColor)
             .overlay(overlay)
     }
-    
+
     @ViewBuilder
     private var overlay: some View {
         GeometryReader { geo in
@@ -40,10 +40,13 @@ struct BadgedCardView: View {
 
 struct BadgedCardView_Previews: PreviewProvider {
     static var previews: some View {
-        BadgedCardView(cardColor: .blue, starsColor: .gray,
-                       name: "Origin card",
-                       badgeBackground: .red,
-                       badgeForeground: .white)
-            .frame(width: 300, height: 0.6 * 300)
+        BadgedCardView(
+            cardColor: .blue,
+            starsColor: .gray,
+            name: "Origin card",
+            badgeBackground: .red,
+            badgeForeground: .white
+        )
+        .frame(width: 300, height: 0.6 * 300)
     }
 }

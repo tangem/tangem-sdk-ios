@@ -26,13 +26,15 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
     /// An optional counter that protect issuer data against replay attack. When flag `Protect_Issuer_Data_Against_Replay` set in `SettingsMask`
     /// then this value is mandatory and must increase on each execution of `WriteIssuerDataCommand`.
     public let issuerDataCounter: Int?
-    
+
     func verify(with publicKey: Data) -> Bool? {
-        return IssuerDataVerifier.verify(cardId: cardId,
-                                         issuerData: issuerData,
-                                         issuerDataCounter: issuerDataCounter,
-                                         publicKey: publicKey,
-                                         signature: issuerDataSignature)
+        return IssuerDataVerifier.verify(
+            cardId: cardId,
+            issuerData: issuerData,
+            issuerDataCounter: issuerDataCounter,
+            publicKey: publicKey,
+            signature: issuerDataSignature
+        )
     }
 }
 
@@ -45,25 +47,25 @@ public struct ReadIssuerDataResponse: JSONStringConvertible {
 @available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class ReadIssuerDataCommand: Command {
     private var issuerPublicKey: Data?
-    
+
     public init(issuerPublicKey: Data? = nil) {
         self.issuerPublicKey = issuerPublicKey
     }
-    
+
     deinit {
         Log.debug("ReadIssuerDataCommand deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadIssuerDataResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
+
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
-        
+
         transceive(in: session) { result in
             switch result {
             case .success(let response):
@@ -71,9 +73,9 @@ public final class ReadIssuerDataCommand: Command {
                     completion(.success(response))
                     return
                 }
-                
+
                 if let result = response.verify(with: self.issuerPublicKey!),
-                    result == true {
+                   result == true {
                     completion(.success(response))
                 } else {
                     completion(.failure(.verificationFailed))
@@ -83,21 +85,22 @@ public final class ReadIssuerDataCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
-        
+
         return CommandApdu(.readIssuerData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadIssuerDataResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return ReadIssuerDataResponse(
             cardId: try decoder.decode(.cardId),
             issuerData: try decoder.decode(.data),
             issuerDataSignature: try decoder.decode(.issuerDataSignature),
-            issuerDataCounter: try decoder.decode(.issuerDataCounter))
+            issuerDataCounter: try decoder.decode(.issuerDataCounter)
+        )
     }
 }

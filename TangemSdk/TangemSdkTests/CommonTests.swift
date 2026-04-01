@@ -28,18 +28,20 @@ class CommonTests: XCTestCase {
         XCTAssertTrue(AttestationTask.Mode.offline < AttestationTask.Mode.full)
         XCTAssertTrue(AttestationTask.Mode.full > AttestationTask.Mode.offline)
     }
-    
+
     func testAttestationRawRepresentation() {
-        let attestaion = Attestation(cardKeyAttestation: .verifiedOffline,
-                                     walletKeysAttestation: .verified,
-                                     firmwareAttestation: .skipped,
-                                     cardUniquenessAttestation: .failed)
-        
+        let attestaion = Attestation(
+            cardKeyAttestation: .verifiedOffline,
+            walletKeysAttestation: .verified,
+            firmwareAttestation: .skipped,
+            cardUniquenessAttestation: .failed
+        )
+
         let fromRepresentation = Attestation(rawRepresentation: attestaion.rawRepresentation)
         XCTAssertNotNil(fromRepresentation)
         XCTAssertEqual(attestaion, fromRepresentation)
     }
-    
+
     func testCardIdFormatter() {
         func format(with style: CardIdDisplayFormat) -> String? {
             var formatter = CardIdFormatter()
@@ -51,7 +53,7 @@ class CommonTests: XCTestCase {
 
             return formatter.string(from: cardIdString)?.replacingOccurrences(of: nbsp, with: whitespace)
         }
-        
+
         XCTAssertEqual(format(with: .full), "CB79 0000 0001 8201")
         XCTAssertEqual(format(with: .lastLunh(4)), "Card #1820")
         XCTAssertEqual(format(with: .last(1)), "Card #1")
@@ -61,29 +63,29 @@ class CommonTests: XCTestCase {
         XCTAssertEqual(format(with: .last(20)), "Card #CB79 0000 0001 8201")
         XCTAssertEqual(format(with: .last(16)), "Card #CB79 0000 0001 8201")
     }
-    
+
     func testFirmwareParse() {
         let dev = FirmwareVersion(stringValue: "4.45d SDK")
         XCTAssertEqual(dev.major, 4)
         XCTAssertEqual(dev.minor, 45)
         XCTAssertEqual(dev.patch, 0)
         XCTAssertEqual(dev.type, .sdk)
-        
+
         let spec = FirmwareVersion(stringValue: "4.45 mfi")
         XCTAssertEqual(spec.major, 4)
         XCTAssertEqual(spec.minor, 45)
         XCTAssertEqual(spec.patch, 0)
         XCTAssertEqual(spec.type, .special)
-        
+
         let spec1 = FirmwareVersion(stringValue: "4.45m")
         XCTAssertEqual(spec, spec1)
-        
+
         let rel = FirmwareVersion(stringValue: "4.45r")
         XCTAssertEqual(rel.major, 4)
         XCTAssertEqual(rel.minor, 45)
         XCTAssertEqual(rel.patch, 0)
         XCTAssertEqual(rel.type, .release)
-        
+
         let rel1 = FirmwareVersion(stringValue: "4.45")
         XCTAssertEqual(rel, rel1)
     }

@@ -81,7 +81,7 @@ struct WelcomeBackView: View {
 private extension WelcomeBackView {
     enum Constants {
         static let supportedBlogLanguages: Set<String> = [
-            "en", "es", "pt", "de", "ja", "fr", "tr", "ko", "zh-Hans", "ru"
+            "en", "es", "pt", "de", "ja", "fr", "tr", "ko", "zh-Hans", "ru",
         ]
 
         static var preactivatedWalletsURL: URL? {
@@ -91,7 +91,7 @@ private extension WelcomeBackView {
                 URLQueryItem(name: "utm_source", value: "tangem-app"),
                 URLQueryItem(name: "utm_medium", value: "app"),
                 URLQueryItem(name: "utm_campaign", value: "articles-sdk-\(lang)"),
-                URLQueryItem(name: "utm_content", value: "devicelang-\(Locale.deviceLanguageCode(withRegion: false))")
+                URLQueryItem(name: "utm_content", value: "devicelang-\(Locale.deviceLanguageCode(withRegion: false))"),
             ]
 
             var blogURLComponents = URLComponents(string: "https://tangem.com/\(lang)/blog/post/preactivated-wallets")

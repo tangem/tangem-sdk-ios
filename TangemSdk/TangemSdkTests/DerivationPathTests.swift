@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class DerivationPathTests: XCTestCase {
-
     // MARK: - Parsing
 
     func testParseStandardPath() throws {

@@ -16,29 +16,29 @@ public struct FileSettings: Codable {
 extension FileSettings {
     init?(_ data: Data?) throws {
         guard let data = data else { return nil }
-        
+
         guard let significantByte = data.last else {
             throw TangemSdkError.decodingFailed("Failed to decode FileSettings")
         }
-        
-        if data.count == 2 { //v3 version
-            self.isPermanent = false
-            self.visibility = significantByte == 1 ? .public : .private
+
+        if data.count == 2 { // v3 version
+            isPermanent = false
+            visibility = significantByte == 1 ? .public : .private
         } else {
             let settings = FileRawSettings(rawValue: significantByte)
-            self.isPermanent = settings.contains(.isPermanent)
-            self.visibility = settings.contains(.isPublic) ? .public : .private
+            isPermanent = settings.contains(.isPermanent)
+            visibility = settings.contains(.isPublic) ? .public : .private
         }
     }
 }
 
-///File visibility. Private files can be read only with security delay or user code if set
+/// File visibility. Private files can be read only with security delay or user code if set
 public enum FileVisibility: String, Codable {
     /// User can read public files without any codes
     case `public`
     /// User can read private files only with security delay or user code if set
     case `private`
-    
+
     func serializeValue(for fwVersion: FirmwareVersion) -> Data {
         if fwVersion < .multiwalletAvailable {
             return Data([Byte(0), permissionsRawValue])
@@ -46,7 +46,7 @@ public enum FileVisibility: String, Codable {
             return Data(permissionsRawValue)
         }
     }
-    
+
     fileprivate var permissionsRawValue: Byte {
         switch self {
         case .public:
@@ -57,12 +57,12 @@ public enum FileVisibility: String, Codable {
     }
 }
 
-fileprivate struct FileRawSettings: OptionSet {
+private struct FileRawSettings: OptionSet {
     static let isPublic: FileRawSettings = .init(rawValue: 0x01)
     static let isPermanent: FileRawSettings = .init(rawValue: 0x10)
-    
+
     let rawValue: Byte
-    
+
     init(rawValue: Byte) {
         self.rawValue = rawValue
     }

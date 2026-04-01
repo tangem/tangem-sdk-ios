@@ -10,37 +10,37 @@ import Foundation
 
 public final class JSONRPCConverter {
     public private(set) var handlers: [String: JSONRPCHandler] = [:]
-    
+
     init() {}
-    
+
     deinit {
         Log.debug("JSONRPCConverter deinit")
     }
-    
+
     public func register(_ object: JSONRPCHandler) {
         handlers[object.method.lowercased()] = object
     }
-    
+
     public func convert(request: JSONRPCRequest) throws -> AnyJSONRPCRunnable {
         let handler = try getHandler(from: request)
         let runnable = try handler.makeRunnable(from: request.params)
         runnable.id = request.id
         return runnable
     }
-    
+
     public func getHandler(from request: JSONRPCRequest) throws -> JSONRPCHandler {
         guard let handler = handlers[request.method.lowercased()] else {
             throw JSONRPCError(.methodNotFound, data: JSONRPCErrorData(.methodNotFound, message: request.method))
         }
-        
+
         return handler
     }
 }
 
 // MARK: - Factory
 
-extension JSONRPCConverter {
-    public static func makeDefaultConverter(networkService: NetworkService) -> JSONRPCConverter {
+public extension JSONRPCConverter {
+    static func makeDefaultConverter(networkService: NetworkService) -> JSONRPCConverter {
         let converter = JSONRPCConverter()
         converter.register(ScanHandler(networkService: networkService))
         converter.register(AttestCardKeyHandler())
@@ -67,33 +67,33 @@ extension JSONRPCConverter {
 
 public protocol JSONRPCHandler {
     var method: String { get }
-    
-    func makeRunnable(from parameters: [String : Any]) throws -> AnyJSONRPCRunnable
+
+    func makeRunnable(from parameters: [String: Any]) throws -> AnyJSONRPCRunnable
 }
 
-
 // MARK: - JSONRPC Specification
+
 public struct JSONRPCRequest {
     public let jsonrpc: String
     public let id: Int?
     public let method: String
     public let params: [String: Any]
-    
-    public init(id: Int?, method: String, params: [String : Any]) {
-        self.jsonrpc = "2.0"
+
+    public init(id: Int?, method: String, params: [String: Any]) {
+        jsonrpc = "2.0"
         self.id = id
         self.method = method
         self.params = params
     }
-    
+
     public init(jsonString: String) throws {
         guard let data = jsonString.data(using: .utf8) else {
             throw JSONRPCError(.parseError)
         }
-        
+
         try self.init(data: data)
     }
-    
+
     public init(data: Data) throws {
         do {
             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -105,12 +105,12 @@ public struct JSONRPCRequest {
             throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: error.localizedDescription))
         }
     }
-    
+
     public init(json: [String: Any]) throws {
-        jsonrpc = json["jsonrpc"] as? String ?? "2.0" //todo make it mandatory
+        jsonrpc = json["jsonrpc"] as? String ?? "2.0" // todo make it mandatory
         id = json["id"] as? Int
-        params = json["params"] as? [String:Any] ?? [:]
-        
+        params = json["params"] as? [String: Any] ?? [:]
+
         if let methodValue = json["method"] as? String {
             method = methodValue
         } else {
@@ -124,9 +124,9 @@ struct JSONRPCRequestParser {
         guard let data = jsonString.data(using: .utf8) else {
             throw JSONRPCError(.parseError)
         }
-        
+
         if let requestArray = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] {
-            let requests = try requestArray.map { try JSONRPCRequest(json: $0 )}
+            let requests = try requestArray.map { try JSONRPCRequest(json: $0) }
             if requests.isEmpty {
                 throw JSONRPCError(.invalidRequest)
             }
@@ -136,11 +136,11 @@ struct JSONRPCRequestParser {
             return .single(request)
         }
     }
-    
+
     enum ParseResult {
         case array([JSONRPCRequest])
         case single(JSONRPCRequest)
-        
+
         var requests: [JSONRPCRequest] {
             switch self {
             case .array(let requests):
@@ -157,9 +157,9 @@ public struct JSONRPCResponse: JSONStringConvertible {
     public let result: AnyJSONRPCResponse?
     public let error: JSONRPCError?
     public let id: Int?
-    
+
     public init(id: Int?, result: AnyJSONRPCResponse?, error: JSONRPCError?) {
-        self.jsonrpc = "2.0"
+        jsonrpc = "2.0"
         self.result = result
         self.error = error
         self.id = id
@@ -172,16 +172,16 @@ public struct JSONRPCError: Error, JSONStringConvertible, Equatable {
     public let code: Int
     public let message: String
     public let data: JSONRPCErrorData?
-    
+
     public init(code: Int, message: String, data: JSONRPCErrorData?) {
         self.code = code
         self.message = message
         self.data = data
     }
-    
+
     public init(_ code: JSONRPCError.Code, data: JSONRPCErrorData? = nil) {
         self.code = code.rawValue
-        self.message = code.message
+        message = code.message
         self.data = data
     }
 }
@@ -191,23 +191,23 @@ public struct JSONRPCErrorData: Encodable, Equatable, JSONStringConvertible {
     public let message: String
 }
 
-extension JSONRPCErrorData {
-    public init(_ code: JSONRPCError.Code, message: String) {
+public extension JSONRPCErrorData {
+    init(_ code: JSONRPCError.Code, message: String) {
         self.code = code.rawValue
         self.message = message
     }
 }
 
-extension JSONRPCError {
-    public enum Code: Int {
+public extension JSONRPCError {
+    enum Code: Int {
         case parseError = -32700
         case invalidRequest = -32600
         case methodNotFound = -32601
         case invalidParams = -32602
         case internalError = -32603
         case serverError = -32000
-        
-        var message: String { //TODO: localize
+
+        var message: String { // TODO: localize
             switch self {
             case .internalError:
                 return "Internal error"
@@ -227,6 +227,7 @@ extension JSONRPCError {
 }
 
 // MARK: - JSONRPC Helper extensions
+
 extension Result where Success: JSONStringConvertible, Failure == TangemSdkError {
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         switch self {
@@ -242,7 +243,7 @@ extension Error {
     func toJsonResponse(id: Int? = nil) -> JSONRPCResponse {
         return JSONRPCResponse(id: id, result: nil, error: toJsonError())
     }
-    
+
     func toJsonError() -> JSONRPCError {
         if let jsonError = self as? JSONRPCError {
             return jsonError
@@ -260,19 +261,19 @@ extension Dictionary where Key == String, Value == Any {
         if value == nil || String(describing: value) == "Optional(<null>)" {
             return nil
         }
-        
+
         return try decode(value!, for: key)
     }
-    
+
     func value<T: Decodable>(for key: String) throws -> T {
         let value = self[key]
         if value == nil || String(describing: value) == "<null>" {
             throw JSONRPCError(.invalidParams, data: JSONRPCErrorData(.invalidParams, message: key))
         }
-        
+
         return try decode(value!, for: key)
     }
-    
+
     private func decode<T: Decodable>(_ value: Any, for key: String) throws -> T {
         if T.self == Data.self || T.self == Data?.self {
             if let hex = value as? String {
@@ -281,7 +282,7 @@ extension Dictionary where Key == String, Value == Any {
                 throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
             }
         }
-        
+
         if T.self == [Data].self || T.self == [Data]?.self {
             if let hex = value as? [String] {
                 return hex.compactMap { Data(hexString: $0) } as! T
@@ -289,15 +290,15 @@ extension Dictionary where Key == String, Value == Any {
                 throw JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
             }
         }
-        
+
         if let converted = value as? T {
             return converted
         }
-        
+
         var someError: Error? = nil
-        
+
         do {
-            if let jsonData =  "\"\(value)\"".data(using: .utf8) {
+            if let jsonData = "\"\(value)\"".data(using: .utf8) {
                 return try JSONDecoder.tangemSdkDecoder.decode(T.self, from: jsonData)
             }
         } catch {
@@ -310,7 +311,7 @@ extension Dictionary where Key == String, Value == Any {
         } catch {
             someError = error
         }
-        
+
         throw someError ?? JSONRPCError(.parseError, data: JSONRPCErrorData(.parseError, message: key))
     }
 }

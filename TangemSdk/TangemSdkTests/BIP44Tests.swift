@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class BIP44Tests: XCTestCase {
-
     func testBuildPathBitcoin() {
         let bip44 = BIP44(coinType: 0, account: 0, change: .external, addressIndex: 0)
         let path = bip44.buildPath()

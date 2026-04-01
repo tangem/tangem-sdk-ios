@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class FirmwareVersionTests: XCTestCase {
-
     // MARK: - Parsing
 
     func testParseRelease() {

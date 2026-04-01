@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol CardArtworksProvider {
-    func loadArtworks() async throws -> Artworks 
+    func loadArtworks() async throws -> Artworks
 }
 
 public struct Artworks {

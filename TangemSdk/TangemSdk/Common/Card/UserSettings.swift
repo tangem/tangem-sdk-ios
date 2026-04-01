@@ -41,9 +41,9 @@ extension Card.UserSettings {
     }
 
     init(from mask: UserSettingsMask) {
-        self.isUserCodeRecoveryAllowed = !mask.contains(.forbidResetPIN)
-        self.isPINRequired = mask.contains(.requirePIN)
-        self.isNDEFDisabled = mask.contains(.disableNDEF)
+        isUserCodeRecoveryAllowed = !mask.contains(.forbidResetPIN)
+        isPINRequired = mask.contains(.requirePIN)
+        isNDEFDisabled = mask.contains(.disableNDEF)
     }
 }
 

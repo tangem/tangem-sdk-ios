@@ -10,30 +10,30 @@ import Foundation
 
 public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
     public typealias Response = [Data: DerivedKeys]
-    
-    private let derivations: Array<(Data,[DerivationPath])>
+
+    private let derivations: [(Data, [DerivationPath])]
     private var response: Response = .init()
-    
+
     public init(_ derivations: [Data: [DerivationPath]]) {
         self.derivations = derivations.reduce(into: []) { result, item in
             result.append((item.key, item.value))
         }
     }
-    
+
     deinit {
         Log.debug("DeriveMultipleWalletPublicKeysTask deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<Response>) {
-        self.derive(index: 0, in: session, completion: completion)
+        derive(index: 0, in: session, completion: completion)
     }
-    
+
     private func derive(index: Int, in session: CardSession, completion: @escaping CompletionResult<Response>) {
         if index == derivations.count {
             completion(.success(response))
             return
         }
-        
+
         let derivation = derivations[index]
         let task = DeriveWalletPublicKeysTask(walletPublicKey: derivation.0, derivationPaths: derivation.1)
         task.run(in: session) { result in

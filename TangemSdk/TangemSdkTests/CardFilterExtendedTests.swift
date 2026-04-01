@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class CardFilterExtendedTests: XCTestCase {
-
     // MARK: - ItemFilter
 
     func testItemFilterAllowContains() {

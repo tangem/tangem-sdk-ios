@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Result where Success == ResponseApdu, Failure == TangemSdkError  {
+extension Result where Success == ResponseApdu, Failure == TangemSdkError {
     func getResponse() throws -> Success {
         switch self {
         case .success(let rapdu):

@@ -37,7 +37,7 @@ public final class AttestWalletKeyTask: Command {
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath?
     private let confirmationMode: ConfirmationMode
-    
+
     /// Default initializer
     /// - Parameters:
     ///   - publicKey: Public key of the wallet to check
@@ -55,7 +55,7 @@ public final class AttestWalletKeyTask: Command {
         self.challenge = challenge
         self.confirmationMode = confirmationMode
     }
-    
+
     deinit {
         Log.debug("AttestWalletKeyTask deinit")
     }
@@ -94,7 +94,7 @@ public final class AttestWalletKeyTask: Command {
                 completion(.failure(error.toTangemSdkError()))
             }
         }
-        
+
         if let derivationPath {
             let derivationCommand = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPath)
             derivationCommand.run(in: session) { result in
@@ -109,8 +109,7 @@ public final class AttestWalletKeyTask: Command {
             transceiveAttestation(in: session, completion: completion)
         }
     }
-    
-    
+
     func transceiveAttestation(in session: CardSession, completion: @escaping CompletionResult<AttestWalletKeyResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -120,12 +119,14 @@ public final class AttestWalletKeyTask: Command {
                     completion(.failure(.cardError))
                     return
                 }
-                
+
                 do {
                     let isWalletSignatureValid = try self.verifyWalletSignature(response: checkWalletResponse, wallet: wallet)
-                    let isCardSignatureValid = try self.verifyCardSignature(response: checkWalletResponse,
-                                                                            cardPublicKey: card.cardPublicKey)
-                    if isWalletSignatureValid && isCardSignatureValid {
+                    let isCardSignatureValid = try self.verifyCardSignature(
+                        response: checkWalletResponse,
+                        cardPublicKey: card.cardPublicKey
+                    )
+                    if isWalletSignatureValid, isCardSignatureValid {
                         completion(.success(checkWalletResponse))
                     } else {
                         completion(.failure(.cardVerificationFailed))
@@ -138,16 +139,16 @@ public final class AttestWalletKeyTask: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         guard let walletIndex = card.wallets[walletPublicKey]?.index else {
             throw TangemSdkError.walletNotFound
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.challenge, value: challenge)
             .append(.walletIndex, value: walletIndex)
@@ -160,7 +161,7 @@ public final class AttestWalletKeyTask: Command {
             try tlvBuilder.append(.cardId, value: environment.card?.cardId)
         }
 
-        //Otherwise, static confirmation will fail with the "invalidParams" error.
+        // Otherwise, static confirmation will fail with the "invalidParams" error.
         if card.firmwareVersion >= .walletOwnershipConfirmationAvailable {
             switch confirmationMode {
             case .none:
@@ -171,29 +172,29 @@ public final class AttestWalletKeyTask: Command {
                 try tlvBuilder.append(.publicKeyChallenge, value: challenge)
             }
         }
-        
+
         if let derivationPath {
             try tlvBuilder.append(.walletHDPath, value: derivationPath)
         }
-        
+
         return CommandApdu(.attestWalletKey, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AttestWalletKeyResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        
+
         return AttestWalletKeyResponse(
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),
             walletSignature: try decoder.decode(.walletSignature),
-            challenge: self.challenge,
+            challenge: challenge,
             cardSignature: try decoder.decode(.cardSignature),
             publicKeySalt: try decoder.decode(.publicKeySalt),
             walletStatus: try decoder.decode(.status),
             counter: try decoder.decode(.checkWalletCounter)
         )
     }
-    
+
     private func verifyWalletSignature(response: AttestWalletKeyResponse, wallet: Card.Wallet) throws -> Bool {
         // Impossible case because of precheck
         guard let currentWalletPublicKey = wallet.publicKey else {
@@ -203,13 +204,13 @@ public final class AttestWalletKeyTask: Command {
         guard currentWalletPublicKey == walletPublicKey else {
             return false
         }
-        
+
         let publicKey: Data
         if let derivationPath {
             guard let derivedKey = wallet.derivedKeys[derivationPath] else {
                 throw TangemSdkError.walletNotFound
             }
-            
+
             publicKey = derivedKey.publicKey
         } else {
             publicKey = currentWalletPublicKey

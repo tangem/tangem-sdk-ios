@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class EntropyLengthTests: XCTestCase {
-
     func testWordCount() {
         XCTAssertEqual(EntropyLength.bits128.wordCount, 12)
         XCTAssertEqual(EntropyLength.bits160.wordCount, 15)

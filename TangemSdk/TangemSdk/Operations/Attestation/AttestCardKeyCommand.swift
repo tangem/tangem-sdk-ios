@@ -20,7 +20,7 @@ public struct AttestCardKeyResponse: JSONStringConvertible {
     public let challenge: Data
     /// Card's public keys of linked cards if "full" attestationMode was selected. COS v6+.
     public let linkedCardPublicKeys: [Data]
-    
+
     public func verify(with cardPublicKey: Data) throws -> Bool {
         var message = challenge + salt
 
@@ -28,16 +28,18 @@ public struct AttestCardKeyResponse: JSONStringConvertible {
             message += Constants.linkedCardsPrefix.data(using: .utf8)! + linkedCardPublicKeys.joined()
         }
 
-        return try CryptoUtils.verify(curve: .secp256k1,
-                                      publicKey: cardPublicKey,
-                                      message: message,
-                                      signature: cardSignature)
+        return try CryptoUtils.verify(
+            curve: .secp256k1,
+            publicKey: cardPublicKey,
+            message: message,
+            signature: cardSignature
+        )
     }
 }
 
 public class AttestCardKeyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readCardOnly }
-    
+
     private var challenge: Data?
     private let mode: Mode
 
@@ -49,7 +51,7 @@ public class AttestCardKeyCommand: Command {
         self.challenge = challenge
         self.mode = mode
     }
-    
+
     deinit {
         Log.debug("AttestCardKeyCommand deinit")
     }
@@ -61,7 +63,7 @@ public class AttestCardKeyCommand: Command {
 
         return nil
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<AttestCardKeyResponse>) {
         if challenge == nil {
             do {
@@ -70,12 +72,12 @@ public class AttestCardKeyCommand: Command {
                 completion(.failure(error.toTangemSdkError()))
             }
         }
-        
+
         guard let cardPublicKey = session.environment.card?.cardPublicKey else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
+
         transceive(in: session) { result in
             switch result {
             case .success(let response):
@@ -85,7 +87,7 @@ public class AttestCardKeyCommand: Command {
                         completion(.failure(.cardVerificationFailed))
                         return
                     }
-                    
+
                     completion(.success(response))
                 } catch {
                     completion(.failure(error.toTangemSdkError()))
@@ -95,7 +97,7 @@ public class AttestCardKeyCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
@@ -119,7 +121,7 @@ public class AttestCardKeyCommand: Command {
 
         return CommandApdu(.attestCardKey, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> AttestCardKeyResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
@@ -127,8 +129,9 @@ public class AttestCardKeyCommand: Command {
             cardId: try decoder.decode(.cardId),
             salt: try decoder.decode(.salt),
             cardSignature: try decoder.decode(.cardSignature),
-            challenge: self.challenge!,
-            linkedCardPublicKeys: try decodeLinkedCardPublicKeys(from: decoder.tlv))
+            challenge: challenge!,
+            linkedCardPublicKeys: try decodeLinkedCardPublicKeys(from: decoder.tlv)
+        )
     }
 
     private func decodeLinkedCardPublicKeys(from tlv: [Tlv]) throws -> [Data] {

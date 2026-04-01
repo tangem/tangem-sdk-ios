@@ -45,7 +45,7 @@ final class StartBackupCardLinkingCommand: Command {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.primaryCardLinkingKey, value: primaryCardLinkingKey)
 

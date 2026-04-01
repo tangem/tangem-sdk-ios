@@ -11,20 +11,20 @@ import SwiftUI
 struct CardView: View {
     let cardColor: Color
     let starsColor: Color
-    
+
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
             .fill(cardColor)
             .overlay(overlay)
             .aspectRatio(CGSize(width: 210, height: 130), contentMode: .fit)
     }
-    
+
     @ViewBuilder
     private var overlay: some View {
         GeometryReader { geo in
             VStack {
                 Spacer()
-                
+
                 Text("**** **** **** ****")
                     .lineLimit(1)
                     .minimumScaleFactor(0.4)
@@ -40,7 +40,7 @@ struct CardView: View {
 
 struct CardView_Previews: PreviewProvider {
     static var cardColor = TangemSdkStyle().colors.cardColor
-    
+
     static var previews: some View {
         Group {
             CardView(cardColor: cardColor, starsColor: .gray)

@@ -11,13 +11,13 @@ import Foundation
 /// Command that deletes file at specified index
 public final class DeleteFileCommand: Command {
     var requiresPasscode: Bool { true }
-    
+
     private let fileIndex: Int
-    
+
     public init(fileIndex: Int) {
         self.fileIndex = fileIndex
     }
-    
+
     deinit {
         Log.debug("DeleteFileCommand deinit")
     }
@@ -26,14 +26,14 @@ public final class DeleteFileCommand: Command {
         if card.firmwareVersion < .filesAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         if !card.settings.isFilesAllowed {
             return .filesDisabled
         }
-        
+
         return nil
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
@@ -41,10 +41,10 @@ public final class DeleteFileCommand: Command {
             .append(.pin2, value: environment.passcode.value)
             .append(.interactionMode, value: FileDataMode.deleteFile)
             .append(.fileIndex, value: fileIndex)
-        
+
         return CommandApdu(.writeFileData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))

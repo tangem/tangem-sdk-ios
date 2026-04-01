@@ -9,7 +9,7 @@
 import Foundation
 import LocalAuthentication
 
-public final class BiometricsUtil {
+public enum BiometricsUtil {
     public static var isAvailable: Bool {
         var error: NSError?
 
@@ -51,7 +51,7 @@ public final class BiometricsUtil {
                         completion(.failure(error.toTangemSdkError()))
                         return
                     }
-                    
+
                     completion(.failure(mapError(error: laError)))
                 }
             }
@@ -82,16 +82,16 @@ public final class BiometricsUtil {
         case .userCancel, .appCancel, .systemCancel, .notInteractive:
             return TangemSdkError.userCancelled
         case .authenticationFailed,
-                .biometryDisconnected,
-                .biometryNotPaired,
-                .companionNotAvailable,
-                .invalidContext,
-                .invalidDimensions,
-                .passcodeNotSet,
-                .touchIDLockout,
-                .touchIDNotAvailable,
-                .touchIDNotEnrolled,
-                .userFallback:
+             .biometryDisconnected,
+             .biometryNotPaired,
+             .companionNotAvailable,
+             .invalidContext,
+             .invalidDimensions,
+             .passcodeNotSet,
+             .touchIDLockout,
+             .touchIDNotAvailable,
+             .touchIDNotEnrolled,
+             .userFallback:
             return error.toTangemSdkError()
         @unknown default:
             return TangemSdkError.userCancelled

@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class WalletDataTests: XCTestCase {
-
     func testCodableRoundTrip() throws {
         let token = WalletData.Token(
             name: "USD Coin",

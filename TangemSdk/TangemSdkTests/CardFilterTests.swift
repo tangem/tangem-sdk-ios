@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class CardFilterTests: XCTestCase {
-
     func testCardIDRange() throws {
         let range = try XCTUnwrap(CardIdRange(start: "0000000000000000", end: "FFFFFFFFFFFFFFFF"))
 

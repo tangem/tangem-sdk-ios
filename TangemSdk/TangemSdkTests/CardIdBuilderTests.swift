@@ -10,7 +10,6 @@ import XCTest
 @testable import TangemSdk
 
 class CardIdBuilderTests: XCTestCase {
-
     // MARK: - Simple path tests
 
     func testCreateCardId_4CharSeries_StartNumber0() {

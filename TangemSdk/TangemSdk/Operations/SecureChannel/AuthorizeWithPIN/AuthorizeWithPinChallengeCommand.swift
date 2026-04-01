@@ -31,7 +31,7 @@ class AuthorizeWithPinChallengeCommand: Command {
 
         return nil
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<AuthorizeWithPinChallengeResponse>) {
         transceive(in: session) { result in
             switch result {

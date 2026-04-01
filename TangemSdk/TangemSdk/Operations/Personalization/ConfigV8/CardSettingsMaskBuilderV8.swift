@@ -38,7 +38,7 @@ enum CardSettingsMaskBuilderV8 {
             builder.add(.disableFiles)
         }
 
-        if config.allowHDWallets ?? false  {
+        if config.allowHDWallets ?? false {
             builder.add(.allowHDWallets)
         }
 

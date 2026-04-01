@@ -30,7 +30,7 @@ public class CreateWalletTask: CardSessionRunnable {
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     public init(curve: EllipticCurve) {
         self.curve = curve
-        self.privateKey = nil
+        privateKey = nil
     }
 
     /// Use this initializer to import a key. COS v6+.
@@ -52,7 +52,7 @@ public class CreateWalletTask: CardSessionRunnable {
             case .success(let response):
                 self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
             case .failure(let error):
-                if case .invalidState = error { //Wallet already created but we didn't get the proper response from the card. Rescan and retrieve the wallet
+                if case .invalidState = error { // Wallet already created but we didn't get the proper response from the card. Rescan and retrieve the wallet
                     Log.debug("Received wallet creation error. Try rescan and retrieve created wallet")
                     self.scanAndRetrieveCreatedWallet(at: command.walletIndex, in: session, completion: completion)
                 } else {
@@ -97,7 +97,7 @@ public class CreateWalletTask: CardSessionRunnable {
 
         if let createdWallet = card.wallets.first(where: { $0.index == index }) {
             let response = CreateWalletResponse(cardId: card.cardId, wallet: createdWallet)
-            self.deriveKeysIfNeeded(for: response, in: session, completion: completion)
+            deriveKeysIfNeeded(for: response, in: session, completion: completion)
         } else {
             Log.debug("Wallet not found after rescan.")
             completion(.failure(TangemSdkError.unknownError))

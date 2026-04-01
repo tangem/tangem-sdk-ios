@@ -28,16 +28,16 @@ public struct CreateWalletResponse: JSONStringConvertible {
 final class CreateWalletCommand: Command {
     var requiresPasscode: Bool { true }
     var walletIndex: Int = 0
-    
+
     private let curve: EllipticCurve
     private let privateKey: ExtendedPrivateKey?
     private let signingMethod = SigningMethod.signHash
-    
+
     /// Default initializer
     /// - Parameter curve: Elliptic curve of the wallet.  `Card.supportedCurves` contains all curves supported by the card
     init(curve: EllipticCurve) {
         self.curve = curve
-        self.privateKey = nil
+        privateKey = nil
     }
 
     /// Use this initializer to import a key. COS v6+.
@@ -47,11 +47,11 @@ final class CreateWalletCommand: Command {
         self.curve = curve
         self.privateKey = privateKey
     }
-    
+
     deinit {
         Log.debug("CreateWalletCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         let selectBlockchainAllowedFlagRelevantVersions = (FirmwareVersion.multiwalletAvailable ..< .createWalletResponseAvailable)
 
@@ -59,11 +59,11 @@ final class CreateWalletCommand: Command {
            !card.settings.isSelectBlockchainAllowed {
             return .walletCannotBeCreated
         }
-        
+
         guard card.supportedCurves.contains(curve) else {
             return TangemSdkError.unsupportedCurve
         }
-        
+
         if card.firmwareVersion < .multiwalletAvailable {
             if let cardSigningMethods = card.settings.defaultSigningMethods,
                !signingMethod.isSubset(of: cardSigningMethods) {
@@ -90,7 +90,7 @@ final class CreateWalletCommand: Command {
 
         return nil
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<CreateWalletResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -104,20 +104,20 @@ final class CreateWalletCommand: Command {
             }
         }
     }
-    
+
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
             guard let card = card else { return error }
-            
+
             if card.firmwareVersion >= .passcodeStatusAvailable,
                let isPasscodeSet = card.isPasscodeSet, !isPasscodeSet {
                 return .alreadyCreated
             }
         }
-        
+
         return error
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
@@ -137,12 +137,12 @@ final class CreateWalletCommand: Command {
             try tlvBuilder.append(.cardId, value: environment.card?.cardId)
         }
 
-        self.walletIndex = try calculateWalletIndex(for: card)
-        
+        walletIndex = try calculateWalletIndex(for: card)
+
         if card.firmwareVersion >= .multiwalletAvailable {
             let maskBuilder = MaskBuilder<WalletSettingsMask>()
-            maskBuilder.add(.isReusable) //The newest v4 cards ignore this setting, the card's settings value used instead
-            
+            maskBuilder.add(.isReusable) // The newest v4 cards ignore this setting, the card's settings value used instead
+
             try tlvBuilder.append(.settingsMask, value: maskBuilder.build())
                 .append(.curveId, value: curve)
                 .append(.signingMethod, value: signingMethod)
@@ -155,43 +155,49 @@ final class CreateWalletCommand: Command {
                 try tlvBuilder.append(.walletHDChain, value: privateKey.chainCode)
             }
         }
-        
+
         return CommandApdu(.createWallet, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> CreateWalletResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }
-        
+
         let wallet: Card.Wallet
-        
+
         switch card.firmwareVersion {
         case .createWalletResponseAvailable...:
-            //Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
+            // Newest v4 cards don't have their own wallet settings, so we should take them from the card's settings
             wallet = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet)
                 .deserializeWallet(from: decoder)
-        case .multiwalletAvailable...: //We don't have a wallet response so we use to create it ourselves
-            wallet = try makeWalletLegacy(decoder: decoder,
-                                          index: try decoder.decode(.walletIndex),
-                                          remainingSignatures: nil, //deprecated
-                                          isPermanentWallet: false) //we restrict to create permanent wallets by sdk design
-        default: //We don't have a wallet response so we use to create it ourselves
-            wallet = try makeWalletLegacy(decoder: decoder,
-                                          index: 0,
-                                          remainingSignatures: card.remainingSignatures,
-                                          isPermanentWallet: card.settings.isPermanentWallet)
+        case .multiwalletAvailable...: // We don't have a wallet response so we use to create it ourselves
+            wallet = try makeWalletLegacy(
+                decoder: decoder,
+                index: try decoder.decode(.walletIndex),
+                remainingSignatures: nil, // deprecated
+                isPermanentWallet: false
+            ) // we restrict to create permanent wallets by sdk design
+        default: // We don't have a wallet response so we use to create it ourselves
+            wallet = try makeWalletLegacy(
+                decoder: decoder,
+                index: 0,
+                remainingSignatures: card.remainingSignatures,
+                isPermanentWallet: card.settings.isPermanentWallet
+            )
         }
-        
+
         return CreateWalletResponse(cardId: try decoder.decode(.cardId), wallet: wallet)
     }
-    
-    private func makeWalletLegacy(decoder: TlvDecoder,
-                                  index: Int,
-                                  remainingSignatures: Int?,
-                                  isPermanentWallet: Bool) throws -> Card.Wallet {
+
+    private func makeWalletLegacy(
+        decoder: TlvDecoder,
+        index: Int,
+        remainingSignatures: Int?,
+        isPermanentWallet: Bool
+    ) throws -> Card.Wallet {
         return Card.Wallet(
             publicKey: try decoder.decode(.walletPublicKey),
             chainCode: nil,
@@ -206,16 +212,16 @@ final class CreateWalletCommand: Command {
             status: .loaded
         )
     }
-    
+
     private func calculateWalletIndex(for card: Card) throws -> Int {
-        let maxIndex = card.settings.maxWalletsCount //We need to execute this wallet index calculation stuff only after precheck because of correct error mapping. Run fires only before precheck. And precheck will not fire if error handling disabled
+        let maxIndex = card.settings.maxWalletsCount // We need to execute this wallet index calculation stuff only after precheck because of correct error mapping. Run fires only before precheck. And precheck will not fire if error handling disabled
         let occupiedIndices = card.wallets.map { $0.index }
-        let allIndices = 0..<maxIndex
+        let allIndices = 0 ..< maxIndex
         if let firstAvailableIndex = allIndices.filter({ !occupiedIndices.contains($0) }).sorted().first {
             return firstAvailableIndex
         } else {
             if maxIndex == 1 {
-                //already created for old cards mostly
+                // already created for old cards mostly
                 throw TangemSdkError.alreadyCreated
             } else {
                 throw TangemSdkError.maxNumberOfWalletsCreated

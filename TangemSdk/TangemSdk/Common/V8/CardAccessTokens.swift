@@ -14,7 +14,7 @@ struct CardAccessTokens: Codable {
 
 extension CardAccessTokens {
     init(_ manageAccessTokensResponse: ManageAccessTokensResponse) {
-        self.accessToken = manageAccessTokensResponse.accessToken
-        self.identifyToken = manageAccessTokensResponse.identifyToken
+        accessToken = manageAccessTokensResponse.accessToken
+        identifyToken = manageAccessTokensResponse.identifyToken
     }
 }

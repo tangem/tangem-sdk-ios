@@ -10,21 +10,23 @@ import Foundation
 
 class FinalizeBackupCardTask: CardSessionRunnable {
     var shouldAskForAccessCode: Bool { false }
-    
+
     private let primaryCard: PrimaryCard
     private let backupCards: [BackupCard]
     private let backupData: [EncryptedBackupData]
     private let attestSignature: Data
     private let accessCode: Data
     private let passcode: Data
-    private var commandsBag: [Any]  = .init()
-    
-    init(primaryCard: PrimaryCard,
-         backupCards: [BackupCard],
-         backupData: [EncryptedBackupData],
-         attestSignature: Data,
-         accessCode: Data,
-         passcode: Data) {
+    private var commandsBag: [Any] = .init()
+
+    init(
+        primaryCard: PrimaryCard,
+        backupCards: [BackupCard],
+        backupData: [EncryptedBackupData],
+        attestSignature: Data,
+        accessCode: Data,
+        passcode: Data
+    ) {
         self.primaryCard = primaryCard
         self.backupCards = backupCards
         self.backupData = backupData
@@ -32,11 +34,11 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         self.accessCode = accessCode
         self.passcode = passcode
     }
-    
+
     deinit {
         Log.debug("FinalizeBackupCardTask deinit")
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
@@ -45,11 +47,13 @@ class FinalizeBackupCardTask: CardSessionRunnable {
 
         switch card.backupStatus {
         case .noBackup: // The direct case
-            let command = LinkPrimaryCardCommand(primaryCard: primaryCard,
-                                                 backupCards: backupCards,
-                                                 attestSignature: attestSignature,
-                                                 accessCode: accessCode,
-                                                 passcode: passcode)
+            let command = LinkPrimaryCardCommand(
+                primaryCard: primaryCard,
+                backupCards: backupCards,
+                attestSignature: attestSignature,
+                accessCode: accessCode,
+                passcode: passcode
+            )
 
             command.run(in: session) { linkResult in
                 switch linkResult {
@@ -65,12 +69,14 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             writeBackupData(in: session, completion: completion)
         }
     }
-    
+
     private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let writeCommand = WriteBackupDataCommand(backupData: self.backupData,
-                                                  accessCode: self.accessCode)
-        self.commandsBag.append(writeCommand)
-        
+        let writeCommand = WriteBackupDataCommand(
+            backupData: backupData,
+            accessCode: accessCode
+        )
+        commandsBag.append(writeCommand)
+
         writeCommand.run(in: session) { writeResult in
             switch writeResult {
             case .success(let writeResponse):
@@ -84,7 +90,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             }
         }
     }
-    
+
     private func readWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         ReadWalletsListCommand().run(in: session) { result in
             switch result {

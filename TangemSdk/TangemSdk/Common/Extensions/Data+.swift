@@ -10,27 +10,27 @@ import Foundation
 import CryptoKit
 import CommonCrypto
 
-extension Data {
-    public var hexString: String {
-        return self.map { return String(format: "%02X", $0) }.joined()
+public extension Data {
+    var hexString: String {
+        return map { return String(format: "%02X", $0) }.joined()
     }
 
-    public var utf8String: String? {
+    var utf8String: String? {
         return String(bytes: self, encoding: .utf8)?.remove("\0")
     }
 
-    public var description: String {
+    var description: String {
         return hexString
     }
 
-    public func toInt() -> Int? {
+    func toInt() -> Int? {
         return Int(hexData: self)
     }
 
-    public func toDate() -> Date? {
-        guard self.count >= 4 else { return nil }
+    func toDate() -> Date? {
+        guard count >= 4 else { return nil }
 
-        let year = Int(hexData: self[0...1])
+        let year = Int(hexData: self[0 ... 1])
         let month = Int(self[2])
         let day = Int(self[3])
 
@@ -39,20 +39,20 @@ extension Data {
         return calendar.date(from: components)
     }
 
-    public var sha256Ripemd160: Data {
+    var sha256Ripemd160: Data {
         var md = RIPEMD160()
         let hash = getSHA256()
         md.update(data: hash)
         return md.finalize()
     }
 
-    public var ripemd160: Data {
+    var ripemd160: Data {
         var md = RIPEMD160()
         md.update(data: self)
         return md.finalize()
     }
 
-    public init(hexString: String) {
+    init(hexString: String) {
         self = Data()
         reserveCapacity(hexString.unicodeScalars.lazy.underestimatedCount)
 
@@ -64,12 +64,12 @@ extension Data {
                 skip -= 1
                 continue
             }
-            guard char.value >= 48 && char.value <= 102 else {
+            guard char.value >= 48, char.value <= 102 else {
                 removeAll()
                 return
             }
             let v: UInt8
-            let c: UInt8 = UInt8(char.value)
+            let c = UInt8(char.value)
             switch c {
             case let c where c <= 57:
                 v = c - 48
@@ -93,11 +93,11 @@ extension Data {
         }
     }
 
-    public init(_ byte: Byte) {
+    init(_ byte: Byte) {
         self = Data([byte])
     }
 
-    init?(bitsString: String) {
+    internal init?(bitsString: String) {
         let byteLength = 8
 
         guard bitsString.count % byteLength == 0 else {
@@ -120,28 +120,30 @@ extension Data {
         self = Data(bytes)
     }
 
-    public func getSHA256() -> Data {
+    func getSHA256() -> Data {
         let digest = SHA256.hash(data: self)
         return Data(digest)
     }
 
-    public func getSHA512() -> Data {
+    func getSHA512() -> Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
     }
 
-    public func getDoubleSHA256() -> Data {
+    func getDoubleSHA256() -> Data {
         return getSHA256().getSHA256()
     }
 
-    public var toBytes: [Byte] {
+    var toBytes: [Byte] {
         return Array(self)
     }
 
-    public func pbkdf2(hash: CCPBKDFAlgorithm,
-                       salt: Data,
-                       keyByteCount: Int,
-                       rounds: Int) throws -> Data {
+    func pbkdf2(
+        hash: CCPBKDFAlgorithm,
+        salt: Data,
+        keyByteCount: Int,
+        rounds: Int
+    ) throws -> Data {
         var derivedKeyData = Data(repeating: 0, count: keyByteCount)
         let derivedCount = derivedKeyData.count
 
@@ -160,7 +162,8 @@ extension Data {
                         hash,
                         UInt32(rounds),
                         derivedKeyRawBytes,
-                        derivedCount)
+                        derivedCount
+                    )
                 }
             }
         }
@@ -172,16 +175,16 @@ extension Data {
         throw TangemSdkError.cryptoUtilsError("Failed to pbkdf2")
     }
 
-    public func pbkdf2sha256(salt: Data, rounds: Int, keyByteCount: Int = 32) throws -> Data {
+    func pbkdf2sha256(salt: Data, rounds: Int, keyByteCount: Int = 32) throws -> Data {
         return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA256), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
     }
 
-    public func pbkdf2sha512(salt: Data, rounds: Int, keyByteCount: Int = 64) throws -> Data {
+    func pbkdf2sha512(salt: Data, rounds: Int, keyByteCount: Int = 64) throws -> Data {
         return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA512), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
     }
 
-    //SO14443A
-    public func crc16() -> Data {
+    ///SO14443A
+    func crc16() -> Data {
         var wCRC = Int32(0x6363) // ITU-V.41
         forEach { byte in
             var chBlock = UInt8(byte)
@@ -199,25 +202,28 @@ extension Data {
     /// - Parameter encryptionKey: key to encrypt
     /// - Throws: encription errors
     /// - Returns: Encripted data
-    public func encrypt(with encryptionKey: Data) throws -> Data {
-        return try CryptoUtils.crypt(operation: kCCEncrypt,
-                                     algorithm: kCCAlgorithmAES,
-                                     options: kCCOptionPKCS7Padding,
-                                     key: encryptionKey,
-                                     dataIn: self)
+    func encrypt(with encryptionKey: Data) throws -> Data {
+        return try CryptoUtils.crypt(
+            operation: kCCEncrypt,
+            algorithm: kCCAlgorithmAES,
+            options: kCCOptionPKCS7Padding,
+            key: encryptionKey,
+            dataIn: self
+        )
     }
 
     /// Decrypt data with  AES256-CBC and PKCS7
     /// - Parameter encryptionKey: key to decrypt
     /// - Throws: decryption errors
     /// - Returns: Decrypted data
-    public func decrypt(with encryptionKey: Data) throws -> Data {
-        return try CryptoUtils.crypt(operation: kCCDecrypt,
-                                     algorithm: kCCAlgorithmAES,
-                                     options: kCCOptionPKCS7Padding,
-                                     key: encryptionKey,
-                                     dataIn: self)
-
+    func decrypt(with encryptionKey: Data) throws -> Data {
+        return try CryptoUtils.crypt(
+            operation: kCCDecrypt,
+            algorithm: kCCAlgorithmAES,
+            options: kCCOptionPKCS7Padding,
+            key: encryptionKey,
+            dataIn: self
+        )
     }
 
     /// Encrypts the data using AES-CCM mode with the specified key, IV, and additional authenticated data.
@@ -227,7 +233,7 @@ extension Data {
     ///   - additionalAuthenticatedData: Additional data to authenticate but not encrypt.
     /// - Throws: Encryption errors thrown by the underlying cryptographic implementation.
     /// - Returns: The encrypted data (ciphertext).
-    public func encryptAESCCM(with encryptionKey: Data, iv: Data, additionalAuthenticatedData: Data) throws -> Data {
+    func encryptAESCCM(with encryptionKey: Data, iv: Data, additionalAuthenticatedData: Data) throws -> Data {
         return try CryptoSwiftUtils.encryptAESCCM(
             encryptionKey: encryptionKey,
             message: self,
@@ -243,7 +249,7 @@ extension Data {
     ///   - additionalAuthenticatedData: Additional data to authenticate but not decrypt.
     /// - Throws: Decryption errors thrown by the underlying cryptographic implementation.
     /// - Returns: The decrypted data (plaintext).
-    public func decryptAESCCM(with encryptionKey: Data, iv: Data, additionalAuthenticatedData: Data) throws -> Data {
+    func decryptAESCCM(with encryptionKey: Data, iv: Data, additionalAuthenticatedData: Data) throws -> Data {
         return try CryptoSwiftUtils.decryptAESCCM(
             encryptionKey: encryptionKey,
             encryptedMessage: self,
@@ -252,7 +258,7 @@ extension Data {
         )
     }
 
-    public func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) throws -> Data {
+    func sign(privateKey: Data, curve: EllipticCurve = .secp256k1) throws -> Data {
         switch curve {
         case .secp256k1:
             return try Secp256k1Utils().sign(self, with: privateKey)
@@ -261,7 +267,7 @@ extension Data {
         case .ed25519:
             return try Curve25519.Signing.PrivateKey(rawRepresentation: privateKey).signature(for: getSHA512())
         case .bls12381_G2_AUG:
-            return try Data(hexString: BLSUtils().sign(hash: self.hexString, privateKey: privateKey))
+            return try Data(hexString: BLSUtils().sign(hash: hexString, privateKey: privateKey))
         default:
             assertionFailure("Not implemented")
             throw TangemSdkError.unsupportedCurve
@@ -269,14 +275,14 @@ extension Data {
     }
 
     /// XORs the data with another Data of the same length. Throws if lengths differ.
-    public func xor(with other: Data) throws -> Data {
-        guard self.count == other.count else {
+    func xor(with other: Data) throws -> Data {
+        guard count == other.count else {
             throw TangemSdkError.cryptoUtilsError("To do xor byte arrays should have the same length")
         }
 
-        var result = Data(count: self.count)
+        var result = Data(count: count)
 
-        for i in 0..<self.count {
+        for i in 0 ..< count {
             result[i] = self[i] ^ other[i]
         }
 
@@ -286,18 +292,18 @@ extension Data {
     /// Computes HMAC-SHA256 using the current Data as the key and the input Data as the message.
     /// - Parameter input: The Data to authenticate.
     /// - Returns: The HMAC-SHA256 digest as Data.
-    public func hmacSHA256(input: Data) -> Data {
+    func hmacSHA256(input: Data) -> Data {
         let key = SymmetricKey(data: self)
         let authenticationCode = HMAC<SHA256>.authenticationCode(for: input, using: key)
         return Data(authenticationCode)
     }
 
-    func toBits() -> [String] {
+    internal func toBits() -> [String] {
         return flatMap { $0.toBits() }
     }
 
-    func decodeTlv<T>(tag: TlvTag) -> T? {
-        guard let tlv = Tlv.deserialize(self) else{
+    internal func decodeTlv<T>(tag: TlvTag) -> T? {
+        guard let tlv = Tlv.deserialize(self) else {
             return nil
         }
 
@@ -305,8 +311,8 @@ extension Data {
         return try? decoder.decode(tag)
     }
 
-    mutating func zeroOut() {
+    internal mutating func zeroOut() {
         guard !isEmpty else { return }
-        resetBytes(in: startIndex..<endIndex)
+        resetBytes(in: startIndex ..< endIndex)
     }
 }

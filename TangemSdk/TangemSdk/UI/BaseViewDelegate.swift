@@ -10,24 +10,24 @@ import Foundation
 import UIKit
 
 class BaseViewDelegate {
-    var screen: UIViewController? = nil
-    
+    var screen: UIViewController?
+
     deinit {
         Log.debug("BaseViewDelegate deinit")
     }
-    
+
     func makeScreen() -> UIViewController {
         fatalError("You should not call base method")
     }
-    
+
     func presentScreenIfNeeded() {
         guard self.screen == nil else {
             return
         }
-        
+
         guard let topmostViewController = UIApplication.shared.topMostViewController else { return }
-        
-        if let presentedController = topmostViewController.presentedViewController { //dismiss alert
+
+        if let presentedController = topmostViewController.presentedViewController { // dismiss alert
             presentedController.dismiss(animated: false) {
                 DispatchQueue.main.async {
                     self.presentScreenIfNeeded()
@@ -36,25 +36,24 @@ class BaseViewDelegate {
 
             return
         }
-        
+
         let screen = makeScreen()
         self.screen = screen
-        
+
         topmostViewController.present(screen, animated: true, completion: nil)
     }
-    
-    
+
     func dismissScreen(completion: (() -> Void)?) {
-        guard let screen = self.screen else {
+        guard let screen = screen else {
             completion?()
             return
         }
-        
+
         if screen.isBeingDismissed || screen.presentingViewController == nil {
             completion?()
             return
         }
-        
+
         if screen.isBeingPresented {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 screen.dismiss(animated: false, completion: {
@@ -64,13 +63,13 @@ class BaseViewDelegate {
             }
             return
         }
-        
+
         screen.presentingViewController?.dismiss(animated: true, completion: {
             self.screen = nil
             completion?()
         })
     }
-    
+
     func runInMainThread(_ block: @autoclosure @escaping () -> Void) {
         DispatchQueue.main.async {
             block()

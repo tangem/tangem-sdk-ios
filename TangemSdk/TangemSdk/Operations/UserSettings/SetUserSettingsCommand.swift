@@ -20,7 +20,7 @@ struct SetUserSettingsCommandResponse: JSONStringConvertible {
 class SetUserSettingsCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
     var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
-    
+
     private let settings: Card.UserSettings
 
     init(settings: Card.UserSettings) {
@@ -55,7 +55,7 @@ class SetUserSettingsCommand: Command {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.userSettingsMask, value: settings.mask)
 

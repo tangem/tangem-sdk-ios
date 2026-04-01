@@ -26,8 +26,8 @@ public struct SLIP23 {
         s[0] &= 0xF8
         s[31] = (s[31] & 0x1F) | 0x40
 
-        let privateKey = s[0..<64] // kL + kR
-        let chainCode = s[64..<96]
+        let privateKey = s[0 ..< 64] // kL + kR
+        let chainCode = s[64 ..< 96]
 
         return ExtendedPrivateKey(privateKey: privateKey, chainCode: chainCode)
     }

@@ -22,9 +22,7 @@ public class PersonalizeCommandV8: Command {
     private let issuer: Issuer
     private let manufacturer: Manufacturer
 
-    private lazy var devPersonalizationKey: Data = {
-        return "1234".getSHA256().prefix(32)
-    }()
+    private lazy var devPersonalizationKey: Data = "1234".getSHA256().prefix(32)
 
     /// Default initializer
     /// - Parameters:
@@ -43,7 +41,7 @@ public class PersonalizeCommandV8: Command {
     }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) //We have to run preflight read ourselves to catch the notPersonalized error
+        let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) // We have to run preflight read ourselves to catch the notPersonalized error
         read.run(in: session) { readResult in
             switch readResult {
             case .success:
@@ -75,14 +73,16 @@ public class PersonalizeCommandV8: Command {
 
         let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
         return try CardDeserializer(allowNotPersonalized: true)
-            .deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
-                         decoder: decoder,
-                         cardDataDecoder: cardDataDecoder)
+            .deserialize(
+                isAccessCodeSetLegacy: isAccessCodeSet,
+                decoder: decoder,
+                cardDataDecoder: cardDataDecoder
+            )
     }
 
     private func encryptApdu(cApdu: CommandApdu) throws -> CommandApdu {
         let p1: Byte = 0x00
-        let nonce =  Data([0x7E] + (0..<ConstantsV8.nonceLength-1).map { UInt8($0) })
+        let nonce = Data([0x7E] + (0 ..< ConstantsV8.nonceLength - 1).map { UInt8($0) })
         let associatedData = Data([cApdu.cla, cApdu.ins, p1, cApdu.p2])
 
         let encryptedPayload = try cApdu.data.encryptAESCCM(

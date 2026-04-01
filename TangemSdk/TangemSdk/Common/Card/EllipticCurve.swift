@@ -20,8 +20,8 @@ public enum EllipticCurve: String, StringCodable, CaseIterable {
     case bip0340
 }
 
-extension EllipticCurve {
-    public var supportsDerivation: Bool {
+public extension EllipticCurve {
+    var supportsDerivation: Bool {
         switch self {
         case .secp256k1, .ed25519, .ed25519_slip0010, .secp256r1, .bip0340:
             return true

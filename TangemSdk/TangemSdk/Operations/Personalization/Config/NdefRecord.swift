@@ -14,10 +14,10 @@ struct NdefRecord: Codable {
         case aar
         case text
     }
-    
+
     let type: NdefRecordType
     let value: String
-    
+
     func toBytes() -> Data? {
         return value.data(using: .utf8)
     }

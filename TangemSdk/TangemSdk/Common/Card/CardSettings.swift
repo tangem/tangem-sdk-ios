@@ -8,7 +8,8 @@
 
 import Foundation
 
-//MARK:- Card Settings
+// MARK: - Card Settings
+
 public extension Card {
     struct Settings: Codable {
         /// Delay in milliseconds before executing a command that affects any sensitive data or wallets on the card
@@ -55,27 +56,32 @@ public extension Card {
 }
 
 extension Card.Settings {
-    init(securityDelay: Int, maxWalletsCount: Int,  mask: CardSettingsMask,
-         defaultSigningMethods: SigningMethod? = nil, defaultCurve: EllipticCurve? = nil) {
+    init(
+        securityDelay: Int,
+        maxWalletsCount: Int,
+        mask: CardSettingsMask,
+        defaultSigningMethods: SigningMethod? = nil,
+        defaultCurve: EllipticCurve? = nil
+    ) {
         self.securityDelay = securityDelay
         self.maxWalletsCount = maxWalletsCount
         self.defaultSigningMethods = defaultSigningMethods
         self.defaultCurve = defaultCurve
-        
-        self.isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
-        self.isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
-        self.isRemovingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
-        self.isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
-        self.isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
-        self.isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
-        self.isPermanentWallet = mask.contains(.permanentWallet)
-        self.isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
-        self.isHDWalletAllowed = mask.contains(.allowHDWallets)
-        self.isFilesAllowed = !mask.contains(.disableFiles)
-        self.isBackupAllowed = mask.contains(.allowBackup)
-        self.isBackupRequired = mask.contains(.requireBackup)
-        self.isKeysImportAllowed = mask.contains(.allowKeysImport)
-        
+
+        isSettingAccessCodeAllowed = mask.contains(.allowSetPIN1)
+        isSettingPasscodeAllowed = mask.contains(.allowSetPIN2)
+        isRemovingUserCodesAllowed = !mask.contains(.prohibitDefaultPIN1)
+        isLinkedTerminalEnabled = mask.contains(.skipSecurityDelayIfValidatedByLinkedTerminal)
+        isOverwritingIssuerExtraDataRestricted = mask.contains(.restrictOverwriteIssuerExtraData)
+        isIssuerDataProtectedAgainstReplay = mask.contains(.protectIssuerDataAgainstReplay)
+        isPermanentWallet = mask.contains(.permanentWallet)
+        isSelectBlockchainAllowed = mask.contains(.allowSelectBlockchain)
+        isHDWalletAllowed = mask.contains(.allowHDWallets)
+        isFilesAllowed = !mask.contains(.disableFiles)
+        isBackupAllowed = mask.contains(.allowBackup)
+        isBackupRequired = mask.contains(.requireBackup)
+        isKeysImportAllowed = mask.contains(.allowKeysImport)
+
         var encryptionModes: [EncryptionMode] = [.strong]
         if mask.contains(.allowFastEncryption) {
             encryptionModes.append(.fast)
@@ -83,16 +89,18 @@ extension Card.Settings {
         if mask.contains(.allowUnencrypted) {
             encryptionModes.append(.none)
         }
-        
-        self.supportedEncryptionModes = encryptionModes
+
+        supportedEncryptionModes = encryptionModes
     }
-    
+
     func updated(with mask: CardSettingsMask) -> Card.Settings {
-        return .init(securityDelay: self.securityDelay,
-                     maxWalletsCount: self.maxWalletsCount,
-                     mask: mask,
-                     defaultSigningMethods: self.defaultSigningMethods,
-                     defaultCurve: self.defaultCurve)
+        return .init(
+            securityDelay: securityDelay,
+            maxWalletsCount: maxWalletsCount,
+            mask: mask,
+            defaultSigningMethods: defaultSigningMethods,
+            defaultCurve: defaultCurve
+        )
     }
 }
 
@@ -104,7 +112,7 @@ extension Card.Settings {
     /// Stores and maps Tangem card settings.
     struct Mask: OptionSet, OptionSetCustomStringConvertible {
         let rawValue: Int
-        
+
         init(rawValue: Int) {
             self.rawValue = rawValue
         }

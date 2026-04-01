@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-
 import Foundation
 
 struct ChunkedHashesContainer {
@@ -19,8 +18,8 @@ struct ChunkedHashesContainer {
     private var signedChunks: [SignedChunk] = []
 
     init(hashes: [Data]) {
-        self.chunks = ChunkHashesUtil().chunkHashes(hashes)
-        self.chunksCount = chunks.count
+        chunks = ChunkHashesUtil().chunkHashes(hashes)
+        chunksCount = chunks.count
     }
 
     func getCurrentChunk() throws -> Chunk {
@@ -48,4 +47,3 @@ struct ChunkedHashesContainer {
 enum ChunkedHashesContainerError: Error {
     case processingError
 }
-

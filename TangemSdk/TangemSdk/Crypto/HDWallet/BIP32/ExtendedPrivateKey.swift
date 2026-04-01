@@ -24,7 +24,7 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
         self.parentFingerprint = parentFingerprint
         self.childNumber = childNumber
 
-        if depth == 0 && (parentFingerprint.contains(where: { $0 != 0 }) || childNumber != 0) {
+        if depth == 0, parentFingerprint.contains(where: { $0 != 0 }) || childNumber != 0 {
             throw ExtendedKeySerializationError.wrongKey
         }
     }
@@ -36,9 +36,9 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
     public init(privateKey: Data, chainCode: Data) {
         self.privateKey = privateKey
         self.chainCode = chainCode
-        self.depth = 0
-        self.parentFingerprint = Data(hexString: "0x00000000")
-        self.childNumber = 0
+        depth = 0
+        parentFingerprint = Data(hexString: "0x00000000")
+        childNumber = 0
     }
 
     public func makePublicKey(for curve: EllipticCurve) throws -> ExtendedPublicKey {
@@ -56,7 +56,7 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
     public func serializeToWIFCompressed(for networkType: NetworkType) -> String {
         return WIF.encodeToWIFCompressed(privateKey, networkType: networkType)
     }
-    
+
     public func sign(_ data: Data, curve: EllipticCurve) throws -> Data {
         return try data.sign(privateKey: privateKey, curve: curve)
     }

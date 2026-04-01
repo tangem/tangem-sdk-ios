@@ -48,7 +48,7 @@ public class ReadWalletsListCommand: Command {
                     self.backupHash = backupHash
                 }
 
-                if self.receivedWalletsCount == 0 && response.wallets.isEmpty {
+                if self.receivedWalletsCount == 0, response.wallets.isEmpty {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }
@@ -76,7 +76,7 @@ public class ReadWalletsListCommand: Command {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.interactionMode, value: ReadMode.walletsList)
 
@@ -97,7 +97,7 @@ public class ReadWalletsListCommand: Command {
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadWalletsListResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        
+
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }

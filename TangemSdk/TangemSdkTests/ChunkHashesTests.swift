@@ -6,7 +6,6 @@
 //  Copyright © 2024 Tangem AG. All rights reserved.
 //
 
-
 import Foundation
 import XCTest
 @testable import TangemSdk
@@ -55,14 +54,14 @@ class ChunkHashesTests: XCTestCase {
                 hashSize: 16,
                 hashes: [
                     Hash(index: 0, data: hashes[0]),
-                    Hash(index: 12, data: hashes[12])
+                    Hash(index: 12, data: hashes[12]),
                 ]
             ),
             Chunk(
                 hashSize: 17,
                 hashes: [
                     Hash(index: 13, data: hashes[13]),
-                    Hash(index: 14, data: hashes[14])
+                    Hash(index: 14, data: hashes[14]),
                 ]
             ),
             Chunk(
@@ -83,9 +82,9 @@ class ChunkHashesTests: XCTestCase {
             Chunk(
                 hashSize: 32,
                 hashes: [
-                    Hash(index: 11, data: hashes[11])
+                    Hash(index: 11, data: hashes[11]),
                 ]
-            )
+            ),
         ]
 
         XCTAssertEqual(chunks.sorted(by: { $0.hashSize < $1.hashSize }), expectedChunks.sorted(by: { $0.hashSize < $1.hashSize }))
@@ -133,7 +132,7 @@ class ChunkHashesTests: XCTestCase {
 
         var container = ChunkedHashesContainer(hashes: hashes)
 
-        for _ in 0..<container.chunksCount {
+        for _ in 0 ..< container.chunksCount {
             let chunk = try container.getCurrentChunk()
 
             let signedHashes = chunk.hashes.map {

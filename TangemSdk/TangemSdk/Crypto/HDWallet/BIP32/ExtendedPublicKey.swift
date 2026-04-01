@@ -24,7 +24,7 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
         self.chainCode = chainCode
         self.publicKey = publicKey
 
-        if depth == 0 && (parentFingerprint.contains(where: { $0 != 0 }) || childNumber != 0) {
+        if depth == 0, parentFingerprint.contains(where: { $0 != 0 }) || childNumber != 0 {
             throw ExtendedKeySerializationError.wrongKey
         }
     }
@@ -34,36 +34,38 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
     ///   - publicKey: publicKey
     ///   - chainCode: chainCode
     public init(publicKey: Data, chainCode: Data) {
-        try! self.init(publicKey: publicKey,
-                       chainCode: chainCode,
-                       depth: 0,
-                       parentFingerprint: Data(hexString: "0x00000000"),
-                       childNumber: 0)
+        try! self.init(
+            publicKey: publicKey,
+            chainCode: chainCode,
+            depth: 0,
+            parentFingerprint: Data(hexString: "0x00000000"),
+            childNumber: 0
+        )
     }
-    
+
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
     ///  It is only defined for non-hardened child keys. `secp256k1` only
     public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
         guard (try? Secp256k1Key(with: publicKey)) != nil else {
             throw TangemSdkError.unsupportedCurve
         }
-        
+
         let index = node.index
-        
-        //We can derive only non-hardened keys
+
+        // We can derive only non-hardened keys
         guard index < BIP32.Constants.hardenedOffset else {
             throw HDWalletError.hardenedNotSupported
         }
-        
-        //let I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i)).
+
+        // let I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i)).
         let data = publicKey + index.bytes4
         let hmac = HMAC<SHA512>.authenticationCode(for: data, using: SymmetricKey(data: chainCode))
         let digest = Data(hmac)
-        
+
         let secp256k1 = Secp256k1Utils()
-        let ki = try secp256k1.createPublicKey(privateKey: digest[0..<32], compressed: true)
+        let ki = try secp256k1.createPublicKey(privateKey: digest[0 ..< 32], compressed: true)
         let derivedPublicKey = try secp256k1.sum(compressedPubKey1: ki, compressedPubKey2: publicKey)
-        let derivedChainCode = digest[32..<64]
+        let derivedChainCode = digest[32 ..< 64]
 
         return try ExtendedPublicKey(
             publicKey: derivedPublicKey,
@@ -73,16 +75,16 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
             childNumber: index
         )
     }
-    
+
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
     ///  It is only defined for non-hardened child keys. `secp256k1` only
     public func derivePublicKey(path derivationPath: DerivationPath) throws -> ExtendedPublicKey {
         var key: ExtendedPublicKey = self
-        
+
         for node in derivationPath.nodes {
             key = try key.derivePublicKey(node: node)
         }
-        
+
         return key
     }
 }
@@ -166,11 +168,13 @@ extension ExtendedPublicKey: Decodable {
         let childNumber = try container.decodeIfPresent(UInt32.self, forKey: .childNumber)
 
         if let depth, let parentFingerprint, let childNumber {
-            try self.init(publicKey: publicKey,
-                          chainCode: chainCode,
-                          depth: depth,
-                          parentFingerprint: parentFingerprint,
-                          childNumber: childNumber)
+            try self.init(
+                publicKey: publicKey,
+                chainCode: chainCode,
+                depth: depth,
+                parentFingerprint: parentFingerprint,
+                childNumber: childNumber
+            )
             return
         }
 

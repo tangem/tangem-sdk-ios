@@ -7,17 +7,16 @@
 //
 
 import Foundation
-
 import UIKit
 
 extension UIViewController {
     @objc var topmostViewController: UIViewController? {
         let controller = presentedViewController?.topmostViewController ?? self
-        
-        if let alert = controller as? UIAlertController { //We can't present modally from detached controllers
+
+        if let alert = controller as? UIAlertController { // We can't present modally from detached controllers
             return alert.presentingViewController
         }
-        
+
         return controller
     }
 }
@@ -41,7 +40,7 @@ extension UIWindow {
 }
 
 extension UIApplication {
-    var topMostViewController : UIViewController? {
+    var topMostViewController: UIViewController? {
         let scene = UIApplication.shared.connectedScenes
             .filter { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }
             .first as? UIWindowScene

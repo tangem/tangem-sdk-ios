@@ -11,10 +11,10 @@ import SwiftUI
 struct UserCodeHeaderView: View {
     let title: String
     let cardId: String
-    let onCancel: (() -> Void)
-    
+    let onCancel: () -> Void
+
     @EnvironmentObject var style: TangemSdkStyle
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -22,11 +22,11 @@ struct UserCodeHeaderView: View {
                 Button("common_cancel".localized, action: onCancel)
                     .foregroundColor(style.colors.tint)
             }.padding(.bottom, 16)
-            
+
             Text(title)
                 .font(Font.system(size: 24).bold())
                 .lineLimit(1)
-            
+
             Text(cardId)
                 .font(.system(size: 17))
         }

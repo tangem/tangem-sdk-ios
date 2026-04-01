@@ -12,36 +12,36 @@ import Foundation
 /// and commands can return modified `SessionEnvironment`.
 public struct SessionEnvironment {
     /// Current card, read by preflight `Read` command
-    public internal(set) var card: Card? = nil
-    
+    public internal(set) var card: Card?
+
     /// Current card's wallet data, read by preflight `Read` command
-    public internal(set) var walletData: WalletData? = nil
-    
+    public internal(set) var walletData: WalletData?
+
     public internal(set) var config: Config
-    
+
     weak var terminalKeysService: TerminalKeysService?
-    
+
     var encryptionMode: EncryptionMode = .none
-    
-    var encryptionKey: Data? = nil
-    
-    var currentSecurityDelay: Float? = nil
+
+    var encryptionKey: Data?
+
+    var currentSecurityDelay: Float?
 
     /// COS v8+
     var cardAccessTokens: CardAccessTokens?
 
     var accessCode: UserCode = .init(.accessCode)
-    
+
     var passcode: UserCode = .init(.passcode)
-    
+
     var legacyMode: Bool { config.legacyMode ?? NFCUtils.isPoorNfcQualityDevice }
-    
+
     /// Keys for Linked Terminal feature
     var terminalKeys: KeyPair? {
         if config.linkedTerminal ?? !NFCUtils.isPoorNfcQualityDevice {
             return terminalKeysService?.keys
         }
-        
+
         return nil
     }
 

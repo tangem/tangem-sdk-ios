@@ -34,7 +34,7 @@ public final class CreateMasterSecretCommand: Command {
             return TangemSdkError.alreadyCreated
         }
 
-        /// It's impossible to create backup without creating master secret. If backup is already created or started, master secret must be created too.
+        // It's impossible to create backup without creating master secret. If backup is already created or started, master secret must be created too.
         if let backupStatus = card.backupStatus, backupStatus != .noBackup {
             return TangemSdkError.alreadyCreated
         }

@@ -15,7 +15,7 @@ class SecureChannelSession {
     private let cardIdBytes: Data
 
     init(cardId: String) {
-        self.cardIdBytes = Data(hexString: cardId)
+        cardIdBytes = Data(hexString: cardId)
     }
 
     /// Constructs a 12-byte nonce for AES-CCM encryption.
@@ -53,12 +53,12 @@ class SecureChannelSession {
 
     func didEstablishChannel(accessLevel: AccessLevel) {
         self.accessLevel = accessLevel
-        self.packetCounter = 1
+        packetCounter = 1
     }
 
     func didAuthorizePin(accessLevel: AccessLevel) {
         self.accessLevel = accessLevel
-        self.isAuthorizedWithAccessCode = true
+        isAuthorizedWithAccessCode = true
     }
 
     func reset() {

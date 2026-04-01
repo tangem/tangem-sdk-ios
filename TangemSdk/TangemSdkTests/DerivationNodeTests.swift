@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class DerivationNodeTests: XCTestCase {
-
     // MARK: - pathDescription
 
     func testHardenedPathDescription() {

@@ -19,7 +19,7 @@ struct ActivityIndicatorView: UIViewRepresentable {
         self.style = style
         self.color = UIColor(color)
     }
-    
+
     func makeUIView(context: UIViewRepresentableContext<ActivityIndicatorView>) -> UIActivityIndicatorView {
         let indicator = UIActivityIndicatorView(style: style)
         indicator.color = color

@@ -14,11 +14,11 @@ extension StringCodable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercasingFirst()
-        
+
         if let value = Self(rawValue: stringValue) {
             self = value
         } else {
-            throw TangemSdkError.decodingFailed("Failed to decode \(String(describing: type(of:Self.self)))")
+            throw TangemSdkError.decodingFailed("Failed to decode \(String(describing: type(of: Self.self)))")
         }
     }
 }

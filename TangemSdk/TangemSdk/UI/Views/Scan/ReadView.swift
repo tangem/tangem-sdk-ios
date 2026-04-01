@@ -11,23 +11,25 @@ import SwiftUI
 struct ReadView: View {
     @EnvironmentObject var style: TangemSdkStyle
     @State private var progress: Double = 0
-    
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 NFCFieldView(isAnimationOn: true)
                     .frame(width: 240, height: 240)
                     .offset(y: -160)
-                
+
                 tagView
                     .discreteAnimation(progress: progress, cardWidth: Constants.cardWidth, verticalOffset: Constants.verticalOffset)
                     .frame(minWidth: 210, maxWidth: 210)
-                
+
                 PhoneView()
                     .frame(width: 180, height: 360)
             }
-            .frame(width: geo.size.width,
-                   height: geo.size.height)
+            .frame(
+                width: geo.size.width,
+                height: geo.size.height
+            )
         }
         .onAppear {
             progress = 0
@@ -36,7 +38,7 @@ struct ReadView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private var tagView: some View {
         switch style.scanTagImage {

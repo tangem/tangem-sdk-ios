@@ -118,7 +118,7 @@ class CommonFirmwareTests: FWTestCase {
         tangemSdk.startSession { session, error in
 
             for cmd in cmds.enumerated() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(3*Double(cmd.0))) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(3 * Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
@@ -126,20 +126,17 @@ class CommonFirmwareTests: FWTestCase {
                                 print("!!! Wallet not found ❌")
                                 return
                             }
-                            //let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
+                            // let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
                             let expected = generatedPublicKeys[cmd.0]
                             let equals = key == expected
                             // print(key)
                             print("!!! \(cmd.0) \(equals ? "✅" : "❌")")
-                        case  .failure(let error):
+                        case .failure(let error):
                             print("!!! \(error.localizedDescription)")
                             print("!!! ❌❌❌")
-                            break
                         }
-
                     }
                 }
-
             }
         }
     }
@@ -210,11 +207,10 @@ class CommonFirmwareTests: FWTestCase {
 
         let tangemSdk = TangemSdk()
 
-
         tangemSdk.startSession { session, error in
 
             for cmd in cmds.enumerated() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5*Double(cmd.0))) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5 * Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
                         switch resp {
                         case .success(let r):
@@ -222,24 +218,22 @@ class CommonFirmwareTests: FWTestCase {
                                 print("!!! Wallet not found ❌")
                                 return
                             }
-                            //let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
+                            // let expected = try! cmd.1.1.makePublicKey(for: .ed25519_slip0010).publicKey
                             let expected = generatedPublicKeys[cmd.0]
                             let equals = key == expected.dropFirst(2)
                             // print(key)
                             print("!!! \(cmd.0) \(equals ? "✅" : "❌")")
-                        case  .failure(let error):
+                        case .failure(let error):
                             print("!!! \(error.localizedDescription)")
                             print("!!! ❌❌❌")
-                            break
                         }
-
                     }
                 }
             }
         }
     }
 
-    // All mnemonics from BIP39
+    /// All mnemonics from BIP39
     func testMnemonicsSecp256k1() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
@@ -283,7 +277,7 @@ class CommonFirmwareTests: FWTestCase {
         tangemSdk.startSession { session, error in
 
             for cmd in cmds.enumerated() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5*Double(cmd.0))) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5 * Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
                         do {
                             switch resp {
@@ -296,21 +290,19 @@ class CommonFirmwareTests: FWTestCase {
                                 self.printEquals(expected, key)
                             case .failure(let error):
                                 print(error)
-                                break
                             }
                         } catch {
                             print("!!! Unexpected error: \(error) ❌")
                         }
-
                     }
                 }
             }
 
-            withExtendedLifetime(tangemSdk, {})
+            withExtendedLifetime(tangemSdk) {}
         }
     }
 
-    // All mnemonics from BIP39
+    /// All mnemonics from BIP39
     func testMnemonicsSecp256r1() throws {
         let mnemonics = [
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
@@ -354,7 +346,7 @@ class CommonFirmwareTests: FWTestCase {
         tangemSdk.startSession { session, error in
 
             for cmd in cmds.enumerated() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5*Double(cmd.0))) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(0.5 * Double(cmd.0))) {
                     cmd.1.0.run(in: session) { resp in
                         do {
                             switch resp {
@@ -368,17 +360,15 @@ class CommonFirmwareTests: FWTestCase {
                                 self.printEquals(expected, key)
                             case .failure(let error):
                                 print(error)
-                                break
                             }
                         } catch {
                             print("!!! Unexpected error: \(error) ❌")
                         }
-
                     }
                 }
             }
 
-            withExtendedLifetime(tangemSdk, {})
+            withExtendedLifetime(tangemSdk) {}
         }
     }
 }

@@ -98,8 +98,8 @@ enum CardIdBuilder {
 
         let paddedNumber = String(String(repeating: "0", count: tailLength) + String(actualNumber)).suffix(tailLength)
         var numberIterator = paddedNumber.reversed().makeIterator()
-        var randomIterator = numberFormat.filter({ $0 == "R" }).map { _ in
-            Character(String(Int.random(in: 0...9)))
+        var randomIterator = numberFormat.filter { $0 == "R" }.map { _ in
+            Character(String(Int.random(in: 0 ... 9)))
         }.reversed().makeIterator()
 
         let tail = String(numberFormat.reversed().map { char -> Character in
@@ -115,7 +115,7 @@ enum CardIdBuilder {
 
     private static func completeCardId(_ cardId: String) -> String? {
         guard cardId.count == 15,
-              cardId.prefix(2).allSatisfy({ Self.Alf.contains($0) }) else {
+              cardId.prefix(2).allSatisfy({ Alf.contains($0) }) else {
             return nil
         }
 

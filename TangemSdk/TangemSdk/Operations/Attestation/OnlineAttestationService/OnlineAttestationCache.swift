@@ -14,7 +14,7 @@ public class OnlineAttestationCache {
     private let secureStorage = SecureStorage()
     private let secureEnclave = SecureEnclaveService()
 
-    //Key is Hash of card's public key
+    ///Key is Hash of card's public key
     private var data: [Data: OnlineAttestationResponse] = [:]
 
     init() {
@@ -49,8 +49,8 @@ public class OnlineAttestationCache {
 
     private func fetch() throws {
         if let encryptedData = try secureStorage.get(.onlineAttestationResponses) {
-           let encodedData = try secureEnclave.decryptData(encryptedData, storageKey: .onlineAttestationResponsesEncryptionKey)
-            self.data = try JSONDecoder.tangemSdkDecoder.decode([Data: OnlineAttestationResponse].self, from: encodedData)
+            let encodedData = try secureEnclave.decryptData(encryptedData, storageKey: .onlineAttestationResponsesEncryptionKey)
+            data = try JSONDecoder.tangemSdkDecoder.decode([Data: OnlineAttestationResponse].self, from: encodedData)
         }
     }
 

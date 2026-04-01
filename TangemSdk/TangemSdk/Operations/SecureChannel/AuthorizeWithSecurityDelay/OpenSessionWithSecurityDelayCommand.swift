@@ -24,7 +24,7 @@ class OpenSessionWithSecurityDelayCommand: Command {
     init(sessionKeyB: Data) {
         self.sessionKeyB = sessionKeyB
     }
-    
+
     deinit {
         Log.debug("OpenSessionWithSecurityDelayCommand deinit")
     }
@@ -51,7 +51,7 @@ class OpenSessionWithSecurityDelayCommand: Command {
 
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> OpenSessionWithSecurityDelayResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        
+
         return OpenSessionWithSecurityDelayResponse(
             accessLevel: try decoder.decode(.accessLevel)
         )

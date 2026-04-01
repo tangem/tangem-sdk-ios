@@ -44,7 +44,7 @@ public class AccessCodeRepository {
 
         guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
             Log.debug("Skip saving")
-            return //Nothing changed. Return
+            return // Nothing changed. Return
         }
 
         var savedCardIds = try getCards()
@@ -123,18 +123,18 @@ public class AccessCodeRepository {
     }
 
     func unlock(context: LAContext) throws {
-        self.accessCodes = [:]
+        accessCodes = [:]
         Log.debug("Start unlocking access codes with provided context")
 
         var fetchedAccessCodes: [String: Data] = [:]
 
-        for cardId in try self.getCards() {
+        for cardId in try getCards() {
             let storageKey = SecureStorageKey.accessCode(for: cardId)
             let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
             do {
-                if let encryptedAccessCode = try self.biometricsStorage.get(storageKey, context: context) {
+                if let encryptedAccessCode = try biometricsStorage.get(storageKey, context: context) {
                     do {
-                        let accessCode = try self.biometricsSecureEnclave.decryptData(
+                        let accessCode = try biometricsSecureEnclave.decryptData(
                             encryptedAccessCode,
                             keyTag: encryptionKey,
                             context: context
@@ -153,8 +153,8 @@ public class AccessCodeRepository {
             }
         }
 
-        self.accessCodes = fetchedAccessCodes
-        try self.saveCards(cardIds: Set(fetchedAccessCodes.keys)) // Actualize all the cards. E.g. if biometrics was changed.
+        accessCodes = fetchedAccessCodes
+        try saveCards(cardIds: Set(fetchedAccessCodes.keys)) // Actualize all the cards. E.g. if biometrics was changed.
         Log.debug("Access codes unlocked successfully")
     }
 
@@ -169,29 +169,29 @@ public class AccessCodeRepository {
     }
 
     private func updateCodesIfNeeded(with accessCode: Data, for cardIds: [String]) -> Bool {
-        var hasChanges: Bool = false
+        var hasChanges = false
 
         for cardId in cardIds {
             let existingCode = accessCodes[cardId]
 
             if let existingCode, CryptoUtils.secureCompare(existingCode, accessCode) {
                 Log.debug("We already know this code. Ignoring.")
-                continue //We already know this code. Ignoring
+                continue // We already know this code. Ignoring
             }
 
-            //We found default code
+            // We found default code
             if CryptoUtils.secureCompare(accessCode, UserCodeType.accessCode.defaultValue.getSHA256()) {
                 if existingCode == nil {
                     Log.debug("Ignore the default code")
-                    continue //Ignore default code
+                    continue // Ignore default code
                 } else {
                     Log.debug("User deleted the code. We should update the storage.")
-                    accessCodes[cardId] = nil //User deleted the code. We should update the storage.
+                    accessCodes[cardId] = nil // User deleted the code. We should update the storage.
                     hasChanges = true
                 }
             } else {
                 Log.debug("Save a new code")
-                accessCodes[cardId] = accessCode //Save a new code
+                accessCodes[cardId] = accessCode // Save a new code
                 hasChanges = true
             }
         }

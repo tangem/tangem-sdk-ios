@@ -54,7 +54,7 @@ class ResetToFactorySettingsTask: CardSessionRunnable {
 
         guard let backupStatus = card.backupStatus,
               backupStatus != .noBackup else {
-            self.resetAccessTokens(in: session, completion: completion)
+            resetAccessTokens(in: session, completion: completion)
             return
         }
 

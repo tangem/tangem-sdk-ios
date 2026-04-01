@@ -13,7 +13,8 @@ import Combine
 
 @MainActor
 class MainTabViewModel: ObservableObject {
-    //MARK: - Inputs
+    // MARK: - Inputs
+
     @Published var method: Method = .scan
     @Published var curve: EllipticCurve = .secp256k1
     @Published var mnemonicString: String = ""
@@ -27,14 +28,16 @@ class MainTabViewModel: ObservableObject {
     @Published var isPinRequired: Bool = false
     @Published var isNDEFDisabled: Bool = false
 
-    //MARK: - Outputs
+    // MARK: - Outputs
+
     @Published var logText: String = DebugLogger.logPlaceholder
     @Published var isScanning: Bool = false
     @Published var card: Card?
     @Published var showWalletSelection: Bool = false
     @Published var image: UIImage? = nil
 
-    //MARK: - Config
+    // MARK: - Config
+
     @AppStorage("handleErrors") var handleErrors: Bool = true
     @AppStorage("displayLogs") var displayLogs: Bool = false
     @AppStorage("useDevApi") var useDevApi: Bool = false
@@ -47,7 +50,7 @@ class MainTabViewModel: ObservableObject {
     var configuredSdk: TangemSdk {
         var config = Config()
         config.linkedTerminal = false
-        config.handleErrors = self.handleErrors
+        config.handleErrors = handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         config.accessCodeRequestPolicy = accessCodeRequestPolicy
 
@@ -70,7 +73,7 @@ class MainTabViewModel: ObservableObject {
             .secp256r1: [try! DerivationPath(rawPath: "m/0'/1")],
             .ed25519: [try! DerivationPath(rawPath: "m/0'/1")],
             .ed25519_slip0010: [try! DerivationPath(rawPath: "m/0'/1'")],
-            .bip0340: [try! DerivationPath(rawPath: "m/0'/1")]
+            .bip0340: [try! DerivationPath(rawPath: "m/0'/1")],
         ]
 
         _tangemSdk.config = config
@@ -87,7 +90,7 @@ class MainTabViewModel: ObservableObject {
             .logsPublisher
             .debounce(for: 1, scheduler: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
-            .sink {[weak self] logs in
+            .sink { [weak self] logs in
                 self?.logText = logs
             }
             .store(in: &bag)
@@ -135,9 +138,9 @@ class MainTabViewModel: ObservableObject {
     private func handleCompletion<T>(_ completionResult: Result<T, TangemSdkError>) -> Void {
         switch completionResult {
         case .success(let response):
-            self.complete(with: response)
+            complete(with: response)
         case .failure(let error):
-            self.complete(with: error)
+            complete(with: error)
         }
     }
 
@@ -155,7 +158,7 @@ class MainTabViewModel: ObservableObject {
     }
 
     private func getRandomHash(size: Int = 32) -> Data {
-        let array = (0..<size).map{ _ -> UInt8 in
+        let array = (0 ..< size).map { _ -> UInt8 in
             UInt8(arc4random_uniform(255))
         }
         return Data(array)
@@ -168,7 +171,7 @@ class MainTabViewModel: ObservableObject {
         }
 
         guard let card = card, !card.wallets.isEmpty else {
-            self.complete(with: "Scan card to retrieve wallet")
+            complete(with: "Scan card to retrieve wallet")
             return
         }
 
@@ -181,6 +184,7 @@ class MainTabViewModel: ObservableObject {
 }
 
 // MARK: - Editor
+
 extension MainTabViewModel {
     var editorData: String {
         get {
@@ -226,10 +230,11 @@ extension MainTabViewModel {
 }
 
 // MARK: - Commands
+
 extension MainTabViewModel {
     func scan() {
         configuredSdk.scanCard(initialMessage: Message(header: "Scan Card", body: "Tap Tangem Card to learn more"), networkService: .init(session: .shared, additionalHeaders: [:])) { result in
-            if case let .success(card) = result {
+            if case .success(let card) = result {
                 self.card = card
                 self.curve = card.supportedCurves[0]
                 self.loadArtworks(for: card)
@@ -260,13 +265,13 @@ extension MainTabViewModel {
 
     func attestWallet(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
         let path = try? DerivationPath(rawPath: derivationPath)
-        if !derivationPath.isEmpty && path == nil {
-            self.complete(with: "Failed to parse hd path")
+        if !derivationPath.isEmpty, path == nil {
+            complete(with: "Failed to parse hd path")
             return
         }
 
@@ -281,20 +286,20 @@ extension MainTabViewModel {
 
     func signHash(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
         let path = try? DerivationPath(rawPath: derivationPath)
         if !derivationPath.isEmpty && path == nil {
-            self.complete(with: "Failed to parse hd path")
+            complete(with: "Failed to parse hd path")
             return
         }
 
         UIApplication.shared.endEditing()
 
-        guard let wallet = self.card?.wallets[walletPublicKey] else {
-            self.complete(with: "Scan card before")
+        guard let wallet = card?.wallets[walletPublicKey] else {
+            complete(with: "Scan card before")
             return
         }
 
@@ -303,11 +308,13 @@ extension MainTabViewModel {
         let hashSize = wallet.curve == .ed25519 || wallet.curve == .ed25519_slip0010 ? 64 : 32
         let hash = getRandomHash(size: hashSize)
 
-        configuredSdk.sign(hash: hash,
-                       walletPublicKey: walletPublicKey,
-                       cardId: nil,
-                       derivationPath: path,
-                       initialMessage: Message(header: "Signing hash")) { result in
+        configuredSdk.sign(
+            hash: hash,
+            walletPublicKey: walletPublicKey,
+            cardId: nil,
+            derivationPath: path,
+            initialMessage: Message(header: "Signing hash")
+        ) { result in
 
             if case .success(let response) = result {
                 let isValid = try? CryptoUtils.verify(curve: wallet.curve, publicKey: verifyKey, hash: hash, signature: response.signature)
@@ -320,79 +327,87 @@ extension MainTabViewModel {
 
     func signHashes(walletIndex: Int) {
         guard let walletPublicKey = card?.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
         let path = try? DerivationPath(rawPath: derivationPath)
-        if !derivationPath.isEmpty && path == nil {
-            self.complete(with: "Failed to parse hd path")
+        if !derivationPath.isEmpty, path == nil {
+            complete(with: "Failed to parse hd path")
             return
         }
 
         guard let hashesCount = Int(signHashesCount, radix: 10) else {
-            self.complete(with: "Failed to signed hashes count")
+            complete(with: "Failed to signed hashes count")
             return
         }
 
         UIApplication.shared.endEditing()
 
-        let hashes = (0..<hashesCount).map {_ -> Data in getRandomHash()}
+        let hashes = (0 ..< hashesCount).map { _ -> Data in getRandomHash() }
 
-        configuredSdk.sign(hashes: hashes,
-                       walletPublicKey: walletPublicKey,
-                       cardId: nil,
-                       derivationPath: path,
-                       initialMessage: Message(header: "Signing hashes"),
-                       completion: handleCompletion)
+        configuredSdk.sign(
+            hashes: hashes,
+            walletPublicKey: walletPublicKey,
+            cardId: nil,
+            derivationPath: path,
+            initialMessage: Message(header: "Signing hashes"),
+            completion: handleCompletion
+        )
     }
 
     func derivePublicKey(walletIndex: Int) {
         guard let card = card else {
-            self.complete(with: "Scan card before")
+            complete(with: "Scan card before")
             return
         }
 
         guard let walletPublicKey = card.wallets.first(where: { $0.index == walletIndex })?.publicKey else {
-            self.complete(with: TangemSdkError.walletUnavailableBackupRequired)
+            complete(with: TangemSdkError.walletUnavailableBackupRequired)
             return
         }
 
         guard let path = try? DerivationPath(rawPath: derivationPath) else {
-            self.complete(with: "Failed to parse hd path")
+            complete(with: "Failed to parse hd path")
             return
         }
 
         UIApplication.shared.endEditing()
 
-        configuredSdk.deriveWalletPublicKey(cardId: card.cardId,
-                                        walletPublicKey: walletPublicKey,
-                                        derivationPath: path,
-                                        completion: handleCompletion)
+        configuredSdk.deriveWalletPublicKey(
+            cardId: card.cardId,
+            walletPublicKey: walletPublicKey,
+            derivationPath: path,
+            completion: handleCompletion
+        )
     }
 
     func createWallet() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.createWallet(curve: curve,
-                               cardId: cardId,
-                               completion: handleCompletion)
+        configuredSdk.createWallet(
+            curve: curve,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func importWallet() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.importWallet(curve: curve,
-                               cardId: cardId,
-                               mnemonic: mnemonicString,
-                               passphrase: passphrase,
-                               completion: handleCompletion)
+        configuredSdk.importWallet(
+            curve: curve,
+            cardId: cardId,
+            mnemonic: mnemonicString,
+            passphrase: passphrase,
+            completion: handleCompletion
+        )
     }
 
     func createMasterSecret() {
@@ -417,13 +432,15 @@ extension MainTabViewModel {
 
     func purgeWallet(walletIndex: Int) {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.purgeWallet(walletIndex: walletIndex,
-                              cardId: cardId,
-                              completion: handleCompletion)
+        configuredSdk.purgeWallet(
+            walletIndex: walletIndex,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func chainingExample() {
@@ -475,43 +492,52 @@ extension MainTabViewModel {
 
     func setAccessCode() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.setAccessCode(nil,
-                                cardId: cardId,
-                                completion: handleCompletion)
+        configuredSdk.setAccessCode(
+            nil,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func setPasscode() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.setPasscode(nil,
-                              cardId: cardId,
-                              completion: handleCompletion)
+        configuredSdk.setPasscode(
+            nil,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func resetUserCodes() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
-        configuredSdk.resetUserCodes(cardId: cardId,
-                                 completion: handleCompletion)
+        configuredSdk.resetUserCodes(
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 }
 
-//MARK: - Files
+// MARK: - Files
+
 extension MainTabViewModel {
     func readFiles() {
-        configuredSdk.readFiles(readPrivateFiles: true,
-                            fileName: nil,
-                            walletPublicKey: nil) { result in
+        configuredSdk.readFiles(
+            readPrivateFiles: true,
+            fileName: nil,
+            walletPublicKey: nil
+        ) { result in
             switch result {
             case .success(let files):
                 var text = ""
@@ -541,17 +567,19 @@ extension MainTabViewModel {
 
     func writeUserFile() {
         let demoPayload = Data(repeating: UInt8(1), count: 10)
-        let file: FileToWrite = .byUser(data: demoPayload,
-                                        fileName: "User file",
-                                        fileVisibility: .public,
-                                        walletPublicKey: nil)
+        let file: FileToWrite = .byUser(
+            data: demoPayload,
+            fileName: "User file",
+            fileVisibility: .public,
+            walletPublicKey: nil
+        )
 
         configuredSdk.writeFiles(files: [file], completion: handleCompletion)
     }
 
     func writeOwnerFile() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
@@ -559,25 +587,29 @@ extension MainTabViewModel {
         let demoPayload = Data(repeating: UInt8(2), count: 10)
         let counter = 1
 
-        let fileHash = try! FileHashHelper.prepareHash(for: cardId,
-                                                       fileData: demoPayload,
-                                                       fileCounter: counter,
-                                                       fileName: filename,
-                                                       privateKey: Utils.issuer.privateKey)
+        let fileHash = try! FileHashHelper.prepareHash(
+            for: cardId,
+            fileData: demoPayload,
+            fileCounter: counter,
+            fileName: filename,
+            privateKey: Utils.issuer.privateKey
+        )
         guard
             let startSignature = fileHash.startingSignature,
             let finalSignature = fileHash.finalizingSignature else {
-            self.complete(with: "Failed to sign data with issuer signature")
+            complete(with: "Failed to sign data with issuer signature")
             return
         }
 
-        let file: FileToWrite = .byFileOwner(data: demoPayload,
-                                             startingSignature: startSignature,
-                                             finalizingSignature: finalSignature,
-                                             counter: counter,
-                                             fileName: filename,
-                                             fileVisibility: .public,
-                                             walletPublicKey: nil)
+        let file: FileToWrite = .byFileOwner(
+            data: demoPayload,
+            startingSignature: startSignature,
+            finalizingSignature: finalSignature,
+            counter: counter,
+            fileName: filename,
+            fileVisibility: .public,
+            walletPublicKey: nil
+        )
 
         configuredSdk.writeFiles(files: [file], completion: handleCompletion)
     }
@@ -587,7 +619,7 @@ extension MainTabViewModel {
     }
 
     func updateFilePermissions() {
-        var changes: [Int:FileVisibility] = .init()
+        var changes: [Int: FileVisibility] = .init()
         changes[0] = .public
 
         let changeTask = ChangeFileSettingsTask(changes: changes)
@@ -595,34 +627,43 @@ extension MainTabViewModel {
     }
 }
 
-//MARK: - Deprecated commands
+// MARK: - Deprecated commands
+
 extension MainTabViewModel {
     func readUserData() {
-        configuredSdk.readUserData(cardId: card?.cardId,
-                               completion: handleCompletion)
+        configuredSdk.readUserData(
+            cardId: card?.cardId,
+            completion: handleCompletion
+        )
     }
 
     func writeUserData() {
         let userData = Data(hexString: "0102030405060708")
 
-        configuredSdk.writeUserData(userData: userData,
-                                userCounter: 2,
-                                cardId: card?.cardId,
-                                completion: handleCompletion)
+        configuredSdk.writeUserData(
+            userData: userData,
+            userCounter: 2,
+            cardId: card?.cardId,
+            completion: handleCompletion
+        )
     }
 
     func writeUserProtectedData() {
         let userData = Data(hexString: "01010101010101")
 
-        configuredSdk.writeUserProtectedData(userProtectedData: userData,
-                                         userProtectedCounter: 1,
-                                         cardId: card?.cardId,
-                                         completion: handleCompletion)
+        configuredSdk.writeUserProtectedData(
+            userProtectedData: userData,
+            userProtectedCounter: 1,
+            cardId: card?.cardId,
+            completion: handleCompletion
+        )
     }
 
     func readIssuerData() {
-        configuredSdk.readIssuerData(cardId: card?.cardId,
-                                 initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")){ result in
+        configuredSdk.readIssuerData(
+            cardId: card?.cardId,
+            initialMessage: Message(header: "Read issuer data", body: "This is read issuer data request")
+        ) { result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerDataResponse = issuerDataResponse
@@ -635,12 +676,12 @@ extension MainTabViewModel {
 
     func writeIssuerData() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Scan card to retrieve cardId")
+            complete(with: "Scan card to retrieve cardId")
             return
         }
 
         guard let issuerDataResponse = issuerDataResponse else {
-            self.complete(with: "Please, run ReadIssuerData before")
+            complete(with: "Please, run ReadIssuerData before")
             return
         }
 
@@ -648,15 +689,17 @@ extension MainTabViewModel {
         let sampleData = Data(repeating: UInt8(1), count: 100)
         let sig = try! Secp256k1Utils().sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: Utils.issuer.privateKey)
 
-        configuredSdk.writeIssuerData(issuerData: sampleData,
-                                  issuerDataSignature: sig,
-                                  issuerDataCounter: newCounter,
-                                  cardId: cardId,
-                                  completion: handleCompletion)
+        configuredSdk.writeIssuerData(
+            issuerData: sampleData,
+            issuerDataSignature: sig,
+            issuerDataCounter: newCounter,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func readIssuerExtraData() {
-        configuredSdk.readIssuerExtraData(cardId: card?.cardId){ result in
+        configuredSdk.readIssuerExtraData(cardId: card?.cardId) { result in
             switch result {
             case .success(let issuerDataResponse):
                 self.issuerExtraDataResponse = issuerDataResponse
@@ -670,12 +713,12 @@ extension MainTabViewModel {
 
     func writeIssuerExtraData() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Please, scan card before")
+            complete(with: "Please, scan card before")
             return
         }
 
         guard let issuerDataResponse = issuerExtraDataResponse else {
-            self.complete(with: "Please, run ReadIssuerExtraData before")
+            complete(with: "Please, run ReadIssuerExtraData before")
             return
         }
         let newCounter = (issuerDataResponse.issuerDataCounter ?? 0) + 1
@@ -685,12 +728,14 @@ extension MainTabViewModel {
         let startSig = try! secp256k1.sign(Data(hexString: cardId) + newCounter.bytes4 + sampleData.count.bytes2, with: issuerKey)
         let finalSig = try! secp256k1.sign(Data(hexString: cardId) + sampleData + newCounter.bytes4, with: issuerKey)
 
-        configuredSdk.writeIssuerExtraData(issuerData: sampleData,
-                                       startingSignature: startSig,
-                                       finalizingSignature: finalSig,
-                                       issuerDataCounter: newCounter,
-                                       cardId: cardId,
-                                       completion: handleCompletion)
+        configuredSdk.writeIssuerExtraData(
+            issuerData: sampleData,
+            startingSignature: startSig,
+            finalizingSignature: finalSig,
+            issuerDataCounter: newCounter,
+            cardId: cardId,
+            completion: handleCompletion
+        )
     }
 
     func resetBackup() {
@@ -707,7 +752,7 @@ extension MainTabViewModel {
 
     func setUserCodeRecoveryAllowed() {
         guard let cardId = card?.cardId else {
-            self.complete(with: "Please, scan card before")
+            complete(with: "Please, scan card before")
             return
         }
 
@@ -726,8 +771,8 @@ extension MainTabViewModel {
 
     func readMasterSecret() {
         let path = try? DerivationPath(rawPath: derivationPath)
-        if !derivationPath.isEmpty && path == nil {
-            self.complete(with: "Failed to parse hd path")
+        if !derivationPath.isEmpty, path == nil {
+            complete(with: "Failed to parse hd path")
             return
         }
 
@@ -741,7 +786,8 @@ extension MainTabViewModel {
     }
 }
 
-//MARK: - Json RPC
+// MARK: - Json RPC
+
 extension MainTabViewModel {
     func runJsonRpc() {
         UIApplication.shared.endEditing()
@@ -755,7 +801,8 @@ extension MainTabViewModel {
     }
 }
 
-//MARK: - Personalization
+// MARK: - Personalization
+
 extension MainTabViewModel {
     private func pastePersonalizationConfig() {
         if let string = UIPasteboard.general.string {
@@ -772,9 +819,11 @@ extension MainTabViewModel {
             let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfig.self, from: configData)
             let issuer = try JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: Self.issuerJson.data(using: .utf8)!)
             let manufacturer = try JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: Self.manufacturerJson.data(using: .utf8)!)
-            let personalizeCommand = PersonalizeCommand(config: config,
-                                                        issuer: issuer,
-                                                        manufacturer: manufacturer)
+            let personalizeCommand = PersonalizeCommand(
+                config: config,
+                issuer: issuer,
+                manufacturer: manufacturer
+            )
 
             configuredSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
@@ -791,9 +840,11 @@ extension MainTabViewModel {
             let config = try JSONDecoder.tangemSdkDecoder.decode(CardConfigV8.self, from: configData)
             let issuer = try JSONDecoder.tangemSdkDecoder.decode(Issuer.self, from: Self.issuerJson.data(using: .utf8)!)
             let manufacturer = try JSONDecoder.tangemSdkDecoder.decode(Manufacturer.self, from: Self.manufacturerJson.data(using: .utf8)!)
-            let personalizeCommand = PersonalizeCommandV8(config: config,
-                                                          issuer: issuer,
-                                                          manufacturer: manufacturer)
+            let personalizeCommand = PersonalizeCommandV8(
+                config: config,
+                issuer: issuer,
+                manufacturer: manufacturer
+            )
 
             configuredSdk.startSession(with: personalizeCommand, completion: handleCompletion)
         } catch {
@@ -803,6 +854,7 @@ extension MainTabViewModel {
 }
 
 // MARK: - Method Enum
+
 extension MainTabViewModel {
     enum Method: String, CaseIterable {
         case scan
@@ -822,15 +874,15 @@ extension MainTabViewModel {
         case createMasterSecret
         case importMasterSecret
         case purgeMasterSecret
-        //files
+        // files
         case readFiles
         case writeUserFile
         case writeOwnerFile
         case deleteFile
         case updateFilePermissions
-        //case json-rpc
+        ///case json-rpc
         case jsonrpc
-        //deprecated
+        // deprecated
         case readIssuerData
         case writeIssuerData
         case readIssuerExtraData
@@ -838,7 +890,7 @@ extension MainTabViewModel {
         case readUserData
         case writeUserData
         case writeUserProtectedData
-        //developer
+        // developer
         case depersonalize
         case personalize
         case personalizeV8

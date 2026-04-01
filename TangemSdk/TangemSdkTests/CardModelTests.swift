@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class CardModelTests: XCTestCase {
-
     // MARK: - Card JSON fixture decoding
 
     func testDecodeCardFromFixture() throws {

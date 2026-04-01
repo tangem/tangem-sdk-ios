@@ -42,11 +42,11 @@ extension ApduSerializable {
         if firmwareVersion >= .v8 {
             return false
         }
-        
+
         if firmwareVersion >= .isDefaultPinsOptional, value.isDefault {
             return false
         }
-        
+
         return true
     }
 
@@ -99,7 +99,7 @@ extension Command {
     func transceive(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         Log.sendCommand(self)
 
-        if preflightReadMode != .none && session.environment.card == nil {
+        if preflightReadMode != .none, session.environment.card == nil {
             completion(.failure(.missingPreflightRead))
             return
         }
@@ -111,7 +111,7 @@ extension Command {
             }
         }
 
-        if session.environment.passcode.value == nil && requiresPasscode {
+        if session.environment.passcode.value == nil, requiresPasscode {
             requestPin(.passcode, session, completion: completion)
         } else {
             transceiveInternal(in: session, completion: completion)
@@ -170,12 +170,12 @@ extension Command {
 
                         switch error {
                         case .accessCodeRequired:
-                            self.requestPin(.accessCode, session, completion: completion) //only read command
+                            self.requestPin(.accessCode, session, completion: completion) // only read command
                         case .passcodeRequired:
                             self.requestPin(.passcode, session, completion: completion)
                         case .invalidParams:
                             if self.requiresPasscode {
-                                //Addition check for COS v4 and newer to prevent false-positive pin2 request
+                                // Addition check for COS v4 and newer to prevent false-positive pin2 request
                                 if session.environment.card?.isPasscodeSet == false,
                                    session.environment.passcode.isDefault {
                                     fallthrough
@@ -198,76 +198,76 @@ extension Command {
 
     private func transceive(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
         session.establishEncryptionIfNeeded(cardSessionEncryption: cardSessionEncryption, shouldAskForAccessCode: shouldAskForAccessCode) { encryptionResult in
-                switch encryptionResult {
-                case .success:
-                    Log.session("Encryption established successfully")
-                    session.send(apdu: apdu) { result in
-                        switch result {
-                        case .success(let responseApdu):
-                            switch responseApdu.statusWord {
-                            case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
-                                    .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
+            switch encryptionResult {
+            case .success:
+                Log.session("Encryption established successfully")
+                session.send(apdu: apdu) { result in
+                    switch result {
+                    case .success(let responseApdu):
+                        switch responseApdu.statusWord {
+                        case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
+                             .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
 
-                                if session.environment.currentSecurityDelay != nil {
-                                    session.environment.currentSecurityDelay = nil
-                                    session.viewDelegate.setState(.default)
-                                }
-
-                                completion(.success(responseApdu))
-                            case .needPause:
-                                if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
-                                    if session.environment.currentSecurityDelay == nil {
-                                        let fw = session.environment.card?.firmwareVersion
-                                        let isInstantSecurityDelay = fw.map { $0 >= .backupAvailable } ?? false //false for old cards, because new read works without pin. It's okay for most cases
-                                        session.environment.currentSecurityDelay = isInstantSecurityDelay ?
-                                        securityDelayResponse.remainingSeconds : securityDelayResponse.remainingSeconds + 1
-                                    }
-
-                                    let totalSd = session.environment.currentSecurityDelay!
-                                    if totalSd > 0 {
-                                        session.viewDelegate.setState(.delay(remaining: securityDelayResponse.remainingSeconds, total: totalSd))
-                                        session.viewDelegate.showAlertMessage("view_delegate_security_delay_description_format".localized(session.environment.config.productType.localizedDescription))
-                                    }
-
-                                    if securityDelayResponse.saveToFlash && session.environment.encryptionMode == .none {
-                                        session.restartPolling(silent: true)
-                                    }
-                                    self.transceive(apdu: apdu, in: session, completion: completion)
-                                }
-                            case .needEncryption:
-                                switch session.environment.encryptionMode {
-                                case .none:
-                                    Log.session("Try change to fast encryption")
-                                    session.environment.encryptionKey = nil
-                                    session.environment.encryptionMode = .fast
-                                case .fast:
-                                    Log.session("Try change to strong encryption")
-                                    session.environment.encryptionKey = nil
-                                    session.environment.encryptionMode = .strong
-                                case .strong:
-                                    break
-                                case .ccmWithSecurityDelay, .ccmWithAccessToken, .ccmWithAsymmetricKeys:
-                                    // Should not happen
-                                    completion(.failure(TangemSdkError.needEncryption))
-                                    return
-                                }
-
-                                self.transceive(apdu: apdu, in: session, completion: completion)
-                            case .unknown:
-                                completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
-                            case .accessDenied:
-                                completion(.failure(TangemSdkError.accessDenied))
-                            default:
-                                completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
+                            if session.environment.currentSecurityDelay != nil {
+                                session.environment.currentSecurityDelay = nil
+                                session.viewDelegate.setState(.default)
                             }
-                        case .failure(let error):
-                            completion(.failure(error))
+
+                            completion(.success(responseApdu))
+                        case .needPause:
+                            if let securityDelayResponse = self.deserializeSecurityDelay(with: session.environment, from: responseApdu) {
+                                if session.environment.currentSecurityDelay == nil {
+                                    let fw = session.environment.card?.firmwareVersion
+                                    let isInstantSecurityDelay = fw.map { $0 >= .backupAvailable } ?? false // false for old cards, because new read works without pin. It's okay for most cases
+                                    session.environment.currentSecurityDelay = isInstantSecurityDelay ?
+                                        securityDelayResponse.remainingSeconds : securityDelayResponse.remainingSeconds + 1
+                                }
+
+                                let totalSd = session.environment.currentSecurityDelay!
+                                if totalSd > 0 {
+                                    session.viewDelegate.setState(.delay(remaining: securityDelayResponse.remainingSeconds, total: totalSd))
+                                    session.viewDelegate.showAlertMessage("view_delegate_security_delay_description_format".localized(session.environment.config.productType.localizedDescription))
+                                }
+
+                                if securityDelayResponse.saveToFlash, session.environment.encryptionMode == .none {
+                                    session.restartPolling(silent: true)
+                                }
+                                self.transceive(apdu: apdu, in: session, completion: completion)
+                            }
+                        case .needEncryption:
+                            switch session.environment.encryptionMode {
+                            case .none:
+                                Log.session("Try change to fast encryption")
+                                session.environment.encryptionKey = nil
+                                session.environment.encryptionMode = .fast
+                            case .fast:
+                                Log.session("Try change to strong encryption")
+                                session.environment.encryptionKey = nil
+                                session.environment.encryptionMode = .strong
+                            case .strong:
+                                break
+                            case .ccmWithSecurityDelay, .ccmWithAccessToken, .ccmWithAsymmetricKeys:
+                                // Should not happen
+                                completion(.failure(TangemSdkError.needEncryption))
+                                return
+                            }
+
+                            self.transceive(apdu: apdu, in: session, completion: completion)
+                        case .unknown:
+                            completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
+                        case .accessDenied:
+                            completion(.failure(TangemSdkError.accessDenied))
+                        default:
+                            completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                         }
+                    case .failure(let error):
+                        completion(.failure(error))
                     }
-                case .failure(let error):
-                    completion(.failure(error))
                 }
+            case .failure(let error):
+                completion(.failure(error))
             }
+        }
     }
 
     /// Helper method to parse security delay information received from a card.
@@ -278,7 +278,7 @@ extension Command {
             return nil
         }
 
-        let seconds: Float = Float(remainingCs) / 100.0
+        let seconds = Float(remainingCs) / 100.0
 
         let saveToFlash = tlv.contains(tag: .flash)
         return (seconds, saveToFlash)

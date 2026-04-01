@@ -11,7 +11,6 @@ import XCTest
 @testable import TangemSdk
 
 class EllipticCurveTests: XCTestCase {
-
     // MARK: - supportsDerivation
 
     func testSupportsDerivation() {

@@ -11,7 +11,7 @@ import Foundation
 /// This command deletes all wallet data and its private and public keys
 public final class PurgeWalletCommand: Command {
     var requiresPasscode: Bool { true }
-    
+
     private let walletIndex: Int
 
     /// Default initializer
@@ -19,23 +19,23 @@ public final class PurgeWalletCommand: Command {
     public init(walletIndex: Int) {
         self.walletIndex = walletIndex
     }
-    
+
     deinit {
         Log.debug("PurgeWalletCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard let wallet = card.wallets.first(where: { $0.index == walletIndex }) else {
             return .walletNotFound
         }
-        
+
         if wallet.settings.isPermanent {
             return .purgeWalletProhibited
         }
-        
+
         return nil
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         transceive(in: session) { [walletIndex] result in
             switch result {
@@ -47,12 +47,12 @@ public final class PurgeWalletCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         guard let card = environment.card else {
             throw TangemSdkError.missingPreflightRead
         }
-        
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.walletIndex, value: walletIndex)
 
@@ -70,7 +70,7 @@ public final class PurgeWalletCommand: Command {
 
         return CommandApdu(.purgeWallet, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))

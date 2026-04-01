@@ -30,7 +30,7 @@ class IntUtilsTests: XCTestCase {
         let testData = Data(hexString: "FFFFFFFFFFFFFFFF01")
         XCTAssertNil(Int(hexData: testData))
     }
-    
+
     func testToByteConversion() {
         XCTAssertEqual(15.byte, Data(hexString: "0F"))
         XCTAssertEqual(356.bytes2, Data(hexString: "0164"))
@@ -115,7 +115,7 @@ class IntUtilsTests: XCTestCase {
     }
 
     func testUInt32Bytes4Max() {
-        let value: UInt32 = UInt32.max
+        let value = UInt32.max
         XCTAssertEqual(value.bytes4, Data([0xFF, 0xFF, 0xFF, 0xFF]))
     }
 

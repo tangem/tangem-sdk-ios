@@ -14,11 +14,11 @@ public struct ReadUserDataResponse: JSONStringConvertible {
     public let cardId: String
     /// Data defined by user's App.
     public let userData: Data
-    ///Data defined by user's App (confirmed by PIN2).
+    /// Data defined by user's App (confirmed by PIN2).
     public let userProtectedData: Data
-    ///Counter initialized by user's App and increased on every signing of new transaction
+    /// Counter initialized by user's App and increased on every signing of new transaction
     public let userCounter: Int
-    ///* Counter initialized by user's App (confirmed by PIN2) and increased on every signing of new transaction
+    /// * Counter initialized by user's App (confirmed by PIN2) and increased on every signing of new transaction
     public let userProtectedCounter: Int
 }
 
@@ -35,7 +35,7 @@ public struct ReadUserDataResponse: JSONStringConvertible {
 @available(iOS, deprecated: 100000.0, message: "Use files instead")
 public final class ReadUserDataCommand: Command {
     public init() {}
-    
+
     deinit {
         Log.debug("ReadUserDataCommand deinit")
     }
@@ -44,17 +44,18 @@ public final class ReadUserDataCommand: Command {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
             .append(.pin, value: environment.accessCode.value)
-        
+
         return CommandApdu(.readUserData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadUserDataResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        return ReadUserDataResponse(cardId: try decoder.decode(.cardId),
-                                    userData: try decoder.decode(.userData),
-                                    userProtectedData: try decoder.decode(.userProtectedData),
-                                    userCounter: try decoder.decode(.userCounter),
-                                    userProtectedCounter: try decoder.decode(.userProtectedCounter)
+        return ReadUserDataResponse(
+            cardId: try decoder.decode(.cardId),
+            userData: try decoder.decode(.userData),
+            userProtectedData: try decoder.decode(.userProtectedData),
+            userCounter: try decoder.decode(.userCounter),
+            userProtectedCounter: try decoder.decode(.userProtectedCounter)
         )
     }
 }

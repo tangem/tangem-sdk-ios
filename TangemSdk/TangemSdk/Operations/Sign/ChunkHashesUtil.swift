@@ -27,7 +27,7 @@ struct ChunkHashesUtil {
     }
 
     func getChunkSize(for hashSize: Int) -> Int {
-        /// These devices are not able to sign long hashes.
+        // These devices are not able to sign long hashes.
         if NFCUtils.isPoorNfcQualityDevice {
             return Constants.maxChunkSizePoorNfcQualityDevice
         }

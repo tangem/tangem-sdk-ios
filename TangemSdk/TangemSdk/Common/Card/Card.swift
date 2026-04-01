@@ -8,7 +8,7 @@
 
 import Foundation
 
-///Response for `ReadCommand`. Contains detailed card information.
+/// Response for `ReadCommand`. Contains detailed card information.
 public struct Card: Codable, JSONStringConvertible {
     /// Unique Tangem card ID number.
     public let cardId: String
@@ -97,30 +97,30 @@ public extension Card {
         /// Signature of CardId with manufacturer’s private key. COS 1.21+
         public let signature: Data?
     }
-    
+
     struct Issuer: Codable {
         /// Name of the issuer.
         public let name: String
         /// Public key that is used by the card issuer to sign IssuerData field.
         public let publicKey: Data
     }
-    
+
     /// Card's linked terminal status. SDK can generate asymmetric key-pair and then use it for linking a card.
     enum LinkedTerminalStatus: String, Codable {
-        // Current app instance is linked to the card
+        /// Current app instance is linked to the card
         case current
-        // The other app/device is linked to the card
+        /// The other app/device is linked to the card
         case other
-        // No app/device is linked
+        /// No app/device is linked
         case none
     }
-    
+
     /// Card's backup status
     enum BackupStatus: Codable, Equatable {
         case noBackup
         case cardLinked(cardsCount: Int)
         case active(cardsCount: Int)
-        
+
         public var isActive: Bool {
             switch self {
             case .active:
@@ -161,33 +161,33 @@ public extension Card {
 
         public init(from decoder: Decoder) throws {
             let codableStruct = try BackupStatusCodable(from: decoder)
-            try self.init(from: codableStruct.status, cardsCount: codableStruct.cardsCount )
+            try self.init(from: codableStruct.status, cardsCount: codableStruct.cardsCount)
         }
-        
+
         init(from rawStatus: BackupRawStatus, cardsCount: Int?) throws {
             switch rawStatus {
             case .active:
                 guard let cardsCount = cardsCount else {
                     throw TangemSdkError.decodingFailed("Failed to decode BackupStatus")
                 }
-                
+
                 self = .active(cardsCount: cardsCount)
             case .cardLinked:
                 guard let cardsCount = cardsCount else {
                     throw TangemSdkError.decodingFailed("Failed to decode BackupStatus")
                 }
-                
+
                 self = .cardLinked(cardsCount: cardsCount)
             case .noBackup:
                 self = .noBackup
             }
         }
-        
+
         public func encode(to encoder: Encoder) throws {
             let codableStruct = toBackupStatusCodable()
             try codableStruct.encode(to: encoder)
         }
-        
+
         private func toBackupStatusCodable() -> BackupStatusCodable {
             switch self {
             case .active(let cardsCount):
@@ -198,7 +198,7 @@ public extension Card {
                 return BackupStatusCodable(status: .noBackup, cardsCount: nil)
             }
         }
-        
+
         private struct BackupStatusCodable: Codable {
             let status: BackupRawStatus
             let cardsCount: Int?
@@ -214,14 +214,14 @@ extension Card {
         case loaded = 2
         case purged = 3
     }
-    
+
     /// Card's backup status
     enum BackupRawStatus: String, StringCodable {
         case noBackup
         case cardLinked
         case active
-        
-        var intValue: Int { 
+
+        var intValue: Int {
             switch self {
             case .noBackup:
                 return 0
@@ -231,7 +231,7 @@ extension Card {
                 return 2
             }
         }
-        
+
         static func make(from intValue: Int) -> BackupRawStatus? {
             if intValue == 0 {
                 return .noBackup
@@ -240,9 +240,8 @@ extension Card {
             } else if intValue == 2 {
                 return .active
             }
-            
+
             return nil
         }
     }
 }
-

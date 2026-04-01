@@ -134,7 +134,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
 
     private func isBatchIdCompatible(_ batchId: String) -> Bool {
         guard let primaryCardBatchId = primaryCard.batchId?.uppercased() else {
-            return true //We found the old interrupted backup. Skip this check.
+            return true // We found the old interrupted backup. Skip this check.
         }
 
         let backupCardBatchId = batchId.uppercased()
@@ -151,7 +151,7 @@ final class StartBackupCardLinkingTask: CardSessionRunnable {
     }
 }
 
-public struct BatchId {
+public enum BatchId {
     private static let detached: [String] = ["AC01", "AC02", "CB95"]
 
     public static func isDetached(_ batchId: String) -> Bool {

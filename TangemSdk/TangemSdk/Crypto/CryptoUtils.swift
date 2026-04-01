@@ -11,7 +11,6 @@ import CommonCrypto
 import CryptoKit
 
 public enum CryptoUtils {
-    
     /**
      * Generates array of random bytes.
      * It is used, among other things, to generate helper private keys
@@ -19,7 +18,7 @@ public enum CryptoUtils {
      *
      * - Parameter count: length of the array that is to be generated.
      */
-    public static func generateRandomBytes(count: Int) throws -> Data  {
+    public static func generateRandomBytes(count: Int) throws -> Data {
         var bytes = [Byte](repeating: 0, count: count)
         let status = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
         if status == errSecSuccess {
@@ -28,7 +27,7 @@ public enum CryptoUtils {
             throw TangemSdkError.failedToGenerateRandomSequence
         }
     }
-    
+
     /**
      * Helper function to verify that the data was signed with a private key that corresponds
      * to the provided public key.
@@ -51,11 +50,11 @@ public enum CryptoUtils {
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
             let pubKey = publicKey.count == Constants.p256CompressedKeySize ?
-            try P256.Signing.PublicKey(compressedRepresentation: publicKey)
-            : try P256.Signing.PublicKey(x963Representation: publicKey)
-            
+                try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+                : try P256.Signing.PublicKey(x963Representation: publicKey)
+
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
-            
+
             return pubKey.isValidSignature(sig, for: message)
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
             // TODO: implement
@@ -84,7 +83,7 @@ public enum CryptoUtils {
         }
     }
 
-    // We can create only decompressed secp256r1 key here.
+    /// We can create only decompressed secp256r1 key here.
     public static func makePublicKey(from privateKey: Data, curve: EllipticCurve) throws -> Data {
         switch curve {
         case .secp256k1:
@@ -109,7 +108,7 @@ public enum CryptoUtils {
             throw TangemSdkError.unsupportedCurve
         }
     }
-    
+
     /**
      * Helper function to verify that the data was signed with a private key that corresponds
      * to the provided public key.
@@ -131,8 +130,8 @@ public enum CryptoUtils {
             return pubKey.isValidSignature(signature, for: hash)
         case .secp256r1:
             let pubKey = publicKey.count == Constants.p256CompressedKeySize ?
-            try P256.Signing.PublicKey(compressedRepresentation: publicKey)
-            : try P256.Signing.PublicKey(x963Representation: publicKey)
+                try P256.Signing.PublicKey(compressedRepresentation: publicKey)
+                : try P256.Signing.PublicKey(x963Representation: publicKey)
 
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
@@ -157,17 +156,26 @@ public enum CryptoUtils {
         return try key.withUnsafeBytes { keyUnsafeRawBufferPointer in
             return try dataIn.withUnsafeBytes { dataInUnsafeRawBufferPointer in
                 // Give the data out some breathing room for PKCS7's padding.
-                let dataOutSize: Int = dataIn.count + kCCBlockSizeAES128*2
-                let dataOut = UnsafeMutableRawPointer.allocate(byteCount: dataOutSize,
-                                                               alignment: 1)
+                let dataOutSize: Int = dataIn.count + kCCBlockSizeAES128 * 2
+                let dataOut = UnsafeMutableRawPointer.allocate(
+                    byteCount: dataOutSize,
+                    alignment: 1
+                )
                 defer { dataOut.deallocate() }
-                var dataOutMoved: Int = 0
-                let status = CCCrypt(CCOperation(operation), CCAlgorithm(algorithm),
-                                     CCOptions(options),
-                                     keyUnsafeRawBufferPointer.baseAddress, key.count,
-                                     nil,
-                                     dataInUnsafeRawBufferPointer.baseAddress, dataIn.count,
-                                     dataOut, dataOutSize, &dataOutMoved)
+                var dataOutMoved = 0
+                let status = CCCrypt(
+                    CCOperation(operation),
+                    CCAlgorithm(algorithm),
+                    CCOptions(options),
+                    keyUnsafeRawBufferPointer.baseAddress,
+                    key.count,
+                    nil,
+                    dataInUnsafeRawBufferPointer.baseAddress,
+                    dataIn.count,
+                    dataOut,
+                    dataOutSize,
+                    &dataOutMoved
+                )
                 guard status == kCCSuccess else { throw TangemSdkError.cryptoUtilsError("CCCryptor error. Code: \(status)") }
                 return Data(bytes: dataOut, count: dataOutMoved)
             }
@@ -175,17 +183,18 @@ public enum CryptoUtils {
     }
 }
 
-fileprivate struct CustomSha256Digest: Digest {
+private struct CustomSha256Digest: Digest {
     static var byteCount: Int { 32 }
-    
+
     let hash: Data
-    
+
     func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
-       try hash.withUnsafeBytes(body)
+        try hash.withUnsafeBytes(body)
     }
 }
 
 // MARK: - Constants
+
 private extension CryptoUtils {
     enum Constants {
         static let p256CompressedKeySize = 33

@@ -36,7 +36,7 @@ public extension Card {
         /// Derived keys according to `Config.defaultDerivationPaths`
         public var derivedKeys: DerivedKeys = [:]
         /// Raw status of the wallet
-        internal let status: Card.Wallet.Status
+        let status: Card.Wallet.Status
     }
 }
 
@@ -48,7 +48,7 @@ public extension Card.Wallet {
 }
 
 public extension Card.Wallet {
-    /// Status of the wallet. 
+    /// Status of the wallet.
     enum Status: Int, Codable, StatusType, JSONStringConvertible {
         /// Wallet not created
         case empty = 1
@@ -103,10 +103,10 @@ extension Card.Wallet.Settings {
     /// - Note: Available only for cards with COS v.4.0
     struct Mask: OptionSet, OptionSetCustomStringConvertible {
         var rawValue: Int
-        
+
         static let isPermanent = Mask(rawValue: 0x0004)
         static let isReusable = Mask(rawValue: 0x0001)
-        
+
         init(rawValue: Int) {
             self.rawValue = rawValue
         }
@@ -115,7 +115,7 @@ extension Card.Wallet.Settings {
 
 extension Card.Wallet.Settings {
     init(mask: WalletSettingsMask) {
-        self.isPermanent = mask.contains(.isPermanent)
+        isPermanent = mask.contains(.isPermanent)
     }
 }
 
@@ -125,7 +125,7 @@ extension WalletSettingsMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
         case isPermanent
         case isReusable
-        
+
         var value: WalletSettingsMask {
             switch self {
             case .isPermanent:

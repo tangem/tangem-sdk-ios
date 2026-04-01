@@ -12,37 +12,37 @@ import Foundation
 public final class DeleteFilesTask: CardSessionRunnable {
     private let indices: [Int]?
     private var deleteRunnable: DeleteAllFilesTask?
-    
+
     /// Task for deleting files from card.
     /// - Parameters:
     ///   - indices: Optional array of indices that should be deleted. If not specified all files will be deleted from card
     public init(indices: [Int]?) {
         self.indices = indices?.sorted(by: <)
     }
-    
+
     deinit {
         Log.debug("DeleteFilesTask deinit")
     }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        if let indices = self.indices {
+        if let indices = indices {
             deleteFiles(indices: indices, session: session, completion: completion)
         } else {
             deleteAllFiles(session: session, completion: completion)
         }
     }
-    
+
     private func deleteAllFiles(session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        self.deleteRunnable = DeleteAllFilesTask()
+        deleteRunnable = DeleteAllFilesTask()
         deleteRunnable!.run(in: session, completion: completion)
     }
-    
+
     private func deleteFiles(indices: [Int], session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         guard let index = indices.last else {
             completion(.success(SuccessResponse(cardId: session.environment.card?.cardId ?? "")))
             return
         }
-        
+
         let command = DeleteFileCommand(fileIndex: index)
         command.run(in: session) { result in
             switch result {

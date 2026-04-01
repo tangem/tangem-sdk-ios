@@ -14,26 +14,26 @@ struct NFCFieldView: View {
             circleScale = isAnimationOn ? 0.5 : 1
         }
     }
-    
+
     @EnvironmentObject var style: TangemSdkStyle
-    
+
     private let duration: Double = 0.9
-    
+
     private var bigCircleAnimation: Animation {
         Animation
             .easeInOut(duration: duration)
             .repeatForever()
             .delay(0.1)
     }
-    
+
     private var smallCircleAnimation: Animation {
         Animation
             .easeInOut(duration: duration)
             .repeatForever()
     }
-    
-    @State private var circleScale: CGFloat =  1.0
-    
+
+    @State private var circleScale: CGFloat = 1.0
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -44,13 +44,15 @@ struct NFCFieldView: View {
 
                 Circle()
                     .fill(style.colors.tint.opacity(0.2))
-                    .frame(width: 0.6 * geo.size.width,
-                           height: 0.6 * geo.size.width)
+                    .frame(
+                        width: 0.6 * geo.size.width,
+                        height: 0.6 * geo.size.width
+                    )
                     .scaleEffect(circleScale)
                     .animation(isAnimationOn ? smallCircleAnimation : nil, value: circleScale)
             }
         }
-        .onAppear() {
+        .onAppear {
             circleScale = isAnimationOn ? 0.5 : 1
         }
     }

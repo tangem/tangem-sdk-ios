@@ -15,13 +15,15 @@ public struct CommandApdu: Equatable {
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
 
-    //MARK: Header
+    // MARK: Header
+
     let cla: Byte
 
-    let p1:  Byte
-    let p2:  Byte
+    let p1: Byte
+    let p2: Byte
 
-    //MARK: Body
+    // MARK: Body
+
     /// An array of  serialized TLVs that are to be sent to the card
     let data: Data
     let le: Int?
@@ -43,12 +45,14 @@ public struct CommandApdu: Equatable {
     /// Values exceeding 65535 will be clamped to 65535.
     /// Negative values will be clamped to 0.
     /// - Parameter tlv: Payload data
-    public init(cla: Byte = 0x00,
-                ins: Byte,
-                p1: Byte = 0x0,
-                p2: Byte = 0x0,
-                le: Int? = nil,
-                tlv: Data) {
+    public init(
+        cla: Byte = 0x00,
+        ins: Byte,
+        p1: Byte = 0x0,
+        p2: Byte = 0x0,
+        le: Int? = nil,
+        tlv: Data
+    ) {
         self.cla = cla
         self.ins = ins
         self.p1 = p1
@@ -67,7 +71,7 @@ public struct CommandApdu: Equatable {
         apduBytes.append(p2)
 
         if !data.isEmpty {
-            //append LC as an extended field
+            // append LC as an extended field
             apduBytes.append(UInt8(0))
             apduBytes.append(contentsOf: data.count.bytes2)
 
@@ -75,7 +79,7 @@ public struct CommandApdu: Equatable {
         }
 
         if let le = le {
-            //append LE as an extended field
+            // append LE as an extended field
             apduBytes.append(contentsOf: le.bytes2)
         }
 
@@ -89,7 +93,7 @@ public struct CommandApdu: Equatable {
     /// - Parameter encryptionNonce: nonce for CCM encryption
     /// - Returns: Encrypted APDU
     public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> CommandApdu {
-        guard let encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
+        guard let encryptionKey, p1 == EncryptionMode.none.byteValue else { // skip if already encrypted or empty encryptionKey
             return self
         }
 

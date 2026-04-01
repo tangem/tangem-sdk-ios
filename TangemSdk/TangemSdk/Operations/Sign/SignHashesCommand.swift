@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 public typealias SignHashesResponse = SignResponse
 
 public final class SignHashesCommand: CardSessionRunnable {

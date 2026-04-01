@@ -13,7 +13,7 @@ public final class PurgeMasterSecretCommand: Command {
     var requiresPasscode: Bool { true }
 
     public init() {}
-    
+
     deinit {
         Log.debug("PurgeMasterSecretCommand deinit")
     }
@@ -22,7 +22,7 @@ public final class PurgeMasterSecretCommand: Command {
         if card.firmwareVersion < .v8 {
             return .notSupportedFirmwareVersion
         }
-        
+
         return nil
     }
 

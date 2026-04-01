@@ -8,7 +8,7 @@
 
 import Foundation
 
-/**
+/* 
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand] for V8 cards.
  */
@@ -41,7 +41,6 @@ public struct CardConfigV8: Decodable {
     /// Number of wallets supported by card, by default - 1
     let walletsCount: Byte?
 
-    
     enum CodingKeys: String, CodingKey {
         case releaseVersion
         case issuerName
@@ -70,4 +69,3 @@ public struct CardConfigV8: Decodable {
         case requireBackup
     }
 }
-

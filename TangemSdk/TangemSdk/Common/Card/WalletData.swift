@@ -13,15 +13,15 @@ public struct WalletData: Equatable, Hashable, Codable, JSONStringConvertible {
     public let blockchain: String
     /// Token of the specified blockchain.
     public let token: Token?
-    
+
     public init(blockchain: String, token: Token?) {
         self.blockchain = blockchain
         self.token = token
     }
 }
 
-extension WalletData {
-    public struct Token: Equatable, Hashable, Codable, JSONStringConvertible {
+public extension WalletData {
+    struct Token: Equatable, Hashable, Codable, JSONStringConvertible {
         /// Display name of the token.
         public let name: String
         /// Token symbol
@@ -30,7 +30,7 @@ extension WalletData {
         public let contractAddress: String
         /// Number of decimals in token value.
         public let decimals: Int
-        
+
         public init(name: String, symbol: String, contractAddress: String, decimals: Int) {
             self.name = name
             self.symbol = symbol

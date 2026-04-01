@@ -22,7 +22,7 @@ struct OpenSessionWithAccessTokenResponse {
             signature: signAttestSession
         )
 
-       return isValid
+        return isValid
     }
 }
 

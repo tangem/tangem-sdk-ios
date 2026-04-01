@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension JSONDecoder {
-    public static var tangemSdkDecoder: JSONDecoder  {
+public extension JSONDecoder {
+    static var tangemSdkDecoder: JSONDecoder {
         let decoder = JSONDecoder()
         decoder.dataDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
@@ -17,33 +17,32 @@ extension JSONDecoder {
             return Data(hexString: hex)
         }
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy  = .formatted(.tangemSdkDateFormatter)
+        decoder.dateDecodingStrategy = .formatted(.tangemSdkDateFormatter)
         return decoder
     }
 }
 
-extension JSONEncoder {
-    public static var tangemSdkEncoder: JSONEncoder  {
+public extension JSONEncoder {
+    static var tangemSdkEncoder: JSONEncoder {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
-        encoder.dataEncodingStrategy = .custom{ data, encoder in
+        encoder.dataEncodingStrategy = .custom { data, encoder in
             var container = encoder.singleValueContainer()
             return try container.encode(data.hexString)
         }
-        
+
         encoder.dateEncodingStrategy = .formatted(.tangemSdkDateFormatter)
         return encoder
     }
-    
-    public static var tangemSdkTestEncoder: JSONEncoder  {
+
+    static var tangemSdkTestEncoder: JSONEncoder {
         let encoder = JSONEncoder.tangemSdkEncoder
         encoder.outputFormatting = [.sortedKeys]
         return encoder
     }
 }
 
-
-fileprivate extension DateFormatter {
+private extension DateFormatter {
     static var tangemSdkDateFormatter: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

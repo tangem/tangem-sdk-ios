@@ -50,6 +50,8 @@
 --enable redundantPattern
 --enable redundantRawValues
 --enable redundantSelf
+# In the rare case of functions with @autoclosure arguments, self may be required at the call site, but SwiftFormat is unable to detect this automatically
+--selfrequired runInMainThread
 --enable redundantType
 --enable redundantVoidReturnType
 --enable redundantFileprivate

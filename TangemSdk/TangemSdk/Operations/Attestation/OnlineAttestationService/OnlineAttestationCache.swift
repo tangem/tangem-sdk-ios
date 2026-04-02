@@ -14,7 +14,7 @@ public class OnlineAttestationCache {
     private let secureStorage = SecureStorage()
     private let secureEnclave = SecureEnclaveService()
 
-    ///Key is Hash of card's public key
+    /// Key is the hash of the card's public key
     private var data: [Data: OnlineAttestationResponse] = [:]
 
     init() {

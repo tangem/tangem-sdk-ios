@@ -30,7 +30,7 @@ public final class WriteIssuerDataCommand: Command {
     /// An optional counter that protect issuer data against replay attack. When flag `Protect_Issuer_Data_Against_Replay` set in `SettingsMask`
     /// then this value is mandatory and must increase on each execution of `WriteIssuerDataCommand`.
     public let issuerDataCounter: Int?
-    /* 
+    /*
      * - Parameters:
      *   - issuerData: Data to write
      *   - issuerDataSignature: Signature to write

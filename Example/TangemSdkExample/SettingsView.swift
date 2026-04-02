@@ -38,8 +38,9 @@ struct SettingsView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
 
-            Button("Remove access codes") {
+            Button("Remove access codes and tokens") {
                 AccessCodeRepository().clear()
+                CardAccessTokensRepository().clear()
             }
             .padding()
 

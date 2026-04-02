@@ -8,7 +8,7 @@
 import Foundation
 import LocalAuthentication
 
-class CardAccessTokensRepository {
+public class CardAccessTokensRepository {
     var isEmpty: Bool {
         let cards = try? getCards()
         return cards?.isEmpty ?? true
@@ -30,6 +30,16 @@ class CardAccessTokensRepository {
 
     deinit {
         Log.debug("CardAccessTokensRepository deinit")
+    }
+
+    public func clear() {
+        Log.debug("Clear CardAccessTokensRepository")
+        do {
+            let cardIds = try getCards()
+            try deleteTokens(for: Array(cardIds))
+        } catch {
+            Log.error(error)
+        }
     }
 
     func save(_ cardAccessTokens: CardAccessTokens, for cardIds: [String]) throws {
@@ -94,16 +104,6 @@ class CardAccessTokensRepository {
 
         try saveCards(cardIds: savedCardIds)
         Log.debug("Card access tokens deletion completed successfully")
-    }
-
-    func clear() {
-        Log.debug("Clear CardAccessTokensRepository")
-        do {
-            let cardIds = try getCards()
-            try deleteTokens(for: Array(cardIds))
-        } catch {
-            Log.error(error)
-        }
     }
 
     func contains(_ cardId: String) -> Bool {

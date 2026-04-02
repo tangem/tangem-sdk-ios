@@ -33,11 +33,11 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
 
         let setStateAction = { self.viewModel.viewState = state }
         runInMainThread(setStateAction())
-        runInMainThread(presentScreenIfNeeded())
+        runInMainThread(self.presentScreenIfNeeded())
     }
 
     func hide(completion: (() -> Void)?) {
-        runInMainThread(dismissScreen(completion: completion))
+        runInMainThread(self.dismissScreen(completion: completion))
     }
 
     func showError(_ error: TangemSdkError) {

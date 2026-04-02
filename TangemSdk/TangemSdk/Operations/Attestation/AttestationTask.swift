@@ -282,7 +282,7 @@ public extension AttestationTask {
 
 private extension AttestationTask {
     enum Constants {
-        ///Attest wallet count or sign command count greater this value is looks suspicious.
+        /// An attest wallet count or sign command count greater than this value looks suspicious.
         static let maxCounter = 100000
     }
 }

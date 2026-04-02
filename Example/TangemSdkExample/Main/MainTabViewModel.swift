@@ -880,7 +880,7 @@ extension MainTabViewModel {
         case writeOwnerFile
         case deleteFile
         case updateFilePermissions
-        ///case json-rpc
+        /// case json-rpc
         case jsonrpc
         // deprecated
         case readIssuerData

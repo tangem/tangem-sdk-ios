@@ -177,7 +177,7 @@ class SignCommand: Command {
             try tlvBuilder.append(.cardId, value: environment.card?.cardId)
         }
 
-        /* 
+        /*
          * Application can optionally submit a public key Terminal_PublicKey in [SignCommand].
          * Submitted key is stored by the Tangem card if it differs from a previous submitted Terminal_PublicKey.
          * The Tangem card will not enforce security delay if [SignCommand] will be called with

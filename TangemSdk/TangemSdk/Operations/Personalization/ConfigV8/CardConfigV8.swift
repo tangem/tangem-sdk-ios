@@ -8,7 +8,7 @@
 
 import Foundation
 
-/* 
+/*
  * It is a configuration file with all the card settings that are written on the card
  * during [PersonalizeCommand] for V8 cards.
  */

@@ -45,7 +45,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
 
         let setStateAction = { self.viewModel.viewState = state }
         runInMainThread(setStateAction())
-        runInMainThread(presentScreenIfNeeded())
+        runInMainThread(self.presentScreenIfNeeded())
     }
 
     func showAlertMessage(_ text: String) {
@@ -81,7 +81,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
 
     func sessionStarted() {
         Log.view("Session started")
-        runInMainThread(presentScreenIfNeeded())
+        runInMainThread(self.presentScreenIfNeeded())
         engine.start()
     }
 
@@ -89,7 +89,7 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
         Log.view("Session stopped")
         pinnedMessage = nil
         engine.stop()
-        runInMainThread(dismissScreen(completion: completion))
+        runInMainThread(self.dismissScreen(completion: completion))
     }
 
     func attestationDidFailDevCard(onContinue: @escaping () -> Void, onCancel: @escaping () -> Void) {

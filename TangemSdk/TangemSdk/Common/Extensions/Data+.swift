@@ -183,7 +183,7 @@ public extension Data {
         return try pbkdf2(hash: CCPBKDFAlgorithm(kCCPRFHmacAlgSHA512), salt: salt, keyByteCount: keyByteCount, rounds: rounds)
     }
 
-    ///SO14443A
+    /// ISO14443A
     func crc16() -> Data {
         var wCRC = Int32(0x6363) // ITU-V.41
         forEach { byte in

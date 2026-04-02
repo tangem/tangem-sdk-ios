@@ -36,7 +36,7 @@ extension NFCReader: SlixTagReader {
     }
 }
 
-///Slix2 tag support. [REDACTED_TODO_COMMENT]
+/// Slix2 tag support. [REDACTED_TODO_COMMENT]
 private extension ResponseApdu {
     init?(slix2Data: Data) {
         let ndefTlvData = slix2Data[4...] // cut e1402801 (CC)

@@ -28,7 +28,7 @@ enum SecureStorageKey: String {
     case terminalPrivateKey // link card to terminal
     case terminalPublicKey
 
-    ///backup service
+    /// backup service
     case backupData
 }
 

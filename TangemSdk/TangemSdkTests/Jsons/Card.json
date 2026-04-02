@@ -9,7 +9,7 @@
   "userSettings" : {
       "isUserCodeRecoveryAllowed" : true,
       "isPINRequired" : false,
-      "isNDEFDisabled" : false,
+      "isNDEFDisabled" : false
   },
   "settings" : {
     "isSettingPasscodeAllowed" : true,

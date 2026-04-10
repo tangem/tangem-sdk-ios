@@ -19,39 +19,32 @@ struct WelcomeBackView: View {
                 circleIcon
                     .padding(.top, 68)
 
-                VStack(spacing: 12) {
-                    Text("already_activated_title".localized)
-                        .font(.system(size: 28).bold())
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                VStack(spacing: 32) {
+                    VStack(spacing: 12) {
+                        Text("already_activated_title".localized)
+                            .font(.system(size: 28).bold())
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
 
-                    Text("already_activated_message".localized)
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                        Text("already_activated_message".localized)
+                            .font(.callout)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
+                    }
+
+                    WalletAlreadyActivatedNoticeView { showSafari = true }
+                        .padding(.horizontal, 16)
                 }
-
-                SecurityNoticeView()
-                    .padding(.horizontal, 32)
             }
         }
         .scrollBounceBehavior(.basedOnSize)
         .safeAreaInset(edge: .bottom, spacing: 16) {
-            VStack(spacing: 10) {
-                SdkButton(
-                    title: "already_activated_btn_confirm".localized,
-                    colors: style.colors.buttonColors,
-                    action: onConfirm
-                )
-
-                SdkButton(
-                    title: "already_activated_btn_just_bought".localized,
-                    colors: style.colors.secondaryButtonColors
-                ) {
-                    showSafari = true
-                }
-            }
+            SdkButton(
+                title: "already_activated_btn_confirm".localized,
+                colors: style.colors.secondaryButtonColors,
+                action: onConfirm
+            )
             .padding(.horizontal, 16)
             .bottomPaddingIfZeroSafeArea(16)
         }
@@ -64,10 +57,11 @@ struct WelcomeBackView: View {
     }
 
     private var circleIcon: some View {
-        Image("heading", bundle: .sdkBundle)
-            .foregroundColor(style.colors.tint)
+        Image(systemName: "exclamationmark.shield.fill")
+            .foregroundColor(Color(uiColor: UIColor.systemYellow))
+            .font(.system(size: 40, weight: .semibold))
             .padding(16)
-            .background(style.colors.tint.opacity(0.1))
+            .background(Color(uiColor: UIColor.LightPalette.warningBackground).opacity(0.2))
             .clipShape(Circle())
     }
 

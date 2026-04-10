@@ -1,7 +1,7 @@
-"already_activated_btn_confirm" = "This is my wallet";
-"already_activated_btn_just_bought" = "I\'ve just bought it";
-"already_activated_message" = "This wallet has already been activated, and we would like to confirm that it was activated by you.";
-"already_activated_title" = "Welcome back";
+"already_activated_btn_confirm" = "I activated it earlier";
+"already_activated_btn_just_bought" = "Yes, this is a new wallet";
+"already_activated_message" = "This wallet has already been activated before. If that wasn’t you, please contact support.";
+"already_activated_title" = "This Wallet\nis Already Activated";
 "attestation_failed_card_title" = "Non è stata eseguita la verifica della carta";
 "attestation_failed_dev_card" = "This is a development card. Its authenticity cannot be verified. Do not accept this card as a means of payment.";
 "attestation_online_failed_body" = "At the moment, online attestation of the card cannot be performed. You can continue at your own risk or try again later.";
@@ -74,7 +74,8 @@
 "reset_codes_scan_to_reset" = "Scan card or ring to reset user codes";
 "reset_codes_success_message" = "Code was reset successfully";
 "sign_multiple_chunks_part" = "Signing part %1$li of %2$li";
-"tangem_never_pregenerate_code_alert" = "Tangem never sells wallets along with the pre-generated access code";
+"tangem_never_pregenerate_access_code_alert" = "Tangem never sells wallets along with the pre‑generated access code.";
+"tangem_never_pregenerate_code_alert" = "If, during the first use of the wallet, you are prompted to enter or change the access code, do not use it — this is a scam. Are you activating it for the first time?";
 "touch_id_localized_reason" = "Use Touch ID to save access codes in the app";
 "view_delegate_scan_description_format" = "Tap the %@ as shown above and hold until the end of the operation";
 "view_delegate_scan_description" = "Tap the card or ring as shown above and hold until the end of the operation";

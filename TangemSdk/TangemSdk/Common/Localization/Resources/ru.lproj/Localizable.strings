@@ -1,7 +1,7 @@
-"already_activated_btn_confirm" = "Это мой кошелек";
-"already_activated_btn_just_bought" = "Я только его купил";
-"already_activated_message" = "Этот кошелёк уже был активирован ранее, и мы хотели бы подтвердить, что его активировали именно вы.";
-"already_activated_title" = "С возвращением!";
+"already_activated_btn_confirm" = "Я его активировал ранее";
+"already_activated_btn_just_bought" = "Да, это новый кошелек";
+"already_activated_message" = "Этот кошелек уже был активирован ранее. Если это сделали не вы, свяжитесь со службой поддержки.";
+"already_activated_title" = "Этот кошелек\nуже активирован";
 "attestation_failed_card_title" = "Ошибка проверки карты";
 "attestation_failed_dev_card" = "Это карта предназначена для тестовых целей. Её подлинность не может быть проверена. Не принимайте эту карту как средство оплаты.";
 "attestation_online_failed_body" = "В настоящее время онлайн аттестация карты не может быть выполнена. Вы можете продолжить на свой страх и риск или повторить попытку.";
@@ -74,7 +74,8 @@
 "reset_codes_scan_to_reset" = "Отсканируйте карту или кольцо для сброса кода";
 "reset_codes_success_message" = "Код успешно сброшен";
 "sign_multiple_chunks_part" = "Подпись части %1$li из %2$li";
-"tangem_never_pregenerate_code_alert" = "Tangem никогда не продаёт кошельки с заранее сгенерированным кодом доступа.";
+"tangem_never_pregenerate_access_code_alert" = "Tangem никогда не продаёт кошельки с заранее сгенерированным кодом доступа.";
+"tangem_never_pregenerate_code_alert" = "Если при первом использовании кошелька предлагается ввести или изменить код доступа, не используйте его — это мошенничество! Вы активируете его впервые?";
 "touch_id_localized_reason" = "Используйте Touch ID для сохранения кодов доступа в приложении";
 "view_delegate_scan_description_format" = "Поднесите %@, как показано выше, и удерживайте до конца операции";
 "view_delegate_scan_description" = "Поднесите карту или кольцо, как показано выше, и удерживайте до конца операции";

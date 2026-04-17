@@ -114,7 +114,7 @@ static void secp256k1_ecmult_gen(const secp256k1_ecmult_gen_context *ctx, secp25
     }
     secp256k1_scalar_clear(&d);
 
-    /* In secp256k1_ecmult_gen_prec_table we have precomputed sums of the
+    /* In tangem_secp256k1_ecmult_gen_prec_table we have precomputed sums of the
      * (2*d[i]-1) * 2^(i-1) * G points, for various combinations of i positions.
      * We rewrite our equation in terms of these table entries.
      *
@@ -185,7 +185,7 @@ static void secp256k1_ecmult_gen(const secp256k1_ecmult_gen_context *ctx, secp25
      * entry from the second half is needed, we look up its bit-flipped version instead, and negate
      * it.
      *
-     * secp256k1_ecmult_gen_prec_table[b][index] stores the table(b, m) entries. Index
+     * tangem_secp256k1_ecmult_gen_prec_table[b][index] stores the table(b, m) entries. Index
      * is the relevant mask(b) bits of m packed together without gaps. */
 
     /* Outer loop: iterate over comb_off from COMB_SPACING - 1 down to 0. */
@@ -245,7 +245,7 @@ static void secp256k1_ecmult_gen(const secp256k1_ecmult_gen_context *ctx, secp25
              *    (https://www.tau.ac.il/~tromer/papers/cache.pdf)
              */
             for (index = 0; index < COMB_POINTS; ++index) {
-                secp256k1_ge_storage_cmov(&adds, &secp256k1_ecmult_gen_prec_table[block][index], index == abs);
+                secp256k1_ge_storage_cmov(&adds, &tangem_secp256k1_ecmult_gen_prec_table[block][index], index == abs);
             }
 
             /* Set add=adds or add=-adds, in constant time, based on sign. */

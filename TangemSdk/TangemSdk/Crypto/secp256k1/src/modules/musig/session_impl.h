@@ -499,9 +499,9 @@ int secp256k1_musig_nonce_gen_counter(const secp256k1_context* ctx, secp256k1_mu
 
     secp256k1_write_be64(buf, nonrepeating_cnt);
     /* keypair_sec and keypair_pub do not fail if the arguments are not NULL */
-    ret = secp256k1_keypair_sec(ctx, seckey, keypair);
+    ret = tangem_secp256k1_keypair_sec(ctx, seckey, keypair);
     VERIFY_CHECK(ret);
-    ret = secp256k1_keypair_pub(ctx, &pubkey, keypair);
+    ret = tangem_secp256k1_keypair_pub(ctx, &pubkey, keypair);
     VERIFY_CHECK(ret);
 #ifndef VERIFY
     (void) ret;

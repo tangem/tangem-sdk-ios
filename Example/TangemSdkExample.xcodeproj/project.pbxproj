@@ -171,7 +171,7 @@
 			);
 			mainGroup = 5D78C1AD234F435B008D7478;
 			packageReferences = (
-				DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference "../../tangem-sdk-ios" */,
+				DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference ".." */,
 			);
 			productRefGroup = 5D78C1B7234F435B008D7478 /* Products */;
 			projectDirPath = "";
@@ -424,9 +424,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference "../../tangem-sdk-ios" */ = {
+		DC3D69102EE7448700F718D9 /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../tangem-sdk-ios";
+			relativePath = "..";
 		};
 /* End XCLocalSwiftPackageReference section */
 

@@ -1,7 +1,7 @@
 "already_activated_btn_confirm" = "先ほど有効化しました";
 "already_activated_btn_just_bought" = "はい、これは新しいウォレットです";
 "already_activated_message" = "このウォレットはすでに有効化されています。操作を行ったのがご自身でない場合は、サポートまでご連絡ください。";
-"already_activated_title" = "このウォレットはすでに有効化されています";
+"already_activated_title" = "このウォレット\nはすでに有効化されています";
 "attestation_failed_card_title" = "カード認証に失敗しました";
 "attestation_failed_dev_card" = "これは開発カードです。真正性は確認できません。このカードを支払い手段として使用しないでください。";
 "attestation_online_failed_body" = "現在、カードのオンライン認証は実行できません。自己責任で続行するか、後でもう一度お試しください。";

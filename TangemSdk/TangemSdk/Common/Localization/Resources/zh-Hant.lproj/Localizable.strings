@@ -1,7 +1,7 @@
-"already_activated_btn_confirm" = "這是我的錢包";
-"already_activated_btn_just_bought" = "我剛買的";
-"already_activated_message" = "此錢包已激活，我們想確認是否由您激活。";
-"already_activated_title" = "歡迎回來";
+"already_activated_btn_confirm" = "我之前已經激活了。";
+"already_activated_btn_just_bought" = "是的，這是個新錢包。";
+"already_activated_message" = "此錢包之前已激活。如果不是您本人激活，請聯絡客服。";
+"already_activated_title" = "此錢包已激活";
 "attestation_failed_card_title" = "卡片驗證失敗";
 "attestation_failed_dev_card" = "這是一張開發卡篇。其真實性無從考證。請勿用此卡作為付款方式。";
 "attestation_online_failed_body" = "目前無法進行線上卡片認證。您可以自行承擔風險繼續操作，或稍後重試。";

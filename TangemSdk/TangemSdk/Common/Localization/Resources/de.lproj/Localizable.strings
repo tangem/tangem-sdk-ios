@@ -74,7 +74,7 @@
 "reset_codes_scan_to_reset" = "Scanne die Karte oder den Ring, um Benutzercodes zurückzusetzen";
 "reset_codes_success_message" = "Code wurde erfolgreich zurückgesetzt";
 "sign_multiple_chunks_part" = "Unterzeichnung von Teil %1$li von %2$li";
-"tangem_never_pregenerate_access_code_alert" = "Tangem never sells wallets along with the pre‑generated access code.";
+"tangem_never_pregenerate_access_code_alert" = "Tangem verkauft niemals Wallets zusammen mit dem vorab generierten Zugangscode.";
 "tangem_never_pregenerate_code_alert" = "Tangem verkauft niemals Geldbörsen zusammen mit dem vorgenerierten Zugangscode";
 "touch_id_localized_reason" = "Verwende Touch ID, um Zugangscodes in der App zu speichern";
 "view_delegate_scan_description_format" = "Halte die %@ wie oben gezeigt auf und halten diese gedrückt, bis der Vorgang abgeschlossen ist.";

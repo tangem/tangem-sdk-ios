@@ -1,7 +1,7 @@
-"already_activated_btn_confirm" = "Це мій гаманець";
-"already_activated_btn_just_bought" = "Я щойно його придбав";
-"already_activated_message" = "Цей гаманець уже активовано, і ми хочемо переконатися, що це зробили саме ви.";
-"already_activated_title" = "З поверненням";
+"already_activated_btn_confirm" = "Я активував раніше";
+"already_activated_btn_just_bought" = "Так, це новий гаманець";
+"already_activated_message" = "Цей гаманець уже було активовано раніше. Якщо це зробили не ви, зверніться до служби підтримки";
+"already_activated_title" = "Цей гаманець вже активовано";
 "attestation_failed_card_title" = "Помилка перевірки картки";
 "attestation_failed_dev_card" = "Ця картка призначена для тестових цілей. Її автентичність не може бути перевірена. Не приймайте цю карту як засіб оплати.";
 "attestation_online_failed_body" = "Наразі онлайн-атестація картки неможлива. Ви можете продовжити на свій страх і ризик або спробувати ще раз.";
@@ -74,6 +74,7 @@
 "reset_codes_scan_to_reset" = "Відскануйте картку або кільце щоб скинути код";
 "reset_codes_success_message" = "Код успішно скинуто";
 "sign_multiple_chunks_part" = "Підпис частини %1$li з %2$li";
+"tangem_never_pregenerate_access_code_alert" = "Tangem ніколи не продає гаманці з попередньо згенерованим кодом доступу";
 "tangem_never_pregenerate_code_alert" = "Tangem ніколи не продає гаманці разом з кодом доступу";
 "touch_id_localized_reason" = "Використовуйте Touch ID для збереження кодів доступу в додатку";
 "view_delegate_scan_description_format" = "Піднесіть %@, як показано вище, і утримуйте до кінця операції";

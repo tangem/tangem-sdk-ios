@@ -1,7 +1,7 @@
-"already_activated_btn_confirm" = "Esta es mi billetera";
-"already_activated_btn_just_bought" = "Acabo de comprarla";
-"already_activated_message" = "Esta billetera ya ha sido activada y nos gustaría confirmar que usted la activó.";
-"already_activated_title" = "Bienvenido de nuevo";
+"already_activated_btn_confirm" = "La activé anteriormente";
+"already_activated_btn_just_bought" = "Sí, es una billetera nueva";
+"already_activated_message" = "Esta billetera ya ha sido activada anteriormente. Si no fue usted quien la activó, comuníquese con el soporte.";
+"already_activated_title" = "Esta billetera\nya está activada.";
 "attestation_failed_card_title" = "Error de validación de tarjeta";
 "attestation_failed_dev_card" = "Esta es una tarjeta en desarrollo. No se puede verificar su autenticidad. No acepte esta tarjeta como medio de pago.";
 "attestation_online_failed_body" = "En estos momentos no es posible realizar la certificación online de la tarjeta. Puede continuar por su cuenta y riesgo o volver a intentarlo más tarde.";
@@ -74,6 +74,7 @@
 "reset_codes_scan_to_reset" = "Escanee la tarjeta/anillo para restablecer los códigos de usuario";
 "reset_codes_success_message" = "El código se restableció correctamente";
 "sign_multiple_chunks_part" = "Parte de firma %1$li de %2$li";
+"tangem_never_pregenerate_access_code_alert" = "Tangem nunca vende billeteras con un código de acceso generado previamente";
 "tangem_never_pregenerate_code_alert" = "Tangem nunca vende billeteras con un código de acceso generado previamente";
 "touch_id_localized_reason" = "Use Touch ID para guardar códigos de acceso en la aplicación";
 "view_delegate_scan_description_format" = "Mantenga %@ como se muestra arriba, sin mover hasta el fin de la operación.";

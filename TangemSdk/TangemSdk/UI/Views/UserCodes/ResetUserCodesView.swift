@@ -19,8 +19,6 @@ struct ResetUserCodesView: View {
 
     @EnvironmentObject var style: TangemSdkStyle
 
-    @State private var isLoading: Bool = false
-
     var body: some View {
         GeometryReader { geo in
             VStack(alignment: .center, spacing: 0) {
@@ -55,11 +53,6 @@ struct ResetUserCodesView: View {
             }
         }
         .padding([.horizontal, .bottom])
-        .onAppear {
-            if isLoading {
-                isLoading = false
-            }
-        }
     }
 
     @ViewBuilder

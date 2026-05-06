@@ -13,11 +13,11 @@ struct SecurityNoticeView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(Color(UIColor.systemYellow))
+                .foregroundColor(Color(uiColor: UIColor.systemYellow))
                 .font(.system(size: 16, weight: .semibold))
                 .padding(.top, 2)
 
-            Text("tangem_never_pregenerate_code_alert".localized)
+            Text("tangem_never_pregenerate_access_code_alert".localized)
                 .font(.subheadline)
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.leading)

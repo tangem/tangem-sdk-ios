@@ -58,6 +58,7 @@ struct ChangeUserCodeView: View {
                 SdkButton(
                     title: "common_continue".localized,
                     colors: style.colors.buttonColors,
+                    isDisabled: isContinueDisabled,
                     action: onDone
                 )
             }

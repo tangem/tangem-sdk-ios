@@ -70,7 +70,7 @@ public class CardAccessTokensRepository {
                 savedCardIds.insert(cardId)
                 tokens[cardId] = cardAccessTokens
             } catch {
-                Log.debug("Card access tokens error for cardId: \(cardId)")
+                Log.error("Card access tokens error for cardId: \(cardId)")
             }
         }
 
@@ -141,7 +141,7 @@ public class CardAccessTokensRepository {
                     fetchedTokens[cardId] = cardAccessTokens
                 }
             } catch {
-                Log.debug("Failed to unlock card access tokens for cardId: \(cardId). Error: \(error)")
+                Log.error("Failed to unlock card access tokens for cardId: \(cardId). Error: \(error)")
             }
         }
 

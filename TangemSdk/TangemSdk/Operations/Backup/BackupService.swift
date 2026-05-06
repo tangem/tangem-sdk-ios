@@ -568,7 +568,7 @@ class BackupRepo {
             do {
                 try save()
             } catch {
-                Log.debug(error)
+                Log.error(error)
             }
 
             Log.debug("BackupRepo updated")
@@ -579,7 +579,7 @@ class BackupRepo {
         do {
             try fetch()
         } catch {
-            Log.debug(error)
+            Log.error(error)
         }
     }
 
@@ -587,7 +587,7 @@ class BackupRepo {
         do {
             try storage.delete(.backupData)
         } catch {
-            Log.debug(error)
+            Log.error(error)
         }
         data = .init()
     }

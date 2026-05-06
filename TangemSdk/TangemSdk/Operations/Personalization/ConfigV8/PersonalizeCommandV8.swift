@@ -93,7 +93,7 @@ public class PersonalizeCommandV8: Command {
 
         let encryptedData = nonce + encryptedPayload
 
-        Log.debug("C-APDU encrypted with CCM")
+        Log.apdu("C-APDU encrypted with CCM")
 
         return CommandApdu(
             cla: cApdu.cla,

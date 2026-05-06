@@ -120,9 +120,9 @@ extension Command {
 
     private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         do {
-            Log.debug("C-APDU serialization start".titleFormatted)
+            Log.apdu("C-APDU serialization start".titleFormatted)
             let commandApdu = try serialize(with: session.environment)
-            Log.debug("C-APDU serialization finish".titleFormatted)
+            Log.apdu("C-APDU serialization finish".titleFormatted)
 
             session.rememberTag()
 
@@ -139,9 +139,9 @@ extension Command {
                             Log.session("Current packet counter is \(packetCounter)")
                         }
 
-                        Log.debug("R-APDU deserialization start".titleFormatted)
+                        Log.apdu("R-APDU deserialization start".titleFormatted)
                         let responseData = try self.deserialize(with: session.environment, from: responseApdu)
-                        Log.debug("R-APDU deserialization finish".titleFormatted)
+                        Log.apdu("R-APDU deserialization finish".titleFormatted)
 
                         completion(.success(responseData))
                     } catch {
@@ -155,10 +155,10 @@ extension Command {
                             // We have to restart secure channel flow for COS V8+
                             session.secureChannelSession?.reset()
                             if commandApdu.ins == Instruction.authorize.rawValue || commandApdu.ins == Instruction.openSession.rawValue {
-                                Log.debug("Fail secure channel command to restart the full flow")
+                                Log.session("Fail secure channel command to restart the full flow")
                                 completion(.failure(error))
                             } else {
-                                Log.debug("Retry command with new secure channel session")
+                                Log.session("Retry command with new secure channel session")
                                 self.transceiveInternal(in: session, completion: completion)
                             }
                         default:

@@ -128,7 +128,7 @@ class HapticsEngine {
                 let engine = try CHHapticEngine()
                 engine.playsHapticsOnly = true
                 engine.stoppedHandler = { [weak self] reason in
-                    Log.debug("CHHapticEngine stop handler: The engine stopped for reason: \(reason.rawValue)")
+                    Log.error("CHHapticEngine stop handler: The engine stopped for reason: \(reason.rawValue)")
                     self?.engineNeedsStart = true
                 }
                 engine.resetHandler = { [weak self] in

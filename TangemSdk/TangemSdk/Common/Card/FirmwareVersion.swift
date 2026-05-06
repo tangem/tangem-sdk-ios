@@ -137,7 +137,7 @@ public extension FirmwareVersion {
     /// ed25519_slip0010
     static let ed25519Slip0010Available = FirmwareVersion(major: 6, minor: 33)
     /// COS v8+, a lot of changes
-    static let v8 = FirmwareVersion(major: 8, minor: 53)
+    static let v8 = FirmwareVersion(major: 8, minor: 56)
 }
 
 public extension FirmwareVersion {

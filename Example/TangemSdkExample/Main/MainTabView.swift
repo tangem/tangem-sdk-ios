@@ -140,8 +140,10 @@ struct MainTabView: View {
             createWalletView
         case .importWallet:
             importWalletView
-        case .signHash, .signHashes, .derivePublicKey, .readMasterSecret:
+        case .signHash, .signHashes, .derivePublicKey:
             hdPathView
+        case .getEntropy:
+            getEntropyView
         case .jsonrpc:
             jsonEditorView
         case .personalize, .personalizeV8:
@@ -232,6 +234,28 @@ struct MainTabView: View {
                 TextField("", text: $viewModel.signHashesCount)
                     .textFieldStyle(.roundedBorder)
                     .textInputAutocapitalization(.never)
+            }
+        }
+        .orangeBorder()
+    }
+
+    private var getEntropyView: some View {
+        VStack {
+            Text("Get entropy configuration")
+                .font(.headline)
+                .bold()
+
+            Picker("", selection: $viewModel.isDeterministicEntropy) {
+                Text("random").tag(false)
+                Text("deterministic").tag(true)
+            }
+            .pickerStyle(.segmented)
+
+            if viewModel.isDeterministicEntropy {
+                TextField("\"m/0/1\"", text: $viewModel.derivationPath)
+                    .textFieldStyle(.roundedBorder)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
             }
         }
         .orangeBorder()

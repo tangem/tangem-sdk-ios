@@ -27,6 +27,7 @@ class MainTabViewModel: ObservableObject {
     @Published var isUserCodeRecoveryAllowed: Bool = false
     @Published var isPinRequired: Bool = false
     @Published var isNDEFDisabled: Bool = false
+    @Published var isDeterministicEntropy: Bool = false
 
     // MARK: - Outputs
 
@@ -152,6 +153,7 @@ class MainTabViewModel: ObservableObject {
     private func complete(with error: TangemSdkError) {
         if !error.isUserCancelled {
             logger.log("\(error.localizedDescription)")
+            logger.log(error)
         }
 
         isScanning = false
@@ -747,7 +749,24 @@ extension MainTabViewModel {
     }
 
     func getEntropy() {
-        configuredSdk.startSession(with: GetEntropyCommand(), completion: handleCompletion)
+        let mode: GetEntropyMode
+        if isDeterministicEntropy {
+            guard !derivationPath.isEmpty, let path = try? DerivationPath(rawPath: derivationPath) else {
+                complete(with: "Failed to parse hd path")
+                return
+            }
+
+            mode = .deterministic(derivationPath: path)
+        } else {
+            mode = .random
+        }
+
+        UIApplication.shared.endEditing()
+
+        configuredSdk.startSession(
+            with: GetEntropyCommand(mode: mode),
+            completion: handleCompletion
+        )
     }
 
     func setUserCodeRecoveryAllowed() {
@@ -770,15 +789,7 @@ extension MainTabViewModel {
     }
 
     func readMasterSecret() {
-        let path = try? DerivationPath(rawPath: derivationPath)
-        if !derivationPath.isEmpty, path == nil {
-            complete(with: "Failed to parse hd path")
-            return
-        }
-
-        UIApplication.shared.endEditing()
-
-        configuredSdk.startSession(with: ReadMasterSecretCommand(derivationPath: path), completion: handleCompletion)
+        configuredSdk.startSession(with: ReadMasterSecretCommand(), completion: handleCompletion)
     }
 
     func resetAccessTokens() {

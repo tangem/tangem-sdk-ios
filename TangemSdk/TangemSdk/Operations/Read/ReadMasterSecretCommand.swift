@@ -14,25 +14,25 @@ public struct ReadMasterSecretResponse: JSONStringConvertible {
 
 /// This command reads master secret from the Tangem Card.
 public final class ReadMasterSecretCommand: Command {
-    public var preflightReadMode: PreflightReadMode { .none }
+    public var preflightReadMode: PreflightReadMode { .readCardOnly }
 
-    private let derivationPath: DerivationPath?
-
-    public init(derivationPath: DerivationPath? = nil) {
-        self.derivationPath = derivationPath
-    }
+    public init() {}
 
     deinit {
         Log.debug("ReadMasterSecretCommand deinit")
     }
 
+    func performPreCheck(_ card: Card) -> TangemSdkError? {
+        guard card.firmwareVersion >= .v8 else {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        return nil
+    }
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.interactionMode, value: ReadMode.masterSecret)
-
-        if let derivationPath {
-            try tlvBuilder.append(.walletHDPath, value: derivationPath)
-        }
 
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }

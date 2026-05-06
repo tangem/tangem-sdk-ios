@@ -82,7 +82,7 @@ private extension WelcomeBackView {
                 URLQueryItem(name: "utm_source", value: "tangem-app"),
                 URLQueryItem(name: "utm_medium", value: "app"),
                 URLQueryItem(name: "utm_campaign", value: utmCampaignValue),
-                URLQueryItem(name: "utm_content", value: utmContentValue)
+                URLQueryItem(name: "utm_content", value: utmContentValue),
             ]
 
             var blogURLComponents = URLComponents(string: "https://tangem.com/embed/blog/post/preactivated-wallets")

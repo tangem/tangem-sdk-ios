@@ -64,6 +64,7 @@ struct EnterUserCodeView: View {
                 SdkButton(
                     title: "reset_codes_btn_forgot_your_code".localized,
                     colors: style.colors.secondaryButtonColors,
+                    isDisabled: isLoading,
                     action: onForgot
                 )
             }
@@ -71,6 +72,8 @@ struct EnterUserCodeView: View {
             SdkButton(
                 title: "common_continue".localized,
                 colors: style.colors.buttonColors,
+                isDisabled: isContinueDisabled,
+                isLoading: isLoading,
                 action: onDone
             )
         }

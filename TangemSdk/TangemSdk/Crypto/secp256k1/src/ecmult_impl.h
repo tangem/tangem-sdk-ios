@@ -332,11 +332,11 @@ static void secp256k1_ecmult_strauss_wnaf(const struct secp256k1_strauss_state *
             }
         }
         if (i < bits_ng_1 && (n = wnaf_ng_1[i])) {
-            secp256k1_ecmult_table_get_ge_storage(&tmpa, secp256k1_pre_g, n, WINDOW_G);
+            secp256k1_ecmult_table_get_ge_storage(&tmpa, tangem_secp256k1_pre_g, n, WINDOW_G);
             secp256k1_gej_add_zinv_var(r, r, &tmpa, &Z);
         }
         if (i < bits_ng_128 && (n = wnaf_ng_128[i])) {
-            secp256k1_ecmult_table_get_ge_storage(&tmpa, secp256k1_pre_g_128, n, WINDOW_G);
+            secp256k1_ecmult_table_get_ge_storage(&tmpa, tangem_secp256k1_pre_g_128, n, WINDOW_G);
             secp256k1_gej_add_zinv_var(r, r, &tmpa, &Z);
         }
     }

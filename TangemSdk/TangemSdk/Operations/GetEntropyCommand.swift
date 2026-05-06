@@ -21,7 +21,11 @@ public class GetEntropyCommand: Command {
     public var preflightReadMode: PreflightReadMode { .readCardOnly }
     var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
 
-    public init() {}
+    private let mode: GetEntropyMode
+
+    public init(mode: GetEntropyMode = .random) {
+        self.mode = mode
+    }
 
     deinit {
         Log.debug("GetEntropyCommand deinit")
@@ -30,6 +34,23 @@ public class GetEntropyCommand: Command {
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard card.firmwareVersion >= .keysImportAvailable else {
             return TangemSdkError.notSupportedFirmwareVersion
+        }
+
+        switch mode {
+        case .random:
+            break
+        case .deterministic(let derivationPath):
+            if card.firmwareVersion < .v8 {
+                return TangemSdkError.notSupportedFirmwareVersion
+            }
+
+            if card.settings.isBackupRequired, card.backupStatus?.isActive == false {
+                return TangemSdkError.noActiveBackup
+            }
+
+            if derivationPath.nodes.contains(where: { !$0.isHardened }) {
+                return TangemSdkError.nonHardenedDerivationNotSupported
+            }
         }
 
         return nil
@@ -47,7 +68,12 @@ public class GetEntropyCommand: Command {
         }
 
         if card.firmwareVersion < .v8 {
-            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+            try tlvBuilder.append(.cardId, value: card.cardId)
+        } else {
+            try tlvBuilder.append(.interactionMode, value: mode)
+            if case .deterministic(let derivationPath) = mode {
+                try tlvBuilder.append(.walletHDPath, value: derivationPath)
+            }
         }
 
         return CommandApdu(.getEntropy, tlv: tlvBuilder.serialize())
@@ -59,5 +85,19 @@ public class GetEntropyCommand: Command {
             cardId: try decoder.decode(.cardId),
             data: try decoder.decode(.data)
         )
+    }
+}
+
+// MARK: - GetEntropyMode
+
+public enum GetEntropyMode: InteractionMode {
+    case random
+    case deterministic(derivationPath: DerivationPath)
+
+    public var rawValue: Byte {
+        switch self {
+        case .random: return 0x00
+        case .deterministic: return 0x01
+        }
     }
 }

@@ -34,9 +34,9 @@ struct SdkButton: View {
                 .background(backgroundColor)
                 .overlay(loadingOverlay)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .allowsHitTesting(!isDisabled && !isLoading)
                 .animation(.easeInOut(duration: 0.2), value: isDisabled)
         }
+        .disabled(isDisabled || isLoading)
         .buttonStyle(BorderlessButtonStyle())
     }
 

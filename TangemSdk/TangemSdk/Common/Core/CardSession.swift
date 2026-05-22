@@ -910,22 +910,26 @@ private extension CardSession {
         if !shouldAskForAccessCode {
             return false
         }
-
-        // Authorization is mandatory by command
-        if cardSessionEncryption == .secureChannelWithPIN, environment.card?.isAccessCodeSet == true {
-            return true
+        
+        // Access code is set
+        if let card = environment.card, card.isAccessCodeSet {
+            
+            // Authorization is mandatory by command
+            if cardSessionEncryption == .secureChannelWithPIN {
+                return true
+            }
+            
+            // Authorization is mandatory by user
+            if card.userSettings.isPINRequired {
+                return true
+            }
+            
+            // No access tokens, pin must be entered
+            if environment.cardAccessTokens == nil {
+                return true
+            }
         }
-
-        // Authorization is mandatory by user
-        if let card = environment.card, card.userSettings.isPINRequired {
-            return true
-        }
-
-        // Access code is set, no access tokens, pin must be entered
-        if let card = environment.card, card.isAccessCodeSet, environment.cardAccessTokens == nil {
-            return true
-        }
-
+        
         return false
     }
 

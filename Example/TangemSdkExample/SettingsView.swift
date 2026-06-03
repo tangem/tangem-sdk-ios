@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage("handleErrors") private var handleErrors: Bool = true
     @AppStorage("displayLogs") private var displayLogs: Bool = false
     @AppStorage("useDevApi") private var useDevApi: Bool = false
+    @AppStorage("extendedBackup") private var extendedBackup: Bool = false
     @AppStorage("isDevelopmentMode") private var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") private var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
 
@@ -21,6 +22,8 @@ struct SettingsView: View {
             Toggle("Error handling", isOn: $handleErrors)
 
             Toggle("Display logs", isOn: $displayLogs)
+
+            Toggle("Extended backup", isOn: $extendedBackup)
 
             Toggle("Dev api", isOn: $useDevApi)
 

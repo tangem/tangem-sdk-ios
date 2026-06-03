@@ -41,7 +41,7 @@ struct BackupView: View {
 
     private var backupCardsSection: some View {
         VStack(spacing: 8) {
-            Text("Maximum backup cards count is: \(BackupService.maxBackupCardsCount)")
+            Text("Maximum backup cards count is: \(viewModel.maxBackupCardsCount)")
             Text(viewModel.backupCardsCountTitle)
 
             actionButton("Add backup card", action: viewModel.addBackupCard)

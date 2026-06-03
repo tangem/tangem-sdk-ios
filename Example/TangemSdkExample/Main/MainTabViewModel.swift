@@ -42,6 +42,7 @@ class MainTabViewModel: ObservableObject {
     @AppStorage("handleErrors") var handleErrors: Bool = true
     @AppStorage("displayLogs") var displayLogs: Bool = false
     @AppStorage("useDevApi") var useDevApi: Bool = false
+    @AppStorage("extendedBackup") private var extendedBackup: Bool = false
     @AppStorage("isDevelopmentMode") var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
 
@@ -62,6 +63,7 @@ class MainTabViewModel: ObservableObject {
         }
 
         Config.useDevApi = useDevApi
+        Config.extendedBackup = extendedBackup
         Config.isDevelopmentMode = isDevelopmentMode
 
         config.logConfig = .custom(

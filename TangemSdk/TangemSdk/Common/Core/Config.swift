@@ -76,6 +76,9 @@ public struct Config {
     /// Handle health tag toggle
     public static var handleHealth: Bool = false
 
+    /// Enables 4-card backup (1 primary + 3 backup cards) for COS v8+.
+    public static var extendedBackup: Bool = false
+
     public mutating func setupForProduct(_ product: ProductType) {
         switch product {
         case .card:

@@ -10,12 +10,13 @@ import Foundation
 import Combine
 
 public class BackupService {
-    public static let maxBackupCardsCount = 2
+    private static let defaultMaxBackupCardsCount = 2
+    private static let v8MaxBackupCardsCount = 3
 
     public private(set) var currentState: State = .preparing
 
     public var canAddBackupCards: Bool {
-        addedBackupCardsCount < BackupService.maxBackupCardsCount
+        addedBackupCardsCount < maxBackupCardsCount
             && repo.data.primaryCard?.linkingKey != nil
     }
 
@@ -26,6 +27,19 @@ public class BackupService {
         default:
             return false
         }
+    }
+
+    public var maxBackupCardsCount: Int {
+        guard Config.extendedBackup else {
+            return Self.defaultMaxBackupCardsCount
+        }
+
+        if let firmwareVersion = repo.data.primaryCard?.firmwareVersion,
+           firmwareVersion >= .v8 {
+            return Self.v8MaxBackupCardsCount
+        }
+
+        return Self.defaultMaxBackupCardsCount
     }
 
     public var config: Config {
@@ -74,7 +88,7 @@ public class BackupService {
         }
 
         if handleErrors {
-            guard addedBackupCardsCount < BackupService.maxBackupCardsCount else {
+            guard addedBackupCardsCount < maxBackupCardsCount else {
                 completion(.failure(.tooMuchBackupCards))
                 return
             }
@@ -329,7 +343,7 @@ public class BackupService {
                     throw TangemSdkError.emptyBackupCards
                 }
 
-                guard repo.data.backupCards.count < 3 else {
+                guard repo.data.backupCards.count <= maxBackupCardsCount else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }
@@ -409,7 +423,7 @@ public class BackupService {
             }
 
             if handleErrors {
-                guard repo.data.backupCards.count < 3 else {
+                guard repo.data.backupCards.count <= maxBackupCardsCount else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }

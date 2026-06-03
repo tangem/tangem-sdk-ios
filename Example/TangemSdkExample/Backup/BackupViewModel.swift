@@ -24,6 +24,8 @@ final class BackupViewModel: ObservableObject {
 
     var isSetUp: Bool { backupService != nil }
 
+    var maxBackupCardsCount: Int { backupService?.maxBackupCardsCount ?? 0 }
+
     private var backupService: BackupService?
 
     init() {}

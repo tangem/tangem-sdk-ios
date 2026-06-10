@@ -20,6 +20,7 @@ public struct CardConfigV8: Decodable {
     let startNumber: Int64
     let count: Int
     let numberFormat: String
+    let useLuhn: Bool?
     let pin: String
     let securityDelay: Int
     let curveID: EllipticCurve?
@@ -33,7 +34,7 @@ public struct CardConfigV8: Decodable {
     let disableFiles: Bool?
     let allowHDWallets: Bool?
     let allowBackup: Bool?
-    let allowKeysImport: Bool?
+    let allowExternalWallets: Bool?
     let requireBackup: Bool?
     let createWallet: Int
     let cardData: CardConfigData
@@ -48,9 +49,10 @@ public struct CardConfigV8: Decodable {
         case startNumber
         case count
         case numberFormat
+        case useLuhn
         case pin = "PIN"
         case curveID
-        case signingMethod = "SigningMethod"
+        case signingMethod
         case allowSetPIN = "allowSwapPIN"
         case useActivation
         case useNDEF
@@ -60,7 +62,7 @@ public struct CardConfigV8: Decodable {
         case disableFiles
         case allowHDWallets
         case allowBackup
-        case allowKeysImport
+        case allowExternalWallets
         case createWallet
         case cardData
         case ndefRecords = "NDEF"

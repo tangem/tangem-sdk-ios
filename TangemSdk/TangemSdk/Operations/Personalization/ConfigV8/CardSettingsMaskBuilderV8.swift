@@ -46,7 +46,7 @@ enum CardSettingsMaskBuilderV8 {
             builder.add(.allowBackup)
         }
 
-        if config.allowKeysImport ?? false {
+        if config.allowExternalWallets ?? false {
             builder.add(.allowKeysImport)
         }
 

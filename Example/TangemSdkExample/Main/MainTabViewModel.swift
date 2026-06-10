@@ -46,7 +46,12 @@ class MainTabViewModel: ObservableObject {
     @AppStorage("isDevelopmentMode") var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
 
-    private lazy var _tangemSdk: TangemSdk = .init()
+    private lazy var _tangemSdk: TangemSdk = {
+        let sdk = TangemSdk()
+        sdk.initializeJSONRPC(networkService: .init(session: .shared, additionalHeaders: [:]))
+        return sdk
+    }()
+
     private lazy var logger: DebugLogger = .init()
 
     var configuredSdk: TangemSdk {

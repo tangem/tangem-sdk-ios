@@ -132,6 +132,7 @@ public final class AttestWalletKeyTask: Command {
                     let isCardSignatureValid = try self.verifyCardSignature(
                         response: checkWalletResponse,
                         cardPublicKey: card.cardPublicKey,
+                        firmwareVersion: card.firmwareVersion,
                         walletPublicKey: walletPublicKey
                     )
                     if isWalletSignatureValid, isCardSignatureValid {
@@ -225,13 +226,27 @@ public final class AttestWalletKeyTask: Command {
         )
     }
 
-    private func verifyCardSignature(
+    func verifyCardSignature(
         response: AttestWalletKeyResponse,
         cardPublicKey: Data,
+        firmwareVersion: FirmwareVersion,
         walletPublicKey: Data
     ) throws -> Bool {
         guard let cardSignature = response.cardSignature else {
-            return true
+            // The card signature is requested only on COS: 2.01+ when a confirmation mode other than `none` is used
+            // (see the matching gate in `serialize`). When it was requested but the card returned no `CardSignature`
+            // TLV, fail closed instead of accepting the response — otherwise an emulated card or a tampered response
+            // could pass wallet-ownership verification by simply omitting the signature.
+            let isCardSignatureExpected = confirmationMode != .none
+                && firmwareVersion >= .walletOwnershipConfirmationAvailable
+            return !isCardSignatureExpected
+        }
+
+        // If dynamic confirmation was requested, the response must contain `publicKeySalt`. If it is absent,
+        // the signature covers a static message without the challenge — a previously recorded static
+        // signature would pass verification (downgrade to static). Fail closed.
+        if confirmationMode == .dynamic, response.publicKeySalt == nil {
+            return false
         }
 
         var message = walletPublicKey

@@ -19,6 +19,7 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
     /// Challenge, used to check wallet
     public let challenge: Data
     /// Confirmation signature of the wallet ownership.  COS: 2.01+.  And a wallet's status for COS: 6.16+.
+    /// The signed public key is the attested one: the derived key, if a derivation path is passed.
     /// - `ConfirmationMode.none` :  No signature will be returned.
     /// - `ConfirmationMode.static` :  Wallet's public key and wallet's status (COS 6.16+) signed with the card's private key.
     /// - `ConfirmationMode.dynamic`: Wallet's public key,  wallet's status (COS 6.16+), `challenge`, and `publicKeySalt`, signed with the card's private key.
@@ -34,23 +35,23 @@ public struct AttestWalletKeyResponse: JSONStringConvertible {
 /// This task proves that the wallet private key from the card corresponds to the wallet public key.  Standard challenge/response scheme is used
 public final class AttestWalletKeyTask: Command {
     private var challenge: Data!
-    private let walletPublicKey: Data
+    private let seedWalletPublicKey: Data
     private let derivationPath: DerivationPath?
     private let confirmationMode: ConfirmationMode
 
     /// Default initializer
     /// - Parameters:
-    ///   - publicKey: Public key of the wallet to check
+    ///   - walletPublicKey: Seed public key of the wallet to check
     ///   - derivationPath: DerivationPath of the wallet. Optional. COS v. 4.28 and higher,
     ///   - challenge: Optional challenge. If nil, it will be created automatically and returned in command response
-    ///   - confirmationMode: Additional confirmation of the wallet ownership.  The card will return the `cardSignature` (a wallet's public key signed by the card's private key)  in response.  COS: 2.01+.
+    ///   - confirmationMode: Additional confirmation of the wallet ownership.  The card will return the `cardSignature` (the attested wallet's public key — the derived one, if a derivation path is passed — signed by the card's private key)  in response.  COS: 2.01+.
     public init(
         walletPublicKey: Data,
         derivationPath: DerivationPath? = nil,
         challenge: Data? = nil,
         confirmationMode: ConfirmationMode = .dynamic
     ) {
-        self.walletPublicKey = walletPublicKey
+        seedWalletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
         self.challenge = challenge
         self.confirmationMode = confirmationMode
@@ -65,7 +66,7 @@ public final class AttestWalletKeyTask: Command {
             return error
         }
 
-        guard let wallet = card.wallets[walletPublicKey] else {
+        guard let wallet = card.wallets[seedWalletPublicKey] else {
             return .walletNotFound
         }
 
@@ -92,11 +93,12 @@ public final class AttestWalletKeyTask: Command {
                 challenge = try CryptoUtils.generateRandomBytes(count: 16)
             } catch {
                 completion(.failure(error.toTangemSdkError()))
+                return
             }
         }
 
         if let derivationPath {
-            let derivationCommand = DeriveWalletPublicKeyTask(walletPublicKey: walletPublicKey, derivationPath: derivationPath)
+            let derivationCommand = DeriveWalletPublicKeyTask(walletPublicKey: seedWalletPublicKey, derivationPath: derivationPath)
             derivationCommand.run(in: session) { result in
                 switch result {
                 case .success:
@@ -115,16 +117,22 @@ public final class AttestWalletKeyTask: Command {
             switch result {
             case .success(let checkWalletResponse):
                 guard let card = session.environment.card,
-                      let wallet = card.wallets[self.walletPublicKey] else {
+                      let wallet = card.wallets[self.seedWalletPublicKey] else {
                     completion(.failure(.cardError))
                     return
                 }
 
                 do {
-                    let isWalletSignatureValid = try self.verifyWalletSignature(response: checkWalletResponse, wallet: wallet)
+                    let walletPublicKey = try self.getPublicKey(from: wallet)
+                    let isWalletSignatureValid = try self.verifyWalletSignature(
+                        response: checkWalletResponse,
+                        wallet: wallet,
+                        walletPublicKey: walletPublicKey
+                    )
                     let isCardSignatureValid = try self.verifyCardSignature(
                         response: checkWalletResponse,
-                        cardPublicKey: card.cardPublicKey
+                        cardPublicKey: card.cardPublicKey,
+                        walletPublicKey: walletPublicKey
                     )
                     if isWalletSignatureValid, isCardSignatureValid {
                         completion(.success(checkWalletResponse))
@@ -145,7 +153,7 @@ public final class AttestWalletKeyTask: Command {
             throw TangemSdkError.missingPreflightRead
         }
 
-        guard let walletIndex = card.wallets[walletPublicKey]?.index else {
+        guard let walletIndex = card.wallets[seedWalletPublicKey]?.index else {
             throw TangemSdkError.walletNotFound
         }
 
@@ -195,36 +203,33 @@ public final class AttestWalletKeyTask: Command {
         )
     }
 
-    private func verifyWalletSignature(response: AttestWalletKeyResponse, wallet: Card.Wallet) throws -> Bool {
+    private func verifyWalletSignature(
+        response: AttestWalletKeyResponse,
+        wallet: Card.Wallet,
+        walletPublicKey: Data
+    ) throws -> Bool {
         // Impossible case because of precheck
         guard let currentWalletPublicKey = wallet.publicKey else {
             throw TangemSdkError.walletUnavailableBackupRequired
         }
 
-        guard currentWalletPublicKey == walletPublicKey else {
+        guard currentWalletPublicKey == seedWalletPublicKey else {
             return false
-        }
-
-        let publicKey: Data
-        if let derivationPath {
-            guard let derivedKey = wallet.derivedKeys[derivationPath] else {
-                throw TangemSdkError.walletNotFound
-            }
-
-            publicKey = derivedKey.publicKey
-        } else {
-            publicKey = currentWalletPublicKey
         }
 
         return try CryptoUtils.verify(
             curve: wallet.curve,
-            publicKey: publicKey,
+            publicKey: walletPublicKey,
             message: challenge + response.salt,
             signature: response.walletSignature
         )
     }
 
-    private func verifyCardSignature(response: AttestWalletKeyResponse, cardPublicKey: Data) throws -> Bool {
+    private func verifyCardSignature(
+        response: AttestWalletKeyResponse,
+        cardPublicKey: Data,
+        walletPublicKey: Data
+    ) throws -> Bool {
         guard let cardSignature = response.cardSignature else {
             return true
         }
@@ -246,6 +251,22 @@ public final class AttestWalletKeyTask: Command {
             message: message,
             signature: cardSignature
         )
+    }
+
+    private func getPublicKey(from wallet: Card.Wallet) throws -> Data {
+        if let derivationPath {
+            guard let derivedKey = wallet.derivedKeys[derivationPath] else {
+                throw TangemSdkError.walletNotFound
+            }
+
+            return derivedKey.publicKey
+        } else {
+            guard let seedPublicKey = wallet.publicKey else {
+                throw TangemSdkError.walletUnavailableBackupRequired
+            }
+
+            return seedPublicKey
+        }
     }
 }
 

@@ -258,6 +258,7 @@ extension Command {
                         case .accessDenied:
                             completion(.failure(TangemSdkError.accessDenied))
                         default:
+                            session.secureChannelSession?.incrementPacketCounter()
                             completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                         }
                     case .failure(let error):

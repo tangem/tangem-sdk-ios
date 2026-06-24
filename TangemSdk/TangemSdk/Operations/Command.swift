@@ -132,8 +132,6 @@ extension Command {
                     do {
                         session.releaseTag()
 
-                        session.secureChannelSession?.incrementPacketCounter()
-
                         // Should be incremented only for success responses. Do not increment on security delay responses.
                         if let packetCounter = session.secureChannelSession?.packetCounter {
                             Log.session("Current packet counter is \(packetCounter)")
@@ -204,6 +202,8 @@ extension Command {
                 session.send(apdu: apdu) { result in
                     switch result {
                     case .success(let responseApdu):
+                        session.secureChannelSession?.incrementPacketCounter()
+                        
                         switch responseApdu.statusWord {
                         case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                              .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:
@@ -258,7 +258,6 @@ extension Command {
                         case .accessDenied:
                             completion(.failure(TangemSdkError.accessDenied))
                         default:
-                            session.secureChannelSession?.incrementPacketCounter()
                             completion(.failure(responseApdu.statusWord.toTangemSdkError() ?? .unknownError))
                         }
                     case .failure(let error):

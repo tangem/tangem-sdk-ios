@@ -35,6 +35,11 @@ class SecureChannelSession {
     }
 
     func incrementPacketCounter() {
+        guard accessLevel != .publicAccess else {
+            // Do not increment the counter until the secure channel is established
+            return
+        }
+        
         packetCounter += 1
     }
 

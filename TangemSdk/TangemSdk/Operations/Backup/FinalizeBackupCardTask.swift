@@ -64,7 +64,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
                 case .failure(let error):
                     completion(.failure(error))
                 }
-                
+
                 withExtendedLifetime(linkCommand) {}
             }
         case .active: // Inconsistence case. The card status is ok, but sdk status is incompleted. We should check all wallets later on the app side.
@@ -91,14 +91,14 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
-            
+
             withExtendedLifetime(writeCommand) {}
         }
     }
 
     private func readWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         let readWalletsCommand = ReadWalletsListCommand()
-        
+
         readWalletsCommand.run(in: session) { result in
             switch result {
             case .success:
@@ -106,21 +106,21 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             case .failure(let error):
                 completion(.failure(error))
             }
-            
+
             withExtendedLifetime(readWalletsCommand) {}
         }
     }
-    
+
     private func deriveKeysIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
+
         guard performDerivations else {
             completion(.success(card))
             return
-        } 
+        }
 
         if card.assertWalletsAccess() != nil {
             completion(.success(card))
@@ -152,7 +152,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
                     completion(.failure(.missingPreflightRead))
                     return
                 }
-                
+
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))
@@ -161,5 +161,4 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             withExtendedLifetime(derivationTask) {}
         }
     }
-
 }

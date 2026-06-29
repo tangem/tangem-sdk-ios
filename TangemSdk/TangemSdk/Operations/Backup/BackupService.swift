@@ -434,10 +434,9 @@ public class BackupService {
                 throw TangemSdkError.noBackupDataForCard
             }
 
-            
             // For Wallet 3, the default derivations must be performed at the final step of the backup process.
             let performDerivations: Bool = backupCard.firmwareVersion >= .v8 && cardIndex == repo.data.backupCards.count - 1
-            
+
             let command = FinalizeBackupCardTask(
                 primaryCard: primaryCard,
                 backupCards: repo.data.backupCards,

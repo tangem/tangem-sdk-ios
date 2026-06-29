@@ -56,9 +56,9 @@ struct CommonCardArtworksProvider: CardArtworksProvider {
               let imageSmallURL = response.imageSmallUrl,
               let imageSmallData,
               try verifier.verify(
-                imageData: imageSmallData,
-                imagePrefix: SignaturePrefixBuilder.smallImage.prefix(for: imageSmallURL),
-                signature: imageSmallSignature
+                  imageData: imageSmallData,
+                  imagePrefix: SignaturePrefixBuilder.smallImage.prefix(for: imageSmallURL),
+                  signature: imageSmallSignature
               ) else {
             return Artworks(large: imageLargeData, small: nil)
         }

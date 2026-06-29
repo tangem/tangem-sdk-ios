@@ -7,10 +7,10 @@
 
 import Foundation
 
-fileprivate enum Base58 {
+private enum Base58 {
     private static let base58Alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
-    // Encode
+    /// Encode
     static func base58FromBytes(_ bytes: [UInt8]) -> String {
         var bytes = bytes
         var zerosCount = 0
@@ -30,7 +30,7 @@ fileprivate enum Base58 {
             var carry = Int(b)
             var i = 0
 
-            for j in 0...base58.count-1 where carry != 0 || i < length {
+            for j in 0 ... base58.count - 1 where carry != 0 || i < length {
                 carry += 256 * Int(base58[base58.count - j - 1])
                 base58[base58.count - j - 1] = UInt8(carry % 58)
                 carry /= 58
@@ -63,7 +63,7 @@ fileprivate enum Base58 {
         return str
     }
 
-    // Decode
+    /// Decode
     static func bytesFromBase58(_ base58: String) -> [UInt8] {
         // remove leading and trailing whitespaces
         let string = base58.trimmingCharacters(in: CharacterSet.whitespaces)
@@ -90,7 +90,7 @@ fileprivate enum Base58 {
 
             var carry = base58Index.utf16Offset(in: base58Alphabet)
             var i = 0
-            for j in 0...base58.count where carry != 0 || i < length {
+            for j in 0 ... base58.count where carry != 0 || i < length {
                 carry += 58 * Int(base58[base58.count - j - 1])
                 base58[base58.count - j - 1] = UInt8(carry % 256)
                 carry /= 256
@@ -132,15 +132,15 @@ public extension Data {
 
 public extension Array where Element == UInt8 {
     var base58EncodedString: String {
-        guard !self.isEmpty else { return "" }
+        guard !isEmpty else { return "" }
 
         return Base58.base58FromBytes(self)
     }
 
     var base58CheckEncodedString: String {
-        guard !self.isEmpty else { return "" }
+        guard !isEmpty else { return "" }
 
-        let checksum = self.getDoubleSHA256().prefix(4)
+        let checksum = getDoubleSHA256().prefix(4)
         let bytes = self + checksum
         return Base58.base58FromBytes(bytes)
     }

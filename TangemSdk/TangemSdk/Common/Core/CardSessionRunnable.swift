@@ -12,7 +12,7 @@ import Foundation
 public protocol CardSessionRunnable {
     /// Mode for preflight read. Change this property only if you understand what to do
     var preflightReadMode: PreflightReadMode { get }
-    
+
     /// Allow SDK to fetch access code from the local encrypted repository when running the command
     var shouldAskForAccessCode: Bool { get }
 
@@ -21,13 +21,13 @@ public protocol CardSessionRunnable {
 
     /// Simple interface for responses received after sending commands to Tangem cards.
     associatedtype Response
-    
+
     /// This method will be called before nfc session starts.
     /// - Parameters:
     ///   - session:You can use view delegate methods at this moment, but not commands execution
     ///   - completion: Call the completion handler to complete the task.
     func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>)
-    
+
     /// The starting point for custom business logic. Adopt this protocol and use `TangemSdk.startSession` to run
     /// - Parameters:
     ///   - session: You can run commands in this session
@@ -35,20 +35,20 @@ public protocol CardSessionRunnable {
     func run(in session: CardSession, completion: @escaping CompletionResult<Response>)
 }
 
-extension CardSessionRunnable {
-    public var preflightReadMode: PreflightReadMode { .fullCardRead }
-    
-    public var shouldAskForAccessCode: Bool { true }
+public extension CardSessionRunnable {
+    var preflightReadMode: PreflightReadMode { .fullCardRead }
 
-    public var encryptionMode: EncryptionMode { .none }
+    var shouldAskForAccessCode: Bool { true }
 
-    public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
+    var encryptionMode: EncryptionMode { .none }
+
+    func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
         completion(.success(()))
     }
 }
 
-extension CardSessionRunnable where Response: JSONStringConvertible {
-    public func eraseToAnyRunnable() -> AnyJSONRPCRunnable {
+public extension CardSessionRunnable where Response: JSONStringConvertible {
+    func eraseToAnyRunnable() -> AnyJSONRPCRunnable {
         AnyJSONRPCRunnable(self)
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 public class DeriveWalletPublicKeyTask: CardSessionRunnable {
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath
-    
+
     /// Derive wallet  public key according to BIP32 (Private parent key → public child key).
     /// Warning: Only `secp256k1` and `ed25519` (BIP32-Ed25519 scheme) curves supported
     /// - Parameters:
@@ -21,18 +21,22 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
         self.walletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
     }
-    
+
     deinit {
         Log.debug("DeriveWalletPublicKeyTask deinit")
     }
-    
-       
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<ExtendedPublicKey>) {
+        if let error = session.environment.card?.assertWalletsAccess() {
+            completion(.failure(error))
+            return
+        }
+
         guard let wallet = session.environment.card?.wallets[walletPublicKey] else {
             completion(.failure(TangemSdkError.walletNotFound))
             return
         }
-        
+
         guard wallet.curve.supportsDerivation else {
             completion(.failure(TangemSdkError.unsupportedCurve))
             return
@@ -43,7 +47,7 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
             completion(.failure(TangemSdkError.nonHardenedDerivationNotSupported))
             return
         }
-        
+
         let readWallet = ReadWalletCommand(walletIndex: wallet.index, derivationPath: derivationPath)
         readWallet.run(in: session) { result in
             switch result {
@@ -52,8 +56,13 @@ public class DeriveWalletPublicKeyTask: CardSessionRunnable {
                     completion(.failure(.cardError))
                     return
                 }
-                
-                let childKey = ExtendedPublicKey(publicKey: response.wallet.publicKey, chainCode: chainCode)
+
+                guard let publicKey = response.wallet.publicKey else {
+                    completion(.failure(.walletUnavailableBackupRequired))
+                    return
+                }
+
+                let childKey = ExtendedPublicKey(publicKey: publicKey, chainCode: chainCode)
                 session.environment.card?.wallets[self.walletPublicKey]?.derivedKeys[self.derivationPath] = childKey
                 completion(.success(childKey))
             case .failure(let error):

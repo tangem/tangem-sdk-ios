@@ -26,10 +26,10 @@ public class NFCUtils {
         return !correctRestartPollingDevices.contains(identifier)
     }
 
-    // iPhone 7 family
+    /// iPhone 7 family
     private static let poorNFCQualityDevices = ["iPhone9,1", "iPhone9,3", "iPhone9,2", "iPhone9,4"]
 
-    // iPhone 14 Pro/Pro Max and iPhone 15 Pro have issues with restarting polling after 20 seconds from the first connection on iOS 17+. We assume that all new devices have this behavior. We have no confirmed cases for iPhone 14/14 Plus ("iPhone14,7", "iPhone14,8") at this time.
+    /// iPhone 14 Pro/Pro Max and iPhone 15 Pro have issues with restarting polling after 20 seconds from the first connection on iOS 17+. We assume that all new devices have this behavior. We have no confirmed cases for iPhone 14/14 Plus ("iPhone14,7", "iPhone14,8") at this time.
     private static let correctRestartPollingDevices = [
         "iPhone9,1", // iPhone 7 family
         "iPhone9,2",
@@ -72,5 +72,4 @@ public class NFCUtils {
         }
         return identifier
     }()
-
 }

@@ -23,7 +23,7 @@ struct OnlineAttestationVerifier {
         }
 
         return try verifyManufacturerSignature(signature: manufacturerSignature)
-         && verifyIssuerSignature(signature: response.issuerSignature)
+            && verifyIssuerSignature(signature: response.issuerSignature)
     }
 
     private func verifyManufacturerSignature(signature: Data) throws -> Bool {

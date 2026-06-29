@@ -22,7 +22,7 @@ public final class SignHashCommand: CardSessionRunnable {
     private let walletPublicKey: Data
     private let hash: Data
     private let derivationPath: DerivationPath?
-    
+
     /// Default initializer
     /// - Parameters:
     ///   - hash: Transaction hash for sign by card.
@@ -33,11 +33,11 @@ public final class SignHashCommand: CardSessionRunnable {
         self.walletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
     }
-    
+
     deinit {
         Log.debug("SignHashCommand deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SignHashResponse>) {
         let signCommand = SignCommand(hashes: [hash], walletPublicKey: walletPublicKey, derivationPath: derivationPath)
         signCommand.run(in: session) { result in

@@ -10,7 +10,6 @@ import Foundation
 import SwiftUI
 
 extension Binding {
-    
     /// When the `Binding`'s `wrappedValue` changes, the given closure is executed.
     /// - Parameter closure: Chunk of code to execute whenever the value changes.
     /// - Returns: New `Binding`.

@@ -9,8 +9,7 @@
 import Foundation
 
 /// Use this helper when creating signatures for files that signed by issuer
-public struct FileHashHelper {
-    
+public enum FileHashHelper {
     /// Creating hashes for `FileDataProtectedBySignature`
     /// - Parameters:
     ///   - cardId: CID, Unique Tangem card ID number.
@@ -20,11 +19,11 @@ public struct FileHashHelper {
     /// - Returns: `FileHashData`
     public static func prepareHash(for cardId: String, fileData: Data, fileCounter: Int, fileName: String? = nil, privateKey: Data? = nil) throws -> FileHashData {
         var fileData: Data = fileData
-        
+
         if let fileName = fileName {
             fileData = try NamedFile(name: fileName, payload: fileData).serialize()
         }
-       
+
         let startHash = Data(hexString: cardId) + fileCounter.bytes4 + fileData.count.bytes2
         let finalHash = Data(hexString: cardId) + fileData + fileCounter.bytes4
         var startSignature: Data?
@@ -33,10 +32,12 @@ public struct FileHashHelper {
             startSignature = try startHash.sign(privateKey: privateKey)
             finalSignature = try finalHash.sign(privateKey: privateKey)
         }
-        
-        return FileHashData(startingHash: startHash,
-                            startingSignature: startSignature,
-                            finalizingHash: finalHash,
-                            finalizingSignature: finalSignature)
+
+        return FileHashData(
+            startingHash: startHash,
+            startingSignature: startSignature,
+            finalizingHash: finalHash,
+            finalizingSignature: finalSignature
+        )
     }
 }

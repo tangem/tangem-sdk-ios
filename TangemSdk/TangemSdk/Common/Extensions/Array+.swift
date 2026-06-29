@@ -14,7 +14,7 @@ extension Array {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
     }
-    
+
     func reversedChunked(into size: Int) -> [[Element]] {
         return stride(from: count, to: 0, by: -size).map {
             Array(self[Swift.max($0 - size, 0) ..< $0])

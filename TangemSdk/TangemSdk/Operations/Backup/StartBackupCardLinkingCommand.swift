@@ -9,7 +9,7 @@
 import Foundation
 
 final class StartBackupCardLinkingCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
 
     private let primaryCardLinkingKey: Data
 
@@ -42,10 +42,20 @@ final class StartBackupCardLinkingCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .append(.cardId, value: environment.card?.cardId)
             .append(.primaryCardLinkingKey, value: primaryCardLinkingKey)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
 
         return CommandApdu(.startBackupCardLinking, tlv: tlvBuilder.serialize())
     }

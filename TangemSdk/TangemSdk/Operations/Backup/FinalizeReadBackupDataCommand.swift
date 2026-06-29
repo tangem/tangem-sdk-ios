@@ -9,7 +9,7 @@
 import Foundation
 
 final class FinalizeReadBackupDataCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
 
     private let accessCode: Data
 
@@ -42,9 +42,17 @@ final class FinalizeReadBackupDataCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .append(.pin, value: accessCode)
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
+        let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.pin, value: accessCode)
+        }
 
         return CommandApdu(.finalizeReadBackupData, tlv: tlvBuilder.serialize())
     }
@@ -54,4 +62,3 @@ final class FinalizeReadBackupDataCommand: Command {
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
 }
-

@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Response from the Tangem card after `LinkBackupCardsCommand`.
+/// Response from the Tangem card after `LinkBackupCardsCommand`.
 struct LinkBackupCardsResponse {
     /// Unique Tangem card ID number
     let cardId: String
@@ -16,8 +16,8 @@ struct LinkBackupCardsResponse {
 }
 
 final class LinkBackupCardsCommand: Command {
-    var requiresPasscode: Bool { return true }
-    
+    var requiresPasscode: Bool { true }
+
     private let backupCards: [BackupCard]
     private let accessCode: Data
     private let passcode: Data
@@ -27,27 +27,27 @@ final class LinkBackupCardsCommand: Command {
         self.accessCode = accessCode
         self.passcode = passcode
     }
-    
+
     deinit {
         Log.debug("LinkBackupCardsCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .backupFailedFirmware
         }
-        
+
         if !card.settings.isBackupAllowed {
             return .backupNotAllowed
         }
-        
+
         if card.wallets.isEmpty {
             return .backupFailedEmptyWallets
         }
-        
+
         return nil
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<LinkBackupCardsResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -56,13 +56,13 @@ final class LinkBackupCardsCommand: Command {
                 session.environment.card?.settings.isSettingAccessCodeAllowed = true
                 session.environment.card?.settings.isSettingPasscodeAllowed = true
                 session.environment.card?.settings.isRemovingUserCodesAllowed = false
-                
+
                 session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
                 session.environment.passcode = UserCode(.passcode, value: self.passcode)
-                
-                let isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
-                let isPasscodeSet = session.environment.isUserCodeSet(.passcode)
-                
+
+                let isAccessCodeSet = session.environment.accessCode.isNonDefault
+                let isPasscodeSet = session.environment.passcode.isNonDefault
+
                 session.environment.card?.isAccessCodeSet = isAccessCodeSet
                 session.environment.card?.isPasscodeSet = isPasscodeSet
                 completion(.success(response))
@@ -79,16 +79,29 @@ final class LinkBackupCardsCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.backupCount, value: backupCards.count)
             .append(.newPin, value: accessCode)
-            .append(.newPin2, value: passcode)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+            try tlvBuilder.append(.newPin2, value: passcode)
+        }
+
         for (index, card) in backupCards.enumerated() {
             guard let certificate = card.certificate else {
                 throw TangemSdkError.certificateSignatureRequired
@@ -99,17 +112,19 @@ final class LinkBackupCardsCommand: Command {
                 .append(.backupCardLinkingKey, value: card.linkingKey)
                 .append(.certificate, value: certificate)
                 .append(.cardSignature, value: card.attestSignature)
-            
+
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())
         }
-        
+
         return CommandApdu(.linkBackupCards, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> LinkBackupCardsResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
-        return LinkBackupCardsResponse(cardId: try decoder.decode(.cardId),
-                                       attestSignature: try decoder.decode(.backupAttestSignature))
+        return LinkBackupCardsResponse(
+            cardId: try decoder.decode(.cardId),
+            attestSignature: try decoder.decode(.backupAttestSignature)
+        )
     }
 }

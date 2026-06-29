@@ -95,7 +95,7 @@ enum CardSettingsMaskBuilder {
             builder.add(.disableIssuerData)
         }
 
-        if config.disableUserData ?? false  {
+        if config.disableUserData ?? false {
             builder.add(.disableUserData)
         }
 

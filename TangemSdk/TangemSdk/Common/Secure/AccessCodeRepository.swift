@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import LocalAuthentication
 
 public class AccessCodeRepository {
     var isEmpty: Bool {
@@ -32,42 +33,50 @@ public class AccessCodeRepository {
         Log.debug("AccessCodeRepository deinit")
     }
 
-    public func save(_ accessCode: Data, for cardIds: [String]) throws {
+    public func save(_ accessCode: Data, for cardIds: [String], firmwareVersion: FirmwareVersion) throws {
+        guard firmwareVersion < .v8 else {
+            throw TangemSdkError.notSupportedFirmwareVersion
+        }
+
         guard BiometricsUtil.isAvailable else {
             throw TangemSdkError.biometricsUnavailable
         }
 
         guard updateCodesIfNeeded(with: accessCode, for: cardIds) else {
             Log.debug("Skip saving")
-            return //Nothing changed. Return
+            return // Nothing changed. Return
         }
 
         var savedCardIds = try getCards()
 
         for cardId in cardIds {
-            let storageKey = SecureStorageKey.accessCode(for: cardId)
-            let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
+            do {
+                let storageKey = SecureStorageKey.accessCode(for: cardId)
+                let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
 
-            biometricsSecureEnclave.deleteKey(tag: encryptionKey)
-            try? biometricsStorage.delete(storageKey)
+                biometricsSecureEnclave.deleteKey(tag: encryptionKey)
+                try? biometricsStorage.delete(storageKey)
 
-            let encryptedAccessCode = try biometricsSecureEnclave.encryptData(
-                accessCode,
-                keyTag: encryptionKey,
-                context: nil
-            )
+                let encryptedAccessCode = try biometricsSecureEnclave.encryptData(
+                    accessCode,
+                    keyTag: encryptionKey,
+                    context: nil
+                )
 
-            try biometricsStorage.store(encryptedAccessCode, forKey: storageKey)
+                try biometricsStorage.store(encryptedAccessCode, forKey: storageKey)
 
-            savedCardIds.insert(cardId)
+                savedCardIds.insert(cardId)
+            } catch {
+                Log.debug("Access codes repository error for cardId: \(cardId)")
+            }
         }
 
         try saveCards(cardIds: savedCardIds)
         Log.debug("The saving was completed successfully")
     }
 
-    public func save(_ accessCode: Data, for cardId: String) throws {
-        try save(accessCode, for: [cardId])
+    public func save(_ accessCode: Data, for cardId: String, firmwareVersion: FirmwareVersion) throws {
+        try save(accessCode, for: [cardId], firmwareVersion: firmwareVersion)
     }
 
     public func deleteAccessCode(for cardIds: [String]) throws {
@@ -113,59 +122,40 @@ public class AccessCodeRepository {
         }
     }
 
-    func unlock(localizedReason: String, completion: @escaping (Result<Void, TangemSdkError>) -> Void) {
-        guard BiometricsUtil.isAvailable else {
-            completion(.failure(.biometricsUnavailable))
-            return
-        }
+    func unlock(context: LAContext) throws {
+        accessCodes = [:]
+        Log.debug("Start unlocking access codes with provided context")
 
-        self.accessCodes = [:]
-        Log.debug("Start unlocking with biometrics")
+        var fetchedAccessCodes: [String: Data] = [:]
 
-        BiometricsUtil.requestAccess(localizedReason: localizedReason) { [weak self] result in
-            guard let self = self else { return }
+        for cardId in try getCards() {
+            let storageKey = SecureStorageKey.accessCode(for: cardId)
+            let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
+            do {
+                if let encryptedAccessCode = try biometricsStorage.get(storageKey, context: context) {
+                    do {
+                        let accessCode = try biometricsSecureEnclave.decryptData(
+                            encryptedAccessCode,
+                            keyTag: encryptionKey,
+                            context: context
+                        )
 
-            switch result {
-            case .failure(let error):
-                Log.error(error)
-                completion(.failure(error))
-            case .success(let context):
-                Log.debug("Storage was unlocked successfully")
-                do {
-                    var fetchedAccessCodes: [String: Data] = [:]
-
-                    // fetch encrypted or unencrypted
-                    for cardId in try self.getCards() {
-                        let storageKey = SecureStorageKey.accessCode(for: cardId)
-                        let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
-
-                        if let encryptedAccessCode = try self.biometricsStorage.get(storageKey, context: context) {
-                            do {
-                                let accessCode = try self.biometricsSecureEnclave.decryptData(
-                                    encryptedAccessCode,
-                                    keyTag: encryptionKey,
-                                    context: context
-                                )
-
-                                fetchedAccessCodes[cardId] = accessCode
-                            } catch SecureEnclaveError.decryptionFailed {
-                                // use old unencrypted data for backward compatibility
-                                if encryptedAccessCode.count == 32 {
-                                    fetchedAccessCodes[cardId] = encryptedAccessCode
-                                }
-                            }
+                        fetchedAccessCodes[cardId] = accessCode
+                    } catch SecureEnclaveError.decryptionFailed {
+                        // use old unencrypted data for backward compatibility
+                        if encryptedAccessCode.count == 32 {
+                            fetchedAccessCodes[cardId] = encryptedAccessCode
                         }
                     }
-
-                    self.accessCodes = fetchedAccessCodes
-                    try self.saveCards(cardIds: Set(fetchedAccessCodes.keys)) // Actualize all the cards. E.g. if biometrics was changed.
-                    completion(.success(()))
-                } catch {
-                    Log.error(error)
-                    completion(.failure(error.toTangemSdkError()))
                 }
+            } catch {
+                Log.debug("Failed to unlock access codes for cardId: \(cardId). Error: \(error)")
             }
         }
+
+        accessCodes = fetchedAccessCodes
+        try saveCards(cardIds: Set(fetchedAccessCodes.keys)) // Actualize all the cards. E.g. if biometrics was changed.
+        Log.debug("Access codes unlocked successfully")
     }
 
     func lock() {
@@ -179,29 +169,29 @@ public class AccessCodeRepository {
     }
 
     private func updateCodesIfNeeded(with accessCode: Data, for cardIds: [String]) -> Bool {
-        var hasChanges: Bool = false
+        var hasChanges = false
 
         for cardId in cardIds {
             let existingCode = accessCodes[cardId]
 
-            if existingCode == accessCode {
+            if let existingCode, CryptoUtils.secureCompare(existingCode, accessCode) {
                 Log.debug("We already know this code. Ignoring.")
-                continue //We already know this code. Ignoring
+                continue // We already know this code. Ignoring
             }
 
-            //We found default code
-            if accessCode == UserCodeType.accessCode.defaultValue.getSHA256() {
+            // We found default code
+            if CryptoUtils.secureCompare(accessCode, UserCodeType.accessCode.defaultValue.getSHA256()) {
                 if existingCode == nil {
                     Log.debug("Ignore the default code")
-                    continue //Ignore default code
+                    continue // Ignore default code
                 } else {
                     Log.debug("User deleted the code. We should update the storage.")
-                    accessCodes[cardId] = nil //User deleted the code. We should update the storage.
+                    accessCodes[cardId] = nil // User deleted the code. We should update the storage.
                     hasChanges = true
                 }
             } else {
                 Log.debug("Save a new code")
-                accessCodes[cardId] = accessCode //Save a new code
+                accessCodes[cardId] = accessCode // Save a new code
                 hasChanges = true
             }
         }

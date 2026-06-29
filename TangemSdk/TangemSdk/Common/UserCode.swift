@@ -12,17 +12,26 @@ import Foundation
 struct UserCode {
     let type: UserCodeType
     let value: Data?
-    
+
+    var isDefault: Bool {
+        guard let value else { return false }
+        return CryptoUtils.secureCompare(value, type.defaultValue.getSHA256())
+    }
+
+    var isNonDefault: Bool {
+        !isDefault
+    }
+
     init(_ type: UserCodeType) {
-        self.value = type.defaultValue.getSHA256()
+        value = type.defaultValue.getSHA256()
         self.type = type
     }
-    
+
     init(_ type: UserCodeType, stringValue: String) {
-        self.value = stringValue.getSHA256()
+        value = stringValue.getSHA256()
         self.type = type
     }
-    
+
     init(_ type: UserCodeType, value: Data?) {
         self.value = value
         self.type = type
@@ -32,7 +41,7 @@ struct UserCode {
 public enum UserCodeType {
     case accessCode
     case passcode
-    
+
     var defaultValue: String {
         switch self {
         case .accessCode:
@@ -43,10 +52,11 @@ public enum UserCodeType {
     }
 }
 
-//MARK: Constants
+// MARK: Constants
+
 extension UserCodeType {
     static let minLength = 4
-    
+
     private static let defaultAccessCode = "000000"
     private static let defaultPasscode = "000"
 }
@@ -60,27 +70,27 @@ extension UserCodeType {
             return "pin2".localized
         }
     }
-    
+
     var enterCodeTitle: String {
         "pin_enter".localized(name.lowercasingFirst())
     }
-    
+
     var enterNewCodeTitle: String {
         "pin_change_new_code_format".localized(name.lowercasingFirst())
     }
-    
+
     var changeCodeTitle: String {
         "pin_set_code_format".localized(name.lowercasingFirst())
     }
-    
+
     var confirmCodeTitle: String {
         "pin_set_code_confirm_format".localized(name.lowercasingFirst())
     }
-    
+
     var resetCodeTitle: String {
         "pin_reset_code_format".localized(name.lowercasingFirst())
     }
-    
+
     var shortLengthErrorMessage: String {
         switch self {
         case .accessCode:

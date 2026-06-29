@@ -16,14 +16,13 @@ public class PersonalizeCommandV8: Command {
     public var preflightReadMode: PreflightReadMode { .none }
 
     var requiresPasscode: Bool { false }
+    var cardSessionEncryption: CardSessionEncryption { .none }
 
     private let config: CardConfigV8
     private let issuer: Issuer
     private let manufacturer: Manufacturer
 
-    private lazy var devPersonalizationKey: Data = {
-        return "1234".getSHA256().prefix(32)
-    }()
+    private lazy var devPersonalizationKey: Data = "1234".getSHA256().prefix(32)
 
     /// Default initializer
     /// - Parameters:
@@ -37,8 +36,12 @@ public class PersonalizeCommandV8: Command {
         self.manufacturer = manufacturer
     }
 
+    deinit {
+        Log.debug("PersonalizeCommandV8 deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) //We have to run preflight read ourselves to catch the notPersonalized error
+        let read = PreflightReadTask(readMode: .readCardOnly, filter: nil) // We have to run preflight read ourselves to catch the notPersonalized error
         read.run(in: session) { readResult in
             switch readResult {
             case .success:
@@ -50,7 +53,7 @@ public class PersonalizeCommandV8: Command {
                         return
                     }
 
-                    self.runPersonalize(in: session, completion: completion)
+                    self.transceive(in: session, completion: completion)
                 } else {
                     completion(.failure(error))
                 }
@@ -70,25 +73,16 @@ public class PersonalizeCommandV8: Command {
 
         let isAccessCodeSet = config.pin != UserCodeType.accessCode.defaultValue
         return try CardDeserializer(allowNotPersonalized: true)
-            .deserialize(isAccessCodeSetLegacy: isAccessCodeSet,
-                         decoder: decoder,
-                         cardDataDecoder: cardDataDecoder)
-    }
-
-    private func runPersonalize(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        let encryptionKey = session.environment.encryptionKey
-
-        // override encryption for personalization
-        session.environment.encryptionKey = nil
-        transceive(in: session) { result in
-            session.environment.encryptionKey = encryptionKey
-            completion(result)
-        }
+            .deserialize(
+                isAccessCodeSetLegacy: isAccessCodeSet,
+                decoder: decoder,
+                cardDataDecoder: cardDataDecoder
+            )
     }
 
     private func encryptApdu(cApdu: CommandApdu) throws -> CommandApdu {
         let p1: Byte = 0x00
-        let nonce =  Data([0x7E] + (0..<ConstantsV8.nonceLength-1).map { UInt8($0) })
+        let nonce = Data([0x7E] + (0 ..< ConstantsV8.nonceLength - 1).map { UInt8($0) })
         let associatedData = Data([cApdu.cla, cApdu.ins, p1, cApdu.p2])
 
         let encryptedPayload = try cApdu.data.encryptAESCCM(
@@ -99,7 +93,7 @@ public class PersonalizeCommandV8: Command {
 
         let encryptedData = nonce + encryptedPayload
 
-        Log.debug("C-APDU encrypted with CCM")
+        Log.apdu("C-APDU encrypted with CCM")
 
         return CommandApdu(
             cla: cApdu.cla,

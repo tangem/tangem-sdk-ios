@@ -14,9 +14,9 @@ struct FloatingTextField: View {
     let text: Binding<String>
     var onCommit: () -> Void = {}
     var shouldBecomeFirstResponder: Bool = false
-    
+
     @EnvironmentObject private var style: TangemSdkStyle
-    
+
     @ViewBuilder
     private var textField: some View {
         FocusableTextField(
@@ -25,7 +25,7 @@ struct FloatingTextField: View {
             onCommit: onCommit
         )
     }
-    
+
     var body: some View {
         VStack(spacing: 6) {
             HStack {
@@ -34,7 +34,7 @@ struct FloatingTextField: View {
                         .foregroundColor(text.wrappedValue.isEmpty ? Color(.placeholderText) : style.colors.tint)
                         .offset(y: text.wrappedValue.isEmpty ? 0 : -32)
                         .scaleEffect(text.wrappedValue.isEmpty ? 1 : 0.76, anchor: .leading)
-                    
+
                     textField
                         .keyboardType(.default)
                         .autocapitalization(.none)
@@ -42,9 +42,8 @@ struct FloatingTextField: View {
                         .font(.system(size: 17))
                         .frame(height: 17)
                 }
-
             }
-            
+
             Color(UIColor.opaqueSeparator)
                 .frame(height: 1)
         }
@@ -53,10 +52,9 @@ struct FloatingTextField: View {
     }
 }
 
-
 struct FloatingTextField_Previews: PreviewProvider {
     @State static var text: String = "002139123"
-    
+
     static var previews: some View {
         FloatingTextField(title: "Access code", text: $text)
             .environmentObject(TangemSdkStyle())

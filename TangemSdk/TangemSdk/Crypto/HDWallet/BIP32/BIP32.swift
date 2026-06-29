@@ -9,7 +9,7 @@
 import Foundation
 import CryptoKit
 
-// https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+/// https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 public struct BIP32 {
     public init() {}
 
@@ -24,7 +24,7 @@ public struct BIP32 {
         }
 
         // The seed must be between 128 and 512 bits
-        guard 16...64 ~= seed.count else {
+        guard 16 ... 64 ~= seed.count else {
             throw HDWalletError.invalidSeed
         }
 
@@ -64,7 +64,7 @@ extension BIP32 {
     }
 }
 
-fileprivate extension EllipticCurve {
+private extension EllipticCurve {
     var hmacKey: BIP32.HMACKey? {
         switch self {
         case .secp256k1, .bip0340:

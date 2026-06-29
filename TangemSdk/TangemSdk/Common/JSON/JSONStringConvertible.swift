@@ -10,7 +10,7 @@ import Foundation
 
 /// The basic protocol for command response
 public protocol JSONStringConvertible: Encodable {
-    var json: String {get}
+    var json: String { get }
 }
 
 public extension JSONStringConvertible {

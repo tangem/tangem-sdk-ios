@@ -11,52 +11,53 @@ import Foundation
 public class SetUserCodeCommand: Command {
     var requiresPasscode: Bool = true
     var shouldRestrictDefaultCodes = true
-    
+    var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
+
     private var codes: [UserCodeType: UserCodeAction] = [:]
-    
+
     /// Change access code only. Passcode will be remain the same
     /// - Parameters:
     ///   - accessCode: If nil, user will be prompted to enter the code
     public init(accessCode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
+        codes[.accessCode] = accessCode.map { .stringValue($0.trim()) } ?? .request
         codes[.passcode] = .notChange
     }
-    
+
     /// Change  passcode only. Access code will be remain the same
     /// - Parameters:
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(passcode: String?) {
         codes[.accessCode] = .notChange
-        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
+        codes[.passcode] = passcode.map { .stringValue($0.trim()) } ?? .request
     }
-    
+
     /// Change  access code and passcode.
     /// - Parameters:
     ///   - accessCode: If nil, user will be prompted to enter the code
     ///   - passcode: If nil, user will be prompted to enter the code
     public init(accessCode: String?, passcode: String?) {
-        codes[.accessCode] = accessCode.map{ .stringValue($0.trim()) } ?? .request
-        codes[.passcode] = passcode.map{ .stringValue($0.trim()) } ?? .request
+        codes[.accessCode] = accessCode.map { .stringValue($0.trim()) } ?? .request
+        codes[.passcode] = passcode.map { .stringValue($0.trim()) } ?? .request
     }
-    
+
     /// Change  access code and passcode. Useful for checkpin, because with take codes from environment as Data
     /// - Parameters:
     ///   - accessCode: If nil, user will be prompted to enter the code
     ///   - passcode: If nil, user will be prompted to enter the code
     init(accessCode: Data?, passcode: Data?) {
-        codes[.accessCode] = accessCode.map{ .value($0) } ?? .request
-        codes[.passcode] = passcode.map{ .value($0) } ?? .request
+        codes[.accessCode] = accessCode.map { .value($0) } ?? .request
+        codes[.passcode] = passcode.map { .value($0) } ?? .request
     }
-    
+
     deinit {
         Log.debug("SetPinCommand deinit")
     }
 
     public func prepare(_ session: CardSession, completion: @escaping CompletionResult<Void>) {
-        requestIfNeeded(.accessCode, in: session) { result  in
+        requestIfNeeded(.accessCode, in: session) { result in
             switch result {
             case .success:
-                self.requestIfNeeded(.passcode, in: session) { result  in
+                self.requestIfNeeded(.passcode, in: session) { result in
                     switch result {
                     case .success:
                         completion(.success(()))
@@ -69,9 +70,9 @@ public class SetUserCodeCommand: Command {
             }
         }
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        if codes.values.contains(.request) { //If prepare not called e.g. chaining
+        if codes.values.contains(.request) { // If prepare not called e.g. chaining
             if let error = getPauseError(environment: session.environment) {
                 session.pause(error: error)
             } else {
@@ -81,130 +82,152 @@ public class SetUserCodeCommand: Command {
                 switch result {
                 case .success:
                     session.resume()
-                    self.runCommand(in: session, completion: completion )
+                    self.runCommand(in: session, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
                 }
             }
         } else {
-            self.runCommand(in: session, completion: completion )
+            runCommand(in: session, completion: completion)
         }
     }
-    
+
     private func runCommand(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
-        //Restrict default codes except reset command
+        // Restrict default codes except reset command
         if shouldRestrictDefaultCodes {
             if !isCodeAllowed(.accessCode) {
                 completion(.failure(TangemSdkError.accessCodeCannotBeDefault))
                 return
             }
-            
+
             if !isCodeAllowed(.passcode) {
                 completion(.failure(TangemSdkError.passcodeCannotBeDefault))
                 return
             }
         }
-        
+
         if !isCodeLengthValid(.accessCode) {
             completion(.failure(TangemSdkError.accessCodeTooShort))
             return
         }
-        
+
         if !isCodeLengthValid(.passcode) {
             completion(.failure(TangemSdkError.passcodeTooShort))
             return
         }
 
-        self.transceive(in: session) { result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
-                
+
                 if let accessCodeValue = self.codes[.accessCode]?.value {
                     session.environment.accessCode = UserCode(.accessCode, value: accessCodeValue)
                 }
-                
+
                 if let passcodeValue = self.codes[.passcode]?.value {
                     session.environment.passcode = UserCode(.passcode, value: passcodeValue)
                 }
-                
+
                 completion(.success(response))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
-    
-    private func isCodeAllowed(_ type: UserCodeType) -> Bool  {
-        if let code = self.codes[type]?.value,
-           code == type.defaultValue.getSHA256() {
+
+    private func isCodeAllowed(_ type: UserCodeType) -> Bool {
+        if let code = codes[type]?.value,
+           CryptoUtils.secureCompare(code, type.defaultValue.getSHA256()) {
             return false
         }
-        
+
         return true
     }
-    
-    private func isCodeLengthValid(_ type: UserCodeType) -> Bool  {
-        if let stringValue = self.codes[type]?.stringValue,
+
+    private func isCodeLengthValid(_ type: UserCodeType) -> Bool {
+        if let stringValue = codes[type]?.stringValue,
            stringValue != type.defaultValue,
            stringValue.count < UserCodeType.minLength {
             return false
         }
-        
-        if let dataValue = self.codes[type]?.value, dataValue.isEmpty {
+
+        if let dataValue = codes[type]?.value, dataValue.isEmpty {
             return false
         }
-        
+
         return true
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
-        guard let accessCodeValue = codes[.accessCode]?.value ?? environment.accessCode.value,
-              let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
+        guard let accessCodeValue = codes[.accessCode]?.value ?? environment.accessCode.value else {
             throw TangemSdkError.serializeCommandError
         }
-        
-        let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.pin, value: environment.accessCode.value)
-            .append(.pin2, value: environment.passcode.value)
-            .append(.cardId, value: environment.card?.cardId)
-            .append(.newPin, value: accessCodeValue)
-            .append(.newPin2, value: passcodeValue)
-        
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
+
+        let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
+
+        if card.firmwareVersion >= .v8 {
+            try tlvBuilder
+                .append(.newPin, value: accessCodeValue)
+                .append(.hash, value: accessCodeValue.getSHA256())
+        } else if card.firmwareVersion >= .backupAvailable {
+            guard let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+                throw TangemSdkError.serializeCommandError
+            }
+
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.newPin, value: accessCodeValue)
+                .append(.newPin2, value: passcodeValue)
+                .append(.hash, value: (accessCodeValue + passcodeValue).getSHA256())
+        } else {
+            guard let passcodeValue = codes[.passcode]?.value ?? environment.passcode.value else {
+                throw TangemSdkError.serializeCommandError
+            }
+
+            try tlvBuilder
+                .append(.cardId, value: environment.card?.cardId)
+                .append(.newPin, value: accessCodeValue)
+                .append(.newPin2, value: passcodeValue)
         }
-        
-        if let fw = environment.card?.firmwareVersion, fw >= .backupAvailable {
-            let hash = (accessCodeValue + passcodeValue).getSHA256()
-            try tlvBuilder.append(.codeHash, value: hash)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
         }
-        
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
         return CommandApdu(.setPin, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))
     }
-    
+
     private func getPauseError(environment: SessionEnvironment) -> TangemSdkError? {
         let filtered = codes.filter { $0.value == .request }
-        
+
         guard filtered.count == 1, let type = filtered.first?.key else {
             return nil
         }
-        
+
         return TangemSdkError.from(userCodeType: type, environment: environment)
     }
-    
+
     private func requestIfNeeded(_ type: UserCodeType, in session: CardSession, completion: @escaping CompletionResult<Void>) {
         guard codes[type] == .request else {
             completion(.success(()))
             return
         }
-        
+
         let formattedCid = session.cardId.flatMap { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
-        
+
         session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { result in
             switch result {
             case .success(let code):
@@ -217,23 +240,27 @@ public class SetUserCodeCommand: Command {
         }))
     }
 }
-// MARK:- Reset codes
+
+// MARK: - Reset codes
+
 public extension SetUserCodeCommand {
     static var resetAccessCodeCommand: SetUserCodeCommand {
         let command = SetUserCodeCommand(accessCode: UserCodeType.accessCode.defaultValue)
         command.shouldRestrictDefaultCodes = false
         return command
     }
-    
+
     static var resetPasscodeCommand: SetUserCodeCommand {
         let command = SetUserCodeCommand(passcode: UserCodeType.passcode.defaultValue)
         command.shouldRestrictDefaultCodes = false
         return command
     }
-    
+
     static var resetUserCodes: SetUserCodeCommand {
-        let command = SetUserCodeCommand(accessCode: UserCodeType.accessCode.defaultValue,
-                                         passcode: UserCodeType.passcode.defaultValue)
+        let command = SetUserCodeCommand(
+            accessCode: UserCodeType.accessCode.defaultValue,
+            passcode: UserCodeType.passcode.defaultValue
+        )
         command.shouldRestrictDefaultCodes = false
         return command
     }
@@ -245,7 +272,7 @@ extension SetUserCodeCommand {
         case stringValue(String)
         case value(Data)
         case notChange
-        
+
         var value: Data? {
             switch self {
             case .stringValue(let code):
@@ -256,7 +283,7 @@ extension SetUserCodeCommand {
                 return nil
             }
         }
-        
+
         var stringValue: String? {
             switch self {
             case .stringValue(let code):

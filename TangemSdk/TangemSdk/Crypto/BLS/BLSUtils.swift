@@ -12,11 +12,11 @@ import Bls_Signature
 
 public struct BLSUtils {
     // MARK: - Init
-    
+
     public init() {}
-    
+
     // MARK: - Implementation
-    
+
     /// hkdf_mod_r() implementaion (KeyGen)
     /// https://eips.ethereum.org/EIPS/eip-2333#hkdf_mod_r-1
     /// https://www.ietf.org/archive/id/draft-irtf-cfrg-bls-signature-05.html#name-keygen
@@ -36,8 +36,8 @@ public struct BLSUtils {
             throw BLSError.keyGenerationFailed
         }
 
-        let sk  = intKey % Constants.curveOrder
-        
+        let sk = intKey % Constants.curveOrder
+
         if sk != 0 {
             // Always return 32 bytes, left-padded with zeros if needed
             var skData = Data(hexString: sk.hexString)
@@ -49,7 +49,7 @@ public struct BLSUtils {
         }
 
         let salt = salt.getSHA256()
-        
+
         return try generateKey(inputKeyMaterial: inputKeyMaterial, salt: salt, keyInfo: keyInfo)
     }
 }
@@ -61,13 +61,13 @@ extension BLSUtils {
 
         /// Actual version of  keygen algorithm
         static let salt: Data = saltPreV4.getSHA256()
-        
+
         /// L, Calculated as ceil((3 * ceil(log2(r))) / 16). where r is s the order of the BLS 12-381
         fileprivate static let okmCount: Int = 48
 
         /// r, defined in  https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-bls-signature-04
         fileprivate static let curveOrder: BigInt = .init("52435875175126190479447740508185965837690552500527637822603658699938581184513", radix: 10)!
-        
+
         fileprivate static let outputKeyLength = 32
     }
 
@@ -118,7 +118,7 @@ public extension BLSUtils {
     func verify(signatures: [String], with publicKey: String, message: String) throws -> Bool {
         try BlsSignatureSwift.verify(signatures: signatures, with: publicKey, message: message)
     }
-    
+
     func sign(hash: String, privateKey: Data) throws -> String {
         try BlsSignatureSwift.sign(hash: hash, with: privateKey)
     }

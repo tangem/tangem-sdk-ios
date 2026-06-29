@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Response from the Tangem card after `LinkPrimaryCardCommand`.
+/// Response from the Tangem card after `LinkPrimaryCardCommand`.
 struct LinkPrimaryCardResponse {
     /// Unique Tangem card ID number
     let cardId: String
@@ -16,14 +16,14 @@ struct LinkPrimaryCardResponse {
 }
 
 final class LinkPrimaryCardCommand: Command {
-    var requiresPasscode: Bool { return true }
-    
+    var requiresPasscode: Bool { true }
+
     private let primaryCard: PrimaryCard
     private let backupCards: [BackupCard]
     private let attestSignature: Data
     private let accessCode: Data
     private let passcode: Data
-    
+
     init(primaryCard: PrimaryCard, backupCards: [BackupCard], attestSignature: Data, accessCode: Data, passcode: Data) {
         self.primaryCard = primaryCard
         self.backupCards = backupCards
@@ -31,37 +31,37 @@ final class LinkPrimaryCardCommand: Command {
         self.accessCode = accessCode
         self.passcode = passcode
     }
-    
+
     deinit {
         Log.debug("LinkPrimaryCardCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .backupFailedFirmware
         }
-        
+
         if !card.settings.isBackupAllowed {
             return .backupNotAllowed
         }
-        
+
         if !card.wallets.isEmpty {
             return .backupFailedNotEmptyWallets(cardId: card.cardId)
         }
-        
+
         return nil
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<LinkPrimaryCardResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
                 session.environment.accessCode = UserCode(.accessCode, value: self.accessCode)
                 session.environment.passcode = UserCode(.passcode, value: self.passcode)
-                
-                let isAccessCodeSet = session.environment.isUserCodeSet(.accessCode)
-                let isPasscodeSet = session.environment.isUserCodeSet(.passcode)
-                
+
+                let isAccessCodeSet = session.environment.accessCode.isNonDefault
+                let isPasscodeSet = session.environment.passcode.isNonDefault
+
                 session.environment.card?.isAccessCodeSet = isAccessCodeSet
                 session.environment.card?.isPasscodeSet = isPasscodeSet
                 self.complete(response: response, session: session, completion: completion)
@@ -69,10 +69,14 @@ final class LinkPrimaryCardCommand: Command {
                 switch error {
                 case .accessCodeRequired, .passcodeRequired:
                     if let cardId = session.environment.card?.cardId {
-                        self.complete(response: LinkPrimaryCardResponse(cardId: cardId,
-                                                                        backupStatus: .cardLinked),
-                                      session: session,
-                                      completion: completion)
+                        self.complete(
+                            response: LinkPrimaryCardResponse(
+                                cardId: cardId,
+                                backupStatus: .cardLinked
+                            ),
+                            session: session,
+                            completion: completion
+                        )
                         return
                     }
                     completion(.failure(error))
@@ -82,45 +86,59 @@ final class LinkPrimaryCardCommand: Command {
             }
         }
     }
-    
+
     private func complete(response: LinkPrimaryCardResponse, session: CardSession, completion: @escaping CompletionResult<LinkPrimaryCardResponse>) {
-        session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: self.backupCards.count)
+        session.environment.card?.backupStatus = try? Card.BackupStatus(from: response.backupStatus, cardsCount: backupCards.count)
         session.environment.card?.settings.isSettingAccessCodeAllowed = true
         session.environment.card?.settings.isSettingPasscodeAllowed = true
         session.environment.card?.settings.isRemovingUserCodesAllowed = false
         completion(.success(response))
     }
-    
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         guard let certificate = primaryCard.certificate else {
             throw TangemSdkError.certificateSignatureRequired
         }
 
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .append(.cardId, value: environment.card?.cardId)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
             .append(.primaryCardLinkingKey, value: primaryCard.linkingKey)
             .append(.certificate, value: certificate)
             .append(.backupAttestSignature, value: attestSignature)
             .append(.newPin, value: accessCode)
-            .append(.newPin2, value: passcode)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+            try tlvBuilder.append(.newPin2, value: passcode)
+        }
+
         for (index, card) in backupCards.enumerated() {
             let builder = try TlvBuilder()
                 .append(.fileIndex, value: index)
                 .append(.backupCardLinkingKey, value: card.linkingKey)
-            
+
             try tlvBuilder.append(.backupCardLink, value: builder.serialize())
         }
-        
+
         return CommandApdu(.linkPrimaryCard, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> LinkPrimaryCardResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
-        return LinkPrimaryCardResponse(cardId: try decoder.decode(.cardId),
-                                       backupStatus: try decoder.decode(.backupStatus))
+        return LinkPrimaryCardResponse(
+            cardId: try decoder.decode(.cardId),
+            backupStatus: try decoder.decode(.backupStatus)
+        )
     }
 }

@@ -26,9 +26,10 @@ public enum TlvValueType: String {
     case uint16
     case interactionMode
     case derivationPath
-    case backupStatus //TODO: make all these type more generic
+    case backupStatus // TODO: make all these type more generic
     case accessLevel
 }
+
 /// Contains all TLV tags, with their code and descriptive name.
 public enum TlvTag: Byte {
     case unknown = 0x00
@@ -74,7 +75,7 @@ public enum TlvTag: Byte {
     case manufacturerSignature = 0x21
     case issuerPublicKey = 0x30
     case issuerTransactionPublicKey = 0x31
-    case issuerData = 0x32
+    case data = 0x32
     case issuerDataSignature = 0x33
     case issuerDataCounter = 0x35
     case isActivated = 0x3A
@@ -87,7 +88,7 @@ public enum TlvTag: Byte {
     case resetPin = 0x36
     case codePageAddress = 0x40
     case codePageCount = 0x41
-    case codeHash = 0x42
+    case hash = 0x42
     case trOutRaw = 0x52
     case walletPublicKey = 0x60
     case firmwareVersion = 0x80
@@ -117,17 +118,19 @@ public enum TlvTag: Byte {
     case acquirerPublicKey = 0x37
     case pin2IsDefault = 0x59
     case pinIsDefault = 0x5A
-    
+
     // MARK: - Multi-wallet
+
     case walletIndex = 0x65
     case walletsCount = 0x66
     case walletData = 0x67
     case cardWallet = 0x68
-    
+
     // MARK: - Tlv tags for files
+
     case fileIndex = 0x26
     case fileSettings = 0x27
-    
+
     case fileTypeName = 0x70
     case fileData = 0x71
     case fileSignature = 0x73
@@ -135,11 +138,13 @@ public enum TlvTag: Byte {
     case fileOwnerIndex = 0x75
 
     // MARK: - HDWallet
+
     case walletHDPath = 0x6A
     case walletHDChain = 0x6B
     case walletPrivateKey = 0x6F
-    
+
     // MARK: - Backup
+
     case certificate = 0x55
     case backupStatus = 0xD0
     case backupCount = 0xD1
@@ -152,12 +157,14 @@ public enum TlvTag: Byte {
     case proof = 0xAA
 
     // MARK: - COS v8+
+
     case hmac = 0x44
     case accessToken = 0x48
     case identifyToken = 0x49
     case accessLevel = 0x4A
 
     // MARK: - Ttl value types
+
     /// `TlvValueType` associated with a `TlvTag`
     var valueType: TlvValueType {
         switch self {
@@ -205,119 +212,119 @@ public enum TlvTag: Byte {
     var shouldMask: Bool {
         switch self {
         case .pin,
-                .pin2,
-                .newPin,
-                .newPin2,
-                .newPin3,
-                .walletPublicKey,
-                .walletPrivateKey,
-                .walletHDChain,
-                .cardId,
-                .transactionOutHash,
-                .walletSignature,
-                .issuerTxSignature,
-                .cardPublicKey,
-                .cardSignature,
-                .manufacturerSignature,
-                .cardIDManufacturerSignature,
-                .terminalPublicKey,
-                .terminalTransactionSignature,
-                .acquirerPublicKey,
-                .manufacturerPublicKey,
-                .primaryCardLinkingKey,
-                .backupCardLinkingKey,
-                .backupCardLink,
-                .backupAttestSignature,
-                .backupCardPublicKey,
-                .sessionKeyA,
-                .sessionKeyB,
-                .certificate,
-                .issuerData,
-                .issuerDataSignature,
-                .cardData,
-                .proof,
-                .publicKeyChallenge,
-                .publicKeySalt,
-                .challenge,
-                .salt,
-                .cvc,
-                .issuerPublicKey,
-                .issuerTransactionPublicKey,
-                .resetPin,
-                .trOutRaw,
-                .cardWallet,
-                .fileData,
-                .fileSignature,
-                .accessToken,
-                .identifyToken:
+             .pin2,
+             .newPin,
+             .newPin2,
+             .newPin3,
+             .walletPublicKey,
+             .walletPrivateKey,
+             .walletHDChain,
+             .cardId,
+             .transactionOutHash,
+             .walletSignature,
+             .issuerTxSignature,
+             .cardPublicKey,
+             .cardSignature,
+             .manufacturerSignature,
+             .cardIDManufacturerSignature,
+             .terminalPublicKey,
+             .terminalTransactionSignature,
+             .acquirerPublicKey,
+             .manufacturerPublicKey,
+             .primaryCardLinkingKey,
+             .backupCardLinkingKey,
+             .backupCardLink,
+             .backupAttestSignature,
+             .backupCardPublicKey,
+             .sessionKeyA,
+             .sessionKeyB,
+             .certificate,
+             .data,
+             .issuerDataSignature,
+             .cardData,
+             .proof,
+             .publicKeyChallenge,
+             .publicKeySalt,
+             .challenge,
+             .salt,
+             .cvc,
+             .issuerPublicKey,
+             .issuerTransactionPublicKey,
+             .resetPin,
+             .trOutRaw,
+             .cardWallet,
+             .fileData,
+             .fileSignature,
+             .accessToken,
+             .identifyToken:
             return true
         case .unknown,
-                .transactionOutHashSize,
-                .walletRemainingSignatures,
-                .walletSignedHashes,
-                .pause,
-                .flash,
-                .status,
-                .curveId,
-                .hashAlgId,
-                .signingMethod,
-                .maxSignatures,
-                .pauseBeforePin2,
-                .settingsMask,
-                .userSettingsMask,
-                .ndefData,
-                .createWalletAtPersonalize,
-                .health,
-                .crExKey,
-                .validationCounter,
-                .uid,
-                .manufacturerName,
-                .issuerDataCounter,
-                .isActivated,
-                .activationSeed,
-                .paymentFlowVersion,
-                .userData,
-                .userProtectedData,
-                .userCounter,
-                .userProtectedCounter,
-                .codePageAddress,
-                .codePageCount,
-                .codeHash,
-                .firmwareVersion,
-                .batchId,
-                .manufactureDateTime,
-                .issuerName,
-                .blockchainName,
-                .tokenSymbol,
-                .tokenContractAddress,
-                .tokenDecimal,
-                .tokenName,
-                .denomination,
-                .validatedBalance,
-                .lastSignDate,
-                .denominationText,
-                .checkWalletCounter,
-                .productMask,
-                .isLinked,
-                .legacyMode,
-                .interactionMode,
-                .offset,
-                .size,
-                .pin2IsDefault,
-                .pinIsDefault,
-                .walletIndex,
-                .walletsCount,
-                .walletData,
-                .fileIndex,
-                .fileSettings,
-                .fileTypeName,
-                .fileCounter,
-                .fileOwnerIndex,
-                .walletHDPath,
-                .backupStatus,
-                .backupCount,
-                .hmac,
-                .accessLevel:
+             .transactionOutHashSize,
+             .walletRemainingSignatures,
+             .walletSignedHashes,
+             .pause,
+             .flash,
+             .status,
+             .curveId,
+             .hashAlgId,
+             .signingMethod,
+             .maxSignatures,
+             .pauseBeforePin2,
+             .settingsMask,
+             .userSettingsMask,
+             .ndefData,
+             .createWalletAtPersonalize,
+             .health,
+             .crExKey,
+             .validationCounter,
+             .uid,
+             .manufacturerName,
+             .issuerDataCounter,
+             .isActivated,
+             .activationSeed,
+             .paymentFlowVersion,
+             .userData,
+             .userProtectedData,
+             .userCounter,
+             .userProtectedCounter,
+             .codePageAddress,
+             .codePageCount,
+             .hash,
+             .firmwareVersion,
+             .batchId,
+             .manufactureDateTime,
+             .issuerName,
+             .blockchainName,
+             .tokenSymbol,
+             .tokenContractAddress,
+             .tokenDecimal,
+             .tokenName,
+             .denomination,
+             .validatedBalance,
+             .lastSignDate,
+             .denominationText,
+             .checkWalletCounter,
+             .productMask,
+             .isLinked,
+             .legacyMode,
+             .interactionMode,
+             .offset,
+             .size,
+             .pin2IsDefault,
+             .pinIsDefault,
+             .walletIndex,
+             .walletsCount,
+             .walletData,
+             .fileIndex,
+             .fileSettings,
+             .fileTypeName,
+             .fileCounter,
+             .fileOwnerIndex,
+             .walletHDPath,
+             .backupStatus,
+             .backupCount,
+             .hmac,
+             .accessLevel:
             return false
         }
     }

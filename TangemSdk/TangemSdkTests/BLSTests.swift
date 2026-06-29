@@ -39,7 +39,7 @@ final class BLSTests: XCTestCase {
         // 19022158461524446591288038168518313374041767046816487870552872741050760015818 in decimal representation
         XCTAssertEqual(key.hexString.lowercased(), "2a0e28ffa5fbbe2f8e7aad4ed94f745d6bf755c51182e119bb1694fe61d3afca")
     }
-    
+
     func testCase4() throws {
         let key = try BLSUtils().generateKey(inputKeyMaterial: Data(hexString: "BA1F68D840F0F0CE53C4F2C7E5C2AD17A0D04BB184951C5EA650067DDFBF649E3EDD14C810901D6F75176FF0712FE09469C93CA5B9D705F66D8773F14976B7FE"))
 

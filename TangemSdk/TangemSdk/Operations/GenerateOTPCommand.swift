@@ -23,34 +23,40 @@ public struct GenerateOTPResponse: JSONStringConvertible {
 /// Generate OTP on the card.
 public class GenerateOTPCommand: Command {
     public init() {}
-    
+
     deinit {
         Log.debug("GenerateOTPCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard !card.wallets.isEmpty else {
             return TangemSdkError.walletNotFound
         }
-        
+
+        guard FirmwareVersion.visaRange.contains(card.firmwareVersion.doubleValue) else {
+            return TangemSdkError.notSupportedFirmwareVersion
+        }
+
         return nil
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.pin2, value: environment.passcode.value)
             .append(.cardId, value: environment.card?.cardId)
-        
+
         return CommandApdu(.generateOTP, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> GenerateOTPResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
-        return GenerateOTPResponse(cardId: try decoder.decode(.cardId),
-                                   rootOTP: try decoder.decode(.codeHash),
-                                   rootOTPCounter: try decoder.decode(.fileIndex),
-                                   walletPublicKey: try decoder.decode(.walletPublicKey))
+        return GenerateOTPResponse(
+            cardId: try decoder.decode(.cardId),
+            rootOTP: try decoder.decode(.hash),
+            rootOTPCounter: try decoder.decode(.fileIndex),
+            walletPublicKey: try decoder.decode(.walletPublicKey)
+        )
     }
 }

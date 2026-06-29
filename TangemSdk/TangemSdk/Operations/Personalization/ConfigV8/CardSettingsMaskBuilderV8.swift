@@ -38,7 +38,7 @@ enum CardSettingsMaskBuilderV8 {
             builder.add(.disableFiles)
         }
 
-        if config.allowHDWallets ?? false  {
+        if config.allowHDWallets ?? false {
             builder.add(.allowHDWallets)
         }
 
@@ -46,7 +46,7 @@ enum CardSettingsMaskBuilderV8 {
             builder.add(.allowBackup)
         }
 
-        if config.allowKeysImport ?? false {
+        if config.allowExternalWallets ?? false {
             builder.add(.allowKeysImport)
         }
 

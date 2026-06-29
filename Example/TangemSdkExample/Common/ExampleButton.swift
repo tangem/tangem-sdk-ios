@@ -14,9 +14,9 @@ struct ExampleButton: ButtonStyle {
     var bgColor: Color = .orange
     var fgColor: Color = .white
     var height: CGFloat = 50
-    
+
     @ViewBuilder private var loadingOverlay: some View {
-        if isLoading  {
+        if isLoading {
             ZStack {
                 bgColor
                 ActivityIndicatorView()
@@ -25,15 +25,15 @@ struct ExampleButton: ButtonStyle {
             Color.clear
         }
     }
-    
+
     @ViewBuilder private var disabledOverlay: some View {
-        if isDisabled  {
+        if isDisabled {
             Color.white.opacity(0.4)
         } else {
             Color.clear
         }
     }
-    
+
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             Spacer()

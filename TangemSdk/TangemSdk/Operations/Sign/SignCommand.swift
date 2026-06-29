@@ -23,8 +23,8 @@ class SignCommand: Command {
     typealias Response = SignResponse
     typealias CommandResponse = PartialSignResponse
 
-    var requiresPasscode: Bool { return true }
-    
+    var requiresPasscode: Bool { true }
+
     private let walletPublicKey: Data
     private let derivationPath: DerivationPath?
 
@@ -38,73 +38,73 @@ class SignCommand: Command {
     init(hashes: [Data], walletPublicKey: Data, derivationPath: DerivationPath? = nil) {
         self.walletPublicKey = walletPublicKey
         self.derivationPath = derivationPath
-        self.chunkHashesHelper = ChunkedHashesContainer(hashes: hashes)
+        chunkHashesHelper = ChunkedHashesContainer(hashes: hashes)
     }
-    
+
     deinit {
         Log.debug("SignCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         guard let wallet = card.wallets[walletPublicKey] else {
             return .walletNotFound
         }
-        
+
         if derivationPath != nil {
             if card.firmwareVersion < .hdWalletAvailable {
                 return .notSupportedFirmwareVersion
             }
-            
+
             guard wallet.curve.supportsDerivation else {
                 return .unsupportedCurve
             }
-            
+
             if !card.settings.isHDWalletAllowed {
                 return .hdWalletDisabled
             }
         }
-        
-        //Before v4
+
+        // Before v4
         if let remainingSignatures = wallet.remainingSignatures,
            remainingSignatures == 0 {
             return .noRemainingSignatures
         }
-        
+
         if let defaultSigningMethods = card.settings.defaultSigningMethods {
             if !defaultSigningMethods.contains(.signHash) {
                 return .signHashesNotAvailable
             }
         }
-        
-        if card.firmwareVersion.doubleValue < 2.28, card.settings.securityDelay > 15000 {
+
+        if card.firmwareVersion < .persistentSecurityDelayAvailable, card.settings.securityDelay > 15000 {
             return .oldCard
         }
-        
+
         return nil
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if chunkHashesHelper.isEmpty {
             completion(.failure(.emptyHashes))
             return
         }
-        
+
         sign(in: session, completion: completion)
     }
-    
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {        
+
+    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .unknownStatus = error {
             return .nfcStuck
         }
-        
+
         return error
     }
-    
+
     func sign(in session: CardSession, completion: @escaping CompletionResult<SignResponse>) {
         if chunkHashesHelper.chunksCount > 1 {
             session.viewDelegate.showAlertMessage("sign_multiple_chunks_part".localized([chunkHashesHelper.currentChunkIndex + 1, chunkHashesHelper.chunksCount]))
         }
-        
+
         transceive(in: session) { result in
             switch result {
             case .success(let response):
@@ -120,13 +120,15 @@ class SignCommand: Command {
                             session.environment.card?.wallets[self.walletPublicKey]?.remainingSignatures = remainingSignatures - signatures.count
                         }
 
-                        completion(.success(SignResponse(cardId: response.cardId,
-                                                         signatures: signatures,
-                                                         totalSignedHashes: response.totalSignedHashes)))
+                        completion(.success(SignResponse(
+                            cardId: response.cardId,
+                            signatures: signatures,
+                            totalSignedHashes: response.totalSignedHashes
+                        )))
                     } catch {
                         completion(.failure(error.toTangemSdkError()))
                     }
-                    
+
                     return
                 }
 
@@ -141,32 +143,41 @@ class SignCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         guard let walletIndex = environment.card?.wallets[walletPublicKey]?.index else {
             throw TangemSdkError.walletNotFound
         }
 
         let chunk = try chunkHashesHelper.getCurrentChunk()
-        
+
         let hashSize = chunk.hashSize
         let hashSizeData = hashSize > 255 ? hashSize.bytes2 : hashSize.byte
 
         let flattenHashes = Data(chunk.hashes.flatMap { $0.data })
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
-            .append(.cardId, value: environment.card?.cardId)
             .append(.transactionOutHashSize, value: hashSizeData)
             .append(.transactionOutHash, value: flattenHashes)
-            //Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
+            // Wallet index works only on COS v.4.0 and higher. For previous version index will be ignored
             .append(.walletIndex, value: walletIndex)
-        
-        if let cvc = environment.cvc {
-            try tlvBuilder.append(.cvc, value: cvc)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
         }
-        
-        /**
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
+
+        /*
          * Application can optionally submit a public key Terminal_PublicKey in [SignCommand].
          * Submitted key is stored by the Tangem card if it differs from a previous submitted Terminal_PublicKey.
          * The Tangem card will not enforce security delay if [SignCommand] will be called with
@@ -174,21 +185,21 @@ class SignCommand: Command {
          * (this key should be generated and securily stored by the application).
          * COS version 2.30 and later.
          */
-        if let terminalKeys = self.retrieveTerminalKeys(from: environment) {
+        if let terminalKeys = retrieveTerminalKeys(from: environment) {
             let signedData = try flattenHashes.sign(privateKey: terminalKeys.privateKey)
-            
+
             try tlvBuilder
                 .append(.terminalTransactionSignature, value: signedData)
                 .append(.terminalPublicKey, value: terminalKeys.publicKey)
         }
-        
-        if let derivationPath = self.derivationPath {
+
+        if let derivationPath = derivationPath {
             try tlvBuilder.append(.walletHDPath, value: derivationPath)
         }
-        
+
         return CommandApdu(.sign, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> PartialSignResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         let chunk = try chunkHashesHelper.getCurrentChunk()
@@ -196,7 +207,7 @@ class SignCommand: Command {
         let signatureBLOB: Data = try decoder.decode(.walletSignature)
         let signatures = splitSignatureBLOB(signatureBLOB, numberOfSignatures: chunk.hashes.count)
 
-        let signedHashes = zip(chunk.hashes, signatures).map { (hash, signature) in
+        let signedHashes = zip(chunk.hashes, signatures).map { hash, signature in
             SignedHash(
                 index: hash.index,
                 data: hash.data,
@@ -214,45 +225,45 @@ class SignCommand: Command {
 
         return response
     }
-    
+
     private func processSignatures(with environment: SessionEnvironment) throws -> [Data] {
         let signatures = chunkHashesHelper.getSignatures()
 
-        if environment.card?.wallets[self.walletPublicKey]?.curve == .secp256k1,
+        if environment.card?.wallets[walletPublicKey]?.curve == .secp256k1,
            environment.config.canonizeSecp256k1Signatures {
             let secp256k1 = Secp256k1Utils()
             let normalizedSignatures = try signatures.map { try secp256k1.normalizeSignature($0) }
             if normalizedSignatures.count != signatures.count {
                 throw TangemSdkError.cryptoUtilsError("Normalization error")
             }
-            
+
             return normalizedSignatures
         }
-        
+
         return signatures
     }
-    
+
     private func splitSignatureBLOB(_ signature: Data, numberOfSignatures: Int) -> [Data] {
         var signatures = [Data]()
         let signatureSize = signature.count / numberOfSignatures
-        for index in 0..<numberOfSignatures {
+        for index in 0 ..< numberOfSignatures {
             let offsetMin = index * signatureSize
             let offsetMax = offsetMin + signatureSize
-            
-            let sig = signature[offsetMin..<offsetMax]
+
+            let sig = signature[offsetMin ..< offsetMax]
             signatures.append(sig)
         }
-        
+
         return signatures
     }
-    
+
     private func retrieveTerminalKeys(from environment: SessionEnvironment) -> KeyPair? {
         guard let card = environment.card,
               card.settings.isLinkedTerminalEnabled,
               card.firmwareVersion < .hdWalletAvailable else {
-                  return nil
-              }
-        
+            return nil
+        }
+
         return environment.terminalKeys
     }
 }
@@ -267,5 +278,3 @@ struct PartialSignResponse {
     /// Total number of signed  hashes returned by the wallet since its creation. COS: 1.16+
     let totalSignedHashes: Int?
 }
-
-

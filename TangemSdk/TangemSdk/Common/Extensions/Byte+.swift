@@ -11,21 +11,21 @@ import CryptoKit
 
 public typealias Byte = UInt8
 
-extension UInt8 {
-    public var description: String {
+public extension UInt8 {
+    var description: String {
         return hexString
     }
-    
-    public var hexString: String {
+
+    var hexString: String {
         return String(format: "%02X", self)
     }
 
-    func toBits() -> [String] {
+    internal func toBits() -> [String] {
         let totalBitsCount = 8
 
         var bits = [String](repeating: "0", count: totalBitsCount)
 
-        for index in 0..<totalBitsCount {
+        for index in 0 ..< totalBitsCount {
             let mask: UInt8 = 1 << UInt8(totalBitsCount - 1 - index)
             let currentBit = self & mask
 
@@ -38,28 +38,28 @@ extension UInt8 {
     }
 }
 
-extension UInt16 {
-    public var description: String {
+public extension UInt16 {
+    var description: String {
         return hexString
     }
-    
-    public var hexString: String {
+
+    var hexString: String {
         return String(format: "%02X", self)
     }
 }
 
-extension Array where Element == UInt8 {
-    public func getSHA256() -> Data {
+public extension Array where Element == UInt8 {
+    func getSHA256() -> Data {
         let digest = SHA256.hash(data: self)
         return Data(digest)
     }
 
-    public func getSHA512() -> Data {
+    func getSHA512() -> Data {
         let digest = SHA512.hash(data: self)
         return Data(digest)
     }
 
-    public func getDoubleSHA256() -> Data {
+    func getDoubleSHA256() -> Data {
         return getSHA256().getSHA256()
     }
 }

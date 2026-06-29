@@ -13,9 +13,9 @@ import LocalAuthentication
 /// Helper class for Keychain
 public class BiometricsStorage {
     private let context = LAContext.default
-  
+
     public init() {}
-    
+
     public func get(_ account: String, context: LAContext? = nil) throws -> Data? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
@@ -25,18 +25,18 @@ public class BiometricsStorage {
             kSecReturnData: true,
             kSecUseAuthenticationContext: context ?? self.context,
         ]
-        
+
         var result: AnyObject?
-        
+
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         Log.debug("BiometricsStorage get - status \(status.message) \(status). Data size \((result as? Data)?.count ?? -1)")
-        
-        switch  status {
+
+        switch status {
         case errSecSuccess:
             guard let data = result as? Data else {
                 return nil
             }
-            
+
             return data
         case errSecItemNotFound:
             return nil
@@ -47,34 +47,34 @@ public class BiometricsStorage {
             throw error
         }
     }
-    
+
     public func store(_ object: Data, forKey account: String, overwrite: Bool = true) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: account,
             kSecUseDataProtectionKeychain: true,
             kSecValueData: object,
-            kSecAttrAccessControl: self.makeBiometricAccessControl(),
+            kSecAttrAccessControl: makeBiometricAccessControl(),
         ]
-        
+
         var status = SecItemAdd(query as CFDictionary, nil)
-        
+
         Log.debug("BiometricsStorage set - status \(status.message) \(status)")
-        
-        if status == errSecDuplicateItem && overwrite {
+
+        if status == errSecDuplicateItem, overwrite {
             let searchQuery: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: account,
                 kSecUseDataProtectionKeychain: true,
-                kSecAttrAccessControl: self.makeBiometricAccessControl(),
+                kSecAttrAccessControl: makeBiometricAccessControl(),
             ]
-            
+
             let attributes = [kSecValueData: object] as [String: Any]
             status = SecItemUpdate(searchQuery as CFDictionary, attributes as CFDictionary)
-    
+
             Log.debug("BiometricsStorage set - overwrite status \(status.message) \(status)")
         }
-        
+
         switch status {
         case errSecSuccess:
             break
@@ -85,18 +85,18 @@ public class BiometricsStorage {
             throw error
         }
     }
-    
-    public func delete(_ account : String) throws {
+
+    public func delete(_ account: String) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecUseDataProtectionKeychain: true,
             kSecAttrAccount: account,
         ]
-        
+
         let status = SecItemDelete(query as CFDictionary)
-        
+
         Log.debug("BiometricsStorage delete - status \(status.message) \(status)")
-        
+
         switch status {
         case errSecItemNotFound, errSecSuccess:
             break
@@ -105,19 +105,19 @@ public class BiometricsStorage {
             throw error.toTangemSdkError()
         }
     }
-    
+
     func get(_ storageKey: SecureStorageKey, context: LAContext? = nil) throws -> Data? {
         try get(storageKey.rawValue, context: context)
     }
-    
+
     func store(_ object: Data, forKey storageKey: SecureStorageKey, overwrite: Bool = true) throws {
-         try store(object, forKey: storageKey.rawValue, overwrite: overwrite)
+        try store(object, forKey: storageKey.rawValue, overwrite: overwrite)
     }
-    
+
     func delete(_ storageKey: SecureStorageKey) throws {
         try delete(storageKey.rawValue)
     }
-    
+
     private func makeBiometricAccessControl() -> SecAccessControl {
         return SecAccessControlCreateWithFlags(
             nil,

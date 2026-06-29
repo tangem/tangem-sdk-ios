@@ -10,14 +10,18 @@ import Foundation
 
 /// Task for deleting all files from card.
 final class DeleteAllFilesTask: CardSessionRunnable {
+    deinit {
+        Log.debug("DeleteAllFilesTask deinit")
+    }
+
     func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         deleteFile(session: session, completion: completion)
     }
-    
+
     private func deleteFile(session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         let command = DeleteFileCommand(fileIndex: 0)
-        
-        command.run(in: session) { (result) in
+
+        command.run(in: session) { result in
             switch result {
             case .success:
                 self.deleteFile(session: session, completion: completion)
@@ -26,10 +30,9 @@ final class DeleteAllFilesTask: CardSessionRunnable {
                     completion(.success(SuccessResponse(cardId: session.environment.card?.cardId ?? "")))
                     return
                 }
-                
+
                 completion(.failure(error))
             }
         }
     }
-    
 }

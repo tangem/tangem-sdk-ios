@@ -10,7 +10,7 @@ import Foundation
 
 public final class TlvEncoder {
     public init() {}
-    
+
     public func encode<T>(_ tag: TlvTag, value: T?) throws -> Tlv {
         do {
             if let value = value {
@@ -25,7 +25,7 @@ public final class TlvEncoder {
             throw error
         }
     }
-    
+
     private func encode<T>(_ value: T, for tag: TlvTag) throws -> Data {
         switch tag.valueType {
         case .hexString:
@@ -97,7 +97,7 @@ public final class TlvEncoder {
             } catch {
                 Log.warning("Settings mask type is not Card settings mask. Trying to check WalletSettingsMask")
             }
-            
+
             try typeCheck(value, WalletSettingsMask.self, for: tag)
             let mask = value as! WalletSettingsMask
             return mask.rawValue.bytes4
@@ -129,7 +129,7 @@ public final class TlvEncoder {
             return accessLevel.rawValue.byte
         }
     }
-    
+
     private func typeCheck<Value, ToType>(_ value: Value, _ to: ToType, for tag: TlvTag) throws {
         guard type(of: value) is ToType else {
             throw TangemSdkError.encodingFailedTypeMismatch("Encoding error for tag: \(tag). Value is \(value) of type \(Value.self). Expected: \(to).")

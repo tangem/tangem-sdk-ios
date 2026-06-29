@@ -10,13 +10,14 @@ import Foundation
 import Combine
 
 public class BackupService {
-    public static let maxBackupCardsCount = 2
+    private static let defaultMaxBackupCardsCount = 2
+    private static let v8MaxBackupCardsCount = 3
 
     public private(set) var currentState: State = .preparing
 
     public var canAddBackupCards: Bool {
-        addedBackupCardsCount < BackupService.maxBackupCardsCount
-        &&  repo.data.primaryCard?.linkingKey != nil
+        addedBackupCardsCount < maxBackupCardsCount
+            && repo.data.primaryCard?.linkingKey != nil
     }
 
     public var hasIncompletedBackup: Bool {
@@ -26,6 +27,19 @@ public class BackupService {
         default:
             return false
         }
+    }
+
+    public var maxBackupCardsCount: Int {
+        guard Config.extendedBackup else {
+            return Self.defaultMaxBackupCardsCount
+        }
+
+        if let firmwareVersion = repo.data.primaryCard?.firmwareVersion,
+           firmwareVersion >= .v8 {
+            return Self.v8MaxBackupCardsCount
+        }
+
+        return Self.defaultMaxBackupCardsCount
     }
 
     public var config: Config {
@@ -46,7 +60,7 @@ public class BackupService {
     private let sdk: TangemSdk
     private let networkService: NetworkService
     private var repo: BackupRepo = .init()
-    private var currentCommand: AnyObject? = nil
+    private var currentCommand: AnyObject?
     private var handleErrors: Bool { sdk.config.handleErrors }
 
     public init(
@@ -55,7 +69,7 @@ public class BackupService {
     ) {
         self.sdk = sdk
         self.networkService = networkService
-        self.updateState()
+        updateState()
     }
 
     deinit {
@@ -74,7 +88,7 @@ public class BackupService {
         }
 
         if handleErrors {
-            guard addedBackupCardsCount < BackupService.maxBackupCardsCount else {
+            guard addedBackupCardsCount < maxBackupCardsCount else {
                 completion(.failure(.tooMuchBackupCards))
                 return
             }
@@ -85,7 +99,7 @@ public class BackupService {
             return
         }
 
-        /// Impossible case due to primaryCard compatible Codable implementation with older app versions.
+        // Impossible case due to primaryCard compatible Codable implementation with older app versions.
         guard let primaryCardFirmwareVersion = primaryCard.firmwareVersion else {
             completion(.failure(.missingPrimaryCard))
             return
@@ -103,8 +117,8 @@ public class BackupService {
             case .success(let certificate):
                 var primaryCard = primaryCard
                 primaryCard.certificate = certificate
-                self.repo.data.primaryCard = primaryCard
-                self.readBackupCard(primaryCard, completion: completion)
+                repo.data.primaryCard = primaryCard
+                readBackupCard(primaryCard, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -166,7 +180,7 @@ public class BackupService {
     public func proceedBackup(completion: @escaping CompletionResult<Card>) {
         switch currentState {
         case .finalizingPrimaryCard:
-            handleFinalizePrimaryCard() {
+            handleFinalizePrimaryCard {
                 self.handleCompletion($0, completion: completion)
             }
         case .finalizingBackupCard(let index):
@@ -184,41 +198,45 @@ public class BackupService {
     }
 
     public func readPrimaryCard(cardId: String? = nil, completion: @escaping CompletionResult<Void>) {
-        var initialMessage: Message? = nil
+        var initialMessage: Message?
 
         if config.productType == .ring {
             initialMessage = Message(
                 header: nil,
-                body:"backup_finalize_primary_ring_message".localized
+                body: "backup_finalize_primary_ring_message".localized
             )
         } else {
             let formattedCardId = cardId.flatMap { CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: $0) }
 
             initialMessage = formattedCardId.map {
-                Message(header: nil,
-                        body: "backup_prepare_primary_card_message_format".localized($0)) }
-            ?? Message(header: "backup_prepare_primary_card_message".localized)
+                Message(
+                    header: nil,
+                    body: "backup_prepare_primary_card_message_format".localized($0)
+                )
+            }
+                ?? Message(header: "backup_prepare_primary_card_message".localized)
         }
 
         let command = StartPrimaryCardLinkingCommand()
         currentCommand = command
-        sdk.startSession(with: command,
-                         cardId: cardId,
-                         initialMessage: initialMessage
-        ) {[weak self] result in
+        sdk.startSession(
+            with: command,
+            cardId: cardId,
+            initialMessage: initialMessage
+        ) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.setPrimaryCard(response)
+                setPrimaryCard(response)
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
-            self.currentCommand = nil
+            currentCommand = nil
         }
     }
 
-    private func handleCompletion(_ result: Result<Card, TangemSdkError>, completion: @escaping CompletionResult<Card>) -> Void {
+    private func handleCompletion(_ result: Result<Card, TangemSdkError>, completion: @escaping CompletionResult<Card>) {
         switch result {
         case .success(let card):
             updateState()
@@ -235,8 +253,8 @@ public class BackupService {
             || repo.data.backupCards.isEmpty {
             currentState = .preparing
         } else if repo.data.attestSignature == nil
-                    || repo.data.backupData.count < repo.data.backupCards.count
-                    || repo.data.primaryCardFinalized == false {
+            || repo.data.backupData.count < repo.data.backupCards.count
+            || repo.data.primaryCardFinalized == false {
             currentState = .finalizingPrimaryCard
         } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
             currentState = .finalizingBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
@@ -267,8 +285,8 @@ public class BackupService {
             case .success(let certificate):
                 var backupCard = backupCard
                 backupCard.certificate = certificate
-                self.repo.data.backupCards.append(backupCard)
-                self.updateState()
+                repo.data.backupCards.append(backupCard)
+                updateState()
                 completion(.success(backupCardResponse.card))
             case .failure(let error):
                 completion(.failure(error))
@@ -285,26 +303,30 @@ public class BackupService {
         )
         currentCommand = command
 
-        sdk.startSession(with: command,
-                         filter: nil,
-                         initialMessage: Message(header: nil,
-                                                 body: "backup_add_backup_card_message".localized)) {[weak self] result in
+        sdk.startSession(
+            with: command,
+            filter: nil,
+            initialMessage: Message(
+                header: nil,
+                body: "backup_add_backup_card_message".localized
+            )
+        ) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success(let response):
-                self.addBackupCard(response, completion: completion)
+                addBackupCard(response, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
-            self.currentCommand = nil
+            currentCommand = nil
         }
     }
 
     private func handleFinalizePrimaryCard(completion: @escaping CompletionResult<Card>) {
         do {
             if handleErrors {
-                if repo.data.accessCode == nil && repo.data.passcode == nil {
+                if repo.data.accessCode == nil, repo.data.passcode == nil {
                     throw TangemSdkError.accessCodeOrPasscodeRequired
                 }
             }
@@ -321,7 +343,7 @@ public class BackupService {
                     throw TangemSdkError.emptyBackupCards
                 }
 
-                guard repo.data.backupCards.count < 3 else {
+                guard repo.data.backupCards.count <= maxBackupCardsCount else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }
@@ -345,24 +367,27 @@ public class BackupService {
                 }
             )
 
-            var initialMessage: Message? = nil
+            var initialMessage: Message?
 
             if config.productType == .ring {
                 initialMessage = Message(
                     header: nil,
-                    body:"backup_finalize_primary_ring_message".localized
+                    body: "backup_finalize_primary_ring_message".localized
                 )
             } else if let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: primaryCard.cardId) {
                 initialMessage = Message(
                     header: nil,
-                    body: "backup_finalize_primary_card_message_format".localized(formattedCardId))
+                    body: "backup_finalize_primary_card_message_format".localized(formattedCardId)
+                )
             }
 
             currentCommand = task
 
-            sdk.startSession(with: task,
-                             cardId: primaryCard.cardId,
-                             initialMessage: initialMessage) {[weak self] result in
+            sdk.startSession(
+                with: task,
+                cardId: primaryCard.cardId,
+                initialMessage: initialMessage
+            ) { [weak self] result in
                 completion(result)
                 self?.currentCommand = nil
             }
@@ -375,7 +400,7 @@ public class BackupService {
     private func handleWriteBackupCard(index: Int, completion: @escaping CompletionResult<Card>) {
         do {
             if handleErrors {
-                if repo.data.accessCode == nil && repo.data.passcode == nil {
+                if repo.data.accessCode == nil, repo.data.passcode == nil {
                     throw TangemSdkError.accessCodeOrPasscodeRequired
                 }
             }
@@ -398,7 +423,7 @@ public class BackupService {
             }
 
             if handleErrors {
-                guard repo.data.backupCards.count < 3 else {
+                guard repo.data.backupCards.count <= maxBackupCardsCount else {
                     throw TangemSdkError.tooMuchBackupCards
                 }
             }
@@ -409,42 +434,51 @@ public class BackupService {
                 throw TangemSdkError.noBackupDataForCard
             }
 
-            let command = FinalizeBackupCardTask(primaryCard: primaryCard,
-                                                 backupCards: repo.data.backupCards,
-                                                 backupData: backupData,
-                                                 attestSignature: attestSignature,
-                                                 accessCode: accessCode,
-                                                 passcode: passcode)
+            // For Wallet 3, the default derivations must be performed at the final step of the backup process.
+            let performDerivations: Bool = backupCard.firmwareVersion >= .v8 && cardIndex == repo.data.backupCards.count - 1
 
-            var initialMessage: Message? = nil
+            let command = FinalizeBackupCardTask(
+                primaryCard: primaryCard,
+                backupCards: repo.data.backupCards,
+                backupData: backupData,
+                attestSignature: attestSignature,
+                accessCode: accessCode,
+                passcode: passcode,
+                performDerivations: performDerivations
+            )
+
+            var initialMessage: Message?
 
             if config.productType == .ring {
                 initialMessage = Message(
                     header: nil,
-                    body:"backup_finalize_backup_ring_message".localized
+                    body: "backup_finalize_backup_ring_message".localized
                 )
             } else if let formattedCardId = CardIdFormatter(style: sdk.config.cardIdDisplayFormat).string(from: backupCard.cardId) {
                 initialMessage = Message(
                     header: nil,
-                    body: "backup_finalize_backup_card_message_format".localized(formattedCardId))
+                    body: "backup_finalize_backup_card_message_format".localized(formattedCardId)
+                )
             }
 
             currentCommand = command
 
-            sdk.startSession(with: command,
-                             cardId: backupCard.cardId,
-                             initialMessage: initialMessage) {[weak self] result in
+            sdk.startSession(
+                with: command,
+                cardId: backupCard.cardId,
+                initialMessage: initialMessage
+            ) { [weak self] result in
                 guard let self = self else { return }
 
                 switch result {
                 case .success(let card):
-                    self.repo.data.finalizedBackupCardsCount += 1
+                    repo.data.finalizedBackupCardsCount += 1
                     completion(.success(card))
                 case .failure(let error):
                     completion(.failure(error))
                 }
 
-                self.currentCommand = nil
+                currentCommand = nil
             }
 
         } catch {
@@ -472,7 +506,7 @@ public class BackupService {
             firmwareVersion: firmwareVersion
         )
 
-        certificateProvider.getCertificate() {
+        certificateProvider.getCertificate {
             completion($0)
             withExtendedLifetime(certificateProvider) {}
         }
@@ -481,8 +515,8 @@ public class BackupService {
 
 // MARK: - State
 
-extension BackupService {
-    public enum State: Equatable {
+public extension BackupService {
+    enum State: Equatable {
         case preparing
         case finalizingPrimaryCard
         case finalizingBackupCard(index: Int)
@@ -497,7 +531,7 @@ public struct PrimaryCard: Codable {
     public let cardPublicKey: Data
     public let linkingKey: Data
 
-    //For compatibility check with backup card
+    // For compatibility check with backup card
     public let existingWalletsCount: Int
     public let isHDWalletAllowed: Bool
     public let issuer: Card.Issuer
@@ -532,7 +566,7 @@ struct BackupServiceData: Codable {
     var primaryCard: PrimaryCard? = nil
     var attestSignature: Data? = nil
     var backupCards: [BackupCard] = []
-    var backupData: [String:[EncryptedBackupData]] = [:]
+    var backupData: [String: [EncryptedBackupData]] = [:]
     var finalizedBackupCardsCount: Int = 0
     var primaryCardFinalized: Bool? = nil
 
@@ -552,18 +586,18 @@ class BackupRepo {
             do {
                 try save()
             } catch {
-                Log.debug(error)
+                Log.error(error)
             }
 
             Log.debug("BackupRepo updated")
         }
     }
 
-    init () {
+    init() {
         do {
             try fetch()
         } catch {
-            Log.debug(error)
+            Log.error(error)
         }
     }
 
@@ -571,24 +605,24 @@ class BackupRepo {
         do {
             try storage.delete(.backupData)
         } catch {
-            Log.debug(error)
+            Log.error(error)
         }
         data = .init()
     }
 
     private func save() throws {
-        guard !isFetching && data.shouldSave else { return }
+        guard !isFetching, data.shouldSave else { return }
 
         let encoded = try JSONEncoder().encode(data)
         try storage.store(encoded, forKey: .backupData)
     }
 
     private func fetch() throws {
-        self.isFetching = true
+        isFetching = true
         defer { self.isFetching = false }
 
         if let savedData = try storage.get(.backupData) {
-            self.data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
+            data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
     }
 }

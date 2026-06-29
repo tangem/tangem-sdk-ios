@@ -15,11 +15,11 @@ struct MainScreen: View {
     var body: some View {
         mainView
             .transition(AnyTransition
-                            .identity
-                            .combined(with: .opacity))
+                .identity
+                .combined(with: .opacity))
             .environmentObject(style)
     }
-    
+
     @ViewBuilder
     private var mainView: some View {
         Group {
@@ -56,13 +56,14 @@ struct MainScreen: View {
 
             case .empty:
                 EmptyView()
+
             default:
-                indicatorView(self.viewModel.viewState.indicatorState!)
+                indicatorView(viewModel.viewState.indicatorState!)
                     .transition(.opacity.animation(.easeInOut))
             }
         }
     }
-    
+
     @ViewBuilder
     private func requestCodeView(
         type: UserCodeType,
@@ -96,8 +97,8 @@ struct MainScreen: View {
     @ViewBuilder
     private func indicatorView(_ state: IndicatorView.ViewState) -> some View {
         GeometryReader { geo in
-            
-            let sheetHeight =  UIScreen.main.isZoomedMode && UIScreen.main.scale < 3 ? Constants.nfcSheetHeightZoomed : Constants.nfcSheetHeight
+
+            let sheetHeight = UIScreen.main.isZoomedMode && UIScreen.main.scale < 3 ? Constants.nfcSheetHeightZoomed : Constants.nfcSheetHeight
             let availableSpace = min(geo.size.width, geo.size.height - sheetHeight, Constants.indicatorMaxSize)
             let indicatorSize = availableSpace * 0.8
 
@@ -119,7 +120,7 @@ struct MainScreen: View {
 private extension MainScreen {
     enum Constants {
         static let indicatorMaxSize: CGFloat = 280
-        static let nfcSheetHeightZoomed: CGFloat = 310 //iPhone 7
+        static let nfcSheetHeightZoomed: CGFloat = 310 // iPhone 7
         static let nfcSheetHeight: CGFloat = 390
     }
 }
@@ -132,18 +133,21 @@ struct MainScreen_Preview: PreviewProvider {
     }
 }
 
-fileprivate extension SessionViewState {
+private extension SessionViewState {
     var indicatorState: IndicatorView.ViewState? {
         switch self {
         case .default:
             return .spinner
-            
+
         case .delay(let remaining, let total):
-            return .delay(currentValue: CGFloat(remaining),
-                          totalValue: CGFloat(total))
-            
+            return .delay(
+                currentValue: CGFloat(remaining),
+                totalValue: CGFloat(total)
+            )
+
         case .progress(let progress):
-            return.progress(progress: progress)
+            return .progress(progress: progress)
+
         default:
             return nil
         }

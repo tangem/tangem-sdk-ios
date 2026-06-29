@@ -23,7 +23,7 @@ public enum PreflightReadMode: Decodable, Equatable {
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
         let stringValue = try values.decode(String.self).lowercased()
-        
+
         switch stringValue {
         case "none":
             self = .none
@@ -44,51 +44,56 @@ final class PreflightReadTask: CardSessionRunnable {
 
     init(readMode: PreflightReadMode, filter: PreflightReadFilter?) {
         self.readMode = readMode
-        self.preflightFilter = filter
+        preflightFilter = filter
     }
-    
+
     deinit {
         Log.debug("PreflightReadTask deinit")
     }
-    
+
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        Log.debug("Run preflight read with mode: \(readMode)")
+        Log.session("Run preflight read with mode: \(readMode)")
         ReadCommand().run(in: session) { result in
             switch result {
             case .success(let readResponse):
+                let (card, _) = readResponse
+
                 do {
                     let permanentFilter = session.environment.config.filter
-                    try permanentFilter.verifyCard(readResponse)
+                    try permanentFilter.verifyCard(card)
 
                     if session.environment.config.handleErrors {
-                        try self.preflightFilter?.onCardRead(readResponse, environment: session.environment)
+                        try self.preflightFilter?.onCardRead(card, environment: session.environment)
                     }
 
                 } catch {
                     completion(.failure(.preflightFiltered(error)))
                     return
                 }
-                
-                self.updateEnvironmentIfNeeded(for: readResponse, in: session)
+
+                if card.firmwareVersion.type != .sdk {
+                    Config.isDevelopmentMode = false
+                }
+
+                self.updateEnvironmentIfNeeded(for: card, in: session)
                 session.fetchAccessCodeIfNeeded()
-                
+                session.fetchAccessTokensIfNeeded()
                 self.finalizeRead(in: session, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
-    
+
     private func finalizeRead(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
-        if card.firmwareVersion < .multiwalletAvailable {
 
+        if card.firmwareVersion < .multiwalletAvailable {
             do {
-                try self.filterOnReadWalletsList(card: card, session)
+                try filterOnReadWalletsList(card: card, session)
             } catch {
                 completion(.failure(.preflightFiltered(error)))
                 return
@@ -97,17 +102,24 @@ final class PreflightReadTask: CardSessionRunnable {
             completion(.success(card))
             return
         }
-        
+
         switch readMode {
         case .fullCardRead:
             readWalletsList(in: session, completion: completion)
         case .fullCardReadWithAccessCodeCheck:
             if card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
                 session.pause()
-                session.environment.accessCode = UserCode(.accessCode, value: nil)
+
+                let showWelcomeBackWarning: Bool
+                if Config.isDevelopmentMode, card.firmwareVersion.type == .sdk {
+                    showWelcomeBackWarning = false
+                } else {
+                    showWelcomeBackWarning = true
+                }
 
                 DispatchQueue.main.async {
-                    session.requestUserCodeIfNeeded(.accessCode, showWelcomeBackWarning: true) { result in
+                    session.environment.accessCode = UserCode(.accessCode, value: nil)
+                    session.requestUserCode(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
                         switch result {
                         case .success:
                             session.resume()
@@ -126,11 +138,11 @@ final class PreflightReadTask: CardSessionRunnable {
             completion(.success(card))
         }
     }
-    
+
     private func readWalletsList(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         ReadWalletsListCommand().run(in: session) { result in
             switch result {
-            case .success:
+            case .success(let response):
                 guard let card = session.environment.card else {
                     completion(.failure(.missingPreflightRead))
                     return
@@ -143,11 +155,84 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
 
-                completion(.success(card))
+                if card.firmwareVersion >= .v8 {
+                    self.readMasterSecret(in: session) {
+                        self.verifyBackup(backupHash: response.backupHash, session: session)
+                        completion($0)
+                    }
+                } else {
+                    completion(.success(card))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+    }
+
+    private func readMasterSecret(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+        ReadMasterSecretCommand().run(in: session) { result in
+            switch result {
+            case .success(let response):
+                guard let card = session.environment.card else {
+                    completion(.failure(.missingPreflightRead))
+                    return
+                }
+
+                session.environment.card?.masterSecret = response.masterSecret
+                completion(.success(session.environment.card ?? card))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func verifyBackup(backupHash: Data?, session: CardSession) {
+        guard let backupHash,
+              let card = session.environment.card else {
+            return
+        }
+
+        // No backup yet
+        if backupHash.allSatisfy({ $0 == 0 }) {
+            return
+        }
+
+        let calculatedHash = Self.calculateBackupHash(card: card)
+        let isBackupVerified = CryptoUtils.secureCompare(calculatedHash, backupHash)
+        session.environment.card?.isBackupVerified = isBackupVerified
+        Log.session("Backup is verified: \(isBackupVerified)")
+    }
+
+    private static func calculateBackupHash(card: Card) -> Data {
+        var hashData = Data("WALLETS".utf8)
+
+        // Master secret
+        if let masterSecret = card.masterSecret {
+            hashData.append(UInt8(masterSecret.status.rawValue) & 0x7F)
+
+            if let publicKey = masterSecret.publicKey {
+                hashData.append(publicKey)
+            }
+
+            if let chainCode = masterSecret.chainCode {
+                hashData.append(chainCode)
+            }
+        }
+
+        for wallet in card.wallets.sorted(by: { $0.index < $1.index }) {
+            hashData.append(wallet.index.byte)
+            hashData.append(UInt8(wallet.status.rawValue) & 0x7F)
+
+            if let publicKey = wallet.publicKey {
+                hashData.append(publicKey)
+            }
+
+            if let chainCode = wallet.chainCode {
+                hashData.append(chainCode)
+            }
+        }
+
+        return hashData.getSHA256().prefix(8)
     }
 
     private func filterOnReadWalletsList(card: Card, _ session: CardSession) throws {
@@ -156,7 +241,7 @@ final class PreflightReadTask: CardSessionRunnable {
         }
 
         do {
-            try self.preflightFilter?.onFullCardRead(card, environment: session.environment)
+            try preflightFilter?.onFullCardRead(card, environment: session.environment)
         } catch {
             throw TangemSdkError.preflightFiltered(error)
         }

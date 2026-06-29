@@ -1,0 +1,109 @@
+# file options
+--exclude Pods
+--exclude **/*.pb.swift    # Protobufs
+--exclude vendor    # Fastlane source files
+
+# Format options
+# Disable all default options
+--disable all
+
+# Enabled rules
+
+--enable andOperator
+--enable anyObjectProtocol
+--enable assertionFailures
+--enable braces
+--enable duplicateImports
+--enable elseOnSameLine
+--enable emptyBraces
+--enable enumNamespaces
+--enable extensionAccessControl
+--enable hoistPatternLet
+--patternlet inline
+--enable indent
+--indent 4
+--ifdef no-indent
+--enable isEmpty
+--enable leadingDelimiters
+--enable linebreakAtEndOfFile
+--enable linebreaks
+--enable modifierOrder
+--enable consistentSwitchCaseSpacing
+--enable docCommentsBeforeModifiers
+--enable initCoderUnavailable
+--enable noExplicitOwnership
+--enable docComments
+# --enable unusedPrivateDeclarations    # Enable on CI only
+
+## Redundant rules
+--enable redundantBackticks
+--enable redundantBreak
+--enable redundantClosure
+--enable redundantExtensionACL
+--enable redundantGet
+--enable redundantInit
+--enable redundantLet
+--enable redundantLetError
+--enable redundantNilInit
+--enable redundantObjc
+--enable redundantParens
+--enable redundantPattern
+--enable redundantRawValues
+--enable redundantSelf
+# In the rare case of functions with @autoclosure arguments, self may be required at the call site, but SwiftFormat is unable to detect this automatically
+--selfrequired runInMainThread
+--enable redundantType
+--enable redundantVoidReturnType
+--enable redundantFileprivate
+--enable redundantInternal
+--enable redundantStaticSelf
+--enable redundantTypedThrows
+
+--enable semicolons
+--enable typeSugar
+--enable strongifiedSelf
+--enable todos
+--enable void
+
+## Wrap rules
+--enable wrapArguments
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+--closingparen balanced
+--wrapreturntype preserve
+--wrapconditions preserve
+--wraptypealiases preserve
+--enable wrapAttributes
+--funcattributes prev-line
+--typeattributes prev-line
+--varattributes preserve
+--enable wrapEnumCases
+--enable wrapLoopBodies
+
+# Spacing rules options
+--enable consecutiveSpaces
+--enable consecutiveBlankLines
+
+--enable blankLinesBetweenScopes
+--enable blankLinesBetweenImports
+--enable blankLineAfterImports
+--enable blankLinesAtStartOfScope
+--enable blankLinesAtEndOfScope
+--enable blankLinesAroundMark
+
+--enable trailingSpace
+--enable trailingCommas
+--enable trailingClosures
+
+--enable spaceAroundBraces
+--enable spaceAroundBrackets
+--enable spaceAroundComments
+--enable spaceAroundGenerics
+--enable spaceAroundOperators
+--enable spaceAroundParens
+--enable spaceInsideBraces
+--enable spaceInsideBrackets
+--enable spaceInsideComments
+--enable spaceInsideGenerics
+--enable spaceInsideParens

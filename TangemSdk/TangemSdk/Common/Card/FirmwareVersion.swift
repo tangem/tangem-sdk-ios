@@ -13,54 +13,54 @@ import Foundation
 public struct FirmwareVersion: Codable {
     /// Version that saved on card
     public let stringValue: String
-    
+
     public var doubleValue: Double {
         Double("\(major).\(minor)")!
     }
-    
-    private(set) public var major: Int = 0
-    private(set) public var minor: Int = 0
-    private(set) public var patch: Int = 0
-    private(set) public var type: FirmwareType
-    
+
+    public private(set) var major: Int = 0
+    public private(set) var minor: Int = 0
+    public private(set) var patch: Int = 0
+    public private(set) var type: FirmwareType
+
     public init(stringValue: String) {
         self.stringValue = stringValue
-        
+
         let versionCleaned = stringValue.remove("\0")
-        
+
         let cardTypeStr = versionCleaned.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789."))
         let result = versionCleaned.remove(cardTypeStr)
-        
+
         var splitted = result.split(separator: ".")
         if let majorStr = splitted.first, let major = Int(majorStr) {
             self.major = major
             splitted.removeFirst()
         }
-        
+
         if let minorStr = splitted.first, let minor = Int(minorStr) {
             self.minor = minor
             splitted.removeFirst()
         }
-        
+
         if let patchStr = splitted.first, let patch = Int(patchStr) {
             self.patch = patch
         }
-        
+
         type = .type(for: cardTypeStr)
     }
-    
+
     public init(major: Int, minor: Int, patch: Int = 0, type: FirmwareType = .sdk) {
         self.major = major
         self.minor = minor
         self.patch = patch
         self.type = type
-        
+
         let patchSuffix = ".\(patch)"
         var version = "\(major).\(minor)"
         version += patch != 0 ? patchSuffix : ""
         version += type.rawValue
-        
-        self.stringValue = version
+
+        stringValue = version
     }
 }
 
@@ -74,11 +74,11 @@ extension FirmwareVersion: Comparable {
             return lhs.patch < rhs.patch
         }
     }
-    
+
     public static func == (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
         lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
     }
-    
+
     public static func >= (lhs: FirmwareVersion, rhs: FirmwareVersion) -> Bool {
         if lhs.major != rhs.major {
             return lhs.major > rhs.major
@@ -88,66 +88,71 @@ extension FirmwareVersion: Comparable {
             return lhs.patch >= rhs.patch
         }
     }
-    
+
     public static func < (lhs: FirmwareVersion?, rhs: FirmwareVersion) -> Bool {
         guard let lhs = lhs else { return false }
-        
+
         return lhs < rhs
     }
-    
+
     public static func >= (lhs: FirmwareVersion?, rhs: FirmwareVersion) -> Bool {
         guard let lhs = lhs else { return false }
-        
+
         return lhs >= rhs
     }
-    
 }
-//MARK: - Constants
-public extension FirmwareVersion { //todo: move all doubleValue checks to constants, group production cos
+
+// MARK: - Constants
+
+public extension FirmwareVersion {
+    /// Wallet ownership confirmation available
+    static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
+    /// Persistent security delay available
+    static let persistentSecurityDelayAvailable = FirmwareVersion(major: 2, minor: 28)
+    /// Read-write files
+    static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
+    /// Read file checksum, writing by user codes
+    static let updatedFilesAvailable = FirmwareVersion(major: 3, minor: 34)
     /// Multi-wallet
     static let multiwalletAvailable = FirmwareVersion(major: 4, minor: 0)
-    /// BLS
-    static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
     /// Field on card that describes is passcode is default value or not
     static let passcodeStatusAvailable = FirmwareVersion(major: 4, minor: 1)
+    /// Is create wallet command answers with the whole wallet
+    static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
     /// Starting from this firmware version, the card provides status information about user codes (access code and passcode),
     /// including whether they are set to default values. The status words SW_INVALID_PIN and SW_INVALID_PIN2 indicate invalid user code attempts.
     static let userCodeStatusesAvailable = FirmwareVersion(major: 4, minor: 33)
     /// Determines when default PINs are optional in commands
     static let isDefaultPinsOptional = FirmwareVersion(major: 4, minor: 34)
-    /// Read-write files
-    static let filesAvailable = FirmwareVersion(major: 3, minor: 29)
     /// HD Wallet
     static let hdWalletAvailable = FirmwareVersion(major: 4, minor: 39)
-    /// Is create wallet command answers with the whole wallet
-    static let createWalletResponseAvailable = FirmwareVersion(major: 4, minor: 25)
     /// Backup available
     static let backupAvailable = FirmwareVersion(major: 4, minor: 39)
-    /// Wallet ownership confirmation available
-    static let walletOwnershipConfirmationAvailable = FirmwareVersion(major: 2, minor: 1)
+    /// BLS
+    static let blsAvailable = FirmwareVersion(major: 4, minor: 45)
+    /// Tmp range for visa cards
+    static let visaRange = 5.25 ... 5.30
     /// Keys import support
     static let keysImportAvailable = FirmwareVersion(major: 6, minor: 21)
-    /// Tmp range for visa cards
-    static let visaRange = 5.25...5.30
     /// ed25519_slip0010
     static let ed25519Slip0010Available = FirmwareVersion(major: 6, minor: 33)
-    /// main secret
-    static let v8 = FirmwareVersion(major: 8, minor: 44)
+    /// COS v8+, a lot of changes
+    static let v8 = FirmwareVersion(major: 8, minor: 58)
 }
 
 public extension FirmwareVersion {
     enum FirmwareType: String, StringCodable, CaseIterable, JSONStringConvertible {
-        case sdk = "d SDK" //todo fix
+        case sdk = "d SDK"
         case release = "r"
         case special
-        
+
         static func type(for str: String) -> FirmwareType {
             let trimmed = str.trim()
-            
+
             if trimmed.isEmpty {
                 return .release
             }
-            
+
             return FirmwareType(rawValue: trimmed) ?? .special
         }
     }

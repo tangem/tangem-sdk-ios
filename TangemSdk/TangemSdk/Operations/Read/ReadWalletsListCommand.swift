@@ -11,6 +11,9 @@ import Foundation
 public struct ReadWalletsListResponse: JSONStringConvertible {
     public let cardId: String
     public let wallets: [Card.Wallet]
+
+    /// Hash of all wallets included in the backup. Returned only if walletIndex is omitted. COS v8+.
+    public let backupHash: Data?
 }
 
 /// Read all wallets on card.
@@ -19,71 +22,92 @@ public class ReadWalletsListCommand: Command {
 
     private var loadedWallets: [Card.Wallet] = []
     private var receivedWalletsCount: Int = 0
-    
+    private var backupHash: Data?
+
     public init() {}
-    
+
     deinit {
         Log.debug("ReadWalletsListCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .multiwalletAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         return nil
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<ReadWalletsListResponse>) {
         transceive(in: session) { result in
             switch result {
             case .success(let response):
                 self.loadedWallets.append(contentsOf: response.wallets)
-                
-                if self.receivedWalletsCount == 0 && response.wallets.isEmpty {
+
+                if let backupHash = response.backupHash {
+                    self.backupHash = backupHash
+                }
+
+                if self.receivedWalletsCount == 0, response.wallets.isEmpty {
                     completion(.failure(.cardWithMaxZeroWallets))
                     return
                 }
-                
+
                 guard self.receivedWalletsCount == session.environment.card?.settings.maxWalletsCount else {
                     self.run(in: session, completion: completion)
                     return
                 }
-                
+
                 let wallets = self.loadedWallets.sorted(by: { $0.index < $1.index })
                 session.environment.card?.wallets = wallets
-                
-                completion(.success(ReadWalletsListResponse(cardId: response.cardId,
-                                                            wallets: wallets)))
+
+                completion(.success(ReadWalletsListResponse(
+                    cardId: response.cardId,
+                    wallets: wallets,
+                    backupHash: self.backupHash
+                )))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
             .append(.interactionMode, value: ReadMode.walletsList)
-            .append(.cardId, value: environment.card?.cardId)
-        
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
+
         if receivedWalletsCount > 0 {
             try tlvBuilder.append(.walletIndex, value: receivedWalletsCount)
         }
-        
+
         return CommandApdu(.read, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ReadWalletsListResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
         guard let card = environment.card else {
             throw TangemSdkError.unknownError
         }
-        
+
         let deserializedData = try WalletDeserializer(isDefaultPermanentWallet: card.settings.isPermanentWallet).deserializeWallets(from: decoder)
         receivedWalletsCount += deserializedData.totalReceived
-        return ReadWalletsListResponse(cardId: try decoder.decode(.cardId),
-                                       wallets: deserializedData.wallets)
+        return ReadWalletsListResponse(
+            cardId: try decoder.decode(.cardId),
+            wallets: deserializedData.wallets,
+            backupHash: try decoder.decode(.hash)
+        )
     }
 }

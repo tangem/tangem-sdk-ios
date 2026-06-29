@@ -12,48 +12,48 @@ import Foundation
 /// and commands can return modified `SessionEnvironment`.
 public struct SessionEnvironment {
     /// Current card, read by preflight `Read` command
-    public internal(set) var card: Card? = nil
-    
+    public internal(set) var card: Card?
+
     /// Current card's wallet data, read by preflight `Read` command
-    public internal(set) var walletData: WalletData? = nil
-    
+    public internal(set) var walletData: WalletData?
+
     public internal(set) var config: Config
-    
+
     weak var terminalKeysService: TerminalKeysService?
-    
+
     var encryptionMode: EncryptionMode = .none
-    
-    var encryptionKey: Data? = nil
-    
-    var currentSecurityDelay: Float? = nil
-    
-    var cvc: Data? = nil //todo: remove
-    
+
+    var encryptionKey: Data?
+
+    var currentSecurityDelay: Float?
+
+    /// COS v8+
+    var cardAccessTokens: CardAccessTokens?
+
     var accessCode: UserCode = .init(.accessCode)
-    
+
     var passcode: UserCode = .init(.passcode)
-    
+
     var legacyMode: Bool { config.legacyMode ?? NFCUtils.isPoorNfcQualityDevice }
-    
+
     /// Keys for Linked Terminal feature
     var terminalKeys: KeyPair? {
         if config.linkedTerminal ?? !NFCUtils.isPoorNfcQualityDevice {
             return terminalKeysService?.keys
         }
-        
+
         return nil
     }
-    
-    func isUserCodeSet(_ type: UserCodeType) -> Bool {
-        switch type {
-        case .accessCode:
-            return accessCode.value != type.defaultValue.getSHA256()
-        case .passcode:
-            return passcode.value != type.defaultValue.getSHA256()
-        }
+
+    init(config: Config = Config(), terminalKeysService: TerminalKeysService? = nil) {
+        self.config = config
+        self.terminalKeysService = terminalKeysService
     }
 
-    mutating func resetCodes() {
+    mutating func reset() {
+        encryptionKey?.zeroOut()
+        encryptionKey = nil
+        cardAccessTokens = nil
         accessCode = .init(.accessCode)
         passcode = .init(.passcode)
     }

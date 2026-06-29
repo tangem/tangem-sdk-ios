@@ -15,26 +15,26 @@ typealias BigInt = _BigInt<UInt8>
 extension FixedWidthInteger {
     /// Returns the high and low parts of a potentially overflowing addition.
     func addingFullWidth(_ other: Self) ->
-    (high: Self, low: Self) {
-        let sum = self.addingReportingOverflow(other)
+        (high: Self, low: Self) {
+        let sum = addingReportingOverflow(other)
         return (sum.overflow ? 1 : 0, sum.partialValue)
     }
 
     /// Returns the high and low parts of two seqeuential potentially overflowing
     /// additions.
     static func addingFullWidth(_ x: Self, _ y: Self, _ z: Self) ->
-    (high: Self, low: Self) {
+        (high: Self, low: Self) {
         let xy = x.addingReportingOverflow(y)
         let xyz = xy.partialValue.addingReportingOverflow(z)
         let high: Self = (xy.overflow ? 1 : 0) +
-        (xyz.overflow ? 1 : 0)
+            (xyz.overflow ? 1 : 0)
         return (high, xyz.partialValue)
     }
 
     /// Returns a tuple containing the value that would be borrowed from a higher
     /// place and the partial difference of this value and `rhs`.
     func subtractingWithBorrow(_ rhs: Self) ->
-    (borrow: Self, partialValue: Self) {
+        (borrow: Self, partialValue: Self) {
         let difference = subtractingReportingOverflow(rhs)
         return (difference.overflow ? 1 : 0, difference.partialValue)
     }
@@ -42,12 +42,12 @@ extension FixedWidthInteger {
     /// Returns a tuple containing the value that would be borrowed from a higher
     /// place and the partial value of `x` and `y` subtracted from this value.
     func subtractingWithBorrow(_ x: Self, _ y: Self) ->
-    (borrow: Self, partialValue: Self) {
+        (borrow: Self, partialValue: Self) {
         let firstDifference = subtractingReportingOverflow(x)
         let secondDifference =
-        firstDifference.partialValue.subtractingReportingOverflow(y)
+            firstDifference.partialValue.subtractingReportingOverflow(y)
         let borrow: Self = (firstDifference.overflow ? 1 : 0) +
-        (secondDifference.overflow ? 1 : 0)
+            (secondDifference.overflow ? 1 : 0)
         return (borrow, secondDifference.partialValue)
     }
 }
@@ -60,18 +60,16 @@ extension FixedWidthInteger {
 /// The `_BigInt` type is fully generic on the size of its "word" -- the
 /// `BigInt` alias uses the system's word-sized `UInt` as its word type, but
 /// any word size should work properly.
-struct _BigInt<Word: FixedWidthInteger & UnsignedInteger> :
+struct _BigInt<Word: FixedWidthInteger & UnsignedInteger>:
     BinaryInteger, SignedInteger, CustomStringConvertible,
     CustomDebugStringConvertible
-where Word.Magnitude == Word
-{
-
+    where Word.Magnitude == Word {
     /// The binary representation of the value's magnitude, with the least
     /// significant word at index `0`.
     ///
     /// - `_data` has no trailing zero elements
     /// - If `self == 0`, then `isNegative == false` and `_data == []`
-    internal var _data: [Word] = []
+    var _data: [Word] = []
 
     /// A Boolean value indicating whether this instance is negative.
     private(set) var isNegative = false
@@ -84,7 +82,7 @@ where Word.Magnitude == Word
     //===--- Numeric initializers -------------------------------------------===//
 
     /// Creates a new instance equal to zero.
-    init() { }
+    init() {}
 
     /// Creates a new instance using `_data` as the data collection.
     init<C: Collection>(_ _data: C) where C.Iterator.Element == Word {
@@ -96,17 +94,17 @@ where Word.Magnitude == Word
         self.init(value)
     }
 
-    init<T : BinaryInteger>(_ source: T) {
+    init<T: BinaryInteger>(_ source: T) {
         var source = source
         if source < 0 as T {
             if source.bitWidth <= UInt64.bitWidth {
                 let sourceMag = Int(truncatingIfNeeded: source).magnitude
                 self = _BigInt(sourceMag)
-                self.isNegative = true
+                isNegative = true
                 return
             } else {
                 // Have to kind of assume that we're working with another BigInt here
-                self.isNegative = true
+                isNegative = true
                 source *= -1
             }
         }
@@ -115,7 +113,7 @@ where Word.Magnitude == Word
         let wordRatio = UInt.bitWidth / Word.bitWidth
         assert(wordRatio != 0)
         for var sourceWord in source.words {
-            for _ in 0..<wordRatio {
+            for _ in 0 ..< wordRatio {
                 _data.append(Word(truncatingIfNeeded: sourceWord))
                 sourceWord >>= Word.bitWidth
             }
@@ -123,23 +121,23 @@ where Word.Magnitude == Word
         _standardize()
     }
 
-    init?<T : BinaryInteger>(exactly source: T) {
+    init?<T: BinaryInteger>(exactly source: T) {
         self.init(source)
     }
 
-    init<T : BinaryInteger>(truncatingIfNeeded source: T) {
+    init<T: BinaryInteger>(truncatingIfNeeded source: T) {
         self.init(source)
     }
 
-    init<T : BinaryInteger>(clamping source: T) {
+    init<T: BinaryInteger>(clamping source: T) {
         self.init(source)
     }
 
-    init<T : BinaryFloatingPoint>(_ source: T) {
+    init<T: BinaryFloatingPoint>(_ source: T) {
         fatalError("Not implemented")
     }
 
-    init?<T : BinaryFloatingPoint>(exactly source: T) {
+    init?<T: BinaryFloatingPoint>(exactly source: T) {
         fatalError("Not implemented")
     }
 
@@ -147,9 +145,9 @@ where Word.Magnitude == Word
     static func _randomWord() -> Word {
         // This handles up to a 64-bit word
         if Word.bitWidth > UInt32.bitWidth {
-            return Word(UInt32.random(in: 0...UInt32.max)) << 32 | Word(UInt32.random(in: 0...UInt32.max))
+            return Word(UInt32.random(in: 0 ... UInt32.max)) << 32 | Word(UInt32.random(in: 0 ... UInt32.max))
         } else {
-            return Word(truncatingIfNeeded: UInt32.random(in: 0...UInt32.max))
+            return Word(truncatingIfNeeded: UInt32.random(in: 0 ... UInt32.max))
         }
     }
 
@@ -157,10 +155,10 @@ where Word.Magnitude == Word
     /// data. The sign of the new value is randomly selected.
     init(randomBits: Int) {
         let (words, extraBits) =
-        randomBits.quotientAndRemainder(dividingBy: Word.bitWidth)
+            randomBits.quotientAndRemainder(dividingBy: Word.bitWidth)
 
         // Get the bits for any full words.
-        self._data = (0..<words).map({ _ in _BigInt._randomWord() })
+        _data = (0 ..< words).map { _ in _BigInt._randomWord() }
 
         // Get another random number - the highest bit will determine the sign,
         // while the lower `Word.bitWidth - 1` bits are available for any leftover
@@ -186,7 +184,7 @@ where Word.Magnitude == Word
             _data.removeLast()
         }
         // Zero is never negative.
-        isNegative = isNegative && _data.count != 0
+        isNegative = isNegative && !_data.isEmpty
     }
 
     /// Checks and asserts on invariants -- all invariants must be satisfied
@@ -196,8 +194,10 @@ where Word.Magnitude == Word
     /// - If `self == 0`, then `isNegative == false`
     func _checkInvariants(source: String = #function) {
         if _data.isEmpty {
-            assert(isNegative == false,
-                   "\(source): isNegative with zero length _data")
+            assert(
+                isNegative == false,
+                "\(source): isNegative with zero length _data"
+            )
         }
         assert(_data.last != 0, "\(source): extra zeroes on _data")
     }
@@ -221,7 +221,7 @@ where Word.Magnitude == Word
         (carry, _data[0]) = _data[0].addingFullWidth(rhs)
 
         // Handle any additional carries
-        for i in 1..<_data.count {
+        for i in 1 ..< _data.count {
             // No more action needed if there's nothing to carry
             if carry == 0 { break }
             (carry, _data[i]) = _data[i].addingFullWidth(carry)
@@ -248,7 +248,7 @@ where Word.Magnitude == Word
         var carry: Word
         (carry, _data[0]) = _data[0].subtractingWithBorrow(rhs)
 
-        for i in 1..<_data.count {
+        for i in 1 ..< _data.count {
             // No more action needed if there's nothing to carry
             if carry == 0 { break }
             (carry, _data[i]) = _data[i].subtractingWithBorrow(carry)
@@ -264,12 +264,12 @@ where Word.Magnitude == Word
             // If _data only contains one word and `rhs` is greater, swap them,
             // make self positive and continue with unsigned subtraction.
             var rhs = rhs
-            if _data.count == 1 && _data[0] < rhs {
+            if _data.count == 1, _data[0] < rhs {
                 swap(&rhs, &_data[0])
                 isNegative = false
             }
             _unsignedSubtract(rhs)
-        } else {   // positive or zero
+        } else { // positive or zero
             _unsignedAdd(rhs)
         }
     }
@@ -285,7 +285,7 @@ where Word.Magnitude == Word
             _data.append(rhs)
         } else {
             var rhs = rhs
-            if _data.count == 1 && _data[0] < rhs {
+            if _data.count == 1, _data[0] < rhs {
                 swap(&rhs, &_data[0])
                 isNegative = true
             }
@@ -296,7 +296,7 @@ where Word.Magnitude == Word
     /// Multiplies this instance by `rhs`.
     mutating func multiply(by rhs: Word) {
         // If either `self` or `rhs` is zero, the result is zero.
-        guard !isZero && rhs != 0 else {
+        guard !isZero, rhs != 0 else {
             self = 0
             return
         }
@@ -309,7 +309,7 @@ where Word.Magnitude == Word
         }
 
         var carry: Word = 0
-        for i in 0..<_data.count {
+        for i in 0 ..< _data.count {
             let product = _data[i].multipliedFullWidth(by: rhs)
             (carry, _data[i]) = product.low.addingFullWidth(carry)
             carry = carry &+ product.high
@@ -340,7 +340,7 @@ where Word.Magnitude == Word
         }
 
         var carry: Word = 0
-        for i in (0..<_data.count).reversed() {
+        for i in (0 ..< _data.count).reversed() {
             let lhs = (high: carry, low: _data[i])
             (_data[i], carry) = rhs.dividingFullWidth(lhs)
         }
@@ -369,13 +369,13 @@ where Word.Magnitude == Word
 
         // Add the words up to the common count, carrying any overflows
         var carry: Word = 0
-        for i in 0..<commonCount {
+        for i in 0 ..< commonCount {
             (carry, _data[i]) = Word.addingFullWidth(_data[i], rhs._data[i], carry)
         }
 
         // If there are leftover words in `self`, just need to handle any carries
         if _data.count > rhs._data.count {
-            for i in commonCount..<maxCount {
+            for i in commonCount ..< maxCount {
                 // No more action needed if there's nothing to carry
                 if carry == 0 { break }
                 (carry, _data[i]) = _data[i].addingFullWidth(carry)
@@ -383,7 +383,7 @@ where Word.Magnitude == Word
 
             // If there are leftover words in `rhs`, need to copy to `self` with carries
         } else if _data.count < rhs._data.count {
-            for i in commonCount..<maxCount {
+            for i in commonCount ..< maxCount {
                 // Append remaining words if nothing to carry
                 if carry == 0 {
                     _data.append(contentsOf: rhs._data.suffix(from: i))
@@ -409,11 +409,11 @@ where Word.Magnitude == Word
         precondition(rhs._data.count <= _data.count)
 
         var carry: Word = 0
-        for i in 0..<rhs._data.count {
+        for i in 0 ..< rhs._data.count {
             (carry, _data[i]) = _data[i].subtractingWithBorrow(rhs._data[i], carry)
         }
 
-        for i in rhs._data.count..<_data.count {
+        for i in rhs._data.count ..< _data.count {
             // No more action needed if there's nothing to carry
             if carry == 0 { break }
             (carry, _data[i]) = _data[i].subtractingWithBorrow(carry)
@@ -423,7 +423,7 @@ where Word.Magnitude == Word
         _standardize()
     }
 
-    static func +=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func += (lhs: inout _BigInt, rhs: _BigInt) {
         defer { lhs._checkInvariants() }
         if lhs.isNegative == rhs.isNegative {
             lhs._unsignedAdd(rhs)
@@ -432,7 +432,7 @@ where Word.Magnitude == Word
         }
     }
 
-    static func -=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func -= (lhs: inout _BigInt, rhs: _BigInt) {
         defer { lhs._checkInvariants() }
 
         // Subtracting something of the opposite sign just adds magnitude.
@@ -457,24 +457,26 @@ where Word.Magnitude == Word
         }
     }
 
-    static func *=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func *= (lhs: inout _BigInt, rhs: _BigInt) {
         // If either `lhs` or `rhs` is zero, the result is zero.
-        guard !lhs.isZero && !rhs.isZero else {
+        guard !lhs.isZero, !rhs.isZero else {
             lhs = 0
             return
         }
 
-        var newData: [Word] = Array(repeating: 0,
-                                    count: lhs._data.count + rhs._data.count)
+        var newData: [Word] = Array(
+            repeating: 0,
+            count: lhs._data.count + rhs._data.count
+        )
         let (a, b) = lhs._data.count > rhs._data.count
-        ? (lhs._data, rhs._data)
-        : (rhs._data, lhs._data)
+            ? (lhs._data, rhs._data)
+            : (rhs._data, lhs._data)
         assert(a.count >= b.count)
 
         var carry: Word = 0
-        for ai in 0..<a.count {
+        for ai in 0 ..< a.count {
             carry = 0
-            for bi in 0..<b.count {
+            for bi in 0 ..< b.count {
                 // Each iteration needs to perform this operation:
                 //
                 //     newData[ai + bi] += (a[ai] * b[bi]) + carry
@@ -485,7 +487,8 @@ where Word.Magnitude == Word
                 // `newData[ai + bi]` and any addition overflow in `carry`.
                 let product = a[ai].multipliedFullWidth(by: b[bi])
                 (carry, newData[ai + bi]) = Word.addingFullWidth(
-                    newData[ai + bi], product.low, carry)
+                    newData[ai + bi], product.low, carry
+                )
 
                 // Now we combine the high word of the multiplication with any addition
                 // overflow. It is safe to add `product.high` and `carry` here without
@@ -540,13 +543,13 @@ where Word.Magnitude == Word
             break
         }
 
-        var tempSelf = self.magnitude
+        var tempSelf = magnitude
         let n = tempSelf.bitWidth - rhs.magnitude.bitWidth
         var quotient: _BigInt = 0
         var tempRHS = rhs.magnitude << n
         var tempQuotient: _BigInt = 1 << n
 
-        for _ in (0...n).reversed() {
+        for _ in (0 ... n).reversed() {
             if tempRHS._compareMagnitude(to: tempSelf) != .greaterThan {
                 tempSelf -= tempRHS
                 quotient += tempQuotient
@@ -556,7 +559,7 @@ where Word.Magnitude == Word
         }
 
         // `tempSelf` is the remainder - match sign of original `self`
-        tempSelf.isNegative = self.isNegative
+        tempSelf.isNegative = isNegative
         tempSelf._standardize()
 
         quotient.isNegative = isNegative != rhs.isNegative
@@ -566,37 +569,37 @@ where Word.Magnitude == Word
         return tempSelf
     }
 
-    static func /=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func /= (lhs: inout _BigInt, rhs: _BigInt) {
         lhs._internalDivide(by: rhs)
     }
 
     // FIXME: Remove once default implementations are provided:
 
-    static func +(_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
+    static func + (_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
         var lhs = lhs
         lhs += rhs
         return lhs
     }
 
-    static func -(_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
+    static func - (_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
         var lhs = lhs
         lhs -= rhs
         return lhs
     }
 
-    static func *(_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
+    static func * (_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
         var lhs = lhs
         lhs *= rhs
         return lhs
     }
 
-    static func /(_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
+    static func / (_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
         var lhs = lhs
         lhs /= rhs
         return lhs
     }
 
-    static func %(_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
+    static func % (_ lhs: _BigInt, _ rhs: _BigInt) -> _BigInt {
         var lhs = lhs
         lhs %= rhs
         return lhs
@@ -607,7 +610,7 @@ where Word.Magnitude == Word
     /// Creates a new instance using the given data array in two's complement
     /// representation.
     init(_twosComplementData: [Word]) {
-        guard _twosComplementData.count > 0 else {
+        guard !_twosComplementData.isEmpty else {
             self = 0
             return
         }
@@ -616,7 +619,7 @@ where Word.Magnitude == Word
         isNegative = _twosComplementData.last!.leadingZeroBitCount == 0
         if isNegative {
             _data = _twosComplementData.map(~)
-            self._unsignedAdd(1 as Word)
+            _unsignedAdd(1 as Word)
         } else {
             _data = _twosComplementData
         }
@@ -636,7 +639,7 @@ where Word.Magnitude == Word
             }
         }
         // * -1 will get zeroed out below, easier to handle here
-        if _data.count == 1 && _data.first == 1 { return [~0] }
+        if _data.count == 1, _data.first == 1 { return [~0] }
 
         var x = self
         x._unsignedSubtract(1 as Word)
@@ -656,7 +659,7 @@ where Word.Magnitude == Word
         let twosComplementData = _dataAsTwosComplement()
         var words: [UInt] = []
         words.reserveCapacity((twosComplementData.count * Word.bitWidth
-                               + UInt.bitWidth - 1) / UInt.bitWidth)
+                + UInt.bitWidth - 1) / UInt.bitWidth)
         var word: UInt = 0
         var shift = 0
         for w in twosComplementData {
@@ -692,7 +695,7 @@ where Word.Magnitude == Word
 
             // If positive, need to make space for at least one zero on high end
             return twosComplementData.count * Word.bitWidth
-            - twosComplementData.last!.leadingZeroBitCount + 1
+                - twosComplementData.last!.leadingZeroBitCount + 1
         }
     }
 
@@ -710,27 +713,26 @@ where Word.Magnitude == Word
         return i * Word.bitWidth + _data[i].trailingZeroBitCount
     }
 
-    static func %=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func %= (lhs: inout _BigInt, rhs: _BigInt) {
         defer { lhs._checkInvariants() }
         lhs = lhs._internalDivide(by: rhs)
     }
 
     func quotientAndRemainder(dividingBy rhs: _BigInt) ->
-    (_BigInt, _BigInt)
-    {
+        (_BigInt, _BigInt) {
         var x = self
         let r = x._internalDivide(by: rhs)
         return (x, r)
     }
 
-    static func &=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func &= (lhs: inout _BigInt, rhs: _BigInt) {
         var lhsTemp = lhs._dataAsTwosComplement()
         let rhsTemp = rhs._dataAsTwosComplement()
 
         // If `lhs` is longer than `rhs`, behavior depends on sign of `rhs`
         // * If `rhs < 0`, length is extended with 1s
         // * If `rhs >= 0`, length is extended with 0s, which crops `lhsTemp`
-        if lhsTemp.count > rhsTemp.count && !rhs.isNegative {
+        if lhsTemp.count > rhsTemp.count, !rhs.isNegative {
             lhsTemp.removeLast(lhsTemp.count - rhsTemp.count)
         }
 
@@ -738,19 +740,19 @@ where Word.Magnitude == Word
         // * If `lhs < 0`, length is extended with 1s, so `lhs` should get extra
         //   bits from `rhs`
         // * If `lhs >= 0`, length is extended with 0s
-        if lhsTemp.count < rhsTemp.count && lhs.isNegative {
-            lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count..<rhsTemp.count])
+        if lhsTemp.count < rhsTemp.count, lhs.isNegative {
+            lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count ..< rhsTemp.count])
         }
 
         // Perform bitwise & on words that both `lhs` and `rhs` have.
-        for i in 0..<Swift.min(lhsTemp.count, rhsTemp.count) {
+        for i in 0 ..< Swift.min(lhsTemp.count, rhsTemp.count) {
             lhsTemp[i] &= rhsTemp[i]
         }
 
         lhs = _BigInt(_twosComplementData: lhsTemp)
     }
 
-    static func |=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func |= (lhs: inout _BigInt, rhs: _BigInt) {
         var lhsTemp = lhs._dataAsTwosComplement()
         let rhsTemp = rhs._dataAsTwosComplement()
 
@@ -758,9 +760,11 @@ where Word.Magnitude == Word
         // * If `rhs < 0`, length is extended with 1s, so those bits of `lhs`
         //   should all be 1
         // * If `rhs >= 0`, length is extended with 0s, which is a no-op
-        if lhsTemp.count > rhsTemp.count && rhs.isNegative {
-            lhsTemp.replaceSubrange(rhsTemp.count..<lhsTemp.count,
-                                    with: repeatElement(Word.max, count: lhsTemp.count - rhsTemp.count))
+        if lhsTemp.count > rhsTemp.count, rhs.isNegative {
+            lhsTemp.replaceSubrange(
+                rhsTemp.count ..< lhsTemp.count,
+                with: repeatElement(Word.max, count: lhsTemp.count - rhsTemp.count)
+            )
         }
 
         // If `rhs` is longer than `lhs`, behavior depends on sign of `lhs`
@@ -771,21 +775,21 @@ where Word.Magnitude == Word
         if lhsTemp.count < rhsTemp.count {
             if lhs.isNegative {
                 lhsTemp.append(contentsOf:
-                                repeatElement(Word.max, count: rhsTemp.count - lhsTemp.count))
+                    repeatElement(Word.max, count: rhsTemp.count - lhsTemp.count))
             } else {
-                lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count..<rhsTemp.count])
+                lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count ..< rhsTemp.count])
             }
         }
 
         // Perform bitwise | on words that both `lhs` and `rhs` have.
-        for i in 0..<Swift.min(lhsTemp.count, rhsTemp.count) {
+        for i in 0 ..< Swift.min(lhsTemp.count, rhsTemp.count) {
             lhsTemp[i] |= rhsTemp[i]
         }
 
         lhs = _BigInt(_twosComplementData: lhsTemp)
     }
 
-    static func ^=(lhs: inout _BigInt, rhs: _BigInt) {
+    static func ^= (lhs: inout _BigInt, rhs: _BigInt) {
         var lhsTemp = lhs._dataAsTwosComplement()
         let rhsTemp = rhs._dataAsTwosComplement()
 
@@ -793,8 +797,8 @@ where Word.Magnitude == Word
         // * If `rhs < 0`, length is extended with 1s, so those bits of `lhs`
         //   should all be flipped
         // * If `rhs >= 0`, length is extended with 0s, which is a no-op
-        if lhsTemp.count > rhsTemp.count && rhs.isNegative {
-            for i in rhsTemp.count..<lhsTemp.count {
+        if lhsTemp.count > rhsTemp.count, rhs.isNegative {
+            for i in rhsTemp.count ..< lhsTemp.count {
                 lhsTemp[i] = ~lhsTemp[i]
             }
         }
@@ -808,27 +812,27 @@ where Word.Magnitude == Word
             if lhs.isNegative {
                 lhsTemp += rhsTemp.suffix(from: lhsTemp.count).map(~)
             } else {
-                lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count..<rhsTemp.count])
+                lhsTemp.append(contentsOf: rhsTemp[lhsTemp.count ..< rhsTemp.count])
             }
         }
 
         // Perform bitwise ^ on words that both `lhs` and `rhs` have.
-        for i in 0..<Swift.min(lhsTemp.count, rhsTemp.count) {
+        for i in 0 ..< Swift.min(lhsTemp.count, rhsTemp.count) {
             lhsTemp[i] ^= rhsTemp[i]
         }
 
         lhs = _BigInt(_twosComplementData: lhsTemp)
     }
 
-    static prefix func ~(x: _BigInt) -> _BigInt {
+    static prefix func ~ (x: _BigInt) -> _BigInt {
         return -x - 1
     }
 
     //===--- SignedNumeric --------------------------------------------------===//
 
-    static prefix func -(x: inout _BigInt) {
+    static prefix func - (x: inout _BigInt) {
         defer { x._checkInvariants() }
-        guard x._data.count > 0 else { return }
+        guard !x._data.isEmpty else { return }
         x.isNegative = !x.isNegative
     }
 
@@ -854,7 +858,7 @@ where Word.Magnitude == Word
             return other.magnitude
         }
 
-        var (x, y) = (self.magnitude, other.magnitude)
+        var (x, y) = (magnitude, other.magnitude)
         let (xLSB, yLSB) = (x.trailingZeroBitCount, y.trailingZeroBitCount)
 
         // Remove any common factor of two
@@ -907,18 +911,18 @@ where Word.Magnitude == Word
     ///   - radix: The radix to use when parsing `source`. `radix` must be in the
     ///     range `2...36`. The default is `10`.
     init?(_ source: String, radix: Int = 10) {
-        assert(2...36 ~= radix, "radix must be in range 2...36")
+        assert(2 ... 36 ~= radix, "radix must be in range 2...36")
         let radix = Word(radix)
 
         func valueForCodeUnit(_ unit: Unicode.UTF16.CodeUnit) -> Word? {
             switch unit {
-                // "0"..."9"
-            case 48...57: return Word(unit - 48)
-                // "a"..."z"
-            case 97...122: return Word(unit - 87)
-                // "A"..."Z"
-            case 65...90: return Word(unit - 55)
-                // invalid character
+            // "0"..."9"
+            case 48 ... 57: return Word(unit - 48)
+            // "a"..."z"
+            case 97 ... 122: return Word(unit - 87)
+            // "A"..."Z"
+            case 65 ... 90: return Word(unit - 55)
+            // invalid character
             default: return nil
             }
         }
@@ -937,11 +941,11 @@ where Word.Magnitude == Word
             guard let v = v else { return nil }
             guard v < radix else { return nil }
 
-            self.multiply(by: radix)
-            self.add(v)
+            multiply(by: radix)
+            add(v)
         }
 
-        self.isNegative = negative
+        isNegative = negative
     }
 
     /// Returns a string representation of this instance.
@@ -953,20 +957,20 @@ where Word.Magnitude == Word
     ///   - lowercase: Whether to use lowercase letters to represent digits
     ///     greater than 10. The default is `true`.
     func toString(radix: Int = 10, lowercase: Bool = true) -> String {
-        assert(2...36 ~= radix, "radix must be in range 2...36")
+        assert(2 ... 36 ~= radix, "radix must be in range 2...36")
 
         let digitsStart = ("0" as Unicode.Scalar).value
         let lettersStart = ((lowercase ? "a" : "A") as Unicode.Scalar).value - 10
         func toLetter(_ x: UInt32) -> Unicode.Scalar {
             return x < 10
-            ? Unicode.Scalar(digitsStart + x)!
-            : Unicode.Scalar(lettersStart + x)!
+                ? Unicode.Scalar(digitsStart + x)!
+                : Unicode.Scalar(lettersStart + x)!
         }
 
         let radix = _BigInt(radix)
         var result: [Unicode.Scalar] = []
 
-        var x = self.magnitude
+        var x = magnitude
         while !x.isZero {
             let remainder: _BigInt
             (x, remainder) = x.quotientAndRemainder(dividingBy: radix)
@@ -975,8 +979,8 @@ where Word.Magnitude == Word
 
         let sign = isNegative ? "-" : ""
         let rest = result.count == 0
-        ? "0"
-        : String(String.UnicodeScalarView(result.reversed()))
+            ? "0"
+            : String(String.UnicodeScalarView(result.reversed()))
         return sign + rest
     }
 
@@ -1018,7 +1022,9 @@ where Word.Magnitude == Word
     //===--- Comparable -----------------------------------------------------===//
 
     enum _ComparisonResult {
-        case lessThan, equal, greaterThan
+        case lessThan
+        case equal
+        case greaterThan
     }
 
     /// Returns whether this instance is less than, greather than, or equal to
@@ -1047,14 +1053,14 @@ where Word.Magnitude == Word
         }
 
         // Equal number of words: compare from most significant word
-        for i in (0..<_data.count).reversed() {
+        for i in (0 ..< _data.count).reversed() {
             if _data[i] < rhs._data[i] { return .lessThan }
             if _data[i] > rhs._data[i] { return .greaterThan }
         }
         return .equal
     }
 
-    static func ==(lhs: _BigInt, rhs: _BigInt) -> Bool {
+    static func == (lhs: _BigInt, rhs: _BigInt) -> Bool {
         return lhs._compare(to: rhs) == .equal
     }
 
@@ -1081,7 +1087,7 @@ where Word.Magnitude == Word
         data.removeFirst(Swift.min(data.count, words))
     }
 
-    static func <<= <RHS : BinaryInteger>(lhs: inout _BigInt, rhs: RHS) {
+    static func <<= <RHS: BinaryInteger>(lhs: inout _BigInt, rhs: RHS) {
         defer { lhs._checkInvariants() }
         guard rhs != 0 else { return }
         guard rhs > 0 else {
@@ -1109,9 +1115,9 @@ where Word.Magnitude == Word
 
         // Add new word at the end, then shift everything left by `offset` bits.
         lhs._data.append(0)
-        for i in ((extraWords + 1)..<lhs._data.count).reversed() {
+        for i in ((extraWords + 1) ..< lhs._data.count).reversed() {
             lhs._data[i] = lhs._data[i] << highOffset
-            | lhs._data[i - 1] >> lowOffset
+                | lhs._data[i - 1] >> lowOffset
         }
 
         // Finally, shift the lowest word.
@@ -1119,7 +1125,7 @@ where Word.Magnitude == Word
         lhs._standardize()
     }
 
-    static func >>= <RHS : BinaryInteger>(lhs: inout _BigInt, rhs: RHS) {
+    static func >>= <RHS: BinaryInteger>(lhs: inout _BigInt, rhs: RHS) {
         defer { lhs._checkInvariants() }
         guard rhs != 0 else { return }
         guard rhs > 0 else {
@@ -1134,7 +1140,7 @@ where Word.Magnitude == Word
         // If that removes the entirety of `_data`, we're done.
         let wordsToRemove = Int(rhs / wordWidth)
         _BigInt._shiftRight(&tempData, byWords: wordsToRemove)
-        guard tempData.count != 0 else {
+        guard !tempData.isEmpty else {
             lhs = lhs.isNegative ? -1 : 0
             return
         }
@@ -1154,9 +1160,9 @@ where Word.Magnitude == Word
         }
 
         // Shift everything right by `offset` bits.
-        for i in 0..<(tempData.count - 1) {
+        for i in 0 ..< (tempData.count - 1) {
             tempData[i] = tempData[i] >> lowOffset |
-            tempData[i + 1] << highOffset
+                tempData[i + 1] << highOffset
         }
 
         // Finally, shift the highest word and standardize the result.
@@ -1169,7 +1175,7 @@ where Word.Magnitude == Word
 //===----------------------------------------------------------------------===//
 
 /// A one-bit fixed width integer.
-struct Bit : FixedWidthInteger, UnsignedInteger {
+struct Bit: FixedWidthInteger, UnsignedInteger {
     typealias Magnitude = Bit
 
     var value: UInt8 = 0
@@ -1218,7 +1224,7 @@ struct Bit : FixedWidthInteger, UnsignedInteger {
         value = UInt8(bits & 1)
     }
 
-    init<T: BinaryInteger>(clamping source: T)  {
+    init<T: BinaryInteger>(clamping source: T) {
         value = source >= 1 ? 1 : 0
     }
 
@@ -1290,58 +1296,58 @@ struct Bit : FixedWidthInteger, UnsignedInteger {
     }
 
     func addingReportingOverflow(_ rhs: Bit) ->
-    (partialValue: Bit, overflow: Bool) {
+        (partialValue: Bit, overflow: Bool) {
         let result = value &+ rhs.value
         return (Bit(result & 1), _checkOverflow(result))
     }
 
     func subtractingReportingOverflow(_ rhs: Bit) ->
-    (partialValue: Bit, overflow: Bool) {
+        (partialValue: Bit, overflow: Bool) {
         let result = value &- rhs.value
         return (Bit(result & 1), _checkOverflow(result))
     }
 
     func multipliedReportingOverflow(by rhs: Bit) ->
-    (partialValue: Bit, overflow: Bool) {
+        (partialValue: Bit, overflow: Bool) {
         let result = value &* rhs.value
         return (Bit(result), false)
     }
 
     func dividedReportingOverflow(by rhs: Bit) ->
-    (partialValue: Bit, overflow: Bool) {
+        (partialValue: Bit, overflow: Bool) {
         return (self, rhs != 0)
     }
 
     func remainderReportingOverflow(dividingBy rhs: Bit) ->
-    (partialValue: Bit, overflow: Bool) {
+        (partialValue: Bit, overflow: Bool) {
         fatalError()
     }
 
-    static func +=(lhs: inout Bit, rhs: Bit) {
+    static func += (lhs: inout Bit, rhs: Bit) {
         let result = lhs.addingReportingOverflow(rhs)
         assert(!result.overflow, "Addition overflow")
         lhs = result.partialValue
     }
 
-    static func -=(lhs: inout Bit, rhs: Bit) {
+    static func -= (lhs: inout Bit, rhs: Bit) {
         let result = lhs.subtractingReportingOverflow(rhs)
         assert(!result.overflow, "Subtraction overflow")
         lhs = result.partialValue
     }
 
-    static func *=(lhs: inout Bit, rhs: Bit) {
+    static func *= (lhs: inout Bit, rhs: Bit) {
         let result = lhs.multipliedReportingOverflow(by: rhs)
         assert(!result.overflow, "Multiplication overflow")
         lhs = result.partialValue
     }
 
-    static func /=(lhs: inout Bit, rhs: Bit) {
+    static func /= (lhs: inout Bit, rhs: Bit) {
         let result = lhs.dividedReportingOverflow(by: rhs)
         assert(!result.overflow, "Division overflow")
         lhs = result.partialValue
     }
 
-    static func %=(lhs: inout Bit, rhs: Bit) {
+    static func %= (lhs: inout Bit, rhs: Bit) {
         assert(rhs != 0, "Modulo sum overflow")
         lhs.value = 0 // No remainders with bit division!
     }
@@ -1351,7 +1357,7 @@ struct Bit : FixedWidthInteger, UnsignedInteger {
     }
 
     func dividingFullWidth(_ dividend: (high: Bit, low: Bit)) ->
-    (quotient: Bit, remainder: Bit) {
+        (quotient: Bit, remainder: Bit) {
         assert(self != 0, "Division overflow")
         assert(dividend.high == 0, "Quotient overflow")
         return (dividend.low, 0)
@@ -1359,31 +1365,31 @@ struct Bit : FixedWidthInteger, UnsignedInteger {
 
     // FIXME: Remove once default implementations are provided:
 
-    static func +(_ lhs: Bit, _ rhs: Bit) -> Bit {
+    static func + (_ lhs: Bit, _ rhs: Bit) -> Bit {
         var lhs = lhs
         lhs += rhs
         return lhs
     }
 
-    static func -(_ lhs: Bit, _ rhs: Bit) -> Bit {
+    static func - (_ lhs: Bit, _ rhs: Bit) -> Bit {
         var lhs = lhs
         lhs -= rhs
         return lhs
     }
 
-    static func *(_ lhs: Bit, _ rhs: Bit) -> Bit {
+    static func * (_ lhs: Bit, _ rhs: Bit) -> Bit {
         var lhs = lhs
         lhs *= rhs
         return lhs
     }
 
-    static func /(_ lhs: Bit, _ rhs: Bit) -> Bit {
+    static func / (_ lhs: Bit, _ rhs: Bit) -> Bit {
         var lhs = lhs
         lhs /= rhs
         return lhs
     }
 
-    static func %(_ lhs: Bit, _ rhs: Bit) -> Bit {
+    static func % (_ lhs: Bit, _ rhs: Bit) -> Bit {
         var lhs = lhs
         lhs %= rhs
         return lhs
@@ -1391,46 +1397,46 @@ struct Bit : FixedWidthInteger, UnsignedInteger {
 
     // Bitwise operators
 
-    static prefix func ~(x: Bit) -> Bit {
+    static prefix func ~ (x: Bit) -> Bit {
         return Bit(~x.value & 1)
     }
 
-    // Why doesn't the type checker complain about these being missing?
-    static func &=(lhs: inout Bit, rhs: Bit) {
+    /// Why doesn't the type checker complain about these being missing?
+    static func &= (lhs: inout Bit, rhs: Bit) {
         lhs.value &= rhs.value
     }
 
-    static func |=(lhs: inout Bit, rhs: Bit) {
+    static func |= (lhs: inout Bit, rhs: Bit) {
         lhs.value |= rhs.value
     }
 
-    static func ^=(lhs: inout Bit, rhs: Bit) {
+    static func ^= (lhs: inout Bit, rhs: Bit) {
         lhs.value ^= rhs.value
     }
 
-    static func ==(lhs: Bit, rhs: Bit) -> Bool {
+    static func == (lhs: Bit, rhs: Bit) -> Bool {
         return lhs.value == rhs.value
     }
 
-    static func <(lhs: Bit, rhs: Bit) -> Bool {
+    static func < (lhs: Bit, rhs: Bit) -> Bool {
         return lhs.value < rhs.value
     }
 
-    static func <<(lhs: Bit, rhs: Bit) -> Bit {
+    static func << (lhs: Bit, rhs: Bit) -> Bit {
         return rhs == 0 ? lhs : 0
     }
 
-    static func >>(lhs: Bit, rhs: Bit) -> Bit {
+    static func >> (lhs: Bit, rhs: Bit) -> Bit {
         return rhs == 0 ? lhs : 0
     }
 
-    static func <<=(lhs: inout Bit, rhs: Bit) {
+    static func <<= (lhs: inout Bit, rhs: Bit) {
         if rhs != 0 {
             lhs = 0
         }
     }
 
-    static func >>=(lhs: inout Bit, rhs: Bit) {
+    static func >>= (lhs: inout Bit, rhs: Bit) {
         if rhs != 0 {
             lhs = 0
         }

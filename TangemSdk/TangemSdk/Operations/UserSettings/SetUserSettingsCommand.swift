@@ -16,9 +16,10 @@ struct SetUserSettingsCommandResponse: JSONStringConvertible {
     let settings: Card.UserSettings
 }
 
-/// Set user serrings on a card. COS v.6.16+
+/// Set user settings on a card. COS v.6.16+
 class SetUserSettingsCommand: Command {
     var preflightReadMode: PreflightReadMode { .readCardOnly }
+    var cardSessionEncryption: CardSessionEncryption { .secureChannelWithPIN }
 
     private let settings: Card.UserSettings
 
@@ -51,11 +52,24 @@ class SetUserSettingsCommand: Command {
     }
 
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
+        guard let card = environment.card else {
+            throw TangemSdkError.missingPreflightRead
+        }
+
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
-            .appendPinIfNeeded(.pin, value: environment.accessCode, card: environment.card)
-            .appendPinIfNeeded(.pin2, value: environment.passcode, card: environment.card)
-            .append(.cardId, value: environment.card?.cardId)
             .append(.userSettingsMask, value: settings.mask)
+
+        if shouldAddPin(environment.accessCode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin, value: environment.accessCode.value)
+        }
+
+        if shouldAddPin(environment.passcode, firmwareVersion: card.firmwareVersion) {
+            try tlvBuilder.append(.pin2, value: environment.passcode.value)
+        }
+
+        if card.firmwareVersion < .v8 {
+            try tlvBuilder.append(.cardId, value: environment.card?.cardId)
+        }
 
         return CommandApdu(.setUserSettings, tlv: tlvBuilder.serialize())
     }

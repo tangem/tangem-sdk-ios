@@ -17,7 +17,7 @@ extension OptionSetCustomStringConvertible where Self: OptionSetCodable {
             return string.replacingOccurrences(of: "{[", with: "")
                 .replacingOccurrences(of: "]}", with: "")
         }
-        
+
         return ""
     }
 }

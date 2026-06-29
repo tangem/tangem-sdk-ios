@@ -9,233 +9,122 @@
 import SwiftUI
 import TangemSdk
 
+// MARK: - Content View
+
 struct ContentView: View {
-    @EnvironmentObject var model: AppModel
+    @StateObject private var mainViewModel = MainTabViewModel()
+    @StateObject private var backupViewModel = BackupViewModel()
+    @StateObject private var resetPinViewModel = ResetPinViewModel()
+
+    @State private var selectedTab: Tab = .main
+    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                GeometryReader { geo in
-                    VStack {
-                        ScrollView {
-                            VStack {
-                                
-                                if let image = model.image {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 200, height: 200)
-                                }
-                                
-                                Text(model.logText)
-                                    .font(.caption)
-                            }
-                        }
-                        .padding(.vertical, 2)
-                        .padding(.horizontal, 14)
-                        .clipped()
-                        .frame(width: geo.size.width)
-                        .overlay(RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.orange, lineWidth: 2)
-                            .padding(.horizontal, 8))
-                        .layoutPriority(-1)
-                        
-                        VStack(spacing: 4) {
-                            HStack {
-                                Button("Clear", action: model.clear)
-                                Button("Copy", action: model.copy)
-                                Button("Backup", action: model.onBackup)
-                                Button("Reset", action: model.onResetService)
-                                Button("Hide kb", action: model.hideKeyboard)
-                            }
-                            
-                            additionalView
-                                .padding(.top, 4)
-                            
-                            Picker("", selection: $model.method) {
-                                ForEach(0..<AppModel.Method.allCases.count, id: \.self) { index in
-                                    Text(AppModel.Method.allCases[index].rawValue)
-                                        .tag(AppModel.Method.allCases[index])
-                                }
-                            }
-                            .frame(minHeight: 110)
-                            .labelsHidden()
-                            .pickerStyle(WheelPickerStyle())
-                            
-                            Button("Start") { model.start() }
-                                .buttonStyle(ExampleButton(isLoading: model.isScanning))
-                                .frame(width: 100)
-                            
-                        }
-                        .padding(.horizontal, 8)
-                        .frame(width: geo.size.width)
+            TabView(selection: $selectedTab) {
+                MainTabView(viewModel: mainViewModel)
+                    .tag(Tab.main)
+                    .tabItem { Label("Main", systemImage: "house") }
+                    .keyboardDismissToolbarWorkaround()
+
+                BackupView(viewModel: backupViewModel)
+                    .onAppear { setupBackup() }
+                    .tag(Tab.backup)
+                    .tabItem { Label("Backup", systemImage: "doc.on.doc") }
+                    .keyboardDismissToolbarWorkaround()
+
+                ResetPinView(viewModel: resetPinViewModel)
+                    .onAppear { setupResetPin() }
+                    .tag(Tab.resetCodes)
+                    .tabItem { Label("Reset Codes", systemImage: "arrow.counterclockwise") }
+                    .keyboardDismissToolbarWorkaround()
+            }
+            .navigationTitle(selectedTab.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showSettings = true } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button {
+                        UIApplication.shared.endEditing()
+                    } label: {
+                        Image(systemName: "keyboard.chevron.compact.down")
                     }
                 }
             }
-            .navigationBarTitle("SDK", displayMode: .inline)
-            .navigationBarItems(trailing: Button(action: model.onSettings, label: { Image(systemName: "gear")}))
-            .navigationDestination(isPresented: $model.showBackupView) {
-                model.makeBackupDestination()
-            }
-            .navigationDestination(isPresented: $model.showSettings) {
-                model.makeSettingsDestination()
-            }
-            .navigationDestination(isPresented: $model.showResetPin) {
-                model.makePinResetDestination()
-            }
-            .padding(.bottom, 8)
-            .actionSheet(isPresented: $model.showWalletSelection) {
-                let walletButtons: [Alert.Button] = model.card?.wallets.map { wallet in
-                    let publicKey = wallet.publicKey.hexString
-                    let formattedKey = "\(publicKey.prefix(6))...\(publicKey.suffix(6)) (\(wallet.curve.rawValue))"
-                    
-                    return ActionSheet.Button.default(Text(formattedKey)) {
-                        model.start(walletPublicKey: wallet.publicKey)
-                    }
-                } ?? []
-                
-                let cancelButton = ActionSheet.Button.cancel {
-                    model.isScanning = false
-                }
-                
-                return ActionSheet(title: Text("Select wallet"),
-                                   message: nil,
-                                   buttons: walletButtons + [cancelButton])
+            .navigationDestination(isPresented: $showSettings) {
+                SettingsView()
             }
         }
     }
 
-        @ViewBuilder
-        private var additionalView: some View {
-            switch model.method {
-            case .attest:
-                VStack {
-                    Text("Attestation configuration")
-                        .font(.headline)
-                        .bold()
+    private func setupBackup() {
+        guard !backupViewModel.isSetUp else { return }
 
-                    Picker("", selection: $model.attestationMode) {
-                        ForEach(0..<AttestationTask.Mode.allCases.count, id: \.self) { index in
-                            Text(AttestationTask.Mode.allCases[index].rawValue)
-                                .tag(AttestationTask.Mode.allCases[index])
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .attestWallet:
-                VStack {
-                    Text("Wallet Attestation config")
-                        .font(.headline)
-                        .bold()
+        let sdk = mainViewModel.configuredSdk
+        let service = BackupService(sdk: sdk, networkService: .init(session: .shared, additionalHeaders: [:]))
+        backupViewModel.setup(backupService: service)
+    }
 
-                    TextField("\"m/0/1\"", text: $model.derivationPath)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .createWallet, .importWallet:
-                VStack {
-                    Text("Create wallet configuration")
-                        .font(.headline)
-                        .bold()
+    private func setupResetPin() {
+        guard !resetPinViewModel.isSetUp else { return }
 
-                    if let supportedCurves = model.card?.supportedCurves {
-                        Picker("", selection: $model.curve) {
-                            ForEach(0..<supportedCurves.count, id: \.self) { index in
-                                Text(supportedCurves[index].rawValue)
-                                    .tag(supportedCurves[index])
-                            }
-                        }
-                        .pickerStyle(WheelPickerStyle())
-                    }
+        let sdk = mainViewModel.configuredSdk
+        let service = ResetPinService(config: sdk.config)
+        resetPinViewModel.setup(resetPinService: service)
+    }
+}
 
-                    if case .importWallet = model.method {
-                        TextField("Optional mnemonic", text: $model.mnemonicString)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
+// MARK: - Tab
 
-                        TextField("Optional passphrase", text: $model.passphrase)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
-                    }
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .signHash, .signHashes, .derivePublicKey:
-                VStack {
-                    Text("Hd path")
-                        .font(.headline)
-                        .bold()
+extension ContentView {
+    enum Tab {
+        case main
+        case backup
+        case resetCodes
 
-                    TextField("\"m/0/1\"", text: $model.derivationPath)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-
-                    if case .signHashes = model.method {
-                        Text("Sign hashes count")
-                            .font(.headline)
-                            .bold()
-
-                        TextField("", text: $model.signHashesCount)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .autocapitalization(.none)
-                    }
-                }
-                .padding()
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-            case .jsonrpc, .personalize, .personalizeV8:
-                VStack {
-                    Text("JSON editor")
-                        .font(.headline)
-                        .bold()
-
-                    TextEditor(text: $model.editorData)
-                        .frame(height: 100)
-
-                    HStack {
-                        Spacer()
-                        Button("Paste json", action: model.pasteEditor)
-                        Spacer()
-                        Button("End editing", action: model.endEditing)
-                        Spacer()
-                    }
-                }
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .padding(.vertical, 8)
-                .cornerRadius(8)
-                .overlay(RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 2))
-                .onAppear(perform: model.onAppear)
-            case .setUserCodeRecoveryAllowed:
-                Toggle(isOn: $model.isUserCodeRecoveryAllowed) {
-                    Text("Is user code recovery allowed")
-                }
-            default:
-                EmptyView()
+        var title: String {
+            switch self {
+            case .main: "SDK"
+            case .backup: "Backup"
+            case .resetCodes: "Reset Codes"
             }
         }
     }
+}
 
-    struct ContentView_Previews: PreviewProvider {
-        static var model = AppModel()
+// MARK: - iOS 26 Keyboard Toolbar Workaround
 
-        static var previews: some View {
-            ContentView()
-                .previewDevice("iPhone 8")
-                .environmentObject(model)
-        }
+/// Workaround for iOS 26.3 bug where keyboard toolbar on NavigationStack
+/// doesn't propagate to TabView children. Applied per-tab with availability check.
+private struct KeyboardDismissToolbarModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                if #available(iOS 26.0, *) {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button {
+                            UIApplication.shared.endEditing()
+                        } label: {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                        }
+                    }
+                }
+            }
     }
+}
+
+private extension View {
+    func keyboardDismissToolbarWorkaround() -> some View {
+        modifier(KeyboardDismissToolbarModifier())
+    }
+}
+
+#Preview {
+    ContentView()
+}

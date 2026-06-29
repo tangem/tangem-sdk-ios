@@ -15,27 +15,33 @@ public struct CheckUserCodesResponse: JSONStringConvertible {
 
 public final class CheckUserCodesCommand: CardSessionRunnable {
     public init() {}
-    
+
     deinit {
         Log.debug("CheckUserCodesCommand deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<CheckUserCodesResponse>) {
-        let command = SetUserCodeCommand(accessCode: session.environment.accessCode.value,
-                                    passcode: session.environment.passcode.value)
-        
+        let command = SetUserCodeCommand(
+            accessCode: session.environment.accessCode.value,
+            passcode: session.environment.passcode.value
+        )
+
         command.shouldRestrictDefaultCodes = false
         command.requiresPasscode = false
-        
+
         command.run(in: session) { result in
             switch result {
             case .success:
-                completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.isUserCodeSet(.accessCode),
-                                                           isPasscodeSet: session.environment.isUserCodeSet(.passcode))))
+                completion(.success(CheckUserCodesResponse(
+                    isAccessCodeSet: session.environment.accessCode.isNonDefault,
+                    isPasscodeSet: session.environment.passcode.isNonDefault
+                )))
             case .failure(let error):
                 if case .invalidParams = error {
-                    completion(.success(CheckUserCodesResponse(isAccessCodeSet: session.environment.isUserCodeSet(.accessCode),
-                                                               isPasscodeSet: true)))
+                    completion(.success(CheckUserCodesResponse(
+                        isAccessCodeSet: session.environment.accessCode.isNonDefault,
+                        isPasscodeSet: true
+                    )))
                 } else {
                     completion(.failure(error))
                 }

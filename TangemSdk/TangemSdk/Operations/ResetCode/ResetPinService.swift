@@ -13,60 +13,62 @@ public class ResetPinService {
     public var currentState: State { _currentState.value }
     public var currentStatePublisher: AnyPublisher<State, Never> { _currentState.eraseToAnyPublisher() }
 
-    public private(set) var error: TangemSdkError? = nil
-    
+    public var error: TangemSdkError? { _error.value }
+    public var errorPublisher: AnyPublisher<TangemSdkError?, Never> { _error.eraseToAnyPublisher() }
+
     private var session: CardSession?
     private let config: Config
     private var repo: ResetPinRepo = .init()
-    private var currentCommand: AnyObject? = nil
+    private var currentCommand: AnyObject?
     private var _currentState: CurrentValueSubject<State, Never> = .init(.needCode)
+    private var _error: CurrentValueSubject<TangemSdkError?, Never> = .init(nil)
 
     public init(config: Config) {
         self.config = config
     }
-    
+
     deinit {
         Log.debug("ResetPinService deinit")
     }
-    
+
     public func setAccessCode(_ code: String) throws {
         repo.accessCode = nil
         let code = code.trim()
-        
+
         if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.accessCodeRequired
             }
-            
+
             if code == UserCodeType.accessCode.defaultValue {
                 throw TangemSdkError.accessCodeCannotBeDefault
             }
-            
+
             if code.count < UserCodeType.minLength {
                 throw TangemSdkError.accessCodeTooShort
             }
         }
-        
+
         repo.accessCode = code.getSHA256()
-        
+
         if currentState == .needCode {
             _currentState.value = currentState.next()
         }
     }
-    
+
     public func setPasscode(_ code: String) throws {
         repo.passcode = nil
         let code = code.trim()
-        
+
         if config.handleErrors {
             guard !code.isEmpty else {
                 throw TangemSdkError.passcodeRequired
             }
-            
+
             if code == UserCodeType.passcode.defaultValue {
                 throw TangemSdkError.passcodeCannotBeDefault
             }
-            
+
             if code.count < UserCodeType.minLength {
                 throw TangemSdkError.passcodeTooShort
             }
@@ -78,7 +80,7 @@ public class ResetPinService {
             _currentState.value = currentState.next()
         }
     }
-    
+
     public func proceed(with resetCardId: String? = nil) {
         switch currentState {
         case .needScanResetCard:
@@ -91,16 +93,16 @@ public class ResetPinService {
             break
         }
     }
-    
-    private func handleCompletion(_ result: Result<Void, TangemSdkError>) -> Void {
+
+    private func handleCompletion(_ result: Result<Void, TangemSdkError>) {
         switch result {
         case .success:
             _currentState.value = currentState.next()
         case .failure(let error):
-            self.error = error
+            _error.value = error
         }
     }
-    
+
     private func scanResetPinCard(resetCardId: String?, _ completion: @escaping CompletionResult<Void>) {
         let userCodeType: UserCodeType
         if repo.accessCode != nil {
@@ -110,38 +112,42 @@ public class ResetPinService {
         } else {
             fatalError("Scan card called without the code specified")
         }
-        
-        self.session = TangemSdk().makeSession(with: config,
-                                               filter: .init(from: resetCardId),
-                                               initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()])))
+
+        session = TangemSdk().makeSession(
+            with: config,
+            filter: .init(from: resetCardId),
+            initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()]))
+        )
 
         let command = GetResetPinTokenCommand()
         currentCommand = command
-        
+
         session!.start(with: command) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .success(let response):
-                self.repo.resetPinCard = response
+                repo.resetPinCard = response
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
 
-            self.currentCommand = nil
+            currentCommand = nil
         }
     }
-    
+
     private func scanConfirmationCard(_ completion: @escaping CompletionResult<Void>) {
         guard let resetPinCard = repo.resetPinCard else {
             completion(.failure(.unknownError))
             return
         }
-        
-        self.session = TangemSdk().makeSession(with: config,
-                                               filter: nil,
-                                               initialMessage: Message(header: "reset_codes_scan_confirmation_card".localized))
+
+        session = TangemSdk().makeSession(
+            with: config,
+            filter: nil,
+            initialMessage: Message(header: "reset_codes_scan_confirmation_card".localized)
+        )
 
         let command = SignResetPinTokenCommand(resetPinCard: resetPinCard)
         currentCommand = command
@@ -151,60 +157,62 @@ public class ResetPinService {
 
             switch result {
             case .success(let response):
-                self.repo.confirmationCard = response
+                repo.confirmationCard = response
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
             }
 
-            self.currentCommand = nil
+            currentCommand = nil
         }
     }
-    
+
     private func writeResetPinCard(_ completion: @escaping CompletionResult<Void>) {
         guard let resetPinCard = repo.resetPinCard else {
             completion(.failure(.unknownError))
             return
         }
-        
+
         guard let confirmationCard = repo.confirmationCard else {
             completion(.failure(.unknownError))
             return
         }
-        
+
         var accessCode = repo.accessCode
         var passcode = repo.passcode
-        
+
         if config.handleErrors {
             if !resetPinCard.isAccessCodeSet {
                 accessCode = UserCodeType.accessCode.defaultValue.getSHA256()
             }
-            
+
             if !resetPinCard.isPasscodeSet {
                 passcode = UserCodeType.passcode.defaultValue.getSHA256()
             }
         }
-        
+
         guard let accessCodeUnwrapped = accessCode else {
             completion(.failure(.accessCodeRequired))
             return
         }
-        
+
         guard let passcodeUnwrapped = passcode else {
             completion(.failure(.passcodeRequired))
             return
         }
-        
-        self.session = TangemSdk().makeSession(with: config,
-                                               filter: .cardId(resetPinCard.cardId),
-                                               initialMessage: Message(header: "reset_codes_scan_to_reset".localized))
+
+        session = TangemSdk().makeSession(
+            with: config,
+            filter: .cardId(resetPinCard.cardId),
+            initialMessage: Message(header: "reset_codes_scan_to_reset".localized)
+        )
 
         let command = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)
         currentCommand = command
 
         session!.start(with: command) { [weak self] result in
             guard let self = self else { return }
-            
+
             switch result {
             case .success:
                 completion(.success(()))
@@ -212,26 +220,26 @@ public class ResetPinService {
                 completion(.failure(error))
             }
 
-            self.currentCommand = nil
+            currentCommand = nil
         }
     }
 }
 
 extension ResetPinService {
     class ResetPinRepo {
-        var confirmationCard: ConfirmationCard? = nil
-        var resetPinCard: ResetPinCard? = nil
+        var confirmationCard: ConfirmationCard?
+        var resetPinCard: ResetPinCard?
         var accessCode: Data?
         var passcode: Data?
     }
-    
+
     public enum State: Equatable, CaseIterable {
         case needCode
         case needScanResetCard
         case needScanConfirmationCard
         case needWriteResetCard
         case finished
-        
+
         var messageTitle: String {
             switch self {
             case .finished: return "common_success".localized
@@ -243,7 +251,7 @@ extension ResetPinService {
                 return ""
             }
         }
-        
+
         var messageBody: String {
             switch self {
             case .finished: return "reset_codes_success_message".localized
@@ -257,7 +265,7 @@ extension ResetPinService {
                 return ""
             }
         }
-        
+
         var cardType: CardType {
             switch self {
             case .needCode, .needScanResetCard, .needWriteResetCard, .finished:
@@ -272,7 +280,7 @@ extension ResetPinService {
 enum CardType {
     case origin
     case backup
-    
+
     var topIndex: Int {
         switch self {
         case .origin:
@@ -281,7 +289,7 @@ enum CardType {
             return 1
         }
     }
-    
+
     var bottomIndex: Int {
         switch self {
         case .origin:

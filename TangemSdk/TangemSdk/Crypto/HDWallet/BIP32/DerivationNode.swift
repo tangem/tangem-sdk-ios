@@ -11,7 +11,7 @@ import Foundation
 public enum DerivationNode: Equatable, Hashable {
     case hardened(UInt32)
     case nonHardened(UInt32)
-    
+
     public var pathDescription: String {
         switch self {
         case .hardened(let index):
@@ -20,7 +20,7 @@ public enum DerivationNode: Equatable, Hashable {
             return "\(index)"
         }
     }
-    
+
     public var index: UInt32 {
         switch self {
         case .hardened(let index):
@@ -30,7 +30,7 @@ public enum DerivationNode: Equatable, Hashable {
             return index
         }
     }
-    
+
     public var isHardened: Bool {
         switch self {
         case .hardened:
@@ -39,7 +39,7 @@ public enum DerivationNode: Equatable, Hashable {
             return false
         }
     }
-    
+
     public static func fromIndex(_ index: UInt32) -> DerivationNode {
         if index < BIP32.Constants.hardenedOffset {
             return .nonHardened(index)
@@ -55,7 +55,7 @@ extension DerivationNode {
     func serialize() -> Data {
         index.bytes4
     }
-    
+
     static func deserialize(from data: Data) -> DerivationNode? {
         guard let intValue = data.toInt() else { return nil }
 
@@ -64,7 +64,7 @@ extension DerivationNode {
         if index >= BIP32.Constants.hardenedOffset {
             return .hardened(index - BIP32.Constants.hardenedOffset)
         }
-        
+
         return .nonHardened(index)
     }
 }

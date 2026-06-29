@@ -11,7 +11,7 @@ import SwiftUI
 
 class ViewModel<ViewState>: ObservableObject {
     @Published var viewState: ViewState
-    
+
     init(viewState: ViewState) {
         self.viewState = viewState
     }

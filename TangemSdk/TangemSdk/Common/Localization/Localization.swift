@@ -8,22 +8,22 @@
 
 import Foundation
 
-public final class Localization {
+public enum Localization {
     public static var localizationsBundle: Bundle?
 
-    public static func string( _ key: String, _ args: CVarArg...) -> String {
+    public static func string(_ key: String, _ args: CVarArg...) -> String {
         let format = getFormat(for: key)
         return String(format: format, locale: Locale.current, arguments: args)
     }
 
     public static func getFormat(for key: String) -> String {
         if let overridedBundle = localizationsBundle {
-            let format = NSLocalizedString(key,  bundle: overridedBundle, comment: "")
+            let format = NSLocalizedString(key, bundle: overridedBundle, comment: "")
             if format != key {
                 return format
             }
         }
-        let format = NSLocalizedString(key,  bundle: .sdkBundle, comment: "")
+        let format = NSLocalizedString(key, bundle: .sdkBundle, comment: "")
         return format
     }
 }

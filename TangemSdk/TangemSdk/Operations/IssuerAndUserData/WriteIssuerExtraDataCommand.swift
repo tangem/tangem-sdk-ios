@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 /**
  * This command writes Issuer Extra Data field and its issuer’s signature.
  * Issuer Extra Data is never changed or parsed from within the Tangem COS.
@@ -17,7 +18,7 @@ import Foundation
 public final class WriteIssuerExtraDataCommand: Command {
     private static let singleWriteSize = 900
     private static let maxSize = 32 * 1024
-    
+
     private var mode: IssuerExtraDataMode = .readOrStartWrite
     private var offset: Int = 0
     private let issuerData: Data
@@ -25,10 +26,10 @@ public final class WriteIssuerExtraDataCommand: Command {
     private let startingSignature: Data
     private let finalizingSignature: Data
     private let issuerDataCounter: Int?
-    
+
     private var completion: CompletionResult<SuccessResponse>?
     private var viewDelegate: SessionViewDelegate?
-    
+
     /// Initializer
     /// - Parameters:
     ///   - issuerData: Data provided by issuer
@@ -45,63 +46,63 @@ public final class WriteIssuerExtraDataCommand: Command {
         self.finalizingSignature = finalizingSignature
         self.issuerDataCounter = issuerDataCounter
     }
-    
+
     deinit {
         Log.debug("WriteIssuerExtraDataCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion >= .multiwalletAvailable {
             return .notSupportedFirmwareVersion
         }
-        
+
         if issuerData.count > WriteIssuerExtraDataCommand.maxSize {
             return .extendedDataSizeTooLarge
         }
-        
-        if card.settings.isIssuerDataProtectedAgainstReplay
-            && issuerDataCounter == nil {
+
+        if card.settings.isIssuerDataProtectedAgainstReplay,
+           issuerDataCounter == nil {
             return .missingCounter
         }
-        
+
         if !verify(with: card.cardId) {
             return .verificationFailed
         }
-        
+
         return nil
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<SuccessResponse>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
+
         if issuerPublicKey == nil {
             issuerPublicKey = card.issuer.publicKey
         }
-        
+
         self.completion = completion
-        self.viewDelegate = session.viewDelegate
+        viewDelegate = session.viewDelegate
         writeData(session)
     }
-    
+
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if card?.settings.isIssuerDataProtectedAgainstReplay ?? false {
             if case .invalidParams = error {
                 return .dataCannotBeWritten
             }
-            
+
             if case .invalidState = error {
                 return .overwritingDataIsProhibited
             }
         }
         return error
     }
-    
+
     private func writeData(_ session: CardSession) {
         showProgress()
-        transceive(in: session) {result in
+        transceive(in: session) { result in
             switch result {
             case .success(let response):
                 switch self.mode {
@@ -123,65 +124,69 @@ public final class WriteIssuerExtraDataCommand: Command {
             }
         }
     }
-    
+
     private func calculateChunk() -> Range<Int> {
         let bytesLeft = issuerData.count - offset
         let to = min(bytesLeft, WriteIssuerExtraDataCommand.singleWriteSize)
-        return offset..<offset + to
+        return offset ..< offset + to
     }
-    
+
     private func verify(with cardId: String) -> Bool {
-        let startingVerifierResult = IssuerDataVerifier.verify(cardId: cardId,
-                                                               issuerDataSize: issuerData.count,
-                                                               issuerDataCounter: issuerDataCounter,
-                                                               publicKey: issuerPublicKey!,
-                                                               signature: startingSignature)
-        
-        let finalizingVerifierResult = IssuerDataVerifier.verify(cardId: cardId,
-                                                                 issuerData: issuerData,
-                                                                 issuerDataCounter: issuerDataCounter,
-                                                                 publicKey: issuerPublicKey!,
-                                                                 signature: finalizingSignature)
-        
+        let startingVerifierResult = IssuerDataVerifier.verify(
+            cardId: cardId,
+            issuerDataSize: issuerData.count,
+            issuerDataCounter: issuerDataCounter,
+            publicKey: issuerPublicKey!,
+            signature: startingSignature
+        )
+
+        let finalizingVerifierResult = IssuerDataVerifier.verify(
+            cardId: cardId,
+            issuerData: issuerData,
+            issuerDataCounter: issuerDataCounter,
+            publicKey: issuerPublicKey!,
+            signature: finalizingSignature
+        )
+
         return startingVerifierResult && finalizingVerifierResult
     }
-    
+
     private func showProgress() {
         guard mode == .writePart else {
             return
         }
-        let progress = Int(round(Float(offset)/Float(issuerData.count) * 100.0))
+        let progress = Int(round(Float(offset) / Float(issuerData.count) * 100.0))
         viewDelegate?.setState(.progress(percent: progress))
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.pin, value: environment.accessCode.value)
             .append(.cardId, value: environment.card?.cardId)
             .append(.interactionMode, value: mode)
-        
+
         switch mode {
         case .readOrStartWrite:
             try tlvBuilder
                 .append(.size, value: issuerData.count)
                 .append(.issuerDataSignature, value: startingSignature)
-            
+
             if let counter = issuerDataCounter {
                 try tlvBuilder.append(.issuerDataCounter, value: counter)
             }
-            
+
         case .writePart:
             try tlvBuilder
-                .append(.issuerData, value: issuerData[calculateChunk()])
+                .append(.data, value: issuerData[calculateChunk()])
                 .append(.offset, value: offset)
-            
+
         case .finalizeWrite:
             try tlvBuilder.append(.issuerDataSignature, value: finalizingSignature)
         }
-        
+
         return CommandApdu(.writeIssuerData, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> SuccessResponse {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
         return SuccessResponse(cardId: try decoder.decode(.cardId))

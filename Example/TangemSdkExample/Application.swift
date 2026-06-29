@@ -12,13 +12,9 @@ import SwiftUI
 
 @main
 struct Application: App {
-    private let model = AppModel()
-
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(model)
         }
     }
 }
-

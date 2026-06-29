@@ -14,16 +14,16 @@ struct EnterUserCodeView: View {
     let placeholder: String
     let showForgotButton: Bool
     let completion: CompletionResult<String>
-    
+
     @EnvironmentObject var style: TangemSdkStyle
-    
+
     @State private var isLoading: Bool = false
     @State private var code: String = ""
-    
+
     private var isContinueDisabled: Bool {
         code.trim().isEmpty
     }
-    
+
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
@@ -58,7 +58,6 @@ struct EnterUserCodeView: View {
 
     private var footer: some View {
         VStack(spacing: 16) {
-
             Spacer()
 
             if showForgotButton {
@@ -85,23 +84,23 @@ struct EnterUserCodeView: View {
             isLoading = false
         }
     }
-    
+
     private func onCancel() {
         completion(.failure(.userCancelled))
     }
-    
+
     private func onForgot() {
         completion(.failure(.userForgotTheCode))
     }
-    
+
     private func onDone() {
         if isContinueDisabled {
             return
         }
-        
+
         UIApplication.shared.endEditing()
         isLoading = true
-        
+
         let userCode = code.trim()
         completion(.success(userCode))
     }
@@ -110,17 +109,21 @@ struct EnterUserCodeView: View {
 struct EnterUserCodeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            EnterUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
-                              placeholder: "Enter code",
-                              showForgotButton: true,
-                              completion: {_ in})
-            EnterUserCodeView(title: "Title",
-                              cardId: "0000 1111 2222 3333 444",
-                              placeholder: "Enter code",
-                              showForgotButton: true,
-                              completion: {_ in})
-                .preferredColorScheme(.dark)
+            EnterUserCodeView(
+                title: "Title",
+                cardId: "0000 1111 2222 3333 444",
+                placeholder: "Enter code",
+                showForgotButton: true,
+                completion: { _ in }
+            )
+            EnterUserCodeView(
+                title: "Title",
+                cardId: "0000 1111 2222 3333 444",
+                placeholder: "Enter code",
+                showForgotButton: true,
+                completion: { _ in }
+            )
+            .preferredColorScheme(.dark)
         }
         .environmentObject(TangemSdkStyle())
     }

@@ -23,23 +23,23 @@ public struct Mnemonic {
     ///   - wordList: The Wordlist length to use. Default is en.
     public init(with entropy: EntropyLength = .bits128, wordList: BIP39.Wordlist = .en) throws {
         mnemonicComponents = try bip39.generateMnemonic(entropyLength: entropy, wordlist: wordList)
-        self.wordlist = wordList
+        wordlist = wordList
     }
-    
+
     /// Initialize from entropy data and word list
     /// - Parameters:
     ///   - entropyData: The entropy data to use
     ///   - wordList: The Wordlist to use. Default is en.
     public init(entropyData: Data, wordList: BIP39.Wordlist = .en) throws {
         mnemonicComponents = try bip39.generateMnemonic(from: entropyData, wordlist: wordList)
-        self.wordlist = wordList
+        wordlist = wordList
     }
 
     /// Parse a mnemonic strind
     /// - Parameter mnemonic: The mnemonic string to use
     public init(with mnemonic: String) throws {
         mnemonicComponents = try bip39.parse(mnemonicString: mnemonic)
-        self.wordlist = try bip39.parseWordlist(from: mnemonicComponents)
+        wordlist = try bip39.parseWordlist(from: mnemonicComponents)
     }
 
     /// Generate a seed from the current mnemonic.

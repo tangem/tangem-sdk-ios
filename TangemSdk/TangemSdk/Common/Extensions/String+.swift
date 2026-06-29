@@ -18,20 +18,20 @@ public extension String {
         let data = Data(Array(utf8))
         return data.getSHA512()
     }
-    
+
     internal var titleFormatted: String {
         let separator = Array(repeating: "-", count: 16).joined()
         return "\(separator) \(self) \(separator)"
     }
-    
+
     func remove(_ substring: String) -> String {
-        return self.replacingOccurrences(of: substring, with: "")
+        return replacingOccurrences(of: substring, with: "")
     }
-    
+
     internal func capitalizingFirst() -> String {
         return prefix(1).capitalized + dropFirst()
     }
-    
+
     internal func lowercasingFirst() -> String {
         return prefix(1).lowercased() + dropFirst()
     }
@@ -49,14 +49,14 @@ public extension String {
         let format = Localization.getFormat(for: self)
         return String(format: format, arguments)
     }
-    
+
     internal func trim() -> String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     internal func leadingZeroPadding(toLength newLength: Int) -> String {
         guard count < newLength else { return self }
-            
+
         let prefix = String(repeating: "0", count: newLength - count)
         return prefix + self
     }
@@ -66,14 +66,14 @@ extension DefaultStringInterpolation {
     mutating func appendInterpolation(_ data: Data) {
         appendLiteral(data.hexString)
     }
-    
+
     mutating func appendInterpolation(_ byte: Byte) {
         appendLiteral(byte.hexString)
     }
 }
 
 extension String.SubSequence {
-    internal func trim() -> String {
+    func trim() -> String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

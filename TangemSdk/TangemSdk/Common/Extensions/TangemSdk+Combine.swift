@@ -11,10 +11,11 @@ import Combine
 import CoreNFC
 
 extension ResponseApdu {
-    func decryptPublisher(encryptionKey: Data?) -> AnyPublisher<ResponseApdu, TangemSdkError> {
-        return Deferred {Future() { promise in
+    func decryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) -> AnyPublisher<ResponseApdu, TangemSdkError> {
+        return Deferred { Future { promise in
             do {
-                let decrypted = try self.decrypt(encryptionKey: encryptionKey)
+                let decrypted = try self.decrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
+                Log.apdu("R-APDU decrypted <-- \(decrypted)")
                 promise(.success(decrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))
@@ -24,10 +25,12 @@ extension ResponseApdu {
 }
 
 extension CommandApdu {
-    func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
-        return Deferred {Future() { promise in
+    func encryptPublisher(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) -> AnyPublisher<CommandApdu, TangemSdkError> {
+        return Deferred { Future { promise in
             do {
-                let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey)
+                Log.apdu("C-APDU unencrypted --> \(self)")
+
+                let encrypted = try self.encrypt(encryptionMode: encryptionMode, encryptionKey: encryptionKey, nonce: nonce)
                 promise(.success(encrypted))
             } catch {
                 promise(.failure(error.toTangemSdkError()))
@@ -38,24 +41,25 @@ extension CommandApdu {
 
 extension NFCISO7816Tag {
     func sendCommandPublisher(cApdu: CommandApdu) -> AnyPublisher<Result<ResponseApdu, TangemSdkError>, TangemSdkError> {
-        return Deferred { Future() { promise in
+        return Deferred { Future { promise in
             let serializedAPDU = cApdu.serialize()
             guard let apdu = NFCISO7816APDU(data: serializedAPDU) else {
                 promise(.failure(TangemSdkError.failedToBuildCommandApdu))
                 return
             }
 
-            Log.apdu("C-APDU send --> \(serializedAPDU.hexString)")
+            Log.apdu("C-APDU send encrypted --> \(serializedAPDU.hexString)")
 
             let requestDate = Date()
             self.sendCommand(apdu: apdu) { data, sw1, sw2, error in
-                Log.apdu("R-APDU receive <-- Data: \(data.hexString) SW1: \(sw1) SW2: \(sw2)")
+                Log.apdu("R-APDU receive encrypted <-- Data: \(data.hexString) SW1: \(sw1) SW2: \(sw2)")
 
                 let dateDiff = Calendar.current.dateComponents([.nanosecond], from: requestDate, to: Date())
-                Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0)/1000000) ms")
+                Log.command("Command execution time is: \((dateDiff.nanosecond ?? 0) / 1000000) ms")
 
                 if let sdkError = error?.toTangemSdkError() {
-                    Log.error(sdkError)
+                    Log.command("Error received.")
+                    Log.error(error)
                     promise(.failure(sdkError))
                 } else {
                     let rApdu = ResponseApdu(data, sw1, sw2)
@@ -68,7 +72,7 @@ extension NFCISO7816Tag {
 
 extension NFCTagReaderSession {
     func connectPublisher(tag: NFCTag) -> AnyPublisher<Void, TangemSdkError> {
-        return Deferred { Future() { promise in
+        return Deferred { Future { promise in
             self.connect(to: tag) { error in
                 if let error = error {
                     promise(.failure(error.toTangemSdkError()))
@@ -88,11 +92,13 @@ public extension TangemSdk {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     /// - Returns: `AnyPublisher<T.Response, TangemSdkError>`
-    func startSessionPublisher<T: CardSessionRunnable>(with runnable: T,
-                                                       cardId: String?,
-                                                       initialMessage: Message? = nil,
-                                                       accessCode: String? = nil) -> AnyPublisher<T.Response, TangemSdkError> {
-        return Deferred { Future() {
+    func startSessionPublisher<T: CardSessionRunnable>(
+        with runnable: T,
+        cardId: String?,
+        initialMessage: Message? = nil,
+        accessCode: String? = nil
+    ) -> AnyPublisher<T.Response, TangemSdkError> {
+        return Deferred { Future {
             self.startSession(with: runnable, cardId: cardId, initialMessage: initialMessage, accessCode: accessCode, completion: $0)
         }}.eraseToAnyPublisher()
     }
@@ -104,11 +110,13 @@ public extension TangemSdk {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - accessCode: Access code that will be used for a card session initialization. If nil, Tangem SDK will handle it automatically.
     /// - Returns: `AnyPublisher<T.Response, TangemSdkError>`
-    func startSessionPublisher<T: CardSessionRunnable>(with runnable: T,
-                                                       filter: SessionFilter?,
-                                                       initialMessage: Message? = nil,
-                                                       accessCode: String? = nil) -> AnyPublisher<T.Response, TangemSdkError> {
-        return Deferred { Future() {
+    func startSessionPublisher<T: CardSessionRunnable>(
+        with runnable: T,
+        filter: SessionFilter?,
+        initialMessage: Message? = nil,
+        accessCode: String? = nil
+    ) -> AnyPublisher<T.Response, TangemSdkError> {
+        return Deferred { Future {
             self.startSession(with: runnable, filter: filter, initialMessage: initialMessage, accessCode: accessCode, completion: $0)
         }}.eraseToAnyPublisher()
     }

@@ -12,27 +12,31 @@ import Foundation
 public class ReadFilesTask: CardSessionRunnable {
     /// If true, user code or security delay will be requested
     public var shouldReadPrivateFiles = false
-    
-    //Read filters
+
+    // Read filters
     private let fileName: String?
     private let walletPublicKey: Data?
-    
+
     private var files: [File] = []
-    
+
     public init(fileName: String? = nil, walletPublicKey: Data? = nil) {
         self.fileName = fileName
         self.walletPublicKey = walletPublicKey
     }
-    
+
+    deinit {
+        Log.debug("ReadFilesTask deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<[File]>) {
         readAllFiles(fileIndex: 0, session: session, completion: completion)
     }
-    
+
     private func readAllFiles(fileIndex: Int, session: CardSession, completion: @escaping CompletionResult<[File]>) {
         let command = ReadFileCommand(fileIndex: fileIndex, fileName: fileName, walletPublicKey: walletPublicKey)
-        command.shouldReadPrivateFiles = self.shouldReadPrivateFiles
-        
-        command.run(in: session) { (result) in
+        command.shouldReadPrivateFiles = shouldReadPrivateFiles
+
+        command.run(in: session) { result in
             switch result {
             case .success(let responseFile):
                 if let file = responseFile {
@@ -51,4 +55,3 @@ public class ReadFilesTask: CardSessionRunnable {
         }
     }
 }
-

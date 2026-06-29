@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension BIP39 {
-    public enum Wordlist: CaseIterable {
+public extension BIP39 {
+    enum Wordlist: CaseIterable {
         case en
     }
 }

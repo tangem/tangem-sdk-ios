@@ -24,19 +24,19 @@ public final class ScanTask: CardSessionRunnable {
     deinit {
         Log.debug("ScanTask deinit")
     }
-    
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
-        guard let card = session.environment.card  else {
+        guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
-        
-        //We have to retrieve passcode status information for cards with COS before v4.01 with checkUserCodes command for backward compatibility.
-        //checkUserCodes command for cards with COS <=1.19 not supported because of persistent SD.
-        //We cannot run checkUserCodes command for cards whose `isRemovingUserCodesAllowed` is set to false because of an error
-        if card.firmwareVersion < .passcodeStatusAvailable
-            && card.firmwareVersion.doubleValue > 1.19
-            && card.settings.isRemovingUserCodesAllowed {
+
+        // We have to retrieve passcode status information for cards with COS before v4.01 with checkUserCodes command for backward compatibility.
+        // checkUserCodes command for cards with COS <=1.19 not supported because of persistent SD.
+        // We cannot run checkUserCodes command for cards whose `isRemovingUserCodesAllowed` is set to false because of an error
+        if card.firmwareVersion < .passcodeStatusAvailable,
+           card.firmwareVersion.doubleValue > 1.19,
+           card.settings.isRemovingUserCodesAllowed {
             checkUserCodes(session, completion)
         } else {
             deriveKeysIfNeeded(session, completion)
@@ -57,30 +57,35 @@ public final class ScanTask: CardSessionRunnable {
             withExtendedLifetime(checkCodesCommand) {}
         }
     }
-    
+
     private func deriveKeysIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
 
+        if card.assertWalletsAccess() != nil {
+            runAttestation(session, completion)
+            return
+        }
+
         let defaultPaths = session.environment.config.defaultDerivationPaths
         guard card.firmwareVersion >= .hdWalletAvailable, card.settings.isHDWalletAllowed, !defaultPaths.isEmpty else {
-            self.runAttestation(session, completion)
+            runAttestation(session, completion)
             return
         }
-        
-        let derivations = card.wallets.reduce(into: [Data: [DerivationPath]]()) { (result, wallet) in
-            if let paths = defaultPaths[wallet.curve], !paths.isEmpty {
-                result[wallet.publicKey] = paths
+
+        let derivations = card.wallets.reduce(into: [Data: [DerivationPath]]()) { result, wallet in
+            if let walletPublicKey = wallet.publicKey, let paths = defaultPaths[wallet.curve], !paths.isEmpty {
+                result[walletPublicKey] = paths
             }
         }
-        
+
         guard !derivations.isEmpty else {
-            self.runAttestation(session, completion)
+            runAttestation(session, completion)
             return
         }
-        
+
         let derivationTask = DeriveMultipleWalletPublicKeysTask(derivations)
         derivationTask.run(in: session) { result in
             switch result {
@@ -93,17 +98,17 @@ public final class ScanTask: CardSessionRunnable {
             withExtendedLifetime(derivationTask) {}
         }
     }
-    
+
     private func runAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
         let attestationTask = AttestationTask(mode: session.environment.config.attestationMode, networkService: networkService)
         attestationTask.run(in: session) { result in
             switch result {
             case .success:
-                guard let card = session.environment.card  else {
+                guard let card = session.environment.card else {
                     completion(.failure(.missingPreflightRead))
                     return
                 }
-                
+
                 completion(.success(card))
             case .failure(let error):
                 completion(.failure(error))

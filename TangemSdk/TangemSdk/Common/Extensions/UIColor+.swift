@@ -10,39 +10,47 @@ import Foundation
 import UIKit
 
 extension UIColor {
-    struct LightPalette {        
+    enum LightPalette {
         static var indicatorBackground: UIColor {
-            .init(red: 240.0/255.0,
-                  green: 241.0/255.0,
-                  blue: 242.0/255.0,
-                  alpha: 0.9)
+            .init(
+                red: 240.0 / 255.0,
+                green: 241.0 / 255.0,
+                blue: 242.0 / 255.0,
+                alpha: 0.9
+            )
         }
-        
+
         static var cardColor: UIColor {
-            .init(red: 176.0/255.0,
-                  green: 176.0/255.0,
-                  blue: 176.0/255.0,
-                  alpha: 1)
+            .init(
+                red: 176.0 / 255.0,
+                green: 176.0 / 255.0,
+                blue: 176.0 / 255.0,
+                alpha: 1
+            )
         }
-        
+
         static var secondaryButtonBackground: UIColor {
-            .init(red: 224.0/255.0,
-                  green: 224/255.0,
-                  blue: 224.0/255.0,
-                  alpha: 1)
+            .init(
+                red: 224.0 / 255.0,
+                green: 224 / 255.0,
+                blue: 224.0 / 255.0,
+                alpha: 1
+            )
         }
-        
+
         static var secondaryButtonForeground: UIColor {
-            .init(red: 58.0/255.0,
-                  green: 58/255.0,
-                  blue: 60.0/255.0,
-                  alpha: 1)
+            .init(
+                red: 58.0 / 255.0,
+                green: 58 / 255.0,
+                blue: 60.0 / 255.0,
+                alpha: 1
+            )
         }
 
         static let warningBackground = UIColor(
-            red: 255.0/255.0,
-            green: 183.0/255.0,
-            blue: 27.0/255.0,
+            red: 255.0 / 255.0,
+            green: 183.0 / 255.0,
+            blue: 27.0 / 255.0,
             alpha: 1
         )
     }
@@ -51,10 +59,12 @@ extension UIColor {
 extension UIColor {
     enum DarkPalette {
         static var cardColor: UIColor {
-            .init(red: 101.0/255.0,
-                  green: 101.0/255.0,
-                  blue: 101.0/255.0,
-                  alpha: 1)
+            .init(
+                red: 101.0 / 255.0,
+                green: 101.0 / 255.0,
+                blue: 101.0 / 255.0,
+                alpha: 1
+            )
         }
     }
 }

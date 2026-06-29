@@ -14,79 +14,81 @@ import CoreNFC
  * Errors are propagated back to the caller in callbacks.
  */
 public enum TangemSdkError: Error, LocalizedError, Encodable {
-    //MARK: NFC processing errors
-    
+    // MARK: NFC processing errors
+
     /// Command was sent to wrong tag type
     case unsupportedCommand
-    
+
     /// This error is returned when the current device doesn't support the desired NFC operations
     case unsupportedDevice
-    
+
     /// Start session before
     case sessionInactive
-    
+
     /// It seems that NFC does not work properly on your iPhone. Try to reboot your iPhone
     case nfcStuck
-    
+
     case nfcTimeout
-    
+
     case nfcReaderError
-    
-    
-    //MARK: Apdu processing errrors
-    
+
+    /// COS v8+. We can't retry anymore, always restart session after this error.
+    case retrySecureChannelNeeded
+
+    // MARK: Apdu processing errrors
+
     case serializeCommandError
-    
+
     /// This error is returned when the `ResponseApdu` cannot deserialize bytes to `[Tlv]`
     case deserializeApduFailed
-    
+
     /// This error is returned when the `TlvEncoder` failed to encode value not matching `TlvTag` value type
     case encodingFailedTypeMismatch(_ message: String)
-    
+
     /// This error is returned when the `TlvEncoder` failed to encode nil value or failed to encode stiring with utf8 encoding
     case encodingFailed(_ message: String)
-    
+
     /// This error is returned when the `TlvDecoder` cannot find desired tag. You can use `decode` to handle this error automatically
     case decodingFailedMissingTag(_ message: String)
-    
+
     /// This error is returned when the `TlvDecoder` failed to decode value not matching `TlvTag` value type
     case decodingFailedTypeMismatch(_ message: String)
-    
+
     /// This error is returned when the `TlvDecoder` failed to decode value. Please let us know
     case decodingFailed(_ message: String)
-    
+
     case failedToEncryptApdu
-    
+
     case failedToDecryptApdu
-    
+
     case failedToEstablishEncryption
-    
+
     case invalidResponseApdu
-    
+
     case failedToBuildCommandApdu
-    
-    //MARK: Card errors
-    
+
+    // MARK: Card errors
+
     /// This error is returned when unknown `StatusWord` is received from a card.
     case unknownStatus(_ sw: String)
-    
+
     /// This error is returned when a card's reply is `StatusWord.ErrorProcessingCommand`.
     /// The card sends this status in case of internal card error
     case errorProcessingCommand
-    
+
     /// This error is returned when a card's reply is `StatusWord.InvalidState`.
     /// The card sends this status when command can not be executed in the current state of a card.
     case invalidState
-    
+
     /// This error is returned when a card's reply is `StatusWord.InsNotSupported`.
     /// The card sends this status when the card cannot process the `Instruction`.
     case insNotSupported
-    
+
     /// This error is returned when a card's reply is `StatusWord.InvalidParams`.
     /// The card sends this status when there are wrong or not sufficient parameters in `TLV` request, or wrong `PIN1/PIN2`.
     /// The error may be caused, for example, by wrong parameters of the `ApduSerializable`, encode/decode  errors.
     case invalidParams
-    
+
     /// This error is returned when a card's reply is `StatusWord.NeedEncryption` and the encryption was not established by TangemSdk.
     case needEncryption
 
@@ -94,28 +96,31 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case accessDenied
 
     /// COS v8+
+    case needReset
+
+    /// COS v8+
     case invalidAccessTokens
 
-    //MARK: Business logic errors
-    
-    // Personalization Errors
+    // MARK: Business logic errors
+
+    /// Personalization Errors
     case alreadyPersonalized
-    
-    // Depersonalization Errors
+
+    /// Depersonalization Errors
     case cannotBeDepersonalized
-    
+
     // Read Errors
     case accessCodeRequired
     case nonHardenedDerivationNotSupported
-    
+
     // CreateWallet Errors
     case alreadyCreated
-    case unsupportedCurve //todo: localize
-    case unsupportedWalletConfig //todo: localize
-    
-    // PurgeWallet Errors
+    case unsupportedCurve
+    case unsupportedWalletConfig
+
+    /// PurgeWallet Errors
     case purgeWalletProhibited
-    
+
     // SetPin Errors
     case accessCodeCannotBeChanged
     case passcodeCannotBeChanged
@@ -123,69 +128,69 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case passcodeCannotBeDefault
     case accessCodeTooShort
     case passcodeTooShort
-    
-    //Sign Errors
+
+    // Sign Errors
     case noRemainingSignatures
     case oldCard
-    
+
     /// This error is returned when a `SignCommand` receives only empty hashes for signature.
     case emptyHashes
 
     case signHashesNotAvailable
-    
-    // Write Extra Issuer Data Errors
+
+    /// Write Extra Issuer Data Errors
     case extendedDataSizeTooLarge
-    
+
     // General Errors
-    
+
     case notPersonalized(firmware: FirmwareVersion)
 
     case notActivated
-    
+
     case walletIsPurged
-    
+
     case passcodeRequired
-    
+
     /// This error is returned when SDK checks unsuccessfully either
     /// a card's ability to sign with its private key, or the validity of issuer data or the validity of images
     case verificationFailed
-    
+
     case cardVerificationFailed
-    
+
     /// This error is returned when a [Task] checks unsuccessfully either
     /// a card's ability to sign with its private key, or the validity of issuer data.
     case dataSizeTooLarge
-    
+
     /// This error is returned when `ReadIssuerData` or `ReadIssuerExtraData` expects a counter
     /// (when the card's requires it), but the counter is missing.
     case missingCounter
-    
+
     case overwritingDataIsProhibited
-    
+
     case dataCannotBeWritten
-    
+
     /// This error is returned when `issuerPublicKey` requires to perform operation
     case missingIssuerPublicKey
-    
-    ///User entered wrong Access Code
+
+    /// User entered wrong Access Code
     case wrongAccessCode
-    
-    ///User entered wrong Passcode
+
+    /// User entered wrong Passcode
     case wrongPasscode
-    
-    //MARK: SDK errors
-    
+
+    // MARK: SDK errors
+
     case unknownError
-    
+
     case underlying(error: Error)
-    
+
     /// This error is returned when a user manually closes the NFC  Dialog.
     case userCancelled
-    
+
     case userForgotTheCode
-    
+
     case biometricsUnavailable
-    
+
     /// This error is returned when `CardSession`  was called with a new operation,  while a previous operation is still in progress.
     case busy
 
@@ -194,11 +199,14 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     /// This error is returned when a `CardSessionRunnable` requires that `ReadCommand`
     /// is executed before performing other commands.
     case missingPreflightRead
-    
+
+    /// This error is returned when a `SecureChannel` requires `AccessTokens`
+    case missingAccessTokens
+
     /// This error is returned when a [Task] expects a user to use a particular card,
     /// but the user tries to use a different card.
     case wrongCardNumber(expectedCardId: String?)
-    
+
     /// This error is returned when a user scans a card of a [com.tangem.common.extensions.CardType]
     /// that is not specified in [Config.cardFilter].
     case wrongCardType(_ localizedDescription: String?)
@@ -207,14 +215,15 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
 
     /// This error is returned when the scanned card doesn't have some essential fields.
     case cardError
-    
+
     /// This error is returned when SDK fails to perform some low-level crypto algorithm
     case cryptoUtilsError(_ message: String)
-    
+
     /// This error is returned when the error occurs inside third-party crypto libraries code
     case failedToGenerateRandomSequence
-    
-    //MARK: Underlying NFC reader errors
+
+    // MARK: Underlying NFC reader errors
+
     case readerErrorUnsupportedFeature
     case readerErrorSecurityViolation
     case readerErrorInvalidParameter
@@ -235,31 +244,33 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case ndefReaderSessionErrorZeroLengthMessage
     case readerErrorRadioDisabled
     case readerTransceiveErrorPacketTooLong
-    // TODO: uncomment for xcode26
-//     case readerErrorIneligible
-//     case readerErrorAccessNotAccepted
+    case readerErrorIneligible
+    case readerErrorAccessNotAccepted
 
     // MARK: Files errors
-    
+
     /// Returned when there is no files on card or when successfully read all files
     case fileNotFound
     case fileSettingsUnsupported
     case filesIsEmpty
-    
+
     /// Returned when command setup not available interaction mode (ex. while writing file was setup delete interaction mode)
     case wrongInteractionMode
-    
+
     /// Returned when command  is not met firmware version requirements (ex. for file writing COD must be 3.29 or greater)
     case notSupportedFirmwareVersion
-    
+
     // MARK: Wallet errors
+
     case maxNumberOfWalletsCreated
     case walletNotFound
     case cardWithMaxZeroWallets
     case walletCannotBeCreated
     case walletAlreadyCreated
-    
+    case walletUnavailableBackupRequired
+
     // MARK: Backup errors
+
     case backupFailedCardNotLinked
     case backupNotAllowed
     case backupCardAlreadyAdded
@@ -288,28 +299,30 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case backupFailedKeysImportSettings
     case backupFailedAlreadyCreated
 
-    //MARK: Settings
+    // MARK: Settings
+
     case filesDisabled
     case hdWalletDisabled
     case keysImportDisabled
     case userCodeRecoveryDisabled
-    
+
     case resetPinNoCardToReset
     case resetPinWrongCard(internalCode: Int? = nil)
-    
+
     public var code: Int {
         switch self {
-            // MARK: 1xxxx Errors
+        // MARK: 1xxxx Errors
+
         case .unsupportedCommand: return 10003
         case .unsupportedDevice: return 10004
         case .sessionInactive: return 10005
         case .nfcStuck: return 10006
         case .nfcTimeout: return 10007
         case .nfcReaderError: return 10008
-            
-            
-            // MARK: 2xxxx Errors
-            // Errors occured during the mapping or parsing data.
+        case .retrySecureChannelNeeded: return 10009
+
+        // MARK: 2xxxx Errors
+        // Errors occurred during the mapping or parsing data.
         case .serializeCommandError: return 20001
         case .deserializeApduFailed: return 20002
         case .encodingFailedTypeMismatch: return 20003
@@ -322,9 +335,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .failedToEstablishEncryption: return 20010
         case .invalidResponseApdu: return 20011
         case .failedToBuildCommandApdu: return 20012
-            
-            // MARK: 3xxxx Errors
-            // Errors from card SW codes
+
+        // MARK: 3xxxx Errors
+        // Errors from card SW codes
         case .unknownStatus: return 30001
         case .errorProcessingCommand: return 30002
         case .invalidState: return 30003
@@ -334,10 +347,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .fileNotFound: return 30007
         case .walletNotFound: return 30008
         case .accessDenied: return 30009
+        case .needReset: return 30010
 
-            // MARK: 4yyxx Errors
-            // Command Error. Business logical errors that occurred inside commands' implmentation.
-            
+        // MARK: 4yyxx Errors
+        // Command Error. Business logical errors that occurred inside commands' implementation.
         case .notPersonalized: return 40001
         case .notActivated: return 40002
         case .walletIsPurged: return 40003
@@ -352,38 +365,30 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongAccessCode: return 40012
         case .wrongPasscode: return 40013
         case .invalidAccessTokens: return 40014
-
         case .alreadyPersonalized: return 40101
-            
         case .cannotBeDepersonalized: return 40201
-            
         case .accessCodeRequired: return 40401
         case .nonHardenedDerivationNotSupported: return 40402
         case .walletCannotBeCreated: return 40403
         case .cardWithMaxZeroWallets: return 40404
         case .walletAlreadyCreated: return 40405
-            
+        case .walletUnavailableBackupRequired: return 40406
         case .alreadyCreated: return 40501
         case .unsupportedCurve: return 40502
         case .maxNumberOfWalletsCreated: return 40503
         case .unsupportedWalletConfig: return 40504
-            
         case .purgeWalletProhibited: return 40601
-            
         case .accessCodeCannotBeChanged: return 40801
         case .passcodeCannotBeChanged: return 40802
         case .accessCodeCannotBeDefault: return 40803
         case .passcodeCannotBeDefault: return 40804
         case .accessCodeTooShort: return 40805
         case .passcodeTooShort: return 40806
-            
         case .noRemainingSignatures: return 40901
         case .emptyHashes: return 40902
         case .signHashesNotAvailable: return 40905
         case .oldCard: return 40907
-            
         case .extendedDataSizeTooLarge: return 41101
-            
         case .backupFailedCardNotLinked: return 41201
         case .backupCardAlreadyAdded: return 41202
         case .missingPrimaryCard: return 41203
@@ -411,20 +416,17 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupFailedIncompatibleFirmware: return 41232
         case .backupFailedKeysImportSettings: return 41233
         case .backupFailedAlreadyCreated: return 41234
-            
         case .resetPinNoCardToReset: return 41300
         case .resetPinWrongCard(let internalCode): return internalCode ?? 41301
-            
         case .fileSettingsUnsupported: return 42000
         case .filesIsEmpty: return 42001
-            
         case .filesDisabled: return 42002
         case .hdWalletDisabled: return 42003
         case .keysImportDisabled: return 42004
         case .userCodeRecoveryDisabled: return 42005
-            
-            // MARK: 5xxxx Errors
-            // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
+
+        // MARK: 5xxxx Errors
+        // SDK error. Errors, that occurred in the upper level of SDK, like device restrictions, user canceled the operation or SDK is busy and can’t open the new session right now.
         case .unknownError: return 50001
         case .userCancelled: return 50002
         case .busy: return 50003
@@ -433,6 +435,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .wrongCardType: return 50006
         case .cardError: return 50007
         case .notSupportedFirmwareVersion: return 50008
+        case .missingAccessTokens: return 50009
         case .failedToGenerateRandomSequence: return 50010
         case .cryptoUtilsError: return 50011
         case .underlying: return 50012
@@ -440,12 +443,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .biometricsUnavailable: return 50014
         case .preflightFiltered: return 50015
         case .jsonConverterNotSet: return 50016
-
         case .wrongInteractionMode: return 50027
-            
-            // MARK: 9xxxx Errors
-            // Reader error.
-            
+
+        // MARK: 9xxxx Errors
+        // Reader error.
         case .readerErrorUnsupportedFeature: return 90003
         case .readerErrorSecurityViolation: return 90004
         case .readerErrorInvalidParameter: return 90005
@@ -466,12 +467,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .ndefReaderSessionErrorZeroLengthMessage: return 90020
         case .readerErrorRadioDisabled: return 90021
         case .readerTransceiveErrorPacketTooLong: return 90022
-            // TODO: uncomment for xCode26
-//        case .readerErrorIneligible: return 90023
-//        case .readerErrorAccessNotAccepted: return 90024
+        case .readerErrorIneligible: return 90023
+        case .readerErrorAccessNotAccepted: return 90024
         }
     }
-    
+
     public var message: String? {
         switch self {
         case .encodingFailed(let message):
@@ -488,7 +488,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return nil
         }
     }
-    
+
     public var errorDescription: String? {
         switch self {
         case .nfcTimeout: return "nfc_session_timeout".localized
@@ -521,9 +521,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .backupCardRequired, .backupCardAlreadyAdded: return "error_backup_card_already_added".localized
         case .backupFailedNotEmptyWallets: return "error_backup_not_empty_wallets".localized
         case .backupFailedWrongIssuer, .backupFailedHDWalletSettings, .backupFailedNotEnoughCurves,
-                .backupFailedNotEnoughWallets, .backupFailedFirmware, .backupNotAllowed,
-                .backupFailedIncompatibleBatch, .backupFailedIncompatibleFirmware, .backupFailedKeysImportSettings:
-            return "error_backup_wrong_card".localized("\(self.code)")
+             .backupFailedNotEnoughWallets, .backupFailedFirmware, .backupNotAllowed,
+             .backupFailedIncompatibleBatch, .backupFailedIncompatibleFirmware, .backupFailedKeysImportSettings:
+            return "error_backup_wrong_card".localized("\(code)")
         case .backupFailedAlreadyCreated:
             return "error_backup_failed_already_created".localized
         case .resetPinWrongCard(let internalCode):
@@ -531,28 +531,27 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             case TangemSdkError.noActiveBackup.code:
                 return "error_no_active_backup".localized
             default:
-                return "error_reset_wrong_card".localized("\(self.code)")
+                return "error_reset_wrong_card".localized("\(code)")
             }
         case .oldCard: return "error_old_card".localized
         case .userCodeRecoveryDisabled: return "error_user_code_recovery_disabled".localized
-            
         default:
-            if let message = self.message {
-                return "generic_error_code".localized("\(self.code). \(message)")
+            if let message = message {
+                return "generic_error_code".localized("\(code). \(message)")
             }
-            
-            //let description = "\(self)".capitalizingFirst()
-            return "generic_error_code".localized("\(self.code)")
+
+            // let description = "\(self)".capitalizingFirst()
+            return "generic_error_code".localized("\(code)")
         }
     }
-    
+
     public var jsonDescription: String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
         let data = (try? encoder.encode(self)) ?? Data()
         return String(data: data, encoding: .utf8)!
     }
-    
+
     public var isUserCancelled: Bool {
         if case .userCancelled = self {
             return true
@@ -560,7 +559,7 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return false
         }
     }
-    
+
     public static func parse(_ error: Error) -> TangemSdkError {
         if let readerError = error as? NFCReaderError {
             switch readerError.code {
@@ -608,11 +607,10 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .readerErrorRadioDisabled
             case .readerTransceiveErrorPacketTooLong:
                 return .readerTransceiveErrorPacketTooLong
-                // TODO: uncomment for xCode26
-//            case .readerErrorIneligible:
-//                return .readerErrorIneligible
-//            case .readerErrorAccessNotAccepted:
-//                return .readerErrorAccessNotAccepted
+            case .readerErrorIneligible:
+                return .readerErrorIneligible
+            case .readerErrorAccessNotAccepted:
+                return .readerErrorAccessNotAccepted
             @unknown default:
                 return .nfcReaderError
             }
@@ -620,27 +618,27 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
             return (error as? TangemSdkError) ?? TangemSdkError.underlying(error: error)
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
-        var error = [String:String]()
+        var error = [String: String]()
         error["code"] = String(describing: code)
         error["localizedDescription"] = localizedDescription
         var container = encoder.singleValueContainer()
         try container.encode(error)
     }
-    
+
     /// Get error according to the pin type
     /// - Parameters:
     ///   - userCodeType: Specific user code type
     ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
     /// - Returns: TangemSdkError
     static func from(userCodeType: UserCodeType, environment: SessionEnvironment?) -> TangemSdkError {
-        let isCodeSet = environment?.isUserCodeSet(userCodeType) ?? false
-        
         switch userCodeType {
         case .accessCode:
+            let isCodeSet = environment?.accessCode.isNonDefault ?? false
             return isCodeSet ? .wrongAccessCode : .accessCodeRequired
         case .passcode:
+            let isCodeSet = environment?.passcode.isNonDefault ?? false
             return isCodeSet ? .wrongPasscode : .passcodeRequired
         }
     }

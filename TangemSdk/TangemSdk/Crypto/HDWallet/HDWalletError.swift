@@ -14,7 +14,7 @@ enum HDWalletError: String, Error, LocalizedError {
     case wrongIndex
     case invalidSeed
     case invalidHMACKey
-    
+
     var errorDescription: String? {
         return rawValue
     }

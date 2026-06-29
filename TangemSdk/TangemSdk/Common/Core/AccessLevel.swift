@@ -13,4 +13,22 @@ enum AccessLevel: Int {
     case issuer = 0x08
     case fileOwner = 0x10
     case backupCard = 0x20
+
+    var isPublic: Bool {
+        switch self {
+        case .publicAccess:
+            true
+        default:
+            false
+        }
+    }
+
+    var isPublicSecureChannel: Bool {
+        switch self {
+        case .publicSecureChannel:
+            true
+        default:
+            false
+        }
+    }
 }

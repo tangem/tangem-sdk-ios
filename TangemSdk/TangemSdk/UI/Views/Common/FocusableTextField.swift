@@ -33,9 +33,10 @@ struct FocusableTextField: View {
             }
     }
 
-    init(shouldBecomeFirstResponder: Bool,
-         text: Binding<String>,
-         onCommit: @escaping () -> Void = {}
+    init(
+        shouldBecomeFirstResponder: Bool,
+        text: Binding<String>,
+        onCommit: @escaping () -> Void = {}
     ) {
         self.shouldBecomeFirstResponder = shouldBecomeFirstResponder
         self.text = text
@@ -43,14 +44,13 @@ struct FocusableTextField: View {
     }
 }
 
-
 private extension FocusableTextField {
     enum Field: Hashable {
         case secure
     }
 }
 
-fileprivate class FocusableTextFieldModel: ObservableObject {
+private class FocusableTextFieldModel: ObservableObject {
     var focusPublisher: PassthroughSubject<Void, Never> = .init()
 
     private var appearPublisher: CurrentValueSubject<Bool, Never> = .init(false)
@@ -81,7 +81,7 @@ fileprivate class FocusableTextFieldModel: ObservableObject {
 
         appearPublisher
             .filter { $0 }
-            .combineLatest(activePublisher.filter{ $0 })
+            .combineLatest(activePublisher.filter { $0 })
             .sink { [weak self] _ in
                 self?.focusPublisher.send(())
             }
@@ -89,13 +89,13 @@ fileprivate class FocusableTextFieldModel: ObservableObject {
     }
 }
 
-fileprivate extension UIApplication {
+private extension UIApplication {
     var isActive: Bool {
         applicationState == .active
     }
 }
 
-fileprivate extension View {
+private extension View {
     @ViewBuilder
     func writingToolsBehaviorDisabled() -> some View {
         if #available(iOS 18.0, *) {

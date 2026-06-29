@@ -16,7 +16,7 @@ public enum StatusWord: UInt16 {
     case errorProcessingCommand = 0x6286
     case invalidState = 0x6985
     case insNotSupported = 0x6D00
-    case needEcryption = 0x6982
+    case needEncryption = 0x6982
     case needPause = 0x9789
     case pin1Changed = 0x9001
     case pin2Changed = 0x9002
@@ -30,14 +30,15 @@ public enum StatusWord: UInt16 {
     case invalidAccessCode = 0x6AF1
     case invalidPascode = 0x6AF2
     case walletAlreadyExists = 0x6A89
-    /// case pinsNotChanged = 0x9000 equals to processCompleted
+    case needReset = 0x6983
+    // case pinsNotChanged = 0x9000 equals to processCompleted
 
     /// COS v8+
     case accessDenied = 0x6AF3
 
     func toTangemSdkError() -> TangemSdkError? {
         switch self {
-        case .needEcryption:
+        case .needEncryption:
             return TangemSdkError.needEncryption
         case .invalidParams:
             return TangemSdkError.invalidParams
@@ -61,6 +62,8 @@ public enum StatusWord: UInt16 {
             return TangemSdkError.walletAlreadyCreated
         case .accessDenied:
             return TangemSdkError.accessDenied
+        case .needReset:
+            return TangemSdkError.needReset
         default:
             return nil
         }

@@ -45,19 +45,19 @@ private extension TangemSdkStyle.ButtonColors {
     static let customWhiteColors: Self = .init(
         foregroundColor: .adaptiveColor(
             dark: .white,
-            light: UIColor(red: 30/255, green: 30/255, blue: 30/255, alpha: 1)
+            light: UIColor(red: 30 / 255, green: 30 / 255, blue: 30 / 255, alpha: 1)
         ),
         backgroundColor: .adaptiveColor(
             dark: .white.withAlphaComponent(0.2),
             light: .white
         ),
         disabledForegroundColor: .adaptiveColor(
-            dark: UIColor(red: 73/255, green: 73/255, blue: 73/255, alpha: 1),
-            light: UIColor(red: 201/255, green: 201/255, blue: 201/255, alpha: 1)
+            dark: UIColor(red: 73 / 255, green: 73 / 255, blue: 73 / 255, alpha: 1),
+            light: UIColor(red: 201 / 255, green: 201 / 255, blue: 201 / 255, alpha: 1)
         ),
         disabledBackgroundColor: .adaptiveColor(
-            dark: UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1),
-            light: UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1)
+            dark: UIColor(red: 48 / 255, green: 48 / 255, blue: 48 / 255, alpha: 1),
+            light: UIColor(red: 235 / 255, green: 235 / 255, blue: 235 / 255, alpha: 1)
         )
     )
 }

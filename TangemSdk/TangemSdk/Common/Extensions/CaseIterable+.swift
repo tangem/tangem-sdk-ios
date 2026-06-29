@@ -12,12 +12,12 @@ extension CaseIterable where Self: Equatable {
     func next() -> Self {
         let all = Self.allCases
         let selfIndex = all.firstIndex(of: self)!
-        
+
         if selfIndex < all.endIndex {
             let nextIndex = all.index(after: selfIndex)
             return all[nextIndex]
         }
-        
+
         return all[all.endIndex]
     }
 }

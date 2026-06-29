@@ -30,7 +30,6 @@ public struct CardArtworksProviderFactory {
         issuerPublicKey: Data,
         firmwareVersionType: FirmwareVersion.FirmwareType
     ) -> CardArtworksProvider {
-
         if firmwareVersionType == .sdk {
             return DevCardArtworksProvider()
         }
@@ -43,5 +42,3 @@ public struct CardArtworksProviderFactory {
         )
     }
 }
-
-

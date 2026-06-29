@@ -12,7 +12,7 @@ import CoreNFC
 /// Stores response data from the card and parses it to `Tlv` and `StatusWord`.
 public struct ResponseApdu {
     /// Status word code, reflecting the status of the response
-    public var sw: UInt16 { return UInt16( (UInt16(sw1) << 8) | UInt16(sw2) ) }
+    public var sw: UInt16 { return UInt16((UInt16(sw1) << 8) | UInt16(sw2)) }
     /// Parsed status word.
     public var statusWord: StatusWord { return StatusWord(rawValue: sw) ?? .unknown }
 
@@ -37,20 +37,39 @@ public struct ResponseApdu {
         return tlv
     }
 
-    /// Decrypts the response APDU data using AES-CBC encryption.
+    /// Decrypts the response APDU data.
+    /// - Parameter encryptionMode: encryption mode
     /// - Parameter encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    /// - Parameter nonce: The nonce (initialization vector) used for CCM decryption.
     /// - Throws: `TangemSdkError.invalidResponseApdu` if decryption fails or data integrity check fails.
     /// - Returns: A new `ResponseApdu` with decrypted payload data.
-    func decrypt(encryptionKey: Data?) throws -> ResponseApdu {
+    func decrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> ResponseApdu {
         guard let encryptionKey else {
             return self
         }
 
-        if data.isEmpty { //error response. nothing to decrypt
+        switch encryptionMode {
+        case .fast, .strong, .none:
+            return try decryptLegacy(encryptionKey: encryptionKey)
+        case .ccmWithAccessToken, .ccmWithAsymmetricKeys, .ccmWithSecurityDelay:
+            guard let nonce else {
+                throw TangemSdkError.failedToDecryptApdu
+            }
+
+            return try decryptCcm(encryptionKey: encryptionKey, nonce: nonce)
+        }
+    }
+
+    /// Decrypts the response APDU data using AES-CBC encryption.
+    /// - Parameter encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    /// - Throws: `TangemSdkError.invalidResponseApdu` if decryption fails or data integrity check fails.
+    /// - Returns: A new `ResponseApdu` with decrypted payload data.
+    private func decryptLegacy(encryptionKey: Data) throws -> ResponseApdu {
+        if data.isEmpty { // error response. nothing to decrypt
             return self
         }
 
-        if data.count < 16 { //not encrypted response. nothing to decrypt
+        if data.count < 16 { // not encrypted response. nothing to decrypt
             return self
         }
 
@@ -59,29 +78,30 @@ public struct ResponseApdu {
             throw TangemSdkError.invalidResponseApdu
         }
 
-        let length = decryptedData[0...1].toInt()
-        let crc = decryptedData[2...3]
+        let length = decryptedData[0 ... 1].toInt()
+        let crc = decryptedData[2 ... 3]
         let payload = decryptedData[4...]
 
         guard length == payload.count, crc == payload.crc16() else {
             throw TangemSdkError.invalidResponseApdu
         }
 
-        return ResponseApdu(payload, self.sw1, self.sw2)
+        return ResponseApdu(payload, sw1, sw2)
     }
 
     /// Decrypts the response APDU data using AES-CCM encryption.
     /// - Parameters:
-    ///   - encryptionKey: The key used for decryption. If nil, returns the original APDU.
+    ///   - encryptionKey: The key used for decryption.
     ///   - nonce: The nonce (initialization vector) used for CCM decryption.
     /// - Throws: `TangemSdkError.invalidResponseApdu` if data is too short for decryption.
     /// - Returns: A new `ResponseApdu` with decrypted payload data.
-    func decryptCcm(encryptionKey: Data?, nonce: Data) throws -> ResponseApdu {
-        guard let encryptionKey else {
+    private func decryptCcm(encryptionKey: Data, nonce: Data) throws -> ResponseApdu {
+        if data.isEmpty { // error response. nothing to decrypt
             return self
         }
 
-        if data.isEmpty { //error response. nothing to decrypt
+        // always unencrypted
+        if statusWord == .needPause || statusWord == .needEncryption {
             return self
         }
 
@@ -96,12 +116,12 @@ public struct ResponseApdu {
             additionalAuthenticatedData: swBytes
         )
 
-        return ResponseApdu(payload, self.sw1, self.sw2)
+        return ResponseApdu(payload, sw1, sw2)
     }
 }
 
 extension ResponseApdu: CustomStringConvertible {
     public var description: String {
-        return "<-- RECEIVED [\(data.count + 2) bytes]: *** \(sw1) \(sw2) (SW: \(statusWord))"
+        return "[\(data.count + 2) bytes]: \(data) \(sw1) \(sw2) (SW: \(statusWord))"
     }
 }

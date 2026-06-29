@@ -15,18 +15,20 @@ public struct CommandApdu: Equatable {
     /// Instruction code that determines the type of request for the card.
     let ins: Byte
 
-    //MARK: Header
+    // MARK: Header
+
     let cla: Byte
 
-    let p1:  Byte
-    let p2:  Byte
+    let p1: Byte
+    let p2: Byte
 
-    //MARK: Body
+    // MARK: Body
+
     /// An array of  serialized TLVs that are to be sent to the card
     let data: Data
     let le: Int?
 
-    /// Convinience initializer
+    /// Convenience initializer
     /// - Parameter instruction: Instruction code
     /// - Parameter tlv: data
     public init(_ instruction: Instruction, tlv: Data) {
@@ -43,60 +45,20 @@ public struct CommandApdu: Equatable {
     /// Values exceeding 65535 will be clamped to 65535.
     /// Negative values will be clamped to 0.
     /// - Parameter tlv: Payload data
-    public init(cla: Byte = 0x00,
-                ins: Byte,
-                p1: Byte = 0x0,
-                p2: Byte = 0x0,
-                le: Int? = nil,
-                tlv: Data) {
+    public init(
+        cla: Byte = 0x00,
+        ins: Byte,
+        p1: Byte = 0x0,
+        p2: Byte = 0x0,
+        le: Int? = nil,
+        tlv: Data
+    ) {
         self.cla = cla
         self.ins = ins
         self.p1 = p1
         self.p2 = p2
         self.le = le
         data = tlv
-    }
-
-    /// Encrypt APDU
-    /// - Parameters:
-    /// - Parameter encryptionMode: encryption mode
-    /// - Parameter encryptionKey: encryption key
-    /// - Returns: Encrypted APDU
-    public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?) throws -> CommandApdu {
-        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else { //skip if already encrypted or empty encryptionKey
-            return self
-        }
-
-        let crc = data.crc16()
-        let tlvDataToEncrypt = data.count.bytes2 + crc + data
-        let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
-        Log.debug("C-APDU encrypted")
-
-        return CommandApdu(cla: cla, ins: ins, p1: encryptionMode.byteValue, p2: p2, le: le, tlv: Data(encryptedPayload))
-    }
-
-    /// Encrypt APDU using CCM mode
-    /// - Parameters:
-    ///   - encryptionKey: encryption key
-    ///   - encryptionNonce: nonce for CCM encryption
-    /// - Returns: Encrypted APDU
-    public func encryptCcm(encryptionKey: Data?, nonce: Data) throws -> CommandApdu {
-        guard let encryptionKey = encryptionKey, p1 == EncryptionMode.none.byteValue else {
-            return self
-        }
-
-        let newP1: Byte = AesMode.ccm.byteValue
-        let associatedData = Data([cla, ins, newP1, p2])
-
-        let encryptedPayload = try data.encryptAESCCM(
-            with: encryptionKey,
-            iv: nonce,
-            additionalAuthenticatedData: associatedData
-        )
-
-        Log.debug("C-APDU encrypted with CCM")
-
-        return CommandApdu(cla: cla, ins: ins, p1: newP1, p2: p2, le: le, tlv: encryptedPayload)
     }
 
     /// Serialize as an extended APDU
@@ -109,7 +71,7 @@ public struct CommandApdu: Equatable {
         apduBytes.append(p2)
 
         if !data.isEmpty {
-            //append LC as an extended field
+            // append LC as an extended field
             apduBytes.append(UInt8(0))
             apduBytes.append(contentsOf: data.count.bytes2)
 
@@ -117,18 +79,64 @@ public struct CommandApdu: Equatable {
         }
 
         if let le = le {
-            //append LE as an extended field
+            // append LE as an extended field
             apduBytes.append(contentsOf: le.bytes2)
         }
 
         return apduBytes
     }
+
+    /// Encrypt APDU
+    /// - Parameters:
+    /// - Parameter encryptionMode: encryption mode
+    /// - Parameter encryptionKey: encryption key
+    /// - Parameter encryptionNonce: nonce for CCM encryption
+    /// - Returns: Encrypted APDU
+    public func encrypt(encryptionMode: EncryptionMode, encryptionKey: Data?, nonce: Data?) throws -> CommandApdu {
+        guard let encryptionKey, p1 == EncryptionMode.none.byteValue else { // skip if already encrypted or empty encryptionKey
+            return self
+        }
+
+        switch encryptionMode {
+        case .fast, .strong, .none:
+            return try encryptLegacy(encryptionKey: encryptionKey, p1: encryptionMode.byteValue)
+        case .ccmWithAccessToken, .ccmWithAsymmetricKeys, .ccmWithSecurityDelay:
+            guard let nonce else {
+                throw TangemSdkError.failedToEncryptApdu
+            }
+
+            return try encryptCcm(encryptionKey: encryptionKey, nonce: nonce)
+        }
+    }
+
+    private func encryptLegacy(encryptionKey: Data, p1: Byte) throws -> CommandApdu {
+        let crc = data.crc16()
+        let tlvDataToEncrypt = data.count.bytes2 + crc + data
+        let encryptedPayload = try tlvDataToEncrypt.encrypt(with: encryptionKey)
+        Log.apdu("C-APDU encrypted")
+
+        return CommandApdu(cla: cla, ins: ins, p1: p1, p2: p2, le: le, tlv: Data(encryptedPayload))
+    }
+
+    private func encryptCcm(encryptionKey: Data, nonce: Data) throws -> CommandApdu {
+        let newP1: Byte = AesMode.ccm.byteValue
+        let associatedData = Data([cla, ins, newP1, p2])
+
+        let encryptedPayload = try data.encryptAESCCM(
+            with: encryptionKey,
+            iv: nonce,
+            additionalAuthenticatedData: associatedData
+        )
+
+        Log.apdu("C-APDU encrypted with CCM")
+
+        return CommandApdu(cla: cla, ins: ins, p1: newP1, p2: p2, le: le, tlv: encryptedPayload)
+    }
 }
 
 extension CommandApdu: CustomStringConvertible {
     public var description: String {
-        let instruction = Instruction(rawValue: ins) ?? .unknown
         let bytes = serialize()
-        return "\(instruction) [\(bytes.count) bytes]: \(bytes)"
+        return "cla: \(cla) ins: \(ins) p1: \(p1) p2: \(p2) length: [\(bytes.count) bytes]: \(bytes)"
     }
 }

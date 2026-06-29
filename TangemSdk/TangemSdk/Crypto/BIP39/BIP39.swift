@@ -8,9 +8,8 @@
 
 import Foundation
 
-// https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
+/// https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 public struct BIP39 {
-
     public init() {}
 
     /// Validate  a mnemonic.
@@ -136,7 +135,6 @@ public struct BIP39 {
             }
 
             return allWords[index]
-
         }
 
         return words

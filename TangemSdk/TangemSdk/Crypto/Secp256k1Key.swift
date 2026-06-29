@@ -12,7 +12,7 @@ import TangemSdk_secp256k1
 public struct Secp256k1Key {
     private let secp256k1 = Secp256k1Utils()
     private let secp256k1PubKey: secp256k1_pubkey
-    
+
     public init(with data: Data) throws {
         secp256k1PubKey = try secp256k1.parsePublicKey(data)
     }
@@ -29,7 +29,7 @@ public struct Secp256k1Key {
         var pubkey = secp256k1PubKey
         return try secp256k1.serializePublicKey(&pubkey, compressed: true)
     }
-    
+
     public func decompress() throws -> Data {
         var pubkey = secp256k1PubKey
         return try secp256k1.serializePublicKey(&pubkey, compressed: false)

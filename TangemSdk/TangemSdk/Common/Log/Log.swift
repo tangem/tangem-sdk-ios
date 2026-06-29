@@ -11,67 +11,67 @@ import Foundation
 private let logger = Log()
 
 public class Log {
-    public static var config: Config = .default {
+    public static var config: LogConfig = .default {
         didSet {
             logger.logLevel = config.logLevel
             logger.loggers = config.loggers
         }
     }
-    
+
     private(set) var logLevel: [Log.Level] = Log.config.logLevel
-    
+
     private(set) var loggers: [TangemSdkLogger] = Log.config.loggers
 
     private var queue: DispatchQueue = .init(label: "tangem_sdk_log_queue")
 
     fileprivate init() {}
-    
+
     public static func warning<T>(_ message: T) {
         logger.logInternal(message, level: .warning)
     }
-    
+
     public static func error<T>(_ message: T) {
         logger.logInternal(message, level: .error)
     }
-    
+
     public static func nfc<T>(_ message: T) {
         logger.logInternal(message, level: .nfc)
     }
-    
+
     public static func apdu<T>(_ message: T) {
-        if Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String == "com.tangem.TangemSDKExample" {
+        if Config.isDevelopmentMode {
             logger.logInternal(message, level: .apdu)
         }
     }
-    
+
     public static func command<T>(_ message: T) {
         logger.logInternal(message, level: .command)
     }
-    
+
     public static func session<T>(_ message: T) {
         logger.logInternal(message, level: .session)
     }
-    
+
     public static func tlv<T>(_ message: T) {
         logger.logInternal(message, level: .tlv)
     }
-    
+
     public static func debug<T>(_ message: T) {
         logger.logInternal(message, level: .debug)
     }
-    
+
     public static func network<T>(_ message: T) {
         logger.logInternal(message, level: .network)
     }
-    
+
     public static func view<T>(_ message: T) {
         logger.logInternal(message, level: .view)
     }
-    
+
     public static func filter(_ level: Log.Level) -> Bool {
-       return logger.logLevel.contains(level)
+        return logger.logLevel.contains(level)
     }
-    
+
     private func logInternal<T>(_ message: T, level: Log.Level) {
         queue.async { [weak self] in
             guard let self else { return }
@@ -99,7 +99,7 @@ public extension Log {
         case debug
         case network
         case view
-        
+
         public var emoji: String {
             switch self {
             case .command:
@@ -124,7 +124,7 @@ public extension Log {
                 return "🟤"
             }
         }
-        
+
         public var prefix: String {
             switch self {
             case .session:
@@ -141,16 +141,18 @@ public extension Log {
 }
 
 public extension Log {
-    enum Config {
+    enum LogConfig {
         case release
         case debug
         case verbose
-        case custom(logLevel: [Log.Level],
-                    loggers: [TangemSdkLogger] = [ConsoleLogger()])
+        case custom(
+            logLevel: [Log.Level],
+            loggers: [TangemSdkLogger] = [ConsoleLogger()]
+        )
 
-        static var `default`: Log.Config = .debug
-        
-        internal var logLevel: [Log.Level] {
+        static var `default`: Log.LogConfig = .debug
+
+        var logLevel: [Log.Level] {
             switch self {
             case .custom(let logLevel, _):
                 return logLevel
@@ -162,8 +164,8 @@ public extension Log {
                 return [.warning, .error, .command, .debug, .nfc, .session]
             }
         }
-        
-        internal var loggers: [TangemSdkLogger] {
+
+        var loggers: [TangemSdkLogger] {
             switch self {
             case .custom(_, let loggers):
                 return loggers
@@ -173,7 +175,9 @@ public extension Log {
         }
     }
 }
-// MARK:- Log formatter helpers
+
+// MARK: - Log formatter helpers
+
 extension Log {
     static func sendCommand(_ commandObject: AnyObject) {
         let commandName = "\(commandObject)".remove("TangemSdk.").remove("Command")

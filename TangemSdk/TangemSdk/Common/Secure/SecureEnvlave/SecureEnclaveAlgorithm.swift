@@ -17,7 +17,7 @@ struct SecureEnclaveAlgorithm {
         }
 
         var error: Unmanaged<CFError>?
-        guard let signature = SecKeyCreateSignature(privateKey, algorithm, data as CFData,  &error) as Data? else {
+        guard let signature = SecKeyCreateSignature(privateKey, algorithm, data as CFData, &error) as Data? else {
             let underlyingError = error!.takeRetainedValue() as Error
             throw SecureEnclaveError.signingFailed(underlyingError: underlyingError)
         }
@@ -34,7 +34,6 @@ struct SecureEnclaveAlgorithm {
         guard SecKeyIsAlgorithmSupported(privateKey, .sign, algorithm) else {
             throw SecureEnclaveError.algorithmNotSupported
         }
-
 
         var error: Unmanaged<CFError>?
         guard SecKeyVerifySignature(publicKey, algorithm, message as CFData, signature as CFData, &error) else {

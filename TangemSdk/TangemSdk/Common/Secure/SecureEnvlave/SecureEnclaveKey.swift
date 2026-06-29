@@ -14,7 +14,8 @@ struct SecureEnclaveKey {
             kCFAllocatorDefault,
             kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
             flags,
-            nil)!
+            nil
+        )!
 
         let attributes: NSDictionary = [
             kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
@@ -24,7 +25,7 @@ struct SecureEnclaveKey {
                 kSecAttrIsPermanent: true,
                 kSecAttrApplicationTag: tag,
                 kSecAttrAccessControl: accessControl,
-            ]
+            ],
         ]
 
         var error: Unmanaged<CFError>?
@@ -37,10 +38,10 @@ struct SecureEnclaveKey {
 
     func restoreKey(tag: String, context: LAContext?) -> SecKey? {
         var query: [String: Any] = [
-            kSecClass as String                 : kSecClassKey,
-            kSecAttrApplicationTag as String    : tag,
-            kSecAttrKeyType as String           : kSecAttrKeyTypeECSECPrimeRandom,
-            kSecReturnRef as String             : true,
+            kSecClass as String: kSecClassKey,
+            kSecAttrApplicationTag as String: tag,
+            kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
+            kSecReturnRef as String: true,
         ]
 
         if let context {
@@ -58,9 +59,9 @@ struct SecureEnclaveKey {
 
     func delete(tag: String) {
         let query: [String: Any] = [
-            kSecClass as String                 : kSecClassKey,
-            kSecAttrApplicationTag as String    : tag,
-            kSecAttrKeyType as String           : kSecAttrKeyTypeECSECPrimeRandom,
+            kSecClass as String: kSecClassKey,
+            kSecAttrApplicationTag as String: tag,
+            kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
         ]
 
         // status intentionally omitted because data could be absent

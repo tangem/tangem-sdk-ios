@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension Date {
-    public func toString(style: DateFormatter.Style = .medium, locale: Locale = .current) -> String {
+public extension Date {
+    func toString(style: DateFormatter.Style = .medium, locale: Locale = .current) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = style
         formatter.locale = locale

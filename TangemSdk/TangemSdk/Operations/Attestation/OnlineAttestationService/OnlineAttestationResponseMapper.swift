@@ -16,7 +16,7 @@ struct OnlineAttestationResponseMapper {
 
         if let networkError = error as? NetworkServiceError {
             switch networkError {
-            case .statusCode(let code, _) where (code == 403 || code == 404):
+            case .statusCode(let code, _) where code == 403 || code == 404:
                 return Attestation.Status.failed
             case .failedToMakeRequest, .mappingError:
                 return Attestation.Status.failed

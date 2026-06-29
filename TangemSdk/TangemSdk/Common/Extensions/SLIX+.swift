@@ -21,7 +21,7 @@ extension NFCReader: SlixTagReader {
                 Log.nfc(error.localizedDescription)
                 self?.readSlix2Tag(tag, completion: completion)
             } else {
-                tag.readMultipleBlocks(requestFlags: [.highDataRate], blockRange: NSRange(location: 40, length: 38)) {[weak self] data2, error in
+                tag.readMultipleBlocks(requestFlags: [.highDataRate], blockRange: NSRange(location: 40, length: 38)) { [weak self] data2, error in
                     if let error = error as NSError? {
                         Log.nfc(error.userInfo)
                         Log.nfc(error.localizedDescription)
@@ -36,15 +36,15 @@ extension NFCReader: SlixTagReader {
     }
 }
 
-//Slix2 tag support. TODO: Refactor. Useful for payload retrieve
+/// Slix2 tag support. TODO: Refactor. Useful for payload retrieval.
 private extension ResponseApdu {
     init?(slix2Data: Data) {
-        let ndefTlvData = slix2Data[4...] //cut e1402801 (CC)
+        let ndefTlvData = slix2Data[4...] // cut e1402801 (CC)
         if let ndefTlv = Tlv.deserialize(ndefTlvData),
            let ndefValue = ndefTlv.value(for: .cardPublicKey),
            let ndefMessage = NFCNDEFMessage(data: Data(ndefValue)) {
-            let payloads = ndefMessage.records.filter({ String(data: $0.type, encoding: String.Encoding.utf8) == "tangem.com:wallet"})
-            if let payload = payloads.first?.payload  {
+            let payloads = ndefMessage.records.filter { String(data: $0.type, encoding: String.Encoding.utf8) == "tangem.com:wallet" }
+            if let payload = payloads.first?.payload {
                 self.init(payload, Byte(0x90), Byte(0x00))
                 return
             }

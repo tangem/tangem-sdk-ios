@@ -9,32 +9,45 @@
 import Foundation
 
 enum SecureStorageKey: String {
-    //attestation
+    // attestation
     case attestedCards
     case attestedCardsEncryptionKey
 
     case onlineAttestationResponses
     case onlineAttestationResponsesEncryptionKey
 
-    //access codes repo
+    // access codes repo
     case cardsWithSavedCodes
     case cardsWithSavedCodesEncryptionKey
 
-    //terminal keys service
-    case terminalPrivateKey //link card to terminal
+    // card access tokens repo
+    case cardsWithSavedAccessTokens
+    case cardsWithSavedAccessTokensEncryptionKey
+
+    // terminal keys service
+    case terminalPrivateKey // link card to terminal
     case terminalPublicKey
-    
-    //backup service
+
+    /// backup service
     case backupData
 }
 
 extension SecureStorageKey {
-    // Access codes repo
+    /// Access codes repo
     static func accessCode(for cardId: String) -> String {
         "accessCode_\(cardId)"
     }
 
     static func accessCodeEncryptionKey(for cardId: String) -> String {
         "accessCode_encryption_key_\(cardId)"
+    }
+
+    /// Card access tokens repo
+    static func cardAccessTokens(for cardId: String) -> String {
+        "cardAccessTokens_\(cardId)"
+    }
+
+    static func cardAccessTokensEncryptionKey(for cardId: String) -> String {
+        "cardAccessTokens_encryption_key_\(cardId)"
     }
 }

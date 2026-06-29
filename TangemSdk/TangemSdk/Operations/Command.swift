@@ -203,7 +203,7 @@ extension Command {
                     switch result {
                     case .success(let responseApdu):
                         session.secureChannelSession?.incrementPacketCounter()
-                        
+
                         switch responseApdu.statusWord {
                         case .processCompleted, .pin1Changed, .pin2Changed, .pin3Changed,
                              .pins12Changed, .pins13Changed, .pins23Changed, .pins123Changed:

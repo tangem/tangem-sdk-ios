@@ -39,7 +39,7 @@ class SecureChannelSession {
             // Do not increment the counter until the secure channel is established
             return
         }
-        
+
         packetCounter += 1
     }
 

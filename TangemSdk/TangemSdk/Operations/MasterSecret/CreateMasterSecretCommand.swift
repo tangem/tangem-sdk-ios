@@ -58,14 +58,6 @@ public final class CreateMasterSecretCommand: Command {
         }
     }
 
-    func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
-        if case .invalidState = error {
-            return .alreadyCreated
-        }
-
-        return error
-    }
-
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = createTlvBuilder(legacyMode: environment.legacyMode)
         try tlvBuilder.append(.interactionMode, value: ManageMasterSecretMode.create)

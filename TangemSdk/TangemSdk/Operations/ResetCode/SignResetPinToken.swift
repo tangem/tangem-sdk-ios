@@ -9,28 +9,30 @@
 import Foundation
 
 final class SignResetPinTokenCommand: Command {
-    var requiresPasscode: Bool { return false }
+    var requiresPasscode: Bool { false }
     var preflightReadMode: PreflightReadMode { .readCardOnly }
-    
+    var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
+    var shouldAskForAccessCode: Bool { false }
+
     private let resetPinCard: ResetPinCard
-    
+
     init(resetPinCard: ResetPinCard) {
         self.resetPinCard = resetPinCard
     }
-    
+
     deinit {
         Log.debug("SignResetPinTokenCommand deinit")
     }
-    
+
     func performPreCheck(_ card: Card) -> TangemSdkError? {
         if card.firmwareVersion < .backupAvailable {
             return .resetPinWrongCard(internalCode: TangemSdkError.notSupportedFirmwareVersion.code)
         }
-        
+
         guard let backupStatus = card.backupStatus, backupStatus.isActive else {
             return .resetPinWrongCard(internalCode: TangemSdkError.noActiveBackup.code)
         }
-        
+
         if card.cardId == resetPinCard.cardId {
             return .resetPinWrongCard()
         }
@@ -41,15 +43,15 @@ final class SignResetPinTokenCommand: Command {
 
         return nil
     }
-    
+
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError {
         if case .invalidParams = error {
             return .resetPinWrongCard()
         }
-        
+
         return error
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         let tlvBuilder = try createTlvBuilder(legacyMode: environment.legacyMode)
             .append(.cardId, value: environment.card?.cardId)
@@ -57,18 +59,20 @@ final class SignResetPinTokenCommand: Command {
             .append(.challenge, value: resetPinCard.token)
             .append(.primaryCardLinkingKey, value: resetPinCard.backupKey)
             .append(.backupAttestSignature, value: resetPinCard.attestSignature)
-        
+
         return CommandApdu(.authorize, tlv: tlvBuilder.serialize())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> ConfirmationCard {
         let decoder = try createTlvDecoder(environment: environment, apdu: apdu)
 
-        let card = ConfirmationCard(cardId: try decoder.decode(.cardId),
-                                    backupKey: try decoder.decode(.backupCardLinkingKey),
-                                    salt: try decoder.decode(.salt),
-                                    authorizeSignature: try decoder.decode(.backupAttestSignature))
-        
+        let card = ConfirmationCard(
+            cardId: try decoder.decode(.cardId),
+            backupKey: try decoder.decode(.backupCardLinkingKey),
+            salt: try decoder.decode(.salt),
+            authorizeSignature: try decoder.decode(.backupAttestSignature)
+        )
+
         return card
     }
 }

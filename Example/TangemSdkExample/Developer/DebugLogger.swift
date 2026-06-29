@@ -12,7 +12,7 @@ import Combine
 
 class DebugLogger: TangemSdkLogger {
     var logsPublisher: CurrentValueSubject<String, Never> = .init("")
-    
+
     static let logPlaceholder = "Logs will appear here"
 
     private lazy var dateFormatter: DateFormatter = {
@@ -20,30 +20,30 @@ class DebugLogger: TangemSdkLogger {
         formatter.dateFormat = "HH:mm:ss:SSS"
         return formatter
     }()
-    
+
     func log(_ message: String, level: Log.Level) {
         guard Log.filter(level) else { return }
-        
-        let logString = "\(level.emoji) \(self.dateFormatter.string(from: Date())):\(level.prefix) \(message)"
+
+        let logString = "\(level.emoji) \(dateFormatter.string(from: Date())):\(level.prefix) \(message)"
         log(text: logString)
     }
-    
+
     func log(_ object: Any) {
         let text: String = (object as? JSONStringConvertible)?.json ?? "\(object)"
         log(text: text)
     }
-    
+
     func clear() {
         logsPublisher.send("")
     }
-    
+
     private func log(text: String) {
         if logsPublisher.value == DebugLogger.logPlaceholder {
             logsPublisher.send("")
         }
-        
+
         let currentLogs = logsPublisher.value
-        let newLogs = "\(text)\n\n" + currentLogs
+        let newLogs = currentLogs.appending("\n\n\(text)")
         logsPublisher.send(newLogs)
     }
 }

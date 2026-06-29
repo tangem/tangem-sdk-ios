@@ -13,15 +13,21 @@ public struct DepersonalizeResponse: JSONStringConvertible {
 }
 
 /**
-* Command available on SDK cards only
-* This command resets card to initial state,
-* erasing all data written during personalization and usage.
-*/
+ * Command available on SDK cards only
+ * This command resets card to initial state,
+ * erasing all data written during personalization and usage.
+ */
 public class DepersonalizeCommand: Command {
     public var preflightReadMode: PreflightReadMode { .none }
-    
+
+    var cardSessionEncryption: CardSessionEncryption { .none }
+
     public init() {}
-    
+
+    deinit {
+        Log.debug("DepersonalizeCommand deinit")
+    }
+
     public func run(in session: CardSession, completion: @escaping CompletionResult<DepersonalizeResponse>) {
         transceive(in: session) { result in
             switch result {
@@ -29,6 +35,7 @@ public class DepersonalizeCommand: Command {
                 if response.success {
                     session.environment.accessCode = UserCode(.accessCode, value: nil)
                     session.environment.passcode = UserCode(.passcode, value: nil)
+                    session.resetAccessTokens()
                 }
                 completion(.success(response))
             case .failure(let error):
@@ -36,11 +43,11 @@ public class DepersonalizeCommand: Command {
             }
         }
     }
-    
+
     func serialize(with environment: SessionEnvironment) throws -> CommandApdu {
         return CommandApdu(.depersonalize, tlv: Data())
     }
-    
+
     func deserialize(with environment: SessionEnvironment, from apdu: ResponseApdu) throws -> DepersonalizeResponse {
         return DepersonalizeResponse(success: true)
     }

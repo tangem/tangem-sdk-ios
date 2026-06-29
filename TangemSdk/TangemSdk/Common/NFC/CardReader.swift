@@ -13,7 +13,7 @@ public enum NFCTagType: Equatable, CustomStringConvertible {
     case tag(uid: Data)
     case unknown
     case none
-    
+
     public var description: String {
         switch self {
         case .tag(let uid):
@@ -33,14 +33,14 @@ public protocol CardReader: AnyObject {
     var isPaused: Bool { get }
     var isReady: Bool { get }
     var alertMessage: String { get set }
-    var tag: CurrentValueSubject<NFCTagType,TangemSdkError> { get }
+    var tag: CurrentValueSubject<NFCTagType, TangemSdkError> { get }
     var viewEventsPublisher: CurrentValueSubject<CardReaderViewEvent, Never> { get }
     func startSession(with message: String)
     func resumeSession()
     func stopSession(with errorMessage: String?)
     func pauseSession(with errorMessage: String?)
     func stopSession(with error: Error)
-    func sendPublisher(apdu: CommandApdu) -> AnyPublisher<ResponseApdu, TangemSdkError>
+    func sendPublisher(apdu: CommandApdu, retryOnFail: Bool) -> AnyPublisher<ResponseApdu, TangemSdkError>
     func restartPolling(silent: Bool)
 }
 
@@ -48,7 +48,7 @@ public extension CardReader {
     func pauseSession(with errorMessage: String? = nil) {
         pauseSession(with: errorMessage)
     }
-    
+
     func stopSession(with errorMessage: String? = nil) {
         stopSession(with: errorMessage)
     }

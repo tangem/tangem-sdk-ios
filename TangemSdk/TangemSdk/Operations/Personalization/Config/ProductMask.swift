@@ -10,13 +10,13 @@ import Foundation
 
 struct ProductMask: OptionSet, OptionSetCustomStringConvertible {
     let rawValue: Byte
-    
+
     init(rawValue: Byte) {
         self.rawValue = rawValue
     }
 }
 
-//MARK: - Constants
+// MARK: - Constants
 
 extension ProductMask {
     static let note = ProductMask(rawValue: 0x01)
@@ -27,7 +27,7 @@ extension ProductMask {
     static let twinCard = ProductMask(rawValue: 0x20)
 }
 
-//MARK: - OptionSetCodable conformance
+// MARK: - OptionSetCodable conformance
 
 extension ProductMask: OptionSetCodable {
     enum OptionKeys: String, OptionKey {
@@ -36,7 +36,7 @@ extension ProductMask: OptionSetCodable {
         case idCard
         case idIssuer
         case twinCard
-        
+
         var value: ProductMask {
             switch self {
             case .idCard:

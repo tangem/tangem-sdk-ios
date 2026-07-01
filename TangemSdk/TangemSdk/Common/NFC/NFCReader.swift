@@ -2,7 +2,7 @@
 //  NFCReader.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 25/09/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -321,7 +321,7 @@ extension NFCReader: CardReader {
 
                 guard case .iso7816(let iso7816tag) = connectedTag else {
                     return Fail(error: TangemSdkError.unsupportedCommand).eraseToAnyPublisher()
-                } // TODO: handle tag lost
+                } // [REDACTED_TODO_COMMENT]
 
                 let requestTS = Date()
 

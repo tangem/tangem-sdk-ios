@@ -2,7 +2,7 @@
 //  CryptoUtils.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 09/10/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -57,7 +57,7 @@ public enum CryptoUtils {
 
             return pubKey.isValidSignature(sig, for: message)
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -78,7 +78,7 @@ public enum CryptoUtils {
             let key = try? P256.Signing.PrivateKey(rawRepresentation: privateKey)
             return key != nil
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -104,7 +104,7 @@ public enum CryptoUtils {
         case .bls12381_G2_AUG:
             return try Data(hexString: BLSUtils().makePublicKey(from: privateKey))
         case .bls12381_G2, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }
@@ -136,7 +136,7 @@ public enum CryptoUtils {
             let sig = try P256.Signing.ECDSASignature(rawRepresentation: signature)
             return pubKey.isValidSignature(sig, for: CustomSha256Digest(hash: hash))
         case .bls12381_G2, .bls12381_G2_AUG, .bls12381_G2_POP:
-            // TODO: implement
+            // [REDACTED_TODO_COMMENT]
             throw TangemSdkError.unsupportedCurve
         }
     }

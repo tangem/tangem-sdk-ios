@@ -2,7 +2,7 @@
 //  EstablishSecureChannelWithAccessTokenTask.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 26/02/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

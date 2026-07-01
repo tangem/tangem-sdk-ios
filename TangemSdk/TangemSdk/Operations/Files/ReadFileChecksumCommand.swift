@@ -2,7 +2,7 @@
 //  ReadFileChecksumCommand.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 10/7/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

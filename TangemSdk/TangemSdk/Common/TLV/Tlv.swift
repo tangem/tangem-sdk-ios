@@ -2,7 +2,7 @@
 //  Tlv.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 27/09/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 
@@ -51,7 +51,7 @@ public struct Tlv: Equatable {
 
     /// Try to deserialize raw data to array of tlv items
     /// - Parameter data: raw TLV-array
-    public static func deserialize(_ data: Data) -> [Tlv]? { // TODO: throws
+    public static func deserialize(_ data: Data) -> [Tlv]? { // [REDACTED_TODO_COMMENT]
         let dataStream = InputStream(data: data)
         dataStream.open()
         defer { dataStream.close() }

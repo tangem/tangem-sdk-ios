@@ -43,7 +43,7 @@ Every change starts with a Jira ticket whose key flows through the rest of the w
   - **QA Notes (`customfield_11232`)** — per-scenario test plan using the team's template (Preconditions / Steps / Expected result). For changes with zero runtime impact (pure docs/comments, dead-code removal) the entire field can be the team's standard one-line "no QA needed" shorthand — don't fabricate fake scenarios; QA reads the field and noise wastes their time. Refactors, renames, or anything that produces a different binary still need real QA scenarios.
 
   See [External Systems → Jira](#jira) for cloudId, field IDs, and the ADF caveat.
-- **Branch name:** `IOS-NNNNN_short_description` in snake_case (e.g. `IOS-13963_crashfixes`).
+- **Branch name:** `IOS-NNNNN_short_description` in snake_case (e.g. `[REDACTED_INFO]_crashfixes`).
 - **When asked to create a branch, give it its own remote immediately.** `git checkout -b <branch> origin/develop` leaves `<branch>` tracking `origin/develop`, so an IDE "Push" writes straight to `develop`. Right after creating it run `git push -u origin <branch>` (or `git branch --unset-upstream` if not pushing yet). Never push to `develop` or long-lived feature branches (e.g. `develop-fw8`) directly.
 - **Commit message subject:** `IOS-NNNNN Short description`. Body explains the why, not the what — the diff already shows the what.
 - **Move the issue to `In Progress`** the moment you create the branch and start work. Use `getTransitionsForJiraIssue` to find the right transition id, then `transitionJiraIssue`. Don't leave a ticket in `To Do` while a branch with commits exists — sprint metrics and standups read these states.

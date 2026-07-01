@@ -48,7 +48,7 @@ Filter the results to get potential reviewers (exclude service accounts like `gi
 
 ### 2. Extract Issue Number
 
-From the branch name (e.g., `bugfix/IOS-12800_description`), extract:
+From the branch name (e.g., `bugfix/[REDACTED_INFO]_description`), extract:
 - Issue number: `IOS-XXXXX`
 - PR title: `IOS-XXXXX: <description from commit message or branch>`
 

@@ -71,8 +71,8 @@ struct BackupView: View {
             Text(viewModel.errorText)
                 .foregroundStyle(.red)
 
-            Button("Discard incompleted") {
-                viewModel.discardIncompletedBackup()
+            Button("Discard incomplete backup") {
+                viewModel.discardIncompleteBackup()
             }
 
             Text(viewModel.stateTitle)

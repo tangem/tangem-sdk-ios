@@ -67,7 +67,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
 
                 withExtendedLifetime(linkCommand) {}
             }
-        case .active: // Inconsistence case. The card status is ok, but sdk status is incompleted. We should check all wallets later on the app side.
+        case .active: // Inconsistency case. The card status is ok, but SDK status is incomplete. We should check all wallets later in the app.
             readWallets(in: session, completion: completion)
         default: // only an interrupted case is possible
             writeBackupData(in: session, completion: completion)

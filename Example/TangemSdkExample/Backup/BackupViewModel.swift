@@ -88,8 +88,8 @@ final class BackupViewModel: ObservableObject {
         syncState()
     }
 
-    func discardIncompletedBackup() {
-        backupService?.discardIncompletedBackup()
+    func discardIncompleteBackup() {
+        backupService?.discardIncompleteBackup()
         syncState()
     }
 

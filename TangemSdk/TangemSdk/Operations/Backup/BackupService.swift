@@ -20,7 +20,7 @@ public class BackupService {
             && repo.data.primaryCard?.linkingKey != nil
     }
 
-    public var hasIncompletedBackup: Bool {
+    public var hasIncompleteBackup: Bool {
         switch currentState {
         case .finalizingPrimaryCard, .finalizingBackupCard:
             return true
@@ -76,7 +76,7 @@ public class BackupService {
         Log.debug("BackupService deinit")
     }
 
-    public func discardIncompletedBackup() {
+    public func discardIncompleteBackup() {
         repo.reset()
         updateState()
     }
@@ -248,21 +248,18 @@ public class BackupService {
 
     @discardableResult
     private func updateState() -> State {
-        if repo.data.accessCode == nil
-            || repo.data.primaryCard == nil
-            || repo.data.backupCards.isEmpty {
+        switch repo.state {
+        case .preparing:
             currentState = .preparing
-        } else if repo.data.attestSignature == nil
-            || repo.data.backupData.count < repo.data.backupCards.count
-            || repo.data.primaryCardFinalized == false {
+        case .finalizingPrimaryCard:
             currentState = .finalizingPrimaryCard
-        } else if repo.data.finalizedBackupCardsCount < repo.data.backupCards.count {
+        case .finalizingBackupCard:
             currentState = .finalizingBackupCard(index: repo.data.finalizedBackupCardsCount + 1)
-        } else {
+        case .finished:
             currentState = .finished
             onBackupCompleted()
         }
-
+        
         return currentState
     }
 
@@ -513,6 +510,31 @@ public class BackupService {
     }
 }
 
+// MARK: - IncompleteBackupHelper
+
+public struct IncompleteBackupHelper {
+    private let repo: BackupRepo = .init()
+    
+    public init() {}
+    
+    public var cardId: String? {
+        repo.data.primaryCard?.cardId
+    }
+
+    public var hasIncompleteBackup: Bool {
+        switch repo.state {
+        case .finalizingPrimaryCard, .finalizingBackupCard:
+            return true
+        default:
+            return false
+        }
+    }
+
+    public func discardIncompleteBackup() {
+        repo.reset()
+    }
+}
+
 // MARK: - State
 
 public extension BackupService {
@@ -578,6 +600,22 @@ struct BackupServiceData: Codable {
 // MARK: - BackupRepo
 
 class BackupRepo {
+    var state: State {
+        if data.accessCode == nil
+            || data.primaryCard == nil
+            || data.backupCards.isEmpty {
+            return .preparing
+        } else if data.attestSignature == nil
+                    || data.backupData.count < data.backupCards.count
+                    || data.primaryCardFinalized == false {
+            return .finalizingPrimaryCard
+        } else if data.finalizedBackupCardsCount < data.backupCards.count {
+            return .finalizingBackupCard
+        } else {
+            return .finished
+        }
+    }
+    
     private let storage = SecureStorage()
     private var isFetching: Bool = false
 
@@ -624,5 +662,14 @@ class BackupRepo {
         if let savedData = try storage.get(.backupData) {
             data = try JSONDecoder().decode(BackupServiceData.self, from: savedData)
         }
+    }
+}
+
+extension BackupRepo {
+    enum State {
+        case preparing
+        case finalizingPrimaryCard
+        case finalizingBackupCard
+        case finished
     }
 }

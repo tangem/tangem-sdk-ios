@@ -42,44 +42,34 @@ public class CardAccessTokensRepository {
         }
     }
 
-    func save(_ cardAccessTokens: CardAccessTokens, for cardIds: [String]) throws {
+    func save(_ cardAccessTokens: CardAccessTokens, for cardId: String) throws {
         guard BiometricsUtil.isAvailable else {
             throw TangemSdkError.biometricsUnavailable
         }
 
         var savedCardIds = try getCards()
 
-        for cardId in cardIds {
-            do {
-                let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
-                let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
+        let storageKey = SecureStorageKey.cardAccessTokens(for: cardId)
+        let encryptionKey = SecureStorageKey.cardAccessTokensEncryptionKey(for: cardId)
 
-                biometricsSecureEnclave.deleteKey(tag: encryptionKey)
-                try? biometricsStorage.delete(storageKey)
+        biometricsSecureEnclave.deleteKey(tag: encryptionKey)
+        try? biometricsStorage.delete(storageKey)
 
-                var data = try JSONEncoder().encode(cardAccessTokens)
-                let encryptedData = try biometricsSecureEnclave.encryptData(
-                    data,
-                    keyTag: encryptionKey,
-                    context: nil
-                )
-                data.zeroOut()
+        var data = try JSONEncoder().encode(cardAccessTokens)
+        let encryptedData = try biometricsSecureEnclave.encryptData(
+            data,
+            keyTag: encryptionKey,
+            context: nil
+        )
+        data.zeroOut()
 
-                try biometricsStorage.store(encryptedData, forKey: storageKey)
+        try biometricsStorage.store(encryptedData, forKey: storageKey)
 
-                savedCardIds.insert(cardId)
-                tokens[cardId] = cardAccessTokens
-            } catch {
-                Log.error("Card access tokens error for cardId: \(cardId)")
-            }
-        }
+        savedCardIds.insert(cardId)
+        tokens[cardId] = cardAccessTokens
 
         try saveCards(cardIds: savedCardIds)
         Log.debug("Card access tokens saved successfully")
-    }
-
-    func save(_ cardAccessTokens: CardAccessTokens, for cardId: String) throws {
-        try save(cardAccessTokens, for: [cardId])
     }
 
     func deleteTokens(for cardIds: [String]) throws {

@@ -259,7 +259,7 @@ public class BackupService {
             currentState = .finished
             onBackupCompleted()
         }
-        
+
         return currentState
     }
 
@@ -514,9 +514,9 @@ public class BackupService {
 
 public struct IncompleteBackupHelper {
     private let repo: BackupRepo = .init()
-    
+
     public init() {}
-    
+
     public var cardId: String? {
         repo.data.primaryCard?.cardId
     }
@@ -606,8 +606,8 @@ class BackupRepo {
             || data.backupCards.isEmpty {
             return .preparing
         } else if data.attestSignature == nil
-                    || data.backupData.count < data.backupCards.count
-                    || data.primaryCardFinalized == false {
+            || data.backupData.count < data.backupCards.count
+            || data.primaryCardFinalized == false {
             return .finalizingPrimaryCard
         } else if data.finalizedBackupCardsCount < data.backupCards.count {
             return .finalizingBackupCard
@@ -615,7 +615,7 @@ class BackupRepo {
             return .finished
         }
     }
-    
+
     private let storage = SecureStorage()
     private var isFetching: Bool = false
 

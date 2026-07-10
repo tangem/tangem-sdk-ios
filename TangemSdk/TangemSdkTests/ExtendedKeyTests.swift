@@ -49,6 +49,18 @@ class ExtendedKeyTests: XCTestCase {
         XCTAssertEqual(derivedKey.childNumber, 2)
     }
 
+    func testDerivedPrivateKey() throws {
+        let key = try ExtendedPrivateKey(from: "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi", networkType: .mainnet)
+        let parentFingerprint = try key.makePublicKey(for: .secp256k1).publicKey.sha256Ripemd160.prefix(4)
+
+        let derivedKey = try key.derivePrivateKey(node: .hardened(0))
+
+        XCTAssertEqual(derivedKey.parentFingerprint, parentFingerprint)
+        XCTAssertEqual(derivedKey.depth, 1)
+        XCTAssertEqual(derivedKey.childNumber, 2147483648)
+        XCTAssertEqual(try derivedKey.serialize(for: .mainnet), "xprv9uHRZZhk6KAJC1avXpDAp4MDc3sQKNxDiPvvkX8Br5ngLNv1TxvUxt4cV1rGL5hj6KCesnDYUhd7oWgT11eZG7XnxHrnYeSvkzY7d2bhkJ7")
+    }
+
     func testInitMaster() throws {
         let key = ExtendedPublicKey(
             publicKey: Data(hexString: "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"),

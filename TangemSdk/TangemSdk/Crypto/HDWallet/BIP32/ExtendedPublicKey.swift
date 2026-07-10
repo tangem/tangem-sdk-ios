@@ -44,40 +44,32 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
     }
 
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
-    ///  It is only defined for non-hardened child keys. `secp256k1` only
+    ///  It is only defined for non-hardened child keys. `secp256k1` only.
+    ///  In case the derived key is invalid, the derivation proceeds with the next index, as required by BIP32.
     public func derivePublicKey(node: DerivationNode) throws -> ExtendedPublicKey {
         guard (try? Secp256k1Key(with: publicKey)) != nil else {
             throw TangemSdkError.unsupportedCurve
         }
 
-        let index = node.index
-
-        // We can derive only non-hardened keys
-        guard index < BIP32.Constants.hardenedOffset else {
-            throw HDWalletError.hardenedNotSupported
-        }
-
-        // let I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i)).
-        let data = publicKey + index.bytes4
-        let hmac = HMAC<SHA512>.authenticationCode(for: data, using: SymmetricKey(data: chainCode))
-        let digest = Data(hmac)
-
         let secp256k1 = Secp256k1Utils()
-        let ki = try secp256k1.createPublicKey(privateKey: digest[0 ..< 32], compressed: true)
-        let derivedPublicKey = try secp256k1.sum(compressedPubKey1: ki, compressedPubKey2: publicKey)
-        let derivedChainCode = digest[32 ..< 64]
 
-        return try ExtendedPublicKey(
-            publicKey: derivedPublicKey,
-            chainCode: derivedChainCode,
-            depth: depth + 1,
-            parentFingerprint: publicKey.sha256Ripemd160.prefix(4),
-            childNumber: index
-        )
+        return try BIP32.deriveWithRetry(from: node.index) { index in
+            // We can derive only non-hardened keys
+            guard index < BIP32.Constants.hardenedOffset else {
+                throw HDWalletError.hardenedNotSupported
+            }
+
+            // let I = HMAC-SHA512(Key = cpar, Data = serP(Kpar) || ser32(i)).
+            let data = publicKey + index.bytes4
+            let hmac = HMAC<SHA512>.authenticationCode(for: data, using: SymmetricKey(data: chainCode))
+
+            return try makeChildKey(digest: Data(hmac), index: index, secp256k1: secp256k1)
+        }
     }
 
     /// This function performs CKDpub((Kpar, cpar), i) → (Ki, ci) to compute a child extended public key from the parent extended public key.
-    ///  It is only defined for non-hardened child keys. `secp256k1` only
+    ///  It is only defined for non-hardened child keys. `secp256k1` only.
+    ///  In case the derived key is invalid, the derivation proceeds with the next index, as required by BIP32.
     public func derivePublicKey(path derivationPath: DerivationPath) throws -> ExtendedPublicKey {
         var key: ExtendedPublicKey = self
 
@@ -86,6 +78,25 @@ public struct ExtendedPublicKey: Equatable, Hashable, JSONStringConvertible {
         }
 
         return key
+    }
+
+    func makeChildKey(digest: Data, index: UInt32, secp256k1: Secp256k1Utils = Secp256k1Utils()) throws -> ExtendedPublicKey {
+        let derivedPublicKey: Data
+
+        do {
+            derivedPublicKey = try secp256k1.tweakAdd(publicKey: publicKey, tweak: digest[0 ..< 32])
+        } catch {
+            // BIP32: parse256(IL) ≥ n or Ki is the point at infinity
+            throw HDWalletError.invalidChildKey
+        }
+
+        return try ExtendedPublicKey(
+            publicKey: derivedPublicKey,
+            chainCode: digest[32 ..< 64],
+            depth: depth + 1,
+            parentFingerprint: publicKey.sha256Ripemd160.prefix(4),
+            childNumber: index
+        )
     }
 }
 

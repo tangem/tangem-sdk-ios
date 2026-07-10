@@ -153,6 +153,16 @@ class HDWalletTests: XCTestCase {
         )
     }
 
+    func testPrivateDerivationMatchesPublicDerivation() throws {
+        let path = try DerivationPath(rawPath: "m/0/1")
+        let masterKey = try ExtendedPrivateKey(from: "xprv9s21ZrQH143K31xYSDQpPDxsXRTUcvj2iNHm5NUtrGiGG5e2DtALGdso3pGz6ssrdK4PFmM8NSpSBHNqPqm55Qn3LqFtT2emdEXVYsCzC2U", networkType: .mainnet)
+
+        let publicFromPrivate = try masterKey.derivePrivateKey(path: path).makePublicKey(for: .secp256k1)
+        let publicFromPublic = try masterKey.makePublicKey(for: .secp256k1).derivePublicKey(path: path)
+
+        XCTAssertEqual(publicFromPrivate, publicFromPublic)
+    }
+
     func testPathDerivationFailed() {
         let buidler = BIP44(
             coinType: 0,

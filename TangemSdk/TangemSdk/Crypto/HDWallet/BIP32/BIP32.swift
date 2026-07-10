@@ -49,6 +49,25 @@ public struct BIP32 {
 }
 
 extension BIP32 {
+    /// BIP32: in case the derived child key is invalid, one should proceed with the next value for i.
+    static func deriveWithRetry<Key>(from index: UInt32, makeChildKey: (UInt32) throws -> Key) throws -> Key {
+        var index = index
+
+        while true {
+            do {
+                return try makeChildKey(index)
+            } catch HDWalletError.invalidChildKey {
+                guard index < UInt32.max else {
+                    throw HDWalletError.invalidChildKey
+                }
+
+                index += 1
+            }
+        }
+    }
+}
+
+extension BIP32 {
     enum Constants {
         static let hardenedOffset: UInt32 = .init(0x80000000)
         static let hardenedSymbol: String = "'"

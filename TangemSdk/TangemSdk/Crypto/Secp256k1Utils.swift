@@ -76,6 +76,36 @@ public final class Secp256k1Utils {
         return try serializePublicKey(&publicKeySecp, compressed: true)
     }
 
+    /// Computes `(privateKey + tweak) mod n`. Fails if the tweak is not below the curve order or the result is not a valid private key.
+    func tweakAdd(privateKey: Data, tweak: Data) throws -> Data {
+        guard privateKey.count == 32, tweak.count == 32 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to tweak the private key")
+        }
+
+        var seckey = privateKey.toBytes
+
+        guard tangem_secp256k1_ec_seckey_tweak_add(context, &seckey, tweak.toBytes) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to tweak the private key")
+        }
+
+        return Data(seckey)
+    }
+
+    /// Computes `publicKey + tweak * G`. Fails if the tweak is not below the curve order or the result is the point at infinity.
+    func tweakAdd(publicKey: Data, tweak: Data) throws -> Data {
+        guard tweak.count == 32 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to tweak the public key")
+        }
+
+        var pubkey = try parsePublicKey(publicKey)
+
+        guard tangem_secp256k1_ec_pubkey_tweak_add(context, &pubkey, tweak.toBytes) == 1 else {
+            throw TangemSdkError.cryptoUtilsError("Failed to tweak the public key")
+        }
+
+        return try serializePublicKey(&pubkey, compressed: true)
+    }
+
     public func normalizeSignature(_ signature: Data) throws -> Data {
         var parsed = try parseNormalize(signature)
         return try serializeSignature(&parsed)
@@ -164,7 +194,7 @@ public final class Secp256k1Utils {
     }
 
     func isPrivateKeyValid(_ privateKey: Data) -> Bool {
-        guard !privateKey.isEmpty else { return false }
+        guard privateKey.count == 32 else { return false }
 
         let privateKey = privateKey.toBytes
         return tangem_secp256k1_ec_seckey_verify(context, privateKey) == 1

@@ -6,6 +6,7 @@
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 
+import CryptoKit
 import Foundation
 
 /// BIP32 extended private key
@@ -39,6 +40,60 @@ public struct ExtendedPrivateKey: Equatable, Hashable, JSONStringConvertible, Co
         depth = 0
         parentFingerprint = Data(hexString: "0x00000000")
         childNumber = 0
+    }
+
+    /// This function performs CKDpriv((kpar, cpar), i) → (ki, ci) to compute a child extended private key from the parent extended private key.
+    ///  It is defined for both hardened and non-hardened child keys. `secp256k1` only.
+    ///  In case the derived key is invalid, the derivation proceeds with the next index, as required by BIP32.
+    public func derivePrivateKey(node: DerivationNode) throws -> ExtendedPrivateKey {
+        let secp256k1 = Secp256k1Utils()
+
+        guard secp256k1.isPrivateKeyValid(privateKey) else {
+            throw TangemSdkError.unsupportedCurve
+        }
+
+        let publicKey = try secp256k1.createPublicKey(privateKey: privateKey, compressed: true)
+
+        return try BIP32.deriveWithRetry(from: node.index) { index in
+            // let I = HMAC-SHA512(Key = cpar, Data = 0x00 || ser256(kpar) || ser32(i)) for hardened keys
+            // let I = HMAC-SHA512(Key = cpar, Data = serP(point(kpar)) || ser32(i)) for non-hardened keys
+            let data = index >= BIP32.Constants.hardenedOffset ? Data(UInt8(0)) + privateKey + index.bytes4 : publicKey + index.bytes4
+            let hmac = HMAC<SHA512>.authenticationCode(for: data, using: SymmetricKey(data: chainCode))
+
+            return try makeChildKey(digest: Data(hmac), index: index, parentPublicKey: publicKey, secp256k1: secp256k1)
+        }
+    }
+
+    /// This function performs CKDpriv((kpar, cpar), i) → (ki, ci) to compute a child extended private key from the parent extended private key.
+    ///  It is defined for both hardened and non-hardened child keys. `secp256k1` only.
+    ///  In case the derived key is invalid, the derivation proceeds with the next index, as required by BIP32.
+    public func derivePrivateKey(path derivationPath: DerivationPath) throws -> ExtendedPrivateKey {
+        var key: ExtendedPrivateKey = self
+
+        for node in derivationPath.nodes {
+            key = try key.derivePrivateKey(node: node)
+        }
+
+        return key
+    }
+
+    func makeChildKey(digest: Data, index: UInt32, parentPublicKey: Data, secp256k1: Secp256k1Utils = Secp256k1Utils()) throws -> ExtendedPrivateKey {
+        let derivedPrivateKey: Data
+
+        do {
+            derivedPrivateKey = try secp256k1.tweakAdd(privateKey: privateKey, tweak: digest[0 ..< 32])
+        } catch {
+            // BIP32: parse256(IL) ≥ n or ki = 0
+            throw HDWalletError.invalidChildKey
+        }
+
+        return try ExtendedPrivateKey(
+            privateKey: derivedPrivateKey,
+            chainCode: digest[32 ..< 64],
+            depth: depth + 1,
+            parentFingerprint: parentPublicKey.sha256Ripemd160.prefix(4),
+            childNumber: index
+        )
     }
 
     public func makePublicKey(for curve: EllipticCurve) throws -> ExtendedPublicKey {

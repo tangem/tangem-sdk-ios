@@ -428,7 +428,8 @@ extension MainTabViewModel {
             let mnemonic = try Mnemonic(with: mnemonicString)
             let factory = AnyMasterKeyFactory(mnemonic: mnemonic, passphrase: passphrase)
             let privateKey = try factory.makeMasterKey(for: .secp256k1)
-            let command = CreateMasterSecretCommand(privateKey: privateKey)
+            let bip85MasterKey = try privateKey.derivePrivateKey(node: .hardened(83696968))
+            let command = CreateMasterSecretCommand(privateKey: bip85MasterKey)
             configuredSdk.startSession(with: command, completion: handleCompletion)
         } catch {
             complete(with: error)
@@ -756,24 +757,36 @@ extension MainTabViewModel {
     }
 
     func getEntropy() {
-        let mode: GetEntropyMode
         if isDeterministicEntropy {
             guard !derivationPath.isEmpty, let path = try? DerivationPath(rawPath: derivationPath) else {
                 complete(with: "Failed to parse hd path")
                 return
             }
 
-            mode = .deterministic(derivationPath: path)
+            UIApplication.shared.endEditing()
+
+            configuredSdk.startSession(with: GetEntropyCommand(mode: .deterministic(derivationPath: path))) { result in
+                switch result {
+                case .success(let response):
+                    do {
+                        let mnemonic = try Mnemonic(entropyData: response.data.prefix(32)) // 24-words, 256bit
+                        self.complete(with: mnemonic)
+                    } catch {
+                        self.complete(with: error)
+                    }
+
+                case .failure(let error):
+                    self.complete(with: error)
+                }
+            }
         } else {
-            mode = .random
+            UIApplication.shared.endEditing()
+
+            configuredSdk.startSession(
+                with: GetEntropyCommand(mode: .random),
+                completion: handleCompletion
+            )
         }
-
-        UIApplication.shared.endEditing()
-
-        configuredSdk.startSession(
-            with: GetEntropyCommand(mode: mode),
-            completion: handleCompletion
-        )
     }
 
     func setUserCodeRecoveryAllowed() {

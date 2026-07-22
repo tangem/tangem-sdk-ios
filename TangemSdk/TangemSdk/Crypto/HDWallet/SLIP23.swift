@@ -26,8 +26,10 @@ public struct SLIP23 {
         s[0] &= 0xF8
         s[31] = (s[31] & 0x1F) | 0x40
 
-        let privateKey = s[0 ..< 64] // kL + kR
-        let chainCode = s[64 ..< 96]
+        // Copy the slices into independent buffers so wiping `s` doesn't corrupt the result.
+        let privateKey = Data(s[0 ..< 64]) // kL + kR
+        let chainCode = Data(s[64 ..< 96])
+        s.zeroOut()
 
         return ExtendedPrivateKey(privateKey: privateKey, chainCode: chainCode)
     }

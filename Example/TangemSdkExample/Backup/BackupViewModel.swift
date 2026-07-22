@@ -93,6 +93,14 @@ final class BackupViewModel: ObservableObject {
         syncState()
     }
 
+    func savePendingCreds() {
+        backupService?.savePendingCredentials()
+    }
+
+    func deletePendingCreds() {
+        backupService?.deletePendingCredentials()
+    }
+
     func proceed() {
         backupService?.proceedBackup { [weak self] result in
             Task { @MainActor in

@@ -41,7 +41,8 @@ class EstablishSecureChannelWithAccessTokenTask: CardSessionRunnable {
             }
 
             let challengeB = try CryptoUtils.generateRandomBytes(count: 32)
-            let accessKey = try accessTokens.accessToken.xor(with: authorizeResponse.challengeA)
+            var accessKey = try accessTokens.accessToken.xor(with: authorizeResponse.challengeA)
+            defer { accessKey.zeroOut() }
             let input = Data("SESSION.TERM".utf8) + authorizeResponse.challengeA + challengeB
             let hmacAttestB = accessKey.hmacSHA256(input: input)
             let salt = accessTokens.identifyToken + authorizeResponse.challengeA + challengeB

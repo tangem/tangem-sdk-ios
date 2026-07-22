@@ -12,16 +12,14 @@ import SwiftUI
 
 final class DefaultSessionViewDelegate: BaseViewDelegate {
     private let reader: CardReader
-    private let engine: HapticsEngine
+    private let engine: HapticsEngine = .shared
     private var pinnedMessage: String?
     private var style: TangemSdkStyle
     private let viewModel: MainViewModel = .init(viewState: .scan)
 
     init(reader: CardReader, style: TangemSdkStyle) {
         self.reader = reader
-        engine = HapticsEngine()
         self.style = style
-        engine.create()
     }
 
     override func makeScreen() -> UIViewController {

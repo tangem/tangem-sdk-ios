@@ -63,3 +63,13 @@ public extension Array where Element == UInt8 {
         return getSHA256().getSHA256()
     }
 }
+
+extension Array where Element == UInt8 {
+    /// Wipes the buffer via `memset_s`, which the compiler is not allowed to optimize away.
+    mutating func zeroOut() {
+        guard !isEmpty else { return }
+        withUnsafeMutableBytes { buffer in
+            _ = memset_s(buffer.baseAddress, buffer.count, 0, buffer.count)
+        }
+    }
+}

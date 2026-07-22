@@ -59,8 +59,8 @@ public class BackupService {
 
     private let sdk: TangemSdk
     private let networkService: NetworkService
+    private let credentialsHelper: BackupCredentialsHelper
     private var repo: BackupRepo = .init()
-    private var currentCommand: AnyObject?
     private var handleErrors: Bool { sdk.config.handleErrors }
 
     public init(
@@ -69,6 +69,7 @@ public class BackupService {
     ) {
         self.sdk = sdk
         self.networkService = networkService
+        credentialsHelper = BackupCredentialsHelper()
         updateState()
     }
 
@@ -77,8 +78,23 @@ public class BackupService {
     }
 
     public func discardIncompleteBackup() {
+        deletePendingCredentials()
         repo.reset()
         updateState()
+    }
+
+    /// Saves the credentials collected during backup (access tokens for v8+ cards, access codes for older ones)
+    /// that couldn't be saved right away because the biometrics permission hadn't been granted yet.
+    /// Call it when the user enables biometrics. Pending credentials are kept in memory,
+    /// so use the same instance of `BackupService` that performed the backup. Don't call it during an active NFC session.
+    public func savePendingCredentials() {
+        credentialsHelper.savePendingCredentials()
+    }
+
+    /// Deletes the credentials collected during backup. Call it when the user declines biometrics.
+    /// Don't call it during an active NFC session.
+    public func deletePendingCredentials() {
+        credentialsHelper.deletePendingCredentials()
     }
 
     public func addBackupCard(completion: @escaping CompletionResult<Card>) {
@@ -218,7 +234,6 @@ public class BackupService {
         }
 
         let command = StartPrimaryCardLinkingCommand()
-        currentCommand = command
         sdk.startSession(
             with: command,
             cardId: cardId,
@@ -232,7 +247,7 @@ public class BackupService {
             case .failure(let error):
                 completion(.failure(error))
             }
-            currentCommand = nil
+            withExtendedLifetime(command) {}
         }
     }
 
@@ -298,7 +313,6 @@ public class BackupService {
             networkService: networkService,
             skipCompatibilityChecks: skipCompatibilityChecks
         )
-        currentCommand = command
 
         sdk.startSession(
             with: command,
@@ -316,7 +330,7 @@ public class BackupService {
             case .failure(let error):
                 completion(.failure(error))
             }
-            currentCommand = nil
+            withExtendedLifetime(command) {}
         }
     }
 
@@ -378,15 +392,19 @@ public class BackupService {
                 )
             }
 
-            currentCommand = task
-
             sdk.startSession(
                 with: task,
                 cardId: primaryCard.cardId,
                 initialMessage: initialMessage
             ) { [weak self] result in
-                completion(result)
-                self?.currentCommand = nil
+                switch result {
+                case .success(let response):
+                    self?.trySavePendingCredentials(card: response.card, cardAccessTokens: response.cardAccessTokens)
+                    completion(.success(response.card))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+                withExtendedLifetime(task) {}
             }
 
         } catch {
@@ -458,26 +476,21 @@ public class BackupService {
                 )
             }
 
-            currentCommand = command
-
             sdk.startSession(
                 with: command,
                 cardId: backupCard.cardId,
                 initialMessage: initialMessage
             ) { [weak self] result in
-                guard let self = self else { return }
-
                 switch result {
-                case .success(let card):
-                    repo.data.finalizedBackupCardsCount += 1
-                    completion(.success(card))
+                case .success(let response):
+                    self?.repo.data.finalizedBackupCardsCount += 1
+                    self?.trySavePendingCredentials(card: response.card, cardAccessTokens: response.cardAccessTokens)
+                    completion(.success(response.card))
                 case .failure(let error):
                     completion(.failure(error))
                 }
-
-                currentCommand = nil
+                withExtendedLifetime(command) {}
             }
-
         } catch {
             completion(.failure(error.toTangemSdkError()))
         }
@@ -506,6 +519,20 @@ public class BackupService {
         certificateProvider.getCertificate {
             completion($0)
             withExtendedLifetime(certificateProvider) {}
+        }
+    }
+
+    private func trySavePendingCredentials(card: Card, cardAccessTokens: CardAccessTokens?) {
+        let pendingCredentials: BackupCredentialsHelper.PendingCredentials?
+
+        if card.firmwareVersion >= .v8 {
+            pendingCredentials = cardAccessTokens.map { .accessTokens($0) }
+        } else {
+            pendingCredentials = repo.data.accessCode.map { .accessCode($0) }
+        }
+
+        if let pendingCredentials {
+            credentialsHelper.addPendingCredentials(cardId: card.cardId, credentials: pendingCredentials)
         }
     }
 }

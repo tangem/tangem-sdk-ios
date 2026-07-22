@@ -690,10 +690,12 @@ public class CardSession {
                         }
 
                         var protocolKey = try accessCode.pbkdf2sha256(salt: uid, rounds: 50)
+                        defer { protocolKey.zeroOut() }
+
                         var secret = try encryptionHelper.generateSecret(keyB: response.sessionKeyB)
+                        defer { secret.zeroOut() }
+
                         let sessionKey = (secret + protocolKey).getSHA256()
-                        protocolKey.zeroOut()
-                        secret.zeroOut()
                         environment.encryptionKey = sessionKey
                         Log.session("The encryption established")
                         completion(.success(()))
@@ -854,6 +856,9 @@ public class CardSession {
 
     private func resetSensitiveData() {
         secureChannelSession?.reset()
+        // Reset the working copy to wipe the live secrets; the template is reset separately
+        // because it may hold an access code preset at session start.
+        environment.reset()
         _environment.reset()
         environment = _environment
     }
@@ -933,6 +938,11 @@ private extension CardSession {
     }
 
     func requestCardAccessTokensIfNeeded(completion: @escaping CompletionResult<Void>) {
+        guard cardAccessTokensRepository != nil else {
+            completion(.success(()))
+            return
+        }
+
         guard environment.cardAccessTokens == nil else {
             completion(.success(()))
             return

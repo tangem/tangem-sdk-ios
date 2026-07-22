@@ -14,6 +14,11 @@ struct ManageAccessTokensResponse {
     var isZeroResponse: Bool {
         accessToken.allSatisfy { $0 == 0 } || identifyToken.allSatisfy { $0 == 0 }
     }
+
+    var cardAccessTokens: CardAccessTokens? {
+        guard !isZeroResponse else { return nil }
+        return CardAccessTokens(self)
+    }
 }
 
 enum ManageAccessTokensMode: Byte, InteractionMode {

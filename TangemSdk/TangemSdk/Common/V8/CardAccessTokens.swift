@@ -8,13 +8,19 @@
 import Foundation
 
 struct CardAccessTokens: Codable {
-    let accessToken: Data
-    let identifyToken: Data
+    var accessToken: Data
+    var identifyToken: Data
 }
 
 extension CardAccessTokens {
     init(_ manageAccessTokensResponse: ManageAccessTokensResponse) {
         accessToken = manageAccessTokensResponse.accessToken
         identifyToken = manageAccessTokensResponse.identifyToken
+    }
+
+    /// Best-effort wipe. Zeroes in place only if the buffers are uniquely referenced.
+    mutating func zeroOut() {
+        accessToken.zeroOut()
+        identifyToken.zeroOut()
     }
 }

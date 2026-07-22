@@ -47,7 +47,7 @@ public class AccessCodeRepository {
             return // Nothing changed. Return
         }
 
-        var savedCardIds = try getCards()
+        var savedCardIds = (try? getCards()) ?? []
 
         for cardId in cardIds {
             do {
@@ -84,12 +84,8 @@ public class AccessCodeRepository {
             return
         }
 
-        var savedCardIds = try getCards()
+        var savedCardIds = (try? getCards()) ?? []
         for cardId in cardIds {
-            guard savedCardIds.contains(cardId) else {
-                continue
-            }
-
             let storageKey = SecureStorageKey.accessCode(for: cardId)
             let encryptionKey = SecureStorageKey.accessCodeEncryptionKey(for: cardId)
 

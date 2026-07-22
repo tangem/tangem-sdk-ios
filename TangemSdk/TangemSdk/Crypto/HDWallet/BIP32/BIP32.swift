@@ -34,7 +34,10 @@ public struct BIP32 {
 
         let symmetricKey = SymmetricKey(data: keyData)
         let authenticationCode = HMAC<SHA512>.authenticationCode(for: seed, using: symmetricKey)
-        let i = Data(authenticationCode)
+        var i = Data(authenticationCode)
+        // `i` is the full master material (private key ‖ chain code); wipe it after the last
+        // use, which includes the recursive retry below.
+        defer { i.zeroOut() }
         let iL = Data(i.prefix(32))
         let iR = Data(i.suffix(32))
 

@@ -83,8 +83,14 @@ public final class Secp256k1Utils {
         }
 
         var seckey = privateKey.toBytes
+        var tweakBytes = tweak.toBytes
 
-        guard tangem_secp256k1_ec_seckey_tweak_add(context, &seckey, tweak.toBytes) == 1 else {
+        defer {
+            seckey.zeroOut()
+            tweakBytes.zeroOut()
+        }
+
+        guard tangem_secp256k1_ec_seckey_tweak_add(context, &seckey, tweakBytes) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to tweak the private key")
         }
 
@@ -269,18 +275,17 @@ public final class Secp256k1Utils {
         var privkey = privateKey.toBytes
         var pubkey = try parsePublicKey(publicKey)
         var sharedSecret = Array(repeating: UInt8(0), count: 32)
+
+        defer {
+            privkey.zeroOut()
+            sharedSecret.zeroOut()
+        }
+
         guard tangem_secp256k1_ecdh(context, &sharedSecret, &pubkey, privkey, secp256k1_ecdh_tangem, nil) == 1 else {
             throw TangemSdkError.cryptoUtilsError("Failed to compute an EC Diffie-Hellman secret ")
         }
-        let result = Data(sharedSecret)
-        // Zero sensitive intermediates
-        for i in privkey.indices {
-            privkey[i] = 0
-        }
-        for i in sharedSecret.indices {
-            sharedSecret[i] = 0
-        }
-        return result
+
+        return Data(sharedSecret)
     }
 
     func parsePublicKey(_ publicKey: Data) throws -> secp256k1_pubkey {

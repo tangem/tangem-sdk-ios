@@ -8,83 +8,60 @@
 
 import Foundation
 import CoreHaptics
-import UIKit
-import AVFoundation
 
-class HapticsEngine {
+final class HapticsEngine {
+    /// `CHHapticEngine` doesn't depend on the SDK config, so a single engine is shared
+    /// by all `TangemSdk` instances in the process.
+    static let shared = HapticsEngine()
+
+    /// Serial queue confining the engine life cycle and playback. Keeps `.ahap` file I/O
+    /// and engine creation off the caller's (usually main) thread.
+    private let queue = DispatchQueue(label: "com.tangem.TangemSdk.HapticsEngine", qos: .userInitiated)
+    private let supportsHaptics = CHHapticEngine.capabilitiesForHardware().supportsHaptics
+
     private var engine: CHHapticEngine?
     private var engineNeedsStart = true
 
-    private lazy var supportsHaptics: Bool = CHHapticEngine.capabilitiesForHardware().supportsHaptics
+    /// Cached because ticks fire once a second during security delays. Recreated after
+    /// a haptic server reset, as Apple's reset-handler guidance requires.
+    private var tickPlayer: CHHapticPatternPlayer?
+
+    private init() {}
 
     func playSuccess() {
-        if supportsHaptics {
-            do {
-                let filePath = filePath(forResource: "Success")
-
-                guard let path = Bundle.sdkBundle.path(forResource: filePath, ofType: "ahap") else {
-                    return
-                }
-
-                try engine?.playPattern(from: URL(fileURLWithPath: path))
-            } catch {
-                Log.error("Error creating a haptic transient pattern: \(error)")
-            }
-        } else {
-            AudioServicesPlaySystemSound(SystemSoundID(1520))
-        }
+        playPattern(fromResource: "Success")
     }
 
     func playError() {
-        if supportsHaptics {
-            do {
-                let filePath = filePath(forResource: "Error")
-
-                guard let path = Bundle.sdkBundle.path(forResource: filePath, ofType: "ahap") else {
-                    return
-                }
-
-                try engine?.playPattern(from: URL(fileURLWithPath: path))
-            } catch {
-                Log.error("Error creating a haptic transient pattern: \(error)")
-            }
-        } else {
-            AudioServicesPlaySystemSound(SystemSoundID(1102))
-        }
+        playPattern(fromResource: "Error")
     }
 
     func playTick() {
-        if supportsHaptics {
-            do {
-                // Create an event (static) parameter to represent the haptic's intensity.
-                let intensityParameter = CHHapticEventParameter(
-                    parameterID: .hapticIntensity,
-                    value: 0.75
-                )
+        guard supportsHaptics else {
+            return
+        }
 
-                // Create an event (static) parameter to represent the haptic's sharpness.
-                let sharpnessParameter = CHHapticEventParameter(
-                    parameterID: .hapticSharpness,
-                    value: 0.5
-                )
-
-                // Create an event to represent the transient haptic pattern.
-                let event = CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [intensityParameter, sharpnessParameter],
-                    relativeTime: 0
-                )
-
-                let pattern = try CHHapticPattern(events: [event], parameters: [])
-
-                // Create a player to play the haptic pattern.
-                let player = try engine?.makePlayer(with: pattern)
-                try player?.start(atTime: CHHapticTimeImmediate) // Play now.
-            } catch {
-                Log.error("Error creating a haptic transient pattern: \(error)")
+        queue.async {
+            guard self.startEngineIfNeeded() else {
+                return
             }
-        } else {
-            AudioServicesPlaySystemSound(SystemSoundID(1519))
+
+            do {
+                try self.tickPlayerIfAvailable()?.start(atTime: CHHapticTimeImmediate)
+            } catch {
+                Log.error("Failed to play the tick pattern: \(error)")
+            }
+        }
+    }
+
+    func start() {
+        guard supportsHaptics else {
+            return
+        }
+
+        queue.async {
+            self.createEngineIfNeeded()
+            self.startEngineIfNeeded()
         }
     }
 
@@ -93,61 +70,133 @@ class HapticsEngine {
             return
         }
 
-        engine?.stop(completionHandler: { [weak self] error in
-            if let error = error {
-                Log.error("Haptic Engine Shutdown Error: \(error)")
-                return
-            }
-            self?.engineNeedsStart = true
-        })
+        queue.async {
+            self.engine?.stop(completionHandler: { error in
+                if let error = error {
+                    Log.error("Haptic Engine Shutdown Error: \(error)")
+                }
+            })
+            // Set synchronously rather than in the async completion: a start() enqueued
+            // right after stop() must see the flag, or the next session runs with a
+            // stopped engine. If stop actually fails, the redundant start() is harmless.
+            self.engineNeedsStart = true
+        }
     }
 
-    func start() {
-        guard supportsHaptics, engineNeedsStart else {
+    /// Must be called on `queue`. A failed creation isn't retried until the next
+    /// session start, so an unavailable haptic server costs at most one attempt
+    /// and one log line per NFC session.
+    private func createEngineIfNeeded() {
+        guard engine == nil else {
             return
         }
 
-        engine?.start(completionHandler: { [weak self] error in
-            if let error = error {
-                Log.error("Haptic Engine Start Error: \(error)")
-                return
-            }
-            self?.engineNeedsStart = false
-        })
+        do {
+            let engine = try CHHapticEngine()
+            engine.playsHapticsOnly = true
+            // Apple requires the handlers to be set before the engine is started.
+            configureHandlers(of: engine)
+            self.engine = engine
+        } catch {
+            Log.error("Engine Creation Error: \(error)")
+        }
     }
 
-    func create() {
+    private func configureHandlers(of engine: CHHapticEngine) {
+        // An external stop (interruption, suspension) is a normal part of the engine
+        // life cycle, not an error; the engine is restarted on the next use.
+        engine.stoppedHandler = { [weak self] reason in
+            Log.debug("Stop Handler: The engine stopped for reason: \(reason.logDescription)")
+            self?.queue.async {
+                self?.engineNeedsStart = true
+            }
+        }
+
+        engine.resetHandler = { [weak self] in
+            Log.debug("Reset Handler: Restarting the engine.")
+            self?.queue.async {
+                guard let self = self else {
+                    return
+                }
+
+                self.tickPlayer = nil
+                let wasRunning = !self.engineNeedsStart
+                self.engineNeedsStart = true
+
+                if wasRunning {
+                    self.startEngineIfNeeded()
+                }
+            }
+        }
+    }
+
+    /// Must be called on `queue`. Starts the engine in case it's idle, as Apple
+    /// recommends before playback. Returns `true` if the engine is running.
+    @discardableResult
+    private func startEngineIfNeeded() -> Bool {
+        guard let engine = engine else {
+            return false
+        }
+
+        guard engineNeedsStart else {
+            return true
+        }
+
+        do {
+            try engine.start()
+            engineNeedsStart = false
+            return true
+        } catch {
+            Log.error("Haptic Engine Start Error: \(error)")
+            return false
+        }
+    }
+
+    /// Must be called on `queue`.
+    private func tickPlayerIfAvailable() throws -> CHHapticPatternPlayer? {
+        if let tickPlayer = tickPlayer {
+            return tickPlayer
+        }
+
+        guard let engine = engine else {
+            return nil
+        }
+
+        let intensityParameter = CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.75)
+        let sharpnessParameter = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
+        let event = CHHapticEvent(
+            eventType: .hapticTransient,
+            parameters: [intensityParameter, sharpnessParameter],
+            relativeTime: 0
+        )
+        let pattern = try CHHapticPattern(events: [event], parameters: [])
+
+        let player = try engine.makePlayer(with: pattern)
+        tickPlayer = player
+        return player
+    }
+
+    private func playPattern(fromResource resource: String) {
         guard supportsHaptics else {
             return
         }
 
-        // We need to instantiate `CHHapticEngine` on a background thread
-        // because on the Main thread I/O operations can cause UI unresponsiveness
-        DispatchQueue.global(qos: .userInitiated).async {
+        queue.async {
+            guard self.startEngineIfNeeded() else {
+                return
+            }
+
             do {
-                let engine = try CHHapticEngine()
-                engine.playsHapticsOnly = true
-                engine.stoppedHandler = { [weak self] reason in
-                    Log.error("CHHapticEngine stop handler: The engine stopped for reason: \(reason.rawValue)")
-                    self?.engineNeedsStart = true
-                }
-                engine.resetHandler = { [weak self] in
-                    Log.debug("Reset Handler: Restarting the engine.")
-                    do {
-                        // Try restarting the engine.
-                        try self?.engine?.start()
+                let filePath = self.filePath(forResource: resource)
 
-                        // Indicate that the next time the app requires a haptic, the app doesn't need to call engine.start().
-                        self?.engineNeedsStart = false
-
-                    } catch {
-                        Log.error("Failed to start the engine with error: \(error)")
-                    }
+                guard let path = Bundle.sdkBundle.path(forResource: filePath, ofType: "ahap") else {
+                    Log.error("Missing haptic pattern resource: \(filePath).ahap")
+                    return
                 }
 
-                self.engine = engine
+                try self.engine?.playPattern(from: URL(fileURLWithPath: path))
             } catch {
-                Log.error("CHHapticEngine error: \(error)")
+                Log.error("Failed to play the \(resource) pattern: \(error)")
             }
         }
     }
@@ -163,5 +212,28 @@ class HapticsEngine {
         #else
         return resource
         #endif // SWIFT_PACKAGE
+    }
+}
+
+private extension CHHapticEngine.StoppedReason {
+    var logDescription: String {
+        switch self {
+        case .audioSessionInterrupt:
+            return "audio session interrupt"
+        case .applicationSuspended:
+            return "application suspended"
+        case .idleTimeout:
+            return "idle timeout"
+        case .notifyWhenFinished:
+            return "notify when finished"
+        case .engineDestroyed:
+            return "engine destroyed"
+        case .gameControllerDisconnect:
+            return "game controller disconnect"
+        case .systemError:
+            return "system error"
+        @unknown default:
+            return "unknown (\(rawValue))"
+        }
     }
 }

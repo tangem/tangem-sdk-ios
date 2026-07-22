@@ -41,7 +41,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         Log.debug("FinalizeBackupCardTask deinit")
     }
 
-    func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    func run(in session: CardSession, completion: @escaping CompletionResult<FinalizeBackupCardTask.Response>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
@@ -60,6 +60,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
             linkCommand.run(in: session) { linkResult in
                 switch linkResult {
                 case .success:
+                    session.secureChannelSession?.didAuthorizePin(accessLevel: .user)
                     self.writeBackupData(in: session, completion: completion)
                 case .failure(let error):
                     completion(.failure(error))
@@ -74,7 +75,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         }
     }
 
-    private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func writeBackupData(in session: CardSession, completion: @escaping CompletionResult<FinalizeBackupCardTask.Response>) {
         let writeCommand = WriteBackupDataCommand(
             backupData: backupData,
             accessCode: accessCode
@@ -96,7 +97,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         }
     }
 
-    private func readWallets(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func readWallets(in session: CardSession, completion: @escaping CompletionResult<FinalizeBackupCardTask.Response>) {
         let readWalletsCommand = ReadWalletsListCommand()
 
         readWalletsCommand.run(in: session) { result in
@@ -111,25 +112,25 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         }
     }
 
-    private func deriveKeysIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<Card>) {
+    private func deriveKeysIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<FinalizeBackupCardTask.Response>) {
         guard let card = session.environment.card else {
             completion(.failure(.missingPreflightRead))
             return
         }
 
         guard performDerivations else {
-            completion(.success(card))
+            getAccessTokensIfNeeded(session, completion)
             return
         }
 
         if card.assertWalletsAccess() != nil {
-            completion(.success(card))
+            getAccessTokensIfNeeded(session, completion)
             return
         }
 
         let defaultPaths = session.environment.config.defaultDerivationPaths
         guard card.firmwareVersion >= .hdWalletAvailable, card.settings.isHDWalletAllowed, !defaultPaths.isEmpty else {
-            completion(.success(card))
+            getAccessTokensIfNeeded(session, completion)
             return
         }
 
@@ -140,7 +141,7 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         }
 
         guard !derivations.isEmpty else {
-            completion(.success(card))
+            getAccessTokensIfNeeded(session, completion)
             return
         }
 
@@ -148,17 +149,42 @@ class FinalizeBackupCardTask: CardSessionRunnable {
         derivationTask.run(in: session) { result in
             switch result {
             case .success:
-                guard let card = session.environment.card else {
-                    completion(.failure(.missingPreflightRead))
-                    return
-                }
-
-                completion(.success(card))
+                self.getAccessTokensIfNeeded(session, completion)
             case .failure(let error):
                 completion(.failure(error))
             }
 
             withExtendedLifetime(derivationTask) {}
         }
+    }
+
+    private func getAccessTokensIfNeeded(_ session: CardSession, _ completion: @escaping CompletionResult<FinalizeBackupCardTask.Response>) {
+        guard let card = session.environment.card else {
+            completion(.failure(.missingPreflightRead))
+            return
+        }
+
+        guard card.firmwareVersion >= .v8 else {
+            completion(.success(Response(card: card, cardAccessTokens: nil)))
+            return
+        }
+
+        let command = ManageAccessTokensCommand(mode: .renew)
+        command.run(in: session) { result in
+            switch result {
+            case .success(let response):
+                completion(.success(Response(card: card, cardAccessTokens: response.cardAccessTokens)))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+            withExtendedLifetime(command) {}
+        }
+    }
+}
+
+extension FinalizeBackupCardTask {
+    struct Response {
+        let card: Card
+        let cardAccessTokens: CardAccessTokens?
     }
 }

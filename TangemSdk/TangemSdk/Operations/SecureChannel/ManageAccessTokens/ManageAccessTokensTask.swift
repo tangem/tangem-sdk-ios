@@ -9,8 +9,6 @@ import Foundation
 
 /// Get or renew access tokens
 class ManageAccessTokensTask: CardSessionRunnable {
-    typealias Response = Void
-
     deinit {
         Log.debug("ManageAccessTokensTask deinit")
     }

@@ -31,7 +31,6 @@ extension TlvLogging {
     private func logMasked(_ tlv: Tlv) {
         let tagName = "\(tlv.tag)".capitalizingFirst()
         let tagFullName = "TAG_\(tagName)"
-
         Log.tlv("\(tagFullName) [0x\(tlv.tagRaw):***]: ***")
     }
 }

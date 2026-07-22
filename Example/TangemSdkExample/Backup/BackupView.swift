@@ -75,6 +75,14 @@ struct BackupView: View {
                 viewModel.discardIncompleteBackup()
             }
 
+            Button("Save pending credentials") {
+                viewModel.savePendingCreds()
+            }
+
+            Button("Delete pending credentials") {
+                viewModel.deletePendingCreds()
+            }
+
             Text(viewModel.stateTitle)
 
             actionButton("Proceed", action: viewModel.proceed)

@@ -72,7 +72,7 @@ public class CardAccessTokensRepository {
         Log.debug("Card access tokens saved successfully")
     }
 
-    func deleteTokens(for cardIds: [String]) throws {
+    public func deleteTokens(for cardIds: [String]) throws {
         if cardIds.isEmpty {
             return
         }

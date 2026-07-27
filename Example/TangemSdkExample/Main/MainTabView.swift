@@ -252,10 +252,24 @@ struct MainTabView: View {
             .pickerStyle(.segmented)
 
             if viewModel.isDeterministicEntropy {
-                TextField("\"m/0/1\"", text: $viewModel.derivationPath)
+                Text("Number of words")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Picker("Number of words", selection: $viewModel.entropyLength) {
+                    ForEach(EntropyLength.allCases, id: \.self) { length in
+                        Text("\(length.wordCount)").tag(length)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Text("Index")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                TextField("Index", text: $viewModel.entropyIndex)
                     .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
+                    .keyboardType(.numberPad)
             }
         }
         .orangeBorder()

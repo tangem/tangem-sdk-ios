@@ -28,6 +28,8 @@ class MainTabViewModel: ObservableObject {
     @Published var isPinRequired: Bool = false
     @Published var isNDEFDisabled: Bool = false
     @Published var isDeterministicEntropy: Bool = false
+    @Published var entropyLength: EntropyLength = .bits256
+    @Published var entropyIndex: String = "0"
 
     // MARK: - Outputs
 
@@ -758,10 +760,21 @@ extension MainTabViewModel {
 
     func getEntropy() {
         if isDeterministicEntropy {
-            guard !derivationPath.isEmpty, let path = try? DerivationPath(rawPath: derivationPath) else {
-                complete(with: "Failed to parse hd path")
+            let trimmedEntropyIndex = entropyIndex.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard let index = UInt32(trimmedEntropyIndex), index <= UInt32(Int32.max) else {
+                complete(with: "Entropy index must be in range 0...\(Int32.max)")
                 return
             }
+
+            // BIP85: m/39'/0'/{words}'/{index}'
+            let path = DerivationPath(nodes: [
+                .hardened(39),
+                .hardened(0),
+                .hardened(UInt32(entropyLength.wordCount)),
+                .hardened(index),
+            ])
+
+            let entropyByteCount = entropyLength.rawValue / 8
 
             UIApplication.shared.endEditing()
 
@@ -769,7 +782,7 @@ extension MainTabViewModel {
                 switch result {
                 case .success(let response):
                     do {
-                        let mnemonic = try Mnemonic(entropyData: response.data.prefix(32)) // 24-words, 256bit
+                        let mnemonic = try Mnemonic(entropyData: response.data.prefix(entropyByteCount))
                         self.complete(with: mnemonic)
                     } catch {
                         self.complete(with: error)

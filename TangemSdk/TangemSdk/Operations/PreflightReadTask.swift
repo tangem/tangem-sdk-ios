@@ -15,10 +15,24 @@ public enum PreflightReadMode: Decodable, Equatable {
     case none
     /// Read only card info without wallet info. COS 4+. Older card will always read card and wallet info
     case readCardOnly
-    /// Read card info and all wallets. Used by default
-    case fullCardRead
-    /// Read card info and all wallets. Show alert if this card is unknown yet.
-    case fullCardReadWithAccessCodeCheck
+    /// Read card info and all wallets, plus any requested extras. Used by default
+    case fullCardRead(options: Options)
+
+    /// Optional extras layered on top of a full card read.
+    public struct Options: OptionSet, Equatable {
+        public let rawValue: Int
+
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        /// Show an alert and request the access code if this card is unknown yet.
+        public static let accessCodeCheck = Options(rawValue: 1 << 0)
+        /// Read the card's master secret. COS v8+.
+        public static let readMasterSecret = Options(rawValue: 1 << 1)
+        /// Calculate and verify the backup hash. Needs the master secret, so implies `.readMasterSecret`. COS v8+.
+        public static let verifyBackup = Options(rawValue: 1 << 2)
+    }
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.singleValueContainer()
@@ -30,7 +44,7 @@ public enum PreflightReadMode: Decodable, Equatable {
         case "readcardonly":
             self = .readCardOnly
         case "fullcardread":
-            self = .fullCardRead
+            self = .fullCardRead(options: [])
         default:
             throw TangemSdkError.decodingFailed("Failed to decode PreflightReadMode")
         }
@@ -107,10 +121,8 @@ final class PreflightReadTask: CardSessionRunnable {
         }
 
         switch readMode {
-        case .fullCardRead:
-            readWalletsList(in: session, completion: completion)
-        case .fullCardReadWithAccessCodeCheck:
-            if card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
+        case .fullCardRead(let options):
+            if options.contains(.accessCodeCheck), card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
                 session.pause()
 
                 let showWelcomeBackWarning: Bool
@@ -126,7 +138,7 @@ final class PreflightReadTask: CardSessionRunnable {
                         switch result {
                         case .success:
                             session.resume()
-                            self.readWalletsList(in: session, completion: completion)
+                            self.readWalletsList(in: session, options: options, completion: completion)
                         case .failure(let error):
                             session.releaseTag()
                             completion(.failure(error))
@@ -135,14 +147,14 @@ final class PreflightReadTask: CardSessionRunnable {
                 }
 
             } else {
-                readWalletsList(in: session, completion: completion)
+                readWalletsList(in: session, options: options, completion: completion)
             }
         case .readCardOnly, .none:
             completion(.success(card))
         }
     }
 
-    private func readWalletsList(in session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func readWalletsList(in session: CardSession, options: PreflightReadMode.Options, completion: @escaping CompletionResult<Card>) {
         let command = ReadWalletsListCommand()
         command.run(in: session) { result in
             switch result {
@@ -159,8 +171,9 @@ final class PreflightReadTask: CardSessionRunnable {
                     return
                 }
 
-                if card.firmwareVersion >= .v8 {
-                    self.readMasterSecret(backupHash: response.backupHash, session: session, completion: completion)
+                let shouldReadMasterSecret = options.contains(.readMasterSecret) || options.contains(.verifyBackup)
+                if card.firmwareVersion >= .v8, shouldReadMasterSecret {
+                    self.readMasterSecret(backupHash: response.backupHash, options: options, session: session, completion: completion)
                 } else {
                     completion(.success(card))
                 }
@@ -172,13 +185,16 @@ final class PreflightReadTask: CardSessionRunnable {
         }
     }
 
-    private func readMasterSecret(backupHash: Data?, session: CardSession, completion: @escaping CompletionResult<Card>) {
+    private func readMasterSecret(backupHash: Data?, options: PreflightReadMode.Options, session: CardSession, completion: @escaping CompletionResult<Card>) {
         let command = ReadMasterSecretCommand()
         command.run(in: session) { result in
             switch result {
             case .success(let response):
                 session.environment.card?.masterSecret = response.masterSecret
-                self.verifyBackup(backupHash: backupHash, session: session)
+
+                if options.contains(.verifyBackup) {
+                    self.verifyBackup(backupHash: backupHash, session: session)
+                }
 
                 guard let card = session.environment.card else {
                     completion(.failure(.missingPreflightRead))

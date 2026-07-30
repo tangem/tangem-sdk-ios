@@ -45,7 +45,7 @@ public class CardSession {
     private var sendSubscription: [AnyCancellable] = []
     private var nfcReaderSubscriptions: [AnyCancellable] = []
 
-    private var preflightReadMode: PreflightReadMode = .fullCardRead
+    private var preflightReadMode: PreflightReadMode = .fullCardRead(options: [])
     private var currentTag: NFCTagType = .none
     private var resetCodesController: ResetCodesController?
     /// Allows access codes to be stored in a secure location
@@ -407,7 +407,7 @@ public class CardSession {
         cardAccessTokensRepository?.lock()
         nfcReaderSubscriptions = []
         resetSensitiveData()
-        preflightReadMode = .fullCardRead
+        preflightReadMode = .fullCardRead(options: [])
         sendSubscription = []
         viewDelegate.sessionStopped(completion: completion)
         state = .inactive

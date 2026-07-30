@@ -10,7 +10,7 @@ import Foundation
 
 /// Type erased CardSessionRunnable which Response conforms  to JSONStringConvertible
 public class AnyJSONRPCRunnable: CardSessionRunnable {
-    public var preflightReadMode: PreflightReadMode = .fullCardRead
+    public var preflightReadMode: PreflightReadMode = .fullCardRead(options: [])
     /// Request Id
     public var id: Int? = nil
 

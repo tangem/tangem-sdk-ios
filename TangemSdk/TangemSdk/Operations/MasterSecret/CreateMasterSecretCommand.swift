@@ -11,6 +11,13 @@ import Foundation
 /// This command will create a new master secret on the card.
 /// A key pair is generated or imported and securely stored in the card.
 public final class CreateMasterSecretCommand: Command {
+    /// The `.alreadyCreated` pre-check reads `card.masterSecret`, so the preflight read must load it.
+    /// Only the top-level runnable's `preflightReadMode` is applied, so run this command directly via
+    /// `startSession`. When wrapping it in a task, make the task's `preflightReadMode` include `.readMasterSecret`.
+    /// Otherwise the pre-check still runs but cannot see an existing master secret (`card.masterSecret` stays nil),
+    /// and if one was already created the card rejects the command with `.invalidState`.
+    public var preflightReadMode: PreflightReadMode { .fullCardRead(options: [.readMasterSecret]) }
+
     var requiresPasscode: Bool { true }
 
     private let privateKey: ExtendedPrivateKey?

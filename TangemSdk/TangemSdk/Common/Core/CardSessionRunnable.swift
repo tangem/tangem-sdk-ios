@@ -36,7 +36,7 @@ public protocol CardSessionRunnable {
 }
 
 public extension CardSessionRunnable {
-    var preflightReadMode: PreflightReadMode { .fullCardRead }
+    var preflightReadMode: PreflightReadMode { .fullCardRead(options: []) }
 
     var shouldAskForAccessCode: Bool { true }
 

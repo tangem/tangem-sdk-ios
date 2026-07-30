@@ -10,6 +10,9 @@ import Foundation
 import TangemSdk
 
 class ResetToFactorySettingsTask: CardSessionRunnable {
+    /// Reads `card.masterSecret` in `deleteMasterSecret`, so the preflight read must include it.
+    var preflightReadMode: PreflightReadMode { .fullCardRead(options: [.readMasterSecret]) }
+
     func run(in session: CardSession, completion: @escaping CompletionResult<Card>) {
         deleteWallets(in: session, completion: completion)
     }

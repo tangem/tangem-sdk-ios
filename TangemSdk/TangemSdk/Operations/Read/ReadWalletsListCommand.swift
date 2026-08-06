@@ -58,7 +58,17 @@ public class ReadWalletsListCommand: Command {
                     return
                 }
 
-                let wallets = self.loadedWallets.sorted(by: { $0.index < $1.index })
+                var wallets = self.loadedWallets.sorted(by: { $0.index < $1.index })
+
+                if let existingWallets = session.environment.card?.wallets {
+                    for (index, wallet) in wallets.enumerated() {
+                        if let publicKey = wallet.publicKey,
+                           let derivedKeys = existingWallets[publicKey]?.derivedKeys {
+                            wallets[index].derivedKeys = derivedKeys
+                        }
+                    }
+                }
+
                 session.environment.card?.wallets = wallets
 
                 completion(.success(ReadWalletsListResponse(

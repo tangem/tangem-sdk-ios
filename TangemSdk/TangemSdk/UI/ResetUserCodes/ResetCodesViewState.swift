@@ -10,6 +10,6 @@ import Foundation
 
 enum ResetCodesViewState {
     case empty
-    case requestCode(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
-    case resetCodes(_ type: UserCodeType, state: ResetPinService.State, cardId: String?, completion: CompletionResult<Bool>)
+    case requestCode(UserCodeRequest)
+    case resetCodes(ResetCodesRequest)
 }

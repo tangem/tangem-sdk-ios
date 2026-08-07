@@ -28,29 +28,17 @@ struct MainScreen: View {
                 ReadView()
                     .transition(.opacity.animation(.easeInOut))
 
-            case .requestCode(
-                let type,
-                cardId: let cardId,
-                let showForgotButton,
-                let showWelcomeBackWarning,
-                completion: let completion
-            ):
-                requestCodeView(
-                    type: type,
-                    cardId: cardId,
-                    showForgotButton: showForgotButton,
-                    showWelcomeBackWarning: showWelcomeBackWarning,
-                    completion: completion
-                )
+            case .requestCode(let request):
+                requestCodeView(request: request)
 
-            case .requestCodeChange(let type, cardId: let cardId, completion: let completion):
+            case .requestCodeChange(let request):
                 ChangeUserCodeView(
-                    type: type,
-                    title: type.changeCodeTitle,
-                    cardId: cardId ?? "",
-                    placeholder: type.enterNewCodeTitle,
-                    confirmationPlaceholder: type.confirmCodeTitle,
-                    completion: completion
+                    type: request.type,
+                    title: request.type.changeCodeTitle,
+                    cardId: request.cardId ?? "",
+                    placeholder: request.type.enterNewCodeTitle,
+                    confirmationPlaceholder: request.type.confirmCodeTitle,
+                    completion: request.handle
                 )
                 .transition(.opacity.animation(.easeInOut))
 
@@ -65,30 +53,19 @@ struct MainScreen: View {
     }
 
     @ViewBuilder
-    private func requestCodeView(
-        type: UserCodeType,
-        cardId: String?,
-        showForgotButton: Bool,
-        showWelcomeBackWarning: Bool,
-        completion: @escaping CompletionResult<String>
-    ) -> some View {
-        if showWelcomeBackWarning {
+    private func requestCodeView(request: UserCodeRequest) -> some View {
+        if request.showWelcomeBackWarning {
             WelcomeBackView { result in
-                viewModel.handleWelcomeBackResult(
-                    result, type: type,
-                    cardId: cardId,
-                    showForgotButton: showForgotButton,
-                    completion: completion
-                )
+                viewModel.handleWelcomeBackResult(request: request, result: result)
             }
             .transition(.opacity.animation(.easeInOut))
         } else {
             EnterUserCodeView(
-                title: type.enterCodeTitle,
-                cardId: cardId ?? "",
-                placeholder: type.name,
-                showForgotButton: showForgotButton,
-                completion: completion
+                title: request.type.enterCodeTitle,
+                cardId: request.cardId ?? "",
+                placeholder: request.type.name,
+                showForgotButton: request.showForgotButton,
+                completion: request.handle
             )
             .transition(.opacity.animation(.easeInOut))
         }

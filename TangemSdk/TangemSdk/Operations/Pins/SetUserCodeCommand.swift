@@ -228,7 +228,7 @@ public class SetUserCodeCommand: Command {
 
         let formattedCid = session.cardId.flatMap { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
 
-        session.viewDelegate.setState(.requestCodeChange(type, cardId: formattedCid, completion: { result in
+        let request = UserCodeRequest(type: type, cardId: formattedCid) { result in
             switch result {
             case .success(let code):
                 self.codes[type] = .stringValue(code)
@@ -237,7 +237,9 @@ public class SetUserCodeCommand: Command {
                 session.viewDelegate.sessionStopped(completion: nil)
                 completion(.failure(error))
             }
-        }))
+        }
+
+        session.viewDelegate.setState(.requestCodeChange(request))
     }
 }
 

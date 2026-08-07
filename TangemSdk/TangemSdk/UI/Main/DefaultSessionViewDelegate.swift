@@ -32,6 +32,16 @@ final class DefaultSessionViewDelegate: BaseViewDelegate {
         screen.modalTransitionStyle = .crossDissolve
         return screen
     }
+
+    override func presentationDidFail() {
+        // A prompt nobody can see would keep the session occupied forever
+        switch viewModel.viewState {
+        case .requestCode(let request), .requestCodeChange(let request):
+            request.cancel()
+        default:
+            break
+        }
+    }
 }
 
 extension DefaultSessionViewDelegate: SessionViewDelegate {
@@ -79,6 +89,9 @@ extension DefaultSessionViewDelegate: SessionViewDelegate {
 
     func sessionStarted() {
         Log.view("Session started")
+        // Clear the previous session's state before it can flash on the newly presented screen
+        let resetStateAction = { self.viewModel.viewState = .scan }
+        runInMainThread(resetStateAction())
         runInMainThread(self.presentScreenIfNeeded())
         engine.start()
     }

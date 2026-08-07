@@ -44,8 +44,8 @@ public enum SessionViewState {
     case `default`
     case empty
     case scan
-    case requestCode(_ type: UserCodeType, cardId: String?, showForgotButton: Bool, showWelcomeBackWarning: Bool, completion: CompletionResult<String>)
-    case requestCodeChange(_ type: UserCodeType, cardId: String?, completion: CompletionResult<String>)
+    case requestCode(UserCodeRequest)
+    case requestCodeChange(UserCodeRequest)
 
     var shouldPlayHaptics: Bool {
         switch self {

@@ -139,7 +139,9 @@ extension NFCReader: CardReader {
 
         let isExistingSessionActive = readerSession?.isReady ?? false
         if !isExistingSessionActive {
-            startNFCStuckTimer()
+            // Armed via the serial queue, so a previous session's queued stopTimers
+            // always runs before it and can't kill this session's timer
+            queue.async { self.startNFCStuckTimer() }
             start()
         }
 
@@ -259,6 +261,11 @@ extension NFCReader: CardReader {
     }
 
     func stopSession(with errorMessage: String? = nil) {
+        // On the reader queue - every other timer mutation happens there. Unconditionally,
+        // even for a session that never became ready - the stuck timer would keep
+        // restarting it otherwise.
+        queue.async { self.stopTimers() }
+
         guard readerSession?.isReady == true else {
             return
         }
@@ -269,7 +276,6 @@ extension NFCReader: CardReader {
 
         isBeingStopped = true
         Log.nfc("Stop reader session invoked")
-        stopTimers()
         if let errorMessage = errorMessage {
             readerSession?.invalidate(errorMessage: errorMessage)
         } else {
@@ -399,13 +405,14 @@ extension NFCReader: CardReader {
                 guard let self else { return }
 
                 Log.nfc("Stop by stuck timer")
-                startRetryCount -= 1
-                if startRetryCount == 0 {
+                if startRetryCount > 0 {
+                    startRetryCount -= 1
+                    start()
+                } else {
+                    nfcStuckTimerCancellable = nil
                     tag.send(completion: .failure(.nfcStuck))
                     tag = .init(.none)
                     stopSession()
-                } else {
-                    start()
                 }
             }
     }
@@ -474,6 +481,7 @@ extension NFCReader: CardReader {
         sessionTimerCancellable = nil
         tagTimerCancellable = nil
         idleTimerCancellable = nil
+        searchTimerCancellable = nil
     }
 
     private func tagDidDisconnect() {
@@ -492,6 +500,7 @@ extension NFCReader: CardReader {
 
     private func tagDidConnect(_ nfcTag: NFCTag) {
         connectedTag = nfcTag
+        searchTimerCancellable = nil
         let tagType = nfcTag.tagType
 
         Log.nfc("Received tag: \(String(describing: tagType))")
@@ -570,12 +579,15 @@ extension NFCReader: NFCTagReaderSessionDelegate {
 
 extension NFCReader {
     enum Constants {
-        static let tagTimeout = 20.0
+        // One second ahead of the corresponding OS limits (20s tag, 60s session), so the SDK
+        // terminates cleanly instead of racing the OS kill
+        static let tagTimeout = 19.0
         static let idleTimeout = 2.0
-        static let sessionTimeout = 60.0
-        static let nfcStuckTimeout = 1.0
+        static let sessionTimeout = 59.0
+        // Begin retries into a wedged nfcd are spaced out to let it recover
+        static let nfcStuckTimeout = 2.0
         static let retryCount = 20
-        static let startRetryCount = 5
+        static let startRetryCount = 2
         static let requestToleranceTS = 1.0
         static let searchTagTimeout = 1.0
     }

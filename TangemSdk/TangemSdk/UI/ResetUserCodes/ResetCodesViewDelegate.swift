@@ -28,6 +28,18 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
         return screen
     }
 
+    override func presentationDidFail() {
+        // A prompt nobody can see would keep the whole reset flow and its session alive forever
+        switch viewModel.viewState {
+        case .requestCode(let request):
+            request.cancel()
+        case .resetCodes(let request):
+            request.handle(.failure(.userCancelled))
+        case .empty:
+            break
+        }
+    }
+
     func setState(_ state: ResetCodesViewState) {
         Log.view("Set state: \(state)")
 

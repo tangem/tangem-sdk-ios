@@ -20,12 +20,19 @@ class BaseViewDelegate {
         fatalError("You should not call base method")
     }
 
+    /// Called when the screen could not be presented (no view controller to present on,
+    /// e.g. the app is backgrounded)
+    func presentationDidFail() {}
+
     func presentScreenIfNeeded() {
         guard self.screen == nil else {
             return
         }
 
-        guard let topmostViewController = UIApplication.shared.topMostViewController else { return }
+        guard let topmostViewController = UIApplication.shared.topMostViewController else {
+            presentationDidFail()
+            return
+        }
 
         if let presentedController = topmostViewController.presentedViewController { // dismiss alert
             presentedController.dismiss(animated: false) {
@@ -50,6 +57,9 @@ class BaseViewDelegate {
         }
 
         if screen.isBeingDismissed || screen.presentingViewController == nil {
+            // Drop the reference: a screen detached by a failed presentation would
+            // block presentScreenIfNeeded forever
+            self.screen = nil
             completion?()
             return
         }

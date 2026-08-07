@@ -23,24 +23,24 @@ struct ResetCodesScreen: View {
     @ViewBuilder
     private var mainView: some View {
         switch viewModel.viewState {
-        case .requestCode(let type, cardId: let cardId, completion: let completion):
+        case .requestCode(let request):
             ChangeUserCodeView(
-                type: type,
-                title: type.enterNewCodeTitle,
-                cardId: cardId ?? "",
-                placeholder: type.name,
-                confirmationPlaceholder: type.confirmCodeTitle,
-                completion: completion
+                type: request.type,
+                title: request.type.enterNewCodeTitle,
+                cardId: request.cardId ?? "",
+                placeholder: request.type.name,
+                confirmationPlaceholder: request.type.confirmCodeTitle,
+                completion: request.handle
             )
 
-        case .resetCodes(let type, let state, cardId: let cardId, completion: let completion):
+        case .resetCodes(let request):
             ResetUserCodesView(
-                title: type.resetCodeTitle,
-                cardId: cardId ?? "",
-                card: state.cardType,
-                messageTitle: state.messageTitle,
-                messageBody: state.messageBody,
-                completion: completion
+                title: request.type.resetCodeTitle,
+                cardId: request.cardId ?? "",
+                card: request.state.cardType,
+                messageTitle: request.state.messageTitle,
+                messageBody: request.state.messageBody,
+                completion: request.handle
             )
 
         default:

@@ -11,24 +11,13 @@ import Foundation
 typealias MainViewModel = ViewModel<SessionViewState>
 
 extension MainViewModel {
-    func handleWelcomeBackResult(
-        _ result: Result<Bool, TangemSdkError>,
-        type: UserCodeType,
-        cardId: String?,
-        showForgotButton: Bool,
-        completion: @escaping CompletionResult<String>
-    ) {
+    func handleWelcomeBackResult(request: UserCodeRequest, result: Result<Bool, TangemSdkError>) {
         switch result {
         case .success(true):
-            viewState = .requestCode(
-                type,
-                cardId: cardId,
-                showForgotButton: showForgotButton,
-                showWelcomeBackWarning: false,
-                completion: completion
-            )
+            request.acknowledgeWelcomeBack()
+            viewState = .requestCode(request)
         case .success(false), .failure:
-            completion(.failure(.userCancelled))
+            request.cancel()
         }
     }
 }

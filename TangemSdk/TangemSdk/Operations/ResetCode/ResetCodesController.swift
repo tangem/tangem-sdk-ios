@@ -39,7 +39,12 @@ public class ResetCodesController {
         self.cardId = cardId
         self.codeType = codeType
         self.completion = completion
-        viewDelegate.setState(.requestCode(codeType, cardId: formattedCardId, completion: handleCodeInput))
+        // The flow retries after recoverable errors (rejected code, failed scan),
+        // so the prompt must stay invokable
+        let request = UserCodeRequest(type: codeType, cardId: formattedCardId, isOneShot: false) { [weak self] result in
+            self?.handleCodeInput(result)
+        }
+        viewDelegate.setState(.requestCode(request))
     }
 
     private func bind() {
@@ -54,16 +59,18 @@ public class ResetCodesController {
                     viewDelegate.showAlert(
                         newState.messageTitle,
                         message: newState.messageBody,
-                        onContinue: { self.handleContinue(.success(false)) }
+                        onContinue: { [weak self] in self?.handleContinue(.success(false)) }
                     )
                 default:
                     if let codeType = codeType {
-                        viewDelegate.setState(.resetCodes(
-                            codeType,
+                        let request = ResetCodesRequest(
+                            type: codeType,
                             state: newState,
-                            cardId: formattedCardId,
-                            completion: handleContinue
-                        ))
+                            cardId: formattedCardId
+                        ) { [weak self] result in
+                            self?.handleContinue(result)
+                        }
+                        viewDelegate.setState(.resetCodes(request))
                     }
                 }
             }

@@ -627,11 +627,9 @@ public class CardSession {
                         case .success:
                             self.requestCardAccessTokensIfNeeded(completion: completion)
                         case .failure(let error):
-                            Log.session("Authorization was failed. Wrong pin. retrying.")
-
-                            // wrong pin was entered. retry
                             switch error {
                             case .accessCodeRequired:
+                                Log.session("Authorization was failed. Wrong pin. retrying.")
                                 self.handleWrongUserCode(.accessCode) { [weak self] pinResult in
                                     guard let self else {
                                         completion(.failure(.sessionInactive))
@@ -650,6 +648,7 @@ public class CardSession {
                                     }
                                 }
                             default:
+                                Log.session("Authorization was failed with error: \(error)")
                                 completion(.failure(error))
                             }
                         }

@@ -77,7 +77,6 @@ final class NFCReader: NSObject {
     private var startRetryCount = Constants.startRetryCount
     private let pollingOption: NFCTagReaderSession.PollingOption
     private var sessionDidBecomeActiveTS: Date = .init()
-    private var firstConnectionTS: Date? = nil
     private var tagConnectionTS: Date? = nil
     private var isBeingStopped = false
     private var stoppedError: TangemSdkError? = nil
@@ -132,7 +131,6 @@ extension NFCReader: CardReader {
         isBeingStopped = false
         stoppedError = nil
         tagConnectionTS = nil
-        firstConnectionTS = nil
         sessionDidBecomeActiveTS = Date()
 
         _alertMessage = message
@@ -225,15 +223,9 @@ extension NFCReader: CardReader {
                     return
                 }
 
-                if shouldReduceRestartPolling, let firstConnectionTS = firstConnectionTS {
-                    let interval = Date().timeIntervalSince(firstConnectionTS)
-                    Log.nfc("Restart polling interval is: \(interval)")
-
-                    // 20 is too much because of time inaccuracy
-                    if interval >= 16 {
-                        Log.nfc("Ignore restart polling")
-                        return
-                    }
+                if shouldReduceRestartPolling {
+                    Log.nfc("Ignore restart polling on a broken restart-polling device")
+                    return
                 }
 
                 isSilentRestartPolling = isSilent
@@ -386,7 +378,6 @@ extension NFCReader: CardReader {
     }
 
     private func start() {
-        firstConnectionTS = nil
         readerSession?.invalidate() // Important! We must keep invalidate/begin in balance after start retries
         readerSession = NFCTagReaderSession(pollingOption: pollingOption, delegate: self, queue: queue)!
         readerSession!.alertMessage = _alertMessage!
@@ -564,10 +555,6 @@ extension NFCReader: NFCTagReaderSessionDelegate {
                 sessionConnectCancellable = nil
 
                 tagConnectionTS = Date()
-
-                if firstConnectionTS == nil {
-                    firstConnectionTS = tagConnectionTS
-                }
 
             } receiveValue: { [weak self] _ in
                 self?.tagDidConnect(nfcTag)

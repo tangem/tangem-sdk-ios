@@ -39,6 +39,7 @@ class AuthorizeWithAccessTokensCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var cardSessionEncryption: CardSessionEncryption { .none }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     deinit {
         Log.debug("AuthorizeWithAccessTokensCommand deinit")
@@ -74,7 +75,7 @@ class AuthorizeWithAccessTokensCommand: Command {
                         completion(.success(authorizeResponse))
                     } else {
                         session.resetAccessTokens()
-                        session.secureChannelSession?.reset()
+                        session.resetSecureChannel()
                         throw TangemSdkError.invalidAccessTokens
                     }
 

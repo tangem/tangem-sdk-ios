@@ -18,6 +18,7 @@ class AuthorizeWithPinResponseCommand: Command {
     typealias CommandResponse = AuthorizeWithPinResponseCommandResponse
 
     var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     private let challengeWithXor: Data
 

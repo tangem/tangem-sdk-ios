@@ -75,6 +75,12 @@ protocol Command: AnyObject, ApduSerializable, CardSessionRunnable {
     /// Mode for encryption that should be used for this command. Default is `secureChannel`, which means that the command will be encrypted if secure channel is established.
     var cardSessionEncryption: CardSessionEncryption { get }
 
+    /// True for the commands that establish or elevate the secure channel. On `TangemSdkError.retrySecureChannelNeeded`
+    /// they must fail so the whole establish flow restarts, while regular commands re-establish the channel and retry themselves.
+    /// The APDU instruction can't tell them apart: application-level commands, e.g. the reset PIN token family,
+    /// share `Instruction.authorize` with the handshake.
+    var isSecureChannelHandshakeCommand: Bool { get }
+
     func performPreCheck(_ card: Card) -> TangemSdkError?
     func mapError(_ card: Card?, _ error: TangemSdkError) -> TangemSdkError
 }
@@ -83,6 +89,8 @@ extension Command {
     var requiresPasscode: Bool { false }
 
     var cardSessionEncryption: CardSessionEncryption { .secureChannel }
+
+    var isSecureChannelHandshakeCommand: Bool { false }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
         transceive(in: session, completion: completion)
@@ -150,8 +158,8 @@ extension Command {
                         switch error {
                         case .retrySecureChannelNeeded:
                             // We have to restart secure channel flow for COS V8+
-                            session.secureChannelSession?.reset()
-                            if commandApdu.ins == Instruction.authorize.rawValue || commandApdu.ins == Instruction.openSession.rawValue {
+                            session.resetSecureChannel()
+                            if self.isSecureChannelHandshakeCommand {
                                 Log.session("Fail secure channel command to restart the full flow")
                                 completion(.failure(error))
                             } else {

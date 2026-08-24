@@ -18,6 +18,7 @@ class OpenSessionWithSecurityDelayCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var cardSessionEncryption: CardSessionEncryption { .none }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     private let sessionKeyB: Data
 

@@ -29,6 +29,7 @@ class AuthorizeWithSecurityDelayCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var cardSessionEncryption: CardSessionEncryption { .none }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     deinit {
         Log.debug("AuthorizeWithSecurityDelayCommand deinit")

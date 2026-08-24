@@ -19,6 +19,7 @@ class AuthorizeWithPinChallengeCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var cardSessionEncryption: CardSessionEncryption { .publicSecureChannel }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     deinit {
         Log.debug("AuthorizeWithPinChallengeCommand deinit")

@@ -223,8 +223,8 @@ extension NFCReader: CardReader {
                     return
                 }
 
-                if shouldReduceRestartPolling {
-                    Log.nfc("Ignore restart polling on a broken restart-polling device")
+                if shouldReduceRestartPolling, isSilent {
+                    Log.nfc("Ignore silent restart polling on a broken restart-polling device")
                     return
                 }
 
@@ -380,7 +380,7 @@ extension NFCReader: CardReader {
     private func start() {
         readerSession?.invalidate() // Important! We must keep invalidate/begin in balance after start retries
         readerSession = NFCTagReaderSession(pollingOption: pollingOption, delegate: self, queue: queue)!
-        readerSession!.alertMessage = _alertMessage!
+        readerSession!.alertMessage = _alertMessage! + Constants.alertMessagePadding
         readerSession!.begin()
     }
 
@@ -577,5 +577,10 @@ extension NFCReader {
         static let startRetryCount = 2
         static let requestToleranceTS = 1.0
         static let searchTagTimeout = 1.0
+        /// The NFC sheet measures its label once, by the message set before begin(), and cuts every longer
+        /// update down to a single line. Three blank lines on top of the first message, which can wrap on
+        /// its own, keep at least four lines of height. Braille blank is the filler because whitespace and
+        /// format characters are stripped at the edges of the string.
+        static let alertMessagePadding = String(repeating: "\n\u{2800}", count: 3)
     }
 }

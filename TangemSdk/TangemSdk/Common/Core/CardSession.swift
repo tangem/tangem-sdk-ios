@@ -244,9 +244,7 @@ public class CardSession {
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] tag in
-                    self?.environment.encryptionKey?.zeroOut()
-                    self?.environment.encryptionKey = nil
-                    self?.secureChannelSession?.reset()
+                    self?.resetSecureChannel()
                 }
             )
             .store(in: &nfcReaderSubscriptions)
@@ -547,6 +545,12 @@ public class CardSession {
     }
 
     // MARK: - Encryption
+
+    func resetSecureChannel() {
+        environment.encryptionKey?.zeroOut()
+        environment.encryptionKey = nil
+        secureChannelSession?.reset()
+    }
 
     func establishEncryptionIfNeeded(
         cardSessionEncryption: CardSessionEncryption,
@@ -874,7 +878,7 @@ public class CardSession {
     }
 
     private func resetSensitiveData() {
-        secureChannelSession?.reset()
+        resetSecureChannel()
         // Reset the working copy to wipe the live secrets; the template is reset separately
         // because it may hold an access code preset at session start.
         environment.reset()

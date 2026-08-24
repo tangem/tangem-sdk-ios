@@ -33,6 +33,7 @@ class OpenSessionWithAccessTokenCommand: Command {
 
     var preflightReadMode: PreflightReadMode { .none }
     var cardSessionEncryption: CardSessionEncryption { .none }
+    var isSecureChannelHandshakeCommand: Bool { true }
 
     private let challengeB: Data
     private let hmacAttestB: Data
@@ -80,7 +81,7 @@ class OpenSessionWithAccessTokenCommand: Command {
             case .failure(let error):
                 switch error {
                 case .accessDenied, .invalidState:
-                    session.secureChannelSession?.reset()
+                    session.resetSecureChannel()
                 default:
                     break
                 }

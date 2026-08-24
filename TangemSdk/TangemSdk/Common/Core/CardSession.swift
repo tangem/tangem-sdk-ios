@@ -320,6 +320,17 @@ public class CardSession {
         reader.restartPolling(silent: silent)
     }
 
+    private func searchForAnotherCard() {
+        guard state == .active else {
+            Log.session("Skip searching for another card. The session is inactive")
+            return
+        }
+
+        viewDelegate.setState(.scan)
+        viewDelegate.showAlertMessage(defaultScanMessage)
+        restartPolling()
+    }
+
     // MARK: - APDU sending
 
     /// Sends `CommandApdu` to the current card
@@ -363,7 +374,7 @@ public class CardSession {
                     }
                     viewDelegate.wrongCard(message: TangemSdkError.wrongCardNumber(expectedCardId: cardIdFormatted).localizedDescription)
                     DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
-                        self?.restartPolling()
+                        self?.searchForAnotherCard()
                     }
                     return false
                 } else {
@@ -524,7 +535,7 @@ public class CardSession {
                             return
                         }
 
-                        self.restartPolling()
+                        self.searchForAnotherCard()
                         self.preflightCheck(onSessionStarted)
                     }
                 default:

@@ -16,7 +16,7 @@ LLM: To answer your question...
 
 Tangem iOS SDK — an NFC library for communicating with Tangem hardware wallet cards. Enables secure key generation, storage, and transaction signing via NFC. Distributed as both SPM package and CocoaPod.
 
-- **SDK version**: stored in `VERSION` file (also in `TangemSdk.podspec`)
+- **SDK version**: stored in the `VERSION` file and mirrored in `TangemSdk.podspec`; every PR bumps both (see [Workflow Conventions](#workflow-conventions))
 - **Xcode version**: stored in `.xcode-version` file
 - **Swift tools version**: 5.3
 - **iOS deployment target**: 16.4
@@ -38,18 +38,21 @@ mint run swiftgen@6.6.3 config run --config swiftgen.yml
 
 Every change starts with a Jira ticket whose key flows through the rest of the workflow, and every PR goes through a self-review before being opened:
 
-- **Every change carries a Jira ticket key.** Branch names, commit subjects, and PR titles all include an `IOS-NNNNN` prefix. Before starting, decide whether the work belongs on an existing ticket or needs a new one — if it isn't obvious, ask. Either way, before any code is touched the ticket must be: assigned to you, in the active sprint, and have both required custom fields populated. The rule applies regardless of whether the ticket is fresh or reused — fill in anything that's missing on a reused one (it usually is).
+- **Every change carries a Jira ticket key.** Branch names, commit subjects, and PR titles all include an `IOS-NNNNN` prefix. Before starting, decide whether the work belongs on an existing ticket or needs a new one — if it isn't obvious, ask. Either way, before any code is touched the ticket must be: assigned to you, in the active sprint, and have the three custom fields below populated. The rule applies regardless of whether the ticket is fresh or reused — fill in anything that's missing on a reused one (it usually is).
+  - **Stream (`customfield_11931`)** — **always ask the developer which stream the ticket belongs to before creating it.** Never infer it from the change. Offer exactly these three, using the current names the team speaks in: **Store**, **Spend**, **Grow**.
   - **Story Points (`customfield_10025`)** — default to `3` unless context clearly suggests otherwise (trivial = 1; clear hotfix or multi-day work = 5+).
-  - **QA Notes (`customfield_11232`)** — per-scenario test plan using the team's template (Preconditions / Steps / Expected result). For changes with zero runtime impact (pure docs/comments, dead-code removal) the entire field can be the team's standard one-line "no QA needed" shorthand — don't fabricate fake scenarios; QA reads the field and noise wastes their time. Refactors, renames, or anything that produces a different binary still need real QA scenarios.
+  - **QA Notes (`customfield_11232`)** — a concise note telling QA what changed, where and how to check it, and what to expect; do **not** write test cases (QA writes those). When the change can't affect the shipped SDK's runtime behaviour — pure docs/comments, dead-code removal, agent configuration, SwiftUI previews (nothing but Xcode ever instantiates them), or CI/build/release tooling that never ships in the binary (GitHub Actions and other workflows, Fastlane, the version files, release/CI scripts) — the **entire** field is the team's standard one-line "no QA needed" shorthand and nothing else, with no scenarios appended or invented. Only changes that can actually alter how the SDK behaves at runtime get real notes. Ending up in the binary is not the test — being reachable is. Follow the `write-qa-notes` skill for the full structure, quality bar, and pre-handoff checklist.
 
   See [External Systems → Jira](#jira) for cloudId, field IDs, and the ADF caveat.
 - **Branch name:** `IOS-NNNNN_short_description` in snake_case (e.g. `IOS-13963_crashfixes`).
 - **When asked to create a branch, give it its own remote immediately.** `git checkout -b <branch> origin/develop` leaves `<branch>` tracking `origin/develop`, so an IDE "Push" writes straight to `develop`. Right after creating it run `git push -u origin <branch>` (or `git branch --unset-upstream` if not pushing yet). Never push to `develop` or long-lived feature branches (e.g. `develop-fw8`) directly.
+- **Bump the SDK version in every PR to `develop`.** `VERSION` and `s.version` in `TangemSdk.podspec` must match and must move: `set-tag.yml` tags `develop` from `VERSION`, so `check-tag.yml` fails the PR when it stayed put. Ask which component to bump — hotfix by default — and read the current value off `origin/develop`, not your branch point.
 - **Commit message subject:** `IOS-NNNNN Short description`. Body explains the why, not the what — the diff already shows the what.
 - **Move the issue to `In Progress`** the moment you create the branch and start work. Use `getTransitionsForJiraIssue` to find the right transition id, then `transitionJiraIssue`. Don't leave a ticket in `To Do` while a branch with commits exists — sprint metrics and standups read these states.
 - **Self-review before opening the PR.** Once the branch builds and tests pass, do an independent review of the diff as if it were someone else's code: either read `git diff <base>..HEAD` end-to-end with fresh eyes, or delegate to a sub-agent (e.g. Claude Code's `Agent` tool with a skeptical-reviewer prompt; equivalent in other agent harnesses). Apply any meaningful feedback as additional commits before opening the PR — the goal is to spend the human reviewer's attention on judgment calls, not on things you would have caught yourself.
 - **PR title:** identical to the commit subject. The PR body MUST include `[IOS-NNNNN](https://tangem.atlassian.net/browse/IOS-NNNNN)` on its own line so the Atlassian/GitHub integration links the PR back to the ticket. Opening the PR generally moves the issue to `Review` automatically.
 - **PR description style.** Convey the essence — the problem and the approach — in a few plain sentences. Don't walk through the changes file by file or restate the diff; it speaks for itself. Don't tell reviewers what to look at, flag the "riskiest" part, or ask for a second opinion — they decide where to focus. Cut filler and hedging. Write idiomatically in the language of the team conversation — no runglish or word-for-word calques. Keep verification steps only when genuinely useful. PR descriptions live on GitHub (not in the repo).
+- **Don't drag unrelated tickets into the merge.** A Jira↔GitHub automation transitions *every* `IOS-NNNNN` key it finds in the PR title, branch, commit messages, or body to `Ready for Testing` when the PR merges. So write as a real key only the ticket(s) this PR should actually move — normally just its own (the `[IOS-NNNNN](…)` link line above). When you must reference another ticket for context or as a follow-up, de-key it so the matcher (`IOS-` + digits) can't see it: replace the ASCII hyphen with a non-breaking hyphen `‑` (U+2011) — e.g. `IOS‑13154`, which renders identically on GitHub — or refer to it descriptively. Same rule for commit subjects and bodies, not just the description; if a stray key slips into a commit message, that ticket rides the merge too.
 - All commits require a valid GPG signature (see Miscellaneous).
 
 ## Build & Test Commands
@@ -264,23 +267,31 @@ Feature availability is gated by `FirmwareVersion`:
 
 ## Code Style
 
-**English only in committed content.** Code, comments, identifiers, commit messages, and PR titles (which mirror commit subjects) are English. Foreign-language product strings used as test data or fixtures are an exception, but commentary about them stays English. Non-versioned surfaces — PR descriptions, Jira fields and comments, Slack, Confluence — aren't constrained and typically follow the language of the current conversation. When that language isn't English, write the way a native speaker of it would: express each technical idea in the target language's own words rather than transliterating the English term, so the text reads as natural prose and not a calque. Only genuine code identifiers and proper nouns stay in English.
+**English only in committed content.** Code, comments, identifiers, commit messages, and PR titles (which mirror commit subjects) are English. Foreign-language product strings used as test data or fixtures are an exception, but commentary about them stays English. Non-versioned surfaces — PR descriptions, Jira issue bodies (description, QA Notes) and comments, Slack, Confluence — aren't constrained and typically follow the language of the current conversation; the sole exception is the Jira issue summary (title), which is always English like commit and PR titles. When that language isn't English, write the way a native speaker of it would: express each technical idea in the target language's own words rather than transliterating the English term, so the text reads as natural prose and not a calque. Only genuine code identifiers and proper nouns stay in English.
 
 **Style Guide:** Follow [Google's Swift Style Guide](https://google.github.io/swift/)
 
 **No redundant comments.** Don't add comments that merely restate what the code or the language already conveys — e.g. annotating a `static let` with "Resolved once" / "Cached / fixed for the process lifetime", or a `private` member with "Used internally". A comment must explain something the reader can't get from the declaration itself: a non-obvious *why*, a constraint, a gotcha, or intent that isn't visible in the code. When in doubt, leave it out — the diff and the type signatures already document the *what*.
 
-**SwiftUI Previews:** Must be wrapped in `#if DEBUG`/`#endif` and marked with `// MARK: - Previews`:
+**No spec paragraph numbers in comments.** Don't cite spec section/paragraph numbers in code comments (e.g. `(spec 2.1.3)`, `§3.9`). Specs get reorganized and the number rots, leaving the comment pointing at the wrong place. Explain the *why* in plain prose instead; if a pointer is genuinely needed, put it in the PR description or the Jira ticket, not in the code.
+
+**SwiftUI Previews:** Avoid using the `PreviewProvider` protocol. Use the `#Preview` macro instead.
+Do not wrap a preview inside a `#if DEBUG` block unless a DEBUG-only type is used inside it.
+If a view inside the `#Preview` macro requires a DynamicProperty (e.g. `@State`, `@FocusState`), annotate `#Preview` with `@available(iOS 17.0, *)`.
+Add a `// MARK: - Previews` comment before the preview declaration:
 ```swift
 // MARK: - Previews
 
-#if DEBUG
-struct MyView_Previews: PreviewProvider {
-    static var previews: some View {
-        MyView()
-    }
+#Preview {
+    MyView()
 }
-#endif // DEBUG
+
+@available(iOS 17.0, *)
+#Preview {
+    @Previewable @State var toggle = false
+
+    AnotherView(isActive: $toggle)
+}
 ```
 
 ## SPM Target Structure
@@ -298,7 +309,8 @@ struct MyView_Previews: PreviewProvider {
 
 - **Cloud ID:** `d018e0a4-7934-4a07-a61b-3533039acdfa` (`tangem.atlassian.net`).
 - **iOS project key:** `IOS`. Default issue type `Task` (id `10002`). Active sprint id is on `customfield_10021` (read it off any open ticket on board id `12`).
-- **`customfield_11232` — `QA Notes`** is the field manual QA reads. Use the team's per-scenario template (Preconditions / Steps / Expected result), not the description. Discover other field IDs via `getJiraIssueTypeMetaWithFields(cloudId, projectIdOrKey="IOS", issueTypeId="10002")`.
+- **`customfield_11232` — `QA Notes`** is the field manual QA reads — what changed, where and how to check it, and the expected result, not test cases. See the `write-qa-notes` skill for the format. Discover other field IDs via `getJiraIssueTypeMetaWithFields(cloudId, projectIdOrKey="IOS", issueTypeId="10002")`.
+- **`customfield_11931` — `Stream`** is required by `createJiraIssue`; omitting it fails the call with `"Stream is required."`. The option labels in Jira are the old stream names, so ask the developer using the current ones and send the id: **Store** → `{"id": "15117"}` (Jira label `Core`), **Spend** → `{"id": "15981"}` (Jira label `Visa`), **Grow** → `{"id": "15116"}`. The field also carries a `Delivery` option (`16574`) — never offer it.
 - **Markdown vs ADF:**
   - `editJiraIssue` accepts a markdown string for the built-in `description` field (server-side conversion).
   - `createJiraIssue` rejects markdown for `description` — pass an Atlassian Document Format JSON doc instead.
@@ -367,7 +379,7 @@ This project has Xcode MCP integration available. **Prefer Xcode MCP tools over 
 - **Main branch**: `develop`
 - **Feature branches**: e.g., `develop-fw8` (V8 firmware support)
 - **Commit message style**: `IOS-XXXXX Description (#PR)` (Jira ticket prefix)
-- **CI**: GitHub Actions on `macos-15`, runs `bundle exec fastlane test` on PRs to `develop` and `release/**`
+- **CI**: GitHub Actions. `tests.yml` runs `bundle exec fastlane test` on `macos-26` for PRs to `develop` and `release/**`. Every workflow pins its own image, and they are not in step: `sync-to-public-repo` and `update-localizations` are on `macos-15`, the rest on `ubuntu-latest` — check the workflow you're touching rather than assuming a repository-wide version. All runners are GitHub-hosted; there are no self-hosted runners here
 - **Additional workflows**: publish-release, sync-to-public-repo, update-localizations (Lokalise), create-release-branch, check-tag, set-tag, generate-changelog
 
 ## Miscellaneous

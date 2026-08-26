@@ -52,11 +52,12 @@ struct FloatingTextField: View {
     }
 }
 
-struct FloatingTextField_Previews: PreviewProvider {
-    @State static var text: String = "002139123"
+// MARK: - Previews
 
-    static var previews: some View {
-        FloatingTextField(title: "Access code", text: $text)
-            .environmentObject(TangemSdkStyle())
-    }
+@available(iOS 17.0, *)
+#Preview {
+    @Previewable @State var text = "002139123"
+
+    FloatingTextField(title: "Access code", text: $text)
+        .environmentObject(TangemSdkStyle())
 }

@@ -102,12 +102,12 @@ private extension MainScreen {
     }
 }
 
-struct MainScreen_Preview: PreviewProvider {
-    static var previews: some View {
-        MainScreen()
-            .environmentObject(MainViewModel(viewState: .scan))
-            .environmentObject(TangemSdkStyle())
-    }
+// MARK: - Previews
+
+#Preview {
+    MainScreen()
+        .environmentObject(MainViewModel(viewState: .scan))
+        .environmentObject(TangemSdkStyle())
 }
 
 private extension SessionViewState {

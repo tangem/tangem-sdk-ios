@@ -49,10 +49,10 @@ struct ResetCodesScreen: View {
     }
 }
 
-struct ResetUserCodesScreen_Preview: PreviewProvider {
-    static var previews: some View {
-        ResetCodesScreen()
-            .environmentObject(ResetCodesViewModel(viewState: .empty))
-            .environmentObject(TangemSdkStyle())
-    }
+// MARK: - Previews
+
+#Preview {
+    ResetCodesScreen()
+        .environmentObject(ResetCodesViewModel(viewState: .empty))
+        .environmentObject(TangemSdkStyle())
 }

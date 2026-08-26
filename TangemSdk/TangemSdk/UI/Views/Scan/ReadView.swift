@@ -63,13 +63,13 @@ private extension ReadView {
     }
 }
 
-struct ReadView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ReadView()
-            ReadView()
-                .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        ReadView()
+        ReadView()
+            .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

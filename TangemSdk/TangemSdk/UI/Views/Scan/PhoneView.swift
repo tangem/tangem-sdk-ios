@@ -36,17 +36,17 @@ struct PhoneView: View {
     }
 }
 
-struct PhoneView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            PhoneView()
-                .frame(width: 180, height: 360)
-                .padding(50)
+// MARK: - Previews
 
-            PhoneView()
-                .preferredColorScheme(.dark)
-                .padding(50)
-        }
-        .environmentObject(TangemSdkStyle())
+#Preview {
+    Group {
+        PhoneView()
+            .frame(width: 180, height: 360)
+            .padding(50)
+
+        PhoneView()
+            .preferredColorScheme(.dark)
+            .padding(50)
     }
+    .environmentObject(TangemSdkStyle())
 }

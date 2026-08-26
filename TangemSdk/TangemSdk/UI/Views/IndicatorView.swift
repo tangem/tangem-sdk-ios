@@ -120,15 +120,15 @@ extension IndicatorView {
     }
 }
 
-struct SpinnerView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            IndicatorView(state: .spinner)
-            IndicatorView(state: .progress(progress: 30))
-            IndicatorView(state: .delay(currentValue: 14, totalValue: 15))
-            IndicatorView()
-                .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        IndicatorView(state: .spinner)
+        IndicatorView(state: .progress(progress: 30))
+        IndicatorView(state: .delay(currentValue: 14, totalValue: 15))
+        IndicatorView()
+            .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

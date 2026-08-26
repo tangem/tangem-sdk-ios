@@ -2,7 +2,7 @@
 //  Secp256k1Utils.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 07.04.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

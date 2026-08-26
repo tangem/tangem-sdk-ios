@@ -2,7 +2,7 @@
 //  AttestationTask.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 16.06.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 
@@ -94,7 +94,7 @@ public final class AttestationTask: CardSessionRunnable {
     }
 
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        // TODO: ATTEST_CARD_FIRMWARE, ATTEST_CARD_UNIQUENESS
+        // [REDACTED_TODO_COMMENT]
         runOnlineAttestation(session, completion)
     }
 

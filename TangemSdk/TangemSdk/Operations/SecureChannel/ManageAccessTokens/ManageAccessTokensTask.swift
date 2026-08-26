@@ -2,7 +2,7 @@
 //  ManageAccessTokensTask.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 05/03/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

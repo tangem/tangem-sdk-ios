@@ -2,7 +2,7 @@
 //  Base58.swift
 //  TangemSdk
 //
-//  Created by Alex Vlasov.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2018 Alex Vlasov. All rights reserved.
 
 import Foundation

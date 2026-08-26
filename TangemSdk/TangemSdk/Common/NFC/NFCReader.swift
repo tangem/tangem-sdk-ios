@@ -342,7 +342,7 @@ extension NFCReader: CardReader {
 
                         guard retryOnFail else {
                             Log.nfc("Got an error, skip retry.")
-                            restartPolling(silent: true)
+                            restartPolling(silent: false)
                             return Just(.failure(TangemSdkError.retrySecureChannelNeeded))
                                 .setFailureType(to: TangemSdkError.self)
                                 .eraseToAnyPublisher()
@@ -353,7 +353,8 @@ extension NFCReader: CardReader {
                         if isDistanceTooLong || sendRetryCount <= 0 { // retry to fix old device issues
                             Log.nfc("Invoke restart polling on error")
                             sendRetryCount = Constants.retryCount
-                            restartPolling(silent: !isDistanceTooLong) // Use silent mode only if retries are empty
+                            // Silent mode only if retries are empty, and never where it would be dropped
+                            restartPolling(silent: !isDistanceTooLong && !shouldReduceRestartPolling)
                             return Empty(completeImmediately: false)
                                 .eraseToAnyPublisher()
                         } else {

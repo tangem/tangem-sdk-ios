@@ -58,14 +58,13 @@ struct NFCFieldView: View {
     }
 }
 
-struct NFCView_Previews: PreviewProvider {
-    @State static var animation: Bool = true
-    static var previews: some View {
-        Group {
-            NFCFieldView(isAnimationOn: animation)
-            NFCFieldView(isAnimationOn: animation)
-                .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        NFCFieldView(isAnimationOn: true)
+        NFCFieldView(isAnimationOn: true)
+            .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

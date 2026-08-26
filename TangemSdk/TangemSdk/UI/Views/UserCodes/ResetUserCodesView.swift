@@ -99,28 +99,28 @@ struct ResetUserCodesView: View {
     }
 }
 
-struct ResetUserCodesView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ResetUserCodesView(
-                title: "Reset access code",
-                cardId: "Card 0000 1111 2222 3333 444",
-                card: .origin,
-                messageTitle: "Tap the card you want to restore",
-                messageBody: "First, prepare the card for restore process.",
-                completion: { _ in }
-            )
+// MARK: - Previews
 
-            ResetUserCodesView(
-                title: "Reset access code",
-                cardId: "Card 0000 1111 2222 3333 444",
-                card: .backup,
-                messageTitle: "Tap the card you want to restore",
-                messageBody: "First, prepare the card for restore process.",
-                completion: { _ in }
-            )
-            .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+#Preview {
+    Group {
+        ResetUserCodesView(
+            title: "Reset access code",
+            cardId: "Card 0000 1111 2222 3333 444",
+            card: .origin,
+            messageTitle: "Tap the card you want to restore",
+            messageBody: "First, prepare the card for restore process.",
+            completion: { _ in }
+        )
+
+        ResetUserCodesView(
+            title: "Reset access code",
+            cardId: "Card 0000 1111 2222 3333 444",
+            card: .backup,
+            messageTitle: "Tap the card you want to restore",
+            messageBody: "First, prepare the card for restore process.",
+            completion: { _ in }
+        )
+        .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

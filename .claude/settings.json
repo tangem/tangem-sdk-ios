@@ -36,7 +36,6 @@
       "Bash(swift package resolve:*)",
       "Bash(plutil:*)",
       "Bash(xargs basename:*)",
-      "Bash(shuf)",
       "mcp__github__get_me",
       "mcp__github__pull_request_read",
       "mcp__github__create_pull_request",

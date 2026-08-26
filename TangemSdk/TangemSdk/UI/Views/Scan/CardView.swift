@@ -38,16 +38,16 @@ struct CardView: View {
     }
 }
 
-struct CardView_Previews: PreviewProvider {
-    static var cardColor = TangemSdkStyle().colors.cardColor
+// MARK: - Previews
 
-    static var previews: some View {
-        Group {
-            CardView(cardColor: cardColor, starsColor: .gray)
-                .frame(width: 300, height: 200)
-            CardView(cardColor: cardColor, starsColor: .gray)
-                .preferredColorScheme(.dark)
-                .frame(width: 300, height: 200)
-        }
+#Preview {
+    let cardColor = TangemSdkStyle().colors.cardColor
+
+    Group {
+        CardView(cardColor: cardColor, starsColor: .gray)
+            .frame(width: 300, height: 200)
+        CardView(cardColor: cardColor, starsColor: .gray)
+            .preferredColorScheme(.dark)
+            .frame(width: 300, height: 200)
     }
 }

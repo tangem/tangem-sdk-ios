@@ -106,25 +106,25 @@ struct EnterUserCodeView: View {
     }
 }
 
-struct EnterUserCodeView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            EnterUserCodeView(
-                title: "Title",
-                cardId: "0000 1111 2222 3333 444",
-                placeholder: "Enter code",
-                showForgotButton: true,
-                completion: { _ in }
-            )
-            EnterUserCodeView(
-                title: "Title",
-                cardId: "0000 1111 2222 3333 444",
-                placeholder: "Enter code",
-                showForgotButton: true,
-                completion: { _ in }
-            )
-            .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        EnterUserCodeView(
+            title: "Title",
+            cardId: "0000 1111 2222 3333 444",
+            placeholder: "Enter code",
+            showForgotButton: true,
+            completion: { _ in }
+        )
+        EnterUserCodeView(
+            title: "Title",
+            cardId: "0000 1111 2222 3333 444",
+            placeholder: "Enter code",
+            showForgotButton: true,
+            completion: { _ in }
+        )
+        .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

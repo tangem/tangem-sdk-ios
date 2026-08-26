@@ -38,15 +38,15 @@ struct BadgedCardView: View {
     }
 }
 
-struct BadgedCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        BadgedCardView(
-            cardColor: .blue,
-            starsColor: .gray,
-            name: "Origin card",
-            badgeBackground: .red,
-            badgeForeground: .white
-        )
-        .frame(width: 300, height: 0.6 * 300)
-    }
+// MARK: - Previews
+
+#Preview {
+    BadgedCardView(
+        cardColor: .blue,
+        starsColor: .gray,
+        name: "Origin card",
+        badgeBackground: .red,
+        badgeForeground: .white
+    )
+    .frame(width: 300, height: 0.6 * 300)
 }

@@ -62,6 +62,8 @@ private extension TangemSdkStyle.ButtonColors {
     )
 }
 
+// MARK: - Previews
+
 #Preview {
     WalletAlreadyActivatedNoticeView {}
 }

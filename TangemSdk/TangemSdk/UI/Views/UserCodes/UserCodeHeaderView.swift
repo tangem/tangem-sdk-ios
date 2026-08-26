@@ -33,13 +33,13 @@ struct UserCodeHeaderView: View {
     }
 }
 
-struct UserCodeHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            UserCodeHeaderView(title: "Enter access code", cardId: "0000 0000 0000 0000", onCancel: {})
-            UserCodeHeaderView(title: "Enter access code", cardId: "0000 0000 0000 0000", onCancel: {})
-                .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        UserCodeHeaderView(title: "Enter access code", cardId: "0000 0000 0000 0000", onCancel: {})
+        UserCodeHeaderView(title: "Enter access code", cardId: "0000 0000 0000 0000", onCancel: {})
+            .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

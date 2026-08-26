@@ -93,11 +93,9 @@ private extension WelcomeBackView {
     }
 }
 
-// MARK: - Preview
+// MARK: - Previews
 
-struct WelcomeBackView_Previews: PreviewProvider {
-    static var previews: some View {
-        WelcomeBackView { _ in }
-            .environmentObject(TangemSdkStyle())
-    }
+#Preview {
+    WelcomeBackView { _ in }
+        .environmentObject(TangemSdkStyle())
 }

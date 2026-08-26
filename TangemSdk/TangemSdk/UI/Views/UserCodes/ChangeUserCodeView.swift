@@ -110,27 +110,27 @@ struct ChangeUserCodeView: View {
     }
 }
 
-struct ChangeUserCodeView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ChangeUserCodeView(
-                type: .accessCode,
-                title: "Title",
-                cardId: "0000 1111 2222 3333 444",
-                placeholder: "Enter code",
-                confirmationPlaceholder: "Confirm",
-                completion: { _ in }
-            )
-            ChangeUserCodeView(
-                type: .accessCode,
-                title: "Title",
-                cardId: "0000 1111 2222 3333 444",
-                placeholder: "Enter code",
-                confirmationPlaceholder: "Confirm",
-                completion: { _ in }
-            )
-            .preferredColorScheme(.dark)
-        }
-        .environmentObject(TangemSdkStyle())
+// MARK: - Previews
+
+#Preview {
+    Group {
+        ChangeUserCodeView(
+            type: .accessCode,
+            title: "Title",
+            cardId: "0000 1111 2222 3333 444",
+            placeholder: "Enter code",
+            confirmationPlaceholder: "Confirm",
+            completion: { _ in }
+        )
+        ChangeUserCodeView(
+            type: .accessCode,
+            title: "Title",
+            cardId: "0000 1111 2222 3333 444",
+            placeholder: "Enter code",
+            confirmationPlaceholder: "Confirm",
+            completion: { _ in }
+        )
+        .preferredColorScheme(.dark)
     }
+    .environmentObject(TangemSdkStyle())
 }

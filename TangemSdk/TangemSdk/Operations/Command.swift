@@ -239,6 +239,8 @@ extension Command {
                                     session.restartPolling(silent: true)
                                 }
                                 self.transceive(apdu: apdu, in: session, completion: completion)
+                            } else {
+                                fatalError() // FIXME: Andrey Fedorov - Test only, remove when not needed
                             }
                         case .needEncryption:
                             switch session.environment.encryptionMode {

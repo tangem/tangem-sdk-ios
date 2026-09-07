@@ -122,11 +122,15 @@ extension Command {
         if session.environment.passcode.value == nil, requiresPasscode {
             requestPin(.passcode, session, completion: completion)
         } else {
-            transceiveInternal(in: session, completion: completion)
+            transceiveInternal(in: session, retryCount: 0, completion: completion)
         }
     }
 
-    private func transceiveInternal(in session: CardSession, completion: @escaping CompletionResult<CommandResponse>) {
+    private func transceiveInternal(in session: CardSession, retryCount: Int, completion: @escaping CompletionResult<CommandResponse>) {
+        guard retryCount <= Constants.maxRetryCount else {
+            fatalError() // FIXME: Andrey Fedorov - Test only, remove when not needed
+        }
+
         do {
             Log.apdu("C-APDU serialization start".titleFormatted)
             let commandApdu = try serialize(with: session.environment)
@@ -134,7 +138,7 @@ extension Command {
 
             session.rememberTag()
 
-            transceive(apdu: commandApdu, in: session) { result in
+            transceive(apdu: commandApdu, in: session, retryCount: 0) { result in
                 switch result {
                 case .success(let responseApdu):
                     do {
@@ -164,7 +168,7 @@ extension Command {
                                 completion(.failure(error))
                             } else {
                                 Log.session("Retry command with new secure channel session")
-                                self.transceiveInternal(in: session, completion: completion)
+                                self.transceiveInternal(in: session, retryCount: retryCount + 1, completion: completion)
                             }
                         default:
                             session.releaseTag()
@@ -201,7 +205,11 @@ extension Command {
         }
     }
 
-    private func transceive(apdu: CommandApdu, in session: CardSession, completion: @escaping CompletionResult<ResponseApdu>) {
+    private func transceive(apdu: CommandApdu, in session: CardSession, retryCount: Int, completion: @escaping CompletionResult<ResponseApdu>) {
+        guard retryCount <= Constants.maxRetryCount else {
+            fatalError() // FIXME: Andrey Fedorov - Test only, remove when not needed
+        }
+
         session.establishEncryptionIfNeeded(cardSessionEncryption: cardSessionEncryption, shouldAskForAccessCode: shouldAskForAccessCode) { encryptionResult in
             switch encryptionResult {
             case .success:
@@ -238,7 +246,7 @@ extension Command {
                                 if securityDelayResponse.saveToFlash, session.environment.encryptionMode == .none {
                                     session.restartPolling(silent: true)
                                 }
-                                self.transceive(apdu: apdu, in: session, completion: completion)
+                                self.transceive(apdu: apdu, in: session, retryCount: retryCount + 1, completion: completion)
                             } else {
                                 fatalError() // FIXME: Andrey Fedorov - Test only, remove when not needed
                             }
@@ -260,7 +268,7 @@ extension Command {
                                 return
                             }
 
-                            self.transceive(apdu: apdu, in: session, completion: completion)
+                            self.transceive(apdu: apdu, in: session, retryCount: retryCount + 1, completion: completion)
                         case .unknown:
                             completion(.failure(.unknownStatus(responseApdu.sw.hexString)))
                         case .accessDenied:
@@ -297,10 +305,17 @@ extension Command {
         session.handleWrongUserCode(type) { pinResult in
             switch pinResult {
             case .success:
-                self.transceiveInternal(in: session, completion: completion)
+                // The user has just entered a code, so this is a fresh attempt rather than an automatic retry
+                self.transceiveInternal(in: session, retryCount: 0, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
+}
+
+// MARK: - Constants
+
+private enum Constants {
+    static let maxRetryCount = 10
 }

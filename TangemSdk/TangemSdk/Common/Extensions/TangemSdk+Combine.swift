@@ -1,5 +1,5 @@
 //
-//  ResponseApdu+Combine.swift
+//  TangemSdk+Combine.swift
 //  TangemSdk
 //
 //  Created by Alexander Osokin on 04.06.2020.

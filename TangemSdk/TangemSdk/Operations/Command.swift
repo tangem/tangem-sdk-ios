@@ -239,6 +239,8 @@ extension Command {
                                     session.restartPolling(silent: true)
                                 }
                                 self.transceive(apdu: apdu, in: session, completion: completion)
+                            } else {
+                                fatalError() // [REDACTED_TODO_COMMENT]
                             }
                         case .needEncryption:
                             switch session.environment.encryptionMode {

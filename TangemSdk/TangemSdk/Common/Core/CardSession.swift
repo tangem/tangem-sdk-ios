@@ -36,10 +36,11 @@ public class CardSession {
     var cardAccessTokensRepository: CardAccessTokensRepository?
     var secureChannelSession: SecureChannelSession?
 
+    let reader: CardReader
+
     private static let maxSecureChannelRetries = 5
     private var secureChannelRetryCount = 0
 
-    private let reader: CardReader
     private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
     private var sendSubscription: [AnyCancellable] = []

@@ -1,5 +1,5 @@
 //
-//  ResponseApdu+Combine.swift
+//  TangemSdk+Combine.swift
 //  TangemSdk
 //
 //  Created by [REDACTED_AUTHOR]

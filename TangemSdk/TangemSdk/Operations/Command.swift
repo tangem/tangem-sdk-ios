@@ -239,6 +239,8 @@ extension Command {
                                     session.restartPolling(silent: true)
                                 }
                                 self.transceive(apdu: apdu, in: session, completion: completion)
+                            } else {
+                                completion(.failure(TangemSdkError.deserializeApduFailed))
                             }
                         case .needEncryption:
                             switch session.environment.encryptionMode {

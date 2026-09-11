@@ -3,6 +3,7 @@
 //  TangemSdk
 //
 //  Created by Aleksei Lobankov on 05.08.2025.
+//  Copyright © 2025 Tangem AG. All rights reserved.
 //
 
 import struct Foundation.Notification

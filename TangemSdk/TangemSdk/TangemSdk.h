@@ -2,7 +2,7 @@
 //  TangemSdk.h
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 02/09/2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 

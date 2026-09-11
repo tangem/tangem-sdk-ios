@@ -2,7 +2,7 @@
 //  OpenSessionWithAccessTokenCommand.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 20/02/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

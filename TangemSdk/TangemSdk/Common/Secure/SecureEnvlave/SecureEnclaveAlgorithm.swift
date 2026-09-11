@@ -2,7 +2,7 @@
 //  SecureEnclaveAlgorithm.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 04/08/2025.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 import Foundation

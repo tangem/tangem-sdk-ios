@@ -34,7 +34,7 @@ git diff <target_branch>..HEAD --stat
 
 ### 2. Extract Issue Number
 
-From the branch name (e.g., `IOS-12800_description`), extract:
+From the branch name (e.g., `[REDACTED_INFO]_description`), extract:
 - Issue number: `IOS-XXXXX`
 - PR title: `IOS-XXXXX Short description` — identical to the commit subject
 

@@ -2,7 +2,7 @@
 //  CryptoSwiftUtilsTests.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 01/10/2025.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import XCTest

@@ -2,7 +2,7 @@
 //  SetUserSettingsCommand.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 28.03.2023.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2023 Tangem AG. All rights reserved.
 //
 

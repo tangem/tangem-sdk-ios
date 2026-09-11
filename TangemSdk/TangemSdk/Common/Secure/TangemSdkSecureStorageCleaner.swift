@@ -2,7 +2,7 @@
 //  TangemSdkSecureStorageCleaner.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 30/07/2026.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2026 Tangem AG. All rights reserved.
 //
 

@@ -86,7 +86,7 @@ public final class ScanTask: CardSessionRunnable {
             return
         }
 
-        let derivationTask = DeriveMultipleWalletPublicKeysTask(derivations)
+        let derivationTask = DeriveMultipleWalletPublicKeysTask(derivations, shouldFailIfNothingDerived: false)
         derivationTask.run(in: session) { result in
             switch result {
             case .success:

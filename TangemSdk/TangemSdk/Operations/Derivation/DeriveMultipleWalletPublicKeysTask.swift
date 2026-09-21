@@ -27,6 +27,11 @@ public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
     }
 
     public func run(in session: CardSession, completion: @escaping CompletionResult<Response>) {
+        if derivations.isEmpty {
+            completion(.success([:]))
+            return
+        }
+
         derive(index: 0, in: session, completion: completion)
     }
 

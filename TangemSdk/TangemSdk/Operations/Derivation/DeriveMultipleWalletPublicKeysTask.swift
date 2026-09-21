@@ -12,12 +12,14 @@ public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
     public typealias Response = [Data: DerivedKeys]
 
     private let derivations: [(Data, [DerivationPath])]
+    private let shouldFailIfNothingDerived: Bool
     private var response: Response = .init()
 
-    public init(_ derivations: [Data: [DerivationPath]]) {
+    public init(_ derivations: [Data: [DerivationPath]], shouldFailIfNothingDerived: Bool) {
         self.derivations = derivations.reduce(into: []) { result, item in
             result.append((item.key, item.value))
         }
+        self.shouldFailIfNothingDerived = shouldFailIfNothingDerived
     }
 
     deinit {
@@ -30,7 +32,11 @@ public class DeriveMultipleWalletPublicKeysTask: CardSessionRunnable {
 
     private func derive(index: Int, in session: CardSession, completion: @escaping CompletionResult<Response>) {
         if index == derivations.count {
-            completion(.success(response))
+            if shouldFailIfNothingDerived, response.values.allSatisfy(\.keys.isEmpty) {
+                completion(.failure(.walletNotFound))
+            } else {
+                completion(.success(response))
+            }
             return
         }
 

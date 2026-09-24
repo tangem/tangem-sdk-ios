@@ -1,11 +1,15 @@
 ---
 name: write-qa-notes
-description: Use this skill when writing or filling in the QA Notes field (customfield_11232) of a Jira ticket — the note manual QA reads to understand a change. Triggers include "write QA notes", "fill in QA notes", "заполни QA Notes", "напиши QA ноутс", preparing a ticket for handoff to QA, or drafting QA Notes before opening a PR. Not for writing unit tests — use the normal test workflows for those.
+description: Use this skill when writing or filling in the QA Notes field (customfield_11232) of a Jira ticket — the note manual QA reads to understand a change. Triggers include "write QA notes", "fill in QA notes", "заполни QA Notes", "напиши QA ноутс", preparing a ticket for handoff to QA, or right after a PR is opened. Never at ticket creation or before the change exists. Not for writing unit tests — use the normal test workflows for those.
 ---
 
 # Write QA Notes
 
 QA Notes tell manual QA, fast: **what changed**, **where to check**, **how to check**, and **what result to expect**. Whatever you produce here — especially an AI draft — is a **draft only**. The developer MUST read it and correct it before handing the ticket to QA.
+
+## When to write
+
+Only after the work is done — once the PR is open (AGENTS.md → Workflow Conventions). The source is the PR's diff (`git diff <base>...HEAD`), not the ticket description, a plan, or what the change is expected to be: every statement must be traceable to code that actually changed. If asked to fill QA Notes at ticket creation or before the PR exists, don't — say they wait for the PR. When the diff changes after review, rewrite the notes to match.
 
 The field is `customfield_11232` and requires ADF (see AGENTS.md → External Systems → Jira).
 

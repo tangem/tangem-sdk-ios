@@ -29,7 +29,7 @@ final class SignResetPinTokenCommand: Command {
             return .resetPinWrongCard(internalCode: TangemSdkError.notSupportedFirmwareVersion.code)
         }
 
-        guard let backupStatus = card.backupStatus, backupStatus.isActive else {
+        guard card.canResetPin else {
             return .resetPinWrongCard(internalCode: TangemSdkError.noActiveBackup.code)
         }
 

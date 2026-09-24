@@ -2,7 +2,7 @@
 //  SecurityNoticeView.swift
 //  TangemSdk
 //
-//  Created by Viacheslav Efimenko on 11.02.2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import SwiftUI

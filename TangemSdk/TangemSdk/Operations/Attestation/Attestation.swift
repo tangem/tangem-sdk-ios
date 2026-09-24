@@ -2,7 +2,7 @@
 //  VerificationState.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 11.07.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

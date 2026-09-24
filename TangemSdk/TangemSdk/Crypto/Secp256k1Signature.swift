@@ -2,7 +2,7 @@
 //  Secp256k1Signature.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 22.12.2021.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 

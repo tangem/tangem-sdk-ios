@@ -2,7 +2,7 @@
 //  PersonalizeCommand.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 23.06.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

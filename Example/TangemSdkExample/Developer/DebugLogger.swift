@@ -2,7 +2,7 @@
 //  DebugLogger.swift
 //  TangemSdkExample
 //
-//  Created by Alexander Osokin on 08.07.2022.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 

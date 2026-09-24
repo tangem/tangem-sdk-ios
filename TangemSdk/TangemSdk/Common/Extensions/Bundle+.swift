@@ -2,7 +2,7 @@
 //  Bundle+.swift
 //  Pods-TangemSdkExample
 //
-//  Created by Alexander Osokin on 09.06.2020.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

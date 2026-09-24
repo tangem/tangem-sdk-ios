@@ -34,12 +34,11 @@ Unlike `tangem-app-ios`, this repository builds only on GitHub-hosted runners (`
 
 ### 2. Create the Jira Ticket
 
-AGENTS.md is the single source of truth here: the required-field checklist (Stream, Story Points, QA Notes), sprint, cloudId, field IDs and the ADF caveats all live there, and the QA-note shorthand for a change with zero runtime impact comes from the `write-qa-notes` skill. Only what is specific to this task is listed below.
+AGENTS.md is the single source of truth here: the required-field checklist (Stream, Story Points), sprint, cloudId, field IDs and the ADF caveats all live there. Leave QA Notes empty here — they are filled once the PR is open. Only what is specific to this task is listed below.
 
 - **Summary:** `Bump CI Xcode version to <version>`
 - **Description** (ADF): what moves from `<current>` to `<version>`, and which files carry it.
 - **Story Points (`customfield_10025`):** `2`
-- This change never ships in the binary, so QA Notes are the one-line "no QA needed" shorthand.
 - Assign to the current user via a follow-up `editJiraIssue` call (the create-time shorthand is silently dropped) and verify.
 - Transition the ticket to `In Progress`.
 

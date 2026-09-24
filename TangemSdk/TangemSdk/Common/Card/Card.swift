@@ -71,6 +71,23 @@ public extension Card {
         return msb & 0x7F != 0
     }
 
+    var canResetPin: Bool {
+        guard let backupStatus else {
+            return false
+        }
+
+        guard firmwareVersion >= .v8 else {
+            return backupStatus.isActive
+        }
+
+        switch backupStatus {
+        case .active, .cardLinked:
+            return true
+        case .noBackup:
+            return false
+        }
+    }
+
     func assertWalletsAccess() -> TangemSdkError? {
         guard firmwareVersion >= .v8, settings.isBackupRequired else {
             return nil

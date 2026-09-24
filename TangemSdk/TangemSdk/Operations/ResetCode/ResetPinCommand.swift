@@ -30,8 +30,7 @@ final class ResetPinCommand: Command {
             return .notSupportedFirmwareVersion
         }
 
-        guard let backupStatus = card.backupStatus,
-              backupStatus.isActive else {
+        guard card.canResetPin else {
             return TangemSdkError.noActiveBackup
         }
 

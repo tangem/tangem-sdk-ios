@@ -114,8 +114,15 @@ Use the `mcp__github__update_pull_request` tool to add reviewers:
 - `pullNumber`: PR number from step 5
 - `reviewers`: GitHub logins and/or `tangem-developments/<team-slug>` entries
 
-### 8. Report Result
+### 8. Fill QA Notes (skip if draft)
+
+**Skip this step if the PR was created as a draft** — the change isn't final yet; fill them when it is marked ready for review.
+
+Fill the ticket's QA Notes from this PR's diff (`git diff <target_branch>...HEAD`) with the `write-qa-notes` skill. If the field already holds notes, rewrite them to match the diff. Show the result to the user as a draft for them to correct.
+
+### 9. Report Result
 
 Output the PR URL and confirm:
 - Whether the PR was created as a draft or ready for review
+- Whether QA Notes were filled
 - If not a draft: whether human reviewers were assigned (and whom) or skipped per the user's choice

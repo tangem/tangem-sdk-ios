@@ -140,15 +140,6 @@ struct JSONRPCRequestParser {
     enum ParseResult {
         case array([JSONRPCRequest])
         case single(JSONRPCRequest)
-
-        var requests: [JSONRPCRequest] {
-            switch self {
-            case .array(let requests):
-                return requests
-            case .single(let request):
-                return [request]
-            }
-        }
     }
 }
 

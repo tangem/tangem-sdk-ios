@@ -11,6 +11,8 @@ import Foundation
 /// Type erased CardSessionRunnable which Response conforms  to JSONStringConvertible
 public class AnyJSONRPCRunnable: CardSessionRunnable {
     public var preflightReadMode: PreflightReadMode = .fullCardRead(options: [])
+    public var shouldAskForAccessCode: Bool = true
+    public var encryptionMode: EncryptionMode = .none
     /// Request Id
     public var id: Int? = nil
 
@@ -19,6 +21,8 @@ public class AnyJSONRPCRunnable: CardSessionRunnable {
 
     init<T: CardSessionRunnable>(_ runnable: T) where T.Response: JSONStringConvertible {
         preflightReadMode = runnable.preflightReadMode
+        shouldAskForAccessCode = runnable.shouldAskForAccessCode
+        encryptionMode = runnable.encryptionMode
 
         prepareClosure = { session, completion in
             runnable.prepare(session, completion: completion)

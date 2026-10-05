@@ -2,7 +2,7 @@
 //  Card.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 18/11/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

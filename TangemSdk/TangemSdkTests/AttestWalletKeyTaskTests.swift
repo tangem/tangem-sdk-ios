@@ -2,7 +2,7 @@
 //  AttestWalletKeyTaskTests.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 10/06/2026.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2026 Tangem AG. All rights reserved.
 //
 
@@ -37,7 +37,7 @@ class AttestWalletKeyTaskTests: XCTestCase {
     }
 
     func testExpectedSignatureAbsentFailsClosed() throws {
-        // IOS-14320: the signature was requested (COS 2.01+, mode != none) but the card returned none.
+        // [REDACTED_INFO]: the signature was requested (COS 2.01+, mode != none) but the card returned none.
         // Fail closed instead of accepting an unverified response.
         for mode in [AttestWalletKeyTask.ConfirmationMode.static, .dynamic] {
             let isValid = try makeTask(confirmationMode: mode).verifyCardSignature(

@@ -2,7 +2,7 @@
 //  BlsUtilsMakePublicKeyTests.swift
 //  TangemSdk
 //
-//  Created by Aleksei Lobankov on 05.11.2025.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 

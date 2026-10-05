@@ -2,7 +2,7 @@
 //  AESMode.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 29/09/2025.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2025 Tangem AG. All rights reserved.
 
 /// AES encryption modes

@@ -2,7 +2,7 @@
 //  SignData.swift
 //  TangemSdk
 //
-//  Created by Dmitry Fedorov on 24.07.2025.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

@@ -2,7 +2,7 @@
 //  IssuerDataVerifier.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 21.04.2020.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

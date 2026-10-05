@@ -2,7 +2,7 @@
 //  Date+.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 14.11.2019.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2019 Tangem AG. All rights reserved.
 //
 

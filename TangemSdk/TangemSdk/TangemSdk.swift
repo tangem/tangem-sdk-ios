@@ -793,32 +793,24 @@ public extension TangemSdk {
 
         do {
             let parseResult = try JSONRPCRequestParser().parse(jsonString: jsonRequest)
-            let runnables = try parseResult.requests.map { try jsonConverter.convert(request: $0) }
+            let message = initialMessage.flatMap { Message($0) }
 
-            try checkSession()
-            cardSession = makeSession(
-                with: config,
-                filter: .init(from: cardId),
-                initialMessage: initialMessage.flatMap { Message($0) },
-                accessCode: accessCode
-            )
-
-            let task = RunnablesTask(runnables: runnables)
-            cardSession!.start(with: task) { result in
-                switch result {
-                case .success(let response):
-                    switch parseResult {
-                    case .array:
-                        completion(response.json)
-                    case .single:
-                        if response.count == 1 {
-                            completion(response[0].json)
-                        } else {
-                            completion(TangemSdkError.unknownError.toJsonResponse().json)
-                        }
+            switch parseResult {
+            case .single(let request):
+                let runnable = try jsonConverter.convert(request: request)
+                startSession(with: runnable, cardId: cardId, initialMessage: message, accessCode: accessCode) { result in
+                    completion(result.toJsonResponse(id: request.id).json)
+                }
+            case .array(let requests):
+                let runnables = try requests.map { try jsonConverter.convert(request: $0) }
+                let task = RunnablesTask(runnables: runnables)
+                startSession(with: task, cardId: cardId, initialMessage: message, accessCode: accessCode) { result in
+                    switch result {
+                    case .success(let responses):
+                        completion(responses.json)
+                    case .failure(let error):
+                        completion(error.toJsonResponse().json)
                     }
-                case .failure(let error):
-                    completion(error.toJsonResponse().json)
                 }
             }
         } catch {

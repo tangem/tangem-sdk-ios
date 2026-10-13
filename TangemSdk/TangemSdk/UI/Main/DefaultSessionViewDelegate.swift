@@ -38,6 +38,8 @@ final class DefaultSessionViewDelegate: BaseViewDelegate {
         switch viewModel.viewState {
         case .requestCode(let request), .requestCodeChange(let request):
             request.cancel()
+        case .welcomeBack(let request):
+            request.cancel()
         default:
             break
         }

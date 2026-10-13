@@ -20,4 +20,13 @@ extension MainViewModel {
             request.cancel()
         }
     }
+
+    func handleWelcomeBackResult(request: WelcomeBackRequest, result: Result<Bool, TangemSdkError>) {
+        switch result {
+        case .success(true):
+            request.confirm()
+        case .success(false), .failure:
+            request.cancel()
+        }
+    }
 }

@@ -28,7 +28,7 @@ struct WelcomeBackView: View {
 
                         Text("already_activated_message".localized)
                             .font(.callout)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(style.colors.secondaryText)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 32)
                     }

@@ -642,11 +642,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         try container.encode(error)
     }
 
-    /// Get error according to the pin type
-    /// - Parameters:
-    ///   - userCodeType: Specific user code type
-    ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
-    /// - Returns: TangemSdkError
+    // Get error according to the pin type
+    // - Parameters:
+    //   - userCodeType: Specific user code type
+    //   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
+    // - Returns: TangemSdkError
     static func from(userCodeType: UserCodeType, environment: SessionEnvironment?) -> TangemSdkError {
         switch userCodeType {
         case .accessCode:

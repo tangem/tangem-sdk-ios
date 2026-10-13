@@ -31,6 +31,12 @@ struct MainScreen: View {
             case .requestCode(let request):
                 requestCodeView(request: request)
 
+            case .welcomeBack(let request):
+                WelcomeBackView { result in
+                    viewModel.handleWelcomeBackResult(request: request, result: result)
+                }
+                .transition(.opacity.animation(.easeInOut))
+
             case .requestCodeChange(let request):
                 ChangeUserCodeView(
                     type: request.type,

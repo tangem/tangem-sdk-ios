@@ -46,6 +46,7 @@ public enum SessionViewState {
     case scan
     case requestCode(UserCodeRequest)
     case requestCodeChange(UserCodeRequest)
+    case welcomeBack(WelcomeBackRequest)
 
     var shouldPlayHaptics: Bool {
         switch self {

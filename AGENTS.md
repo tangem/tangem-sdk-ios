@@ -18,7 +18,7 @@ Tangem iOS SDK — an NFC library for communicating with Tangem hardware wallet 
 
 - **SDK version**: stored in the `VERSION` file and mirrored in `TangemSdk.podspec`; every PR bumps both (see [Workflow Conventions](#workflow-conventions))
 - **Xcode version**: stored in `.xcode-version` file
-- **Swift tools version**: 5.3
+- **Swift tools version**: 6.2 (all Swift targets stay in Swift 5 language mode via `swiftLanguageModes`)
 - **iOS deployment target**: 16.4
 - **External dependency**: CryptoSwift 1.9.0 (exact)
 

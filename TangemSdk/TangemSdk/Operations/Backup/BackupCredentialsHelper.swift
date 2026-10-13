@@ -2,7 +2,7 @@
 //  BackupCredentialsHelper.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 10/07/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

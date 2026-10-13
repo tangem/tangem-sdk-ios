@@ -2,7 +2,7 @@
 //  SecureStorageKey.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 06.07.2022.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 

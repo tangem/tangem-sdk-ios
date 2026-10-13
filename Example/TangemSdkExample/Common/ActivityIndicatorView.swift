@@ -2,7 +2,7 @@
 //  ActivityIndicatorView.swift
 //  round21
 //
-//  Created by Alexander Osokin on 06.05.2021.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

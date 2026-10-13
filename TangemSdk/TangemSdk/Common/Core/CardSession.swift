@@ -590,8 +590,8 @@ public class CardSession {
                 Log.session("Access code is needed, request early")
                 environment.accessCode = UserCode(.accessCode, value: nil)
                 pause()
-                DispatchQueue.main.async {
-                    self.requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+                DispatchQueue.main.async { [self] in
+                    requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
                         guard let self else {
                             completion(.failure(.sessionInactive))
                             return
@@ -753,8 +753,8 @@ public class CardSession {
             environment.passcode = UserCode(.passcode, value: nil)
         }
 
-        DispatchQueue.main.async {
-            self.requestUserCode(type, showWelcomeBackWarning: false) { [weak self] result in
+        DispatchQueue.main.async { [self] in
+            requestUserCode(type, showWelcomeBackWarning: false) { [weak self] result in
                 guard let self else {
                     completion(.failure(.sessionInactive))
                     return

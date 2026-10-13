@@ -144,10 +144,10 @@ public class CardSession {
 
         Log.session("Start card session with runnable")
 
-        prepareSession(for: runnable) { prepareResult in
+        prepareSession(for: runnable) { [self] prepareResult in
             switch prepareResult {
             case .success:
-                self.startInternal { [weak self] session, error in
+                startInternal { [weak self] session, error in
                     guard let self = self else { return }
 
                     if let error = error {
@@ -184,7 +184,7 @@ public class CardSession {
                 }
             case .failure(let error):
                 Log.error(error)
-                self.stop(error: error) {
+                stop(error: error) {
                     completion(.failure(error))
                 }
             }
@@ -448,10 +448,10 @@ public class CardSession {
             return
         }
 
-        let requestAccessCodeAction = {
+        let requestAccessCodeAction = { [self] in
             Log.session("Request for an access code")
-            self.environment.accessCode = UserCode(.accessCode, value: nil)
-            self.requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
+            environment.accessCode = UserCode(.accessCode, value: nil)
+            requestUserCode(.accessCode, showWelcomeBackWarning: false) { [weak self] result in
                 guard let self else {
                     completion(.failure(.sessionInactive))
                     return
@@ -637,14 +637,16 @@ public class CardSession {
                     }
 
                     Log.session("Authorization with PIN is needed")
-                    AuthorizeWithPINTask().run(in: self) { authorizeResult in
+                    AuthorizeWithPINTask().run(in: self) { [self] authorizeResult in
                         switch authorizeResult {
                         case .success:
+                            // swiftformat:disable:next redundantSelf
                             self.requestCardAccessTokensIfNeeded(completion: completion)
                         case .failure(let error):
                             switch error {
                             case .accessCodeRequired:
                                 Log.session("Authorization was failed. Wrong pin. retrying.")
+                                // swiftformat:disable:next redundantSelf
                                 self.handleWrongUserCode(.accessCode) { [weak self] pinResult in
                                     guard let self else {
                                         completion(.failure(.sessionInactive))

@@ -26,8 +26,9 @@ public enum PreflightReadMode: Decodable, Equatable {
             self.rawValue = rawValue
         }
 
-        /// Show an alert and request the access code if this card is unknown yet.
-        public static let accessCodeCheck = Options(rawValue: 1 << 0)
+        /// Warn that the card is already activated if it is unknown yet: request the access code when one is set,
+        /// otherwise confirm the imported keys.
+        public static let welcomeBackCheck = Options(rawValue: 1 << 0)
         /// Read the card's master secret. COS v8+.
         public static let readMasterSecret = Options(rawValue: 1 << 1)
         /// Calculate and verify the backup hash. Needs the master secret, so implies `.readMasterSecret`. COS v8+.
@@ -122,19 +123,19 @@ final class PreflightReadTask: CardSessionRunnable {
 
         switch readMode {
         case .fullCardRead(let options):
-            if options.contains(.accessCodeCheck), card.isAccessCodeSet, trustedCardsRepo.attestation(for: card.cardPublicKey) == nil {
-                session.pause()
+            let isUnknownCard = options.contains(.welcomeBackCheck) && trustedCardsRepo.attestation(for: card.cardPublicKey) == nil
 
-                let showWelcomeBackWarning: Bool
-                if Config.isDevelopmentMode, card.firmwareVersion.type == .sdk {
-                    showWelcomeBackWarning = false
-                } else {
-                    showWelcomeBackWarning = true
-                }
+            guard isUnknownCard else {
+                readWalletsList(in: session, options: options, completion: completion)
+                return
+            }
+
+            if card.isAccessCodeSet {
+                session.pause()
 
                 DispatchQueue.main.async {
                     session.environment.accessCode = UserCode(.accessCode, value: nil)
-                    session.requestUserCode(.accessCode, showWelcomeBackWarning: showWelcomeBackWarning) { result in
+                    session.requestUserCode(.accessCode, showWelcomeBackWarning: Self.shouldShowWelcomeBackWarning(for: card)) { result in
                         switch result {
                         case .success:
                             session.resume()
@@ -145,12 +146,47 @@ final class PreflightReadTask: CardSessionRunnable {
                         }
                     }
                 }
-
             } else {
-                readWalletsList(in: session, options: options, completion: completion)
+                readWalletsList(in: session, options: options) { result in
+                    guard case .success(let card) = result, Self.shouldShowWelcomeBackWarning(for: card), Self.hasImportedKeys(card) else {
+                        completion(result)
+                        return
+                    }
+
+                    self.confirmWelcomeBack(in: session, card: card, completion: completion)
+                }
             }
         case .readCardOnly, .none:
             completion(.success(card))
+        }
+    }
+
+    private static func shouldShowWelcomeBackWarning(for card: Card) -> Bool {
+        !(Config.isDevelopmentMode && card.firmwareVersion.type == .sdk)
+    }
+
+    private static func hasImportedKeys(_ card: Card) -> Bool {
+        card.wallets.contains { $0.isImported } || card.masterSecret?.isImported == true
+    }
+
+    private func confirmWelcomeBack(in session: CardSession, card: Card, completion: @escaping CompletionResult<Card>) {
+        Log.session("Request the welcome back confirmation")
+        session.pause()
+
+        let request = WelcomeBackRequest { result in
+            switch result {
+            case .success:
+                session.viewDelegate.setState(.default)
+                session.resume()
+                completion(.success(card))
+            case .failure(let error):
+                session.releaseTag()
+                completion(.failure(error))
+            }
+        }
+
+        DispatchQueue.main.async {
+            session.viewDelegate.setState(.welcomeBack(request))
         }
     }
 

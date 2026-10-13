@@ -66,6 +66,12 @@ public extension TangemSdkStyle {
             )
         )
 
+        /// Secondary text color matching the main app's Text.secondary
+        public var secondaryText: Color = .adaptiveColor(
+            dark: UIColor(red: 176 / 255, green: 176 / 255, blue: 176 / 255, alpha: 1),
+            light: UIColor(red: 101 / 255, green: 101 / 255, blue: 101 / 255, alpha: 1)
+        )
+
         public var indicatorBackground: Color = .adaptiveColor(dark: .darkGray, light: UIColor.LightPalette.indicatorBackground)
 
         public var phoneBackground: Color = .adaptiveColor(dark: .black, light: .white)

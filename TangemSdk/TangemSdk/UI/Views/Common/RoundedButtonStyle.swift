@@ -27,13 +27,13 @@ struct SdkButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 16, weight: .bold))
+                .font(.callout.weight(.medium))
                 .foregroundColor(foregroundColor)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, minHeight: 46, maxHeight: 46)
                 .background(backgroundColor)
                 .overlay(loadingOverlay)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(Capsule(style: .continuous))
                 .animation(.easeInOut(duration: 0.2), value: isDisabled)
         }
         .disabled(isDisabled || isLoading)

@@ -33,7 +33,7 @@ struct WalletAlreadyActivatedNoticeView: View {
                 .font(.system(size: 20, weight: .semibold))
 
             Text("tangem_never_pregenerate_code_alert".localized)
-                .font(.subheadline)
+                .font(.footnote)
                 .foregroundColor(.primary)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)

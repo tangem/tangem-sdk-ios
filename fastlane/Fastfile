@@ -2,7 +2,10 @@
 
 PACKAGE_PATH = '.'
 SCHEME_NAME = 'TangemSdk'
-TEST_DEVICE = 'iPhone 17 Pro Max (26.5)' # Update when Xcode is updated
+IOS_SIM_CONFIG = File.readlines(File.join(__dir__, '..', '.ios-sim-runtime')).map(&:strip)
+IOS_SIM_DEVICE = IOS_SIM_CONFIG[0]
+IOS_SIM_RUNTIME = IOS_SIM_CONFIG[1]
+TEST_DEVICE = "#{IOS_SIM_DEVICE} (#{IOS_SIM_RUNTIME})"
 BUILD_RESULT_FOLDER = "test_output"
 
 before_all do |lane, options|

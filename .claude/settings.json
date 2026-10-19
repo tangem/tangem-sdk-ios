@@ -3,7 +3,6 @@
     "DISABLE_FEEDBACK_COMMAND": "1",
     "DISABLE_ERROR_REPORTING": "1",
     "DISABLE_TELEMETRY": "1",
-    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
     "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "0",
     "CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY": "1"
   },
@@ -233,8 +232,25 @@
     ]
   },
   "enabledPlugins": {
-    "axiom@axiom-marketplace": true,
     "swift-lsp@claude-plugins-official": true,
-    "swiftui-expert@swiftui-expert-skill": true
+    "swiftui-expert@swiftui-expert-skill": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "axiom@axiom-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "swiftui-expert-skill": {
+      "source": {
+        "source": "github",
+        "repo": "AvdLee/SwiftUI-Agent-Skill"
+      },
+      "autoUpdate": true
+    },
+    "axiom-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "CharlesWiltgen/Axiom"
+      },
+      "autoUpdate": true
+    }
   }
 }

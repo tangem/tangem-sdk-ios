@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -19,7 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", .exactItem("1.9.0")),
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", exact: "1.9.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -48,7 +48,10 @@ let package = Package(
         ),
         .target(
             name: "TangemSdk_secp256k1",
-            path: "TangemSdk/TangemSdk/Crypto/secp256k1"
+            path: "TangemSdk/TangemSdk/Crypto/secp256k1",
+            cSettings: [
+                .disableWarning("shorten-64-to-32"), // Vendored libsecp256k1 narrows 64-bit values to 32 bits by design
+            ]
         ),
         .binaryTarget(
             name: "Bls_Signature",
@@ -65,5 +68,7 @@ let package = Package(
                 .copy("Jsons"),
             ]
         ),
-    ]
+    ],
+    // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+    swiftLanguageModes: [.v5]
 )

@@ -1,22 +1,21 @@
 ---
 name: bump-ci-xcode
-description: Bump the CI Xcode version - create the Jira ticket, update .xcode-version, .ios-sim-runtime and the Fastfile test device, and open a PR to develop
+description: Bump the CI Xcode version - create the Jira ticket, update .xcode-version and .ios-sim-runtime, and open a PR to develop
 argument: version - Target Xcode version (e.g., 26.5 or 26.4.1)
 ---
 
 # Bump CI Xcode Version
 
-This skill automates the recurring chore of moving CI to a new Xcode version. It creates the Jira ticket, updates the version files in the repository root plus the hardcoded test device in `fastlane/Fastfile`, and opens a PR to `develop`.
+This skill automates the recurring chore of moving CI to a new Xcode version. It creates the Jira ticket, updates the version files in the repository root, and opens a PR to `develop`.
 
 ## How CI consumes the version
 
 - `.xcode-version` — single line with the Xcode version. On CI the `xcodes` action in `fastlane/Fastfile`'s `before_all` selects the toolchain from it (unless an explicit `xcode_version_override` is passed to the lane), and `.github/workflows/update-localizations.yml` uses it in a cache key.
-- `.ios-sim-runtime` — two lines: simulator device name (line 1) and iOS simulator runtime version (line 2). CI does not read this file; it feeds the manual `xcodebuild` commands documented in AGENTS.md → Build & Test Commands.
-- `fastlane/Fastfile` — `TEST_DEVICE` at the top hardcodes `'<device name> (<runtime version>)'` and is what `bundle exec fastlane test` actually runs on, both locally and on CI. **This is the one that breaks the build if it's missed**, and it must stay consistent with `.ios-sim-runtime`.
+- `.ios-sim-runtime` — two lines: simulator device name (line 1) and iOS simulator runtime version (line 2). `fastlane/Fastfile` builds `TEST_DEVICE` from it, so it's what `bundle exec fastlane test` runs on, both locally and on CI; the manual `xcodebuild` commands documented in AGENTS.md → Build & Test Commands read it too.
 
 Both version files end with a **trailing newline** — preserve it when editing.
 
-Unlike `tangem-app-ios`, this repository builds only on GitHub-hosted runners (`macos-*`), so there is no IT Ops ticket and no self-hosted runner to provision. The constraint is different: the requested Xcode version and simulator runtime must be present on the runner image the workflows pin (see `runs-on` in `.github/workflows/`). Check the [runner-images release notes](https://github.com/actions/runner-images) before picking a version, and bump the image in the workflows if the version needs a newer one.
+Unlike `tangem-app-ios`, this repository builds only on GitHub-hosted runners, so there is no IT Ops ticket and no self-hosted runner to provision. The constraint is different: the requested Xcode version and simulator runtime must be present on the runner image the workflows pin (see `runs-on` in `.github/workflows/`), and the device must be one the image pre-creates for that runtime — images ship only a subset of the devices a runtime supports, so a device that exists locally can still be missing on CI. Check the [runner-images release notes](https://github.com/actions/runner-images) before picking a version, and bump the image in the workflows if the version needs a newer one.
 
 ## Prerequisites
 
@@ -30,7 +29,6 @@ Unlike `tangem-app-ios`, this repository builds only on GitHub-hosted runners (`
 - Extract the target version from `$ARGUMENTS` (e.g., `26.5`).
 - Read `.xcode-version` to get the current version for the ticket description and commit message.
 - Read `.ios-sim-runtime` to get the current device name and runtime version.
-- Read `TEST_DEVICE` in `fastlane/Fastfile` and confirm it matches `.ios-sim-runtime`. If it already drifted, say so — that's a pre-existing bug worth mentioning in the PR.
 
 ### 2. Create the Jira Ticket
 
@@ -56,16 +54,15 @@ Push immediately so the branch tracks its own remote instead of `origin/develop`
 
 - `.xcode-version`: replace the content with the new version, keeping the trailing newline.
 - `.ios-sim-runtime`: keep line 1 (device name) as-is unless the device is also changing, set line 2 to the new runtime version, keep the trailing newline.
-- `fastlane/Fastfile`: update `TEST_DEVICE` to `'<device name> (<runtime version>)'` so it matches `.ios-sim-runtime`.
 
 ```bash
 printf '<version>\n' > .xcode-version
 printf '<device name>\n<runtime version>\n' > .ios-sim-runtime
 ```
 
-AGENTS.md documents these files by reference rather than repeating the numbers, so it needs no edit — but if you changed a `runs-on` image, update the per-workflow list in its `Git & CI` section, which spells out that the workflows are deliberately not on the same image.
+AGENTS.md documents these files by reference rather than repeating the numbers, so it needs no edit — but if you changed a `runs-on` image, update the per-workflow list in its `Git & CI` section.
 
-**Patch releases caveat:** patch versions of Xcode (e.g., 26.4 → 26.4.1) usually do not ship a new simulator runtime. In that case leave `.ios-sim-runtime` and `TEST_DEVICE` untouched. If unsure, bump them and watch the CI run on the PR — roll back if simulator selection fails.
+**Patch releases caveat:** patch versions of Xcode (e.g., 26.4 → 26.4.1) usually do not ship a new simulator runtime. In that case leave `.ios-sim-runtime` untouched. If unsure, bump them and watch the CI run on the PR — roll back if simulator selection fails.
 
 ### 5. Commit and Push
 

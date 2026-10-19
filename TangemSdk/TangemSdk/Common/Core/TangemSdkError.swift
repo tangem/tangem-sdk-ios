@@ -246,6 +246,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
     case readerTransceiveErrorPacketTooLong
     case readerErrorIneligible
     case readerErrorAccessNotAccepted
+    case paymentTagReaderSessionErrorLocationAuthorizationDenied
+    case paymentTagReaderSessionErrorLocationServiceRestricted
+    case paymentTagReaderSessionErrorOnDeviceLocationUnavailable
 
     // MARK: Files errors
 
@@ -469,6 +472,9 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         case .readerTransceiveErrorPacketTooLong: return 90022
         case .readerErrorIneligible: return 90023
         case .readerErrorAccessNotAccepted: return 90024
+        case .paymentTagReaderSessionErrorLocationAuthorizationDenied: return 90025
+        case .paymentTagReaderSessionErrorLocationServiceRestricted: return 90026
+        case .paymentTagReaderSessionErrorOnDeviceLocationUnavailable: return 90027
         }
     }
 
@@ -611,6 +617,15 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
                 return .readerErrorIneligible
             case .readerErrorAccessNotAccepted:
                 return .readerErrorAccessNotAccepted
+            // iOS 26.6+/Swift 6.4+/Xcode 27+
+            #if compiler(>=6.4)
+            case .paymentTagReaderSessionErrorLocationAuthorizationDenied:
+                return .paymentTagReaderSessionErrorLocationAuthorizationDenied
+            case .paymentTagReaderSessionErrorLocationServiceRestricted:
+                return .paymentTagReaderSessionErrorLocationServiceRestricted
+            case .paymentTagReaderSessionErrorOnDeviceLocationUnavailable:
+                return .paymentTagReaderSessionErrorOnDeviceLocationUnavailable
+            #endif
             @unknown default:
                 return .nfcReaderError
             }
@@ -627,11 +642,11 @@ public enum TangemSdkError: Error, LocalizedError, Encodable {
         try container.encode(error)
     }
 
-    /// Get error according to the pin type
-    /// - Parameters:
-    ///   - userCodeType: Specific user code type
-    ///   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
-    /// - Returns: TangemSdkError
+    // Get error according to the pin type
+    // - Parameters:
+    //   - userCodeType: Specific user code type
+    //   - environment: optional environment. If set, a more specific error will be returned based on previous pin attempts during the session
+    // - Returns: TangemSdkError
     static func from(userCodeType: UserCodeType, environment: SessionEnvironment?) -> TangemSdkError {
         switch userCodeType {
         case .accessCode:

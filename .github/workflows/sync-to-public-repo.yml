@@ -19,7 +19,7 @@ env:
 
 jobs:
   prepare-and-sync:
-    runs-on: macos-15
+    runs-on: xcode-27
     steps:
       # This delay gives the `set-tag.yml` action some time 
       # to assign the release tag after merging a PR to the master branch

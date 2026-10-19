@@ -18,7 +18,7 @@ Tangem iOS SDK — an NFC library for communicating with Tangem hardware wallet 
 
 - **SDK version**: stored in the `VERSION` file and mirrored in `TangemSdk.podspec`; every PR bumps both (see [Workflow Conventions](#workflow-conventions))
 - **Xcode version**: stored in `.xcode-version` file
-- **Swift tools version**: 5.3
+- **Swift tools version**: 6.2 (all Swift targets stay in Swift 5 language mode via `swiftLanguageModes`)
 - **iOS deployment target**: 16.4
 - **External dependency**: CryptoSwift 1.9.0 (exact)
 
@@ -379,7 +379,7 @@ This project has Xcode MCP integration available. **Prefer Xcode MCP tools over 
 - **Main branch**: `develop`
 - **Feature branches**: e.g., `develop-fw8` (V8 firmware support)
 - **Commit message style**: `IOS-XXXXX Description (#PR)` (Jira ticket prefix)
-- **CI**: GitHub Actions. `tests.yml` runs `bundle exec fastlane test` on `macos-26` for PRs to `develop` and `release/**`. Every workflow pins its own image, and they are not in step: `sync-to-public-repo` and `update-localizations` are on `macos-15`, the rest on `ubuntu-latest` — check the workflow you're touching rather than assuming a repository-wide version. All runners are GitHub-hosted; there are no self-hosted runners here
+- **CI**: GitHub Actions. `tests.yml` runs `bundle exec fastlane test` on `xcode-27` (GitHub's Xcode 27 preview image) for PRs to `develop` and `release/**`. Every workflow pins its own image: `sync-to-public-repo` and `update-localizations` are also on `xcode-27`, the rest on `ubuntu-latest` — check the workflow you're touching rather than assuming a repository-wide version. All runners are GitHub-hosted; there are no self-hosted runners here
 - **Additional workflows**: publish-release, sync-to-public-repo, update-localizations (Lokalise), create-release-branch, check-tag, set-tag, generate-changelog
 
 ## Miscellaneous

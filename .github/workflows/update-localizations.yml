@@ -15,7 +15,7 @@ env:
 
 jobs:
   update-localizations:
-    runs-on: macos-15
+    runs-on: xcode-27
     env:
       SDK_LOCALIZATIONS_DESTINATION: "TangemSdk/TangemSdk/Common/Localization/Resources"
     steps:

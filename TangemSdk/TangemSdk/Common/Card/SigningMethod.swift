@@ -2,7 +2,7 @@
 //  SigningMethod.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 18/11/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 
@@ -21,12 +21,12 @@ struct SigningMethod: OptionSet, OptionSetCustomStringConvertible {
 
 extension SigningMethod {
     static let signHash = SigningMethod(rawValue: 0b10000000 | (1 << 0))
-    static let signRaw = SigningMethod(rawValue: 0b10000000 | (1 << 1)) // TODO: dv
+    static let signRaw = SigningMethod(rawValue: 0b10000000 | (1 << 1)) // [REDACTED_TODO_COMMENT]
     static let signHashSignedByIssuer = SigningMethod(rawValue: 0b10000000 | (1 << 2))
-    static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000 | (1 << 3)) // TODO: dv
-    static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000 | (1 << 4)) // TODO: remove
-    static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000 | (1 << 5)) // TODO: remove
-    static let signPos = SigningMethod(rawValue: 0b10000000 | (1 << 6)) // TODO: remove
+    static let signRawSignedByIssuer = SigningMethod(rawValue: 0b10000000 | (1 << 3)) // [REDACTED_TODO_COMMENT]
+    static let signHashSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000 | (1 << 4)) // [REDACTED_TODO_COMMENT]
+    static let signRawSignedByIssuerAndUpdateIssuerData = SigningMethod(rawValue: 0b10000000 | (1 << 5)) // [REDACTED_TODO_COMMENT]
+    static let signPos = SigningMethod(rawValue: 0b10000000 | (1 << 6)) // [REDACTED_TODO_COMMENT]
 }
 
 // MARK: - OptionSetCodable conformance

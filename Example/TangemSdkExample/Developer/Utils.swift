@@ -2,7 +2,7 @@
 //  Utils.swift
 //  TangemSdkExample
 //
-//  Created by Andrew Son on 10/19/20.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2020 Tangem AG. All rights reserved.
 //
 

@@ -51,6 +51,7 @@ public class CardSession {
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository?
     private let filter: SessionFilter?
+    private var readerTag: CurrentValueSubject<NFCTagType, TangemSdkError>
 
     private var defaultScanMessage: String {
         "view_delegate_scan_description_format".localized(environment.config.productType.localizedDescription)
@@ -105,6 +106,7 @@ public class CardSession {
         cardAccessTokensRepository: CardAccessTokensRepository?
     ) {
         reader = cardReader
+        readerTag = cardReader.tag
         self.viewDelegate = viewDelegate
         _environment = environment
         self.environment = environment
@@ -212,6 +214,7 @@ public class CardSession {
 
     private func startInternal(_ onSessionStarted: @escaping (CardSession, TangemSdkError?) -> Void) {
         Log.session("Start card session with delegate")
+        readerTag = reader.tag
         NotificationCenter.default.post(name: .cardSessionDidStart, object: self)
 
         reader.viewEventsPublisher // Subscription for reader's view events and invoke viewDelegate
@@ -238,7 +241,7 @@ public class CardSession {
             })
             .store(in: &nfcReaderSubscriptions)
 
-        reader.tag // Subscription for handle tag lost events
+        readerTag // Subscription for handle tag lost events
             .dropFirst()
             .filter { $0 == .none }
             .sink(
@@ -249,7 +252,7 @@ public class CardSession {
             )
             .store(in: &nfcReaderSubscriptions)
 
-        reader.tag // Subscription for session initialization and handling any error before session is activated
+        readerTag // Subscription for session initialization and handling any error before session is activated
             .filter { $0 != .none }
             .first()
             .sink(receiveCompletion: { [weak self] readerCompletion in
@@ -306,6 +309,7 @@ public class CardSession {
     }
 
     public func resume() {
+        readerTag = reader.tag
         reader.resumeSession()
     }
 
@@ -357,7 +361,9 @@ public class CardSession {
             retryOnFail = true
         }
 
-        reader.tag
+        var isCompleted = false
+
+        let subscription = readerTag
             .filter { $0 != .none }
             .filter { [weak self] tag in
                 guard let self else { return false }
@@ -391,6 +397,7 @@ public class CardSession {
                 nonce: self.secureChannelSession?.makeResponseAPDUNonce()
             ) }
             .sink(receiveCompletion: { [weak self] readerCompletion in
+                isCompleted = true
                 self?.sendSubscription = []
                 if case .failure(let error) = readerCompletion {
                     completion(.failure(error))
@@ -399,7 +406,10 @@ public class CardSession {
                 self?.sendSubscription = []
                 completion(.success(responseApdu))
             })
-            .store(in: &sendSubscription)
+
+        if !isCompleted {
+            subscription.store(in: &sendSubscription)
+        }
     }
 
     /// Update session environment config with the new one
@@ -409,9 +419,9 @@ public class CardSession {
 
     /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
     func rememberTag() {
-        guard case .tag = reader.tag.value else { return }
+        guard case .tag = readerTag.value else { return }
 
-        currentTag = reader.tag.value
+        currentTag = readerTag.value
     }
 
     /// The command has been completed. We don't need this tag anymore
@@ -703,7 +713,7 @@ public class CardSession {
                         if let uidFromResponse = response.uid {
                             uid = uidFromResponse
                         } else {
-                            if case .tag(let tagUid) = reader.tag.value {
+                            if case .tag(let tagUid) = readerTag.value {
                                 uid = tagUid
                             } else {
                                 throw TangemSdkError.failedToEstablishEncryption

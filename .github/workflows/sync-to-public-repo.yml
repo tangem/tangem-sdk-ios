@@ -5,9 +5,17 @@ on:
     branches:
       - develop
   workflow_dispatch:
+    inputs:
+      allow_history_rewrite:
+        description: "Allow rewriting the public history (moves published release tags off the public branch)"
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
-  group: '${{ github.workflow }} (${{ github.head_ref || github.ref_name }})'
+  # Every run force-pushes the same public repo, so only a single run is allowed. Runs dispatched from other refs
+  # get their own group so they can't cancel an in-progress sync (the job skips them anyway)
+  group: ${{ github.ref == 'refs/heads/develop' && github.workflow || format('{0} ({1})', github.workflow, github.ref) }}
   cancel-in-progress: true
 
 permissions:
@@ -16,94 +24,236 @@ permissions:
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
   PUBLIC_REPO_URL: git@github.com:tangem/tangem-sdk-ios-public.git
+  PUBLIC_REPO_READ_URL: https://github.com/tangem/tangem-sdk-ios-public.git # Anonymous read access, no credentials needed
+  SYNCED_BRANCH: develop # The only branch published to the public repo; also hardcoded in `concurrency` and the job's `if`, which can't read `env`
+  RELEASE_TAG_REGEX: '^[0-9]+\.[0-9]+\.[0-9]+$' # e.g. `5.3.1`, as created by `set-tag.yml` (ERE syntax, also valid for Python)
+  SDK_LOCAL_PATH: 'sdk'
 
 jobs:
   prepare-and-sync:
+    if: github.ref == 'refs/heads/develop'
     runs-on: xcode-27
+    timeout-minutes: 30  # Just for safety purposes to avoid stuck runs
+    defaults:
+      run:
+        shell: bash # Enables `-eo pipefail` for all `run` steps so a failure anywhere in a pipeline fails the step
     steps:
-      # This delay gives the `set-tag.yml` action some time 
-      # to assign the release tag after merging a PR to the master branch
+      # This delay gives the `set-tag.yml` action some time
+      # to assign the release tag after merging a PR to the develop branch.
+      # A tag created later than that is published by the next sync.
       - name: Defer the job execution
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: sleep 90s
-        shell: bash
+
+      # Always the tip of the synced branch, so a manual run can't publish an older commit and rewind the public branch
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0
+        with:
+          ref: ${{ env.SYNCED_BRANCH }}
+          fetch-depth: 0
+          path: ${{ env.SDK_LOCAL_PATH }}
+          persist-credentials: false # Nothing else fetches from this repo
+
+      # This step is required because all these support files will be removed later in the `Remove unused files` step.
+      # It runs first so that the Slack failure message has its payload even if a later setup step fails
+      - name: Copy sync support files out of the repo
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: |
+          cp ./Utilities/public-repo-sync-support/notification-payload.yml ..
+          cp ./Utilities/public-repo-sync-support/clear_sensitive_data_patterns.py ..
+          cp ./Utilities/public-repo-sync-support/verify_sanitized_history.py ..
+          cp ./Utilities/public-repo-sync-support/gitleaks.toml ..
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6.3.0
         with:
           python-version: '3.13'
 
       - name: Install git-filter-repo
-        run: pip3 install git-filter-repo --break-system-packages
+        run: pip3 install git-filter-repo==2.47.0 --break-system-packages
 
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      # When using Github runner images, the preferred way of setting the Ruby version is to use this official action instead of using rvm/rbenv
-      - name: Install Ruby
-        uses: ruby/setup-ruby@a2bbe5b1b236842c1cb7dd11e8e3b51e0a616acc  # v1.202.0
-
-      - name: Configure git
-        run: |
-          git config user.name "Tangem Bot"
-          git config user.email "mobile@tangem.com"
-
-      - name: Get latest tag
-        id: get-latest-tag
-        run: |
-          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-
-      - name: Remove sensitive info from code and commit (if needed)
-        run: |
-          ./Utilities/public-repo-sync-support/clear_sensitive_data.sh
-
-          git add .
-          git diff
-          git commit -m "Auto-cleaned sensitive data in files" || echo "Nothing to commit"
-
-      - name: Clean private repo commit metadata
+      - name: Install gitleaks
         env:
-          RELEASE_TAG: ${{ steps.get-latest-tag.outputs.latest_tag }}
+          GITLEAKS_VERSION: '8.30.1'
+          GITLEAKS_SHA256: b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5 # v8.30.1
         run: |
-          ./Utilities/public-repo-sync-support/clear_commit_metadata.sh
+          curl -sSfL -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_darwin_arm64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | shasum -a 256 -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          rm gitleaks.tar.gz
 
-      - name: Remove unused files and commit (if needed)
+      # Other branches may contain sensitive info and must never be published
+      - name: Keep only the synced branch
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
         run: |
-          # Prevents the `notification-payload` file from being deleted by the `clear_unused_files.sh` script
-          mv ./Utilities/public-repo-sync-support/notification-payload.yml .
-          ./Utilities/public-repo-sync-support/clear_unused_files.sh
+          git checkout -B "${SYNCED_BRANCH}"
+          git for-each-ref refs/heads refs/remotes --format='%(refname)' \
+            | awk -v keep="refs/heads/${SYNCED_BRANCH}" '$0 != keep { print "delete " $0 }' \
+            | git update-ref --no-deref --stdin
 
-          git diff
-          git commit -m "Removed unused files" || echo "Nothing to commit"
+      # Published versions are consumed via SPM and CocoaPods, so a tag that already exists in the public repo
+      # must never be moved or deleted, and only release tags on the synced branch's history are published.
+      # All other local tags are dropped since tags may contain sensitive info (authors, messages and contents).
+      - name: Resolve release tags to publish
+        id: resolve-release-tags
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: |
+          # The regex is read via ENVIRON because `awk -v` mangles backslash escapes
+          git tag --list --merged HEAD | awk '$0 ~ ENVIRON["RELEASE_TAG_REGEX"]' | sort > ../release_tags.txt
+          git ls-remote --tags --refs "${PUBLIC_REPO_READ_URL}" | awk '{ sub("^refs/tags/", "", $2); print $2 }' | sort > ../public_tags.txt
+          comm -23 ../release_tags.txt ../public_tags.txt > ../tags_to_publish.txt
+
+          git for-each-ref refs/tags --format='%(refname:short)' \
+            | sort \
+            | comm -23 - ../tags_to_publish.txt \
+            | awk '{ print "delete refs/tags/" $0 }' \
+            | git update-ref --no-deref --stdin
+
+          LATEST_TAG=$(sort -V ../release_tags.txt | awk 'END { print }')
+          if [ -z "$LATEST_TAG" ]; then
+              echo "::error::Failed to resolve the latest release tag"
+              exit 1
+          fi
+
+          echo "Release tags to publish: $(tr '\n' ' ' < ../tags_to_publish.txt)"
+          echo "latest_tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
+
+      # Every value set here must stay constant: the rewrite has to produce the same commit hashes on every run,
+      # so the commits that published release tags point to stay on the synced branch's history
+      - name: Clean private repo commit metadata and remove sensitive info from code
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: |
+          git filter-repo --replace-refs delete-no-add --force \
+          --file-info-callback '
+            import sys
+
+            sys.path.append("..")
+            from clear_sensitive_data_patterns import redact_file_content, should_ignore_file
+
+            if should_ignore_file(filename):
+                return (filename, mode, blob_id)
+
+            encoding_error_handler = "surrogateescape"  # surrogateescape preserves non-UTF-8 bytes as is
+            file_format = "utf-8"
+            file_content = value.get_contents_by_identifier(blob_id).decode(file_format, errors=encoding_error_handler)
+            redacted_file_content = redact_file_content(file_content)
+
+            if redacted_file_content == file_content:
+                return (filename, mode, blob_id)  # Nothing was redacted, keep the original blob
+
+            try:
+                encoded_file_content = redacted_file_content.encode(file_format, errors=encoding_error_handler)
+                new_blob_id = value.insert_file_with_contents(encoded_file_content)
+            except Exception as e:
+                print(f"::error::Failed to encode or insert file {filename!r}: {e}")
+                raise
+
+            return (filename, mode, new_blob_id)
+          ' \
+          --commit-callback '
+            commit.author_name = b"Tangem Bot"
+            commit.author_email = b"mobile@tangem.com"
+            commit.committer_name = b"Tangem Bot"
+            commit.committer_email = b"mobile@tangem.com"
+            commit.message = b"Update Tangem SDK\n"
+          '
+
+      # File removal is a separate invocation because `--filename-callback` cannot be combined with `--file-info-callback`
+      - name: Remove unused files
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: |
+          git filter-repo --replace-refs delete-no-add --force \
+          --filename-callback '
+            import sys
+
+            sys.path.append("..")
+            from clear_sensitive_data_patterns import should_remove_file
+
+            decoded_filename = filename.decode("utf-8", errors="ignore")
+            if should_remove_file(decoded_filename):
+                print(f"Removing file: {decoded_filename}")
+                return None
+
+            return filename
+          '
+
+      # Fail the sync if the rewritten history still contains anything that must not be published
+      - name: Verify the rewritten history before publishing
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: python3 ../verify_sanitized_history.py
+
+      - name: Scan the rewritten history for secrets
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: |
+          if ! ../gitleaks git . --config ../gitleaks.toml --no-banner --redact --verbose --log-opts="--all"; then
+            echo "::error::gitleaks found potential secrets in the rewritten history; see the step log for details"
+            exit 1
+          fi
+
+      # A deterministic rewrite reproduces the public branch and only extends it. Anything else (changed cleaning
+      # patterns, another filter-repo or git version) would move the commits behind published release tags off the
+      # public branch, so it requires an explicit opt-in
+      - name: Ensure the rewritten history extends the public one
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        env:
+          ALLOW_HISTORY_REWRITE: ${{ inputs.allow_history_rewrite == true && 'true' || 'false' }}
+        run: |
+          PUBLIC_HEAD=$(git ls-remote "${PUBLIC_REPO_READ_URL}" "refs/heads/${SYNCED_BRANCH}" | cut -f1)
+
+          if [ -n "$PUBLIC_HEAD" ] && git cat-file -e "${PUBLIC_HEAD}^{commit}" 2>/dev/null && git merge-base --is-ancestor "$PUBLIC_HEAD" HEAD; then
+              echo "The rewritten history extends the public ${SYNCED_BRANCH} head ${PUBLIC_HEAD}"
+          elif [ "$ALLOW_HISTORY_REWRITE" = "true" ]; then
+              echo "::warning::Rewriting the public ${SYNCED_BRANCH} history (public head: ${PUBLIC_HEAD:-none}), explicitly allowed for this run"
+          else
+              echo "::error::The rewritten history doesn't contain the public ${SYNCED_BRANCH} head ${PUBLIC_HEAD:-none}, so publishing it would rewrite the public history. Re-run the workflow manually with 'allow_history_rewrite' if that is intended"
+              exit 1
+          fi
 
       - name: Authorize SSH session (for pushing the source code to GH Public)
         env:
           SSH_KEY: ${{ secrets.IOS_PUBLIC_REPO_SYNC_SSH_KEY }}
         run: |
+          umask 077
           mkdir -p ~/.ssh
           ssh-keyscan github.com > ~/.ssh/known_hosts
           echo "${SSH_KEY}" > ~/.ssh/ssh_key
-          chmod 600 ~/.ssh/ssh_key
           ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
           ssh-add ~/.ssh/ssh_key
 
-      - name: Push mirror to public repo
+      # `--prune` removes every other branch from the public repo; tags are outside the refspec and stay untouched
+      - name: Push to the public repo
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
+        run: git push --force --prune --atomic "${PUBLIC_REPO_URL}" '+refs/heads/*:refs/heads/*'
+
+      # Pushed as lightweight tags by commit hash and without `--force`, so an existing public tag is never moved
+      - name: Push new release tags to the public repo
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
         run: |
-          git push --mirror ${PUBLIC_REPO_URL}
+          TAGS=$(git for-each-ref refs/tags --format='%(refname:short)')
+          if [ -z "$TAGS" ]; then
+              echo "No new release tags to publish"
+              exit 0
+          fi
+
+          TAG_REFSPECS=()
+          while IFS= read -r TAG; do
+              TAG_REFSPECS+=("$(git rev-parse "refs/tags/${TAG}^{commit}"):refs/tags/${TAG}")
+          done <<< "$TAGS"
+
+          git push --atomic "${PUBLIC_REPO_URL}" "${TAG_REFSPECS[@]}"
 
       - name: Get public repo head
         id: get-latest-commit
+        working-directory: ${{ env.SDK_LOCAL_PATH }}
         run: |
           LATEST_COMMIT=$(git rev-parse HEAD)
-          echo "latest_commit=$LATEST_COMMIT" >> $GITHUB_OUTPUT
+          echo "latest_commit=$LATEST_COMMIT" >> "$GITHUB_OUTPUT"
 
       - name: Slack success message
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         env:
           SLACK_NOTIFICATION_CHANNEL: ${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}
-          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.get-latest-tag.outputs.latest_tag != '' && steps.get-latest-tag.outputs.latest_tag) || 'N/A' }}' with the public repo completed"
+          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.resolve-release-tags.outputs.latest_tag != '' && steps.resolve-release-tags.outputs.latest_tag) || 'N/A' }}' with the public repo completed"
           SLACK_NOTIFICATION_CONTEXT: ":large_green_circle: *Synced*"
           SLACK_NOTIFICATION_PRIVATE_SHA: ${{ github.sha }}
           SLACK_NOTIFICATION_PUBLIC_SHA: ${{ (steps.get-latest-commit.outputs.latest_commit != '' && steps.get-latest-commit.outputs.latest_commit) || 'N/A' }}
@@ -121,7 +271,7 @@ jobs:
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         env:
           SLACK_NOTIFICATION_CHANNEL: ${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}
-          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.get-latest-tag.outputs.latest_tag != '' && steps.get-latest-tag.outputs.latest_tag) || 'N/A' }}' with the public repo failed"
+          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.resolve-release-tags.outputs.latest_tag != '' && steps.resolve-release-tags.outputs.latest_tag) || 'N/A' }}' with the public repo failed"
           SLACK_NOTIFICATION_CONTEXT: ":red_circle: *Error occurred*"
           SLACK_NOTIFICATION_PRIVATE_SHA: ${{ github.sha }}
           SLACK_NOTIFICATION_PUBLIC_SHA: ${{ (steps.get-latest-commit.outputs.latest_commit != '' && steps.get-latest-commit.outputs.latest_commit) || 'N/A' }}

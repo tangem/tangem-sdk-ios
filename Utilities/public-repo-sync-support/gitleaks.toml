@@ -1,0 +1,38 @@
+# Gitleaks config for the pre-push secrets scan of the rewritten public repo history.
+# Extends the default ruleset. Broad path allows are reserved for content that cannot
+# ship real secrets (test fixtures, mocks, vendored sources); known false positives
+# elsewhere are allowed by the exact matched value, so that any new secret in the same
+# files still fails the scan.
+
+[extend]
+useDefault = true
+
+# Content that cannot ship real secrets
+[[allowlists]]
+paths = [
+    '''(^|/)[^/]*Tests/''',  # test targets and their fixtures (sample keys, mock tokens, seed phrases)
+    '''(^|/)Mocks/''',  # mock data
+    '''(^|/)(Podfile|Package)\.(lock|resolved)$''',  # dependency lockfile checksums
+]
+
+# Known non-secret values misdetected as secrets, allowed by the exact matched value.
+# NOTE: do NOT combine `paths` and `regexes` in one global entry to scope a value to a
+# file — in global allowlists gitleaks treats the path match alone as sufficient, which
+# silently turns the entry into a whole-file allow. Only rule-level allowlists honor
+# `condition = "AND"` (see the `generic-api-key` rule extension below).
+[[allowlists]]
+regexTarget = "secret"
+regexes = [
+    '''^BIP32\.HMACKey$''',  # a Swift type reference misdetected as a key (`BIP32.swift`)
+]
+
+# The Example app's developer personalization key pairs (manufacturer, issuer, acquirer), published deliberately,
+# allowed only in the sources known to embed them
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+condition = "AND"
+regexTarget = "secret"
+paths = ['''^Example/TangemSdkExample/(Developer/StaticData|PersonalizationData)\.swift$''']
+regexes = ['''^[0-9A-Fa-f]{64}$''']

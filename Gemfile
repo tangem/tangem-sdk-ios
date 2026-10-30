@@ -1,6 +1,8 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-gem "fastlane"
+source 'https://rubygems.org'
+
+gem 'fastlane'
 gem 'openssl'
 
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')

@@ -84,7 +84,7 @@ jobs:
           git config --global user.name "Tangem Service"
           git config --global user.email "gitservice@tangem.com"
 
-          git checkout -b $SOURCE_BRANCH $TARGET_BRANCH
+          git checkout -b "$SOURCE_BRANCH" "$TARGET_BRANCH"
           git add "${SDK_LOCALIZATIONS_DESTINATION}"
 
           : "${LANGUAGES:="all"}"
@@ -93,7 +93,7 @@ jobs:
           pr_message="This is an automated PR to sync \`${LANGUAGES}\` languages to \`${TARGET_BRANCH}\`."
 
           git commit -S -m "${commit_message}"
-          git push --set-upstream origin $SOURCE_BRANCH --force
+          git push --set-upstream origin "$SOURCE_BRANCH" --force
 
           gh pr create \
           --base "${TARGET_BRANCH}" \

@@ -27,14 +27,14 @@ jobs:
       id: read-version-file
       run: |
         VERSION_NUMBER=$(cat VERSION)
-        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
+        echo "version_number=${VERSION_NUMBER}" >> "$GITHUB_OUTPUT"
 
     - name: Create tag if needed
-      uses: actions/github-script@v3
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
       with:
         github-token: ${{ github.token }}
         script: |
-          github.git.createRef({
+          await github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: "refs/tags/${{ steps.read-version-file.outputs.version_number }}",

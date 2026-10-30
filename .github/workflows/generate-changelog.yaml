@@ -13,7 +13,7 @@ jobs:
     - name: Prepare variables
       run: |
           VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
 
     - name: Jira action
       uses: tangem-developments/jira-action@master

@@ -37,7 +37,7 @@ jobs:
       - name: Prepare variables
         run: |
           VER=$(cat VERSION)
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "VERSION=$VER" >> "$GITHUB_ENV"
 
       - name: Create a release
         uses: actions/create-release@v1
@@ -60,11 +60,11 @@ jobs:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
 
       - name: Create Pull request to master
-        uses: actions/github-script@v4
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9.0.0
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.pulls.create({
+            await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: "master",

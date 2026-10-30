@@ -24,13 +24,13 @@ jobs:
       id: read-version-file
       run: |
         VERSION_NUMBER=$(cat VERSION)
-        echo "version_number=${VERSION_NUMBER}" >> $GITHUB_OUTPUT
+        echo "version_number=${VERSION_NUMBER}" >> "$GITHUB_OUTPUT"
 
     - name: Check for Tag
       env:
         TAG: ${{ steps.read-version-file.outputs.version_number }}
       run: |
-        if [ $(git tag -l "${TAG}") ]; then
+        if [ -n "$(git tag -l "${TAG}")" ]; then
           echo "Tag ${TAG} already exists. Please upgrade version in the 'VERSION' file"
           exit 1
         else

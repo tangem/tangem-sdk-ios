@@ -5,8 +5,8 @@ SCHEME_NAME = 'TangemSdk'
 IOS_SIM_CONFIG = File.readlines(File.join(__dir__, '..', '.ios-sim-runtime')).map(&:strip)
 IOS_SIM_DEVICE = IOS_SIM_CONFIG[0]
 IOS_SIM_RUNTIME = IOS_SIM_CONFIG[1]
-TEST_DEVICE = "#{IOS_SIM_DEVICE} (#{IOS_SIM_RUNTIME})"
-BUILD_RESULT_FOLDER = "test_output"
+TEST_DEVICE = "#{IOS_SIM_DEVICE} (#{IOS_SIM_RUNTIME})".freeze
+BUILD_RESULT_FOLDER = 'test_output'
 
 before_all do |lane, options|
   lanes_to_skip_bootstrap = [
@@ -44,10 +44,11 @@ lane :test do
     # Result bundle will be analyzed using `xcode_summary` Danger plugin
     output_directory: File.join(Dir.pwd, BUILD_RESULT_FOLDER),
     result_bundle: true,
-    # Old Xcode output formatter, 'xcpretty', doesn't work particularly well with the new build system and parallel testing output
-    xcodebuild_formatter: "xcbeautify",
+    # Old Xcode output formatter, 'xcpretty', doesn't work particularly well
+    # with the new build system and parallel testing output
+    xcodebuild_formatter: 'xcbeautify',
     # 'xcbeautify' doesn't support HTML output type
-    output_types: "junit",
+    output_types: 'junit',
     clean: true
   )
 end

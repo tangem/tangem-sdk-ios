@@ -25,9 +25,20 @@ def git_lines(*args):
 def collect_paths():
     # `--name-only` with an empty format yields every path ever touched by any commit reachable from any ref;
     # `-m` includes merge commits, `-z` keeps non-ASCII paths unquoted so the deletion patterns can match them
-    result = subprocess.run(["git", "log", "--all", "-m", "--name-only", "--format=", "-z"], capture_output=True, check=True)
+    result = subprocess.run(
+        ["git", "log", "--all", "-m", "--name-only", "--format=", "-z"],
+        capture_output=True,
+        check=True,
+    )
 
-    return set(filter(None, result.stdout.decode("utf-8", errors="surrogateescape").replace("\n", "\0").split("\0")))
+    return set(
+        filter(
+            None,
+            result.stdout.decode("utf-8", errors="surrogateescape")
+            .replace("\n", "\0")
+            .split("\0"),
+        )
+    )
 
 
 def main():
@@ -37,7 +48,9 @@ def main():
     refs = git_lines("for-each-ref", "--format=%(refname) %(objecttype)")
     ref_names = [line.split(" ")[0] for line in refs]
     if synced_branch_ref not in ref_names:
-        print(f"::error::The synced branch {synced_branch_ref} is missing from the repo to publish")
+        print(
+            f"::error::The synced branch {synced_branch_ref} is missing from the repo to publish"
+        )
         return 1
 
     unexpected_refs = []
@@ -50,18 +63,24 @@ def main():
             unexpected_refs.append(f"{ref} ({object_type})")
 
     if unexpected_refs:
-        print(f"::error::Unexpected refs in the repo to publish: {unexpected_refs} (expected {synced_branch_ref} and lightweight tags only)")
+        print(
+            f"::error::Unexpected refs in the repo to publish: {unexpected_refs} (expected {synced_branch_ref} and lightweight tags only)"
+        )
         return 1
 
     # Git history validation
     violations = [path for path in sorted(collect_paths()) if should_remove_file(path)]
     if violations:
-        print(f"::error::{len(violations)} paths matching the deletion patterns survived the history rewrite (full list in the step log)")
+        print(
+            f"::error::{len(violations)} paths matching the deletion patterns survived the history rewrite (full list in the step log)"
+        )
         for violation in violations:
             print(f"  {violation}")
         return 1
 
-    print(f"Verified {synced_branch_ref} and {len(ref_names) - 1} tags: ref set is as expected, no files match the deletion patterns.")
+    print(
+        f"Verified {synced_branch_ref} and {len(ref_names) - 1} tags: ref set is as expected, no files match the deletion patterns."
+    )
     return 0
 
 

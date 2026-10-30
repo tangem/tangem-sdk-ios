@@ -36,60 +36,27 @@ PATTERNS_TO_EDIT = [
         r"([ \t]*(///|//).*[ \t]+)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(.*$)",
         r"\1[REDACTED_EMAIL]\3",
     ),
-
     # Created by author lines
-    (
-        r"^([ \t]*(///|//).*[ \t]+[Cc]reated[ \t]+by[ \t]+).+",
-        r"\1[REDACTED_AUTHOR]"
-    ),
-
+    (r"^([ \t]*(///|//).*[ \t]+[Cc]reated[ \t]+by[ \t]+).+", r"\1[REDACTED_AUTHOR]"),
     # TODO/FIXME/REVIEW comments
-    (
-        r"([ \t]*(///|//).*[ \t]*)((TODO|FIXME|REVIEW).+)",
-        r"\1[REDACTED_TODO_COMMENT]"
-    ),
-
+    (r"([ \t]*(///|//).*[ \t]*)((TODO|FIXME|REVIEW).+)", r"\1[REDACTED_TODO_COMMENT]"),
     # Inline TODOs
-    (
-        r'(.+")(TODO.+)("\))',
-        r'\1[REDACTED_TODO_COMMENT]\3'
-    ),
-
+    (r'(.+")(TODO.+)("\))', r"\1[REDACTED_TODO_COMMENT]\3"),
     # Username mentions with @
-    (
-        r"^([ \t]*(///|//)[ \t]*)@[A-Za-z]+(.*$)",
-        r"\1[REDACTED_USERNAME]\3"
-    ),
-
+    (r"^([ \t]*(///|//)[ \t]*)@[A-Za-z]+(.*$)", r"\1[REDACTED_USERNAME]\3"),
     # Atlassian URLs
     (
         r"([ \t]*(///|//).*[ \t]*)https?://.*atlassian\.(com|net).*",
         r"\1[REDACTED_INFO]",
     ),
-
     # Figma URLs
-    (
-        r"([ \t]*(///|//).*[ \t]*)https?://.*figma\.com.*",
-        r"\1[REDACTED_INFO]"
-    ),
-
+    (r"([ \t]*(///|//).*[ \t]*)https?://.*figma\.com.*", r"\1[REDACTED_INFO]"),
     # Notion URLs
-    (
-        r"([ \t]*(///|//).*[ \t]*)https?://.*notion\.so.*",
-        r"\1[REDACTED_INFO]"
-    ),
-
+    (r"([ \t]*(///|//).*[ \t]*)https?://.*notion\.so.*", r"\1[REDACTED_INFO]"),
     # Slack URLs
-    (
-        r"([ \t]*(///|//).*[ \t]*)https?://.*slack\.com.*",
-        r"\1[REDACTED_INFO]"
-    ),
-
+    (r"([ \t]*(///|//).*[ \t]*)https?://.*slack\.com.*", r"\1[REDACTED_INFO]"),
     # IOS ticket references
-    (
-        r"IOS-[0-9]{1,5}",
-        r"[REDACTED_INFO]"
-    ),
+    (r"IOS-[0-9]{1,5}", r"[REDACTED_INFO]"),
 ]
 
 PATTERNS_TO_PROCESS = (

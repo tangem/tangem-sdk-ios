@@ -5,17 +5,9 @@ on:
     branches:
       - develop
   workflow_dispatch:
-    inputs:
-      allow_history_rewrite:
-        description: "Allow rewriting the public history (moves published release tags off the public branch)"
-        required: false
-        type: boolean
-        default: false
 
 concurrency:
-  # Every run force-pushes the same public repo, so only a single run is allowed. Runs dispatched from other refs
-  # get their own group so they can't cancel an in-progress sync (the job skips them anyway)
-  group: ${{ github.ref == 'refs/heads/develop' && github.workflow || format('{0} ({1})', github.workflow, github.ref) }}
+  group: '${{ github.workflow }}' # Every run force-pushes the same public repo, so only a single run is allowed
   cancel-in-progress: true
 
 permissions:
@@ -23,10 +15,9 @@ permissions:
 
 env:
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-  PUBLIC_REPO_URL: git@github.com:tangem/tangem-sdk-ios-public.git
-  PUBLIC_REPO_READ_URL: https://github.com/tangem/tangem-sdk-ios-public.git # Anonymous read access, no credentials needed
-  SYNCED_BRANCH: develop # The only branch published to the public repo; also hardcoded in `concurrency` and the job's `if`, which can't read `env`
-  RELEASE_TAG_REGEX: '^[0-9]+\.[0-9]+\.[0-9]+$' # e.g. `5.3.1`, as created by `set-tag.yml` (ERE syntax, also valid for Python)
+  PUBLIC_REPO_URL: git@github.com:tangem/tangem-sdk-ios.git
+  SYNCED_BRANCH: develop # The only branch published to the public repo; also hardcoded in the job's `if`, which can't read `env`
+  RELEASE_TAG_REGEX: '^[0-9]+\.[0-9]+\.[0-9]+$' # e.g. `5.3.1`, as created by `set-tag.yml`; only used to report the latest release
   SDK_LOCAL_PATH: 'sdk'
 
 jobs:
@@ -91,35 +82,28 @@ jobs:
             | awk -v keep="refs/heads/${SYNCED_BRANCH}" '$0 != keep { print "delete " $0 }' \
             | git update-ref --no-deref --stdin
 
-      # Published versions are consumed via SPM and CocoaPods, so a tag that already exists in the public repo
-      # must never be moved or deleted, and only release tags on the synced branch's history are published.
-      # All other local tags are dropped since tags may contain sensitive info (authors, messages and contents).
-      - name: Resolve release tags to publish
-        id: resolve-release-tags
+      # Every tag stays published and is rewritten together with its history, including versions that aren't on the
+      # synced branch (CocoaPods and SPM resolve versions by tag). Annotated tags become lightweight ones,
+      # since their tagger names and messages must not be published
+      - name: Prepare tags for publishing
+        id: prepare-tags
         working-directory: ${{ env.SDK_LOCAL_PATH }}
         run: |
-          # The regex is read via ENVIRON because `awk -v` mangles backslash escapes
-          git tag --list --merged HEAD | awk '$0 ~ ENVIRON["RELEASE_TAG_REGEX"]' | sort > ../release_tags.txt
-          git ls-remote --tags --refs "${PUBLIC_REPO_READ_URL}" | awk '{ sub("^refs/tags/", "", $2); print $2 }' | sort > ../public_tags.txt
-          comm -23 ../release_tags.txt ../public_tags.txt > ../tags_to_publish.txt
-
-          git for-each-ref refs/tags --format='%(refname:short)' \
-            | sort \
-            | comm -23 - ../tags_to_publish.txt \
-            | awk '{ print "delete refs/tags/" $0 }' \
+          git for-each-ref refs/tags --format='%(objecttype) %(refname) %(*objectname)' \
+            | awk '$1 == "tag" { print "update " $2 " " $3 }' \
             | git update-ref --no-deref --stdin
 
-          LATEST_TAG=$(sort -V ../release_tags.txt | awk 'END { print }')
+          # The regex is read via ENVIRON because `awk -v` mangles backslash escapes
+          LATEST_TAG=$(git tag --list --merged HEAD | awk '$0 ~ ENVIRON["RELEASE_TAG_REGEX"]' | sort -V | awk 'END { print }')
           if [ -z "$LATEST_TAG" ]; then
               echo "::error::Failed to resolve the latest release tag"
               exit 1
           fi
 
-          echo "Release tags to publish: $(tr '\n' ' ' < ../tags_to_publish.txt)"
           echo "latest_tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
 
       # Every value set here must stay constant: the rewrite has to produce the same commit hashes on every run,
-      # so the commits that published release tags point to stay on the synced branch's history
+      # so published commits and tags only move when the cleaning patterns change
       - name: Clean private repo commit metadata and remove sensitive info from code
         working-directory: ${{ env.SDK_LOCAL_PATH }}
         run: |
@@ -190,25 +174,6 @@ jobs:
             exit 1
           fi
 
-      # A deterministic rewrite reproduces the public branch and only extends it. Anything else (changed cleaning
-      # patterns, another filter-repo or git version) would move the commits behind published release tags off the
-      # public branch, so it requires an explicit opt-in
-      - name: Ensure the rewritten history extends the public one
-        working-directory: ${{ env.SDK_LOCAL_PATH }}
-        env:
-          ALLOW_HISTORY_REWRITE: ${{ inputs.allow_history_rewrite == true && 'true' || 'false' }}
-        run: |
-          PUBLIC_HEAD=$(git ls-remote "${PUBLIC_REPO_READ_URL}" "refs/heads/${SYNCED_BRANCH}" | cut -f1)
-
-          if [ -n "$PUBLIC_HEAD" ] && git cat-file -e "${PUBLIC_HEAD}^{commit}" 2>/dev/null && git merge-base --is-ancestor "$PUBLIC_HEAD" HEAD; then
-              echo "The rewritten history extends the public ${SYNCED_BRANCH} head ${PUBLIC_HEAD}"
-          elif [ "$ALLOW_HISTORY_REWRITE" = "true" ]; then
-              echo "::warning::Rewriting the public ${SYNCED_BRANCH} history (public head: ${PUBLIC_HEAD:-none}), explicitly allowed for this run"
-          else
-              echo "::error::The rewritten history doesn't contain the public ${SYNCED_BRANCH} head ${PUBLIC_HEAD:-none}, so publishing it would rewrite the public history. Re-run the workflow manually with 'allow_history_rewrite' if that is intended"
-              exit 1
-          fi
-
       - name: Authorize SSH session (for pushing the source code to GH Public)
         env:
           SSH_KEY: ${{ secrets.IOS_PUBLIC_REPO_SYNC_SSH_KEY }}
@@ -220,27 +185,10 @@ jobs:
           ssh-agent -a "${SSH_AUTH_SOCK}" > /dev/null || true
           ssh-add ~/.ssh/ssh_key
 
-      # `--prune` removes every other branch from the public repo; tags are outside the refspec and stay untouched
+      # `--prune` removes every other branch and any tag deleted in the private repo from the public repo
       - name: Push to the public repo
         working-directory: ${{ env.SDK_LOCAL_PATH }}
-        run: git push --force --prune --atomic "${PUBLIC_REPO_URL}" '+refs/heads/*:refs/heads/*'
-
-      # Pushed as lightweight tags by commit hash and without `--force`, so an existing public tag is never moved
-      - name: Push new release tags to the public repo
-        working-directory: ${{ env.SDK_LOCAL_PATH }}
-        run: |
-          TAGS=$(git for-each-ref refs/tags --format='%(refname:short)')
-          if [ -z "$TAGS" ]; then
-              echo "No new release tags to publish"
-              exit 0
-          fi
-
-          TAG_REFSPECS=()
-          while IFS= read -r TAG; do
-              TAG_REFSPECS+=("$(git rev-parse "refs/tags/${TAG}^{commit}"):refs/tags/${TAG}")
-          done <<< "$TAGS"
-
-          git push --atomic "${PUBLIC_REPO_URL}" "${TAG_REFSPECS[@]}"
+        run: git push --force --prune --atomic "${PUBLIC_REPO_URL}" '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'
 
       - name: Get public repo head
         id: get-latest-commit
@@ -253,7 +201,7 @@ jobs:
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         env:
           SLACK_NOTIFICATION_CHANNEL: ${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}
-          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.resolve-release-tags.outputs.latest_tag != '' && steps.resolve-release-tags.outputs.latest_tag) || 'N/A' }}' with the public repo completed"
+          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.prepare-tags.outputs.latest_tag != '' && steps.prepare-tags.outputs.latest_tag) || 'N/A' }}' with the public repo completed"
           SLACK_NOTIFICATION_CONTEXT: ":large_green_circle: *Synced*"
           SLACK_NOTIFICATION_PRIVATE_SHA: ${{ github.sha }}
           SLACK_NOTIFICATION_PUBLIC_SHA: ${{ (steps.get-latest-commit.outputs.latest_commit != '' && steps.get-latest-commit.outputs.latest_commit) || 'N/A' }}
@@ -271,7 +219,7 @@ jobs:
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         env:
           SLACK_NOTIFICATION_CHANNEL: ${{ vars.SLACK_CHANNEL_DEPLOYMENTS_IOS }}
-          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.resolve-release-tags.outputs.latest_tag != '' && steps.resolve-release-tags.outputs.latest_tag) || 'N/A' }}' with the public repo failed"
+          SLACK_NOTIFICATION_TEXT: "Sync of the Card SDK with tag '${{ (steps.prepare-tags.outputs.latest_tag != '' && steps.prepare-tags.outputs.latest_tag) || 'N/A' }}' with the public repo failed"
           SLACK_NOTIFICATION_CONTEXT: ":red_circle: *Error occurred*"
           SLACK_NOTIFICATION_PRIVATE_SHA: ${{ github.sha }}
           SLACK_NOTIFICATION_PUBLIC_SHA: ${{ (steps.get-latest-commit.outputs.latest_commit != '' && steps.get-latest-commit.outputs.latest_commit) || 'N/A' }}

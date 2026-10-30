@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 
 # Pre-push gate for the public repo sync: fails if the repo contains any refs beyond the
-# sanitized synced branch and the release tags on its history (stray branches, tags or
-# remote-tracking refs would leak private data if pushed), or if any path anywhere in the
+# sanitized synced branch and lightweight tags (stray branches, remote-tracking refs or
+# annotated tags would leak private data if pushed), or if any path anywhere in the
 # published history still matches the deletion patterns (e.g. because the patterns were
 # not applied).
 #
-# Reads the synced branch name from `SYNCED_BRANCH` and the release tag regex from
-# `RELEASE_TAG_REGEX` (both set by the sync workflow).
+# Reads the synced branch name from `SYNCED_BRANCH` (set by the sync workflow).
 
 import os
-import re
 import subprocess
 import sys
 
@@ -24,12 +22,6 @@ def git_lines(*args):
     return result.stdout.splitlines()
 
 
-def is_ancestor(ancestor, descendant):
-    result = subprocess.run(["git", "merge-base", "--is-ancestor", ancestor, descendant])
-
-    return result.returncode == 0
-
-
 def collect_paths():
     # `--name-only` with an empty format yields every path ever touched by any commit reachable from any ref;
     # `-m` includes merge commits, `-z` keeps non-ASCII paths unquoted so the deletion patterns can match them
@@ -40,26 +32,25 @@ def collect_paths():
 
 def main():
     synced_branch_ref = f"refs/heads/{os.environ['SYNCED_BRANCH']}"
-    release_tag_regex = re.compile(os.environ["RELEASE_TAG_REGEX"])
 
-    # Ref validation: the synced branch plus release tags on its history, nothing else
-    refs = git_lines("for-each-ref", "--format=%(refname)")
-    if synced_branch_ref not in refs:
+    # Ref validation: the synced branch plus lightweight tags, nothing else
+    refs = git_lines("for-each-ref", "--format=%(refname) %(objecttype)")
+    ref_names = [line.split(" ")[0] for line in refs]
+    if synced_branch_ref not in ref_names:
         print(f"::error::The synced branch {synced_branch_ref} is missing from the repo to publish")
         return 1
 
     unexpected_refs = []
-    for ref in refs:
+    for line in refs:
+        ref, object_type = line.split(" ")
         if ref == synced_branch_ref:
             continue
 
-        tag = ref.removeprefix("refs/tags/")
-        is_release_tag = ref.startswith("refs/tags/") and release_tag_regex.match(tag)
-        if not is_release_tag or not is_ancestor(ref, synced_branch_ref):
-            unexpected_refs.append(ref)
+        if not ref.startswith("refs/tags/") or object_type != "commit":
+            unexpected_refs.append(f"{ref} ({object_type})")
 
     if unexpected_refs:
-        print(f"::error::Unexpected refs in the repo to publish: {unexpected_refs} (expected {synced_branch_ref} and release tags on its history only)")
+        print(f"::error::Unexpected refs in the repo to publish: {unexpected_refs} (expected {synced_branch_ref} and lightweight tags only)")
         return 1
 
     # Git history validation
@@ -70,7 +61,7 @@ def main():
             print(f"  {violation}")
         return 1
 
-    print(f"Verified {', '.join(refs)}: ref set is as expected, no files match the deletion patterns.")
+    print(f"Verified {synced_branch_ref} and {len(ref_names) - 1} tags: ref set is as expected, no files match the deletion patterns.")
     return 0
 
 

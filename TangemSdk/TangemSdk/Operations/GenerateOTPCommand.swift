@@ -2,7 +2,7 @@
 //  GenerateOTPCommand.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 27.09.2022.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 

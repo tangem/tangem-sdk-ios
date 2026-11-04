@@ -2,7 +2,7 @@
 //  SetNDEFDisabledTask.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 11/03/26.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2026 Tangem AG. All rights reserved.
 //
 

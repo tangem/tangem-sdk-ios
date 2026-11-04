@@ -2,7 +2,7 @@
 //  PreflightReadTask.swift
 //  TangemSdk
 //
-//  Created by Andrew Son on 15/03/21.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2021 Tangem AG. All rights reserved.
 //
 

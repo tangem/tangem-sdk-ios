@@ -2,7 +2,7 @@
 //  CardIdBuilderTests.swift
 //  TangemSdkTests
 //
-//  Created by Alexander Osokin on 19.03.2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import Foundation

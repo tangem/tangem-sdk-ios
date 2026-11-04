@@ -2,7 +2,7 @@
 //  CardFilterTests.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 10/03/2025.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2025 Tangem AG. All rights reserved.
 //
 

@@ -69,6 +69,6 @@ let package = Package(
             ]
         ),
     ],
-    // TODO: Andrey Fedorov - Remove after migration to Swift 6 structured concurrency (IOS-8369)
+    // [REDACTED_TODO_COMMENT]
     swiftLanguageModes: [.v5]
 )

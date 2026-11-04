@@ -2,7 +2,7 @@
 //  WalletAlreadyActivatedNoticeView.swift
 //  TangemSdk
 //
-//  Created by Sergey Balashov on 10.04.2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 import SwiftUI

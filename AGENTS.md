@@ -43,7 +43,7 @@ Every change starts with a Jira ticket whose key flows through the rest of the w
   - **Story Points (`customfield_10025`)** — default to `3` unless context clearly suggests otherwise (trivial = 1; clear hotfix or multi-day work = 5+).
 
   See [External Systems → Jira](#jira) for cloudId, field IDs, and the ADF caveat.
-- **Branch name:** `IOS-NNNNN_short_description` in snake_case (e.g. `IOS-13963_crashfixes`).
+- **Branch name:** `IOS-NNNNN_short_description` in snake_case (e.g. `[REDACTED_INFO]_crashfixes`).
 - **When asked to create a branch, give it its own remote immediately.** `git checkout -b <branch> origin/develop` leaves `<branch>` tracking `origin/develop`, so an IDE "Push" writes straight to `develop`. Right after creating it run `git push -u origin <branch>` (or `git branch --unset-upstream` if not pushing yet). Never push to `develop` or long-lived feature branches (e.g. `develop-fw8`) directly.
 - **Bump the SDK version in every PR to `develop`.** `VERSION` and `s.version` in `TangemSdk.podspec` must match and must move: `set-tag.yml` tags `develop` from `VERSION`, so `check-tag.yml` fails the PR when it stayed put. Ask which component to bump — hotfix by default — and read the current value off `origin/develop`, not your branch point.
 - **Commit message subject:** `IOS-NNNNN Short description`. Body explains the why, not the what — the diff already shows the what.

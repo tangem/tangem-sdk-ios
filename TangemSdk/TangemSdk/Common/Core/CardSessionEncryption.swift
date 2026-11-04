@@ -2,7 +2,7 @@
 //  CardSessionEncryption.swift
 //  TangemSdk
 //
-//  Created by Alexander Osokin on 13/03/2026.
+//  Created by [REDACTED_AUTHOR]
 //
 
 enum CardSessionEncryption {

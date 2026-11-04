@@ -2,7 +2,7 @@
 //  AccessCodeRepository.swift
 //  TangemSdk
 //
-//  Created by Andrey Chukavin on 13.05.2022.
+//  Created by [REDACTED_AUTHOR]
 //  Copyright © 2022 Tangem AG. All rights reserved.
 //
 

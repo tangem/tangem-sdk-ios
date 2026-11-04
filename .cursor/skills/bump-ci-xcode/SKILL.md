@@ -2,6 +2,7 @@
 name: bump-ci-xcode
 description: Bump the CI Xcode version - create the Jira ticket, update .xcode-version and .ios-sim-runtime, and open a PR to develop
 argument: version - Target Xcode version (e.g., 26.5 or 26.4.1)
+argument: ticket - Optional existing IOS-NNNNN key to reuse instead of creating a ticket (the tangem-app-ios bump-ci-xcode skill passes its own)
 ---
 
 # Bump CI Xcode Version
@@ -26,11 +27,14 @@ Unlike `tangem-app-ios`, this repository builds only on GitHub-hosted runners, s
 
 ### 1. Parse Arguments and Read Current State
 
-- Extract the target version from `$ARGUMENTS` (e.g., `26.5`).
+- Extract the target version from `$ARGUMENTS` (e.g., `26.5`) and the ticket key, if one is given.
 - Read `.xcode-version` to get the current version for the ticket description and commit message.
 - Read `.ios-sim-runtime` to get the current device name and runtime version.
+- Read the `Xcode` and `Installed Simulators` tables of the runner image's readme (`images/macos/<image>-Readme.md` in `actions/runner-images`, where `<image>` is the `runs-on` label of `tests.yml` plus `-arm64` when the label has no architecture suffix — the `Runner Image` group of a recent `Tests` run log links the exact readme). They decide step 4.
 
 ### 2. Create the Jira Ticket
+
+When a ticket key is given, reuse that ticket and skip this step: the bump is part of the tangem-app-ios bump, which already created, assigned and started the ticket.
 
 AGENTS.md is the single source of truth here: the required-field checklist (Stream, Story Points), sprint, cloudId, field IDs and the ADF caveats all live there. Leave QA Notes empty here — they are filled once the PR is open. Only what is specific to this task is listed below.
 
@@ -53,7 +57,7 @@ Push immediately so the branch tracks its own remote instead of `origin/develop`
 ### 4. Update the Version Files
 
 - `.xcode-version`: replace the content with the new version, keeping the trailing newline.
-- `.ios-sim-runtime`: keep line 1 (device name) as-is unless the device is also changing, set line 2 to the new runtime version, keep the trailing newline.
+- `.ios-sim-runtime`: keep line 1 (device name) as-is unless the device is also changing, set line 2 to the new runtime version, keep the trailing newline. The runtime must be one the image's `Installed Simulators` table lists with that device, so it can lag the value tangem-app-ios picks for its self-hosted runners: for Xcode 27.2 the `xcode-27-arm64` image carried only the 27.2 release candidate and no iOS 27.2 simulators, so line 2 stayed `27.0`. When the image has no build of the target Xcode at all, stop and tell the developer instead of bumping.
 
 ```bash
 printf '<version>\n' > .xcode-version

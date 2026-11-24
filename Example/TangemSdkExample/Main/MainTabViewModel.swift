@@ -22,6 +22,8 @@ class MainTabViewModel: ObservableObject {
     @Published var derivationPath: String = ""
     @Published var signHashesCount: String = "15"
     @Published var attestationMode: AttestationTask.Mode = .normal
+    @Published var codePageAddress: String = "1"
+    @Published var codePageCount: String = "5"
     @Published var json: String = ""
     @Published var personalizationConfig: String = ""
     @Published var isUserCodeRecoveryAllowed: Bool = false
@@ -272,6 +274,29 @@ extension MainTabViewModel {
 
     func attestCard() {
         configuredSdk.attestCardKey(attestationMode: .full, completion: handleCompletion)
+    }
+
+    func attestCardFirmware() {
+        let trimmedAddress = codePageAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedCount = codePageCount.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let address = UInt32(trimmedAddress) else {
+            complete(with: "Code page address must be in range 0...\(UInt32.max)")
+            return
+        }
+
+        guard let count = UInt16(trimmedCount) else {
+            complete(with: "Code page count must be in range 0...\(UInt16.max)")
+            return
+        }
+
+        UIApplication.shared.endEditing()
+
+        configuredSdk.startSession(with: AttestCardFirmwareCommand(
+            codePageAddress: Int(address),
+            codePageCount: Int(count),
+            challenge: nil
+        ), completion: handleCompletion)
     }
 
     func attestWallet(walletIndex: Int) {
@@ -907,6 +932,7 @@ extension MainTabViewModel {
         case derivePublicKey
         case attest
         case attestCard
+        case attestCardFirmware
         case attestWallet
         case chainingExample
         case setAccessCode
@@ -952,6 +978,7 @@ extension MainTabViewModel {
         switch method {
         case .attest: attest()
         case .attestCard: attestCard()
+        case .attestCardFirmware: attestCardFirmware()
         case .attestWallet: runWithWallet(attestWallet, walletIndex)
         case .chainingExample: chainingExample()
         case .setAccessCode: setAccessCode()

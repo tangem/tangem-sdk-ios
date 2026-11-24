@@ -94,8 +94,33 @@ public final class AttestationTask: CardSessionRunnable {
     }
 
     private func runExtraAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
-        // [REDACTED_TODO_COMMENT]
+        runFirmwareAttestation(session, completion)
+    }
+
+    private func runFirmwareAttestation(_ session: CardSession, _ completion: @escaping CompletionResult<Attestation>) {
         runOnlineAttestation(session, completion)
+
+        // [REDACTED_TODO_COMMENT]
+        /*
+         let command = AttestCardFirmwareCommand(
+             codePageAddress: 0, codePageCount: 0, challenge: nil
+         )
+         command.run(in: session) { result in
+             switch result {
+             case .success:
+                 self.currentAttestationStatus.firmwareAttestation = .verified
+                 self.runOnlineAttestation(session, completion)
+             case .failure(let error):
+                 if case TangemSdkError.cardVerificationFailed = error {
+                     self.currentAttestationStatus.firmwareAttestation = .failed
+                 }
+
+                 completion(.failure(error))
+             }
+
+             withExtendedLifetime(command) {}
+         }
+          */
     }
 
     private func attestWallets(_ session: CardSession, _ completion: @escaping CompletionResult<Bool>) {

@@ -48,7 +48,7 @@ public enum TlvTag: Byte {
     case cardPublicKey = 0x03
     case cardSignature = 0x04
     case curveId = 0x05
-    case hashAlgId = 0x06
+    case hashName = 0x06
     case signingMethod = 0x07
     case maxSignatures = 0x08
     case pauseBeforePin2 = 0x09
@@ -171,12 +171,13 @@ public enum TlvTag: Byte {
         case .cardId, .batchId:
             return .hexString
         case .manufacturerName, .firmwareVersion, .issuerName, .blockchainName,
-             .tokenSymbol, .tokenName, .tokenContractAddress, .fileTypeName:
+             .tokenSymbol, .tokenName, .tokenContractAddress, .fileTypeName, .hashName:
             return .utf8String
         case .curveId:
             return .ellipticCurve
         case .maxSignatures, .walletRemainingSignatures, .walletSignedHashes, .userProtectedCounter,
-             .userCounter, .tokenDecimal, .issuerDataCounter, .checkWalletCounter, .fileCounter:
+             .userCounter, .tokenDecimal, .issuerDataCounter, .checkWalletCounter, .fileCounter,
+             .codePageAddress:
             return .intValue
         case .isActivated, .isLinked, .createWalletAtPersonalize, .pin2IsDefault, .pinIsDefault:
             return .boolValue
@@ -194,7 +195,7 @@ public enum TlvTag: Byte {
             return .byte
         case .interactionMode:
             return .interactionMode
-        case .offset, .size, .pauseBeforePin2:
+        case .offset, .size, .pauseBeforePin2, .codePageCount:
             return .uint16
         case .walletHDPath:
             return .derivationPath
@@ -266,7 +267,7 @@ public enum TlvTag: Byte {
              .flash,
              .status,
              .curveId,
-             .hashAlgId,
+             .hashName,
              .signingMethod,
              .maxSignatures,
              .pauseBeforePin2,

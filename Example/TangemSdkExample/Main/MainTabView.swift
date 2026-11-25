@@ -134,6 +134,8 @@ struct MainTabView: View {
         switch viewModel.method {
         case .attest:
             attestView
+        case .attestCardFirmware:
+            attestCardFirmwareView
         case .attestWallet:
             attestWalletView
         case .createWallet:
@@ -173,6 +175,31 @@ struct MainTabView: View {
                 }
             }
             .pickerStyle(.segmented)
+        }
+        .orangeBorder()
+    }
+
+    private var attestCardFirmwareView: some View {
+        VStack {
+            Text("Firmware attestation config")
+                .font(.headline)
+                .bold()
+
+            Text("Code page address")
+                .font(.subheadline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            TextField("Address", text: $viewModel.codePageAddress)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
+
+            Text("Code page count")
+                .font(.subheadline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            TextField("Count", text: $viewModel.codePageCount)
+                .textFieldStyle(.roundedBorder)
+                .keyboardType(.numberPad)
         }
         .orangeBorder()
     }

@@ -1,5 +1,5 @@
 //
-//  AccessCodeToolbar.swift
+//  AccessCodeHeaderActions.swift
 //  TangemSdk
 //
 //  Created by [REDACTED_AUTHOR]
@@ -8,10 +8,9 @@
 
 import SwiftUI
 
-struct AccessCodeToolbar: View {
-    let onCancel: () -> Void
+struct AccessCodeHeaderActions: View {
+    let onClose: () -> Void
 
-    @EnvironmentObject var style: TangemSdkStyle
     @Environment(\.accessCodeFlow) private var accessCodeFlow
     @Environment(\.accessCodeScreen) private var accessCodeScreen
 
@@ -23,52 +22,52 @@ struct AccessCodeToolbar: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Spacer()
-
             if let supportScreen {
                 supportButton(screen: supportScreen)
             }
 
             closeButton
         }
-        .frame(height: 44)
     }
 
     private func supportButton(screen: TangemSdkScreen) -> some View {
         Button {
             accessCodeFlow?.requestSupport(from: screen)
-            onCancel()
+            onClose()
         } label: {
             Text("common_support".localized)
                 .font(.system(size: 16, weight: .medium))
-                .foregroundColor(style.colors.secondaryButtonColors.foregroundColor)
-                .padding(.horizontal, 14)
-                .frame(minWidth: 56, minHeight: 36)
-                .accessCodeToolbarMaterial(Capsule(), style: style)
+                .foregroundColor(.primary)
+                .padding(.horizontal, 18)
+                .frame(height: 44)
+                .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .glassButton()
     }
 
     private var closeButton: some View {
-        Button(action: onCancel) {
+        Button(action: onClose) {
             Image(systemName: "xmark")
-                .font(.system(size: 17, weight: .medium))
-                .foregroundColor(style.colors.secondaryButtonColors.foregroundColor)
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundColor(.primary)
                 .frame(width: 44, height: 44)
-                .accessCodeToolbarMaterial(Circle(), style: style)
+                .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .glassButton()
         .accessibilityLabel("common_cancel".localized)
     }
 }
 
 private extension View {
     @ViewBuilder
-    func accessCodeToolbarMaterial(_ shape: some Shape, style: TangemSdkStyle) -> some View {
+    func glassButton() -> some View {
         if #available(iOS 26.0, *) {
-            glassEffect(.regular.interactive(), in: shape)
+            buttonStyle(.plain)
+                .glassEffect(.regular.interactive(), in: Capsule())
         } else {
-            background(shape.fill(style.colors.secondaryButtonColors.backgroundColor))
+            buttonStyle(.plain)
+                .background(Capsule().fill(.regularMaterial))
+                .shadow(color: .black.opacity(0.12), radius: 20, y: 8)
         }
     }
 }
@@ -76,7 +75,7 @@ private extension View {
 // MARK: - Previews
 
 #Preview {
-    AccessCodeToolbar(onCancel: {})
+    AccessCodeHeaderActions(onClose: {})
         .padding()
-        .environmentObject(TangemSdkStyle())
+        .background(Color.gray.opacity(0.1))
 }

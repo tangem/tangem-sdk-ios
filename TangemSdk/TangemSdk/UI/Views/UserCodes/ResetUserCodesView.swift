@@ -30,7 +30,8 @@ struct ResetUserCodesView: View {
 
     private var newDesignBody: some View {
         VStack(spacing: 0) {
-            AccessCodeToolbar(onCancel: onCancel)
+            AccessCodeHeaderActions(onClose: onCancel)
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, 16)
 
             FillingScrollView { size in

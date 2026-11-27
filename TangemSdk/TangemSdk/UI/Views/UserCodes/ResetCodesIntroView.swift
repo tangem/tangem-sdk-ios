@@ -15,7 +15,8 @@ struct ResetCodesIntroView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AccessCodeToolbar(onCancel: onCancel)
+            AccessCodeHeaderActions(onClose: onCancel)
+                .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, 16)
 
             ScrollView {

@@ -48,7 +48,7 @@ public class CardSession {
     private var preflightReadMode: PreflightReadMode = .fullCardRead(options: [])
     private var currentTag: NFCTagType = .none
     private var resetCodesController: ResetCodesController?
-    let accessCodeFlow: AccessCodeFlow
+    private(set) var accessCodeFlow: AccessCodeFlow
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository?
     private let filter: SessionFilter?
@@ -417,6 +417,7 @@ public class CardSession {
     /// Update session environment config with the new one
     public func updateConfig(with newConfig: Config) {
         environment.config = newConfig
+        accessCodeFlow = AccessCodeFlow(config: newConfig)
     }
 
     /// We need to remember the tag for the duration of the command to be able to compare this tag with new one on tag from connected/lost events
@@ -441,10 +442,12 @@ public class CardSession {
         // Reset before delivering the completion so the caller can start a new session right away
         state = .inactive
         viewDelegate.sessionStopped { [accessCodeFlow] in
-            completion?()
-            Task { @MainActor in
-                accessCodeFlow.openPendingSupport()
+            if Thread.isMainThread {
+                MainActor.assumeIsolated { accessCodeFlow.openPendingSupport() }
+            } else {
+                Task { @MainActor in accessCodeFlow.openPendingSupport() }
             }
+            completion?()
         }
         NotificationCenter.default.post(name: .cardSessionDidFinish, object: self)
     }

@@ -228,7 +228,7 @@ public class SetUserCodeCommand: Command {
 
         let formattedCid = session.cardId.flatMap { CardIdFormatter(style: session.environment.config.cardIdDisplayFormat).string(from: $0) }
 
-        let request = UserCodeRequest(type: type, cardId: formattedCid, accessCodeFlow: session.accessCodeFlow) { result in
+        let request = UserCodeRequest(type: type, cardId: formattedCid, accessCodeFlow: session.accessCodeFlow.scoped(to: type)) { result in
             switch result {
             case .success(let code):
                 self.codes[type] = .stringValue(code)

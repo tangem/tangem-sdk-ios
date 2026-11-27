@@ -38,6 +38,25 @@ final class AccessCodeFlowTests: XCTestCase {
         XCTAssertFalse(AccessCodeFlow(config: Config()).isSupportAvailable)
     }
 
+    func testPasscodeScopeIsInert() {
+        let handler = HandlerMock()
+        var config = makeConfig(handler)
+        config.usesNewAccessCodeDesign = true
+        let flow = AccessCodeFlow(config: config)
+
+        let accessCodeFlow = flow.scoped(to: .accessCode)
+        let passcodeFlow = flow.scoped(to: .passcode)
+        passcodeFlow.deliverTap(for: Result<String, TangemSdkError>.failure(.userForgotTheCode), on: .enterAccessCode)
+        passcodeFlow.requestSupport(from: .enterAccessCode)
+        passcodeFlow.openPendingSupport()
+
+        XCTAssertTrue(accessCodeFlow === flow)
+        XCTAssertFalse(passcodeFlow.usesNewDesign)
+        XCTAssertFalse(passcodeFlow.isSupportAvailable)
+        XCTAssertTrue(handler.events.isEmpty)
+        XCTAssertTrue(handler.supportScreens.isEmpty)
+    }
+
     func testTapsMapToButtons() {
         let handler = HandlerMock()
         let flow = AccessCodeFlow(config: makeConfig(handler))

@@ -49,6 +49,8 @@ class MainTabViewModel: ObservableObject {
     @AppStorage("extendedBackup") private var extendedBackup: Bool = false
     @AppStorage("isDevelopmentMode") var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
+    @AppStorage("usesNewAccessCodeDesign") var usesNewAccessCodeDesign: Bool = false
+    @AppStorage("hasSupportHandler") var hasSupportHandler: Bool = false
 
     private lazy var _tangemSdk: TangemSdk = {
         let sdk = TangemSdk()
@@ -57,6 +59,7 @@ class MainTabViewModel: ObservableObject {
     }()
 
     private lazy var logger: DebugLogger = .init()
+    private let accessCodeHooks = ExampleAccessCodeHooks()
 
     var configuredSdk: TangemSdk {
         var config = Config()
@@ -64,6 +67,9 @@ class MainTabViewModel: ObservableObject {
         config.handleErrors = handleErrors
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         config.accessCodeRequestPolicy = accessCodeRequestPolicy
+        config.usesNewAccessCodeDesign = usesNewAccessCodeDesign
+        config.supportHandler = hasSupportHandler ? accessCodeHooks : nil
+        config.analyticsHandler = accessCodeHooks
 
         var loggers: [TangemSdkLogger] = [ConsoleLogger()]
 
@@ -98,6 +104,10 @@ class MainTabViewModel: ObservableObject {
     private var bag: Set<AnyCancellable> = []
 
     init() {
+        accessCodeHooks.onMessage = { [weak self] message in
+            self?.logText += "\n\(message)"
+        }
+
         logger
             .logsPublisher
             .debounce(for: 1, scheduler: DispatchQueue.global())

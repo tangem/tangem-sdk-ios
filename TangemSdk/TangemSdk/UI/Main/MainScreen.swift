@@ -46,6 +46,7 @@ struct MainScreen: View {
                     confirmationPlaceholder: request.type.confirmCodeTitle,
                     completion: request.handle
                 )
+                .environment(\.accessCodeFlow, request.accessCodeFlow)
                 .transition(.opacity.animation(.easeInOut))
 
             case .empty:
@@ -71,8 +72,12 @@ struct MainScreen: View {
                 cardId: request.cardId ?? "",
                 placeholder: request.type.name,
                 showForgotButton: request.showForgotButton,
-                completion: request.handle
+                completion: { result in
+                    request.accessCodeFlow?.deliverTap(for: result, on: .enterAccessCode)
+                    request.handle(result)
+                }
             )
+            .accessCodeScreen(.enterAccessCode, flow: request.accessCodeFlow)
             .transition(.opacity.animation(.easeInOut))
         }
     }

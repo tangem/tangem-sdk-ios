@@ -16,6 +16,8 @@ struct SettingsView: View {
     @AppStorage("extendedBackup") private var extendedBackup: Bool = false
     @AppStorage("isDevelopmentMode") private var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") private var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
+    @AppStorage("usesNewAccessCodeDesign") private var usesNewAccessCodeDesign: Bool = false
+    @AppStorage("hasSupportHandler") private var hasSupportHandler: Bool = false
 
     var body: some View {
         VStack {
@@ -28,6 +30,10 @@ struct SettingsView: View {
             Toggle("Dev api", isOn: $useDevApi)
 
             Toggle("Dev mode", isOn: $isDevelopmentMode)
+
+            Toggle("New access code design", isOn: $usesNewAccessCodeDesign)
+
+            Toggle("Support handler", isOn: $hasSupportHandler)
 
             Text("Access code request policy")
                 .fontWeight(.bold)

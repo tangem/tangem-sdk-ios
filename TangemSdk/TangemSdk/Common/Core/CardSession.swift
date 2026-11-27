@@ -48,6 +48,7 @@ public class CardSession {
     private var preflightReadMode: PreflightReadMode = .fullCardRead(options: [])
     private var currentTag: NFCTagType = .none
     private var resetCodesController: ResetCodesController?
+    let accessCodeFlow: AccessCodeFlow
     /// Allows access codes to be stored in a secure location
     private var accessCodeRepository: AccessCodeRepository?
     private let filter: SessionFilter?
@@ -115,6 +116,7 @@ public class CardSession {
         self.jsonConverter = jsonConverter
         self.accessCodeRepository = accessCodeRepository
         self.cardAccessTokensRepository = cardAccessTokensRepository
+        accessCodeFlow = AccessCodeFlow(config: environment.config)
     }
 
     deinit {
@@ -438,7 +440,12 @@ public class CardSession {
         sendSubscription = []
         // Reset before delivering the completion so the caller can start a new session right away
         state = .inactive
-        viewDelegate.sessionStopped(completion: completion)
+        viewDelegate.sessionStopped { [accessCodeFlow] in
+            completion?()
+            Task { @MainActor in
+                accessCodeFlow.openPendingSupport()
+            }
+        }
         NotificationCenter.default.post(name: .cardSessionDidFinish, object: self)
     }
 
@@ -794,7 +801,8 @@ public class CardSession {
             type: type,
             cardId: formattedCardId,
             showForgotButton: showForgotButton,
-            showWelcomeBackWarning: showWelcomeBackWarning
+            showWelcomeBackWarning: showWelcomeBackWarning,
+            accessCodeFlow: accessCodeFlow
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -882,9 +890,11 @@ public class CardSession {
     private func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
         var config = environment.config
         config.accessCodeRequestPolicy = .default
+        config.supportHandler = nil
+        config.analyticsHandler = nil
         let resetService = ResetPinService(config: config)
-        let viewDelegate = ResetCodesViewDelegate(style: config.style)
-        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
+        let viewDelegate = ResetCodesViewDelegate(style: config.style, accessCodeFlow: accessCodeFlow)
+        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate, accessCodeFlow: accessCodeFlow)
         resetCodesController!.cardIdDisplayFormat = config.cardIdDisplayFormat
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
     }

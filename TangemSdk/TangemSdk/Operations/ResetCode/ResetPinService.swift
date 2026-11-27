@@ -266,6 +266,21 @@ extension ResetPinService {
             }
         }
 
+        var analyticsScreen: TangemSdkScreen {
+            switch self {
+            case .needCode:
+                return .resetCodesNewCode
+            case .needScanResetCard:
+                return .resetCodesScanResetCard
+            case .needScanConfirmationCard:
+                return .resetCodesScanConfirmationCard
+            case .needWriteResetCard:
+                return .resetCodesWriteResetCard
+            case .finished:
+                return .resetCodesSuccess
+            }
+        }
+
         var cardType: CardType {
             switch self {
             case .needCode, .needScanResetCard, .needWriteResetCard, .finished:

@@ -14,6 +14,7 @@ public class ResetCodesController {
 
     private let resetService: ResetPinService
     private let viewDelegate: ResetCodesViewDelegate
+    private let accessCodeFlow: AccessCodeFlow
 
     private var bag = Set<AnyCancellable>()
     private var codeType: UserCodeType?
@@ -25,9 +26,10 @@ public class ResetCodesController {
         cardId.flatMap { CardIdFormatter(style: cardIdDisplayFormat).string(from: $0) }
     }
 
-    init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate) {
+    init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate, accessCodeFlow: AccessCodeFlow) {
         self.resetService = resetService
         self.viewDelegate = viewDelegate
+        self.accessCodeFlow = accessCodeFlow
         bind()
     }
 
@@ -56,10 +58,14 @@ public class ResetCodesController {
 
                 switch newState {
                 case .finished:
+                    accessCodeFlow.log(.screenOpened(newState.analyticsScreen), .resetCodesFinished)
                     viewDelegate.showAlert(
                         newState.messageTitle,
                         message: newState.messageBody,
-                        onContinue: { [weak self] in self?.handleContinue(.success(false)) }
+                        onContinue: { [weak self] in
+                            self?.accessCodeFlow.log(.buttonTapped(.finish, screen: newState.analyticsScreen))
+                            self?.handleContinue(.success(false))
+                        }
                     )
                 default:
                     if let codeType = codeType {
@@ -75,6 +81,14 @@ public class ResetCodesController {
                 }
             }
             .store(in: &bag)
+
+        resetService
+            .errorPublisher
+            .compactMap { $0 }
+            .sink { [accessCodeFlow] error in
+                accessCodeFlow.logFailure(error)
+            }
+            .store(in: &bag)
     }
 
     private func handleCodeInput(_ result: Result<String, TangemSdkError>) {
@@ -87,9 +101,7 @@ public class ResetCodesController {
                 viewDelegate.showError(error.toTangemSdkError())
             }
         case .failure(let error):
-            viewDelegate.hide {
-                self.completion?(.failure(error))
-            }
+            finish(with: .failure(error))
         }
     }
 
@@ -99,14 +111,19 @@ public class ResetCodesController {
             if shouldContinue {
                 resetService.proceed(with: cardId)
             } else { // completed
-                viewDelegate.hide {
-                    self.completion?(.success(self.newCode))
-                }
+                finish(with: .success(newCode))
             }
         case .failure(let error):
-            viewDelegate.hide {
-                self.completion?(.failure(error))
-            }
+            finish(with: .failure(error))
+        }
+    }
+
+    private func finish(with result: Result<String, TangemSdkError>) {
+        guard let completion else { return }
+
+        self.completion = nil
+        viewDelegate.hide {
+            completion(result)
         }
     }
 }

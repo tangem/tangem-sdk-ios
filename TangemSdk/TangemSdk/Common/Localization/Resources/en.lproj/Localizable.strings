@@ -25,6 +25,7 @@
 "common_retry" = "Retry";
 "common_ring" = "ring";
 "common_success" = "Success";
+"common_support" = "Support";
 "common_understand" = "I understand";
 "common_warning" = "Warning";
 "error_already_created" = "A wallet has already been created";

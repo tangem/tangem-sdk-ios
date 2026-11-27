@@ -67,6 +67,16 @@ public struct Config {
     /// Localized reason for Touch ID. DO NOT leave it empty.
     public var biometricsLocalizedReason: String = "touch_id_localized_reason".localized
 
+    /// Held weakly: the app keeps the handler alive for as long as sessions may use it.
+    public weak var supportHandler: TangemSdkSupportHandler?
+
+    /// Held weakly: the app keeps the handler alive for as long as sessions may use it.
+    public weak var analyticsHandler: TangemSdkAnalyticsHandler?
+
+    public var usesNewAccessCodeDesign: Bool = false
+
+    public var showsResetCodesIntro: Bool = false
+
     /// Development API toggle
     public static var useDevApi: Bool = false
 

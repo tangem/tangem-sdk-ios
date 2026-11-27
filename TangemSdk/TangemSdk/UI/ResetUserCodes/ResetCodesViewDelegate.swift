@@ -13,15 +13,18 @@ import SwiftUI
 final class ResetCodesViewDelegate: BaseViewDelegate {
     private let viewModel: ResetCodesViewModel = .init(viewState: .empty)
     private let style: TangemSdkStyle
+    private let accessCodeFlow: AccessCodeFlow
 
-    init(style: TangemSdkStyle) {
+    init(style: TangemSdkStyle, accessCodeFlow: AccessCodeFlow) {
         self.style = style
+        self.accessCodeFlow = accessCodeFlow
     }
 
     override func makeScreen() -> UIViewController {
         let view = ResetCodesScreen()
             .environmentObject(viewModel)
             .environmentObject(style)
+            .environment(\.accessCodeFlow, accessCodeFlow)
 
         let screen = UIHostingController(rootView: view)
         screen.isModalInPresentation = true

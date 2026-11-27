@@ -17,6 +17,8 @@ public final class UserCodeRequest {
     public let showForgotButton: Bool
     public private(set) var showWelcomeBackWarning: Bool
 
+    let accessCodeFlow: AccessCodeFlow?
+
     private let isOneShot: Bool
     private var completion: CompletionResult<String>?
 
@@ -25,6 +27,7 @@ public final class UserCodeRequest {
         cardId: String? = nil,
         showForgotButton: Bool = false,
         showWelcomeBackWarning: Bool = false,
+        accessCodeFlow: AccessCodeFlow? = nil,
         isOneShot: Bool = true,
         completion: @escaping CompletionResult<String>
     ) {
@@ -32,6 +35,7 @@ public final class UserCodeRequest {
         self.cardId = cardId
         self.showForgotButton = showForgotButton
         self.showWelcomeBackWarning = showWelcomeBackWarning
+        self.accessCodeFlow = accessCodeFlow
         self.isOneShot = isOneShot
         self.completion = completion
     }

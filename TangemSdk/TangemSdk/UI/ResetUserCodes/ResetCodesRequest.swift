@@ -11,10 +11,10 @@ import Foundation
 /// A handle for a pending reset codes interaction. Stays invokable because the flow retries
 /// after recoverable errors, so the completion must capture the flow controller weakly —
 /// the stored view state would retain it otherwise.
-final class ResetCodesRequest {
-    let type: UserCodeType
-    let state: ResetPinService.State
-    let cardId: String?
+public final class ResetCodesRequest {
+    public let type: UserCodeType
+    public let state: ResetPinService.State
+    public let cardId: String?
 
     private let completion: CompletionResult<Bool>
 
@@ -28,6 +28,14 @@ final class ResetCodesRequest {
         self.state = state
         self.cardId = cardId
         self.completion = completion
+    }
+
+    public func proceed() {
+        handle(.success(true))
+    }
+
+    public func cancel() {
+        handle(.failure(.userCancelled))
     }
 
     func handle(_ result: Result<Bool, TangemSdkError>) {

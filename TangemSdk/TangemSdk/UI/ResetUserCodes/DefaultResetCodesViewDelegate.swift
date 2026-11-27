@@ -1,0 +1,83 @@
+//
+//  DefaultResetCodesViewDelegate.swift
+//  TangemSdk
+//
+//  Created by [REDACTED_AUTHOR]
+//  Copyright © 2021 Tangem AG. All rights reserved.
+//
+
+import Foundation
+import UIKit
+import SwiftUI
+
+final class DefaultResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewDelegate {
+    private let viewModel: ResetCodesViewModel = .init(viewState: .empty)
+    private let style: TangemSdkStyle
+
+    init(style: TangemSdkStyle) {
+        self.style = style
+    }
+
+    override func makeScreen() -> UIViewController {
+        let view = ResetCodesScreen()
+            .environmentObject(viewModel)
+            .environmentObject(style)
+
+        let screen = UIHostingController(rootView: view)
+        screen.isModalInPresentation = true
+        return screen
+    }
+
+    override func presentationDidFail() {
+        // A prompt nobody can see would keep the whole reset flow and its session alive forever
+        switch viewModel.viewState {
+        case .requestCode(let request):
+            request.cancel()
+        case .resetCodes(let request):
+            request.cancel()
+        case .empty:
+            break
+        }
+    }
+
+    func setState(_ state: ResetCodesViewState) {
+        Log.view("Set state: \(state)")
+
+        let setStateAction = { self.viewModel.viewState = state }
+        runInMainThread(setStateAction())
+        runInMainThread(self.presentScreenIfNeeded())
+    }
+
+    func hide(completion: (() -> Void)?) {
+        runInMainThread(self.dismissScreen(completion: completion))
+    }
+
+    func showError(_ error: TangemSdkError) {
+        guard let screen = screen else { return }
+
+        let tint = style.colors.tintUIColor
+        runInMainThread(UIAlertController.showAlert(
+            from: screen,
+            title: "common_error".localized,
+            message: error.localizedDescription,
+            tint: tint,
+            onContinue: {}
+        ))
+    }
+
+    func showAlert(_ title: String, message: String, onContinue: @escaping () -> Void) {
+        guard let screen = screen else {
+            onContinue()
+            return
+        }
+
+        let tint = style.colors.tintUIColor
+        runInMainThread(UIAlertController.showAlert(
+            from: screen,
+            title: title,
+            message: message,
+            tint: tint,
+            onContinue: onContinue
+        ))
+    }
+}

@@ -40,6 +40,7 @@ public class CardSession {
     private var secureChannelRetryCount = 0
 
     private let reader: CardReader
+    private let viewDelegateFactory: ViewDelegateFactory
     private let jsonConverter: JSONRPCConverter?
     private let initialMessage: Message?
     private var sendSubscription: [AnyCancellable] = []
@@ -92,6 +93,7 @@ public class CardSession {
     ///   - initialMessage: A custom description that shows at the beginning of the NFC session. If nil, default message will be used
     ///   - cardReader: NFC-reader implementation
     ///   - viewDelegate: viewDelegate implementation
+    ///   - viewDelegateFactory: viewDelegateFactory implementation
     ///   - jsonConverter: optional JSONRPCConverter
     ///   - accessCodeRepository: Optional AccessCodeRepository that saves access codes to Apple Keychain
     ///   - cardAccessTokensRepository: Optional CardAccessTokensRepository that saves card access tokens to Apple Keychain
@@ -101,6 +103,7 @@ public class CardSession {
         initialMessage: Message? = nil,
         cardReader: CardReader,
         viewDelegate: SessionViewDelegate,
+        viewDelegateFactory: ViewDelegateFactory,
         jsonConverter: JSONRPCConverter?,
         accessCodeRepository: AccessCodeRepository?,
         cardAccessTokensRepository: CardAccessTokensRepository?
@@ -108,6 +111,7 @@ public class CardSession {
         reader = cardReader
         readerTag = cardReader.tag
         self.viewDelegate = viewDelegate
+        self.viewDelegateFactory = viewDelegateFactory
         _environment = environment
         self.environment = environment
         self.initialMessage = initialMessage
@@ -882,8 +886,8 @@ public class CardSession {
     private func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
         var config = environment.config
         config.accessCodeRequestPolicy = .default
-        let resetService = ResetPinService(config: config)
-        let viewDelegate = ResetCodesViewDelegate(style: config.style)
+        let resetService = ResetPinService(config: config, viewDelegateFactory: viewDelegateFactory)
+        let viewDelegate = viewDelegateFactory.makeResetCodesViewDelegate()
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate)
         resetCodesController!.cardIdDisplayFormat = config.cardIdDisplayFormat
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)

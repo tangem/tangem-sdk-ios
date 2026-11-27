@@ -18,13 +18,15 @@ public class ResetPinService {
 
     private var session: CardSession?
     private let config: Config
+    private let viewDelegateFactory: ViewDelegateFactory
     private var repo: ResetPinRepo = .init()
     private var currentCommand: AnyObject?
     private var _currentState: CurrentValueSubject<State, Never> = .init(.needCode)
     private var _error: CurrentValueSubject<TangemSdkError?, Never> = .init(nil)
 
-    public init(config: Config) {
+    public init(config: Config, viewDelegateFactory: ViewDelegateFactory? = nil) {
         self.config = config
+        self.viewDelegateFactory = viewDelegateFactory ?? DefaultViewDelegateFactory(style: config.style)
     }
 
     deinit {
@@ -113,7 +115,7 @@ public class ResetPinService {
             fatalError("Scan card called without the code specified")
         }
 
-        session = TangemSdk().makeSession(
+        session = TangemSdk(viewDelegateFactory: viewDelegateFactory).makeSession(
             with: config,
             filter: .init(from: resetCardId),
             initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()]))
@@ -143,7 +145,7 @@ public class ResetPinService {
             return
         }
 
-        session = TangemSdk().makeSession(
+        session = TangemSdk(viewDelegateFactory: viewDelegateFactory).makeSession(
             with: config,
             filter: nil,
             initialMessage: Message(header: "reset_codes_scan_confirmation_card".localized)
@@ -201,7 +203,7 @@ public class ResetPinService {
             return
         }
 
-        session = TangemSdk().makeSession(
+        session = TangemSdk(viewDelegateFactory: viewDelegateFactory).makeSession(
             with: config,
             filter: .cardId(resetPinCard.cardId),
             initialMessage: Message(header: "reset_codes_scan_to_reset".localized)

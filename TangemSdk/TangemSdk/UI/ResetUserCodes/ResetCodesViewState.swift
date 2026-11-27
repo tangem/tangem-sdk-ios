@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ResetCodesViewState {
+public enum ResetCodesViewState {
     case empty
     case requestCode(UserCodeRequest)
     case resetCodes(ResetCodesRequest)

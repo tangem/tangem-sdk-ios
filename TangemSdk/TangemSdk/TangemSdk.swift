@@ -17,6 +17,7 @@ public final class TangemSdk {
 
     private let reader: CardReader
     private let viewDelegate: SessionViewDelegate
+    private let viewDelegateFactory: ViewDelegateFactory
     private let terminalKeysService = TerminalKeysService()
     private var cardSession: CardSession?
     private var jsonConverter: JSONRPCConverter?
@@ -25,18 +26,20 @@ public final class TangemSdk {
     /// - Parameters:
     ///   - cardReader: An interface that is responsible for NFC connection and transfer of data to and from the Tangem Card.
     ///   If nil, its default implementation will be used
-    ///   - viewDelegate:  An interface that allows interaction with users and shows relevant UI.
+    ///   - viewDelegateFactory:  Creates the interfaces that allow interaction with users and show relevant UI.
     ///   If nil, its default implementation will be used
     ///   - config: Allows to change a number of parameters for communication with Tangem cards.
     ///   Do not change the default values unless you know what you are doing.
     public init(
         cardReader: CardReader? = nil,
-        viewDelegate: SessionViewDelegate? = nil,
+        viewDelegateFactory: ViewDelegateFactory? = nil,
         config: Config = Config()
     ) {
         let reader = cardReader ?? NFCReader()
+        let viewDelegateFactory = viewDelegateFactory ?? DefaultViewDelegateFactory(style: config.style)
         self.reader = reader
-        self.viewDelegate = viewDelegate ?? DefaultSessionViewDelegate(reader: reader, style: config.style)
+        viewDelegate = viewDelegateFactory.makeSessionViewDelegate(reader: reader)
+        self.viewDelegateFactory = viewDelegateFactory
         self.config = config
     }
 
@@ -872,6 +875,7 @@ extension TangemSdk {
             initialMessage: initialMessage,
             cardReader: reader,
             viewDelegate: viewDelegate,
+            viewDelegateFactory: viewDelegateFactory,
             jsonConverter: jsonConverter,
             accessCodeRepository: makeAccessCodeRepository(with: config),
             cardAccessTokensRepository: makeCardAccessTokensRepository(with: config)

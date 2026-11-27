@@ -15,13 +15,6 @@ struct UserCodeHeaderView: View {
 
     @EnvironmentObject var style: TangemSdkStyle
     @Environment(\.accessCodeFlow) private var accessCodeFlow
-    @Environment(\.accessCodeScreen) private var accessCodeScreen
-
-    private var supportScreen: TangemSdkScreen? {
-        guard let accessCodeFlow, accessCodeFlow.isSupportAvailable else { return nil }
-
-        return accessCodeScreen
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -29,13 +22,7 @@ struct UserCodeHeaderView: View {
                 Spacer()
 
                 if accessCodeFlow?.usesNewDesign == true {
-                    HStack(spacing: 8) {
-                        if let supportScreen {
-                            supportButton(screen: supportScreen)
-                        }
-
-                        closeButton
-                    }
+                    AccessCodeHeaderActions(onClose: onCancel)
                 } else {
                     Button("common_cancel".localized, action: onCancel)
                         .foregroundColor(style.colors.tint)
@@ -49,31 +36,6 @@ struct UserCodeHeaderView: View {
             Text(cardId)
                 .font(.system(size: 17))
         }
-    }
-
-    private func supportButton(screen: TangemSdkScreen) -> some View {
-        Button {
-            accessCodeFlow?.requestSupport(from: screen)
-            onCancel()
-        } label: {
-            Text("common_support".localized)
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(style.colors.secondaryButtonColors.foregroundColor)
-                .padding(.horizontal, 12)
-                .frame(height: 32)
-                .background(Capsule().fill(style.colors.secondaryButtonColors.backgroundColor))
-        }
-    }
-
-    private var closeButton: some View {
-        Button(action: onCancel) {
-            Image(systemName: "xmark")
-                .font(.system(size: 13, weight: .bold))
-                .foregroundColor(style.colors.secondaryButtonColors.foregroundColor)
-                .frame(width: 32, height: 32)
-                .background(Circle().fill(style.colors.secondaryButtonColors.backgroundColor))
-        }
-        .accessibilityLabel("common_cancel".localized)
     }
 }
 

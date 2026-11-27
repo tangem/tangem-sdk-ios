@@ -21,6 +21,11 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
     private let viewModel: ResetCodesViewModel = .init(viewState: .empty)
     private let style: TangemSdkStyle
     private let accessCodeFlow: AccessCodeFlow
+    private lazy var sheetDismissHandler = SheetDismissHandler { [weak self] in
+        guard case .intro(let request) = self?.viewModel.viewState else { return }
+
+        request.handle(.failure(.userCancelled))
+    }
 
     init(style: TangemSdkStyle, accessCodeFlow: AccessCodeFlow) {
         self.style = style
@@ -35,6 +40,14 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
 
         let screen = UIHostingController(rootView: view)
         screen.isModalInPresentation = true
+
+        if accessCodeFlow.usesNewDesign {
+            screen.modalPresentationStyle = .pageSheet
+            screen.sheetPresentationController?.detents = [.large()]
+            screen.presentationController?.delegate = sheetDismissHandler
+            updateSwipeDismiss(of: screen)
+        }
+
         return screen
     }
 
@@ -57,7 +70,12 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
     func setState(_ state: ResetCodesViewState) {
         Log.view("Set state: \(state)")
 
-        let setStateAction = { self.viewModel.viewState = state }
+        let setStateAction = {
+            self.viewModel.viewState = state
+            if self.accessCodeFlow.usesNewDesign, let screen = self.screen {
+                self.updateSwipeDismiss(of: screen)
+            }
+        }
         runInMainThread(setStateAction())
         runInMainThread(self.presentScreenIfNeeded())
     }
@@ -93,5 +111,26 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
             tint: tint,
             onContinue: onContinue
         ))
+    }
+
+    /// Only the intro may be swiped away; a swipe mid-reset would leave the card half-done
+    private func updateSwipeDismiss(of screen: UIViewController) {
+        if case .intro = viewModel.viewState {
+            screen.isModalInPresentation = false
+        } else {
+            screen.isModalInPresentation = true
+        }
+    }
+}
+
+private final class SheetDismissHandler: NSObject, UIAdaptivePresentationControllerDelegate {
+    private let onDismiss: () -> Void
+
+    init(onDismiss: @escaping () -> Void) {
+        self.onDismiss = onDismiss
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onDismiss()
     }
 }

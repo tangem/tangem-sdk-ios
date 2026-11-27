@@ -37,11 +37,6 @@ struct ResetCodesIntroView: View {
             )
         }
         .padding([.horizontal, .bottom])
-        .accessCodeToolbar(onClose: onCancel)
-    }
-
-    private func onCancel() {
-        completion(.failure(.userCancelled))
     }
 
     private func onContinue() {

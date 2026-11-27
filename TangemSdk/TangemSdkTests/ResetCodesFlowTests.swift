@@ -8,6 +8,7 @@
 
 import Combine
 import Foundation
+import SwiftUI
 import XCTest
 @testable import TangemSdk
 
@@ -116,6 +117,25 @@ final class ResetCodesFlowTests: XCTestCase {
             }
         }))
         wait(for: [successCompleted], timeout: 2)
+    }
+
+    func testNewDesignPresentsResetAsLargePageSheet() {
+        var config = Config()
+        config.usesNewAccessCodeDesign = true
+        let viewDelegate = ResetCodesViewDelegate(style: TangemSdkStyle(), accessCodeFlow: AccessCodeFlow(config: config))
+        let screen = viewDelegate.makeScreen()
+
+        XCTAssertEqual(screen.modalPresentationStyle, .pageSheet)
+        XCTAssertEqual(screen.sheetPresentationController?.detents.map(\.identifier), [.large])
+        XCTAssertNotNil(screen.presentationController?.delegate)
+        XCTAssertTrue(screen.isModalInPresentation)
+    }
+
+    func testOldDesignKeepsResetPresentation() {
+        let screen = ResetCodesViewDelegate(style: TangemSdkStyle(), accessCodeFlow: AccessCodeFlow(config: Config())).makeScreen()
+
+        XCTAssertEqual(screen.modalPresentationStyle, UIHostingController(rootView: EmptyView()).modalPresentationStyle)
+        XCTAssertTrue(screen.isModalInPresentation)
     }
 
     func testIntroContinueAfterCloseIsIgnored() {

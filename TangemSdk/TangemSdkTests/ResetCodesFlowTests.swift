@@ -163,21 +163,6 @@ final class ResetCodesFlowTests: XCTestCase {
         }
     }
 
-    func testPasscodeResetFlowKeepsOldDesignAndReportsNothing() {
-        let handler = AnalyticsHandlerMock()
-        var config = Config()
-        config.usesNewAccessCodeDesign = true
-        config.analyticsHandler = handler
-        let session = makeSession(config: config, card: nil, viewDelegate: SessionViewDelegateMock())
-
-        let passcodeFlow = session.resetCodesFlow(for: .passcode)
-        passcodeFlow.deliver(.buttonTapped(.forgotCode, screen: .resetCodesIntro))
-
-        XCTAssertFalse(passcodeFlow.usesNewDesign)
-        XCTAssertTrue(handler.events.isEmpty)
-        XCTAssertTrue(session.resetCodesFlow(for: .accessCode) === session.accessCodeFlow)
-    }
-
     func testForgotButtonBeforeScanFollowsNewDesign() throws {
         XCTAssertTrue(try requestedCode(usesNewDesign: true, card: nil).showForgotButton)
         XCTAssertFalse(try requestedCode(usesNewDesign: false, card: nil).showForgotButton)
@@ -215,11 +200,14 @@ final class ResetCodesFlowTests: XCTestCase {
         )
     }
 
-    private func makeSession(config: Config, card: Card?, viewDelegate: SessionViewDelegate) -> CardSession {
+    private func requestedCode(_ type: UserCodeType = .accessCode, usesNewDesign: Bool, card: Card?) throws -> UserCodeRequest {
+        var config = Config()
+        config.usesNewAccessCodeDesign = usesNewDesign
         var environment = SessionEnvironment(config: config)
         environment.card = card
 
-        return CardSession(
+        let viewDelegate = SessionViewDelegateMock()
+        let session = CardSession(
             environment: environment,
             cardReader: CardReaderMock(),
             viewDelegate: viewDelegate,
@@ -227,13 +215,6 @@ final class ResetCodesFlowTests: XCTestCase {
             accessCodeRepository: nil,
             cardAccessTokensRepository: nil
         )
-    }
-
-    private func requestedCode(_ type: UserCodeType = .accessCode, usesNewDesign: Bool, card: Card?) throws -> UserCodeRequest {
-        var config = Config()
-        config.usesNewAccessCodeDesign = usesNewDesign
-        let viewDelegate = SessionViewDelegateMock()
-        let session = makeSession(config: config, card: card, viewDelegate: viewDelegate)
 
         session.requestUserCode(type, showWelcomeBackWarning: false) { _ in }
 

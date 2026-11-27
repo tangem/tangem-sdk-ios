@@ -25,6 +25,16 @@ final class AccessCodeFlow {
         handlers = Handlers(support: config.supportHandler, analytics: config.analyticsHandler)
     }
 
+    // Passcode prompts keep the 5.3.10 UI and send no events
+    nonisolated func scoped(to type: UserCodeType) -> AccessCodeFlow {
+        switch type {
+        case .accessCode:
+            return self
+        case .passcode:
+            return AccessCodeFlow(config: Config())
+        }
+    }
+
     nonisolated func log(_ events: TangemSdkAnalyticsEvent...) {
         Task { @MainActor in
             events.forEach(self.deliver)

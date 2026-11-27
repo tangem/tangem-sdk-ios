@@ -805,7 +805,7 @@ public class CardSession {
             cardId: formattedCardId,
             showForgotButton: showForgotButton,
             showWelcomeBackWarning: showWelcomeBackWarning,
-            accessCodeFlow: accessCodeFlow
+            accessCodeFlow: accessCodeFlow.scoped(to: type)
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -895,23 +895,12 @@ public class CardSession {
         config.accessCodeRequestPolicy = .default
         config.supportHandler = nil
         config.analyticsHandler = nil
-        let resetFlow = resetCodesFlow(for: type)
         let resetService = ResetPinService(config: config)
-        let viewDelegate = ResetCodesViewDelegate(style: config.style, accessCodeFlow: resetFlow)
-        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate, accessCodeFlow: resetFlow)
+        let flow = accessCodeFlow.scoped(to: type)
+        let viewDelegate = ResetCodesViewDelegate(style: config.style, accessCodeFlow: flow)
+        resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate, accessCodeFlow: flow)
         resetCodesController!.cardIdDisplayFormat = config.cardIdDisplayFormat
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
-    }
-
-    func resetCodesFlow(for type: UserCodeType) -> AccessCodeFlow {
-        guard type == .passcode, accessCodeFlow.usesNewDesign else { return accessCodeFlow }
-
-        // The new design and its events cover the access code only; a passcode reset keeps the old screens.
-        var config = environment.config
-        config.usesNewAccessCodeDesign = false
-        config.supportHandler = nil
-        config.analyticsHandler = nil
-        return AccessCodeFlow(config: config)
     }
 
     private func resetSensitiveData() {

@@ -45,6 +45,7 @@ struct EnterUserCodeView: View {
             }
             .scrollBounceBehavior(.basedOnSize)
         }
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     private var codeInput: some View {

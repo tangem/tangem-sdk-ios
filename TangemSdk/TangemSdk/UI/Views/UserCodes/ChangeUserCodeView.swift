@@ -64,6 +64,7 @@ struct ChangeUserCodeView: View {
             }
         }
         .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     private func onCancel() {

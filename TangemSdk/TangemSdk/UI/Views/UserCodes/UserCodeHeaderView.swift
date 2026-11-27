@@ -18,16 +18,14 @@ struct UserCodeHeaderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Spacer()
+            if accessCodeFlow?.usesNewDesign != true {
+                HStack {
+                    Spacer()
 
-                if accessCodeFlow?.usesNewDesign == true {
-                    AccessCodeHeaderActions(onClose: onCancel)
-                } else {
                     Button("common_cancel".localized, action: onCancel)
                         .foregroundColor(style.colors.tint)
-                }
-            }.padding(.bottom, 16)
+                }.padding(.bottom, 16)
+            }
 
             Text(title)
                 .font(Font.system(size: 24).bold())

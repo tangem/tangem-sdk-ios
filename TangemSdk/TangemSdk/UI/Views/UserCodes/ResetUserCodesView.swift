@@ -53,6 +53,7 @@ struct ResetUserCodesView: View {
             }
         }
         .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     @ViewBuilder

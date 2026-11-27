@@ -22,9 +22,11 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
     private let style: TangemSdkStyle
     private let accessCodeFlow: AccessCodeFlow
     private lazy var sheetDismissHandler = SheetDismissHandler { [weak self] in
-        guard case .intro(let request) = self?.viewModel.viewState else { return }
+        guard let self, case .intro(let request) = viewModel.viewState else { return }
 
-        request.handle(.failure(.userCancelled))
+        let result = Result<Void, TangemSdkError>.failure(.userCancelled)
+        accessCodeFlow.deliverTap(for: result, on: .resetCodesIntro)
+        request.handle(result)
     }
 
     init(style: TangemSdkStyle, accessCodeFlow: AccessCodeFlow) {
@@ -124,9 +126,9 @@ final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
 }
 
 private final class SheetDismissHandler: NSObject, UIAdaptivePresentationControllerDelegate {
-    private let onDismiss: () -> Void
+    private let onDismiss: @MainActor () -> Void
 
-    init(onDismiss: @escaping () -> Void) {
+    init(onDismiss: @escaping @MainActor () -> Void) {
         self.onDismiss = onDismiss
     }
 

@@ -17,25 +17,24 @@ struct ResetCodesSuccessView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
+            FillingScrollView { _ in
+                VStack(spacing: 20) {
+                    Image("reset_codes_success", bundle: .sdkBundle)
+                        .frame(width: 76, height: 76)
 
-            VStack(spacing: 20) {
-                Image("reset_codes_success", bundle: .sdkBundle)
-                    .frame(width: 76, height: 76)
+                    VStack(spacing: 12) {
+                        Text(title)
+                            .font(.system(size: 28, weight: .bold))
 
-                VStack(spacing: 12) {
-                    Text(title)
-                        .font(.system(size: 28, weight: .bold))
-
-                    Text(message)
-                        .font(.system(size: 16))
-                        .foregroundColor(style.colors.secondaryText)
+                        Text(message)
+                            .font(.system(size: 16))
+                            .foregroundColor(style.colors.secondaryText)
+                    }
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
             }
-
-            Spacer()
 
             SdkButton(
                 title: "common_finish".localized,

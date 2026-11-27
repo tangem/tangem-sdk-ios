@@ -80,6 +80,57 @@ final class ResetCodesFlowTests: XCTestCase {
         }
     }
 
+    func testFinishedLogsCompletionOnceWithNewDesign() async {
+        let handler = AnalyticsHandlerMock()
+        let presenter = ResetCodesPresenterMock()
+        let service = ResetPinServiceMock()
+        var config = Config()
+        config.usesNewAccessCodeDesign = true
+        config.analyticsHandler = handler
+        let controller = ResetCodesController(resetService: service, viewDelegate: presenter, accessCodeFlow: AccessCodeFlow(config: config))
+
+        controller.start(codeType: .accessCode, cardId: nil) { _ in }
+        service.state.send(.finished)
+        for _ in 0 ..< 100 where handler.events.isEmpty {
+            await Task.yield()
+        }
+
+        XCTAssertEqual(handler.events, [.resetCodesFinished])
+    }
+
+    func testUnpresentableIntroCancelsAndSuccessCompletes() {
+        let viewDelegate = ResetCodesViewDelegate(style: TangemSdkStyle(), accessCodeFlow: AccessCodeFlow(config: Config()))
+        let introCancelled = expectation(description: "intro cancelled")
+        let successCompleted = expectation(description: "success completed")
+
+        viewDelegate.setState(.intro(ResetCodesIntroRequest { result in
+            if case .failure(.userCancelled) = result {
+                introCancelled.fulfill()
+            }
+        }))
+        wait(for: [introCancelled], timeout: 2)
+
+        viewDelegate.setState(.success(ResetCodesRequest(type: .accessCode, state: .finished, cardId: nil) { result in
+            if case .success(false) = result {
+                successCompleted.fulfill()
+            }
+        }))
+        wait(for: [successCompleted], timeout: 2)
+    }
+
+    func testIntroContinueAfterCloseIsIgnored() {
+        let presenter = ResetCodesPresenterMock()
+        let controller = makeController(presenter: presenter, usesNewDesign: true, showsIntro: true)
+
+        controller.start(codeType: .accessCode, cardId: nil) { _ in }
+        let request = presenter.introRequest
+        request?.handle(.failure(.userCancelled))
+        request?.handle(.success(()))
+
+        XCTAssertEqual(presenter.stateNames, ["intro"])
+        XCTAssertEqual(presenter.hideCount, 1)
+    }
+
     func testFinishedShowsAlertWithoutNewDesign() {
         let presenter = ResetCodesPresenterMock()
         let service = ResetPinServiceMock()
@@ -96,8 +147,8 @@ final class ResetCodesFlowTests: XCTestCase {
         let numbered = ResetCodesCopy(type: .accessCode, cardId: "•• 0000")
         let ring = ResetCodesCopy(type: .accessCode, cardId: "")
 
-        XCTAssertTrue(numbered.stepTitle(for: .needScanResetCard).contains("•• 0000"))
-        XCTAssertTrue(numbered.successBody.contains("•• 0000"))
+        XCTAssertTrue(numbered.stepTitle(for: .needScanResetCard).contains("••\u{00A0}0000"))
+        XCTAssertTrue(numbered.successBody.contains("••\u{00A0}0000"))
         XCTAssertEqual(ring.stepTitle(for: .needScanResetCard), "reset_codes_prepare_device_title".localized)
         XCTAssertEqual(ring.stepTitle(for: .needWriteResetCard), "reset_codes_prepare_device_again_title".localized)
         XCTAssertEqual(ring.newCodeSubtitle, "reset_codes_new_code_subtitle".localized)
@@ -143,6 +194,12 @@ final class ResetCodesFlowTests: XCTestCase {
 
         XCTAssertFalse(card.canResetPin)
         XCTAssertFalse(try requestedCode(usesNewDesign: true, card: card).showForgotButton)
+
+        var linkedCard = card
+        linkedCard.backupStatus = .active(cardsCount: 2)
+
+        XCTAssertTrue(linkedCard.canResetPin)
+        XCTAssertTrue(try requestedCode(usesNewDesign: false, card: linkedCard).showForgotButton)
     }
 
     private func makeController(
@@ -181,6 +238,15 @@ final class ResetCodesFlowTests: XCTestCase {
         session.requestUserCode(.accessCode, showWelcomeBackWarning: false) { _ in }
 
         return try XCTUnwrap(viewDelegate.codeRequest)
+    }
+}
+
+@MainActor
+private final class AnalyticsHandlerMock: TangemSdkAnalyticsHandler {
+    private(set) var events: [TangemSdkAnalyticsEvent] = []
+
+    func log(_ event: TangemSdkAnalyticsEvent) {
+        events.append(event)
     }
 }
 

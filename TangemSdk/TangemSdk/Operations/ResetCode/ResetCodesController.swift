@@ -110,6 +110,8 @@ public class ResetCodesController {
     }
 
     private func handleIntro(_ result: Result<Void, TangemSdkError>) {
+        guard completion != nil else { return }
+
         switch result {
         case .success:
             if let codeType {

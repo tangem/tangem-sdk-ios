@@ -29,38 +29,39 @@ struct ResetUserCodesView: View {
     }
 
     private var newDesignBody: some View {
-        GeometryReader { geo in
-            VStack(alignment: .center, spacing: 0) {
-                AccessCodeToolbar(onCancel: onCancel)
-                    .padding(.top, 16)
+        VStack(spacing: 0) {
+            AccessCodeToolbar(onCancel: onCancel)
+                .padding(.top, 16)
 
-                Spacer()
+            FillingScrollView { size in
+                VStack(spacing: 0) {
+                    Spacer()
 
-                cardsStack(geo.size)
+                    cardsStack(size)
 
-                Spacer()
-                    .frame(maxHeight: 96)
+                    Spacer()
+                        .frame(minHeight: 32, maxHeight: 96)
 
-                Text(messageTitle)
-                    .font(.system(size: 28, weight: .bold))
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, 12)
+                    Text(messageTitle)
+                        .font(.system(size: 28, weight: .bold))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 12)
 
-                Text(messageBody)
-                    .font(.system(size: 16))
-                    .foregroundColor(style.colors.secondaryText)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(messageBody)
+                        .font(.system(size: 16))
+                        .foregroundColor(style.colors.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                Spacer()
-
-                SdkButton(
-                    title: "common_continue".localized,
-                    colors: style.colors.buttonColors,
-                    action: onContinue
-                )
+                    Spacer()
+                }
+                .multilineTextAlignment(.center)
             }
+
+            SdkButton(
+                title: "common_continue".localized,
+                colors: style.colors.buttonColors,
+                action: onContinue
+            )
         }
         .padding([.horizontal, .bottom])
     }

@@ -13,7 +13,7 @@ struct ResetCodesCopy {
     let cardId: String?
 
     private var deviceNumber: String? {
-        cardId.flatMap { $0.isEmpty ? nil : $0 }
+        cardId.flatMap { $0.isEmpty ? nil : $0.replacingOccurrences(of: " ", with: "\u{00A0}") }
     }
 
     var newCodeTitle: String {
@@ -76,7 +76,7 @@ struct ResetCodesCopy {
     func stepBody(for state: ResetPinService.State) -> String {
         switch state {
         case .needScanResetCard, .needWriteResetCard:
-            return "reset_codes_prepare_device_body".localized
+            return type == .accessCode ? "reset_codes_prepare_device_body".localized : ""
         case .needScanConfirmationCard:
             return "reset_codes_prepare_backup_body".localized
         case .needCode, .finished:

@@ -42,7 +42,6 @@ struct ResetCodesScreen: View {
                 cardId: request.cardId ?? "",
                 placeholder: request.type.name,
                 confirmationPlaceholder: request.type.confirmCodeTitle,
-                usesNewDesign: accessCodeFlow?.usesNewDesign == true,
                 completion: { result in
                     accessCodeFlow?.deliverTap(for: result, on: screen)
                     request.handle(result)

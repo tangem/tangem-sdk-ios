@@ -14,7 +14,6 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
-    var usesNewDesign = false
     let completion: CompletionResult<String>
 
     @State private var code: String = ""
@@ -26,17 +25,6 @@ struct ChangeUserCodeView: View {
     @EnvironmentObject var style: TangemSdkStyle
 
     var body: some View {
-        Group {
-            if usesNewDesign {
-                newDesignBody
-            } else {
-                legacyBody
-            }
-        }
-        .padding([.horizontal, .bottom])
-    }
-
-    private var legacyBody: some View {
         VStack(alignment: .leading, spacing: 8) {
             UserCodeHeaderView(
                 title: title,
@@ -45,67 +33,38 @@ struct ChangeUserCodeView: View {
             )
             .padding(.top, 8)
 
-            fields
+            FloatingTextField(
+                title: placeholder,
+                text: $code.onUpdate(scheduleValidation),
+                onCommit: onDone,
+                shouldBecomeFirstResponder: true
+            )
+            .padding(.top, 16)
+
+            FloatingTextField(
+                title: confirmationPlaceholder,
+                text: $confirmation.onUpdate(scheduleValidation),
+                onCommit: onDone
+            )
+            .padding(.top, 8)
+
+            Text(error)
+                .font(.system(size: 13))
+                .foregroundColor(style.colors.errorTint)
 
             VStack(spacing: 0) {
                 Spacer()
 
-                continueButton
+                SdkButton(
+                    title: "common_continue".localized,
+                    colors: style.colors.buttonColors,
+                    isDisabled: isContinueDisabled,
+                    action: onDone
+                )
             }
         }
-    }
-
-    private var newDesignBody: some View {
-        VStack(spacing: 0) {
-            AccessCodeHeaderActions(onClose: onCancel)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 16)
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .font(.system(size: 22, weight: .bold))
-                        .padding(.top, 40)
-
-                    fields
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .scrollBounceBehavior(.basedOnSize)
-
-            continueButton
-        }
-    }
-
-    @ViewBuilder
-    private var fields: some View {
-        FloatingTextField(
-            title: placeholder,
-            text: $code.onUpdate(scheduleValidation),
-            onCommit: onDone,
-            shouldBecomeFirstResponder: true
-        )
-        .padding(.top, 16)
-
-        FloatingTextField(
-            title: confirmationPlaceholder,
-            text: $confirmation.onUpdate(scheduleValidation),
-            onCommit: onDone
-        )
-        .padding(.top, 8)
-
-        Text(error)
-            .font(.system(size: 13))
-            .foregroundColor(style.colors.errorTint)
-    }
-
-    private var continueButton: some View {
-        SdkButton(
-            title: "common_continue".localized,
-            colors: style.colors.buttonColors,
-            isDisabled: isContinueDisabled,
-            action: onDone
-        )
+        .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     private func onCancel() {
@@ -173,15 +132,6 @@ struct ChangeUserCodeView: View {
             completion: { _ in }
         )
         .preferredColorScheme(.dark)
-        ChangeUserCodeView(
-            type: .accessCode,
-            title: "New access code",
-            cardId: "",
-            placeholder: "Access code",
-            confirmationPlaceholder: "Confirm access code",
-            usesNewDesign: true,
-            completion: { _ in }
-        )
     }
     .environmentObject(TangemSdkStyle())
 }

@@ -30,10 +30,6 @@ struct ResetUserCodesView: View {
 
     private var newDesignBody: some View {
         VStack(spacing: 0) {
-            AccessCodeHeaderActions(onClose: onCancel)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 16)
-
             FillingScrollView { size in
                 VStack(spacing: 0) {
                     Spacer()
@@ -67,6 +63,7 @@ struct ResetUserCodesView: View {
             )
         }
         .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     private var legacyBody: some View {
@@ -103,6 +100,7 @@ struct ResetUserCodesView: View {
             }
         }
         .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     @ViewBuilder

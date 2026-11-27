@@ -15,10 +15,6 @@ struct ResetCodesIntroView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AccessCodeHeaderActions(onClose: onCancel)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.top, 16)
-
             FillingScrollView { _ in
                 VStack(spacing: 12) {
                     Image(decorative: "reset_codes_intro", bundle: .sdkBundle)
@@ -41,6 +37,7 @@ struct ResetCodesIntroView: View {
             )
         }
         .padding([.horizontal, .bottom])
+        .accessCodeToolbar(onClose: onCancel)
     }
 
     private func onCancel() {

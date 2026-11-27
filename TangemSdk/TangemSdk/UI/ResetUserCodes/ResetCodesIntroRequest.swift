@@ -9,13 +9,16 @@
 import Foundation
 
 final class ResetCodesIntroRequest {
-    private let completion: CompletionResult<Void>
+    private var completion: CompletionResult<Void>?
 
     init(completion: @escaping CompletionResult<Void>) {
         self.completion = completion
     }
 
     func handle(_ result: Result<Void, TangemSdkError>) {
+        guard let completion else { return }
+
+        self.completion = nil
         completion(result)
     }
 }

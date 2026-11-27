@@ -131,6 +131,18 @@ final class ResetCodesFlowTests: XCTestCase {
         XCTAssertEqual(presenter.hideCount, 1)
     }
 
+    func testIntroDoubleContinueRequestsCodeOnce() {
+        let presenter = ResetCodesPresenterMock()
+        let controller = makeController(presenter: presenter, usesNewDesign: true, showsIntro: true)
+
+        controller.start(codeType: .accessCode, cardId: nil) { _ in }
+        let request = presenter.introRequest
+        request?.handle(.success(()))
+        request?.handle(.success(()))
+
+        XCTAssertEqual(presenter.stateNames, ["intro", "requestCode"])
+    }
+
     func testFinishedShowsAlertWithoutNewDesign() {
         let presenter = ResetCodesPresenterMock()
         let service = ResetPinServiceMock()

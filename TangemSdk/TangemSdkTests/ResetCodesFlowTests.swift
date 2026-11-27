@@ -155,54 +155,18 @@ final class ResetCodesFlowTests: XCTestCase {
         XCTAssertEqual(presenter.alertCount, 1)
     }
 
-    func testCopyDropsDeviceNumberWhenCardIdIsEmpty() {
-        let numbered = ResetCodesCopy(type: .accessCode, cardId: "•• 0000")
-        let ring = ResetCodesCopy(type: .accessCode, cardId: "")
+    func testNewScreensUseExistingKeys() {
+        let keys = ["reset_codes_btn_forgot_your_code", "common_continue", "common_ok", "common_success", "reset_codes_success_message"]
 
-        XCTAssertTrue(numbered.stepTitle(for: .needScanResetCard).contains("••\u{00A0}0000"))
-        XCTAssertTrue(numbered.successBody.contains("••\u{00A0}0000"))
-        XCTAssertEqual(ring.stepTitle(for: .needScanResetCard), "reset_codes_prepare_device_title".localized)
-        XCTAssertEqual(ring.stepTitle(for: .needWriteResetCard), "reset_codes_prepare_device_again_title".localized)
-        XCTAssertEqual(ring.newCodeSubtitle, "reset_codes_new_code_subtitle".localized)
-        XCTAssertEqual(ring.successBody, "reset_codes_success_body".localized)
-
-        let unformatted = ResetCodesCopy(type: .accessCode, cardId: nil)
-        XCTAssertEqual(unformatted.stepTitle(for: .needScanResetCard), "reset_codes_prepare_device_title".localized)
-        XCTAssertEqual(unformatted.newCodeSubtitle, "reset_codes_new_code_subtitle".localized)
-        XCTAssertEqual(unformatted.successBody, "reset_codes_success_body".localized)
-    }
-
-    func testNewDesignAccessCodeCopyNeverSaysReset() {
-        let copies = [
-            ResetCodesCopy(type: .accessCode, cardId: "•• 0000"),
-            ResetCodesCopy(type: .accessCode, cardId: nil),
-        ]
-        let intro = [
-            "reset_codes_intro_title",
-            "reset_codes_intro_subtitle",
-            "reset_codes_intro_backup_title",
-            "reset_codes_intro_backup_subtitle",
-            "reset_codes_intro_assets_title",
-            "reset_codes_intro_assets_subtitle",
-            "reset_codes_nfc_scan_device",
-            "reset_codes_nfc_write_device",
-            "common_finish",
-        ].map { $0.localized }
-
-        let texts = intro + copies.flatMap { copy in
-            [copy.newCodeTitle, copy.newCodeSubtitle, copy.codePlaceholder, copy.confirmationPlaceholder, copy.successTitle, copy.successBody]
-                + ResetPinService.State.allCases.flatMap { [copy.stepTitle(for: $0), copy.stepBody(for: $0)] }
-        }
-
-        for text in texts {
-            XCTAssertFalse(text.localizedCaseInsensitiveContains("reset"), text)
-            XCTAssertFalse(text.hasPrefix("reset_codes_"), "Missing string: \(text)")
+        for key in keys {
+            XCTAssertNotEqual(key.localized, key)
         }
     }
 
     func testForgotButtonBeforeScanFollowsNewDesign() throws {
         XCTAssertTrue(try requestedCode(usesNewDesign: true, card: nil).showForgotButton)
         XCTAssertFalse(try requestedCode(usesNewDesign: false, card: nil).showForgotButton)
+        XCTAssertFalse(try requestedCode(.passcode, usesNewDesign: true, card: nil).showForgotButton)
     }
 
     func testForgotButtonAfterScanFollowsCard() throws {
@@ -236,7 +200,7 @@ final class ResetCodesFlowTests: XCTestCase {
         )
     }
 
-    private func requestedCode(usesNewDesign: Bool, card: Card?) throws -> UserCodeRequest {
+    private func requestedCode(_ type: UserCodeType = .accessCode, usesNewDesign: Bool, card: Card?) throws -> UserCodeRequest {
         var config = Config()
         config.usesNewAccessCodeDesign = usesNewDesign
         var environment = SessionEnvironment(config: config)
@@ -252,7 +216,7 @@ final class ResetCodesFlowTests: XCTestCase {
             cardAccessTokensRepository: nil
         )
 
-        session.requestUserCode(.accessCode, showWelcomeBackWarning: false) { _ in }
+        session.requestUserCode(type, showWelcomeBackWarning: false) { _ in }
 
         return try XCTUnwrap(viewDelegate.codeRequest)
     }

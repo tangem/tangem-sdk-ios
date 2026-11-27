@@ -116,9 +116,7 @@ public class ResetPinService {
         session = TangemSdk().makeSession(
             with: config,
             filter: .init(from: resetCardId),
-            initialMessage: Message(header: config.usesNewAccessCodeDesign
-                ? "reset_codes_nfc_scan_device".localized
-                : "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()]))
+            initialMessage: Message(header: "reset_codes_scan_first_card".localized([userCodeType.name.lowercased()]))
         )
 
         let command = GetResetPinTokenCommand()
@@ -206,9 +204,7 @@ public class ResetPinService {
         session = TangemSdk().makeSession(
             with: config,
             filter: .cardId(resetPinCard.cardId),
-            initialMessage: Message(header: config.usesNewAccessCodeDesign
-                ? "reset_codes_nfc_write_device".localized
-                : "reset_codes_scan_to_reset".localized)
+            initialMessage: Message(header: "reset_codes_scan_to_reset".localized)
         )
 
         let command = ResetPinTask(confirmationCard: confirmationCard, accessCode: accessCodeUnwrapped, passcode: passcodeUnwrapped)

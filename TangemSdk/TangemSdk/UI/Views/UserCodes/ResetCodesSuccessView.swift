@@ -37,7 +37,7 @@ struct ResetCodesSuccessView: View {
             }
 
             SdkButton(
-                title: "common_finish".localized,
+                title: "common_ok".localized,
                 colors: style.colors.buttonColors,
                 action: onFinish
             )
@@ -51,17 +51,9 @@ struct ResetCodesSuccessView: View {
 
 #Preview {
     Group {
-        ResetCodesSuccessView(
-            title: "New Access Code is set",
-            message: "The new code will only apply to your device •• 0000. You can change it on your other devices later in Settings.",
-            onFinish: {}
-        )
-        ResetCodesSuccessView(
-            title: "New Access Code is set",
-            message: "The new code will only apply to this device. You can change it on your other devices later in Settings.",
-            onFinish: {}
-        )
-        .preferredColorScheme(.dark)
+        ResetCodesSuccessView(title: "Success", message: "Code was reset successfully", onFinish: {})
+        ResetCodesSuccessView(title: "Success", message: "Code was reset successfully", onFinish: {})
+            .preferredColorScheme(.dark)
     }
     .environmentObject(TangemSdkStyle())
 }

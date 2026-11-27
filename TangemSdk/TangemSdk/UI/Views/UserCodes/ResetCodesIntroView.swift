@@ -19,28 +19,20 @@ struct ResetCodesIntroView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.top, 16)
 
-            ScrollView {
-                VStack(spacing: 40) {
-                    heading
+            FillingScrollView { _ in
+                VStack(spacing: 12) {
+                    Image(decorative: "reset_codes_intro", bundle: .sdkBundle)
+                        .renderingMode(.template)
+                        .foregroundColor(.primary)
+                        .frame(width: 80, height: 80)
 
-                    VStack(alignment: .leading, spacing: 28) {
-                        row(
-                            icon: "reset_codes_wallet",
-                            title: "reset_codes_intro_backup_title".localized,
-                            subtitle: "reset_codes_intro_backup_subtitle".localized
-                        )
-
-                        row(
-                            icon: "reset_codes_coin_token",
-                            title: "reset_codes_intro_assets_title".localized,
-                            subtitle: "reset_codes_intro_assets_subtitle".localized
-                        )
-                    }
-                    .padding(.horizontal, 24)
+                    Text("reset_codes_btn_forgot_your_code".localized)
+                        .font(.system(size: 28, weight: .bold))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.top, 32)
+                .frame(maxWidth: .infinity)
             }
-            .scrollBounceBehavior(.basedOnSize)
 
             SdkButton(
                 title: "common_continue".localized,
@@ -49,44 +41,6 @@ struct ResetCodesIntroView: View {
             )
         }
         .padding([.horizontal, .bottom])
-    }
-
-    private var heading: some View {
-        VStack(spacing: 12) {
-            Image(decorative: "reset_codes_intro", bundle: .sdkBundle)
-                .renderingMode(.template)
-                .foregroundColor(.primary)
-                .frame(width: 80, height: 80)
-
-            Text("reset_codes_intro_title".localized)
-                .font(.system(size: 28, weight: .bold))
-
-            Text("reset_codes_intro_subtitle".localized)
-                .font(.system(size: 16))
-                .foregroundColor(style.colors.secondaryText)
-        }
-        .multilineTextAlignment(.center)
-    }
-
-    private func row(icon: String, title: String, subtitle: String) -> some View {
-        HStack(spacing: 16) {
-            Image(decorative: icon, bundle: .sdkBundle)
-                .renderingMode(.template)
-                .foregroundColor(.primary)
-                .frame(width: 42, height: 42)
-                .background(Circle().fill(style.colors.secondaryButtonColors.backgroundColor))
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.system(size: 16, weight: .medium))
-
-                Text(subtitle)
-                    .font(.system(size: 15))
-                    .foregroundColor(style.colors.secondaryText)
-            }
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
     }
 
     private func onCancel() {

@@ -14,7 +14,7 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
-    var subtitle: String?
+    var usesNewDesign = false
     let completion: CompletionResult<String>
 
     @State private var code: String = ""
@@ -27,8 +27,8 @@ struct ChangeUserCodeView: View {
 
     var body: some View {
         Group {
-            if let subtitle {
-                newDesignBody(subtitle: subtitle)
+            if usesNewDesign {
+                newDesignBody
             } else {
                 legacyBody
             }
@@ -55,7 +55,7 @@ struct ChangeUserCodeView: View {
         }
     }
 
-    private func newDesignBody(subtitle: String) -> some View {
+    private var newDesignBody: some View {
         VStack(spacing: 0) {
             AccessCodeHeaderActions(onClose: onCancel)
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -66,11 +66,6 @@ struct ChangeUserCodeView: View {
                     Text(title)
                         .font(.system(size: 22, weight: .bold))
                         .padding(.top, 40)
-
-                    Text(subtitle)
-                        .font(.system(size: 16))
-                        .foregroundColor(style.colors.secondaryText)
-                        .fixedSize(horizontal: false, vertical: true)
 
                     fields
                 }
@@ -180,11 +175,11 @@ struct ChangeUserCodeView: View {
         .preferredColorScheme(.dark)
         ChangeUserCodeView(
             type: .accessCode,
-            title: "New Access Code",
+            title: "New access code",
             cardId: "",
-            placeholder: "Access Code",
-            confirmationPlaceholder: "Confirm Access Code",
-            subtitle: "Create a new password, then confirm it for this device •• 0000",
+            placeholder: "Access code",
+            confirmationPlaceholder: "Confirm access code",
+            usesNewDesign: true,
             completion: { _ in }
         )
     }

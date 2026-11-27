@@ -14,6 +14,7 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
+    var subtitle: String?
     let completion: CompletionResult<String>
 
     @State private var code: String = ""
@@ -26,12 +27,7 @@ struct ChangeUserCodeView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            UserCodeHeaderView(
-                title: title,
-                cardId: cardId,
-                onCancel: onCancel
-            )
-            .padding(.top, 8)
+            header
 
             FloatingTextField(
                 title: placeholder,
@@ -64,6 +60,33 @@ struct ChangeUserCodeView: View {
             }
         }
         .padding([.horizontal, .bottom])
+    }
+
+    @ViewBuilder
+    private var header: some View {
+        if let subtitle {
+            VStack(alignment: .leading, spacing: 0) {
+                AccessCodeToolbar(onCancel: onCancel)
+                    .padding(.top, 16)
+                    .padding(.bottom, 40)
+
+                Text(title)
+                    .font(.system(size: 22, weight: .bold))
+
+                Text(subtitle)
+                    .font(.system(size: 16))
+                    .foregroundColor(style.colors.secondaryText)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+            }
+        } else {
+            UserCodeHeaderView(
+                title: title,
+                cardId: cardId,
+                onCancel: onCancel
+            )
+            .padding(.top, 8)
+        }
     }
 
     private func onCancel() {
@@ -131,6 +154,15 @@ struct ChangeUserCodeView: View {
             completion: { _ in }
         )
         .preferredColorScheme(.dark)
+        ChangeUserCodeView(
+            type: .accessCode,
+            title: "New Access Code",
+            cardId: "",
+            placeholder: "Access Code",
+            confirmationPlaceholder: "Confirm Access Code",
+            subtitle: "Create a new password, then confirm it for this device •• 0000",
+            completion: { _ in }
+        )
     }
     .environmentObject(TangemSdkStyle())
 }

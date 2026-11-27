@@ -18,8 +18,54 @@ struct ResetUserCodesView: View {
     let completion: CompletionResult<Bool>
 
     @EnvironmentObject var style: TangemSdkStyle
+    @Environment(\.accessCodeFlow) private var accessCodeFlow
 
     var body: some View {
+        if accessCodeFlow?.usesNewDesign == true {
+            newDesignBody
+        } else {
+            legacyBody
+        }
+    }
+
+    private var newDesignBody: some View {
+        GeometryReader { geo in
+            VStack(alignment: .center, spacing: 0) {
+                AccessCodeToolbar(onCancel: onCancel)
+                    .padding(.top, 16)
+
+                Spacer()
+
+                cardsStack(geo.size)
+
+                Spacer()
+                    .frame(maxHeight: 96)
+
+                Text(messageTitle)
+                    .font(.system(size: 28, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 12)
+
+                Text(messageBody)
+                    .font(.system(size: 16))
+                    .foregroundColor(style.colors.secondaryText)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                SdkButton(
+                    title: "common_continue".localized,
+                    colors: style.colors.buttonColors,
+                    action: onContinue
+                )
+            }
+        }
+        .padding([.horizontal, .bottom])
+    }
+
+    private var legacyBody: some View {
         GeometryReader { geo in
             VStack(alignment: .center, spacing: 0) {
                 UserCodeHeaderView(

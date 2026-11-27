@@ -10,6 +10,8 @@ import Foundation
 
 enum ResetCodesViewState {
     case empty
+    case intro(ResetCodesIntroRequest)
     case requestCode(UserCodeRequest)
     case resetCodes(ResetCodesRequest)
+    case success(ResetCodesRequest)
 }

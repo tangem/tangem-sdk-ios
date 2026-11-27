@@ -797,7 +797,7 @@ public class CardSession {
     func requestUserCode(_ type: UserCodeType, showWelcomeBackWarning: Bool, _ completion: @escaping CompletionResult<Void>) {
         Log.session("Request user code of type: \(type)")
         let cardId = environment.card?.cardId ?? cardId
-        let showForgotButton = environment.card?.canResetPin ?? false
+        let showForgotButton = environment.card.map(\.canResetPin) ?? environment.config.usesNewAccessCodeDesign
         let formattedCardId = cardId.flatMap { CardIdFormatter(style: environment.config.cardIdDisplayFormat).string(from: $0) }
 
         let request = UserCodeRequest(

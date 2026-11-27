@@ -13,7 +13,7 @@ public class ResetCodesController {
     public var cardIdDisplayFormat: CardIdDisplayFormat = .full
 
     private let resetService: ResetPinService
-    private let viewDelegate: ResetCodesViewDelegate
+    private let viewDelegate: ResetCodesViewPresenting
     private let accessCodeFlow: AccessCodeFlow
 
     private var bag = Set<AnyCancellable>()
@@ -26,7 +26,7 @@ public class ResetCodesController {
         cardId.flatMap { CardIdFormatter(style: cardIdDisplayFormat).string(from: $0) }
     }
 
-    init(resetService: ResetPinService, viewDelegate: ResetCodesViewDelegate, accessCodeFlow: AccessCodeFlow) {
+    init(resetService: ResetPinService, viewDelegate: ResetCodesViewPresenting, accessCodeFlow: AccessCodeFlow) {
         self.resetService = resetService
         self.viewDelegate = viewDelegate
         self.accessCodeFlow = accessCodeFlow
@@ -41,6 +41,18 @@ public class ResetCodesController {
         self.cardId = cardId
         self.codeType = codeType
         self.completion = completion
+
+        if accessCodeFlow.showsResetCodesIntro {
+            let request = ResetCodesIntroRequest { [weak self] result in
+                self?.handleIntro(result)
+            }
+            viewDelegate.setState(.intro(request))
+        } else {
+            requestCode(codeType)
+        }
+    }
+
+    private func requestCode(_ codeType: UserCodeType) {
         // The flow retries after recoverable errors (rejected code, failed scan),
         // so the prompt must stay invokable
         let request = UserCodeRequest(type: codeType, cardId: formattedCardId, isOneShot: false) { [weak self] result in
@@ -57,6 +69,11 @@ public class ResetCodesController {
                 guard let self else { return }
 
                 switch newState {
+                case .finished where accessCodeFlow.usesNewDesign:
+                    accessCodeFlow.log(.resetCodesFinished)
+                    if let request = makeRequest(for: newState) {
+                        viewDelegate.setState(.success(request))
+                    }
                 case .finished:
                     accessCodeFlow.log(.screenOpened(newState.analyticsScreen), .resetCodesFinished)
                     viewDelegate.showAlert(
@@ -68,14 +85,7 @@ public class ResetCodesController {
                         }
                     )
                 default:
-                    if let codeType = codeType {
-                        let request = ResetCodesRequest(
-                            type: codeType,
-                            state: newState,
-                            cardId: formattedCardId
-                        ) { [weak self] result in
-                            self?.handleContinue(result)
-                        }
+                    if let request = makeRequest(for: newState) {
                         viewDelegate.setState(.resetCodes(request))
                     }
                 }
@@ -89,6 +99,25 @@ public class ResetCodesController {
                 accessCodeFlow.logFailure(error)
             }
             .store(in: &bag)
+    }
+
+    private func makeRequest(for state: ResetPinService.State) -> ResetCodesRequest? {
+        guard let codeType else { return nil }
+
+        return ResetCodesRequest(type: codeType, state: state, cardId: formattedCardId) { [weak self] result in
+            self?.handleContinue(result)
+        }
+    }
+
+    private func handleIntro(_ result: Result<Void, TangemSdkError>) {
+        switch result {
+        case .success:
+            if let codeType {
+                requestCode(codeType)
+            }
+        case .failure(let error):
+            finish(with: .failure(error))
+        }
     }
 
     private func handleCodeInput(_ result: Result<String, TangemSdkError>) {

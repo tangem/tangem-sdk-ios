@@ -21,18 +21,33 @@ struct ResetCodesScreen: View {
             .environmentObject(style)
     }
 
+    private var usesNewDesign: Bool {
+        accessCodeFlow?.usesNewDesign == true
+    }
+
     @ViewBuilder
     private var mainView: some View {
         switch viewModel.viewState {
+        case .intro(let request):
+            let screen = TangemSdkScreen.resetCodesIntro
+
+            ResetCodesIntroView(completion: { result in
+                accessCodeFlow?.deliverTap(for: result, on: screen)
+                request.handle(result)
+            })
+            .accessCodeScreen(screen, flow: accessCodeFlow)
+
         case .requestCode(let request):
             let screen = ResetPinService.State.needCode.analyticsScreen
+            let copy = ResetCodesCopy(type: request.type, cardId: request.cardId)
 
             ChangeUserCodeView(
                 type: request.type,
-                title: request.type.enterNewCodeTitle,
+                title: usesNewDesign ? copy.newCodeTitle : request.type.enterNewCodeTitle,
                 cardId: request.cardId ?? "",
-                placeholder: request.type.name,
-                confirmationPlaceholder: request.type.confirmCodeTitle,
+                placeholder: usesNewDesign ? copy.codePlaceholder : request.type.name,
+                confirmationPlaceholder: usesNewDesign ? copy.confirmationPlaceholder : request.type.confirmCodeTitle,
+                subtitle: usesNewDesign ? copy.newCodeSubtitle : nil,
                 completion: { result in
                     accessCodeFlow?.deliverTap(for: result, on: screen)
                     request.handle(result)
@@ -42,13 +57,14 @@ struct ResetCodesScreen: View {
 
         case .resetCodes(let request):
             let screen = request.state.analyticsScreen
+            let copy = ResetCodesCopy(type: request.type, cardId: request.cardId)
 
             ResetUserCodesView(
                 title: request.type.resetCodeTitle,
                 cardId: request.cardId ?? "",
                 card: request.state.cardType,
-                messageTitle: request.state.messageTitle,
-                messageBody: request.state.messageBody,
+                messageTitle: usesNewDesign ? copy.stepTitle(for: request.state) : request.state.messageTitle,
+                messageBody: usesNewDesign ? copy.stepBody(for: request.state) : request.state.messageBody,
                 completion: { result in
                     accessCodeFlow?.deliverTap(for: result, on: screen)
                     request.handle(result)
@@ -56,7 +72,21 @@ struct ResetCodesScreen: View {
             )
             .accessCodeScreen(screen, flow: accessCodeFlow)
 
-        default:
+        case .success(let request):
+            let screen = request.state.analyticsScreen
+            let copy = ResetCodesCopy(type: request.type, cardId: request.cardId)
+
+            ResetCodesSuccessView(
+                title: copy.successTitle,
+                message: copy.successBody,
+                onFinish: {
+                    accessCodeFlow?.deliver(.buttonTapped(.finish, screen: screen))
+                    request.handle(.success(false))
+                }
+            )
+            .accessCodeScreen(screen, flow: accessCodeFlow)
+
+        case .empty:
             EmptyView()
         }
     }

@@ -10,7 +10,14 @@ import Foundation
 import UIKit
 import SwiftUI
 
-final class ResetCodesViewDelegate: BaseViewDelegate {
+protocol ResetCodesViewPresenting: AnyObject {
+    func setState(_ state: ResetCodesViewState)
+    func hide(completion: (() -> Void)?)
+    func showError(_ error: TangemSdkError)
+    func showAlert(_ title: String, message: String, onContinue: @escaping () -> Void)
+}
+
+final class ResetCodesViewDelegate: BaseViewDelegate, ResetCodesViewPresenting {
     private let viewModel: ResetCodesViewModel = .init(viewState: .empty)
     private let style: TangemSdkStyle
     private let accessCodeFlow: AccessCodeFlow
@@ -34,10 +41,14 @@ final class ResetCodesViewDelegate: BaseViewDelegate {
     override func presentationDidFail() {
         // A prompt nobody can see would keep the whole reset flow and its session alive forever
         switch viewModel.viewState {
+        case .intro(let request):
+            request.handle(.failure(.userCancelled))
         case .requestCode(let request):
             request.cancel()
         case .resetCodes(let request):
             request.handle(.failure(.userCancelled))
+        case .success(let request):
+            request.handle(.success(false))
         case .empty:
             break
         }

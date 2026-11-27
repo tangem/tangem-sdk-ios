@@ -50,6 +50,7 @@ class MainTabViewModel: ObservableObject {
     @AppStorage("isDevelopmentMode") var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
     @AppStorage("usesNewAccessCodeDesign") var usesNewAccessCodeDesign: Bool = false
+    @AppStorage("showsResetCodesIntro") var showsResetCodesIntro: Bool = false
     @AppStorage("hasSupportHandler") var hasSupportHandler: Bool = false
 
     private lazy var _tangemSdk: TangemSdk = {
@@ -68,6 +69,7 @@ class MainTabViewModel: ObservableObject {
         config.filter.allowedCardTypes = FirmwareVersion.FirmwareType.allCases
         config.accessCodeRequestPolicy = accessCodeRequestPolicy
         config.usesNewAccessCodeDesign = usesNewAccessCodeDesign
+        config.showsResetCodesIntro = showsResetCodesIntro
         config.supportHandler = hasSupportHandler ? accessCodeHooks : nil
         config.analyticsHandler = accessCodeHooks
 

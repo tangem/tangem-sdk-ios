@@ -12,6 +12,7 @@ import SwiftUI
 @MainActor
 final class AccessCodeFlow {
     let usesNewDesign: Bool
+    let showsResetCodesIntro: Bool
 
     var isSupportAvailable: Bool { handlers.support != nil }
 
@@ -20,6 +21,7 @@ final class AccessCodeFlow {
 
     nonisolated init(config: Config) {
         usesNewDesign = config.usesNewAccessCodeDesign
+        showsResetCodesIntro = config.usesNewAccessCodeDesign && config.showsResetCodesIntro
         handlers = Handlers(support: config.supportHandler, analytics: config.analyticsHandler)
     }
 

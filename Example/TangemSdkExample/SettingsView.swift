@@ -17,6 +17,7 @@ struct SettingsView: View {
     @AppStorage("isDevelopmentMode") private var isDevelopmentMode: Bool = false
     @AppStorage("accessCodeRequestPolicy") private var accessCodeRequestPolicy: AccessCodeRequestPolicy = .default
     @AppStorage("usesNewAccessCodeDesign") private var usesNewAccessCodeDesign: Bool = false
+    @AppStorage("showsResetCodesIntro") private var showsResetCodesIntro: Bool = false
     @AppStorage("hasSupportHandler") private var hasSupportHandler: Bool = false
 
     var body: some View {
@@ -32,6 +33,8 @@ struct SettingsView: View {
             Toggle("Dev mode", isOn: $isDevelopmentMode)
 
             Toggle("New access code design", isOn: $usesNewAccessCodeDesign)
+
+            Toggle("Forgot code intro", isOn: $showsResetCodesIntro)
 
             Toggle("Support handler", isOn: $hasSupportHandler)
 

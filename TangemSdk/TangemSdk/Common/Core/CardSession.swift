@@ -892,17 +892,26 @@ public class CardSession {
 
     private func restoreUserCode(_ type: UserCodeType, cardId: String?, _ completion: @escaping CompletionResult<String>) {
         var config = environment.config
-        // The new design only covers the access code; a passcode reset keeps the old screens.
-        config.usesNewAccessCodeDesign = config.usesNewAccessCodeDesign && type == .accessCode
-        let resetFlow = config.usesNewAccessCodeDesign == accessCodeFlow.usesNewDesign ? accessCodeFlow : AccessCodeFlow(config: config)
         config.accessCodeRequestPolicy = .default
         config.supportHandler = nil
         config.analyticsHandler = nil
+        let resetFlow = resetCodesFlow(for: type)
         let resetService = ResetPinService(config: config)
         let viewDelegate = ResetCodesViewDelegate(style: config.style, accessCodeFlow: resetFlow)
         resetCodesController = ResetCodesController(resetService: resetService, viewDelegate: viewDelegate, accessCodeFlow: resetFlow)
         resetCodesController!.cardIdDisplayFormat = config.cardIdDisplayFormat
         resetCodesController!.start(codeType: type, cardId: cardId, completion: completion)
+    }
+
+    func resetCodesFlow(for type: UserCodeType) -> AccessCodeFlow {
+        guard type == .passcode, accessCodeFlow.usesNewDesign else { return accessCodeFlow }
+
+        // The new design and its events cover the access code only; a passcode reset keeps the old screens.
+        var config = environment.config
+        config.usesNewAccessCodeDesign = false
+        config.supportHandler = nil
+        config.analyticsHandler = nil
+        return AccessCodeFlow(config: config)
     }
 
     private func resetSensitiveData() {

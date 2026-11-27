@@ -14,6 +14,7 @@ struct ChangeUserCodeView: View {
     let cardId: String
     let placeholder: String
     let confirmationPlaceholder: String
+    var showsSupport: Bool = false
     let completion: CompletionResult<String>
 
     @State private var code: String = ""
@@ -64,7 +65,7 @@ struct ChangeUserCodeView: View {
             }
         }
         .padding([.horizontal, .bottom])
-        .accessCodeToolbar(onClose: onCancel)
+        .accessCodeToolbar(showsSupport: showsSupport, onClose: onCancel)
     }
 
     private func onCancel() {

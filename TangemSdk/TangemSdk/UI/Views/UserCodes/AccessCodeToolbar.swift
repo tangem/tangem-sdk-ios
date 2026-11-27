@@ -9,12 +9,13 @@
 import SwiftUI
 
 extension View {
-    func accessCodeToolbar(onClose: @escaping () -> Void) -> some View {
-        modifier(AccessCodeToolbar(onClose: onClose))
+    func accessCodeToolbar(showsSupport: Bool = true, onClose: @escaping () -> Void) -> some View {
+        modifier(AccessCodeToolbar(showsSupport: showsSupport, onClose: onClose))
     }
 }
 
 private struct AccessCodeToolbar: ViewModifier {
+    let showsSupport: Bool
     let onClose: () -> Void
 
     @EnvironmentObject private var style: TangemSdkStyle
@@ -22,7 +23,7 @@ private struct AccessCodeToolbar: ViewModifier {
     @Environment(\.accessCodeScreen) private var accessCodeScreen
 
     private var supportScreen: TangemSdkScreen? {
-        guard let accessCodeFlow, accessCodeFlow.isSupportAvailable else { return nil }
+        guard showsSupport, let accessCodeFlow, accessCodeFlow.isSupportAvailable else { return nil }
 
         return accessCodeScreen
     }

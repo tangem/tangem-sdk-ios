@@ -26,67 +26,90 @@ struct ChangeUserCodeView: View {
     @EnvironmentObject var style: TangemSdkStyle
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            header
-
-            FloatingTextField(
-                title: placeholder,
-                text: $code.onUpdate(scheduleValidation),
-                onCommit: onDone,
-                shouldBecomeFirstResponder: true
-            )
-            .padding(.top, 16)
-
-            FloatingTextField(
-                title: confirmationPlaceholder,
-                text: $confirmation.onUpdate(scheduleValidation),
-                onCommit: onDone
-            )
-            .padding(.top, 8)
-
-            Text(error)
-                .font(.system(size: 13))
-                .foregroundColor(style.colors.errorTint)
-
-            VStack(spacing: 0) {
-                Spacer()
-
-                SdkButton(
-                    title: "common_continue".localized,
-                    colors: style.colors.buttonColors,
-                    isDisabled: isContinueDisabled,
-                    action: onDone
-                )
+        Group {
+            if let subtitle {
+                newDesignBody(subtitle: subtitle)
+            } else {
+                legacyBody
             }
         }
         .padding([.horizontal, .bottom])
     }
 
-    @ViewBuilder
-    private var header: some View {
-        if let subtitle {
-            VStack(alignment: .leading, spacing: 0) {
-                AccessCodeToolbar(onCancel: onCancel)
-                    .padding(.top, 16)
-                    .padding(.bottom, 40)
-
-                Text(title)
-                    .font(.system(size: 22, weight: .bold))
-
-                Text(subtitle)
-                    .font(.system(size: 16))
-                    .foregroundColor(style.colors.secondaryText)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 8)
-            }
-        } else {
+    private var legacyBody: some View {
+        VStack(alignment: .leading, spacing: 8) {
             UserCodeHeaderView(
                 title: title,
                 cardId: cardId,
                 onCancel: onCancel
             )
             .padding(.top, 8)
+
+            fields
+
+            VStack(spacing: 0) {
+                Spacer()
+
+                continueButton
+            }
         }
+    }
+
+    private func newDesignBody(subtitle: String) -> some View {
+        VStack(spacing: 0) {
+            AccessCodeToolbar(onCancel: onCancel)
+                .padding(.top, 16)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(title)
+                        .font(.system(size: 22, weight: .bold))
+                        .padding(.top, 40)
+
+                    Text(subtitle)
+                        .font(.system(size: 16))
+                        .foregroundColor(style.colors.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    fields
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+
+            continueButton
+        }
+    }
+
+    @ViewBuilder
+    private var fields: some View {
+        FloatingTextField(
+            title: placeholder,
+            text: $code.onUpdate(scheduleValidation),
+            onCommit: onDone,
+            shouldBecomeFirstResponder: true
+        )
+        .padding(.top, 16)
+
+        FloatingTextField(
+            title: confirmationPlaceholder,
+            text: $confirmation.onUpdate(scheduleValidation),
+            onCommit: onDone
+        )
+        .padding(.top, 8)
+
+        Text(error)
+            .font(.system(size: 13))
+            .foregroundColor(style.colors.errorTint)
+    }
+
+    private var continueButton: some View {
+        SdkButton(
+            title: "common_continue".localized,
+            colors: style.colors.buttonColors,
+            isDisabled: isContinueDisabled,
+            action: onDone
+        )
     }
 
     private func onCancel() {

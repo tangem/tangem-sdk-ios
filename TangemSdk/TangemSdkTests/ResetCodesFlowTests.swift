@@ -91,7 +91,7 @@ final class ResetCodesFlowTests: XCTestCase {
 
         controller.start(codeType: .accessCode, cardId: nil) { _ in }
         service.state.send(.finished)
-        for _ in 0 ..< 100 where handler.events.isEmpty {
+        for _ in 0 ..< 100 {
             await Task.yield()
         }
 
@@ -153,9 +153,14 @@ final class ResetCodesFlowTests: XCTestCase {
         XCTAssertEqual(ring.stepTitle(for: .needWriteResetCard), "reset_codes_prepare_device_again_title".localized)
         XCTAssertEqual(ring.newCodeSubtitle, "reset_codes_new_code_subtitle".localized)
         XCTAssertEqual(ring.successBody, "reset_codes_success_body".localized)
+
+        let unformatted = ResetCodesCopy(type: .accessCode, cardId: nil)
+        XCTAssertEqual(unformatted.stepTitle(for: .needScanResetCard), "reset_codes_prepare_device_title".localized)
+        XCTAssertEqual(unformatted.newCodeSubtitle, "reset_codes_new_code_subtitle".localized)
+        XCTAssertEqual(unformatted.successBody, "reset_codes_success_body".localized)
     }
 
-    func testNewDesignCopyNeverSaysReset() {
+    func testNewDesignAccessCodeCopyNeverSaysReset() {
         let copies = [
             ResetCodesCopy(type: .accessCode, cardId: "•• 0000"),
             ResetCodesCopy(type: .accessCode, cardId: nil),

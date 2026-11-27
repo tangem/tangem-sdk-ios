@@ -45,12 +45,14 @@ struct ResetUserCodesView: View {
                     Text(messageTitle)
                         .font(.system(size: 28, weight: .bold))
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.bottom, 12)
 
-                    Text(messageBody)
-                        .font(.system(size: 16))
-                        .foregroundColor(style.colors.secondaryText)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if !messageBody.isEmpty {
+                        Text(messageBody)
+                            .font(.system(size: 16))
+                            .foregroundColor(style.colors.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 12)
+                    }
 
                     Spacer()
                 }

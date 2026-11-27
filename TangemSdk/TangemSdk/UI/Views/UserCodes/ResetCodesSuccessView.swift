@@ -19,7 +19,7 @@ struct ResetCodesSuccessView: View {
         VStack(spacing: 0) {
             FillingScrollView { _ in
                 VStack(spacing: 20) {
-                    Image("reset_codes_success", bundle: .sdkBundle)
+                    Image(decorative: "reset_codes_success", bundle: .sdkBundle)
                         .frame(width: 76, height: 76)
 
                     VStack(spacing: 12) {

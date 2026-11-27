@@ -52,7 +52,7 @@ struct ResetCodesIntroView: View {
 
     private var heading: some View {
         VStack(spacing: 12) {
-            Image("reset_codes_intro", bundle: .sdkBundle)
+            Image(decorative: "reset_codes_intro", bundle: .sdkBundle)
                 .renderingMode(.template)
                 .foregroundColor(.primary)
                 .frame(width: 80, height: 80)
@@ -69,7 +69,7 @@ struct ResetCodesIntroView: View {
 
     private func row(icon: String, title: String, subtitle: String) -> some View {
         HStack(spacing: 16) {
-            Image(icon, bundle: .sdkBundle)
+            Image(decorative: icon, bundle: .sdkBundle)
                 .renderingMode(.template)
                 .foregroundColor(.primary)
                 .frame(width: 42, height: 42)
